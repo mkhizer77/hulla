@@ -1,0 +1,74 @@
+name: server-image
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'server/**'
+      - 'packages/rules-engine/**'
+      - 'packages/protocol/**'
+      - 'packages/shared-ts/**'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  detect:
+    name: Detect whether the server image exists
+    runs-on: ubuntu-latest
+    outputs:
+      dockerfile: ${{ steps.check.outputs.dockerfile }}
+    steps:
+      - uses: actions/checkout@v4
+      - id: check
+        run: |
+          if [ -f server/nakama/Dockerfile ]; then echo "dockerfile=true"; else echo "dockerfile=false"; fi >> "$GITHUB_OUTPUT"
+
+  build:
+    name: Build and push the Nakama image
+    needs: detect
+    if: needs.detect.outputs.dockerfile == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm --filter ./server/nakama build
+      - uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - uses: docker/build-push-action@v6
+        with:
+          context: server/nakama
+          push: true
+          tags: |
+            ghcr.io/${{ github.repository }}/nakama:${{ github.sha }}
+            ghcr.io/${{ github.repository }}/nakama:latest
+
+  deploy-phase0:
+    name: Deploy to the phase 0 box (manual approval)
+    needs: build
+    runs-on: ubuntu-latest
+    environment: phase0
+    steps:
+      - name: Pull and restart over SSH
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.PHASE0_HOST }}
+          username: ${{ secrets.PHASE0_USER }}
+          key: ${{ secrets.PHASE0_SSH_KEY }}
+          script: |
+            cd /opt/hulla
+            docker compose pull
+            docker compose up -d
+            docker compose ps

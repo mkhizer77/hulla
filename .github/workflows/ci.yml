@@ -1,0 +1,108 @@
+name: ci
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_call:
+
+permissions:
+  contents: read
+  checks: write
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  detect:
+    name: Detect which parts exist
+    runs-on: ubuntu-latest
+    outputs:
+      typescript: ${{ steps.check.outputs.typescript }}
+      csharp: ${{ steps.check.outputs.csharp }}
+      unity: ${{ steps.check.outputs.unity }}
+    steps:
+      - uses: actions/checkout@v4
+      - id: check
+        run: |
+          if [ -f pnpm-lock.yaml ]; then ts=true; else ts=false; fi
+          if find packages/rules-engine-cs -name '*.csproj' 2>/dev/null | grep -q .; then cs=true; else cs=false; fi
+          if [ -f apps/unity/Hulla/ProjectSettings/ProjectVersion.txt ]; then unity=true; else unity=false; fi
+          printf 'typescript=%s\ncsharp=%s\nunity=%s\n' "$ts" "$cs" "$unity" >> "$GITHUB_OUTPUT"
+          printf 'typescript=%s csharp=%s unity=%s\n' "$ts" "$cs" "$unity"
+
+  typescript:
+    name: TypeScript packages and server
+    needs: detect
+    if: needs.detect.outputs.typescript == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm lint
+      - run: pnpm test
+      - run: pnpm vectors
+      - name: Generated code is up to date
+        run: |
+          pnpm codegen
+          git diff --exit-code -- packages/protocol/generated
+      - run: pnpm content:validate
+
+  csharp:
+    name: C# engine mirror
+    needs: detect
+    if: needs.detect.outputs.csharp == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
+      - run: dotnet test packages/rules-engine-cs --configuration Release --nologo
+
+  unity-tests:
+    name: Unity edit-mode tests
+    needs: detect
+    if: needs.detect.outputs.unity == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          lfs: true
+      - uses: actions/cache@v4
+        with:
+          path: apps/unity/Hulla/Library
+          key: library-${{ hashFiles('apps/unity/Hulla/Packages/packages-lock.json') }}
+          restore-keys: library-
+      - uses: game-ci/unity-test-runner@v4
+        env:
+          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+          UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
+          UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
+        with:
+          projectPath: apps/unity/Hulla
+          unityVersion: 6000.4.9f1
+          testMode: EditMode
+          githubToken: ${{ secrets.GITHUB_TOKEN }}
+
+  # Single required check for branch protection. Skipped jobs count as passing;
+  # any failed job fails this one.
+  ci:
+    name: ci
+    needs: [detect, typescript, csharp, unity-tests]
+    if: ${{ !cancelled() }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Show job results
+        run: echo '${{ toJSON(needs) }}'
+      - name: Fail when any job failed
+        if: ${{ contains(needs.*.result, 'failure') }}
+        run: exit 1

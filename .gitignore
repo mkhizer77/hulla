@@ -1,0 +1,32 @@
+# local assistant and editor files, never published
+CLAUDE.local.md
+.claude/
+.ai/
+.vscode/
+.idea/
+.DS_Store
+
+# node
+node_modules/
+dist/
+coverage/
+*.log
+
+# dotnet
+bin/
+obj/
+
+# unity (project-specific ignores live in apps/unity/Hulla/.gitignore)
+apps/unity/Hulla/Library/
+apps/unity/Hulla/Temp/
+apps/unity/Hulla/Logs/
+apps/unity/Hulla/UserSettings/
+apps/unity/Hulla/Build/
+apps/unity/Hulla/Builds/
+
+# secrets
+.env
+.env.*
+*.pem
+*.p12
+*.keystore

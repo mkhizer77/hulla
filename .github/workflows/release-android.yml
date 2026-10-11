@@ -1,0 +1,54 @@
+name: release-android
+
+on:
+  push:
+    tags: ['v*']
+
+permissions:
+  contents: write
+  checks: write
+
+jobs:
+  tests:
+    name: Tests must pass before a release build
+    uses: ./.github/workflows/ci.yml
+    secrets: inherit
+
+  android:
+    name: Android build
+    needs: tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          lfs: true
+      - uses: actions/cache@v4
+        with:
+          path: apps/unity/Hulla/Library
+          key: library-${{ hashFiles('apps/unity/Hulla/Packages/packages-lock.json') }}
+          restore-keys: library-
+      - name: Build AAB and APK
+        uses: game-ci/unity-builder@v4
+        env:
+          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+          UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
+          UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
+        with:
+          projectPath: apps/unity/Hulla
+          unityVersion: 6000.4.9f1
+          targetPlatform: Android
+          androidAppBundle: true
+          androidKeystoreName: hulla.keystore
+          androidKeystoreBase64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+          androidKeystorePass: ${{ secrets.ANDROID_KEYSTORE_PASS }}
+          androidKeyaliasName: ${{ secrets.ANDROID_KEYALIAS_NAME }}
+          androidKeyaliasPass: ${{ secrets.ANDROID_KEYALIAS_PASS }}
+          versioning: Tag
+      - name: Attach to the GitHub release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: build/Android/**
+          generate_release_notes: true
+
+  # iOS joins here once the Apple developer account exists: a macos-latest job with
+  # targetPlatform: iOS, then an Xcode archive step. Public repositories get macOS runners free.
