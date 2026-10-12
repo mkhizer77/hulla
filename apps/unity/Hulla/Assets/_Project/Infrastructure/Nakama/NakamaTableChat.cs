@@ -65,8 +65,16 @@ namespace Hulla.Infrastructure.Nakama
             }
             catch (Exception error)
             {
-                var refused = error.Message.Contains("rate") ? "network.rate_limited" : "chat.refused";
-                return Result<bool>.Fail(refused, error.Message);
+                // The before-message hook refuses with its code as the message (server hooks/before_channel_message).
+                foreach (var code in new[] { "network.rate_limited", "auth.not_linked", "content.filtered" })
+                {
+                    if (error.Message.Contains(code))
+                    {
+                        return Result<bool>.Fail(code);
+                    }
+                }
+
+                return Result<bool>.Fail("chat.refused", error.Message);
             }
         }
 

@@ -47,6 +47,20 @@ namespace Hulla.Presentation.Text
         public const string Chat = "Chat";
         public const string Send = "Send";
         public const string ChatTooFast = "Slow down a little: one message every 2 seconds.";
+        public const string ChatGuest = "Guests can chat at friends' tables. Link an account to chat at public ones.";
+        public const string ChatFiltered = "That message has words this table doesn't allow.";
+        public const string Mute = "Mute";
+        public const string Unmute = "Unmute";
+        public const string MutedNote = "You won't see {0}'s messages or emotes.";
+
+        public static string ChatProblem(string code) => code switch
+        {
+            "network.rate_limited" => ChatTooFast,
+            "auth.not_linked" => ChatGuest,
+            "content.filtered" => ChatFiltered,
+            _ => ChatRefused,
+        };
+
         public const string ChatRefused = "Not sent. Messages can't have links or phone numbers, up to 140 characters.";
         public const string QuickPlay = "Quick Play";
         public const string Settings = "Settings";

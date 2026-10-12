@@ -18,6 +18,9 @@ namespace Hulla.Presentation.TableKit
 
         public IReadOnlyList<SeatBadge> Badges => _badges;
 
+        /// <summary>Raised with the seat number when an opponent's badge is tapped.</summary>
+        public event System.Action<long>? Tapped;
+
         public void Layout(int seatCount, long mySeat)
         {
             _seatCount = seatCount;
@@ -27,6 +30,8 @@ namespace Hulla.Presentation.TableKit
             {
                 var badge = new SeatBadge();
                 badge.AddToClassList("seat--placed");
+                var index = _badges.Count;
+                badge.RegisterCallback<ClickEvent>(_ => Tapped?.Invoke(SeatAt(index)));
                 _badges.Add(badge);
                 _area.Add(badge);
             }

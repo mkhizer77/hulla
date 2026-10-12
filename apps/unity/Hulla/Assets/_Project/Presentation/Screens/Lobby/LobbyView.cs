@@ -83,8 +83,16 @@ namespace Hulla.Presentation.Screens.Lobby
         public void Dispose() => _client.Model.Changed -= Refresh;
 
         /// <summary>A free-text line on the table channel, newest first, the latest five only.</summary>
+        /// <summary>Muted players' lines are not shown (GDD 11.6).</summary>
+        public Func<string?, bool>? IsMuted { get; set; }
+
         public void ShowText(TextLine line)
         {
+            if (IsMuted?.Invoke(line.SenderId) == true)
+            {
+                return;
+            }
+
             var name = line.SenderName;
             foreach (var seat in _client.Model.Seats)
             {
@@ -119,7 +127,7 @@ namespace Hulla.Presentation.Screens.Lobby
                 return;
             }
 
-            _chatStatus.text = sent.Error.Code == "network.rate_limited" ? UiText.ChatTooFast : UiText.ChatRefused;
+            _chatStatus.text = UiText.ChatProblem(sent.Error.Code);
         }
 
         /// <summary>Per frame: the auto-start countdown of a public table, redrawn when the second changes.</summary>
