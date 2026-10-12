@@ -126,10 +126,25 @@ namespace Hulla.Integration.Tests
                 await again.RefreshAsync(default);
                 Assert.IsTrue(again.IsMuted(request.UserId), "a mute is kept on the server");
 
+                // Data rights (GDD 10.2): export, delete with a 14-day grace, and cancel.
+                var account = new NakamaAccountService(amna.Connection);
+                var export = await account.ExportAsync(default);
+                Assert.IsTrue(export.IsOk, export.Error.ToString());
+                StringAssert.Contains("\"displayName\": \"Amna\"", export.Value, "the export carries the profile");
+                var delete = await account.DeleteAsync(default);
+                Assert.IsTrue(delete.IsOk);
+                var days = (delete.Value - DateTimeOffset.UtcNow.ToUnixTimeMilliseconds()) / 86_400_000.0;
+                Assert.That(days, Is.InRange(13.9, 14.1));
+                var cancel = await account.CancelDeleteAsync(default);
+                Assert.IsTrue(cancel.IsOk && cancel.Value, "a pending deletion can be cancelled");
+
                 var handle = "amna_" + stamp.Substring(stamp.Length - 6);
-                await amna.Profile.SaveAsync("Amna K", handle, "Thulla queen", default);
+                // Sign-in already set the profile name to the one typed (one free change), so keep it.
+                await amna.Profile.RefreshAsync(default);
+                Assert.AreEqual("Amna", amna.Profile.Profile!.DisplayName, "the typed name reaches the profile friends see");
+                await amna.Profile.SaveAsync("Amna", handle, "Thulla queen", default);
                 Assert.IsTrue(amna.Profile.Saved, amna.Profile.ErrorCode);
-                Assert.AreEqual("Amna K", amna.Profile.Profile!.DisplayName);
+                Assert.AreEqual("Thulla queen", amna.Profile.Profile!.Bio);
                 await basit.Profile.RefreshAsync(default);
                 await basit.Profile.SaveAsync("Basit", handle, "", default);
                 Assert.AreEqual("profile.handle_taken", basit.Profile.ErrorCode);

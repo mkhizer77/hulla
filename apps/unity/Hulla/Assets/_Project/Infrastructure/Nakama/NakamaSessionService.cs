@@ -40,6 +40,11 @@ namespace Hulla.Infrastructure.Nakama
                     await client.UpdateAccountAsync(session, null, displayName.Trim(), null, null, null, null, null, cancellation);
                 }
 
+                if (!string.IsNullOrWhiteSpace(displayName))
+                {
+                    await SyncProfileNameAsync(client, session, displayName.Trim(), cancellation);
+                }
+
                 var socket = client.NewSocket(true);
                 await socket.ConnectAsync(session, true);
                 _connection.Session = session;
@@ -89,6 +94,30 @@ namespace Hulla.Infrastructure.Nakama
             {
                 Debug.LogWarning($"reconnect failed: {error.Message}");
                 return Result<bool>.Fail("session.unavailable", error.GetType().Name);
+            }
+        }
+
+        /// <summary>
+        /// The profile (what friends, presence and recent players show) starts with a generated guest
+        /// name; the name the player typed replaces it. Only a different name is sent.
+        /// </summary>
+        private static async Awaitable SyncProfileNameAsync(IClient client, ISession session, string name, CancellationToken cancellation)
+        {
+            try
+            {
+                var current = await client.RpcAsync(session, "profile_get", "{}", null, cancellation);
+                var profile = Newtonsoft.Json.Linq.JObject.Parse(current.Payload)["profile"];
+                if ((string?)profile?["displayName"] == name)
+                {
+                    return;
+                }
+
+                var update = new Newtonsoft.Json.Linq.JObject { ["displayName"] = name };
+                await client.RpcAsync(session, "profile_update", update.ToString(Newtonsoft.Json.Formatting.None), null, cancellation);
+            }
+            catch (Exception error) when (!(error is OperationCanceledException))
+            {
+                Debug.LogWarning($"profile name not updated: {error.Message}");
             }
         }
 

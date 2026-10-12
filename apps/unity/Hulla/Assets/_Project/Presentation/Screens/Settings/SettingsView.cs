@@ -11,8 +11,34 @@ namespace Hulla.Presentation.Screens.Settings
         private readonly SettingsModel _settings;
         private readonly VisualElement _list;
 
-        public SettingsView(VisualElement root, SettingsModel settings, Action close)
+        /// <summary>What the account rows do; null hides the section (not signed in).</summary>
+        public sealed class AccountActions
         {
+            public AccountActions(Action<Action<string>> export, Action<Action<string>> delete, Action<Action<string>> cancelDelete, Func<string?> pendingText)
+            {
+                Export = export;
+                Delete = delete;
+                CancelDelete = cancelDelete;
+                PendingText = pendingText;
+            }
+
+            /// <summary>Runs the action; the callback gets a one-line status to show.</summary>
+            public Action<Action<string>> Export { get; }
+
+            public Action<Action<string>> Delete { get; }
+
+            public Action<Action<string>> CancelDelete { get; }
+
+            /// <summary>"Your account will be deleted on …" while a deletion is pending, else null.</summary>
+            public Func<string?> PendingText { get; }
+        }
+
+        private readonly AccountActions? _account;
+        private Label? _accountStatus;
+
+        public SettingsView(VisualElement root, SettingsModel settings, Action close, AccountActions? account = null)
+        {
+            _account = account;
             _settings = settings;
             root.Q<Label>("title").text = UiText.Settings;
             var closeButton = root.Q<Button>("close");
@@ -41,6 +67,42 @@ namespace Hulla.Presentation.Screens.Settings
             Choice(UiText.TextSizeLabel, new[] { "100%", "125%", "150%", "200%" }, () => Array.IndexOf(scales, _settings.TextScale), i => _settings.TextScale = scales[i]);
             Toggle(UiText.ReduceMotionLabel, () => _settings.ReduceMotion, v => _settings.ReduceMotion = v);
             Toggle(UiText.LeftHandedLabel, () => _settings.LeftHanded, v => _settings.LeftHanded = v);
+            if (_account != null)
+            {
+                Heading(UiText.SettingsAccount);
+                Action(UiText.ExportData, () => _account.Export(Status));
+                var pending = _account.PendingText();
+                if (pending == null)
+                {
+                    Action(UiText.DeleteAccount, () => _account.Delete(Status));
+                }
+                else
+                {
+                    Action(UiText.CancelDeletion, () => _account.CancelDelete(Status));
+                }
+
+                _accountStatus = new Label(pending ?? "");
+                _accountStatus.AddToClassList("status");
+                _list.Add(_accountStatus);
+            }
+        }
+
+        private void Status(string text)
+        {
+            _list.Clear();
+            Build();
+            if (_accountStatus != null)
+            {
+                _accountStatus.text = text;
+            }
+        }
+
+        private void Action(string text, Action click)
+        {
+            var button = new Button(click) { text = text };
+            button.AddToClassList("button");
+            button.AddToClassList("settings__action");
+            _list.Add(button);
         }
 
         private void Heading(string text)
