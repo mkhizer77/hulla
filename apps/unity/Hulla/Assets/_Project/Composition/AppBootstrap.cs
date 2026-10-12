@@ -41,6 +41,8 @@ namespace Hulla.Composition
             _flow.Start();
         }
 
+        private void OnApplicationPause(bool paused) => _flow?.SetAway(paused);
+
         private void OnDestroy()
         {
             SceneManager.sceneLoaded -= OnSceneLoaded;

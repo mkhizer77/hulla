@@ -33,5 +33,11 @@ namespace Hulla.Application.Social
         Awaitable<Result<bool>> BlockAsync(string userId, CancellationToken cancellation);
 
         Awaitable<Result<bool>> SetFavouriteAsync(string userId, bool pinned, CancellationToken cancellation);
+
+        /// <summary>Friends with presence and their tables, joinable lobbies first (table_list_friends).</summary>
+        Awaitable<Result<IReadOnlyList<FriendPresence>>> PresenceAsync(CancellationToken cancellation);
+
+        /// <summary>Shows the player as Away while the app is in the background (presence_set).</summary>
+        Awaitable<Result<bool>> SetAwayAsync(bool away, CancellationToken cancellation);
     }
 }

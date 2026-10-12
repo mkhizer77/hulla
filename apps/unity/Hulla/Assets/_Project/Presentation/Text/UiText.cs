@@ -1,3 +1,5 @@
+using Hulla.Application.Social;
+
 namespace Hulla.Presentation.Text
 {
     /// <summary>
@@ -93,6 +95,15 @@ namespace Hulla.Presentation.Text
         public const string Server = "Server (development builds)";
 
         public const string Profile = "Profile";
+        public const string JoinFriendTable = "Join {0}'s table ({1} open)";
+
+        public static string Presence(PresenceState state) => state switch
+        {
+            PresenceState.Lobby => "in a lobby",
+            PresenceState.Round => "playing",
+            PresenceState.Away => "away",
+            _ => "online",
+        };
         public const string ShareCode = "Share code";
         public const string ShareTitle = "Invite to Hulla";
 

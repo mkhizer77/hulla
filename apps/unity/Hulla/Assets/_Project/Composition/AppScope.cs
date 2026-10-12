@@ -33,6 +33,8 @@ namespace Hulla.Composition
             _matchmaker = new NakamaMatchmaker(_connection);
             _tableChat = new NakamaTableChat(_connection);
             var social = new NakamaSocialService(_connection);
+            Social = social;
+            HomeFriends = new HomeFriendsViewModel(social);
             Friends = new FriendsViewModel(social);
             Profile = new ProfileViewModel(social);
             QuickPlay = new QuickPlayViewModel(_matchmaker);
@@ -57,6 +59,10 @@ namespace Hulla.Composition
         public ITableChat TableChat => _tableChat;
 
         public FriendsViewModel Friends { get; }
+
+        public Hulla.Application.Social.ISocialService Social { get; }
+
+        public HomeFriendsViewModel HomeFriends { get; }
 
         public ProfileViewModel Profile { get; }
 

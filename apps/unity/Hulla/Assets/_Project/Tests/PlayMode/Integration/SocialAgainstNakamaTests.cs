@@ -24,6 +24,8 @@ namespace Hulla.Integration.Tests
                 Connection = NakamaConnection.Create("http", host, port, "local-only-server-key");
                 Session = new NakamaSessionService(Connection, "hulla-social-" + name + "-" + stamp);
                 var social = new NakamaSocialService(Connection);
+                Social = social;
+                Gateway = new NakamaTableGateway(Connection);
                 Friends = new FriendsViewModel(social);
                 Profile = new ProfileViewModel(social);
             }
@@ -35,6 +37,10 @@ namespace Hulla.Integration.Tests
             public FriendsViewModel Friends { get; }
 
             public ProfileViewModel Profile { get; }
+
+            public NakamaSocialService Social { get; }
+
+            public NakamaTableGateway Gateway { get; }
         }
 
         [UnityTest]
@@ -87,6 +93,31 @@ namespace Hulla.Integration.Tests
 
                 await amna.Friends.ToggleFavouriteAsync(amna.Friends.Friends[0], default);
                 Assert.IsTrue(amna.Friends.Friends[0].Favourite, "a friend can be pinned");
+
+                // Presence (GDD 10.4, 14.10): Amna opens a table; Basit's Home offers it.
+                var table = await amna.Gateway.CreateTableAsync(default);
+                Assert.IsTrue(table.IsOk, "table_create");
+                Assert.IsTrue((await amna.Gateway.EnterAsync(table.Value, default)).IsOk);
+                var home = new HomeFriendsViewModel(basit.Social);
+                for (var i = 0; i < 20 && home.Hero == null; i++)
+                {
+                    await home.RefreshAsync(default);
+                    if (home.Hero == null)
+                    {
+                        await Awaitable.WaitForSecondsAsync(0.5f);
+                    }
+                }
+
+                Assert.IsNotNull(home.Hero, "a friend's open lobby becomes the hero");
+                Assert.AreEqual(table.Value.Code, home.Hero!.TableCode);
+                Assert.AreEqual(PresenceState.Lobby, home.Hero.State);
+                Assert.Greater(home.Hero.OpenSeats, 0);
+
+                Assert.IsTrue((await basit.Social.SetAwayAsync(true, default)).IsOk);
+                var amnaHome = new HomeFriendsViewModel(amna.Social);
+                await amnaHome.RefreshAsync(default);
+                Assert.AreEqual(PresenceState.Away, amnaHome.Online[0].State, "Away shows to friends");
+                amna.Gateway.Dispose();
 
                 var handle = "amna_" + stamp.Substring(stamp.Length - 6);
                 await amna.Profile.SaveAsync("Amna K", handle, "Thulla queen", default);

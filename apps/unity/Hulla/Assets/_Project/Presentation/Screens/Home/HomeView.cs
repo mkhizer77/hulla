@@ -1,4 +1,5 @@
 using System;
+using Hulla.Application.Social;
 using Hulla.Application.ViewModels;
 using Hulla.Presentation.Text;
 using UnityEngine.UIElements;
@@ -15,13 +16,19 @@ namespace Hulla.Presentation.Screens.Home
         private readonly Button _join;
         private readonly Label _status;
         private readonly TextField _server;
+        private readonly HomeFriendsViewModel? _friendsOnline;
+        private readonly Button _hero;
+        private readonly Label _online;
 
         /// <param name="server">The server to show in a development build, or null to hide the field.</param>
         private readonly Button _quick;
         private int _seats = 4;
 
-        public HomeView(VisualElement root, HomeViewModel model, string? server, Action<string, string?> create, Action<string, string, string?> join, Action<string, int, string?> quickPlay, Action? openSettings = null, Action<string, string?>? openFriends = null, Action<string, string?>? openProfile = null)
+        public HomeView(VisualElement root, HomeViewModel model, string? server, Action<string, string?> create, Action<string, string, string?> join, Action<string, int, string?> quickPlay, Action? openSettings = null, Action<string, string?>? openFriends = null, Action<string, string?>? openProfile = null, HomeFriendsViewModel? friendsOnline = null)
         {
+            _friendsOnline = friendsOnline;
+            _hero = root.Q<Button>("hero");
+            _online = root.Q<Label>("online");
             var settings = root.Q<Button>("settings");
             settings.text = UiText.Settings;
             settings.clicked += () => openSettings?.Invoke();
@@ -70,6 +77,20 @@ namespace Hulla.Presentation.Screens.Home
             _quick = root.Q<Button>("quick");
             _quick.text = UiText.QuickPlay;
             _quick.clicked += () => quickPlay(_name.value, _seats, Server());
+            _hero.clicked += () =>
+            {
+                var code = _friendsOnline?.Hero?.TableCode;
+                if (code != null)
+                {
+                    join(_name.value, code, Server());
+                }
+            };
+            if (_friendsOnline != null)
+            {
+                _friendsOnline.Changed += RefreshFriends;
+            }
+
+            RefreshFriends();
             var friends = root.Q<Button>("friends");
             friends.text = UiText.Friends;
             friends.clicked += () => openFriends?.Invoke(_name.value, Server());
@@ -80,7 +101,44 @@ namespace Hulla.Presentation.Screens.Home
             Refresh();
         }
 
-        public void Dispose() => _model.Changed -= Refresh;
+        public void Dispose()
+        {
+            _model.Changed -= Refresh;
+            if (_friendsOnline != null)
+            {
+                _friendsOnline.Changed -= RefreshFriends;
+            }
+        }
+
+        private void RefreshFriends()
+        {
+            var hero = _friendsOnline?.Hero;
+            _hero.style.display = hero == null ? DisplayStyle.None : DisplayStyle.Flex;
+            if (hero != null)
+            {
+                _hero.text = string.Format(UiText.JoinFriendTable, hero.Name, hero.OpenSeats);
+            }
+
+            var online = _friendsOnline?.Online;
+            if (online == null || online.Count == 0)
+            {
+                _online.text = "";
+                return;
+            }
+
+            var names = new System.Text.StringBuilder();
+            foreach (var friend in online)
+            {
+                if (names.Length > 0)
+                {
+                    names.Append(" · ");
+                }
+
+                names.Append(friend.Name).Append(" (").Append(UiText.Presence(friend.State)).Append(')');
+            }
+
+            _online.text = names.ToString();
+        }
 
         private void Refresh()
         {
