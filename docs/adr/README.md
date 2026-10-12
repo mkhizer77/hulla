@@ -25,6 +25,7 @@ One file per decision, numbered, never edited after acceptance except to change 
 | 0019 | C# engine mirror deferred past v1.0; the tutorial plays recorded event streams | Accepted |
 | 0020 | Rules engines take no clock; the table core stamps time | Accepted |
 | 0021 | Protocol schemas use JSON Schema draft-07 | Accepted |
+| 0022 | Server-side validators are compiled ahead of time | Accepted |
 
 ## Template
 ```

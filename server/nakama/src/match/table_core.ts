@@ -1,8 +1,8 @@
 import {
-  envelopeSchema,
-  joinTablePayloadSchema,
+  check_envelope,
+  check_join_table,
   OPCODES,
-  payloadValidators,
+  payloadChecks,
 } from "@hulla/protocol/generated";
 import {
   ErrorCodes,
@@ -48,7 +48,7 @@ import {
 import { activeSeats, displayNameOf, spectatorCount, tableStateFor } from "./view";
 
 import type { RoundDeps } from "./round";
-import type { RulesSelection } from "@hulla/protocol/generated";
+import type { JoinTable, MessageEnvelope, RulesSelection } from "@hulla/protocol/generated";
 
 const PROTOCOL_MAJOR = 1;
 
@@ -99,11 +99,6 @@ export interface TableCore<S, M> {
   close(state: TableState<S, M>, reason: TableCloseReason, now: number): Batch;
 }
 
-interface Validator {
-  safeParse(input: unknown): { readonly success: boolean };
-}
-
-const shellValidators = payloadValidators as Record<string, Validator | undefined>;
 const opcodeTable = OPCODES as Record<
   string,
   { readonly direction: "c2s" | "s2c"; readonly game?: string } | undefined
@@ -548,8 +543,9 @@ export function tableCore<S, M, V, E, R>(
       if (state.kicked.includes(presence.userId)) {
         return { accept: false, code: ErrorCodes.table.banned };
       }
-      const parsed = joinTablePayloadSchema.safeParse(normaliseMetadata(metadata));
-      if (!parsed.success) return { accept: false, code: ErrorCodes.table.invalidPayload };
+      const meta = normaliseMetadata(metadata);
+      if (!check_join_table(meta)) return { accept: false, code: ErrorCodes.table.invalidPayload };
+      const parsed = { data: meta as JoinTable };
       const own = state.seats.findIndex((slot) => slot.playerId === presence.userId);
       if (own !== -1) {
         state.admissions.set(presence.sessionId, { kind: "seat", seat: own, reattach: true });
@@ -711,8 +707,7 @@ export function tableCore<S, M, V, E, R>(
           return emit.batch;
         }
       }
-      const parsed = envelopeSchema.safeParse(value);
-      if (!parsed.success) {
+      if (!check_envelope(value)) {
         sendError(
           emit,
           sessionId,
@@ -721,7 +716,7 @@ export function tableCore<S, M, V, E, R>(
         );
         return emit.batch;
       }
-      const envelope = parsed.data;
+      const envelope = value as MessageEnvelope;
       const refSeq = envelope.seq;
       if ((envelope.v as number) !== PROTOCOL_MAJOR) {
         sendError(
@@ -771,10 +766,10 @@ export function tableCore<S, M, V, E, R>(
         return emit.batch;
       }
       const entry = opcodeTable[type];
-      const validator = shellValidators[type];
+      const check = payloadChecks[type];
       if (
         entry === undefined ||
-        validator === undefined ||
+        check === undefined ||
         entry.direction !== "c2s" ||
         entry.game !== undefined
       ) {
@@ -786,7 +781,7 @@ export function tableCore<S, M, V, E, R>(
         );
         return emit.batch;
       }
-      if (!validator.safeParse(payload).success) {
+      if (!check(payload)) {
         sendError(
           emit,
           sessionId,

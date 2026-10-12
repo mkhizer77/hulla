@@ -1,4 +1,4 @@
-import { setRulesPayloadSchema } from "@hulla/protocol/generated";
+import { check_rules_selection } from "@hulla/protocol/generated";
 import {
   ErrorCodes,
   generateRoomCode,
@@ -59,18 +59,17 @@ export function tableCreate(deps: TableCreateDeps, payload: string): TableCreate
     return fail(ruleError(ErrorCodes.table.invalidPayload, { reason: "mode" }));
   }
   const rulesInput = input["rules"] ?? { gameId };
-  const rulesParsed = setRulesPayloadSchema.safeParse({ rules: rulesInput });
-  if (!rulesParsed.success || rulesParsed.data.rules.gameId !== gameId) {
+  if (!check_rules_selection(rulesInput) || (rulesInput as RulesSelection).gameId !== gameId) {
     return fail(ruleError(ErrorCodes.table.invalidPayload, { reason: "rules" }));
   }
-  const rules = rulesParsed.data.rules as RulesSelection;
+  const rules = rulesInput as RulesSelection;
   const resolved = entry.host.resolveRules(rules, mode as TableMode);
   if (!resolved.ok) return fail(resolved.error);
   const seed = sha256(utf8Encode(deps.runtime.uuidv4() + deps.runtime.uuidv4()));
   const code = generateRoomCode(Xoshiro128StarStar.fromState(stateFromSeed(seed)));
   const matchId = deps.matchCreate(entry.matchName, {
     code,
-    gameId: rulesParsed.data.rules.gameId,
+    gameId: rules.gameId,
     mode: mode as TableMode,
     rules,
   });

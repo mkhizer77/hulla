@@ -160,7 +160,7 @@ hulla/
 |---|---|---|---|
 | `packages/rules-engine` | TS (no Node APIs) | `shared-ts` | `protocol`, `server`, any client, Node built-ins |
 | `packages/rules-engine-cs` [LATER, ADR-0019] | C# netstandard2.1 | nothing | UnityEngine, System.Random, DateTime.Now |
-| `packages/protocol` | JSON Schema; generated TS and C# | `zod` (the generated validators) | hand edits in generated folders |
+| `packages/protocol` | JSON Schema; generated TS and C# | `zod` (the web client's validators), `ajv` runtime helpers (the server's compiled checks, ADR-0022) | hand edits in generated folders |
 | `packages/shared-ts` | TS | nothing | Node built-ins (so the web can use it) |
 | `server/nakama` | TS (Nakama runtime) | `rules-engine`, `protocol`, `shared-ts` | `apps/*` |
 | `apps/unity` | C# | `rules-engine-cs` (as a local UPM package), generated C# protocol | server code |
@@ -344,7 +344,7 @@ Open-source Nakama cannot move a running match between nodes, so a restart ends 
 
 ### 8.4 Message pipeline
 1. **Decode** the envelope `{ v, type, tableId, seq, ts, payload }`; reject unknown protocol major versions with `error.unsupported_version`.
-2. **Validate** payload against the generated schema validator for `type` (zod); reject with `error.invalid_payload`.
+2. **Validate** payload against the generated check for `type` (Ajv standalone code on the server, zod on the web, ADR-0022); reject with `error.invalid_payload`.
 3. **Authorise**: the sender's presence maps to a seat or spectator; spectators may only chat; the acting seat must match the phase's allowed actors.
 4. **Idempotency**: `(seat, clientSeq)` already applied → re-send the original acknowledgement, apply nothing.
 5. **Dispatch**: game actions go to `GameModule.applyMove`; table actions (ready, rules, kick, rematch) to `TableCore` handlers; chat to the filter then broadcast.
@@ -487,7 +487,7 @@ Sprite atlases per theme, object pools for cards and effects, zero per-frame all
 `packages/protocol/schemas/` holds JSON Schema (draft-07, ADR-0021): `envelope.json`, `shell/*.json` (table, presence, chat, economy, errors), `games/thulla/*.json` (moves, events, views, rules). Every message type has an `opcode` and a schema id. The protocol has a **major version** in the envelope; within a major, changes are additive only (new optional fields, new message types). A two-major compatibility window is kept on the server (ADR-0005).
 
 ### 10.2 Codegen pipeline
-`pnpm codegen` generates TypeScript types and zod validators (for the server and web) and C# DTOs (for Unity) into committed `generated/` folders. CI regenerates and fails on any diff, so hand edits are impossible to merge. Round-trip tests serialise sample messages in each language and compare canonical JSON.
+`pnpm codegen` generates TypeScript types, zod validators (web), standalone checks (server, ADR-0022) and C# DTOs (for Unity) into committed `generated/` folders. CI regenerates and fails on any diff, so hand edits are impossible to merge. Round-trip tests serialise sample messages in each language and compare canonical JSON.
 
 ### 10.3 Serialisation
 JSON over Nakama's WebSocket match data at launch, UTF-8, compact keys where payloads are hot (`c` for card codes). MessagePack can replace JSON behind the same DTOs when measurements justify it.

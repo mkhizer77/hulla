@@ -1,8 +1,4 @@
-import {
-  envelopeSchema,
-  payloadValidators,
-  tableStatePayloadSchema,
-} from "@hulla/protocol/generated";
+import { check_envelope, payloadChecks } from "@hulla/protocol/generated";
 import {
   createThullaRound,
   fairDealCommitment,
@@ -123,21 +119,16 @@ describe("the Thulla host at the table core", () => {
     const steps = playRound(t);
     expect(t.state.phase).toBe("roundEnded");
     expect(steps).toBeLessThan(600);
-    const validators = payloadValidators as Record<
-      string,
-      { safeParse(x: unknown): { success: boolean } } | undefined
-    >;
     let checked = 0;
     for (const { envelope } of t.sent) {
-      expect(envelopeSchema.safeParse(envelope).success).toBe(true);
-      const validator =
-        envelope.type === "table_state" ? tableStatePayloadSchema : validators[envelope.type];
-      if (validator === undefined) throw new Error(`no validator for ${envelope.type}`);
-      const result = validator.safeParse(envelope.payload);
-      if (!result.success)
+      expect(check_envelope(envelope)).toBe(true);
+      const check = payloadChecks[envelope.type];
+      if (check === undefined) throw new Error(`no check for ${envelope.type}`);
+      if (!check(envelope.payload)) {
         throw new Error(
           `${envelope.type} failed: ${JSON.stringify(envelope.payload).slice(0, 300)}`,
         );
+      }
       checked += 1;
     }
     expect(checked).toBe(t.sent.length);

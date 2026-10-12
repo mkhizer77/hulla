@@ -31,4 +31,4 @@ HULLA_NAKAMA_HOST=127.0.0.1 pnpm --filter @hulla/server test:integration   # scr
 - Round records (seed, players, moves, result, final state hash) go to the `round_logs` storage collection under the system user at round end and when a table closes mid-round.
 
 ## Runtime constraints
-No Node APIs, no timers, no async in match handlers; only `nk` performs IO; every inbound payload passes the generated zod validator before any logic runs (ARCHITECTURE 8.1, CODING_RULES 3.5).
+No Node APIs, no timers, no async in match handlers; only `nk` performs IO; every inbound payload passes the generated check before any logic runs (ARCHITECTURE 8.1, CODING_RULES 3.5).

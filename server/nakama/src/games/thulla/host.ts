@@ -1,4 +1,4 @@
-import { playCardPayloadSchema, takeHandPayloadSchema } from "@hulla/protocol/generated";
+import { check_play_card, check_take_hand } from "@hulla/protocol/generated";
 import {
   canTakeHand,
   legalMoves,
@@ -12,6 +12,7 @@ import { ErrorCodes, err, ok, ruleError, stateHash } from "@hulla/shared-ts";
 import { seriesPayload } from "../../match/view";
 
 import type { EncodeContext, GameHost, GameMessage } from "../../match/types";
+import type { PlayCard } from "@hulla/protocol/generated";
 import type {
   Card,
   ThullaEvent,
@@ -200,15 +201,13 @@ export function decodeThullaMove(
   payload: Record<string, unknown>,
 ): Result<ThullaMove, RuleError> {
   if (type === "play_card") {
-    const parsed = playCardPayloadSchema.safeParse(payload);
-    if (!parsed.success) {
+    if (!check_play_card(payload)) {
       return err(ruleError(ErrorCodes.table.invalidPayload, { reason: "schema", type }));
     }
-    return ok({ type: "play_card", card: parsed.data.card as Card });
+    return ok({ type: "play_card", card: (payload as unknown as PlayCard).card as Card });
   }
   if (type === "take_hand") {
-    const parsed = takeHandPayloadSchema.safeParse(payload);
-    if (!parsed.success) {
+    if (!check_take_hand(payload)) {
       return err(ruleError(ErrorCodes.table.invalidPayload, { reason: "schema", type }));
     }
     return ok({ type: "take_hand" });
