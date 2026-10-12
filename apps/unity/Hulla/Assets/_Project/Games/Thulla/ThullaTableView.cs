@@ -64,6 +64,8 @@ namespace Hulla.Games.Thulla
         private Label _coachText = null!;
         private Button _coachButton = null!;
         private Action? _coachAction;
+        private ThullaHints? _hints;
+        private bool _thullaJustPlayed;
         private readonly Func<string, Awaitable<Domain.Result<bool>>>? _sendText;
         private VisualElement _chatLog = null!;
         private TextField _chatInput = null!;
@@ -183,12 +185,31 @@ namespace Hulla.Games.Thulla
 
         public void HideCoach() => _coach.style.display = DisplayStyle.None;
 
+        /// <summary>Turns on the first-rounds hints for a live table (never for the tutorial).</summary>
+        public void UseHints(ThullaHints hints)
+        {
+            _hints = hints;
+            ShowDueHint();
+        }
+
+        private void ShowDueHint()
+        {
+            var hint = _hints?.Due(_client.Model, _thullaJustPlayed);
+            _thullaJustPlayed = false;
+            if (hint != null)
+            {
+                ShowCoach(hint, TutorialText.GotIt, HideCoach);
+            }
+        }
+
         public float Present(ServerMessage message)
         {
             switch (message.Payload)
             {
                 case MoveApplied applied when applied.Thulla == true:
                     ShowStamp(UiText.Thulla);
+                    _thullaJustPlayed = true;
+                    ShowDueHint();
                     return ThullaMomentSeconds;
                 case TrickResolved resolved when resolved.ThullaBy != null:
                     return ThullaMomentSeconds;
@@ -438,6 +459,11 @@ namespace Hulla.Games.Thulla
 
         private void Refresh()
         {
+            if (_hints != null && _coach.style.display != DisplayStyle.Flex)
+            {
+                ShowDueHint();
+            }
+
             RefreshInfo();
             RefreshOpponents();
             RefreshPile();

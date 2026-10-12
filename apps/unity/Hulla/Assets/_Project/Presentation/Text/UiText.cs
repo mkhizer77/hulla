@@ -95,6 +95,11 @@ namespace Hulla.Presentation.Text
         public const string Server = "Server (development builds)";
 
         public const string Profile = "Profile";
+
+        /// <summary>Starting names for a new player (GDD 17.2), changeable on Home.</summary>
+        public static readonly string[] NamePlaces = { "Lahori", "Dilli", "Karachi", "Dhaka", "Pindi", "Mumbai", "Multani", "Jaipuri" };
+
+        public static readonly string[] NameAnimals = { "Lion", "Tiger", "Falcon", "Panther", "Cheetah", "Eagle", "Leopard", "Peacock" };
         public const string EditRules = "Edit rules";
         public const string PresetLabel = "Preset";
         public const string TurnTimerLabel = "Turn timer";

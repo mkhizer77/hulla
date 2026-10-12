@@ -12,6 +12,12 @@ namespace Hulla.Games.Thulla
         public const string Finish = "Let's play";
         public const string Skip = "Skip";
 
+        public const string GotIt = "Got it";
+        public const string HintLegal = "Lit cards are the ones you can play now. Hold the led suit? Then you must follow it.";
+        public const string HintLeader = "\"Leads\" marks who led this trick. The highest card of that suit takes the hand.";
+        public const string HintTakeHand = "You can take the next player's whole hand before you lead. They escape, and you lead with all of it.";
+        public const string HintQuickChat = "A thulla! Tap Chat to say something, from \"Le lo bhai!\" to a chai emote.";
+
         public const string Step1 = "You have the Ace of Spades. Everyone throws a spade. No punishment on the first trick.";
         public const string Step1Hint = "The round opens with the Ace of Spades. Tap it, then tap again to play.";
         public const string Step1Done = "The opening trick goes to the discard. Your Ace was highest, so you lead next.";
