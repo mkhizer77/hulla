@@ -17,7 +17,7 @@ import {
 import { buildDeck, dealClockwise, nextSeat, sortCards, type Card } from "../card-kit";
 
 import { THULLA_RULES_VERSION, validateRules, type ThullaRules } from "./rules";
-import { THULLA_SEATS, type SeatState, type ThullaState } from "./state";
+import { EMPTY_STATS, THULLA_SEATS, type SeatState, type ThullaState } from "./state";
 
 import type { CreateRoundInput } from "../contract";
 import type { ThullaEvent } from "./events";
@@ -95,6 +95,9 @@ export function createThullaRound(
     trick: { ledSuit: null, plays: [], thullaBy: null },
     discard: [],
     openingPending,
+    handTakeUsed: false,
+    pendingAutoLead: false,
+    stats: seats.map(() => EMPTY_STATS),
     escapeOrder: [],
     bhabhiSeat: null,
     commitment,

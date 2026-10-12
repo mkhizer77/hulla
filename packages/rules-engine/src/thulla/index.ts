@@ -15,7 +15,16 @@ export {
   resolveRules,
   validateRules,
 } from "./rules";
-export type { SeatState, ThullaPhase, ThullaState, TrickState } from "./state";
-export { THULLA_SEATS, activeSeats, nextActiveSeat } from "./state";
+export type { SeatState, SeatStats, ThullaPhase, ThullaState, TrickState } from "./state";
+export {
+  EMPTY_STATS,
+  EMPTY_TRICK,
+  THULLA_SEATS,
+  activeSeats,
+  markEscaped,
+  nextActiveSeat,
+} from "./state";
+export type { ThullaMove } from "./moves";
+export { applyMove, canTakeHand, currentPhase, isRoundOver, legalMoves } from "./engine";
 export type { ThullaEvent } from "./events";
 export { createThullaRound, fairDealCommitment, nextDealer, roundStartedEvent } from "./deal";

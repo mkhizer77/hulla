@@ -20,7 +20,6 @@ export type SeriesFormat =
 /**
  * The toggles of GDD 6.13 that change legality or outcomes. Timers, the loser's title, card-count
  * display, the memory assist, spectators and voice are table settings, not engine rules.
- * A type alias rather than an interface so the state that embeds it stays hashable as JSON.
  */
 export interface ThullaRules {
   /** 2 is reserved for 7–8 seats in v1.2; only 1 is accepted today (owner decision, 12 Oct 2026). */
