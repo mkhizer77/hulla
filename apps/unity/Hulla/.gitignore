@@ -17,3 +17,5 @@
 *.unitypackage
 crashlytics-build.properties
 /.utmp/
+/Assets/StreamingAssets/content/
+/Assets/StreamingAssets/content.meta

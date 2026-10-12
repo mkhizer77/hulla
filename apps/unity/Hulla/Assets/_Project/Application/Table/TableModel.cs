@@ -29,6 +29,9 @@ namespace Hulla.Application.Table
         /// <summary>Raised after every applied message so views can refresh.</summary>
         public event Action? Changed;
 
+        /// <summary>Raised for each quick-chat phrase or emote, so views can show it once.</summary>
+        public event Action<ChatLine>? Chat;
+
         public string UserId { get; }
 
         public string Code { get; private set; } = "";
@@ -150,6 +153,12 @@ namespace Hulla.Application.Table
                     break;
                 case Error error:
                     LastErrorCode = error.Code;
+                    break;
+                case QuickChatSent said:
+                    Chat?.Invoke(new ChatLine(said.Seat, said.PhraseId, null, null));
+                    break;
+                case EmoteSent emote:
+                    Chat?.Invoke(new ChatLine(emote.Seat, null, emote.EmoteId, emote.TargetSeat));
                     break;
             }
 

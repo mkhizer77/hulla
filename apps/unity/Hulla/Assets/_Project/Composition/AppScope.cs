@@ -2,6 +2,7 @@ using System;
 using System.Threading;
 using Hulla.Application.Services;
 using Hulla.Application.ViewModels;
+using Hulla.Infrastructure.Content;
 using Hulla.Infrastructure.Nakama;
 
 namespace Hulla.Composition
@@ -36,6 +37,8 @@ namespace Hulla.Composition
         public ITableGateway Tables => _tables;
 
         public HomeViewModel Home { get; }
+
+        public IChatCatalog Chat { get; } = new StreamingChatCatalog();
 
         public SessionScope? Session => _session;
 

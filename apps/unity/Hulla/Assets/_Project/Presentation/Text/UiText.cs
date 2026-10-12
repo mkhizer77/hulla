@@ -33,6 +33,15 @@ namespace Hulla.Presentation.Text
         public const string Waiting4Rematch = "Waiting for the others…";
         public const string You = "You";
         public const string Reconnecting = "Reconnecting…";
+        public const string Chat = "Chat";
+        public const string Close = "Close";
+
+        /// <summary>Emote ids read as words until the emote art arrives (#34): "laugh_cry" → "Laugh cry".</summary>
+        public static string EmoteLabel(string id)
+        {
+            var words = id.Replace('_', ' ');
+            return words.Length == 0 ? words : char.ToUpperInvariant(words[0]) + words.Substring(1);
+        }
         public const string Server = "Server (development builds)";
 
         public static string Error(string code) => "Something went wrong (" + code + ")";

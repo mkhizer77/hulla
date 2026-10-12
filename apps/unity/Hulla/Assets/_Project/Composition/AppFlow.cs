@@ -45,7 +45,17 @@ namespace Hulla.Composition
             _app.Tables.Disconnected += OnDisconnected;
         }
 
-        public void Start() => ShowHome();
+        public async void Start()
+        {
+            ShowHome();
+            try
+            {
+                await _app.Chat.LoadAsync(_app.Lifetime);
+            }
+            catch (OperationCanceledException)
+            {
+            }
+        }
 
         public void Dispose()
         {
@@ -207,7 +217,7 @@ namespace Hulla.Composition
             }
 
             client.Events.Clear();
-            _tableView = new ThullaTableView(_shell.Show(_shell.Catalog.Table), client, () => DateTimeOffset.UtcNow.ToUnixTimeMilliseconds(), Leave);
+            _tableView = new ThullaTableView(_shell.Show(_shell.Catalog.Table), client, _app.Chat, () => DateTimeOffset.UtcNow.ToUnixTimeMilliseconds(), Leave);
             _scheduler = new AnimationScheduler(client.Events, _tableView);
             _view = _tableView;
         }
