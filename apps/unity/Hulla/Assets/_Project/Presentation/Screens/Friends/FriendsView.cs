@@ -63,7 +63,7 @@ namespace Hulla.Presentation.Screens.Friends
             }, UiText.NoFriendsYet);
             Section(UiText.SentRequests, _model.Sent, entry => new[] { Action(UiText.CancelRequest, () => _actions.Remove(entry.UserId)) });
             Section(UiText.Recent, _model.Recent, entry => new[] { Action(UiText.AddFriend, () => _actions.Add(entry.UserId), true) });
-            Section(UiText.BlockedList, _model.Blocked, entry => new[] { Action(UiText.Unblock, () => _actions.Remove(entry.UserId)) });
+            Section(UiText.BlockedList, _model.Blocked, entry => new[] { Action(UiText.Unblock, () => _actions.Unblock(entry.UserId)) });
         }
 
         private void Section(string title, IReadOnlyList<FriendEntry> entries, Func<FriendEntry, Button[]> buttons, string? empty = null)
@@ -124,8 +124,9 @@ namespace Hulla.Presentation.Screens.Friends
         /// <summary>What the screen's buttons do; the owning flow runs them against the server.</summary>
         public sealed class Actions
         {
-            public Actions(Action<string> addByCode, Action<string> add, Action<string> remove, Action<string> block, Action<FriendEntry> favourite)
+            public Actions(Action<string> addByCode, Action<string> add, Action<string> remove, Action<string> block, Action<FriendEntry> favourite, Action<string>? unblock = null)
             {
+                Unblock = unblock ?? remove;
                 AddByCode = addByCode;
                 Add = add;
                 Remove = remove;
@@ -142,6 +143,8 @@ namespace Hulla.Presentation.Screens.Friends
             public Action<string> Block { get; }
 
             public Action<FriendEntry> Favourite { get; }
+
+            public Action<string> Unblock { get; }
         }
     }
 }

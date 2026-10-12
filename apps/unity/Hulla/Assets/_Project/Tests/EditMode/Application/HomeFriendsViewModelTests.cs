@@ -45,7 +45,9 @@ namespace Hulla.Application.Tests
 
             public Awaitable<Result<bool>> RemoveAsync(string userId, CancellationToken cancellation) => throw new NotSupportedException();
 
-            public Awaitable<Result<bool>> BlockAsync(string userId, CancellationToken cancellation) => throw new NotSupportedException();
+            public Awaitable<Result<bool>> BlockAsync(string userId, CancellationToken cancellation, bool blocked = true) => throw new NotSupportedException();
+
+            public Awaitable<Result<bool>> ReportAsync(string userId, string reason, string? tableId, string? roundId, CancellationToken cancellation) => throw new NotSupportedException();
 
             public Awaitable<Result<bool>> SetFavouriteAsync(string userId, bool pinned, CancellationToken cancellation) => throw new NotSupportedException();
 

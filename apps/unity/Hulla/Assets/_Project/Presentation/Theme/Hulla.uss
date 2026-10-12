@@ -773,3 +773,7 @@
 .settings__action {
     margin-bottom: var(--space-1);
 }
+
+.player-sheet {
+    top: 30%;
+}

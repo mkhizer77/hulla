@@ -50,6 +50,21 @@ namespace Hulla.Presentation.Text
         public const string ChatGuest = "Guests can chat at friends' tables. Link an account to chat at public ones.";
         public const string ChatFiltered = "That message has words this table doesn't allow.";
         public const string Mute = "Mute";
+        public const string Report = "Report";
+        public const string ReportWhy = "What happened with {0}?";
+        public const string ReportThanks = "Thanks. We'll look into it; the table's recent chat is attached.";
+        public const string Blocked = "Blocked. You won't hear from or be matched with {0}.";
+
+        /// <summary>The reasons of GDD 10.11, in the server's order (services/reports REPORT_REASONS).</summary>
+        public static readonly (string Id, string Label)[] ReportReasons =
+        {
+            ("cheating", "Cheating or teaming up"),
+            ("abusive_text", "Abusive messages"),
+            ("abusive_voice", "Abusive voice"),
+            ("inappropriate_profile", "Inappropriate name or picture"),
+            ("spam", "Spam"),
+            ("underage", "Seems under age"),
+        };
         public const string Unmute = "Unmute";
         public const string MutedNote = "You won't see {0}'s messages or emotes.";
 
@@ -58,6 +73,7 @@ namespace Hulla.Presentation.Text
             "network.rate_limited" => ChatTooFast,
             "auth.not_linked" => ChatGuest,
             "content.filtered" => ChatFiltered,
+            "social.muted" => "You're muted for a while after reports from other players.",
             _ => ChatRefused,
         };
 
@@ -193,6 +209,8 @@ namespace Hulla.Presentation.Text
                     return "You have the most friends allowed (500).";
                 case "social.favourite_cap":
                     return "Ten favourites at most.";
+                case "social.blocked":
+                    return "You can't add this player.";
                 case "social.not_friends":
                     return "Only friends can be favourites.";
                 case "profile.handle_taken":

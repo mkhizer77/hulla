@@ -165,7 +165,8 @@ namespace Hulla.Composition
                 id => _ = friends.AddAsync(id, lifetime),
                 id => _ = friends.RemoveAsync(id, lifetime),
                 id => _ = friends.BlockAsync(id, lifetime),
-                entry => _ = friends.ToggleFavouriteAsync(entry, lifetime)));
+                entry => _ = friends.ToggleFavouriteAsync(entry, lifetime),
+                id => _ = friends.UnblockAsync(id, lifetime)));
             await friends.RefreshAsync(lifetime);
         }
 
@@ -393,6 +394,7 @@ namespace Hulla.Composition
             }
 
             _tableView.UseMutes(_app.Mutes.IsMuted, (id, muted) => _ = _app.Mutes.SetAsync(id, muted, _app.Lifetime));
+            _tableView.UseModeration(BlockPlayer, (id, reason, done) => ReportPlayer(client, id, reason, done));
             _scheduler = new AnimationScheduler(client.Events, _tableView);
             _view = _tableView;
         }
@@ -413,6 +415,21 @@ namespace Hulla.Composition
 
             var me = _app.Sessions.Current?.UserId;
             _tableView?.SetFriendActions(id => id != me && !known.Contains(id), id => _ = friends.AddAsync(id, _app.Lifetime));
+        }
+
+        /// <summary>A block hides the player at once and holds both ways on the server (GDD 10.11).</summary>
+        private async void BlockPlayer(string userId)
+        {
+            await _app.Mutes.SetAsync(userId, true, _app.Lifetime);
+            await _app.Social.BlockAsync(userId, _app.Lifetime);
+        }
+
+        private async void ReportPlayer(TableClient client, string userId, string reason, Action<bool> done)
+        {
+            var model = client.Model;
+            var tableId = client.Ticket.TableId.Length > 0 ? client.Ticket.TableId : model.Code.Length > 0 ? "t_" + model.Code : null;
+            var sent = await _app.Social.ReportAsync(userId, reason, tableId, model.RoundId.Length > 0 ? model.RoundId : null, _app.Lifetime);
+            done(sent.IsOk);
         }
 
         private void OnText(TextLine line)

@@ -67,6 +67,12 @@ namespace Hulla.Games.Thulla
         private ThullaHints? _hints;
         private Func<string?, bool>? _isMuted;
         private Action<string, bool>? _setMuted;
+        private Action<string>? _block;
+        private Action<string, string, Action<bool>>? _report;
+        private VisualElement _sheet = null!;
+        private Label _sheetTitle = null!;
+        private VisualElement _sheetActions = null!;
+        private Label _sheetStatus = null!;
         private bool _thullaJustPlayed;
         private readonly Func<string, Awaitable<Domain.Result<bool>>>? _sendText;
         private VisualElement _chatLog = null!;
@@ -164,6 +170,10 @@ namespace Hulla.Games.Thulla
             });
             var compose = root.Q<VisualElement>(className: "chat-panel__compose");
             compose.style.display = sendText == null ? DisplayStyle.None : DisplayStyle.Flex;
+            _sheet = root.Q<VisualElement>("player-sheet");
+            _sheetTitle = root.Q<Label>("sheet-title");
+            _sheetActions = root.Q<VisualElement>("sheet-actions");
+            _sheetStatus = root.Q<Label>("sheet-status");
             _coach = root.Q<VisualElement>("coach");
             _coachText = root.Q<Label>("coach-text");
             _coachButton = root.Q<Button>("coach-next");
@@ -195,6 +205,14 @@ namespace Hulla.Games.Thulla
             _setMuted = setMuted;
         }
 
+        /// <summary>Block and report from the player sheet (GDD 10.11); both run against the server.</summary>
+        public void UseModeration(Action<string> block, Action<string, string, Action<bool>> report)
+        {
+            _block = block;
+            _report = report;
+        }
+
+        /// <summary>The player sheet for a tapped badge: Mute or Unmute, Block, Report.</summary>
         private void OnBadgeTapped(long seat)
         {
             var model = _client.Model;
@@ -203,21 +221,68 @@ namespace Hulla.Games.Thulla
                 return;
             }
 
-            var player = model.Seats[(int)seat];
-            if (player.PlayerId == null)
+            var id = model.Seats[(int)seat].PlayerId;
+            if (id == null)
             {
                 return;
             }
 
-            var id = player.PlayerId;
-            var muted = _isMuted?.Invoke(id) == true;
             var name = NameOf(seat);
-            ShowCoach(muted ? name : string.Format(UiText.MutedNote, name), muted ? UiText.Unmute : UiText.Mute, () =>
+            var muted = _isMuted?.Invoke(id) == true;
+            _sheetTitle.text = name;
+            _sheetStatus.text = "";
+            _sheetActions.Clear();
+            SheetButton(muted ? UiText.Unmute : UiText.Mute, () =>
             {
                 _setMuted(id, !muted);
-                HideCoach();
+                _sheetStatus.text = muted ? "" : string.Format(UiText.MutedNote, name);
+                CloseSheetSoon();
             });
+            if (_block != null)
+            {
+                SheetButton(UiText.Block, () =>
+                {
+                    _block(id);
+                    _sheetStatus.text = string.Format(UiText.Blocked, name);
+                    CloseSheetSoon();
+                });
+            }
+
+            if (_report != null)
+            {
+                SheetButton(UiText.Report, () => ShowReasons(id, name));
+            }
+
+            SheetButton(UiText.Close, () => _sheet.style.display = DisplayStyle.None);
+            _sheet.style.display = DisplayStyle.Flex;
         }
+
+        private void ShowReasons(string id, string name)
+        {
+            _sheetTitle.text = string.Format(UiText.ReportWhy, name);
+            _sheetActions.Clear();
+            foreach (var (reason, label) in UiText.ReportReasons)
+            {
+                var chosen = reason;
+                SheetButton(label, () => _report?.Invoke(id, chosen, ok =>
+                {
+                    _sheetActions.Clear();
+                    _sheetStatus.text = ok ? UiText.ReportThanks : UiText.Error("social.unavailable");
+                    CloseSheetSoon();
+                }));
+            }
+
+            SheetButton(UiText.Close, () => _sheet.style.display = DisplayStyle.None);
+        }
+
+        private void SheetButton(string text, Action click)
+        {
+            var button = new Button(click) { text = text };
+            button.AddToClassList("chip");
+            _sheetActions.Add(button);
+        }
+
+        private void CloseSheetSoon() => _sheet.schedule.Execute(() => _sheet.style.display = DisplayStyle.None).StartingIn(2500);
 
         private bool Muted(long seat)
         {
