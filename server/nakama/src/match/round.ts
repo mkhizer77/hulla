@@ -84,7 +84,7 @@ export function startRound<S, M, V, E, R>(
   uuids: readonly string[],
   now: number,
 ): Result<RoundRuntime<S, M>, RuleError> {
-  const rules = deps.host.resolveRules(state.rules);
+  const rules = deps.host.resolveRules(state.rules, state.mode);
   if (!rules.ok) return rules;
   const seatCount = activeSeats(state.seats).length;
   if (state.series?.points.length !== seatCount) {

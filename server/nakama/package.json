@@ -8,7 +8,8 @@
   "scripts": {
     "typecheck": "tsc -p tsconfig.json",
     "test": "vitest run",
-    "build": "node scripts/build.mjs"
+    "build": "node scripts/build.mjs",
+    "test:integration": "vitest run --config vitest.integration.config.ts"
   },
   "dependencies": {
     "@hulla/protocol": "workspace:*",
@@ -16,6 +17,7 @@
     "@hulla/shared-ts": "workspace:*"
   },
   "devDependencies": {
+    "@heroiclabs/nakama-js": "2.8.0",
     "nakama-runtime": "github:heroiclabs/nakama-common#v1.48.0"
   }
 }

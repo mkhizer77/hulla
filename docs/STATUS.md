@@ -1,11 +1,12 @@
 # Status
 
-Updated: 12 October 2026 (night)
+Updated: 13 October 2026
 
 ## Phase
 M0 complete: the Thulla rulebook runs in TypeScript with full traceability. M1, the vertical slice, starts with the protocol schemas.
 
 ## Done
+- M1 #15 merged (12 Oct): the table core in `server/nakama/src/match` (lifecycle, pipeline with idempotency, deadlines and auto-play, log with state hashes, snapshots, redaction dispatch, rematch and series) and its Nakama binding; OQ-009 and OQ-010 logged.
 - M1 #14 merged (12 Oct): `server/nakama` with the local compose, Dockerfile, config, InitModule with a hello RPC, the esbuild bundler, a fake nk for unit tests and a CI compose smoke test.
 - GDD v1.3 (private, git-ignored at `docs/GDD_Hulla.md`): rules spec with IDs, platform catalogue, economy, UX, compliance, production plan.
 - Architecture, tech stack, project structure, coding rules, contributing guide, 18 ADRs, research notes.
@@ -24,10 +25,10 @@ M0 complete: the Thulla rulebook runs in TypeScript with full traceability. M1, 
 - 12 Oct decisions: C# mirror deferred past v1.0 (ADR-0019), no clock in engines (ADR-0020), JSON Schema draft-07 (ADR-0021), one deck and 3–6 seats until v1.2, web client before Rung (M5 → web → Rung → M6, dates in the execution plan), Facebook login stays, Unity stays on 6000.4.9f1.
 
 ## Doing
-- M1 #15: the table core in `server/nakama/src/match`: lifecycle, message pipeline with zod validation and idempotency, deadlines and auto-play, the event log with sequence numbers and state hashes, snapshots, redaction dispatch, rematch and series, and the Nakama binding; 44 unit tests over a toy game with a fake dispatcher. OQ-009 and OQ-010 logged.
+- M1 #16: the Thulla host for the table core (`src/games/thulla`): moves decoded with the generated validators, engine events encoded to the wire (round_start with the commitment, turn_start with the legal mask and deadline, round_end with the seed reveal), named match callbacks registered as `thulla`, a game registry, a minimal `table_create` RPC, and a scripted four-seat round with `nakama-js` clients against Nakama in Docker, run by the CI compose job.
 
 ## Next
-M1 #16, the Thulla game host (`GameHost` for the engine: move decoding, event encoding with the fairness commitment, legal masks and the seed reveal), the module registry, `match_thulla` registered in InitModule with named top-level callbacks, and the scripted-round integration test against Nakama in Docker; then #17, the table RPCs.
+M1 #17, the table RPCs: the code registry (code to match id with region and expiry), `table_join_by_code`, `presets_get` from `content/presets` and `voice_token`, with integration tests; then #18, matchmaking.
 
 ## Blockers
 - None.

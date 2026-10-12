@@ -71,7 +71,7 @@ export interface EncodeContext<S> {
  */
 export interface GameHost<S, M, V, E, R> {
   readonly module: GameModule<S, M, V, E, R>;
-  resolveRules(selection: RulesSelection): Result<R, RuleError>;
+  resolveRules(selection: RulesSelection, mode: TableMode): Result<R, RuleError>;
   isMoveType(type: string): boolean;
   decodeMove(type: string, payload: Record<string, unknown>): Result<M, RuleError>;
   roundStartEvents(state: S): readonly E[];

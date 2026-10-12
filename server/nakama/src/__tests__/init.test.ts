@@ -13,7 +13,7 @@ async function loadInitModule(): Promise<nkruntime.InitModule> {
 describe("InitModule", () => {
   it("registers the hello RPC and the RPC answers JSON", async () => {
     const init = await loadInitModule();
-    const { rpcs, initializer } = fakeInitializer();
+    const { rpcs, matches, initializer } = fakeInitializer();
     const lines: LogLine[] = [];
     init(
       { env: { HULLA_ENV: "test" } } as unknown as nkruntime.Context,
@@ -21,7 +21,29 @@ describe("InitModule", () => {
       fakeNk(),
       initializer,
     );
-    expect([...rpcs.keys()]).toEqual(["hello"]);
+    expect([...rpcs.keys()]).toEqual(["hello", "table_create"]);
+    expect([...matches.keys()]).toEqual(["thulla"]);
+    const handler = matches.get("thulla");
+    expect(Object.keys(handler ?? {}).sort()).toEqual([
+      "matchInit",
+      "matchJoin",
+      "matchJoinAttempt",
+      "matchLeave",
+      "matchLoop",
+      "matchSignal",
+      "matchTerminate",
+    ]);
+    if (handler === undefined) throw new Error("thulla is not registered");
+    const callbacks = [
+      handler.matchInit,
+      handler.matchJoinAttempt,
+      handler.matchJoin,
+      handler.matchLeave,
+      handler.matchLoop,
+      handler.matchTerminate,
+      handler.matchSignal,
+    ];
+    expect(callbacks.every((fn) => fn.name.startsWith("thullaMatch"))).toBe(true);
     const rpc = rpcs.get("hello");
     const body = rpc?.({} as nkruntime.Context, fakeLogger(), fakeNk(), "");
     expect(JSON.parse(String(body))).toMatchObject({ ok: true, protocolMajor: 1 });

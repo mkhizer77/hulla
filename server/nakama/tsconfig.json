@@ -3,5 +3,10 @@
   "compilerOptions": {
     "types": ["node", "nakama-runtime"]
   },
-  "include": ["src/**/*.ts", "vitest.config.ts"]
+  "include": [
+    "src/**/*.ts",
+    "integration/**/*.ts",
+    "vitest.config.ts",
+    "vitest.integration.config.ts"
+  ]
 }

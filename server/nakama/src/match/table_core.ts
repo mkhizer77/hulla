@@ -401,7 +401,7 @@ export function tableCore<S, M, V, E, R>(
           reject(ruleError(ErrorCodes.table.invalidPayload, { reason: "game_id" }));
           return;
         }
-        const resolved = host.resolveRules(rules);
+        const resolved = host.resolveRules(rules, state.mode);
         if (!resolved.ok) {
           reject(resolved.error);
           return;
