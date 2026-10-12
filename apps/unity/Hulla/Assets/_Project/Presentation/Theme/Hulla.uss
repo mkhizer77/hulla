@@ -431,3 +431,39 @@
     background-color: #3A2F12;
     color: var(--accent-saffron);
 }
+
+.chips--seats {
+    margin-bottom: var(--space-1);
+}
+
+.chip--seat {
+    min-width: 96px;
+    -unity-text-align: middle-center;
+}
+
+.chip--on {
+    background-color: var(--accent-saffron);
+    color: #141518;
+}
+
+.countdown {
+    -unity-text-align: middle-center;
+    font-size: 48px;
+}
+
+.recap {
+    display: none;
+    position: absolute;
+    left: var(--space-2);
+    right: var(--space-2);
+    top: 30%;
+}
+
+.recap__text {
+    white-space: normal;
+    margin: var(--space-1) 0;
+}
+
+.elapsed {
+    -unity-text-align: middle-center;
+}

@@ -32,6 +32,28 @@ namespace Hulla.Application.ViewModels
         public Awaitable<Result<TableTicket>> JoinAsync(string name, string code, CancellationToken cancellation) =>
             RunAsync(name, code, cancellation);
 
+        /// <summary>Signs in (again only when the name changed) without creating or joining a table.</summary>
+        public async Awaitable<Result<PlayerSession>> SignInAsync(string name, CancellationToken cancellation)
+        {
+            if (_session.Current != null && name == LastName)
+            {
+                return Result<PlayerSession>.Ok(_session.Current);
+            }
+
+            var signedIn = await _session.SignInAsync(name, cancellation);
+            if (signedIn.IsOk)
+            {
+                LastName = name;
+            }
+            else
+            {
+                ErrorCode = signedIn.Error.Code;
+                Changed?.Invoke();
+            }
+
+            return signedIn;
+        }
+
         private async Awaitable<Result<TableTicket>> RunAsync(string name, string? code, CancellationToken cancellation)
         {
             if (Busy)

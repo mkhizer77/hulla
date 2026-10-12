@@ -6,6 +6,7 @@ using Hulla.Games.Thulla;
 using Hulla.Presentation.Navigation;
 using Hulla.Presentation.Screens.Home;
 using Hulla.Presentation.Screens.Lobby;
+using Hulla.Presentation.Screens.QuickPlay;
 using Hulla.Presentation.Text;
 using UnityEngine;
 
@@ -24,6 +25,7 @@ namespace Hulla.Composition
             Home,
             Lobby,
             Table,
+            QuickPlay,
         }
 
         private const float ReconnectWindowSeconds = 30f;
@@ -32,6 +34,9 @@ namespace Hulla.Composition
         /// <summary>Set to 1 for reduce-motion until the settings screen (#64) offers the switch.</summary>
         private const string ReduceMotionPrefKey = "hulla.reduce_motion";
 
+        /// <summary>1 once the player chose "don't show again" on the rules recap.</summary>
+        private const string RecapOffPrefKey = "hulla.recap_off";
+
         private readonly AppScope _app;
         private readonly ShellView _shell;
         private Screen _screen;
@@ -39,12 +44,14 @@ namespace Hulla.Composition
         private AnimationScheduler? _scheduler;
         private ThullaTableView? _tableView;
         private bool _reconnecting;
+        private LobbyView? _lobbyView;
 
         public AppFlow(AppScope app, ShellView shell)
         {
             _app = app;
             _shell = shell;
             _shell.Ticked += Tick;
+            _app.QuickPlay.Found += OnQuickPlayFound;
             _app.Tables.Disconnected += OnDisconnected;
         }
 
@@ -63,6 +70,7 @@ namespace Hulla.Composition
         public void Dispose()
         {
             _shell.Ticked -= Tick;
+            _app.QuickPlay.Found -= OnQuickPlayFound;
             _app.Tables.Disconnected -= OnDisconnected;
             CloseView();
         }
@@ -73,7 +81,7 @@ namespace Hulla.Composition
             _screen = Screen.Home;
             var root = _shell.Show(_shell.Catalog.Home);
             var server = Debug.isDebugBuild ? _app.Config.HostAndPort : null;
-            _view = new HomeView(root, _app.Home, server, OnCreate, OnJoin);
+            _view = new HomeView(root, _app.Home, server, OnCreate, OnJoin, OnQuickPlay);
         }
 
         private async void OnCreate(string name, string? server)
@@ -89,6 +97,29 @@ namespace Hulla.Composition
             var ticket = await _app.Home.JoinAsync(name, code, _app.Lifetime);
             await EnterAsync(ticket);
         }
+
+        private async void OnQuickPlay(string name, int seats, string? server)
+        {
+            ApplyServer(server);
+            var signedIn = await _app.Home.SignInAsync(name, _app.Lifetime);
+            if (!signedIn.IsOk)
+            {
+                return;
+            }
+
+            CloseView();
+            _screen = Screen.QuickPlay;
+            _view = new QuickPlayView(_shell.Show(_shell.Catalog.QuickPlay), _app.QuickPlay, CancelQuickPlay);
+            await _app.QuickPlay.StartAsync(seats, _app.Lifetime);
+        }
+
+        private async void CancelQuickPlay()
+        {
+            await _app.QuickPlay.CancelAsync();
+            ShowHome();
+        }
+
+        private async void OnQuickPlayFound(TableTicket ticket) => await EnterAsync(Result<TableTicket>.Ok(ticket));
 
         private void ApplyServer(string? server)
         {
@@ -215,18 +246,27 @@ namespace Hulla.Composition
             _screen = wanted;
             if (wanted == Screen.Lobby)
             {
-                _view = new LobbyView(_shell.Show(_shell.Catalog.Lobby), client, Leave);
+                _lobbyView = new LobbyView(_shell.Show(_shell.Catalog.Lobby), client, () => DateTimeOffset.UtcNow.ToUnixTimeMilliseconds(), Leave);
+                _view = _lobbyView;
                 return;
             }
 
             client.Events.Clear();
-            _tableView = new ThullaTableView(_shell.Show(_shell.Catalog.Table), client, _app.Chat, () => DateTimeOffset.UtcNow.ToUnixTimeMilliseconds(), Leave, PlayerPrefs.GetInt(ReduceMotionPrefKey, 0) == 1);
+            _tableView = new ThullaTableView(_shell.Show(_shell.Catalog.Table), client, _app.Chat, () => DateTimeOffset.UtcNow.ToUnixTimeMilliseconds(), Leave, PlayerPrefs.GetInt(ReduceMotionPrefKey, 0) == 1, PlayerPrefs.GetInt(RecapOffPrefKey, 0) == 1 ? null : HideRecap);
             _scheduler = new AnimationScheduler(client.Events, _tableView);
             _view = _tableView;
         }
 
+        private static void HideRecap()
+        {
+            PlayerPrefs.SetInt(RecapOffPrefKey, 1);
+            PlayerPrefs.Save();
+        }
+
         private void Tick(float deltaSeconds)
         {
+            _app.QuickPlay.Tick(deltaSeconds);
+            _lobbyView?.Tick();
             _scheduler?.Tick(deltaSeconds);
             _tableView?.Tick(deltaSeconds);
         }
@@ -236,6 +276,7 @@ namespace Hulla.Composition
             _view?.Dispose();
             _view = null;
             _tableView = null;
+            _lobbyView = null;
             _scheduler = null;
             _screen = Screen.None;
         }

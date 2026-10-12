@@ -17,6 +17,7 @@ namespace Hulla.Infrastructure.Nakama
         private TableTicket? _ticket;
         private ISocket? _socket;
         private long _envelopeSeq;
+        private string _tableId = "";
 
         public NakamaTableGateway(NakamaConnection connection)
         {
@@ -44,6 +45,7 @@ namespace Hulla.Infrastructure.Nakama
             Detach();
             _socket = socket;
             _ticket = ticket;
+            _tableId = ticket.TableId;
             socket.ReceivedMatchState += OnMatchState;
             socket.Closed += OnClosed;
             try
@@ -69,7 +71,7 @@ namespace Hulla.Infrastructure.Nakama
             }
 
             _envelopeSeq++;
-            var json = _codec.Encode(type, ticket.TableId, _envelopeSeq, DateTimeOffset.UtcNow.ToUnixTimeMilliseconds(), payload);
+            var json = _codec.Encode(type, _tableId, _envelopeSeq, DateTimeOffset.UtcNow.ToUnixTimeMilliseconds(), payload);
             SendAsync(socket, ticket.MatchId, MessageTypes.OpcodeFor(type), json);
         }
 
@@ -140,6 +142,13 @@ namespace Hulla.Infrastructure.Nakama
             var message = _codec.Decode(state.State);
             if (message.HasValue)
             {
+                // A matchmade table is known only by match id until its first table_state names the
+                // code; envelopes carry "t_" + code, the server's table id (shared-ts ids.tableId).
+                if (_tableId.Length == 0 && message.Value.Payload is TableState first)
+                {
+                    _tableId = "t_" + first.Code;
+                }
+
                 MessageReceived?.Invoke(message.Value);
             }
         }
