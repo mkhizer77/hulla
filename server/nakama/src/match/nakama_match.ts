@@ -1,5 +1,6 @@
 import { OPCODES } from "@hulla/protocol/generated";
 
+import { ROUND_RESULTS_COLLECTION } from "../services/account_deletion";
 import { applyRoundToStats, nkProfileStore } from "../services/profiles";
 
 import { tableCore, type PresenceInfo, type TableCore } from "./table_core";
@@ -55,13 +56,33 @@ export function storagePersistence(nk: nkruntime.Nakama, logger: nkruntime.Logge
         if (playerId === null) return;
         try {
           const profile = store.read(playerId);
-          if (profile === null) return;
-          store.write(playerId, {
-            ...profile,
-            stats: applyRoundToStats(profile.stats, seat, record),
-          });
+          if (profile !== null) {
+            store.write(playerId, {
+              ...profile,
+              stats: applyRoundToStats(profile.stats, seat, record),
+            });
+          }
+          nk.storageWrite([
+            {
+              collection: ROUND_RESULTS_COLLECTION,
+              key: `${record.tableId}:${record.roundId}`,
+              userId: playerId,
+              value: {
+                tableId: record.tableId,
+                roundId: record.roundId,
+                gameId: record.gameId,
+                seat,
+                finish: record.result?.finishOrder.indexOf(seat) ?? null,
+                loser: record.result?.loserSeat === seat,
+                points: record.result?.points[seat] ?? 0,
+                endedTs: record.endedTs,
+              },
+              permissionRead: 1,
+              permissionWrite: 0,
+            },
+          ]);
         } catch (error: unknown) {
-          logger.warn("stats card not updated", { seat, error: String(error) });
+          logger.warn("round result not recorded for a player", { seat, error: String(error) });
         }
       });
     },

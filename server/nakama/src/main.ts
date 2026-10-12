@@ -16,6 +16,12 @@ import {
 } from "./hooks/after_authenticate";
 import { beforeChannelMessageSend } from "./hooks/before_channel_message";
 import { matchmakerMatched } from "./hooks/matchmaker_matched";
+import {
+  rpcAccountDelete,
+  rpcAccountDeleteCancel,
+  rpcAccountExport,
+  rpcAdminPurgeDeleted,
+} from "./rpc/account";
 import { rpcHello } from "./rpc/hello";
 import { rpcPresetsGet } from "./rpc/presets_get";
 import { rpcProfileGet, rpcProfileUpdate } from "./rpc/profile";
@@ -43,6 +49,10 @@ function InitModule(
   initializer.registerMatchmakerMatched(matchmakerMatched);
   initializer.registerRpc("profile_get", rpcProfileGet);
   initializer.registerRpc("profile_update", rpcProfileUpdate);
+  initializer.registerRpc("account_delete", rpcAccountDelete);
+  initializer.registerRpc("account_delete_cancel", rpcAccountDeleteCancel);
+  initializer.registerRpc("account_export", rpcAccountExport);
+  initializer.registerRpc("admin_purge_deleted", rpcAdminPurgeDeleted);
   initializer.registerAfterAuthenticateDevice(afterAuthenticateDevice);
   initializer.registerAfterAuthenticateApple(afterAuthenticateApple);
   initializer.registerAfterAuthenticateGoogle(afterAuthenticateGoogle);

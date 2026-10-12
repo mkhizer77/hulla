@@ -29,6 +29,10 @@ describe("InitModule", () => {
       "voice_token",
       "profile_get",
       "profile_update",
+      "account_delete",
+      "account_delete_cancel",
+      "account_export",
+      "admin_purge_deleted",
     ]);
     expect([...matches.keys()]).toEqual(["thulla"]);
     expect(hooks.get("rtBefore:ChannelMessageSend")?.name).toBe("beforeChannelMessageSend");
