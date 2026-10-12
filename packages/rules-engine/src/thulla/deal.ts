@@ -100,6 +100,8 @@ export function createThullaRound(
     stats: seats.map(() => EMPTY_STATS),
     escapeOrder: [],
     bhabhiSeat: null,
+    confirmedBhabhi: null,
+    pendingDraw: null,
     commitment,
     seedHex: bytesToHex(seed),
     deckOrder,

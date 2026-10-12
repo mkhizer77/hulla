@@ -3,6 +3,7 @@ import { cardRank, cardSuit, rankValue, sortCards, type Card, type Suit } from "
 import {
   EMPTY_TRICK,
   activeSeats,
+  endRound,
   markEscaped,
   nextActiveSeat,
   withSeat,
@@ -12,12 +13,12 @@ import {
 
 import type { ApplyResult } from "../contract";
 import type { ThullaEvent } from "./events";
-import type { Rng, SeatIndex } from "@hulla/shared-ts";
+import type { SeatIndex } from "@hulla/shared-ts";
 
 type Outcome = ApplyResult<ThullaState, ThullaEvent>;
 
 /** A validated card play: records it, hands the turn on, or resolves the trick when it is complete. */
-export function playCard(state: ThullaState, seat: SeatIndex, card: Card, rng: Rng): Outcome {
+export function playCard(state: ThullaState, seat: SeatIndex, card: Card): Outcome {
   const opening = state.phase === "opening";
   const leading = state.trick.plays.length === 0;
   const ledSuit = state.trick.ledSuit ?? cardSuit(card);
@@ -49,14 +50,14 @@ export function playCard(state: ThullaState, seat: SeatIndex, card: Card, rng: R
     ? played.openingPending.length === 0
     : played.trick.plays.length === activeSeats(played).length;
   if ((thulla && state.rules.thullaEndsTrick) || everyoneHasPlayed) {
-    return resolveTrick(played, rng, events);
+    return resolveTrick(played, events);
   }
   const turnSeat = simultaneous ? null : nextActiveSeat(played, seat);
   return { ok: true, state: { ...played, turnSeat }, events };
 }
 
 /** GDD 6.14: pick-up or discard, escapes before any draw, the empty-hand draw, then the next trick. */
-function resolveTrick(state: ThullaState, rng: Rng, events: ThullaEvent[]): Outcome {
+function resolveTrick(state: ThullaState, events: ThullaEvent[]): Outcome {
   const { plays, thullaBy } = state.trick;
   const ledSuit = state.trick.ledSuit;
   if (ledSuit === null) {
@@ -84,18 +85,15 @@ function resolveTrick(state: ThullaState, rng: Rng, events: ThullaEvent[]): Outc
   if (pickedUp && activeBefore === 2 && state.rules.twoPlayerEndgame === "thullaEndsRound") {
     // R42: the first thulla of the endgame ends the round and the picker is the Bhabhi.
     next = escape(next, nextActiveSeat(next, top), events);
-    return endRound(next, top, events);
+    return finish(next, top, events);
   }
 
   next = markEscapes(next, top, events);
   if (activeSeats(next).length === 1) {
-    return endRound(settlePile(next, pile, pickedUp), top, events);
+    return finish(settlePile(next, pile, pickedUp), top, events);
   }
   if (next.seats[top]?.hand.length === 0) {
-    next = drawForEmptyLeader(next, top, rng, events);
-    if (activeSeats(next).length === 1) {
-      return endRound(settlePile(next, pile, pickedUp), next.leaderSeat, events);
-    }
+    next = planDrawForEmptyLeader(next, top, events);
   }
   next = settlePile(next, pile, pickedUp);
   const active = activeSeats(next);
@@ -185,29 +183,31 @@ function escape(state: ThullaState, seat: SeatIndex, events: ThullaEvent[]): Thu
   return next;
 }
 
-/** R26, R28 and R38: the leader with the hand but no cards draws one, or exits at once. */
-function drawForEmptyLeader(
+/**
+ * R26, R28 and R38: the leader with the hand but no cards draws one, or exits at once. The draw
+ * itself is deferred so the forced-outcome search can enumerate it (R41); `applyMove` executes it.
+ */
+function planDrawForEmptyLeader(
   state: ThullaState,
   leader: SeatIndex,
-  rng: Rng,
   events: ThullaEvent[],
 ): ThullaState {
   const active = activeSeats(state);
   if (active.length === 2) {
     const opponent = nextActiveSeat(state, leader);
     if (state.rules.twoPlayerEndgame === "drawDiscard" && state.discard.length > 0) {
-      return drawFromDiscard(state, leader, rng, events);
+      return planDraw(state, "discard", null);
     }
-    return drawFromSeat(state, leader, opponent, "opponent", rng, events);
+    return planDraw(state, "opponent", opponent);
   }
   switch (state.rules.emptyHandLeader) {
     case "drawDiscard":
       // An empty discard is only possible under non-default toggles: OQ-001 interim choice.
       return state.discard.length > 0
-        ? drawFromDiscard(state, leader, rng, events)
-        : drawFromSeat(state, leader, nextActiveSeat(state, leader), "nextPlayer", rng, events);
+        ? planDraw(state, "discard", null)
+        : planDraw(state, "nextPlayer", nextActiveSeat(state, leader));
     case "drawNextPlayer":
-      return drawFromSeat(state, leader, nextActiveSeat(state, leader), "nextPlayer", rng, events);
+      return planDraw(state, "nextPlayer", nextActiveSeat(state, leader));
     case "instantExit": {
       const exited = escape(state, leader, events);
       return { ...exited, leaderSeat: nextActiveSeat(exited, leader) };
@@ -215,84 +215,18 @@ function drawForEmptyLeader(
   }
 }
 
-function drawFromDiscard(
+/** The pool is fixed now: the discard before this trick's cards join it (R26), or a hand. */
+function planDraw(
   state: ThullaState,
-  leader: SeatIndex,
-  rng: Rng,
-  events: ThullaEvent[],
+  source: "discard" | "nextPlayer" | "opponent",
+  from: SeatIndex | null,
 ): ThullaState {
-  const index = rng.nextInt(state.discard.length);
-  const card = state.discard[index];
-  if (card === undefined) {
-    throw new Error("invariant: draw index inside the discard");
-  }
-  events.push({
-    type: "private_draw",
-    seat: leader,
-    card,
-    source: "discard",
-    from: null,
-    visibleTo: [leader],
-  });
-  return {
-    ...state,
-    discard: state.discard.filter((_, i) => i !== index),
-    seats: withSeat(state.seats, leader, (current) => ({ ...current, hand: [card] })),
-    pendingAutoLead: true,
-  };
+  const pool = from === null ? state.discard : (state.seats[from]?.hand ?? []);
+  return { ...state, pendingDraw: { source, from, pool } };
 }
 
-function drawFromSeat(
-  state: ThullaState,
-  leader: SeatIndex,
-  from: SeatIndex,
-  source: "nextPlayer" | "opponent",
-  rng: Rng,
-  events: ThullaEvent[],
-): ThullaState {
-  const hand = state.seats[from]?.hand ?? [];
-  const index = rng.nextInt(hand.length);
-  const card = hand[index];
-  if (card === undefined) {
-    throw new Error("invariant: draw index inside the hand");
-  }
-  events.push({
-    type: "private_draw",
-    seat: leader,
-    card,
-    source,
-    from,
-    visibleTo: [leader, from],
-  });
-  let next: ThullaState = {
-    ...state,
-    seats: withSeat(
-      withSeat(state.seats, from, (current) => ({
-        ...current,
-        hand: current.hand.filter((_, i) => i !== index),
-      })),
-      leader,
-      (current) => ({ ...current, hand: [card] }),
-    ),
-    pendingAutoLead: true,
-  };
-  if (next.seats[from]?.hand.length === 0) {
-    // E12: the card was their last; they escaped the moment their hand emptied.
-    next = escape(next, from, events);
-  }
-  return next;
-}
-
-function endRound(state: ThullaState, bhabhiSeat: SeatIndex, events: ThullaEvent[]): Outcome {
-  const ended: ThullaState = {
-    ...state,
-    phase: "ended",
-    bhabhiSeat,
-    turnSeat: null,
-    trick: EMPTY_TRICK,
-    pendingAutoLead: false,
-    openingPending: [],
-  };
+function finish(state: ThullaState, bhabhiSeat: SeatIndex, events: ThullaEvent[]): Outcome {
+  const ended = endRound(state, bhabhiSeat);
   events.push({ type: "round_ended", bhabhiSeat, escapeOrder: ended.escapeOrder });
   return { ok: true, state: ended, events };
 }

@@ -85,16 +85,28 @@ describe("taking a hand", () => {
   });
 
   it("E8_a_target_with_one_card_can_be_taken_and_escapes_with_that_rank", () => {
-    const state = stateFrom({ hands: [["2H"], ["3H"], ["4H", "5H"]], leader: 0 });
+    const state = stateFrom({
+      hands: [["2H"], ["3H"], ["4H", "5H"]],
+      leader: 0,
+      rules: { confirmedFastForward: false },
+    });
     const result = applyMove(state, 0, take, fixedRng());
     expect(result.ok && result.events[1]).toEqual({ type: "escape", seat: 1, rank: 1 });
     expect(result.ok && handOf(result.state, 0)).toEqual(["2H", "3H"]);
   });
 
   it("E9_a_take_that_leaves_two_active_starts_the_endgame_and_disables_taking", () => {
-    const state = stateFrom({ hands: [["2H"], ["3H"], ["4H", "5H"]], leader: 0 });
+    const state = stateFrom({
+      hands: [["2H"], ["3H"], ["4H", "5H"]],
+      leader: 0,
+      rules: { confirmedFastForward: false },
+    });
     const result = applyMove(state, 0, take, fixedRng());
-    expect(result.ok && types(result.events)).toEqual(["hand_taken", "escape", "endgame_started"]);
+    expect(result.ok && types(result.events).slice(0, 3)).toEqual([
+      "hand_taken",
+      "escape",
+      "endgame_started",
+    ]);
     const again = result.ok && applyMove(result.state, 0, take, fixedRng());
     expect(again && !again.ok && again.error.code).toBe("rules.hand_take_disabled_endgame");
   });

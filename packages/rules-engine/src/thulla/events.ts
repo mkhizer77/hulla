@@ -50,6 +50,13 @@ export type ThullaEvent =
     }
   | { readonly type: "endgame_started"; readonly seats: readonly SeatIndex[] }
   | {
+      /** R41: every continuation ends the same way; with fastForward the engine plays it out. */
+      readonly type: "confirmed";
+      readonly bhabhiSeat: SeatIndex;
+      readonly cardsRemaining: number;
+      readonly fastForward: boolean;
+    }
+  | {
       readonly type: "round_ended";
       readonly bhabhiSeat: SeatIndex;
       readonly escapeOrder: readonly SeatIndex[];

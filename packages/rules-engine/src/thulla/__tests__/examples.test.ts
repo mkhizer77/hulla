@@ -82,6 +82,7 @@ describe("GDD worked examples and Appendix C vectors", () => {
     const state = stateFrom({
       hands: [["5C", "2H"], ["TC", "3H"], ["AD"]],
       leader: 0,
+      rules: { confirmedFastForward: false },
       plays: [
         { seat: 0, card: "5C" },
         { seat: 1, card: "TC" },

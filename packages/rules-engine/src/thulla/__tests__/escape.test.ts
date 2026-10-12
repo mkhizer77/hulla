@@ -125,7 +125,7 @@ describe("escaping and the empty-hand leader", () => {
     const state = stateFrom({
       hands: [["9C"], ["7C", "5D"], ["4C", "TD"]],
       leader: 2,
-      rules: { emptyHandLeader: "instantExit" },
+      rules: { emptyHandLeader: "instantExit", confirmedFastForward: false },
       plays: [
         { seat: 2, card: "4C" },
         { seat: 0, card: "9C" },
@@ -146,6 +146,7 @@ describe("escaping and the empty-hand leader", () => {
     const state = stateFrom({
       hands: [["5C", "2H"], ["TC", "3H"], ["AD"]],
       leader: 0,
+      rules: { confirmedFastForward: false },
       plays: [
         { seat: 0, card: "5C" },
         { seat: 1, card: "TC" },
@@ -208,6 +209,7 @@ describe("escaping and the empty-hand leader", () => {
       hands: [["9C", "KH"], ["7C"], ["4C", "TD", "3H"]],
       leader: 2,
       discard: ["2S", "3S"],
+      rules: { confirmedFastForward: false },
       plays: [
         { seat: 2, card: "4C" },
         { seat: 0, card: "9C" },
@@ -282,9 +284,11 @@ describe("escaping and the empty-hand leader", () => {
     const result = applyMove(state, 1, { type: "play_card", card: "3S" }, fixedRng([0]));
     expect(result.ok).toBe(true);
     if (!result.ok) return;
+    // With one card left the outcome is forced, so the search confirms it before the draw runs.
     expect(types(result.events)).toEqual([
       "card_played",
       "trick_resolved",
+      "confirmed",
       "private_draw",
       "escape",
       "round_ended",
