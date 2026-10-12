@@ -35,6 +35,13 @@ namespace Hulla.Presentation.Text
         public const string Reconnecting = "Reconnecting…";
         public const string Chat = "Chat";
         public const string QuickPlay = "Quick Play";
+        public const string Lead = "Leads";
+        public const string Discard = "Discard {0}";
+        public const string FairDeal = "Fair deal ✓";
+        public const string MustFollow = "Must follow {0}";
+        public const string LeadAceOfSpades = "Lead the A♠ to open";
+        public const string NotYourTurn = "Wait for your turn";
+        public const string NotPlayableNow = "Not playable now";
         public const string SeatsLabel = "Table size";
         public const string Cancel = "Cancel";
         public const string Searching = "Finding a table for {0}…";

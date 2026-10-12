@@ -2,6 +2,7 @@
     <ui:VisualElement name="table" class="screen table">
         <ui:VisualElement class="table__top">
             <ui:Button name="leave" class="button button--quiet button--small" />
+            <ui:Label name="info" class="table__info" />
         </ui:VisualElement>
         <ui:VisualElement name="opponents" class="opponents" />
         <ui:VisualElement name="felt" class="felt">
@@ -10,8 +11,12 @@
             <ui:Label name="toast" class="toast" />
         </ui:VisualElement>
         <ui:Label name="my-say" class="bubble bubble--mine" />
+        <ui:Label name="hint" class="hint" />
         <ui:VisualElement class="table__bar">
-            <ui:Label name="turn" class="turn" />
+            <ui:VisualElement class="table__turn">
+                <ui:VisualElement name="timer" class="timer" />
+                <ui:Label name="turn" class="turn" />
+            </ui:VisualElement>
             <ui:VisualElement class="table__bar-actions">
                 <ui:Button name="take-hand" class="button button--primary button--small" />
                 <ui:Button name="chat" class="button button--small" />

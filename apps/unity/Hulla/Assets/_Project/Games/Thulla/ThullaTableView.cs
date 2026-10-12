@@ -5,28 +5,39 @@ using Hulla.Application.Table;
 using Hulla.Presentation.TableKit;
 using Hulla.Presentation.Text;
 using Hulla.Protocol;
+using UnityEngine;
 using UnityEngine.UIElements;
 
 namespace Hulla.Games.Thulla
 {
     /// <summary>
-    /// The Thulla table in UI Toolkit: opponents across the top in play order, the pile in the middle,
-    /// the hand at the bottom with the server's legal cards lit, the turn timer, take-hand, the thulla
-    /// moment and the results overlay with the rematch vote. It renders from the model; the scheduler
-    /// only decides how long each event holds the stage.
+    /// The Thulla table (GDD 14.3 to 14.5) on the UI Toolkit table kit: opponents on the seat arc,
+    /// the pile fanning in from each seat, the fanned hand with the server's legal cards lit and a
+    /// one-line reason on an illegal tap, the turn timer ring, take-hand, quick chat, the thulla
+    /// moment, the first-round rules recap and the results overlay with the rematch vote. It renders
+    /// from the model; the scheduler only decides how long each event holds the stage.
     /// </summary>
     public sealed class ThullaTableView : IEventPresenter, IDisposable
     {
         /// <summary>The thulla moment never delays the next turn by more than this (GDD 14.6).</summary>
         private const float ThullaMomentSeconds = 1.2f;
 
+        /// <summary>The first round opens with a short rules recap that a player can turn off (GDD 9.5).</summary>
+        private const float RecapSeconds = 3f;
+
+        /// <summary>How long a phrase, an emote or a play hint stays on screen.</summary>
+        private const float SaySeconds = 3f;
+
         private readonly TableClient _client;
         private readonly Func<long> _nowMs;
-        private readonly VisualElement _opponents;
-        private readonly VisualElement _pile;
+        private readonly OpponentRing _ring;
+        private readonly PileView _pile;
         private readonly Label _pileNote;
-        private readonly VisualElement _hand;
+        private readonly HandView _hand;
         private readonly Label _turn;
+        private readonly TimerRing _timer;
+        private readonly Label _hint;
+        private readonly Label _info;
         private readonly Button _takeHand;
         private readonly Label _toast;
         private readonly VisualElement _results;
@@ -34,52 +45,54 @@ namespace Hulla.Games.Thulla
         private readonly VisualElement _resultOrder;
         private readonly Button _playAgain;
         private readonly Label _resultStatus;
-        private readonly List<SeatBadge> _badges = new List<SeatBadge>();
         private readonly IChatCatalog _chat;
         private readonly VisualElement _chatPanel;
         private readonly Label _mySay;
-        private float _mySayLeft;
         private readonly StampTimeline _stamp = new StampTimeline();
         private readonly VisualElement _felt;
         private readonly bool _reduceMotion;
         private readonly VisualElement _recap;
         private readonly Action? _hideRecapForGood;
+        private readonly List<(string Card, string Owner, long Seat)> _plays = new List<(string Card, string Owner, long Seat)>();
+        private readonly List<string> _handCards = new List<string>();
+        private float _mySayLeft;
+        private float _hintLeft;
         private bool _recapShown;
         private float _recapLeft;
-
-        /// <summary>The first round opens with a short rules recap that a player can turn off (GDD 9.5).</summary>
-        private const float RecapSeconds = 3f;
         private long _shownSeconds = -1;
+        private long _turnStartMs;
+        private long _turnDeadlineMs;
         private bool _voted;
 
-        /// <summary>How long a phrase or emote stays on screen.</summary>
-        private const float SaySeconds = 3f;
-
+        /// <param name="oneTap">Play on the first tap instead of tap-to-raise (a setting, GDD 14.4).</param>
         /// <param name="hideRecapForGood">Remembers "don't show again"; null when the player already chose it.</param>
-        public ThullaTableView(VisualElement root, TableClient client, IChatCatalog chat, Func<long> nowMs, Action leave, bool reduceMotion = false, Action? hideRecapForGood = null)
+        public ThullaTableView(
+            VisualElement root,
+            TableClient client,
+            IChatCatalog chat,
+            Func<long> nowMs,
+            Action leave,
+            bool reduceMotion = false,
+            Action? hideRecapForGood = null,
+            bool oneTap = false)
         {
-            _hideRecapForGood = hideRecapForGood;
-            _recap = root.Q<VisualElement>("recap");
-            root.Q<Label>("recap-title").text = UiText.RecapTitle;
-            root.Q<Label>("recap-text").text = UiText.Recap;
-            var hideRecap = root.Q<Button>("recap-hide");
-            hideRecap.text = UiText.RecapHide;
-            hideRecap.clicked += () =>
-            {
-                _hideRecapForGood?.Invoke();
-                _recapLeft = 0f;
-                _recap.style.display = DisplayStyle.None;
-            };
-            _reduceMotion = reduceMotion;
-            _felt = root.Q<VisualElement>("felt");
             _client = client;
             _chat = chat;
             _nowMs = nowMs;
-            _opponents = root.Q<VisualElement>("opponents");
-            _pile = root.Q<VisualElement>("pile");
+            _reduceMotion = reduceMotion;
+            _hideRecapForGood = hideRecapForGood;
+            _felt = root.Q<VisualElement>("felt");
+            _ring = new OpponentRing(root.Q<VisualElement>("opponents"));
+            _pile = new PileView(root.Q<VisualElement>("pile")) { ReduceMotion = reduceMotion };
             _pileNote = root.Q<Label>("pile-note");
-            _hand = root.Q<VisualElement>("hand");
+            _hand = new HandView(root.Q<VisualElement>("hand")) { OneTap = oneTap };
+            _hand.Played += card => _client.PlayCard(card);
+            _hand.Refused += ShowHint;
             _turn = root.Q<Label>("turn");
+            _timer = new TimerRing();
+            root.Q<VisualElement>("timer").Add(_timer);
+            _hint = root.Q<Label>("hint");
+            _info = root.Q<Label>("info");
             _takeHand = root.Q<Button>("take-hand");
             _takeHand.text = UiText.TakeHand;
             _takeHand.clicked += () => _client.TakeHand();
@@ -94,6 +107,17 @@ namespace Hulla.Games.Thulla
             var leaveButton = root.Q<Button>("leave");
             leaveButton.text = UiText.Leave;
             leaveButton.clicked += leave;
+            _recap = root.Q<VisualElement>("recap");
+            root.Q<Label>("recap-title").text = UiText.RecapTitle;
+            root.Q<Label>("recap-text").text = UiText.Recap;
+            var hideRecap = root.Q<Button>("recap-hide");
+            hideRecap.text = UiText.RecapHide;
+            hideRecap.clicked += () =>
+            {
+                _hideRecapForGood?.Invoke();
+                _recapLeft = 0f;
+                _recap.style.display = DisplayStyle.None;
+            };
             _mySay = root.Q<Label>("my-say");
             _chatPanel = root.Q<VisualElement>("chat-panel");
             var chatButton = root.Q<Button>("chat");
@@ -136,32 +160,17 @@ namespace Hulla.Games.Thulla
             }
         }
 
-        /// <summary>Per frame: the toast fade and the turn countdown, redrawn only when the second changes.</summary>
+        /// <summary>Per frame: bubbles, the recap, the stamp and the turn timer, redrawn only when they change.</summary>
         public void Tick(float deltaSeconds)
         {
-            foreach (var badge in _badges)
+            foreach (var badge in _ring.Badges)
             {
                 badge.Tick(deltaSeconds);
             }
 
-            if (_recapLeft > 0f)
-            {
-                _recapLeft -= deltaSeconds;
-                if (_recapLeft <= 0f)
-                {
-                    _recap.style.display = DisplayStyle.None;
-                }
-            }
-
-            if (_mySayLeft > 0f)
-            {
-                _mySayLeft -= deltaSeconds;
-                if (_mySayLeft <= 0f)
-                {
-                    _mySay.style.display = DisplayStyle.None;
-                }
-            }
-
+            Countdown(ref _recapLeft, deltaSeconds, _recap);
+            Countdown(ref _mySayLeft, deltaSeconds, _mySay);
+            Countdown(ref _hintLeft, deltaSeconds, _hint);
             if (_stamp.Active)
             {
                 _stamp.Advance(deltaSeconds);
@@ -174,7 +183,11 @@ namespace Hulla.Games.Thulla
                 return;
             }
 
-            var seconds = Math.Max(0, (model.DeadlineTs - _nowMs() + 999) / 1000);
+            var now = _nowMs();
+            var leftMs = Math.Max(0, _turnDeadlineMs - now);
+            var total = Math.Max(1, _turnDeadlineMs - _turnStartMs);
+            _timer.Show((float)leftMs / total, leftMs / 1000f);
+            var seconds = (leftMs + 999) / 1000;
             if (seconds != _shownSeconds)
             {
                 _shownSeconds = seconds;
@@ -186,6 +199,47 @@ namespace Hulla.Games.Thulla
         {
             _client.Model.Changed -= Refresh;
             _client.Model.Chat -= OnChat;
+        }
+
+        private static void Countdown(ref float left, float deltaSeconds, VisualElement element)
+        {
+            if (left <= 0f)
+            {
+                return;
+            }
+
+            left -= deltaSeconds;
+            if (left <= 0f)
+            {
+                element.style.display = DisplayStyle.None;
+            }
+        }
+
+        private void ShowHint(string card)
+        {
+            var model = _client.Model;
+            string text;
+            switch (PlayHint.For(model, card))
+            {
+                case PlayHint.Reason.MustFollow:
+                    text = string.Format(UiText.MustFollow, CardElement.SuitGlyph(model.LedSuit ?? 'S'));
+                    break;
+                case PlayHint.Reason.LeadAceOfSpades:
+                    text = UiText.LeadAceOfSpades;
+                    break;
+                case PlayHint.Reason.NotYourTurn:
+                    text = UiText.NotYourTurn;
+                    break;
+                case PlayHint.Reason.None:
+                    return;
+                default:
+                    text = UiText.NotPlayableNow;
+                    break;
+            }
+
+            _hint.text = text;
+            _hint.style.display = DisplayStyle.Flex;
+            _hintLeft = SaySeconds;
         }
 
         private void BuildChatPanel(VisualElement phrases, VisualElement emotes)
@@ -221,8 +275,7 @@ namespace Hulla.Games.Thulla
             var text = line.PhraseId != null
                 ? _chat.TextFor(line.PhraseId) ?? line.PhraseId
                 : UiText.EmoteLabel(line.EmoteId ?? "") + (line.TargetSeat == null ? "" : " → " + NameOf(line.TargetSeat.Value));
-            var model = _client.Model;
-            if (line.Seat == model.MySeat)
+            if (line.Seat == _client.Model.MySeat)
             {
                 _mySay.text = text;
                 _mySay.style.display = DisplayStyle.Flex;
@@ -230,17 +283,7 @@ namespace Hulla.Games.Thulla
                 return;
             }
 
-            var count = model.SeatCount;
-            if (count == 0)
-            {
-                return;
-            }
-
-            var index = (int)((line.Seat - (model.MySeat ?? 0) - 1 + count) % count);
-            if (index >= 0 && index < _badges.Count)
-            {
-                _badges[index].Say(text, SaySeconds);
-            }
+            _ring.BadgeFor(line.Seat)?.Say(text, SaySeconds);
         }
 
         private void VoteAgain()
@@ -261,7 +304,7 @@ namespace Hulla.Games.Thulla
         {
             _toast.style.display = _stamp.Active ? DisplayStyle.Flex : DisplayStyle.None;
             _toast.style.opacity = _stamp.Opacity;
-            _toast.style.scale = new Scale(new UnityEngine.Vector2(_stamp.Scale, _stamp.Scale));
+            _toast.style.scale = new Scale(new Vector2(_stamp.Scale, _stamp.Scale));
             _felt.style.translate = new Translate(_stamp.ShakeX, 0f);
         }
 
@@ -278,6 +321,7 @@ namespace Hulla.Games.Thulla
 
         private void Refresh()
         {
+            RefreshInfo();
             RefreshOpponents();
             RefreshPile();
             RefreshHand();
@@ -285,81 +329,80 @@ namespace Hulla.Games.Thulla
             RefreshResults();
         }
 
+        private void RefreshInfo()
+        {
+            var model = _client.Model;
+            var text = model.IsPrivate && model.Code.Length > 0 ? model.Code : UiText.QuickPlayTable;
+            if (model.InRound)
+            {
+                text += " · " + string.Format(UiText.Discard, model.DiscardCount);
+                if (model.FairDealCommitted)
+                {
+                    text += " · " + UiText.FairDeal;
+                }
+            }
+
+            _info.text = text;
+        }
+
         private void RefreshOpponents()
         {
             var model = _client.Model;
-            var count = model.SeatCount;
-            var mine = (int)(model.MySeat ?? 0);
-            var needed = Math.Max(0, count - 1);
-            while (_badges.Count < needed)
+            var count = model.SeatCount > 0 ? model.SeatCount : model.Seats.Count;
+            _ring.Layout(count, model.MySeat ?? 0);
+            for (var i = 0; i < count - 1 && i < _ring.Badges.Count; i++)
             {
-                var badge = new SeatBadge();
-                _badges.Add(badge);
-                _opponents.Add(badge);
-            }
-
-            for (var i = 0; i < _badges.Count; i++)
-            {
-                var badge = _badges[i];
-                if (i >= needed)
-                {
-                    badge.style.display = DisplayStyle.None;
-                    continue;
-                }
-
-                badge.style.display = DisplayStyle.Flex;
-                var seat = (mine + 1 + i) % count;
-                var info = seat < model.Seats.Count ? model.Seats[seat] : default;
-                var state = model.IsEscaped(seat) ? UiText.Escaped : info.AutoPlay || (info.Occupied && !info.Connected) ? UiText.Away : "";
-                badge.Show(NameOf(seat), model.HandCount(seat), model.TurnSeat == seat && model.InRound, state);
+                var seat = _ring.SeatAt(i);
+                var info = seat < model.Seats.Count ? model.Seats[(int)seat] : default;
+                var state = model.IsEscaped((int)seat)
+                    ? UiText.Escaped
+                    : info.AutoPlay || (info.Occupied && !info.Connected)
+                        ? UiText.Away
+                        : model.InRound && model.LeaderSeat == seat ? UiText.Lead : "";
+                _ring.Badges[i].Show(NameOf(seat), model.HandCount((int)seat), model.TurnSeat == seat && model.InRound, state);
             }
         }
 
         private void RefreshPile()
         {
             var model = _client.Model;
-            _pile.Clear();
             var showingLast = model.Trick.Count == 0 && model.LastTrick.Count > 0;
-            var plays = showingLast ? model.LastTrick : model.Trick;
-            foreach (var play in plays)
+            var source = showingLast ? model.LastTrick : model.Trick;
+            _plays.Clear();
+            foreach (var play in source)
             {
-                var slot = new VisualElement();
-                slot.AddToClassList("pile__slot");
-                var card = new CardElement().Show(play.Card);
-                card.EnableInClassList("card--faded", showingLast);
-                slot.Add(card);
-                var owner = new Label(NameOf(play.Seat));
-                owner.AddToClassList("pile__owner");
-                slot.Add(owner);
-                _pile.Add(slot);
+                _plays.Add((play.Card, NameOf(play.Seat), play.Seat));
             }
 
+            _pile.Show(_plays, showingLast, SeatOrigin);
             _pileNote.text = showingLast && model.LastPicker != null ? string.Format(UiText.PickedUp, NameOf(model.LastPicker.Value)) : "";
+        }
+
+        /// <summary>Where a card played by <paramref name="seat"/> starts its flight: the badge, or the hand for the player.</summary>
+        private Rect? SeatOrigin(long seat)
+        {
+            if (seat == _client.Model.MySeat)
+            {
+                var bounds = _mySay.parent.worldBound;
+                return new Rect(bounds.center.x - 1f, bounds.yMax - 1f, 2f, 2f);
+            }
+
+            return _ring.BadgeFor(seat)?.worldBound;
         }
 
         private void RefreshHand()
         {
             var model = _client.Model;
-            _hand.Clear();
+            _handCards.Clear();
             foreach (var card in model.Hand)
             {
-                if (card == model.PendingCard)
+                if (card != model.PendingCard)
                 {
-                    continue;
+                    _handCards.Add(card);
                 }
-
-                var element = new CardElement().Show(card);
-                var legal = model.MyTurn && model.IsLegal(card);
-                element.EnableInClassList("card--legal", legal);
-                element.EnableInClassList("card--dim", model.MyTurn && !legal);
-                if (legal)
-                {
-                    var chosen = card;
-                    element.RegisterCallback<PointerUpEvent>(_ => _client.PlayCard(chosen));
-                }
-
-                _hand.Add(element);
             }
+
+            _hand.Show(_handCards, model.IsLegal, model.MyTurn);
         }
 
         private void RefreshTurn()
@@ -368,15 +411,21 @@ namespace Hulla.Games.Thulla
             _shownSeconds = -1;
             if (model.MyTurn)
             {
+                if (_turnDeadlineMs != model.DeadlineTs)
+                {
+                    _turnDeadlineMs = model.DeadlineTs;
+                    _turnStartMs = _nowMs();
+                }
+
                 _turn.text = UiText.YourTurn;
-            }
-            else if (model.InRound && model.TurnSeat != null)
-            {
-                _turn.text = NameOf(model.TurnSeat.Value) + "…";
+                _timer.style.display = DisplayStyle.Flex;
             }
             else
             {
-                _turn.text = "";
+                _turn.text = !model.InRound || model.TurnSeat == null
+                    ? ""
+                    : model.TurnSeat == model.MySeat ? UiText.YourTurn : NameOf(model.TurnSeat.Value) + "…";
+                _timer.style.display = DisplayStyle.None;
             }
 
             _takeHand.style.display = model.MyTurn && model.CanTakeHand ? DisplayStyle.Flex : DisplayStyle.None;
