@@ -99,6 +99,18 @@ namespace Hulla.Protocol
         [JsonProperty("privateDrawPayload", Required = Required.DisallowNull, NullValueHandling = NullValueHandling.Ignore)]
         public PrivateDraw? PrivateDrawPayload { get; set; }
 
+        [JsonProperty("profile", Required = Required.DisallowNull, NullValueHandling = NullValueHandling.Ignore)]
+        public Profile? Profile { get; set; }
+
+        [JsonProperty("profileGet", Required = Required.DisallowNull, NullValueHandling = NullValueHandling.Ignore)]
+        public ProfileGet? ProfileGet { get; set; }
+
+        [JsonProperty("profileStats", Required = Required.DisallowNull, NullValueHandling = NullValueHandling.Ignore)]
+        public ProfileStats? ProfileStats { get; set; }
+
+        [JsonProperty("profileUpdate", Required = Required.DisallowNull, NullValueHandling = NullValueHandling.Ignore)]
+        public ProfileUpdate? ProfileUpdate { get; set; }
+
         [JsonProperty("quickChatPayload", Required = Required.DisallowNull, NullValueHandling = NullValueHandling.Ignore)]
         public QuickChat? QuickChatPayload { get; set; }
 
@@ -515,6 +527,178 @@ namespace Hulla.Protocol
 
         [JsonProperty("source", Required = Required.Always)]
         public Source Source { get; set; }
+    }
+
+    /// <summary>
+    /// A profile as a viewer may see it; the owner sees everything, others only the public card
+    /// </summary>
+    public partial class Profile
+    {
+        [JsonProperty("avatar", Required = Required.Always)]
+        public string Avatar { get; set; }
+
+        [JsonProperty("bio", Required = Required.Always)]
+        [JsonConverter(typeof(IndecentMinMaxLengthCheckConverter))]
+        public string Bio { get; set; }
+
+        [JsonProperty("displayName", Required = Required.Always)]
+        [JsonConverter(typeof(IndigoMinMaxLengthCheckConverter))]
+        public string DisplayName { get; set; }
+
+        [JsonProperty("flag", Required = Required.AllowNull)]
+        public string? Flag { get; set; }
+
+        [JsonProperty("frame", Required = Required.Always)]
+        public string Frame { get; set; }
+
+        /// <summary>
+        /// Owner and friends only
+        /// </summary>
+        [JsonProperty("friendCode", Required = Required.DisallowNull, NullValueHandling = NullValueHandling.Ignore)]
+        public string? FriendCode { get; set; }
+
+        [JsonProperty("handle", Required = Required.Always)]
+        public string Handle { get; set; }
+
+        /// <summary>
+        /// Owner only
+        /// </summary>
+        [JsonProperty("nameChanges", Required = Required.DisallowNull, NullValueHandling = NullValueHandling.Ignore)]
+        public long? NameChanges { get; set; }
+
+        /// <summary>
+        /// Present only when the owner shows it
+        /// </summary>
+        [JsonProperty("online", Required = Required.DisallowNull, NullValueHandling = NullValueHandling.Ignore)]
+        public bool? Online { get; set; }
+
+        /// <summary>
+        /// Owner only
+        /// </summary>
+        [JsonProperty("privacy", Required = Required.DisallowNull, NullValueHandling = NullValueHandling.Ignore)]
+        public ProfilePrivacy? Privacy { get; set; }
+
+        [JsonProperty("stats", Required = Required.Always)]
+        public ProfileStats Stats { get; set; }
+
+        [JsonProperty("title", Required = Required.AllowNull)]
+        public string? Title { get; set; }
+
+        [JsonProperty("userId", Required = Required.Always)]
+        public string UserId { get; set; }
+    }
+
+    /// <summary>
+    /// Owner only
+    /// </summary>
+    public partial class ProfilePrivacy
+    {
+        [JsonProperty("showOnline", Required = Required.Always)]
+        public bool ShowOnline { get; set; }
+
+        [JsonProperty("visibility", Required = Required.Always)]
+        public Visibility Visibility { get; set; }
+    }
+
+    public partial class ProfileStats
+    {
+        [JsonProperty("bestStreak", Required = Required.Always)]
+        public long BestStreak { get; set; }
+
+        [JsonProperty("bhabhis", Required = Required.Always)]
+        public long Bhabhis { get; set; }
+
+        [JsonProperty("biggestPickup", Required = Required.Always)]
+        public long BiggestPickup { get; set; }
+
+        [JsonProperty("cardsPickedUp", Required = Required.Always)]
+        public long CardsPickedUp { get; set; }
+
+        /// <summary>
+        /// Rounds escaped in a row
+        /// </summary>
+        [JsonProperty("currentStreak", Required = Required.Always)]
+        public long CurrentStreak { get; set; }
+
+        [JsonProperty("escapes", Required = Required.Always)]
+        public long Escapes { get; set; }
+
+        [JsonProperty("handsTaken", Required = Required.Always)]
+        public long HandsTaken { get; set; }
+
+        [JsonProperty("rounds", Required = Required.Always)]
+        public long Rounds { get; set; }
+
+        /// <summary>
+        /// Cards played per suit; the largest is the favourite
+        /// </summary>
+        [JsonProperty("suits", Required = Required.Always)]
+        public Suits Suits { get; set; }
+
+        [JsonProperty("thullasGiven", Required = Required.Always)]
+        public long ThullasGiven { get; set; }
+
+        [JsonProperty("thullasReceived", Required = Required.Always)]
+        public long ThullasReceived { get; set; }
+    }
+
+    /// <summary>
+    /// Cards played per suit; the largest is the favourite
+    /// </summary>
+    public partial class Suits
+    {
+        [JsonProperty("C", Required = Required.Always)]
+        public long C { get; set; }
+
+        [JsonProperty("D", Required = Required.Always)]
+        public long D { get; set; }
+
+        [JsonProperty("H", Required = Required.Always)]
+        public long H { get; set; }
+
+        [JsonProperty("S", Required = Required.Always)]
+        public long S { get; set; }
+    }
+
+    /// <summary>
+    /// Nothing for the caller's own profile; a userId or a handle for someone else's
+    /// </summary>
+    public partial class ProfileGet
+    {
+        [JsonProperty("handle", Required = Required.DisallowNull, NullValueHandling = NullValueHandling.Ignore)]
+        public string? Handle { get; set; }
+
+        [JsonProperty("userId", Required = Required.DisallowNull, NullValueHandling = NullValueHandling.Ignore)]
+        public string? UserId { get; set; }
+    }
+
+    /// <summary>
+    /// Any subset of the editable fields
+    /// </summary>
+    public partial class ProfileUpdate
+    {
+        [JsonProperty("avatar", Required = Required.DisallowNull, NullValueHandling = NullValueHandling.Ignore)]
+        public string? Avatar { get; set; }
+
+        [JsonProperty("bio", Required = Required.DisallowNull, NullValueHandling = NullValueHandling.Ignore)]
+        [JsonConverter(typeof(IndecentMinMaxLengthCheckConverter))]
+        public string? Bio { get; set; }
+
+        [JsonProperty("displayName", Required = Required.DisallowNull, NullValueHandling = NullValueHandling.Ignore)]
+        [JsonConverter(typeof(IndigoMinMaxLengthCheckConverter))]
+        public string? DisplayName { get; set; }
+
+        [JsonProperty("flag")]
+        public string? Flag { get; set; }
+
+        [JsonProperty("frame", Required = Required.DisallowNull, NullValueHandling = NullValueHandling.Ignore)]
+        public string? Frame { get; set; }
+
+        [JsonProperty("handle", Required = Required.DisallowNull, NullValueHandling = NullValueHandling.Ignore)]
+        public string? Handle { get; set; }
+
+        [JsonProperty("privacy", Required = Required.DisallowNull, NullValueHandling = NullValueHandling.Ignore)]
+        public ProfilePrivacy? Privacy { get; set; }
     }
 
     public partial class QuickChat
@@ -1092,6 +1276,8 @@ namespace Hulla.Protocol
 
     public enum Source { Discard, NextPlayer, Opponent };
 
+    public enum Visibility { Everyone, Friends };
+
     public enum GameId { Rung, Thulla };
 
     public enum Preset { ClassicPagat, Family, Hardcore, Standard };
@@ -1157,6 +1343,7 @@ namespace Hulla.Protocol
                 TypeEnumConverter.Singleton,
                 StatusConverter.Singleton,
                 SourceConverter.Singleton,
+                VisibilityConverter.Singleton,
                 GameIdConverter.Singleton,
                 PresetConverter.Singleton,
                 DirectionConverter.Singleton,
@@ -1602,6 +1789,75 @@ namespace Hulla.Protocol
         }
 
         public static readonly SourceConverter Singleton = new SourceConverter();
+    }
+
+    internal class IndecentMinMaxLengthCheckConverter : JsonConverter
+    {
+        public override bool CanConvert(Type t) => t == typeof(string);
+
+        public override object ReadJson(JsonReader reader, Type t, object existingValue, JsonSerializer serializer)
+        {
+            var value = serializer.Deserialize<string>(reader);
+            if (value.Length <= 60)
+            {
+                return value;
+            }
+            throw new Exception("Cannot unmarshal type string");
+        }
+
+        public override void WriteJson(JsonWriter writer, object untypedValue, JsonSerializer serializer)
+        {
+            var value = (string)untypedValue;
+            if (value.Length <= 60)
+            {
+                serializer.Serialize(writer, value);
+                return;
+            }
+            throw new Exception("Cannot marshal type string");
+        }
+
+        public static readonly IndecentMinMaxLengthCheckConverter Singleton = new IndecentMinMaxLengthCheckConverter();
+    }
+
+    internal class VisibilityConverter : JsonConverter
+    {
+        public override bool CanConvert(Type t) => t == typeof(Visibility) || t == typeof(Visibility?);
+
+        public override object ReadJson(JsonReader reader, Type t, object existingValue, JsonSerializer serializer)
+        {
+            if (reader.TokenType == JsonToken.Null) return null;
+            var value = serializer.Deserialize<string>(reader);
+            switch (value)
+            {
+                case "everyone":
+                    return Visibility.Everyone;
+                case "friends":
+                    return Visibility.Friends;
+            }
+            throw new Exception("Cannot unmarshal type Visibility");
+        }
+
+        public override void WriteJson(JsonWriter writer, object untypedValue, JsonSerializer serializer)
+        {
+            if (untypedValue == null)
+            {
+                serializer.Serialize(writer, null);
+                return;
+            }
+            var value = (Visibility)untypedValue;
+            switch (value)
+            {
+                case Visibility.Everyone:
+                    serializer.Serialize(writer, "everyone");
+                    return;
+                case Visibility.Friends:
+                    serializer.Serialize(writer, "friends");
+                    return;
+            }
+            throw new Exception("Cannot marshal type Visibility");
+        }
+
+        public static readonly VisibilityConverter Singleton = new VisibilityConverter();
     }
 
     internal class GameIdConverter : JsonConverter

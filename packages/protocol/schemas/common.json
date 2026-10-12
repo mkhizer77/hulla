@@ -65,7 +65,7 @@
     },
     "errorCode": {
       "type": "string",
-      "pattern": "^(rules|table|auth|economy|content|network|voice)\\.[a-z0-9_]+$"
+      "pattern": "^(rules|table|auth|economy|content|network|voice|profile)\\.[a-z0-9_]+$"
     },
     "errorDetail": {
       "type": "object",

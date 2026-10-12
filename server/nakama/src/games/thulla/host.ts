@@ -10,7 +10,7 @@ import { ErrorCodes, err, ok, ruleError, stateHash } from "@hulla/shared-ts";
 
 import { seriesPayload } from "../../match/view";
 
-import type { EncodeContext, GameHost, GameMessage } from "../../match/types";
+import type { EncodeContext, GameHost, GameMessage, LoggedMessage } from "../../match/types";
 import type { Check } from "@hulla/protocol/generated";
 import type {
   Card,
@@ -238,4 +238,48 @@ export const thullaHost: ThullaHost = {
   },
   presentationDelayMs: (events) => (events.some(isThulla) ? THULLA_MOMENT_MS : 0),
   stateHash: (state) => stateHash(state),
+  highlights: thullaHighlights,
 };
+
+/** Stats-card numbers per seat from the round's public messages (GDD 10.1). */
+export function thullaHighlights(
+  messages: readonly LoggedMessage[],
+  seatCount: number,
+): readonly Record<string, number>[] {
+  const out = Array.from({ length: seatCount }, () => ({
+    thullasGiven: 0,
+    thullasReceived: 0,
+    cardsPickedUp: 0,
+    biggestPickup: 0,
+    handsTaken: 0,
+    playedS: 0,
+    playedH: 0,
+    playedC: 0,
+    playedD: 0,
+  }));
+  const bump = (seat: unknown, key: keyof (typeof out)[number], by = 1): void => {
+    const row = typeof seat === "number" ? out[seat] : undefined;
+    if (row !== undefined) row[key] += by;
+  };
+  for (const m of messages) {
+    const p = m.payload as Record<string, unknown>;
+    if (m.type === "move_applied") {
+      const move = p["move"] as { type?: string; card?: string } | undefined;
+      if (move?.type === "play_card" && typeof move.card === "string") {
+        const suit = move.card.slice(-1);
+        if (suit === "S" || suit === "H" || suit === "C" || suit === "D")
+          bump(p["seat"], `played${suit}`);
+      }
+      if (move?.type === "take_hand") bump(p["seat"], "handsTaken");
+    } else if (m.type === "trick_resolved" && p["thullaBy"] !== null && p["picker"] !== null) {
+      bump(p["thullaBy"], "thullasGiven");
+      bump(p["picker"], "thullasReceived");
+    } else if (m.type === "pickup") {
+      const cards = Array.isArray(p["cards"]) ? p["cards"].length : 0;
+      bump(p["seat"], "cardsPickedUp", cards);
+      const row = typeof p["seat"] === "number" ? out[p["seat"]] : undefined;
+      if (row !== undefined) row.biggestPickup = Math.max(row.biggestPickup, cards);
+    }
+  }
+  return out;
+}

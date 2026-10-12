@@ -28,6 +28,9 @@ export function generateChecks(
     check_envelope: `${PROTOCOL_BASE}envelope.json`,
     check_rules_selection: `${PROTOCOL_BASE}shell/table.json#/definitions/rulesSelection`,
     check_thulla_view: `${PROTOCOL_BASE}games/thulla/views.json#/definitions/view`,
+    check_profile: `${PROTOCOL_BASE}shell/profile.json#/definitions/profile`,
+    check_profile_update: `${PROTOCOL_BASE}shell/profile.json#/definitions/profile_update`,
+    check_profile_get: `${PROTOCOL_BASE}shell/profile.json#/definitions/profile_get`,
   };
   for (const entry of opcodes) {
     mapping[`check_${entry.type}`] = entryRef(entry);
@@ -51,6 +54,9 @@ export function generateChecks(
     "  readonly envelope: Check;",
     "  readonly rulesSelection: Check;",
     "  readonly thullaView: Check;",
+    "  readonly profile: Check;",
+    "  readonly profileUpdate: Check;",
+    "  readonly profileGet: Check;",
     "  /** One check per message type in the opcode table. */",
     "  readonly payload: Readonly<Record<string, Check>>;",
     "}",
@@ -65,6 +71,9 @@ export function generateChecks(
     "    envelope: check_envelope,",
     "    rulesSelection: check_rules_selection,",
     "    thullaView: check_thulla_view,",
+    "    profile: check_profile,",
+    "    profileUpdate: check_profile_update,",
+    "    profileGet: check_profile_get,",
     "    payload: {",
     ...table,
     "    },",

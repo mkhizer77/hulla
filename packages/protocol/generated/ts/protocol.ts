@@ -32,6 +32,10 @@ export interface Protocol {
   seriesState?: SeriesState;
   seatStats?: SeatStats;
   ruleError?: RuleError;
+  profile?: Profile;
+  profileStats?: ProfileStats;
+  profileUpdate?: ProfileUpdate;
+  profileGet?: ProfileGet;
   joinTablePayload?: JoinTable;
   leaveTablePayload?: LeaveTable;
   readyPayload?: Ready;
@@ -171,6 +175,93 @@ export interface RuleError {
 }
 export interface ErrorDetail {
   [k: string]: string | number | boolean | undefined;
+}
+/**
+ * A profile as a viewer may see it; the owner sees everything, others only the public card
+ */
+export interface Profile {
+  /**
+   * Server-issued; no length constraint because nullable constrained strings crash quicktype's generated converter
+   */
+  userId: string;
+  displayName: string;
+  handle: string;
+  /**
+   * Owner and friends only
+   */
+  friendCode?: string;
+  avatar: string;
+  frame: string;
+  flag: string | null;
+  title: string | null;
+  bio: string;
+  stats: ProfileStats;
+  /**
+   * Present only when the owner shows it
+   */
+  online?: boolean;
+  privacy?: ProfilePrivacy;
+  /**
+   * Owner only
+   */
+  nameChanges?: number;
+}
+export interface ProfileStats {
+  rounds: number;
+  escapes: number;
+  bhabhis: number;
+  thullasGiven: number;
+  thullasReceived: number;
+  cardsPickedUp: number;
+  biggestPickup: number;
+  handsTaken: number;
+  /**
+   * Rounds escaped in a row
+   */
+  currentStreak: number;
+  bestStreak: number;
+  /**
+   * Cards played per suit; the largest is the favourite
+   */
+  suits: {
+    S: number;
+    H: number;
+    C: number;
+    D: number;
+  };
+}
+/**
+ * Owner only
+ */
+export interface ProfilePrivacy {
+  showOnline: boolean;
+  visibility: "everyone" | "friends";
+}
+/**
+ * Any subset of the editable fields
+ */
+export interface ProfileUpdate {
+  displayName?: string;
+  handle?: string;
+  avatar?: string;
+  frame?: string;
+  flag?: string | null;
+  bio?: string;
+  privacy?: ProfilePrivacy1;
+}
+export interface ProfilePrivacy1 {
+  showOnline: boolean;
+  visibility: "everyone" | "friends";
+}
+/**
+ * Nothing for the caller's own profile; a userId or a handle for someone else's
+ */
+export interface ProfileGet {
+  /**
+   * Server-issued; no length constraint because nullable constrained strings crash quicktype's generated converter
+   */
+  userId?: string;
+  handle?: string;
 }
 export interface JoinTable {
   code?: string;

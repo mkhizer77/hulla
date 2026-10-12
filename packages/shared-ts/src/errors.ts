@@ -64,6 +64,15 @@ export const ErrorCodes = {
     unavailable: "voice.unavailable",
     notAtTable: "voice.not_at_table",
   },
+  profile: {
+    invalidName: "profile.invalid_name",
+    invalidHandle: "profile.invalid_handle",
+    handleTaken: "profile.handle_taken",
+    nameChangeLocked: "profile.name_change_locked",
+    notVisible: "profile.not_visible",
+    unknownAvatar: "profile.unknown_avatar",
+    notFound: "profile.not_found",
+  },
 } as const;
 
 type Leaves<T> = T extends string ? T : { [K in keyof T]: Leaves<T[K]> }[keyof T];

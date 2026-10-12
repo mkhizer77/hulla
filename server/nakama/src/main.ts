@@ -7,10 +7,18 @@ import {
   thullaMatchSignal,
   thullaMatchTerminate,
 } from "./games/thulla/match";
+import {
+  afterAuthenticateApple,
+  afterAuthenticateCustom,
+  afterAuthenticateDevice,
+  afterAuthenticateFacebook,
+  afterAuthenticateGoogle,
+} from "./hooks/after_authenticate";
 import { beforeChannelMessageSend } from "./hooks/before_channel_message";
 import { matchmakerMatched } from "./hooks/matchmaker_matched";
 import { rpcHello } from "./rpc/hello";
 import { rpcPresetsGet } from "./rpc/presets_get";
+import { rpcProfileGet, rpcProfileUpdate } from "./rpc/profile";
 import { rpcTableCreate } from "./rpc/table_create";
 import { rpcTableJoinByCode } from "./rpc/table_join_by_code";
 import { rpcVoiceToken } from "./rpc/voice_token";
@@ -33,6 +41,13 @@ function InitModule(
   initializer.registerRpc("voice_token", rpcVoiceToken);
   initializer.registerRtBefore("ChannelMessageSend", beforeChannelMessageSend);
   initializer.registerMatchmakerMatched(matchmakerMatched);
+  initializer.registerRpc("profile_get", rpcProfileGet);
+  initializer.registerRpc("profile_update", rpcProfileUpdate);
+  initializer.registerAfterAuthenticateDevice(afterAuthenticateDevice);
+  initializer.registerAfterAuthenticateApple(afterAuthenticateApple);
+  initializer.registerAfterAuthenticateGoogle(afterAuthenticateGoogle);
+  initializer.registerAfterAuthenticateFacebook(afterAuthenticateFacebook);
+  initializer.registerAfterAuthenticateCustom(afterAuthenticateCustom);
   initializer.registerMatch("thulla", {
     matchInit: thullaMatchInit,
     matchJoinAttempt: thullaMatchJoinAttempt,

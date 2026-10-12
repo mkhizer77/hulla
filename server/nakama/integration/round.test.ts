@@ -191,6 +191,16 @@ describe.skipIf(NAKAMA_HOST === undefined)(
       expect(replay.value.deckOrder).toEqual(end.fairness.deckOrder);
       expect(replay.value.commitment).toBe(commitment);
 
+      // The stats card moved for every player.
+      for (const c of players) {
+        const own = await rpc<{ ok: boolean; profile?: { stats: { rounds: number } } }>(
+          c,
+          "profile_get",
+          {},
+        );
+        expect(own.profile?.stats.rounds).toBe(1);
+      }
+
       // Redaction at the socket: no client ever saw another seat's hand or legal mask.
       for (const c of players) {
         const mine = seatOf.get(c.name);

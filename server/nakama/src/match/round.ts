@@ -329,6 +329,9 @@ export function roundRecord<S, M, V, E, R>(
     result: round.result,
     series: state.series,
     finalStateHash: deps.host.stateHash(round.state),
+    highlights:
+      deps.host.highlights?.(state.log, round.seatCount) ??
+      Array.from({ length: round.seatCount }, () => ({})),
     startedTs: round.startedTs,
     endedTs: now,
     completed,

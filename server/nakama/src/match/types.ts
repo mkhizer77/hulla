@@ -97,6 +97,11 @@ export interface GameHost<S, M, V, E, R> {
   /** How long clients animate the events before the next deadline may start (ARCHITECTURE 8.4). */
   presentationDelayMs(events: readonly E[]): number;
   stateHash(state: S): string;
+  /** Per-seat numbers for the stats card, read from the round's logged messages (GDD 10.1). */
+  highlights?(
+    messages: readonly LoggedMessage[],
+    seatCount: number,
+  ): readonly Record<string, number>[];
 }
 
 export interface TableConfig {
@@ -282,6 +287,8 @@ export interface RoundRecord {
   readonly result: RoundResult | null;
   readonly series: SeriesState | null;
   readonly finalStateHash: string;
+  /** Per seat, from the game host; empty objects when a game has none. */
+  readonly highlights: readonly Record<string, number>[];
   readonly startedTs: number;
   readonly endedTs: number;
   readonly completed: boolean;

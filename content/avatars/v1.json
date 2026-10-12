@@ -1,0 +1,48 @@
+{
+  "schema": "../../tools/content-schemas/avatars.schema.json",
+  "id": "v1",
+  "avatars": [
+    {
+      "id": "a01",
+      "name": "avatar.a01"
+    },
+    {
+      "id": "a02",
+      "name": "avatar.a02"
+    },
+    {
+      "id": "a03",
+      "name": "avatar.a03"
+    },
+    {
+      "id": "a04",
+      "name": "avatar.a04"
+    },
+    {
+      "id": "a05",
+      "name": "avatar.a05"
+    },
+    {
+      "id": "a06",
+      "name": "avatar.a06"
+    },
+    {
+      "id": "a07",
+      "name": "avatar.a07"
+    },
+    {
+      "id": "a08",
+      "name": "avatar.a08"
+    }
+  ],
+  "frames": [
+    {
+      "id": "f00",
+      "name": "frame.f00"
+    },
+    {
+      "id": "f01",
+      "name": "frame.f01"
+    }
+  ]
+}
