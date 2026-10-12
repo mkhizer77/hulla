@@ -16,10 +16,10 @@ namespace Hulla.Infrastructure.Content
     {
         public static readonly string[] Ids = { "standard", "family", "hardcore", "classicPagat" };
 
-        private readonly Dictionary<string, (ThullaRules Rules, TableSettings TableSettings)> _presets =
-            new Dictionary<string, (ThullaRules Rules, TableSettings TableSettings)>();
+        private readonly Dictionary<string, (ThullaRules Rules, TableSettings Settings)> _presets =
+            new Dictionary<string, (ThullaRules Rules, TableSettings Settings)>();
 
-        public (ThullaRules Rules, TableSettings TableSettings)? Find(string presetId) =>
+        public (ThullaRules Rules, TableSettings Settings)? Find(string presetId) =>
             _presets.TryGetValue(presetId, out var preset) ? preset : ((ThullaRules, TableSettings)?)null;
 
         public async Awaitable LoadAsync(CancellationToken cancellation)

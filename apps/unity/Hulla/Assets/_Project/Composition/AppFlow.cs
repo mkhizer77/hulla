@@ -353,7 +353,7 @@ namespace Hulla.Composition
             _screen = wanted;
             if (wanted == Screen.Lobby)
             {
-                _lobbyView = new LobbyView(_shell.Show(_shell.Catalog.Lobby), client, () => DateTimeOffset.UtcNow.ToUnixTimeMilliseconds(), Leave, code => _app.ShareSheet.Share(UiText.ShareTitle, string.Format(UiText.ShareText, code)), text => _app.TableChat.SendAsync(text, _app.Lifetime));
+                _lobbyView = new LobbyView(_shell.Show(_shell.Catalog.Lobby), client, () => DateTimeOffset.UtcNow.ToUnixTimeMilliseconds(), Leave, code => _app.ShareSheet.Share(UiText.ShareTitle, string.Format(UiText.ShareText, code)), text => _app.TableChat.SendAsync(text, _app.Lifetime), () => ThullaRulesEditor.Summary(client.Model, _app.Presets), () => OpenRulesEditor(client));
                 _view = _lobbyView;
                 return;
             }
@@ -410,6 +410,13 @@ namespace Hulla.Composition
             CloseSettings();
             var sections = ThullaRulebook.Build(client.Model, _app.Presets);
             _ = new RulebookView(_shell.ShowOverlay(_shell.Catalog.Rulebook), RulebookText.Title, sections, _shell.CloseOverlay, section);
+        }
+
+        /// <summary>The host edits the next deal's rules over the lobby (GDD 14.9).</summary>
+        private void OpenRulesEditor(TableClient client)
+        {
+            CloseSettings();
+            _ = new ThullaRulesEditor(_shell.ShowOverlay(_shell.Catalog.Settings), client.Model, _app.Presets, client.SetRules, _shell.CloseOverlay);
         }
 
         private void CloseSettings()

@@ -95,6 +95,14 @@ namespace Hulla.Presentation.Text
         public const string Server = "Server (development builds)";
 
         public const string Profile = "Profile";
+        public const string EditRules = "Edit rules";
+        public const string PresetLabel = "Preset";
+        public const string TurnTimerLabel = "Turn timer";
+        public const string LoserTitleLabel = "The loser is called";
+        public const string RulesSummary = "{0} · {1} · loser: {2}";
+        public const string TurnSeconds = "{0} s turns";
+        public const string NoTimer = "No timer";
+        public const string RulesChangedBy = "{0} changed the rules";
         public const string JoinFriendTable = "Join {0}'s table ({1} open)";
 
         public static string Presence(PresenceState state) => state switch

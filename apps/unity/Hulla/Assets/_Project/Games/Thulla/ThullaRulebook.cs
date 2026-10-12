@@ -22,7 +22,7 @@ namespace Hulla.Games.Thulla
             var preset = selection?.Preset ?? Preset.Standard;
             var fromPreset = presets.Find(PresetId(preset));
             var rules = model.ActiveRules ?? fromPreset?.Rules ?? new ThullaRules();
-            var defaults = fromPreset?.TableSettings ?? new TableSettings();
+            var defaults = fromPreset?.Settings ?? new TableSettings();
             var chosen = selection?.Settings;
             var timer = chosen?.TurnTimerSeconds ?? defaults.TurnTimerSeconds ?? (model.IsPrivate ? 20 : 15);
             var loser = LoserName(chosen?.LoserTitle ?? defaults.LoserTitle ?? LoserTitle.Bhabhi);

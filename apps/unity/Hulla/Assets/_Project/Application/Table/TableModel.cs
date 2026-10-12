@@ -51,6 +51,12 @@ namespace Hulla.Application.Table
         /// <summary>The seats that voted to play again.</summary>
         public IReadOnlyList<long> RematchVotes { get; private set; } = Array.Empty<long>();
 
+        /// <summary>The last rules change in the lobby: who changed it and which keys (E19); null when none.</summary>
+        public RulesChanged? LastRulesChange { get; private set; }
+
+        /// <summary>The seat that last changed the lobby's rules, or null.</summary>
+        public long? RulesChangedBy => LastRulesChange?.ChangedBy;
+
         /// <summary>The toggles the engine resolved for the current round; null before the first deal.</summary>
         public ThullaRules? ActiveRules { get; private set; }
 
@@ -191,6 +197,10 @@ namespace Hulla.Application.Table
                 case HostChanged changed:
                     HostSeat = changed.Seat;
                     break;
+                case RulesChanged rules:
+                    Selection = rules.Rules;
+                    LastRulesChange = rules;
+                    break;
                 case TableClosed _:
                     Closed = true;
                     Status = TableStatus.Closed;
@@ -286,6 +296,7 @@ namespace Hulla.Application.Table
             RoundId = start.RoundId;
             InRound = true;
             AutoStartAtTs = null;
+            LastRulesChange = null;
             Status = TableStatus.InRound;
             LastResult = null;
             _handCounts = start.HandCounts.ToArray();

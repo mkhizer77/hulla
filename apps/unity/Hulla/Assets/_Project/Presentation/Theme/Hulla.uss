@@ -738,3 +738,15 @@
     display: none;
     margin-bottom: var(--space-1);
 }
+
+.lobby-rules {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.lobby-rules__text {
+    flex-shrink: 1;
+    white-space: normal;
+    color: var(--ink-muted);
+}
