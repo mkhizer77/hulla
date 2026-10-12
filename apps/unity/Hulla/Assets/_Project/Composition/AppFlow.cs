@@ -29,6 +29,9 @@ namespace Hulla.Composition
         private const float ReconnectWindowSeconds = 30f;
         private const float RetrySeconds = 2f;
 
+        /// <summary>Set to 1 for reduce-motion until the settings screen (#64) offers the switch.</summary>
+        private const string ReduceMotionPrefKey = "hulla.reduce_motion";
+
         private readonly AppScope _app;
         private readonly ShellView _shell;
         private Screen _screen;
@@ -217,7 +220,7 @@ namespace Hulla.Composition
             }
 
             client.Events.Clear();
-            _tableView = new ThullaTableView(_shell.Show(_shell.Catalog.Table), client, _app.Chat, () => DateTimeOffset.UtcNow.ToUnixTimeMilliseconds(), Leave);
+            _tableView = new ThullaTableView(_shell.Show(_shell.Catalog.Table), client, _app.Chat, () => DateTimeOffset.UtcNow.ToUnixTimeMilliseconds(), Leave, PlayerPrefs.GetInt(ReduceMotionPrefKey, 0) == 1);
             _scheduler = new AnimationScheduler(client.Events, _tableView);
             _view = _tableView;
         }

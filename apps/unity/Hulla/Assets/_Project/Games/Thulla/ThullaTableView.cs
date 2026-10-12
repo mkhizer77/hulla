@@ -39,15 +39,19 @@ namespace Hulla.Games.Thulla
         private readonly VisualElement _chatPanel;
         private readonly Label _mySay;
         private float _mySayLeft;
-        private float _toastLeft;
+        private readonly StampTimeline _stamp = new StampTimeline();
+        private readonly VisualElement _felt;
+        private readonly bool _reduceMotion;
         private long _shownSeconds = -1;
         private bool _voted;
 
         /// <summary>How long a phrase or emote stays on screen.</summary>
         private const float SaySeconds = 3f;
 
-        public ThullaTableView(VisualElement root, TableClient client, IChatCatalog chat, Func<long> nowMs, Action leave)
+        public ThullaTableView(VisualElement root, TableClient client, IChatCatalog chat, Func<long> nowMs, Action leave, bool reduceMotion = false)
         {
+            _reduceMotion = reduceMotion;
+            _felt = root.Q<VisualElement>("felt");
             _client = client;
             _chat = chat;
             _nowMs = nowMs;
@@ -89,7 +93,7 @@ namespace Hulla.Games.Thulla
             switch (message.Payload)
             {
                 case MoveApplied applied when applied.Thulla == true:
-                    ShowToast(UiText.Thulla, ThullaMomentSeconds);
+                    ShowStamp(UiText.Thulla);
                     return ThullaMomentSeconds;
                 case TrickResolved resolved when resolved.ThullaBy != null:
                     return ThullaMomentSeconds;
@@ -122,13 +126,10 @@ namespace Hulla.Games.Thulla
                 }
             }
 
-            if (_toastLeft > 0f)
+            if (_stamp.Active)
             {
-                _toastLeft -= deltaSeconds;
-                if (_toastLeft <= 0f)
-                {
-                    _toast.style.display = DisplayStyle.None;
-                }
+                _stamp.Advance(deltaSeconds);
+                ApplyStamp();
             }
 
             var model = _client.Model;
@@ -213,11 +214,19 @@ namespace Hulla.Games.Thulla
             Refresh();
         }
 
-        private void ShowToast(string text, float seconds)
+        private void ShowStamp(string text)
         {
             _toast.text = text;
-            _toast.style.display = DisplayStyle.Flex;
-            _toastLeft = seconds;
+            _stamp.Play(_reduceMotion);
+            ApplyStamp();
+        }
+
+        private void ApplyStamp()
+        {
+            _toast.style.display = _stamp.Active ? DisplayStyle.Flex : DisplayStyle.None;
+            _toast.style.opacity = _stamp.Opacity;
+            _toast.style.scale = new Scale(new UnityEngine.Vector2(_stamp.Scale, _stamp.Scale));
+            _felt.style.translate = new Translate(_stamp.ShakeX, 0f);
         }
 
         private string NameOf(long seat)
