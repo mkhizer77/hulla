@@ -7,6 +7,7 @@ import {
   thullaMatchSignal,
   thullaMatchTerminate,
 } from "./games/thulla/match";
+import { beforeChannelMessageSend } from "./hooks/before_channel_message";
 import { rpcHello } from "./rpc/hello";
 import { rpcPresetsGet } from "./rpc/presets_get";
 import { rpcTableCreate } from "./rpc/table_create";
@@ -29,6 +30,7 @@ function InitModule(
   initializer.registerRpc("table_join_by_code", rpcTableJoinByCode);
   initializer.registerRpc("presets_get", rpcPresetsGet);
   initializer.registerRpc("voice_token", rpcVoiceToken);
+  initializer.registerRtBefore("ChannelMessageSend", beforeChannelMessageSend);
   initializer.registerMatch("thulla", {
     matchInit: thullaMatchInit,
     matchJoinAttempt: thullaMatchJoinAttempt,

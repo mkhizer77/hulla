@@ -39,12 +39,14 @@ export function fakeRuntime(
 export interface FakeInitializer {
   readonly rpcs: Map<string, nkruntime.RpcFunction>;
   readonly matches: Map<string, nkruntime.MatchHandler>;
+  readonly hooks: Map<string, (...args: unknown[]) => unknown>;
   readonly initializer: nkruntime.Initializer;
 }
 
 export function fakeInitializer(): FakeInitializer {
   const rpcs = new Map<string, nkruntime.RpcFunction>();
   const matches = new Map<string, nkruntime.MatchHandler>();
+  const hooks = new Map<string, (...args: unknown[]) => unknown>();
   const initializer = {
     registerRpc: (id: string, fn: nkruntime.RpcFunction) => {
       rpcs.set(id, fn);
@@ -52,8 +54,11 @@ export function fakeInitializer(): FakeInitializer {
     registerMatch: (name: string, handler: nkruntime.MatchHandler) => {
       matches.set(name, handler);
     },
+    registerRtBefore: (id: string, fn: (...args: unknown[]) => unknown) => {
+      hooks.set(`rtBefore:${id}`, fn);
+    },
   } as unknown as nkruntime.Initializer;
-  return { rpcs, matches, initializer };
+  return { rpcs, matches, hooks, initializer };
 }
 
 export function fakeNk(): nkruntime.Nakama {

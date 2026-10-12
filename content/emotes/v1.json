@@ -1,0 +1,86 @@
+{
+  "schema": "../../tools/content-schemas/emotes.schema.json",
+  "id": "v1",
+  "emotes": [
+    {
+      "id": "thulla_whistle",
+      "name": "emote.thulla_whistle",
+      "throwable": true
+    },
+    {
+      "id": "chai",
+      "name": "emote.chai",
+      "throwable": true
+    },
+    {
+      "id": "turtle",
+      "name": "emote.turtle",
+      "throwable": true
+    },
+    {
+      "id": "donkey",
+      "name": "emote.donkey",
+      "throwable": true
+    },
+    {
+      "id": "clap",
+      "name": "emote.clap",
+      "throwable": false
+    },
+    {
+      "id": "laugh_cry",
+      "name": "emote.laugh_cry",
+      "throwable": false
+    },
+    {
+      "id": "facepalm",
+      "name": "emote.facepalm",
+      "throwable": false
+    },
+    {
+      "id": "mic_drop",
+      "name": "emote.mic_drop",
+      "throwable": false
+    },
+    {
+      "id": "heart",
+      "name": "emote.heart",
+      "throwable": true
+    },
+    {
+      "id": "fire",
+      "name": "emote.fire",
+      "throwable": true
+    },
+    {
+      "id": "ghost",
+      "name": "emote.ghost",
+      "throwable": true
+    },
+    {
+      "id": "six",
+      "name": "emote.six",
+      "throwable": false
+    },
+    {
+      "id": "dhol",
+      "name": "emote.dhol",
+      "throwable": false
+    },
+    {
+      "id": "sunglasses",
+      "name": "emote.sunglasses",
+      "throwable": false
+    },
+    {
+      "id": "sweating",
+      "name": "emote.sweating",
+      "throwable": false
+    },
+    {
+      "id": "sleeping",
+      "name": "emote.sleeping",
+      "throwable": true
+    }
+  ]
+}

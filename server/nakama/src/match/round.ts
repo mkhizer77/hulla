@@ -66,6 +66,8 @@ export function compactSeats<S, M>(state: TableState<S, M>): SeatIndex[] {
       disconnectedTs: null,
       timeouts: 0,
       rematch: null,
+      quickChatTs: 0,
+      emoteTs: 0,
     })),
   ];
   for (const presence of Object.values(state.presences)) {

@@ -7,6 +7,8 @@ import {
   type RuleError,
 } from "@hulla/shared-ts";
 
+import { BUNDLED_CHAT, type ChatContent } from "../content/chat";
+
 import {
   canStart,
   changedRuleKeys,
@@ -67,6 +69,8 @@ export interface TableCoreDeps {
   readonly ids: TableIds;
   readonly persist: Persistence;
   readonly config?: Partial<TableConfig>;
+  /** Phrase and emote ids the table accepts; the bundled content unless a test says otherwise. */
+  readonly chat?: ChatContent;
 }
 
 /**
@@ -121,6 +125,7 @@ export function tableCore<S, M, V, E, R>(
   deps: TableCoreDeps,
 ): TableCore<S, M> {
   const config: TableConfig = { ...DEFAULT_TABLE_CONFIG, ...deps.config };
+  const chat = deps.chat ?? BUNDLED_CHAT;
   const checks = createChecks();
   const round: RoundDeps<S, M, V, E, R> = { host, config, persist: deps.persist };
 
@@ -502,6 +507,50 @@ export function tableCore<S, M, V, E, R>(
         broadcastTableState(state, emit);
         const pending = activeSeats(state.seats).filter((s) => state.seats[s]?.rematch === null);
         if (pending.length === 0) resolveRematch(state, emit, now);
+        return;
+      }
+      case "quick_chat": {
+        if (seat === null || slot === undefined) {
+          reject(ruleError(ErrorCodes.table.notAuthorised));
+          return;
+        }
+        const pack = typeof payload["pack"] === "string" ? payload["pack"] : chat.defaultPack;
+        const phraseId = String(payload["phraseId"]);
+        if (!chat.isPhrase(pack, phraseId)) {
+          reject(ruleError(ErrorCodes.content.packUnknown, { pack, phraseId }));
+          return;
+        }
+        if (now - slot.quickChatTs < config.quickChatCooldownMs) {
+          reject(ruleError(ErrorCodes.network.rateLimited, { kind: "quick_chat" }));
+          return;
+        }
+        slot.quickChatTs = now;
+        emit.public("quick_chat_sent", { seat, phraseId, pack });
+        return;
+      }
+      case "emote": {
+        if (seat === null || slot === undefined) {
+          reject(ruleError(ErrorCodes.table.notAuthorised));
+          return;
+        }
+        const emoteId = String(payload["emoteId"]);
+        if (!chat.isEmote(emoteId)) {
+          reject(ruleError(ErrorCodes.content.packUnknown, { emoteId }));
+          return;
+        }
+        if (now - slot.emoteTs < config.emoteCooldownMs) {
+          reject(ruleError(ErrorCodes.network.rateLimited, { kind: "emote" }));
+          return;
+        }
+        const targetSeat = payload["targetSeat"];
+        const targetSlot = typeof targetSeat === "number" ? state.seats[targetSeat] : undefined;
+        const target =
+          typeof targetSeat === "number" && targetSlot?.playerId != null ? targetSeat : null;
+        slot.emoteTs = now;
+        emit.public(
+          "emote_sent",
+          target === null ? { seat, emoteId } : { seat, emoteId, targetSeat: target },
+        );
         return;
       }
       default:

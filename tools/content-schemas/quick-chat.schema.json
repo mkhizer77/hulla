@@ -1,0 +1,67 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://hulla.gg/schemas/content/quick-chat.json",
+  "title": "A quick-chat pack: phrases with transliteration, translation, tab and auto-suggest context (GDD 11.2, Appendix B)",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema", "id", "locale", "phrases"],
+  "properties": {
+    "schema": { "type": "string", "pattern": "quick-chat\\.schema\\.json$" },
+    "id": { "type": "string", "pattern": "^[a-z0-9]+$" },
+    "locale": { "type": "string", "pattern": "^[a-z]{2}(-[A-Z]{2})?$" },
+    "phrases": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 99,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "roman", "translation", "tab", "context"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^[A-Z][0-9]{2}$" },
+          "roman": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 40,
+            "description": "The phrase as spoken, in Roman script"
+          },
+          "translation": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 60,
+            "description": "English, shown small under the phrase"
+          },
+          "tab": { "type": "string", "enum": ["thulla", "reaction", "courtesy", "taunt", "call"] },
+          "context": {
+            "type": "string",
+            "enum": [
+              "any",
+              "gave_thulla",
+              "received_thulla",
+              "big_pickup",
+              "opponent_high_card",
+              "escaped",
+              "escaped_other",
+              "round_end",
+              "round_end_loser",
+              "good_play",
+              "timeout_self",
+              "reconnect",
+              "away",
+              "leave",
+              "opponent_slow",
+              "opponent_timeout",
+              "opponent_big_hand",
+              "leader_self",
+              "became_leader",
+              "hand_take",
+              "confirmed",
+              "lobby",
+              "lobby_seats_open"
+            ]
+          }
+        }
+      }
+    }
+  }
+}

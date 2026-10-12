@@ -1,0 +1,343 @@
+{
+  "schema": "../../tools/content-schemas/quick-chat.schema.json",
+  "id": "v1",
+  "locale": "en",
+  "phrases": [
+    {
+      "id": "T01",
+      "roman": "THULLA!",
+      "translation": "Thulla!",
+      "tab": "thulla",
+      "context": "gave_thulla"
+    },
+    {
+      "id": "T02",
+      "roman": "Le lo bhai!",
+      "translation": "Take it, brother!",
+      "tab": "thulla",
+      "context": "gave_thulla"
+    },
+    {
+      "id": "T03",
+      "roman": "Pakra gaya!",
+      "translation": "Caught!",
+      "tab": "thulla",
+      "context": "gave_thulla"
+    },
+    {
+      "id": "T04",
+      "roman": "Oye hoye!",
+      "translation": "Oh wow!",
+      "tab": "thulla",
+      "context": "big_pickup"
+    },
+    {
+      "id": "T05",
+      "roman": "Aa gaye line pe",
+      "translation": "Now you're in line",
+      "tab": "thulla",
+      "context": "gave_thulla"
+    },
+    {
+      "id": "T06",
+      "roman": "Ye lo tohfa",
+      "translation": "Here's a gift",
+      "tab": "thulla",
+      "context": "gave_thulla"
+    },
+    {
+      "id": "T07",
+      "roman": "Sambhal ke!",
+      "translation": "Careful!",
+      "tab": "thulla",
+      "context": "opponent_high_card"
+    },
+    {
+      "id": "T08",
+      "roman": "Phansa diya",
+      "translation": "Trapped you",
+      "tab": "thulla",
+      "context": "gave_thulla"
+    },
+    {
+      "id": "T09",
+      "roman": "Haye!",
+      "translation": "Ouch!",
+      "tab": "reaction",
+      "context": "received_thulla"
+    },
+    {
+      "id": "T10",
+      "roman": "Kya kismat hai",
+      "translation": "What luck",
+      "tab": "reaction",
+      "context": "received_thulla"
+    },
+    {
+      "id": "T11",
+      "roman": "Ghalti ho gayi",
+      "translation": "My mistake",
+      "tab": "reaction",
+      "context": "received_thulla"
+    },
+    {
+      "id": "T12",
+      "roman": "Bach gaya!",
+      "translation": "I escaped!",
+      "tab": "reaction",
+      "context": "escaped"
+    },
+    {
+      "id": "T13",
+      "roman": "Mazaa aa gaya",
+      "translation": "That was fun",
+      "tab": "reaction",
+      "context": "round_end"
+    },
+    {
+      "id": "T14",
+      "roman": "Dekh ke khelo",
+      "translation": "Play carefully",
+      "tab": "reaction",
+      "context": "any"
+    },
+    {
+      "id": "T15",
+      "roman": "Chal chal",
+      "translation": "Come on, come on",
+      "tab": "reaction",
+      "context": "any"
+    },
+    {
+      "id": "T16",
+      "roman": "Wah!",
+      "translation": "Wow!",
+      "tab": "reaction",
+      "context": "good_play"
+    },
+    {
+      "id": "T17",
+      "roman": "Shabash",
+      "translation": "Well done",
+      "tab": "courtesy",
+      "context": "escaped_other"
+    },
+    {
+      "id": "T18",
+      "roman": "Zabardast",
+      "translation": "Brilliant",
+      "tab": "courtesy",
+      "context": "good_play"
+    },
+    {
+      "id": "T19",
+      "roman": "Shukriya",
+      "translation": "Thank you",
+      "tab": "courtesy",
+      "context": "any"
+    },
+    {
+      "id": "T20",
+      "roman": "Maaf karna",
+      "translation": "Sorry",
+      "tab": "courtesy",
+      "context": "timeout_self"
+    },
+    {
+      "id": "T21",
+      "roman": "Net slow hai",
+      "translation": "My internet is slow",
+      "tab": "courtesy",
+      "context": "reconnect"
+    },
+    {
+      "id": "T22",
+      "roman": "Ek minute",
+      "translation": "One minute",
+      "tab": "courtesy",
+      "context": "away"
+    },
+    {
+      "id": "T23",
+      "roman": "GG",
+      "translation": "Good game",
+      "tab": "courtesy",
+      "context": "round_end"
+    },
+    {
+      "id": "T24",
+      "roman": "Phir khelte hain",
+      "translation": "Let's play again",
+      "tab": "courtesy",
+      "context": "round_end"
+    },
+    {
+      "id": "T25",
+      "roman": "Khush raho",
+      "translation": "Stay happy",
+      "tab": "courtesy",
+      "context": "leave"
+    },
+    {
+      "id": "T26",
+      "roman": "Jaldi khel!",
+      "translation": "Play quickly!",
+      "tab": "taunt",
+      "context": "opponent_slow"
+    },
+    {
+      "id": "T27",
+      "roman": "Soch mat, khel",
+      "translation": "Don't think, play",
+      "tab": "taunt",
+      "context": "opponent_slow"
+    },
+    {
+      "id": "T28",
+      "roman": "So gaye?",
+      "translation": "Fell asleep?",
+      "tab": "taunt",
+      "context": "opponent_slow"
+    },
+    {
+      "id": "T29",
+      "roman": "Time khatam",
+      "translation": "Time's up",
+      "tab": "taunt",
+      "context": "opponent_timeout"
+    },
+    {
+      "id": "T30",
+      "roman": "Bhabhi ban gaye!",
+      "translation": "You're the Bhabhi!",
+      "tab": "taunt",
+      "context": "round_end_loser"
+    },
+    {
+      "id": "T31",
+      "roman": "Aaj to gaye",
+      "translation": "You're done today",
+      "tab": "taunt",
+      "context": "opponent_big_hand"
+    },
+    {
+      "id": "T32",
+      "roman": "Ghar ja",
+      "translation": "Go home",
+      "tab": "taunt",
+      "context": "opponent_big_hand"
+    },
+    {
+      "id": "T33",
+      "roman": "Haath hila",
+      "translation": "Move your hand",
+      "tab": "taunt",
+      "context": "opponent_slow"
+    },
+    {
+      "id": "T34",
+      "roman": "Itne patte?",
+      "translation": "That many cards?",
+      "tab": "taunt",
+      "context": "opponent_big_hand"
+    },
+    {
+      "id": "T35",
+      "roman": "Darr gaye?",
+      "translation": "Scared?",
+      "tab": "taunt",
+      "context": "any"
+    },
+    {
+      "id": "T36",
+      "roman": "Bas itna hi?",
+      "translation": "That's all?",
+      "tab": "taunt",
+      "context": "any"
+    },
+    {
+      "id": "T37",
+      "roman": "Hukum chalao",
+      "translation": "Play spades",
+      "tab": "call",
+      "context": "leader_self"
+    },
+    {
+      "id": "T38",
+      "roman": "Paan chalao",
+      "translation": "Play hearts",
+      "tab": "call",
+      "context": "leader_self"
+    },
+    {
+      "id": "T39",
+      "roman": "Eent chalao",
+      "translation": "Play diamonds",
+      "tab": "call",
+      "context": "leader_self"
+    },
+    {
+      "id": "T40",
+      "roman": "Chidi chalao",
+      "translation": "Play clubs",
+      "tab": "call",
+      "context": "leader_self"
+    },
+    {
+      "id": "T41",
+      "roman": "Haath mera hai",
+      "translation": "The hand is mine",
+      "tab": "call",
+      "context": "became_leader"
+    },
+    {
+      "id": "T42",
+      "roman": "Haath le raha hoon",
+      "translation": "I'm taking your hand",
+      "tab": "call",
+      "context": "hand_take"
+    },
+    {
+      "id": "T43",
+      "roman": "Bada patta aa raha hai",
+      "translation": "A big card is coming",
+      "tab": "call",
+      "context": "any"
+    },
+    {
+      "id": "T44",
+      "roman": "Pakka Bhabhi",
+      "translation": "Confirmed Bhabhi",
+      "tab": "call",
+      "context": "confirmed"
+    },
+    {
+      "id": "T45",
+      "roman": "Ek aur round?",
+      "translation": "One more round?",
+      "tab": "call",
+      "context": "round_end"
+    },
+    {
+      "id": "T46",
+      "roman": "Rematch!",
+      "translation": "Rematch!",
+      "tab": "call",
+      "context": "round_end"
+    },
+    {
+      "id": "T47",
+      "roman": "Mic on karo",
+      "translation": "Turn on your mic",
+      "tab": "call",
+      "context": "lobby"
+    },
+    {
+      "id": "T48",
+      "roman": "Dost ko bulao",
+      "translation": "Call a friend",
+      "tab": "call",
+      "context": "lobby_seats_open"
+    }
+  ]
+}
