@@ -2,6 +2,7 @@ import { createChecks } from "@hulla/protocol/generated";
 import { ErrorCodes, ruleError, type RuleError } from "@hulla/shared-ts";
 
 import { runtimeFrom, type ServerRuntime } from "../infra/nk";
+import { isUserOnline } from "../services/presence";
 import {
   applyProfileUpdate,
   nkAreFriends,
@@ -106,13 +107,7 @@ function nkDeps(
     userId: ctx.userId ?? null,
     store: nkProfileStore(nk, logger),
     relation: (viewerId, userId) => (nkAreFriends(nk, viewerId, userId) ? "friend" : "other"),
-    isOnline(userId) {
-      try {
-        return nk.usersGetId([userId])[0]?.online === true;
-      } catch {
-        return false;
-      }
-    },
+    isOnline: (userId) => isUserOnline(nk, userId),
     userIdForHandle(handle) {
       try {
         return nk.usersGetUsername([handle])[0]?.userId ?? null;
