@@ -76,7 +76,8 @@ namespace Hulla.Games.Thulla
             bool reduceMotion = false,
             Action? hideRecapForGood = null,
             bool oneTap = false,
-            Action? openSettings = null)
+            Action? openSettings = null,
+            Action<string?>? openRules = null)
         {
             _client = client;
             _chat = chat;
@@ -94,6 +95,7 @@ namespace Hulla.Games.Thulla
             _timer = new TimerRing();
             root.Q<VisualElement>("timer").Add(_timer);
             _hint = root.Q<Label>("hint");
+            _hint.RegisterCallback<ClickEvent>(_ => openRules?.Invoke(ThullaRulebook.WhyNotSection));
             _info = root.Q<Label>("info");
             _takeHand = root.Q<Button>("take-hand");
             _takeHand.text = UiText.TakeHand;
@@ -110,6 +112,10 @@ namespace Hulla.Games.Thulla
             settingsButton.text = UiText.Settings;
             settingsButton.clicked += () => openSettings?.Invoke();
             settingsButton.style.display = openSettings == null ? DisplayStyle.None : DisplayStyle.Flex;
+            var rulesButton = root.Q<Button>("rules");
+            rulesButton.text = RulebookText.Title;
+            rulesButton.clicked += () => openRules?.Invoke(null);
+            rulesButton.style.display = openRules == null ? DisplayStyle.None : DisplayStyle.Flex;
             var leaveButton = root.Q<Button>("leave");
             leaveButton.text = UiText.Leave;
             leaveButton.clicked += leave;

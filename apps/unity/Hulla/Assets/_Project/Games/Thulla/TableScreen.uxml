@@ -2,6 +2,7 @@
     <ui:VisualElement name="table" class="screen table">
         <ui:VisualElement class="table__top">
             <ui:VisualElement class="table__top-actions">
+                <ui:Button name="rules" class="button button--quiet button--small" />
                 <ui:Button name="settings" class="button button--quiet button--small" />
                 <ui:Button name="leave" class="button button--quiet button--small" />
             </ui:VisualElement>

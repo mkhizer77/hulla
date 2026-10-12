@@ -7,6 +7,7 @@ using Hulla.Presentation.Navigation;
 using Hulla.Presentation.Screens.Home;
 using Hulla.Presentation.Screens.Lobby;
 using Hulla.Presentation.Screens.QuickPlay;
+using Hulla.Presentation.Screens.Rulebook;
 using Hulla.Presentation.Screens.Settings;
 using Hulla.Presentation.Theme;
 using Hulla.Application.Settings;
@@ -62,6 +63,7 @@ namespace Hulla.Composition
             try
             {
                 await _app.Chat.LoadAsync(_app.Lifetime);
+                await _app.Presets.LoadAsync(_app.Lifetime);
             }
             catch (OperationCanceledException)
             {
@@ -255,7 +257,7 @@ namespace Hulla.Composition
             }
 
             client.Events.Clear();
-            _tableView = new ThullaTableView(_shell.Show(_shell.Catalog.Table), client, _app.Chat, () => DateTimeOffset.UtcNow.ToUnixTimeMilliseconds(), Leave, openSettings: OpenSettings);
+            _tableView = new ThullaTableView(_shell.Show(_shell.Catalog.Table), client, _app.Chat, () => DateTimeOffset.UtcNow.ToUnixTimeMilliseconds(), Leave, openSettings: OpenSettings, openRules: OpenRules);
             ApplySettings();
             _scheduler = new AnimationScheduler(client.Events, _tableView);
             _view = _tableView;
@@ -268,6 +270,20 @@ namespace Hulla.Composition
         {
             _settingsView?.Dispose();
             _settingsView = new SettingsView(_shell.ShowOverlay(_shell.Catalog.Settings), _app.Settings, CloseSettings);
+        }
+
+        /// <summary>The rulebook opens over the table, so play goes on underneath (GDD 14.11).</summary>
+        private void OpenRules(string? section)
+        {
+            var client = _app.Session?.Table?.Client;
+            if (client == null)
+            {
+                return;
+            }
+
+            CloseSettings();
+            var sections = ThullaRulebook.Build(client.Model, _app.Presets);
+            _ = new RulebookView(_shell.ShowOverlay(_shell.Catalog.Rulebook), RulebookText.Title, sections, _shell.CloseOverlay, section);
         }
 
         private void CloseSettings()
