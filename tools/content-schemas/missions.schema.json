@@ -1,0 +1,52 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://hulla.gg/schemas/content/missions.json",
+  "title": "Missions",
+  "description": "The daily and weekly mission pools (GDD 12.5): three daily missions are drawn per player per local day, five weekly per week; progress comes from round events on the server",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema", "id", "version", "daily", "weekly"],
+  "definitions": {
+    "mission": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "name", "description", "metric", "target", "reward"],
+      "properties": {
+        "id": { "type": "string", "pattern": "^[a-z0-9_]+$" },
+        "name": { "type": "string", "pattern": "^mission\\.[a-z0-9_.]+$" },
+        "description": { "type": "string", "pattern": "^mission\\.[a-z0-9_.]+$" },
+        "metric": {
+          "type": "string",
+          "enum": [
+            "rounds_played",
+            "rounds_with_friend",
+            "escapes",
+            "escaped_first",
+            "thullas_given",
+            "clean_rounds",
+            "low_pickup_rounds",
+            "hands_taken",
+            "series_won",
+            "voice_private"
+          ]
+        },
+        "target": { "type": "integer", "minimum": 1, "maximum": 1000 },
+        "reward": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "coins": { "type": "integer", "minimum": 0, "maximum": 10000 },
+            "gems": { "type": "integer", "minimum": 0, "maximum": 1000 }
+          }
+        }
+      }
+    }
+  },
+  "properties": {
+    "schema": { "type": "string" },
+    "id": { "type": "string", "pattern": "^[a-z0-9-]+$" },
+    "version": { "type": "integer", "minimum": 1 },
+    "daily": { "type": "array", "minItems": 3, "items": { "$ref": "#/definitions/mission" } },
+    "weekly": { "type": "array", "minItems": 5, "items": { "$ref": "#/definitions/mission" } }
+  }
+}

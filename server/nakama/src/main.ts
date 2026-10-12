@@ -36,6 +36,12 @@ import { rpcChatFiltersGet, rpcChatFiltersSet } from "./rpc/chat_filters";
 import { rpcProgressGet, rpcWalletGet } from "./rpc/economy";
 import { rpcHello } from "./rpc/hello";
 import {
+  rpcMissionsClaim,
+  rpcMissionsGet,
+  rpcMissionsReroll,
+  rpcMissionsSet,
+} from "./rpc/missions";
+import {
   rpcAdminChatLogsPurge,
   rpcBlockSet,
   rpcBlocksGet,
@@ -104,6 +110,10 @@ function InitModule(
   initializer.registerRpc("sanctions_get", rpcSanctionsGet);
   initializer.registerRpc("wallet_get", rpcWalletGet);
   initializer.registerRpc("progress_get", rpcProgressGet);
+  initializer.registerRpc("missions_get", rpcMissionsGet);
+  initializer.registerRpc("missions_claim", rpcMissionsClaim);
+  initializer.registerRpc("missions_reroll", rpcMissionsReroll);
+  initializer.registerRpc("missions_set", rpcMissionsSet);
   initializer.registerBeforeAuthenticateDevice(beforeAuthenticateDevice);
   initializer.registerAfterAuthenticateDevice(afterAuthenticateDevice);
   initializer.registerAfterAuthenticateApple(afterAuthenticateApple);

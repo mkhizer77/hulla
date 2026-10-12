@@ -3,6 +3,7 @@ import { ErrorCodes } from "@hulla/shared-ts";
 
 import { ROUND_RESULTS_COLLECTION } from "../services/account_deletion";
 import { credit, nkLedgerPorts } from "../services/ledger";
+import { metricsFromRound, recordMissionMetrics } from "../services/missions";
 import {
   nkFriendIds,
   nkPresenceStore,
@@ -140,6 +141,7 @@ function rewardPlayer(
     if (reward === null) return;
     const applied = applyReward(current, reward, record, record.endedTs);
     progressStore.write(playerId, applied.progress);
+    recordMissionMetrics(nk, playerId, metricsFromRound(record, seat, withFriend), record.endedTs);
     const ledger = nkLedgerPorts(nk);
     const prefix = `${record.tableId}:${record.roundId}`;
     credit(ledger, {

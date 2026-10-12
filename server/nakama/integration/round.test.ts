@@ -273,6 +273,14 @@ describe.skipIf(NAKAMA_HOST === undefined)(
         );
       }
 
+      // Missions moved with the round (GDD 12.5): the weekly round count shows one.
+      const missions = await rpc<{ ok: boolean; weekly: { id: string; progress: number }[] }>(
+        host,
+        "missions_get",
+        { tzOffsetMinutes: 300 },
+      );
+      expect(missions.weekly.find((w) => w.id === "w_rounds_15")?.progress).toBe(1);
+
       // The round replays from its log with the same final hash (ARCHITECTURE 8.11).
       const replayUrl = `http://${NAKAMA_HOST ?? ""}:${NAKAMA_PORT}/v2/rpc/admin_round_replay?http_key=local-only-http-key&unwrap`;
       const replayed = (await (
