@@ -5,7 +5,10 @@ The authoritative rules engines (ADR-0003). Pure and deterministic: no IO, no cl
 ## Layout
 - `src/contract.ts`: the `GameModule` contract every game implements and the table core consumes (ARCHITECTURE §7.1).
 - `src/card-kit/`: cards as two-character codes (`AS`, `TH`, `2C`), the canonical order used for hashing (♠ ♥ ♣ ♦, 2 low to A high), the deck, clockwise dealing and seat arithmetic.
-- `src/thulla/`: the Thulla module. `rules.ts` holds the toggles of GDD §6.13 that change legality or outcomes, their defaults per mode, the presets and the JSON Schema; `state.ts` the immutable round state; `deal.ts` the seeded deal with the fair-deal commitment (R6).
+- `src/thulla/`: the Thulla module. `rules.ts` holds the toggles of GDD §6.13 that change legality or outcomes, their defaults per mode, the presets and the JSON Schema; `state.ts` the immutable round state; `deal.ts` the seeded deal with the fair-deal commitment (R6); `engine.ts` `legalMoves` and the total `applyMove` that share one validation path; `trick.ts` trick resolution following GDD §6.14 (pick-up or discard, escapes before any draw, the empty-hand draws, the endgame draw from the opponent); `hand-take.ts` R31 to R36; `events.ts` the event union clients render, with `private_draw` naming who may see the card.
+
+## Moves and events
+A seat sends `play_card` or `take_hand`. A move is legal exactly when `applyMove` accepts it; a property test replays random rounds under every toggle and checks that for every seat and every card at every step. Failures are `RuleError`s from the catalogue, never throws (R47). Each accepted move yields events in order: `card_played`, then on resolution `trick_resolved`, any `escape`, a `private_draw`, `endgame_started` and finally `round_ended`.
 
 ## The fair deal
 `createThullaRound` shuffles with the `Rng` the table core derived from the round seed, then publishes `commitment = SHA-256(seed ‖ canonicalJson(deckOrder))`. The seed stays server-only until the round ends; any client can then recompute the hash from the revealed seed and the dealt deck.

@@ -19,6 +19,7 @@ export const ErrorCodes = {
     roundOver: "rules.round_over",
     invalidRules: "rules.invalid_rules",
     invalidSeatCount: "rules.invalid_seat_count",
+    invalidSeat: "rules.invalid_seat",
   },
   table: {
     full: "table.full",

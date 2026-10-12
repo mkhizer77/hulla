@@ -13,15 +13,16 @@ Pre-production. Design and architecture complete; no application code yet.
 - CI on GitHub: `detect` decides which parts exist, `ci` is the single required check, `release-android` calls `ci`, `nightly` runs the 10,000-round equivalence harness, secret scanning, Dependabot and CODEOWNERS in place, LFS cached, deploys pinned by commit SHA.
 - Execution plan (`docs/EXECUTION_PLAN.md`): ten phases on GitHub milestones, 133 issues in execution order, design and asset track, web client after v1.0, two UI/UX passes.
 - Audit of design, architecture and tech decisions (11 Oct): rule gaps logged as OQ-001 to OQ-006 with interim choices, document drift fixed, owner tickets #130 to #133 added, decisions below.
+- M0 #1, #3 and #4 merged (12 Oct): workspace and tooling, `@hulla/shared-ts`, the Thulla contract, card kit, rules schema, state and seeded deal.
 - 12 Oct: the GDD is removed from the tracked tree and git-ignored; public documents cite it as a private document; README trimmed to an intro.
 - 12 Oct: voice stays on Agora (O19 decided); billed minutes are cut by joining the channel on demand and leaving after silence.
 - 12 Oct decisions: C# mirror deferred past v1.0 (ADR-0019), no clock in engines (ADR-0020), JSON Schema draft-07 (ADR-0021), one deck and 3–6 seats until v1.2, web client before Rung (M5 → web → Rung → M6, dates in the execution plan), Facebook login stays, Unity stays on 6000.4.9f1.
 
 ## Doing
-- M0 #1 and #3 are in pull requests #135 (stacked on the audit PR #134). #4, the Thulla rules schema, presets, state and seeded deal with the fair-deal commitment, is built and green locally on `feat/thulla-engine-deal`, stacked on #135.
+- M0 #5: opening trick, normal tricks, thulla, pick-up, escaping, the empty-hand draws and hand-taking, with the minimal two-player draw so random playouts complete. 118 tests across both packages, every R-id and E-id of GDD §6.5 to §6.8 named in a test, property tests for legal-move agreement, termination and card conservation.
 
 ## Next
-Work the M0 milestone issue by issue, starting with #1 (pnpm workspace and root tooling). Order and dependencies are in each issue; the map is `docs/EXECUTION_PLAN.md`, the brief is `docs/milestones/M0.md`. Merge #134 then #135 when `ci` is green, rebase the stacked branches, then #5: opening trick, normal tricks, thulla, pick-up and hand-taking.
+Work the M0 milestone issue by issue, starting with #1 (pnpm workspace and root tooling). Order and dependencies are in each issue; the map is `docs/EXECUTION_PLAN.md`, the brief is `docs/milestones/M0.md`. #6: the forced-outcome search for 12 or fewer cards, confirmed fast-forward, the endgame toggles and exhaustive small-endgame tests; then #7 redaction, auto-play, results and series.
 
 ## Blockers
 - None.

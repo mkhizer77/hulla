@@ -9,9 +9,8 @@ export const THULLA_SEATS: SeatSpec = { min: 3, max: 6 };
 export type ThullaPhase = "opening" | "play" | "ended";
 
 /*
- * State types are aliases, not interfaces, so the whole state is a `JsonValue` and `stateHash`
- * can take it directly. Everything is readonly; moves return new objects (ARCHITECTURE 2.3).
- * Absent values are `null`, never `undefined`, so canonical JSON is stable.
+ * Everything is readonly; moves return new objects (ARCHITECTURE 2.3). Absent values are `null`,
+ * never `undefined`, so canonical JSON is stable; `stateHash` accepts these interfaces directly.
  */
 
 export interface SeatState {
@@ -21,6 +20,21 @@ export interface SeatState {
   /** 1 for the first escape, and so on; null while active (R11, R25). */
   readonly escapeRank: number | null;
 }
+
+/** Per-seat counters for the results screen and stats (R49). */
+export interface SeatStats {
+  readonly thullasGiven: number;
+  readonly thullasReceived: number;
+  readonly cardsPickedUp: number;
+  readonly handsTaken: number;
+}
+
+export const EMPTY_STATS: SeatStats = {
+  thullasGiven: 0,
+  thullasReceived: 0,
+  cardsPickedUp: 0,
+  handsTaken: 0,
+};
 
 export interface TrickState {
   readonly ledSuit: Suit | null;
@@ -44,6 +58,11 @@ export interface ThullaState {
   readonly discard: readonly Card[];
   /** Seats still to respond in the simultaneous opening trick (R13). */
   readonly openingPending: readonly SeatIndex[];
+  /** One take per pre-lead window (R35); reset every trick. */
+  readonly handTakeUsed: boolean;
+  /** The leader just drew a card and must lead it; nothing else is legal (R26, R38). */
+  readonly pendingAutoLead: boolean;
+  readonly stats: readonly SeatStats[];
   readonly escapeOrder: readonly SeatIndex[];
   readonly bhabhiSeat: SeatIndex | null;
   /** Public before the deal: SHA-256(seed ‖ canonicalJson(deckOrder)) (R6). */
@@ -51,6 +70,34 @@ export interface ThullaState {
   /** Server-only until the round ends, then revealed so clients verify the commitment (R6). */
   readonly seedHex: string;
   readonly deckOrder: readonly Card[];
+}
+
+export const EMPTY_TRICK: TrickState = { ledSuit: null, plays: [], thullaBy: null };
+
+export function withSeat(
+  seats: readonly SeatState[],
+  seat: SeatIndex,
+  update: (current: SeatState) => SeatState,
+): SeatState[] {
+  return seats.map((current, index) => (index === seat ? update(current) : current));
+}
+
+export function withStats(
+  stats: readonly SeatStats[],
+  seat: SeatIndex,
+  update: (current: SeatStats) => SeatStats,
+): SeatStats[] {
+  return stats.map((current, index) => (index === seat ? update(current) : current));
+}
+
+/** R25: the seat leaves the turn order with the next escape rank. */
+export function markEscaped(state: ThullaState, seat: SeatIndex): ThullaState {
+  const escapeRank = state.escapeOrder.length + 1;
+  return {
+    ...state,
+    seats: withSeat(state.seats, seat, (current) => ({ ...current, escaped: true, escapeRank })),
+    escapeOrder: [...state.escapeOrder, seat],
+  };
 }
 
 export function activeSeats(state: ThullaState): SeatIndex[] {
