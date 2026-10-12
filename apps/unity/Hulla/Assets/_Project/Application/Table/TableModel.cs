@@ -388,8 +388,36 @@ namespace Hulla.Application.Table
             TurnSeat = resolved.NextLeader;
         }
 
+        /// <summary>
+        /// A card drawn by a player with the hand but no cards (R26, R28, R38). The drawer and, for a draw
+        /// from a hand, the player drawn from both see it: the card leaves one hand and joins the other.
+        /// </summary>
         private void ApplyPrivateDraw(PrivateDraw draw)
         {
+            var drawer = (int)draw.Seat;
+            if (drawer < _handCounts.Length)
+            {
+                _handCounts[drawer]++;
+            }
+
+            if (draw.From != null)
+            {
+                var from = (int)draw.From.Value;
+                if (from < _handCounts.Length && _handCounts[from] > 0)
+                {
+                    _handCounts[from]--;
+                }
+
+                if (draw.From == MySeat)
+                {
+                    _hand.Remove(draw.Card);
+                }
+            }
+            else if (draw.Source == Source.Discard && DiscardCount > 0)
+            {
+                DiscardCount--;
+            }
+
             if (draw.Seat == MySeat)
             {
                 _hand.Add(draw.Card);

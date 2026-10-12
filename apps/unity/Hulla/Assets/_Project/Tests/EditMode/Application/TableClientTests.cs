@@ -162,6 +162,25 @@ namespace Hulla.Application.Tests
         }
 
         [Test]
+        public void R38_ACardDrawnFromMyHandLeavesIt()
+        {
+            _gateway.Deliver(Messages.TableState(5, new[] { "4H", "JC" }, seats: 2));
+            _gateway.Deliver(new Services.ServerMessage(MessageTypes.PrivateDraw, 5, new PrivateDraw { RoundId = "r1", Seat = 1, Card = "JC", Source = Source.Opponent, From = 0, AutoLead = true }));
+            CollectionAssert.AreEqual(new[] { "4H" }, _client.Model.Hand);
+            Assert.AreEqual(1, _client.Model.HandCount(0));
+            Assert.AreEqual(14, _client.Model.HandCount(1));
+        }
+
+        [Test]
+        public void R26_ACardIDrawFromTheDiscardJoinsMyHand()
+        {
+            _gateway.Deliver(Messages.TableState(5, new string[0]));
+            _gateway.Deliver(new Services.ServerMessage(MessageTypes.PrivateDraw, 5, new PrivateDraw { RoundId = "r1", Seat = 0, Card = "9S", Source = Source.Discard, AutoLead = true }));
+            CollectionAssert.AreEqual(new[] { "9S" }, _client.Model.Hand);
+            Assert.AreEqual(1, _client.Model.HandCount(0));
+        }
+
+        [Test]
         public void AppliedMessagesJoinTheEventQueue()
         {
             _gateway.Deliver(Messages.TableState(5, new[] { "AS" }));
