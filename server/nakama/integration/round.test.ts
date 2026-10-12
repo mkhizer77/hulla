@@ -49,7 +49,9 @@ describe.skipIf(NAKAMA_HOST === undefined)(
       for (const c of clients)
         await c.send(matchId, "ready", OPCODES.ready.opcode, { ready: true });
       await host.next(
-        (e) => e.type === "table_state" && (e.payload as TableState).seats.every((s) => s.ready),
+        (e) =>
+          e.type === "table_state" &&
+          (e.payload as TableState).seats.filter((s) => s.playerId !== null).every((s) => s.ready),
       );
       await host.send(matchId, "start_round", OPCODES.start_round.opcode, {});
 
