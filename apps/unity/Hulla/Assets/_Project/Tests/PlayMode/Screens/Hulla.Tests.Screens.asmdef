@@ -1,0 +1,26 @@
+{
+    "name": "Hulla.Tests.Screens",
+    "rootNamespace": "Hulla.Screens.Tests",
+    "references": [
+        "Hulla.Application",
+        "Hulla.Domain",
+        "Hulla.Protocol",
+        "Hulla.Presentation",
+        "Hulla.Games.Thulla",
+        "UnityEngine.TestRunner",
+        "UnityEditor.TestRunner"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": true,
+    "precompiledReferences": [
+        "nunit.framework.dll"
+    ],
+    "autoReferenced": false,
+    "defineConstraints": [
+        "UNITY_INCLUDE_TESTS"
+    ],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
