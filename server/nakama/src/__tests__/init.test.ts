@@ -33,6 +33,8 @@ describe("InitModule", () => {
       "account_delete_cancel",
       "account_export",
       "admin_purge_deleted",
+      "account_merge_prepare",
+      "account_merge",
     ]);
     expect([...matches.keys()]).toEqual(["thulla"]);
     expect(hooks.get("rtBefore:ChannelMessageSend")?.name).toBe("beforeChannelMessageSend");

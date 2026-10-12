@@ -630,6 +630,16 @@ export function tableCore<S, M, V, E, R>(
       }
       const own = state.seats.findIndex((slot) => slot.playerId === presence.userId);
       if (own !== -1) {
+        // One active table session per account (GDD 10.2): a live session is only replaced by a
+        // client that proves it held the seat with the resume token; another device is refused.
+        const slot = state.seats[own];
+        const live =
+          slot?.sessionId !== null &&
+          slot?.sessionId !== undefined &&
+          state.presences[slot.sessionId] !== undefined;
+        if (live && parsed.data.resumeToken !== slot.resumeToken) {
+          return { accept: false, code: ErrorCodes.auth.deviceLimit };
+        }
         state.admissions[presence.sessionId] = { kind: "seat", seat: own, reattach: true };
         return { accept: true };
       }

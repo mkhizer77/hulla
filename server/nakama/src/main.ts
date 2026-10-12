@@ -22,6 +22,7 @@ import {
   rpcAccountExport,
   rpcAdminPurgeDeleted,
 } from "./rpc/account";
+import { rpcAccountMerge, rpcAccountMergePrepare } from "./rpc/account_merge";
 import { rpcHello } from "./rpc/hello";
 import { rpcPresetsGet } from "./rpc/presets_get";
 import { rpcProfileGet, rpcProfileUpdate } from "./rpc/profile";
@@ -53,6 +54,8 @@ function InitModule(
   initializer.registerRpc("account_delete_cancel", rpcAccountDeleteCancel);
   initializer.registerRpc("account_export", rpcAccountExport);
   initializer.registerRpc("admin_purge_deleted", rpcAdminPurgeDeleted);
+  initializer.registerRpc("account_merge_prepare", rpcAccountMergePrepare);
+  initializer.registerRpc("account_merge", rpcAccountMerge);
   initializer.registerAfterAuthenticateDevice(afterAuthenticateDevice);
   initializer.registerAfterAuthenticateApple(afterAuthenticateApple);
   initializer.registerAfterAuthenticateGoogle(afterAuthenticateGoogle);

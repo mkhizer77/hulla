@@ -40,6 +40,7 @@ export const ErrorCodes = {
     sessionExpired: "auth.session_expired",
     notLinked: "auth.not_linked",
     deviceLimit: "auth.device_limit",
+    mergeCodeInvalid: "auth.merge_code_invalid",
   },
   economy: {
     insufficientFunds: "economy.insufficient_funds",
