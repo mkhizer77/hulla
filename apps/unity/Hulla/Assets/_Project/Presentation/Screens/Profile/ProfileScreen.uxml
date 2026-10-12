@@ -1,0 +1,23 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements">
+    <ui:VisualElement name="profile" class="screen settings">
+        <ui:VisualElement class="settings__top">
+            <ui:Label name="title" class="title title--small" />
+            <ui:Button name="back" class="button button--quiet button--small" />
+        </ui:VisualElement>
+        <ui:ScrollView class="settings__scroll">
+            <ui:VisualElement class="panel code-box">
+                <ui:Label name="code-label" class="caption" />
+                <ui:Label name="code" class="code" />
+                <ui:Button name="copy" class="button button--small" />
+            </ui:VisualElement>
+            <ui:Label name="stats" class="status" />
+            <ui:VisualElement class="panel">
+                <ui:TextField name="name" class="field" />
+                <ui:TextField name="handle" class="field" />
+                <ui:TextField name="bio" class="field" />
+                <ui:Button name="save" class="button button--primary" />
+                <ui:Label name="status" class="status" />
+            </ui:VisualElement>
+        </ui:ScrollView>
+    </ui:VisualElement>
+</ui:UXML>

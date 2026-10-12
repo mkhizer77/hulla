@@ -124,6 +124,7 @@ namespace Hulla.Integration.Tests
             }
 
             await WaitFor(() => Seated(_players[0]) == 3, 20f, "three seats taken");
+            await WaitFor(() => _players.TrueForAll(pl => pl.Client!.Model.Code.Length > 0), 10f, "every client got its table_state");
             foreach (var player in _players)
             {
                 Assert.AreEqual(code, player.Client!.Model.Code);
