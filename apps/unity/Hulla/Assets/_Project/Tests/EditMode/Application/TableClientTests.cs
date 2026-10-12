@@ -181,6 +181,16 @@ namespace Hulla.Application.Tests
         }
 
         [Test]
+        public void R20_AfterAThullaNobodyHasTheTurnUntilTheTrickResolves()
+        {
+            _gateway.Deliver(Messages.TableState(5, new[] { "AS" }));
+            _gateway.Deliver(new Services.ServerMessage(MessageTypes.MoveApplied, 6, new MoveApplied { RoundId = "r1", Seat = 2, Move = new Move { Type = TypeEnum.PlayCard, Card = "7C" }, TrickIndex = 0, Thulla = true }));
+            Assert.IsNull(_client.Model.TurnSeat);
+            _gateway.Deliver(Messages.TrickResolved(7, 1, 1, 1, 13, 12, 13));
+            Assert.AreEqual(1, _client.Model.TurnSeat);
+        }
+
+        [Test]
         public void AppliedMessagesJoinTheEventQueue()
         {
             _gateway.Deliver(Messages.TableState(5, new[] { "AS" }));

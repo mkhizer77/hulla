@@ -67,6 +67,39 @@ namespace Hulla.Presentation.Navigation
 
         public void CloseOverlay() => Root.Q("shell-overlay")?.RemoveFromHierarchy();
 
+        /// <summary>A question with two answers over the current screen; either answer closes it.</summary>
+        public void ShowDialog(string question, string yes, string no, Action onYes, Action onNo)
+        {
+            CloseOverlay();
+            var overlay = new VisualElement { name = "shell-overlay" };
+            overlay.AddToClassList("overlay");
+            overlay.AddToClassList("results");
+            overlay.style.display = DisplayStyle.Flex;
+            var panel = new VisualElement();
+            panel.AddToClassList("panel");
+            var title = new Label(question);
+            title.AddToClassList("title");
+            title.AddToClassList("title--small");
+            panel.Add(title);
+            var yesButton = new Button(() =>
+            {
+                CloseOverlay();
+                onYes();
+            }) { text = yes };
+            yesButton.AddToClassList("button");
+            yesButton.AddToClassList("button--primary");
+            var noButton = new Button(() =>
+            {
+                CloseOverlay();
+                onNo();
+            }) { text = no };
+            noButton.AddToClassList("button");
+            panel.Add(yesButton);
+            panel.Add(noButton);
+            overlay.Add(panel);
+            Root.Add(overlay);
+        }
+
         /// <summary>A strip across the top of whatever screen is showing; null hides it.</summary>
         public void SetBanner(string? text)
         {

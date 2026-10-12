@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using Hulla.Application.Services;
 using Hulla.Application.Table;
+using Hulla.Application.Tutorial;
 using Hulla.Domain;
 using Hulla.Games.Thulla;
 using Hulla.Presentation.Navigation;
@@ -52,6 +53,11 @@ namespace Hulla.Composition
         private SettingsView? _settingsView;
         private LobbyView? _lobbyView;
         private string _friendsForRound = "";
+        private ScriptedTableGateway? _tutorial;
+        private TableClient? _tutorialClient;
+
+        /// <summary>1 once the player has answered "Do you know Bhabhi?" or finished the tutorial.</summary>
+        private const string TutorialSeenPrefKey = "hulla.tutorial_seen";
 
         public AppFlow(AppScope app, ShellView shell)
         {
@@ -69,6 +75,10 @@ namespace Hulla.Composition
             ApplySettings();
             _app.Home.LastName = PlayerPrefs.GetString(NamePrefKey, "");
             ShowHome();
+            if (PlayerPrefs.GetInt(TutorialSeenPrefKey, 0) == 0 && _app.Home.LastName.Length == 0)
+            {
+                _shell.ShowDialog(TutorialText.Gate, TutorialText.GateYes, TutorialText.GateNo, OfferRefresher, () => StartTutorial(false));
+            }
             if (_app.Home.LastName.Length > 0)
             {
                 SignInQuietly();
@@ -99,7 +109,7 @@ namespace Hulla.Composition
             _screen = Screen.Home;
             var root = _shell.Show(_shell.Catalog.Home);
             var server = Debug.isDebugBuild ? _app.Config.HostAndPort : null;
-            _view = new HomeView(root, _app.Home, server, OnCreate, OnJoin, OnQuickPlay, OpenSettings, OnFriends, OnProfile, _app.HomeFriends);
+            _view = new HomeView(root, _app.Home, server, OnCreate, OnJoin, OnQuickPlay, OpenSettings, OnFriends, OnProfile, _app.HomeFriends, () => StartTutorial(false), TutorialText.HowToPlay);
             _app.HomeFriends.Active = _app.Sessions.Current != null;
             _app.HomeFriends.RefreshSoon();
         }
@@ -437,15 +447,77 @@ namespace Hulla.Composition
         private void Tick(float deltaSeconds)
         {
             _app.QuickPlay.Tick(deltaSeconds);
+            _tutorial?.Tick(deltaSeconds);
             _app.HomeFriends.Tick(deltaSeconds, _app.Lifetime);
             _lobbyView?.Tick();
             _scheduler?.Tick(deltaSeconds);
             _tableView?.Tick(deltaSeconds);
         }
 
+        /// <summary>"Yes" to the gate skips to Home with a short refresher offer (GDD 17.2).</summary>
+        private void OfferRefresher()
+        {
+            MarkTutorialSeen();
+            _shell.ShowDialog(TutorialText.Refresher + "?", TutorialText.Next, TutorialText.Skip, () => StartTutorial(true), () => { });
+        }
+
+        /// <summary>The scripted mini-hands through the normal table (GDD 17.3); the refresher is the thulla steps only.</summary>
+        private void StartTutorial(bool refresher)
+        {
+            CloseView();
+            _screen = Screen.Table;
+            var steps = ThullaTutorial.Steps();
+            var chosen = refresher ? new[] { steps[1], steps[2] } : steps;
+            var gateway = new ScriptedTableGateway(chosen, () => DateTimeOffset.UtcNow.ToUnixTimeMilliseconds(), TutorialText.HowToPlay);
+            var client = new TableClient(gateway, new TableTicket("tutorial", "", ""), "me", 1);
+            var view = new ThullaTableView(_shell.Show(_shell.Catalog.Table), client, _app.Chat, () => DateTimeOffset.UtcNow.ToUnixTimeMilliseconds(), EndTutorial);
+            var settings = _app.Settings;
+            view.ApplySettings(settings.OneTapPlay, settings.ReduceMotion, settings.LargeCards, settings.Haptics, null);
+            view.CardRefused += _ => gateway.WrongTap();
+            gateway.CoachSaid += text => view.ShowCoach(text);
+            gateway.StepFinished += (id, outcome, seconds) =>
+            {
+                // The ftue_step event (GDD 17.6); the analytics pipeline (#71) will send it.
+                Debug.Log($"[ftue] ftue_step step={id} outcome={outcome} duration={seconds:0.0}");
+                if (gateway.HasNextStep)
+                {
+                    view.ShowCoach(gateway.DoneText, TutorialText.Next, () =>
+                    {
+                        view.HideCoach();
+                        gateway.BeginNextStep();
+                    });
+                }
+                else
+                {
+                    view.ShowCoach(gateway.DoneText, TutorialText.Finish, EndTutorial);
+                }
+            };
+            _tutorial = gateway;
+            _tutorialClient = client;
+            _tableView = view;
+            _scheduler = new AnimationScheduler(client.Events, view);
+            _view = view;
+            gateway.BeginNextStep();
+        }
+
+        private void EndTutorial()
+        {
+            MarkTutorialSeen();
+            ShowHome();
+        }
+
+        private static void MarkTutorialSeen()
+        {
+            PlayerPrefs.SetInt(TutorialSeenPrefKey, 1);
+            PlayerPrefs.Save();
+        }
+
         private void CloseView()
         {
             _app.HomeFriends.Active = false;
+            _tutorialClient?.Dispose();
+            _tutorialClient = null;
+            _tutorial = null;
             _view?.Dispose();
             _view = null;
             _tableView = null;

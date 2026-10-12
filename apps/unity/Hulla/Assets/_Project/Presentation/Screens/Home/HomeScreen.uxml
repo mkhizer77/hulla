@@ -18,6 +18,7 @@
         <ui:Label name="status" class="status" />
         <ui:TextField name="server" class="field field--dev" />
         <ui:VisualElement class="home__links">
+            <ui:Button name="how-to-play" class="button button--quiet" />
             <ui:Button name="friends" class="button button--quiet" />
             <ui:Button name="profile" class="button button--quiet" />
             <ui:Button name="settings" class="button button--quiet" />

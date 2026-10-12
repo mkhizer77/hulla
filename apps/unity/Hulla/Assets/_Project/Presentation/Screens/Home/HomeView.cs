@@ -24,8 +24,12 @@ namespace Hulla.Presentation.Screens.Home
         private readonly Button _quick;
         private int _seats = 4;
 
-        public HomeView(VisualElement root, HomeViewModel model, string? server, Action<string, string?> create, Action<string, string, string?> join, Action<string, int, string?> quickPlay, Action? openSettings = null, Action<string, string?>? openFriends = null, Action<string, string?>? openProfile = null, HomeFriendsViewModel? friendsOnline = null)
+        public HomeView(VisualElement root, HomeViewModel model, string? server, Action<string, string?> create, Action<string, string, string?> join, Action<string, int, string?> quickPlay, Action? openSettings = null, Action<string, string?>? openFriends = null, Action<string, string?>? openProfile = null, HomeFriendsViewModel? friendsOnline = null, Action? howToPlay = null, string? howToPlayText = null)
         {
+            var how = root.Q<Button>("how-to-play");
+            how.text = howToPlayText ?? "";
+            how.clicked += () => howToPlay?.Invoke();
+            how.style.display = howToPlay == null ? DisplayStyle.None : DisplayStyle.Flex;
             _friendsOnline = friendsOnline;
             _hero = root.Q<Button>("hero");
             _online = root.Q<Label>("online");
