@@ -2,6 +2,8 @@ import { Client } from "@heroiclabs/nakama-js";
 import { OPCODES, type TableState } from "@hulla/protocol/generated";
 import { afterAll, describe, expect, it } from "vitest";
 
+import { BUNDLED_FILTERS } from "../src/content/filters";
+
 import {
   NAKAMA_HOST,
   NAKAMA_PORT,
@@ -106,6 +108,77 @@ describe.skipIf(NAKAMA_HOST === undefined)(
       await expect(
         other.socket.writeChatMessage(otherChannel.id, { text: "see https://example.com" }),
       ).rejects.toBeDefined();
+
+      // The profanity filter masks in Standard rooms, in English and Roman Urdu (GDD 11.1).
+      const masked = new Promise<string>((resolve) => {
+        other.socket.onchannelmessage = (m) => {
+          resolve(JSON.stringify(m.content));
+        };
+      });
+      await new Promise((r) => setTimeout(r, 2_100));
+      await host.socket.writeChatMessage(channel.id, { text: "ye to sh1t hai, bhenchod" });
+      expect(await masked).toContain("ye to **** hai, ********");
+
+      // The lists reload without a restart: a word uploaded through the admin RPC is masked at once.
+      const reloaded = new Promise<string>((resolve) => {
+        other.socket.onchannelmessage = (m) => {
+          resolve(JSON.stringify(m.content));
+        };
+      });
+      const url = `http://${NAKAMA_HOST ?? ""}:${NAKAMA_PORT}/v2/rpc/chat_filters_set?http_key=local-only-http-key&unwrap`;
+      const upload = await fetch(url, {
+        method: "POST",
+        body: JSON.stringify({
+          id: "test-lists",
+          version: 99,
+          languages: [{ lang: "en", words: ["shit", "zorblat"] }],
+        }),
+      });
+      expect(await upload.json()).toMatchObject({ ok: true, version: 99 });
+      await new Promise((r) => setTimeout(r, 2_100));
+      await host.socket.writeChatMessage(channel.id, { text: "zorblat is new" });
+      expect(await reloaded).toContain("******* is new");
+      const restore = await fetch(url, {
+        method: "POST",
+        body: JSON.stringify(BUNDLED_FILTERS),
+      });
+      expect(await restore.json()).toMatchObject({ ok: true });
+
+      // Mutes follow the account: the list is read back on any device.
+      expect(
+        await rpc<object>(host, "mute_set", { userId: other.session.user_id, muted: true }),
+      ).toEqual({
+        ok: true,
+        mutes: [other.session.user_id],
+      });
+      expect(await rpc<object>(host, "mutes_get", {})).toEqual({
+        ok: true,
+        mutes: [other.session.user_id],
+      });
     }, 90_000);
+
+    it("a guest cannot free-text at a public table, and can once the account is linked", async () => {
+      const suffix = `${String(Date.now())}g`;
+      const guest = await scriptedClient("guest", suffix);
+      const peer = await scriptedClient("peer", suffix);
+      clients.push(guest, peer);
+      const created = await rpc<Created>(guest, "table_create", {
+        gameId: "thulla",
+        mode: "public",
+      });
+      await guest.socket.joinMatch(created.matchId);
+      await peer.socket.joinMatch(created.matchId);
+      const channel = await guest.socket.joinChat(created.matchId, ROOM, false, false);
+      await peer.socket.joinChat(created.matchId, ROOM, false, false);
+      await expect(
+        guest.socket.writeChatMessage(channel.id, { text: "hello strangers" }),
+      ).rejects.toBeDefined();
+      const api = new Client(SERVER_KEY, NAKAMA_HOST ?? "", NAKAMA_PORT, false);
+      await api.linkEmail(guest.session, {
+        email: `guest-${suffix}@example.com`,
+        password: "a-long-test-password",
+      });
+      await guest.socket.writeChatMessage(channel.id, { text: "hello friends" });
+    }, 60_000);
   },
 );

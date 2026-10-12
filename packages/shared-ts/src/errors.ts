@@ -55,6 +55,7 @@ export const ErrorCodes = {
     manifestDowngrade: "content.manifest_downgrade",
     packUnknown: "content.pack_unknown",
     schemaInvalid: "content.schema_invalid",
+    filtered: "content.filtered",
   },
   network: {
     disconnected: "network.disconnected",

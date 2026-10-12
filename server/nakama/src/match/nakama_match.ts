@@ -118,6 +118,7 @@ export function labelFor<S, M>(
     code: state.code,
     gameId: state.gameId,
     mode: state.mode,
+    preset: state.rules.preset ?? null,
     status,
     seated: occupiedSeats(state.seats).length,
     open:

@@ -23,11 +23,18 @@ import {
   rpcAdminPurgeDeleted,
 } from "./rpc/account";
 import { rpcAccountMerge, rpcAccountMergePrepare } from "./rpc/account_merge";
+import { rpcChatFiltersGet, rpcChatFiltersSet } from "./rpc/chat_filters";
 import { rpcHello } from "./rpc/hello";
 import { rpcPresenceSet, rpcTableListFriends } from "./rpc/presence";
 import { rpcPresetsGet } from "./rpc/presets_get";
 import { rpcProfileGet, rpcProfileUpdate } from "./rpc/profile";
-import { rpcFavouriteSet, rpcFriendAddByCode, rpcSocialOverview } from "./rpc/social";
+import {
+  rpcFavouriteSet,
+  rpcFriendAddByCode,
+  rpcMuteSet,
+  rpcMutesGet,
+  rpcSocialOverview,
+} from "./rpc/social";
 import { rpcTableCreate } from "./rpc/table_create";
 import { rpcTableJoinByCode } from "./rpc/table_join_by_code";
 import { rpcVoiceToken } from "./rpc/voice_token";
@@ -63,6 +70,10 @@ function InitModule(
   initializer.registerRpc("social_overview", rpcSocialOverview);
   initializer.registerRpc("table_list_friends", rpcTableListFriends);
   initializer.registerRpc("presence_set", rpcPresenceSet);
+  initializer.registerRpc("mute_set", rpcMuteSet);
+  initializer.registerRpc("mutes_get", rpcMutesGet);
+  initializer.registerRpc("chat_filters_get", rpcChatFiltersGet);
+  initializer.registerRpc("chat_filters_set", rpcChatFiltersSet);
   initializer.registerAfterAuthenticateDevice(afterAuthenticateDevice);
   initializer.registerAfterAuthenticateApple(afterAuthenticateApple);
   initializer.registerAfterAuthenticateGoogle(afterAuthenticateGoogle);

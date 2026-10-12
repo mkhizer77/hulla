@@ -1,0 +1,79 @@
+{
+  "schema": "../../tools/content-schemas/chat-filters.schema.json",
+  "id": "chat-filters-v1",
+  "version": 1,
+  "languages": [
+    {
+      "lang": "en",
+      "words": [
+        "fuck",
+        "fucker",
+        "fucking",
+        "motherfucker",
+        "shit",
+        "bullshit",
+        "bitch",
+        "asshole",
+        "bastard",
+        "cunt",
+        "dick",
+        "wanker",
+        "slut",
+        "whore",
+        "retard"
+      ]
+    },
+    {
+      "lang": "ur-Latn",
+      "words": [
+        "bhenchod",
+        "behenchod",
+        "bhenchood",
+        "madarchod",
+        "maderchod",
+        "chutiya",
+        "chutiye",
+        "gandu",
+        "gaandu",
+        "harami",
+        "haramzada",
+        "haramzadi",
+        "randi",
+        "lund",
+        "gaand",
+        "bhosdike",
+        "bhosdi",
+        "kanjar",
+        "kutti",
+        "ullu ka pattha"
+      ]
+    },
+    {
+      "lang": "hi-Latn",
+      "words": [
+        "bhenchod",
+        "madarchod",
+        "chutiya",
+        "gandu",
+        "harami",
+        "randi",
+        "lund",
+        "gaand",
+        "bhosdike",
+        "saale kutte"
+      ]
+    },
+    {
+      "lang": "ur",
+      "words": ["بہن چود", "مادر چود", "چوتیا", "گانڈو", "حرامی", "رنڈی", "لنڈ", "گانڈ"]
+    },
+    {
+      "lang": "hi",
+      "words": ["भेनचोद", "मादरचोद", "चुतिया", "गांडू", "हरामी", "रंडी", "लंड", "गांड"]
+    },
+    {
+      "lang": "bn",
+      "words": ["মাদারচোদ", "চুতিয়া", "খানকি", "বোকাচোদা", "হারামি", "শালা কুত্তা"]
+    }
+  ]
+}
