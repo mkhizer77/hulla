@@ -76,11 +76,20 @@ describe.skipIf(NAKAMA_HOST === undefined)(
       expect(late.purged, JSON.stringify(late)).toContain(c.session.user_id);
 
       // Gone: the profile with it, the export refuses, and the device cannot sign back in. The old
-      // token lives until it expires, which is why the request record sits under the system user.
-      expect(await rpc<{ ok: boolean }>(c, "profile_get", {})).toMatchObject({
-        ok: false,
-        error: { code: "profile.not_found" },
-      });
+      // token is either logged out (401) or lives until it expires and finds no profile, which is
+      // why the request record sits under the system user.
+      const afterPurge = await rpc<{ ok: boolean; error?: { code: string } }>(
+        c,
+        "profile_get",
+        {},
+      ).catch((error: unknown) => error);
+      const unauthorised =
+        typeof afterPurge === "object" && afterPurge !== null && "status" in afterPurge
+          ? afterPurge.status === 401
+          : false;
+      if (!unauthorised) {
+        expect(afterPurge).toMatchObject({ ok: false, error: { code: "profile.not_found" } });
+      }
       await expect(rpc<ExportResponse>(c, "account_export", {})).rejects.toBeDefined();
       const client = new Client(SERVER_KEY, NAKAMA_HOST ?? "", NAKAMA_PORT, false);
       await expect(
