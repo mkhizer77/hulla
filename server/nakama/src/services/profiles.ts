@@ -287,8 +287,17 @@ export function nkAreFriends(nk: nkruntime.Nakama, viewerId: string, userId: str
   let cursor: string | undefined;
   for (let page = 0; page < 10; page += 1) {
     const list = nk.friendsList(viewerId, 100, 0, cursor);
-    if ((list.friends ?? []).some((f) => f.user?.userId === userId)) return true;
-    if (list.cursor === undefined || list.cursor === "") return false;
+    const friends = list.friends ?? [];
+    if (friends.some((f) => f.user?.userId === userId)) return true;
+    // A short page or a repeated cursor is the end, whatever Nakama hands back.
+    if (
+      friends.length < 100 ||
+      list.cursor === undefined ||
+      list.cursor === "" ||
+      list.cursor === cursor
+    ) {
+      return false;
+    }
     cursor = list.cursor;
   }
   return false;
