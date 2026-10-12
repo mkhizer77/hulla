@@ -1,4 +1,4 @@
-import Ajv from "ajv";
+import AjvDraft7 from "ajv";
 import standaloneCode from "ajv/dist/standalone";
 
 import { PROTOCOL_BASE, entryRef, type JsonSchema, type OpcodeEntry } from "./schemas";
@@ -14,7 +14,7 @@ export function generateChecks(
   opcodes: readonly OpcodeEntry[],
   byId: Map<string, JsonSchema>,
 ): string {
-  const ajv = new Ajv({
+  const ajv = new AjvDraft7({
     schemas: [...byId.values()],
     code: { source: true, esm: true, lines: true },
     strictRequired: false,
