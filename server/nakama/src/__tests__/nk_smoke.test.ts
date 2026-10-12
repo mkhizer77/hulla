@@ -184,7 +184,13 @@ describe("the RPCs and hooks against an in-memory Nakama", () => {
 
     const ctx = { matchId: "m1.n1", env: {} } as unknown as nkruntime.Context;
     const d = fakeDispatcher();
-    const init = thullaMatchInit(ctx, log, m.nk, { code, gameId: "thulla", mode: "private" });
+    const init = thullaMatchInit(ctx, log, m.nk, {
+      code,
+      gameId: "thulla",
+      mode: "private",
+      rules: { gameId: "thulla", preset: "family" },
+    });
+    expect(init.state.rules.settings).toMatchObject({ turnTimerSeconds: 30, loserTitle: "donkey" });
     let state = init.state;
     const rebuilt = <T>(value: T): T => JSON.parse(JSON.stringify(value)) as T;
     const presences: [nkruntime.Presence, nkruntime.Presence, nkruntime.Presence] = [

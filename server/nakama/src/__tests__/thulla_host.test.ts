@@ -8,7 +8,12 @@ import {
 import { hexToBytes, stateFromSeed, stateHash, Xoshiro128StarStar } from "@hulla/shared-ts";
 import { describe, expect, it } from "vitest";
 
-import { decodeThullaMove, encodeThullaEvents, thullaHost } from "../games/thulla/host";
+import {
+  decodeThullaMove,
+  encodeThullaEvents,
+  thullaHost,
+  withPresetSettings,
+} from "../games/thulla/host";
 import { tableCore, type TableCore } from "../match/table_core";
 
 import type { Batch, Envelope, RoundRecord, TableState } from "../match/types";
@@ -311,5 +316,28 @@ describe("the Thulla host at the table core", () => {
       ]),
     ).toBe(1_200);
     expect(thullaHost.presentationDelayMs([{ type: "escape", seat: 1, rank: 1 }])).toBe(0);
+  });
+});
+
+describe("preset table settings (GDD 6.13)", () => {
+  it("fills a selection that names a preset with that preset's settings, explicit values first", () => {
+    expect(withPresetSettings({ gameId: "thulla", preset: "family" })).toEqual({
+      gameId: "thulla",
+      preset: "family",
+      settings: { turnTimerSeconds: 30, loserTitle: "donkey", cardMemoryAssist: true },
+    });
+    expect(
+      withPresetSettings({
+        gameId: "thulla",
+        preset: "family",
+        settings: { turnTimerSeconds: 15 },
+      }),
+    ).toMatchObject({ settings: { turnTimerSeconds: 15, loserTitle: "donkey" } });
+    // The standard preset carries no table settings: the selection comes back untouched.
+    expect(withPresetSettings({ gameId: "thulla" })).toEqual({ gameId: "thulla" });
+    expect(withPresetSettings({ gameId: "thulla", preset: "nope" as "standard" })).toEqual({
+      gameId: "thulla",
+      preset: "nope",
+    });
   });
 });

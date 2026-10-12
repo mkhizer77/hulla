@@ -8,10 +8,11 @@ import {
 } from "@hulla/rules-engine";
 import { ErrorCodes, err, ok, ruleError, stateHash } from "@hulla/shared-ts";
 
+import { presetsFor } from "../../content/presets";
 import { seriesPayload } from "../../match/view";
 
 import type { EncodeContext, GameHost, GameMessage, LoggedMessage } from "../../match/types";
-import type { Check } from "@hulla/protocol/generated";
+import type { Check, RulesSelection } from "@hulla/protocol/generated";
 import type {
   Card,
   ThullaEvent,
@@ -26,6 +27,15 @@ import type { Result, RuleError, SeatIndex } from "@hulla/shared-ts";
 export const THULLA_MOMENT_MS = 1_200;
 
 export type ThullaHost = GameHost<ThullaState, ThullaMove, ThullaView, ThullaEvent, ThullaRules>;
+
+/** The preset's table settings from content sit under the selection's own (explicit wins). */
+export function withPresetSettings(selection: RulesSelection): RulesSelection {
+  const preset = presetsFor(selection.gameId).find(
+    (p) => p.id === (selection.preset ?? "standard"),
+  );
+  const merged = { ...(preset?.settings ?? {}), ...(selection.settings ?? {}) };
+  return Object.keys(merged).length === 0 ? selection : { ...selection, settings: merged };
+}
 
 function isThulla(event: ThullaEvent): boolean {
   return (
@@ -219,6 +229,7 @@ export const thullaHost: ThullaHost = {
   resolveRules(selection, mode) {
     return resolveRules(mode, selection.preset ?? "standard", selection.overrides ?? {});
   },
+  normaliseRules: withPresetSettings,
   isMoveType: (type) => type === "play_card" || type === "take_hand",
   decodeMove: decodeThullaMove,
   roundStartEvents: (state) => [roundStartedEvent(state)],
