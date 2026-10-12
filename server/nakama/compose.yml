@@ -29,9 +29,10 @@ services:
     volumes:
       - ./build:/nakama/data/modules:ro
       - ./config:/nakama/data/config:ro
+    # Loopback by default; HULLA_BIND=0.0.0.0 opens the ports to the LAN for phones on the same Wi-Fi.
     ports:
-      - "127.0.0.1:7350:7350"
-      - "127.0.0.1:7351:7351"
+      - "${HULLA_BIND:-127.0.0.1}:7350:7350"
+      - "${HULLA_BIND:-127.0.0.1}:7351:7351"
     healthcheck:
       test: ["CMD", "/nakama/nakama", "healthcheck"]
       interval: 5s

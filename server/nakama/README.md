@@ -22,6 +22,7 @@ The Hulla runtime modules for Nakama (ADR-0002): RPCs, hooks, the table core and
 pnpm --filter @hulla/server build          # bundle to build/index.js
 pnpm --filter @hulla/server test           # unit tests with the fake runtime
 docker compose -f server/nakama/compose.yml up   # local Nakama on 127.0.0.1:7350, console on 7351
+HULLA_BIND=0.0.0.0 docker compose -f server/nakama/compose.yml up   # to play from phones on your LAN
 curl -s "http://127.0.0.1:7350/v2/rpc/hello?http_key=local-only-http-key"   # smoke test
 HULLA_NAKAMA_HOST=127.0.0.1 pnpm --filter @hulla/server test:integration   # scripted round
 ```
