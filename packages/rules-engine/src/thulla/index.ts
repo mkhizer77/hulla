@@ -15,7 +15,14 @@ export {
   resolveRules,
   validateRules,
 } from "./rules";
-export type { SeatState, SeatStats, ThullaPhase, ThullaState, TrickState } from "./state";
+export type {
+  PendingDraw,
+  SeatState,
+  SeatStats,
+  ThullaPhase,
+  ThullaState,
+  TrickState,
+} from "./state";
 export {
   EMPTY_STATS,
   EMPTY_TRICK,
@@ -26,5 +33,7 @@ export {
 } from "./state";
 export type { ThullaMove } from "./moves";
 export { applyMove, canTakeHand, currentPhase, isRoundOver, legalMoves } from "./engine";
+export { autoPlayMove } from "./autoplay";
+export { CONFIRM_NODE_CAP, cardsInPlay, forcedBhabhi, shouldSearch } from "./confirm";
 export type { ThullaEvent } from "./events";
 export { createThullaRound, fairDealCommitment, nextDealer, roundStartedEvent } from "./deal";

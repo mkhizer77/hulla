@@ -76,6 +76,8 @@ export function stateFrom(setup: Setup): ThullaState {
     stats: seats.map(() => EMPTY_STATS),
     escapeOrder,
     bhabhiSeat: null,
+    confirmedBhabhi: null,
+    pendingDraw: null,
     commitment: "test",
     seedHex: "00",
     deckOrder: [],

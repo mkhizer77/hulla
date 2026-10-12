@@ -36,6 +36,16 @@ export const EMPTY_STATS: SeatStats = {
   handsTaken: 0,
 };
 
+/**
+ * A draw the resolution decided on but has not executed yet, so the forced-outcome search can
+ * enumerate every card in `pool` (R41). `applyMove` always executes it before returning.
+ */
+export interface PendingDraw {
+  readonly source: "discard" | "nextPlayer" | "opponent";
+  readonly from: SeatIndex | null;
+  readonly pool: readonly Card[];
+}
+
 export interface TrickState {
   readonly ledSuit: Suit | null;
   readonly plays: readonly { readonly seat: SeatIndex; readonly card: Card }[];
@@ -65,6 +75,9 @@ export interface ThullaState {
   readonly stats: readonly SeatStats[];
   readonly escapeOrder: readonly SeatIndex[];
   readonly bhabhiSeat: SeatIndex | null;
+  /** R41: set once the forced-outcome search proves the Bhabhi; the search never runs again. */
+  readonly confirmedBhabhi: SeatIndex | null;
+  readonly pendingDraw: PendingDraw | null;
   /** Public before the deal: SHA-256(seed ‖ canonicalJson(deckOrder)) (R6). */
   readonly commitment: string;
   /** Server-only until the round ends, then revealed so clients verify the commitment (R6). */
@@ -97,6 +110,20 @@ export function markEscaped(state: ThullaState, seat: SeatIndex): ThullaState {
     ...state,
     seats: withSeat(state.seats, seat, (current) => ({ ...current, escaped: true, escapeRank })),
     escapeOrder: [...state.escapeOrder, seat],
+  };
+}
+
+/** R10: the last active seat is the Bhabhi; the round is over. */
+export function endRound(state: ThullaState, bhabhiSeat: SeatIndex): ThullaState {
+  return {
+    ...state,
+    phase: "ended",
+    bhabhiSeat,
+    turnSeat: null,
+    trick: EMPTY_TRICK,
+    pendingAutoLead: false,
+    pendingDraw: null,
+    openingPending: [],
   };
 }
 

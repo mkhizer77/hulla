@@ -1,168 +1,75 @@
-import { ErrorCodes, ruleError, type Rng, type RuleError, type SeatIndex } from "@hulla/shared-ts";
-
-import { cardSuit, type Card, type Suit } from "../card-kit";
-
-import { takeHand } from "./hand-take";
-import { activeSeats, type SeatState, type ThullaPhase, type ThullaState } from "./state";
-import { playCard } from "./trick";
+import { rawApply } from "./apply";
+import { autoPlayMove } from "./autoplay";
+import { cardsInPlay, forcedBhabhi, shouldSearch } from "./confirm";
+import { executeDrawWith } from "./draw";
 
 import type { ApplyResult } from "../contract";
 import type { ThullaEvent } from "./events";
 import type { ThullaMove } from "./moves";
+import type { ThullaState } from "./state";
+import type { Rng, SeatIndex } from "@hulla/shared-ts";
 
-const ACE_OF_SPADES: Card = "AS";
+export { canTakeHand, currentPhase, isRoundOver, legalMoves } from "./legal";
 
-export function currentPhase(state: ThullaState): ThullaPhase {
-  return state.phase;
-}
+/** R40 bounds every round; this only guards the fast-forward loop against a broken invariant. */
+const FAST_FORWARD_CAP = 1000;
 
-export function isRoundOver(state: ThullaState): boolean {
-  return state.phase === "ended";
-}
-
-/** Every move `applyMove` would accept for this seat, and nothing else (ARCHITECTURE 7.1). */
-export function legalMoves(state: ThullaState, seat: SeatIndex): readonly ThullaMove[] {
-  const seatState = state.seats[seat];
-  if (state.phase === "ended" || seatState === undefined || seatState.escaped) {
-    return [];
-  }
-  if (state.phase === "opening") {
-    return openingMoves(state, seat, seatState);
-  }
-  if (state.trick.plays.length === 0) {
-    return leadMoves(state, seat, seatState);
-  }
-  if (state.turnSeat !== seat) {
-    return [];
-  }
-  return followOrAny(seatState.hand, state.trick.ledSuit);
-}
-
-/** R12: the Ace of Spades opens; R13 and R15: the others follow spades if they hold any. */
-function openingMoves(state: ThullaState, seat: SeatIndex, seatState: SeatState): ThullaMove[] {
-  if (state.trick.plays.length === 0) {
-    return seat === state.leaderSeat ? [play(ACE_OF_SPADES)] : [];
-  }
-  return mayRespondInOpening(state, seat) ? followOrAny(seatState.hand, "S") : [];
-}
-
-function mayRespondInOpening(state: ThullaState, seat: SeatIndex): boolean {
-  return state.turnSeat === null ? state.openingPending.includes(seat) : state.turnSeat === seat;
-}
-
-/** R16: the leader leads anything; R32 and R35: a take is on offer before the lead. */
-function leadMoves(state: ThullaState, seat: SeatIndex, seatState: SeatState): ThullaMove[] {
-  const moves: ThullaMove[] = seat === state.leaderSeat ? seatState.hand.map(play) : [];
-  if (canTakeHand(state, seat)) {
-    moves.push({ type: "take_hand" });
-  }
-  return moves;
-}
-
-/** R18 and R19: cards of the led suit when any are held, otherwise anything. */
-function followOrAny(hand: readonly Card[], ledSuit: Suit | null): ThullaMove[] {
-  const following = ledSuit === null ? [] : hand.filter((card) => cardSuit(card) === ledSuit);
-  return (following.length > 0 ? following : hand).map(play);
-}
-
-function play(card: Card): ThullaMove {
-  return { type: "play_card", card };
-}
-
-/** R31 to R36: before the lead, from trick two, with three or more active, once per window. */
-export function canTakeHand(state: ThullaState, seat: SeatIndex): boolean {
-  return takeHandError(state, seat) === null;
-}
-
-function takeHandError(state: ThullaState, seat: SeatIndex): RuleError | null {
-  const windowClosed = ruleError(ErrorCodes.rules.handTakeWindowClosed);
-  if (state.rules.handTaking === "off") {
-    return ruleError(ErrorCodes.rules.handTakeDisabled);
-  }
-  if (state.phase !== "play" || state.trick.plays.length > 0 || state.pendingAutoLead) {
-    return windowClosed;
-  }
-  if (activeSeats(state).length < 3) {
-    return ruleError(ErrorCodes.rules.handTakeDisabledEndgame);
-  }
-  if (state.trickIndex < 1 || state.handTakeUsed) {
-    return windowClosed;
-  }
-  if (state.rules.handTaking === "leaderOnly" && seat !== state.leaderSeat) {
-    return ruleError(ErrorCodes.rules.handTakeNotLeader);
-  }
-  return null;
-}
-
-/** Total: every failure is a catalogue error, never a throw (R47). */
+/**
+ * Total: every failure is a catalogue error, never a throw (R47). After a resolution in the
+ * endgame the forced-outcome search runs before any pending draw is realised (R41); the draw is
+ * then executed with the `Rng`, and a confirmed round is played out at once with the R44 policy
+ * when `confirmedFastForward` is on, so the same call ends the round.
+ */
 export function applyMove(
   state: ThullaState,
   seat: SeatIndex,
   move: ThullaMove,
   rng: Rng,
 ): ApplyResult<ThullaState, ThullaEvent> {
-  const error = validate(state, seat, move);
-  if (error !== null) {
-    return { ok: false, error };
+  const applied = rawApply(state, seat, move);
+  if (!applied.ok) {
+    return applied;
   }
-  return move.type === "take_hand" ? takeHand(state, seat) : playCard(state, seat, move.card, rng);
-}
-
-function validate(state: ThullaState, seat: SeatIndex, move: ThullaMove): RuleError | null {
-  if (state.phase === "ended") {
-    return ruleError(ErrorCodes.rules.roundOver);
-  }
-  const seatState = state.seats[seat];
-  if (seatState === undefined) {
-    return ruleError(ErrorCodes.rules.invalidSeat, { seat });
-  }
-  if (seatState.escaped) {
-    return ruleError(ErrorCodes.rules.seatNotActive, { seat });
-  }
-  if (move.type === "take_hand") {
-    return takeHandError(state, seat);
-  }
-  if (!seatState.hand.includes(move.card)) {
-    return ruleError(ErrorCodes.rules.cardNotInHand, { card: move.card });
-  }
-  if (state.phase === "opening") {
-    return validateOpeningPlay(state, seat, seatState, move.card);
-  }
-  if (state.trick.plays.length === 0) {
-    return seat === state.leaderSeat ? null : ruleError(ErrorCodes.rules.notYourTurn, { seat });
-  }
-  if (state.turnSeat !== seat) {
-    return ruleError(ErrorCodes.rules.notYourTurn, { seat });
-  }
-  return followSuitError(seatState.hand, state.trick.ledSuit, move.card);
-}
-
-function validateOpeningPlay(
-  state: ThullaState,
-  seat: SeatIndex,
-  seatState: SeatState,
-  card: Card,
-): RuleError | null {
-  if (state.trick.plays.length === 0) {
-    if (seat !== state.leaderSeat) {
-      return ruleError(ErrorCodes.rules.notYourTurn, { seat });
+  let next = applied.state;
+  const events = [...applied.events];
+  if (shouldSearch(next)) {
+    const bhabhiSeat = forcedBhabhi(next);
+    if (bhabhiSeat !== null) {
+      next = { ...next, confirmedBhabhi: bhabhiSeat };
+      events.push({
+        type: "confirmed",
+        bhabhiSeat,
+        cardsRemaining: cardsInPlay(next),
+        fastForward: next.rules.confirmedFastForward,
+      });
     }
-    return card === ACE_OF_SPADES ? null : ruleError(ErrorCodes.rules.mustLeadAceOfSpades);
   }
-  if (!mayRespondInOpening(state, seat)) {
-    return ruleError(ErrorCodes.rules.notYourTurn, { seat });
+  next = executeDrawWith(next, rng, events);
+  if (next.confirmedBhabhi !== null && next.rules.confirmedFastForward && next.phase !== "ended") {
+    return playOut(next, rng, events);
   }
-  return followSuitError(seatState.hand, "S", card);
+  return { ok: true, state: next, events };
 }
 
-function followSuitError(
-  hand: readonly Card[],
-  ledSuit: Suit | null,
-  card: Card,
-): RuleError | null {
-  if (ledSuit === null || cardSuit(card) === ledSuit) {
-    return null;
+/** R41: the remaining plays resolve with the R44 policy; the outcome is forced, so it cannot change. */
+function playOut(
+  start: ThullaState,
+  rng: Rng,
+  events: ThullaEvent[],
+): ApplyResult<ThullaState, ThullaEvent> {
+  let state = start;
+  for (let step = 0; step < FAST_FORWARD_CAP && state.phase !== "ended"; step++) {
+    const seat = state.turnSeat ?? state.leaderSeat;
+    const move = autoPlayMove(state, seat);
+    if (move === null) {
+      break;
+    }
+    const result = rawApply(state, seat, move);
+    if (!result.ok) {
+      break;
+    }
+    events.push(...result.events);
+    state = executeDrawWith(result.state, rng, events);
   }
-  const holdsLedSuit = hand.some((held) => cardSuit(held) === ledSuit);
-  return holdsLedSuit ? ruleError(ErrorCodes.rules.mustFollowSuit, { ledSuit }) : null;
+  return { ok: true, state, events };
 }
