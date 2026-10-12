@@ -1,0 +1,26 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements">
+    <ui:VisualElement name="table" class="screen table">
+        <ui:VisualElement class="table__top">
+            <ui:Button name="leave" class="button button--quiet button--small" />
+        </ui:VisualElement>
+        <ui:VisualElement name="opponents" class="opponents" />
+        <ui:VisualElement class="felt">
+            <ui:VisualElement name="pile" class="pile" />
+            <ui:Label name="pile-note" class="pile__note" />
+            <ui:Label name="toast" class="toast" />
+        </ui:VisualElement>
+        <ui:VisualElement class="table__bar">
+            <ui:Label name="turn" class="turn" />
+            <ui:Button name="take-hand" class="button button--primary button--small" />
+        </ui:VisualElement>
+        <ui:VisualElement name="hand" class="hand" />
+        <ui:VisualElement name="results" class="results">
+            <ui:VisualElement class="panel results__panel">
+                <ui:Label name="result-title" class="title title--small" />
+                <ui:VisualElement name="result-order" class="results__order" />
+                <ui:Button name="play-again" class="button button--primary" />
+                <ui:Label name="result-status" class="status" />
+            </ui:VisualElement>
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

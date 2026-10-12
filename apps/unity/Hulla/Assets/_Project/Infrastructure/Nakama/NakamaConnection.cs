@@ -10,7 +10,7 @@ namespace Hulla.Infrastructure.Nakama
             Client = client;
         }
 
-        public IClient Client { get; }
+        public IClient Client { get; private set; }
 
         /// <summary>A client over UnityWebRequest so it works on every Unity target.</summary>
         public static NakamaConnection Create(string scheme, string host, int port, string serverKey) =>
@@ -19,5 +19,21 @@ namespace Hulla.Infrastructure.Nakama
         public ISession? Session { get; set; }
 
         public ISocket? Socket { get; set; }
+
+        /// <summary>Closes the socket; the session stays valid for the next connect.</summary>
+        public void Close()
+        {
+            Socket?.CloseAsync();
+            Socket = null;
+        }
+
+        /// <summary>Points the connection at another server; the next sign-in starts a fresh session.</summary>
+        public void Retarget(string scheme, string host, int port, string serverKey)
+        {
+            Socket?.CloseAsync();
+            Socket = null;
+            Session = null;
+            Client = new Client(scheme, host, port, serverKey, UnityWebRequestAdapter.Instance);
+        }
     }
 }

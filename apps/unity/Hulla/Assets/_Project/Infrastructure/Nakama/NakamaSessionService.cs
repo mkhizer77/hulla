@@ -16,20 +16,25 @@ namespace Hulla.Infrastructure.Nakama
     {
         private const string DeviceKey = "hulla.device_id";
         private readonly NakamaConnection _connection;
+        private readonly string? _deviceId;
 
-        public NakamaSessionService(NakamaConnection connection)
+        /// <param name="deviceId">A fixed device id (tests); null reads the command line, then player prefs.</param>
+        public NakamaSessionService(NakamaConnection connection, string? deviceId = null)
         {
             _connection = connection;
+            _deviceId = deviceId;
         }
 
         public PlayerSession? Current { get; private set; }
+
+        public void Forget() => Current = null;
 
         public async Awaitable<Result<PlayerSession>> SignInAsync(string displayName, CancellationToken cancellation)
         {
             try
             {
                 var client = _connection.Client;
-                var session = await client.AuthenticateDeviceAsync(DeviceId(), null, true, null, null, cancellation);
+                var session = await client.AuthenticateDeviceAsync(_deviceId ?? DeviceId(), null, true, null, null, cancellation);
                 if (!string.IsNullOrWhiteSpace(displayName))
                 {
                     await client.UpdateAccountAsync(session, null, displayName.Trim(), null, null, null, null, null, cancellation);
@@ -60,7 +65,8 @@ namespace Hulla.Infrastructure.Nakama
             {
                 if (args[i] == "-hulla-device")
                 {
-                    return args[i + 1];
+                    // Nakama wants 10 to 128 bytes; short names from the command line get a fixed prefix.
+                    return args[i + 1].Length >= 10 ? args[i + 1] : "hulla-dev-" + args[i + 1];
                 }
             }
 

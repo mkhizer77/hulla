@@ -1,30 +1,34 @@
 using System;
 using System.Threading;
+using Hulla.Application.Services;
 
 namespace Hulla.Composition
 {
-    /// <summary>Authenticated services for one signed-in session; owns at most one table at a time.</summary>
+    /// <summary>One signed-in player; owns at most one table at a time.</summary>
     public sealed class SessionScope : IDisposable
     {
         private readonly CancellationTokenSource _lifetime;
         private TableScope? _table;
 
-        public SessionScope(AppScope app)
+        public SessionScope(AppScope app, PlayerSession player)
         {
             App = app;
+            Player = player;
             _lifetime = CancellationTokenSource.CreateLinkedTokenSource(app.Lifetime);
         }
 
         public AppScope App { get; }
 
+        public PlayerSession Player { get; }
+
         public CancellationToken Lifetime => _lifetime.Token;
 
         public TableScope? Table => _table;
 
-        public TableScope BeginTable(string matchId)
+        public TableScope BeginTable(TableTicket ticket)
         {
             _table?.Dispose();
-            _table = new TableScope(this, matchId);
+            _table = new TableScope(this, ticket);
             return _table;
         }
 

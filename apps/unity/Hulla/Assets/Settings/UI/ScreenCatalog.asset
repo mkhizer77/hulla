@@ -1,0 +1,17 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7557f5624cc1349638820e758fe1482b, type: 3}
+  m_Name: ScreenCatalog
+  m_EditorClassIdentifier: Hulla.Presentation::Hulla.Presentation.Navigation.ScreenCatalog
+  Home: {fileID: 9197481963319205126, guid: 03b6cb46ef1dd4d6c9818395b3239a36, type: 3}
+  Lobby: {fileID: 9197481963319205126, guid: 8896cba01213c4230bc680072558a3b4, type: 3}
+  Table: {fileID: 9197481963319205126, guid: be95934513b2743dea69339c2559490a, type: 3}

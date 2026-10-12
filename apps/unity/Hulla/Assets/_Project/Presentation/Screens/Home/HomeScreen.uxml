@@ -1,0 +1,15 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements">
+    <ui:VisualElement name="home" class="screen screen--center">
+        <ui:Label name="title" class="title" />
+        <ui:Label name="tagline" class="subtitle" />
+        <ui:VisualElement class="panel">
+            <ui:TextField name="name" class="field" />
+            <ui:Button name="create" class="button button--primary" />
+            <ui:VisualElement class="divider" />
+            <ui:TextField name="code" class="field field--code" />
+            <ui:Button name="join" class="button" />
+        </ui:VisualElement>
+        <ui:Label name="status" class="status" />
+        <ui:TextField name="server" class="field field--dev" />
+    </ui:VisualElement>
+</ui:UXML>

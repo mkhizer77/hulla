@@ -1,0 +1,17 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements">
+    <ui:VisualElement name="lobby" class="screen">
+        <ui:VisualElement class="code-box">
+            <ui:Label name="code-label" class="caption" />
+            <ui:Label name="code" class="code" />
+        </ui:VisualElement>
+        <ui:ScrollView name="seats-scroll" class="seats">
+            <ui:VisualElement name="seats" />
+        </ui:ScrollView>
+        <ui:Label name="status" class="status" />
+        <ui:VisualElement class="actions">
+            <ui:Button name="ready" class="button" />
+            <ui:Button name="start" class="button button--primary" />
+            <ui:Button name="leave" class="button button--quiet" />
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>
