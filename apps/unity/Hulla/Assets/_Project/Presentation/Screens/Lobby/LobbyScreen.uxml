@@ -3,10 +3,19 @@
         <ui:VisualElement class="code-box">
             <ui:Label name="code-label" class="caption" />
             <ui:Label name="code" class="code" />
+            <ui:Button name="share" class="button button--small" />
         </ui:VisualElement>
         <ui:ScrollView name="seats-scroll" class="seats">
             <ui:VisualElement name="seats" />
         </ui:ScrollView>
+        <ui:VisualElement name="chat" class="lobby-chat">
+            <ui:VisualElement name="chat-log" class="chat-log" />
+            <ui:VisualElement class="chat-panel__compose">
+                <ui:TextField name="chat-input" class="field chat-panel__input" />
+                <ui:Button name="chat-send" class="button button--small" />
+            </ui:VisualElement>
+            <ui:Label name="chat-status" class="caption" />
+        </ui:VisualElement>
         <ui:Label name="countdown" class="turn countdown" />
         <ui:Label name="status" class="status" />
         <ui:VisualElement class="actions">

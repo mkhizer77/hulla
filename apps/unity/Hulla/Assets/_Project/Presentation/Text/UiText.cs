@@ -84,6 +84,11 @@ namespace Hulla.Presentation.Text
         public const string Server = "Server (development builds)";
 
         public const string Profile = "Profile";
+        public const string ShareCode = "Share code";
+        public const string ShareTitle = "Invite to Hulla";
+
+        /// <summary>The bilingual invite (GDD 10.5); the hulla.gg/j/ link joins once deep links exist (#43).</summary>
+        public const string ShareText = "Thulla khelo! Join my table on Hulla with code {0}";
         public const string Friends = "Friends";
         public const string Back = "Back";
         public const string Save = "Save";

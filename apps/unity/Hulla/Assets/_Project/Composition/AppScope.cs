@@ -60,6 +60,8 @@ namespace Hulla.Composition
 
         public ProfileViewModel Profile { get; }
 
+        public IShareSheet ShareSheet { get; } = new Hulla.Infrastructure.Platform.NativeShareSheet();
+
         public SettingsModel Settings { get; } = new SettingsModel(new PlayerPrefsSettingsStore());
 
         public SessionScope? Session => _session;
