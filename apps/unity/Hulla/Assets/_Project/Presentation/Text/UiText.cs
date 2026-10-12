@@ -28,6 +28,15 @@ namespace Hulla.Presentation.Text
         public const string Thulla = "THULLA!";
         public const string PickedUp = "{0} picks up";
         public const string Bhabhi = "{0} is the Bhabhi";
+        public const string LoserIs = "{0} is the {1}";
+        public const string AfterRounds = "After {0} rounds";
+        public const string PointsLine = "{0}: {1} pts · {2}× {3}";
+        public const string Highlights = "Highlights";
+        public const string MostThullas = "Most thullas: {0}, {1}";
+        public const string MostPickedUp = "Most cards picked up: {0}, {1}";
+        public const string MakeFriends = "Played well together?";
+        public const string AddName = "Add {0}";
+        public const string RematchVotes = "{0} of {1} want another";
         public const string EscapeOrder = "Escaped in order";
         public const string PlayAgain = "Play again";
         public const string Waiting4Rematch = "Waiting for the others…";

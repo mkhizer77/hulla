@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Hulla.Application.Services;
 using Hulla.Application.Table;
 using Hulla.Domain;
@@ -47,6 +48,7 @@ namespace Hulla.Composition
         private bool _reconnecting;
         private SettingsView? _settingsView;
         private LobbyView? _lobbyView;
+        private string _friendsForRound = "";
 
         public AppFlow(AppScope app, ShellView shell)
         {
@@ -288,6 +290,12 @@ namespace Hulla.Composition
                 return;
             }
 
+            if (model.LastResult != null && model.LastResult.RoundId != _friendsForRound)
+            {
+                _friendsForRound = model.LastResult.RoundId;
+                OfferFriends();
+            }
+
             var wanted = model.InRound || model.LastResult != null ? Screen.Table : Screen.Lobby;
             if (wanted == _screen)
             {
@@ -308,6 +316,24 @@ namespace Hulla.Composition
             ApplySettings();
             _scheduler = new AnimationScheduler(client.Events, _tableView);
             _view = _tableView;
+        }
+
+        /// <summary>After a round, co-players who aren't friends or pending get an "Add" chip (GDD 14.8, 10.3).</summary>
+        private async void OfferFriends()
+        {
+            var friends = _app.Friends;
+            await friends.RefreshAsync(_app.Lifetime);
+            var known = new HashSet<string>();
+            foreach (var list in new[] { friends.Friends, friends.Sent, friends.Received, friends.Blocked })
+            {
+                foreach (var entry in list)
+                {
+                    known.Add(entry.UserId);
+                }
+            }
+
+            var me = _app.Sessions.Current?.UserId;
+            _tableView?.SetFriendActions(id => id != me && !known.Contains(id), id => _ = friends.AddAsync(id, _app.Lifetime));
         }
 
         private void OnText(TextLine line)

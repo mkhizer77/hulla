@@ -40,11 +40,7 @@ namespace Hulla.Games.Thulla
         private readonly Label _info;
         private readonly Button _takeHand;
         private readonly Label _toast;
-        private readonly VisualElement _results;
-        private readonly Label _resultTitle;
-        private readonly VisualElement _resultOrder;
-        private readonly Button _playAgain;
-        private readonly Label _resultStatus;
+        private readonly ThullaResults _results;
         private readonly IChatCatalog _chat;
         private readonly VisualElement _chatPanel;
         private readonly Label _mySay;
@@ -110,13 +106,7 @@ namespace Hulla.Games.Thulla
             _takeHand.text = UiText.TakeHand;
             _takeHand.clicked += () => _client.TakeHand();
             _toast = root.Q<Label>("toast");
-            _results = root.Q<VisualElement>("results");
-            _resultTitle = root.Q<Label>("result-title");
-            _resultOrder = root.Q<VisualElement>("result-order");
-            _playAgain = root.Q<Button>("play-again");
-            _playAgain.text = UiText.PlayAgain;
-            _playAgain.clicked += VoteAgain;
-            _resultStatus = root.Q<Label>("result-status");
+            _results = new ThullaResults(root.Q<VisualElement>("results"), NameOf, VoteAgain);
             var settingsButton = root.Q<Button>("settings");
             settingsButton.text = UiText.Settings;
             settingsButton.clicked += () => openSettings?.Invoke();
@@ -207,6 +197,7 @@ namespace Hulla.Games.Thulla
             }
 
             Countdown(ref _recapLeft, deltaSeconds, _recap);
+            _results.Tick(_client.Model, _voted, _nowMs());
             Countdown(ref _mySayLeft, deltaSeconds, _mySay);
             Countdown(ref _hintLeft, deltaSeconds, _hint);
             if (_stamp.Active)
@@ -539,29 +530,14 @@ namespace Hulla.Games.Thulla
             _takeHand.style.display = model.MyTurn && model.CanTakeHand ? DisplayStyle.Flex : DisplayStyle.None;
         }
 
-        private void RefreshResults()
+        private void RefreshResults() => _results.Show(_client.Model, _voted);
+
+        /// <summary>Lets the results offer "Add friend" for co-players who aren't friends or pending yet.</summary>
+        public void SetFriendActions(Func<string, bool> canAdd, Action<string> addFriend)
         {
-            var model = _client.Model;
-            var result = model.LastResult;
-            var show = result != null && !model.InRound;
-            _results.style.display = show ? DisplayStyle.Flex : DisplayStyle.None;
-            if (result == null || !show)
-            {
-                return;
-            }
-
-            _resultTitle.text = string.Format(UiText.Bhabhi, NameOf(result.BhabhiSeat));
-            _resultOrder.Clear();
-            var heading = new Label(UiText.EscapeOrder);
-            heading.AddToClassList("caption");
-            _resultOrder.Add(heading);
-            for (var i = 0; i < result.EscapeOrder.Count; i++)
-            {
-                _resultOrder.Add(new Label((i + 1) + ". " + NameOf(result.EscapeOrder[i])));
-            }
-
-            _playAgain.SetEnabled(!_voted);
-            _resultStatus.text = _voted ? UiText.Waiting4Rematch : "";
+            _results.CanAdd = canAdd;
+            _results.AddFriend = addFriend;
+            RefreshResults();
         }
     }
 }
