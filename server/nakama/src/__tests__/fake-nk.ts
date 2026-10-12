@@ -63,6 +63,9 @@ export function fakeInitializer(): FakeInitializer {
     registerBeforeAuthenticateDevice: (fn: (...args: unknown[]) => unknown) => {
       hooks.set("beforeAuthenticateDevice", fn);
     },
+    registerLeaderboardReset: (fn: (...args: unknown[]) => unknown) => {
+      hooks.set("leaderboardReset", fn);
+    },
     registerAfterAuthenticateDevice: (fn: (...args: unknown[]) => unknown) => {
       hooks.set("afterAuthenticateDevice", fn);
     },
@@ -86,6 +89,7 @@ export function fakeNk(): nkruntime.Nakama {
   return {
     uuidv4: () => "11111111-2222-4333-8444-555555555555",
     sha256Hash: (input: string) => `sha256(${input})`,
+    leaderboardCreate: () => undefined,
   } as unknown as nkruntime.Nakama;
 }
 
@@ -144,6 +148,14 @@ export interface MemoryNk {
   readonly loggedOut: string[];
   readonly signals: { matchId: string; data: string }[];
   readonly notifications: { userId: string; subject: string }[];
+  /** leaderboard id -> owner -> record; `expiry` groups the periods. */
+  readonly boards: Map<
+    string,
+    Map<
+      string,
+      { score: number; numScore: number; expiry: number; metadata: Record<string, unknown> }
+    >
+  >;
   user(id: string, overrides?: Partial<MemoryUser>): MemoryUser;
   object(collection: string, key: string, userId: string): Record<string, unknown> | undefined;
 }
@@ -178,6 +190,14 @@ export function memoryNk(): MemoryNk {
   const loggedOut: string[] = [];
   const signals: { matchId: string; data: string }[] = [];
   const notifications: { userId: string; subject: string }[] = [];
+  const boards = new Map<
+    string,
+    Map<
+      string,
+      { score: number; numScore: number; expiry: number; metadata: Record<string, unknown> }
+    >
+  >();
+  const boardMeta = new Map<string, { nextReset: number }>();
   let uuids = 0;
   let versions = 0;
   const user = (id: string, overrides: Partial<MemoryUser> = {}): MemoryUser => {
@@ -404,6 +424,84 @@ export function memoryNk(): MemoryNk {
     notificationSend(userId: string, subject: string) {
       notifications.push({ userId, subject });
     },
+    leaderboardCreate(id: string) {
+      if (!boards.has(id)) boards.set(id, new Map());
+      boardMeta.set(id, { nextReset: 1_800_000_000 });
+    },
+    leaderboardsGetId: (ids: string[]) =>
+      ids.flatMap((id) => {
+        const meta = boardMeta.get(id);
+        return meta === undefined
+          ? []
+          : [{ id, title: id, nextReset: meta.nextReset, prevReset: 0 }];
+      }),
+    leaderboardRecordWrite(
+      id: string,
+      ownerId: string,
+      username: string | undefined,
+      score = 0,
+      subscore = 0,
+      metadata: Record<string, unknown> = {},
+    ) {
+      const board = boards.get(id);
+      if (board === undefined) throw new Error(`no leaderboard ${id}`);
+      const current = board.get(ownerId) ?? { score: 0, numScore: 0, expiry: 0, metadata: {} };
+      const next = {
+        score: current.score + score,
+        numScore: current.numScore + 1,
+        expiry: current.expiry,
+        metadata,
+      };
+      board.set(ownerId, next);
+      return {
+        leaderboardId: id,
+        ownerId,
+        username: username ?? user(ownerId).username,
+        score: next.score,
+        subscore,
+        numScore: next.numScore,
+        metadata,
+        createTime: 0,
+        updateTime: 0,
+        expiryTime: next.expiry,
+        rank: 0,
+      };
+    },
+    leaderboardRecordsList(
+      id: string,
+      owners?: string[],
+      limit = 100,
+      _cursor?: string,
+      overrideExpiry = 0,
+    ) {
+      const board =
+        boards.get(id) ??
+        new Map<
+          string,
+          { score: number; numScore: number; expiry: number; metadata: Record<string, unknown> }
+        >();
+      const ranked = [...board.entries()]
+        .filter(([, r]) => r.expiry === overrideExpiry)
+        .sort((a, b) => b[1].score - a[1].score)
+        .map(([ownerId, r], i) => ({
+          leaderboardId: id,
+          ownerId,
+          username: user(ownerId).username,
+          score: r.score,
+          subscore: 0,
+          numScore: r.numScore,
+          metadata: r.metadata,
+          createTime: 0,
+          updateTime: 0,
+          expiryTime: r.expiry,
+          rank: i + 1,
+        }));
+      const records =
+        owners === undefined
+          ? ranked.slice(0, limit)
+          : ranked.filter((r) => owners.includes(r.ownerId)).slice(0, limit);
+      return { records, ownerRecords: [], rankCount: ranked.length };
+    },
   } as unknown as nkruntime.Nakama;
   return {
     nk,
@@ -419,6 +517,7 @@ export function memoryNk(): MemoryNk {
     loggedOut,
     signals,
     notifications,
+    boards,
     user,
     object: (collection, key, userId) => storage.get(storageKey(collection, userId, key))?.value,
   };
