@@ -24,7 +24,7 @@ namespace Hulla.Presentation.Screens.Home
         private readonly Button _quick;
         private int _seats = 4;
 
-        public HomeView(VisualElement root, HomeViewModel model, string? server, Action<string, string?> create, Action<string, string, string?> join, Action<string, int, string?> quickPlay, Action? openSettings = null, Action<string, string?>? openFriends = null, Action<string, string?>? openProfile = null, HomeFriendsViewModel? friendsOnline = null, Action? howToPlay = null, string? howToPlayText = null)
+        public HomeView(VisualElement root, HomeViewModel model, string? server, Action<string, string?> create, Action<string, string, string?> join, Action<string, int, string?> quickPlay, Action? openSettings = null, Action<string, string?>? openFriends = null, Action<string, string?>? openProfile = null, HomeFriendsViewModel? friendsOnline = null, Action? howToPlay = null, string? howToPlayText = null, Action<string, string, string?>? watch = null)
         {
             var how = root.Q<Button>("how-to-play");
             how.text = howToPlayText ?? "";
@@ -87,6 +87,13 @@ namespace Hulla.Presentation.Screens.Home
                 if (code != null)
                 {
                     join(_name.value, code, Server());
+                    return;
+                }
+
+                var watching = _friendsOnline?.WatchHero?.TableCode;
+                if (watching != null)
+                {
+                    watch?.Invoke(_name.value, watching, Server());
                 }
             };
             if (_friendsOnline != null)
@@ -117,10 +124,15 @@ namespace Hulla.Presentation.Screens.Home
         private void RefreshFriends()
         {
             var hero = _friendsOnline?.Hero;
-            _hero.style.display = hero == null ? DisplayStyle.None : DisplayStyle.Flex;
+            var watchHero = _friendsOnline?.WatchHero;
+            _hero.style.display = hero == null && watchHero == null ? DisplayStyle.None : DisplayStyle.Flex;
             if (hero != null)
             {
                 _hero.text = string.Format(UiText.JoinFriendTable, hero.Name, hero.OpenSeats);
+            }
+            else if (watchHero != null)
+            {
+                _hero.text = string.Format(UiText.WatchFriendTable, watchHero.Name);
             }
 
             var online = _friendsOnline?.Online;

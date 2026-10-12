@@ -115,7 +115,7 @@ namespace Hulla.Composition
             _screen = Screen.Home;
             var root = _shell.Show(_shell.Catalog.Home);
             var server = Debug.isDebugBuild ? _app.Config.HostAndPort : null;
-            _view = new HomeView(root, _app.Home, server, OnCreate, OnJoin, OnQuickPlay, OpenSettings, OnFriends, OnProfile, _app.HomeFriends, () => StartTutorial(false), TutorialText.HowToPlay);
+            _view = new HomeView(root, _app.Home, server, OnCreate, OnJoin, OnQuickPlay, OpenSettings, OnFriends, OnProfile, _app.HomeFriends, () => StartTutorial(false), TutorialText.HowToPlay, OnWatch);
             _app.HomeFriends.Active = _app.Sessions.Current != null;
             _app.HomeFriends.RefreshSoon();
         }
@@ -132,6 +132,14 @@ namespace Hulla.Composition
             ApplyServer(server);
             var ticket = await _app.Home.JoinAsync(name, code, _app.Lifetime);
             await EnterAsync(ticket);
+        }
+
+        /// <summary>Watch a friend's round (GDD 7.7): join by the table's code as a spectator.</summary>
+        private async void OnWatch(string name, string code, string? server)
+        {
+            ApplyServer(server);
+            var ticket = await _app.Home.JoinAsync(name, code, _app.Lifetime);
+            await EnterAsync(ticket.IsOk ? Result<TableTicket>.Ok(ticket.Value.Watching()) : ticket);
         }
 
         private async void OnQuickPlay(string name, int seats, string? server)
@@ -314,7 +322,8 @@ namespace Hulla.Composition
                 while (Time.realtimeSinceStartup < deadline && _app.Session?.Table == table)
                 {
                     var socket = await _app.Sessions.ReconnectAsync(table.Lifetime);
-                    if (socket.IsOk && (await _app.Tables.EnterAsync(table.Ticket, table.Lifetime)).IsOk)
+                    var rejoin = table.Ticket.WithResume(table.Client.Model.ResumeToken);
+                    if (socket.IsOk && (await _app.Tables.EnterAsync(rejoin, table.Lifetime)).IsOk)
                     {
                         await _app.TableChat.JoinAsync(table.Ticket.MatchId, table.Lifetime);
                         _shell.SetBanner(null);
@@ -356,7 +365,7 @@ namespace Hulla.Composition
                 return;
             }
 
-            if (model.MySeat == null && model.Seats.Count == 0)
+            if (model.Seats.Count == 0)
             {
                 return;
             }
@@ -380,6 +389,7 @@ namespace Hulla.Composition
             {
                 _lobbyView = new LobbyView(_shell.Show(_shell.Catalog.Lobby), client, () => DateTimeOffset.UtcNow.ToUnixTimeMilliseconds(), Leave, code => _app.ShareSheet.Share(UiText.ShareTitle, string.Format(UiText.ShareText, code)), text => _app.TableChat.SendAsync(text, _app.Lifetime), () => ThullaRulesEditor.Summary(client.Model, _app.Presets), () => OpenRulesEditor(client));
                 _lobbyView.IsMuted = _app.Mutes.IsMuted;
+                _lobbyView.SeatSpectator = client.SeatSpectator;
                 _view = _lobbyView;
                 return;
             }

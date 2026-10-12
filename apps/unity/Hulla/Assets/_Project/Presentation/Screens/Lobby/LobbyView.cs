@@ -83,6 +83,9 @@ namespace Hulla.Presentation.Screens.Lobby
         public void Dispose() => _client.Model.Changed -= Refresh;
 
         /// <summary>A free-text line on the table channel, newest first, the latest five only.</summary>
+        /// <summary>The host seats a watcher (seat_spectator); null hides the Seat buttons.</summary>
+        public Action<string>? SeatSpectator { get; set; }
+
         /// <summary>Muted players' lines are not shown (GDD 11.6).</summary>
         public Func<string?, bool>? IsMuted { get; set; }
 
@@ -200,16 +203,33 @@ namespace Hulla.Presentation.Screens.Lobby
             }
 
             _rules.text = _rulesSummary?.Invoke() ?? "";
+            foreach (var watcher in model.Spectators)
+            {
+                var row = new VisualElement();
+                row.AddToClassList("lobby-seat");
+                var label = new Label(watcher.Name + " · " + UiText.Watchers + (watcher.SeatNext ? " (" + UiText.SeatsNext + ")" : ""));
+                label.AddToClassList("lobby-seat__name");
+                row.Add(label);
+                if (model.IsHost && SeatSpectator != null && !watcher.SeatNext)
+                {
+                    var id = watcher.UserId;
+                    var seat = new Button(() => SeatSpectator?.Invoke(id)) { text = UiText.SeatThem };
+                    seat.AddToClassList("chip");
+                    row.Add(seat);
+                }
+
+                _seats.Add(row);
+            }
             _editRules.style.display = model.IsHost && !matchmade && _openEditor != null ? DisplayStyle.Flex : DisplayStyle.None;
             var changedBy = model.RulesChangedBy;
             _rulesChanged.text = changedBy == null || changedBy == model.MySeat
                 ? ""
                 : string.Format(UiText.RulesChangedBy, changedBy < model.Seats.Count ? model.Seats[(int)changedBy.Value].DisplayName ?? "?" : "?");
             _ready.text = MeReady() ? UiText.NotReady : UiText.Ready;
-            _ready.style.display = matchmade ? DisplayStyle.None : DisplayStyle.Flex;
+            _ready.style.display = matchmade || model.Spectating ? DisplayStyle.None : DisplayStyle.Flex;
             _shareButton.style.display = matchmade || !_canShare ? DisplayStyle.None : DisplayStyle.Flex;
             _start.style.display = model.IsHost && !matchmade ? DisplayStyle.Flex : DisplayStyle.None;
-            _status.text = model.LastErrorCode != null ? UiText.Error(model.LastErrorCode) : seated < 3 ? UiText.Waiting : "";
+            _status.text = model.LastErrorCode != null ? UiText.Error(model.LastErrorCode) : model.Spectating ? UiText.WatchingLobby : seated < 3 ? UiText.Waiting : "";
         }
     }
 }

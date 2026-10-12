@@ -18,6 +18,9 @@ namespace Hulla.Presentation.TableKit
             new[] { new Vector2(0.14f, 0.62f), new Vector2(0.5f, 0.22f), new Vector2(0.86f, 0.62f) },
             new[] { new Vector2(0.12f, 0.7f), new Vector2(0.32f, 0.22f), new Vector2(0.68f, 0.22f), new Vector2(0.88f, 0.7f) },
             new[] { new Vector2(0.1f, 0.78f), new Vector2(0.2f, 0.32f), new Vector2(0.5f, 0.14f), new Vector2(0.8f, 0.32f), new Vector2(0.9f, 0.78f) },
+
+            // Six around a watcher at a six-seat table.
+            new[] { new Vector2(0.09f, 0.82f), new Vector2(0.14f, 0.4f), new Vector2(0.36f, 0.14f), new Vector2(0.64f, 0.14f), new Vector2(0.86f, 0.4f), new Vector2(0.91f, 0.82f) },
         };
 
         /// <summary>Where opponent <paramref name="index"/> (0 = the next seat after the player) sits at a table of <paramref name="seatCount"/>.</summary>

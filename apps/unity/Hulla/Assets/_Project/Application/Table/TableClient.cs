@@ -96,6 +96,9 @@ namespace Hulla.Application.Table
 
         public void StartRound() => Send(MessageTypes.StartRound, new StartRound());
 
+        /// <summary>The host seats a watcher now in the lobby, or at the round's end mid-round (seat_spectator).</summary>
+        public void SeatSpectator(string userId) => Send(MessageTypes.SeatSpectator, new SeatSpectator { UserId = userId });
+
         /// <summary>The host's rules for the next deal; the server checks the host and the lobby phase.</summary>
         public void SetRules(RulesSelection rules) => Send(MessageTypes.SetRules, new SetRules { Rules = rules });
 

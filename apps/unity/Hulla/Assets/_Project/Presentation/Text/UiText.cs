@@ -150,6 +150,12 @@ namespace Hulla.Presentation.Text
         public const string NoTimer = "No timer";
         public const string RulesChangedBy = "{0} changed the rules";
         public const string JoinFriendTable = "Join {0}'s table ({1} open)";
+        public const string WatchFriendTable = "Watch {0}'s game";
+        public const string Watching = "Watching";
+        public const string WatchingLobby = "You're watching. The host can give you a seat.";
+        public const string Watchers = "Watching";
+        public const string SeatThem = "Seat";
+        public const string SeatsNext = "next round";
 
         public static string Presence(PresenceState state) => state switch
         {

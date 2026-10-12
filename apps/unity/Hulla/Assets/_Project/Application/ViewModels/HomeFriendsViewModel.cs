@@ -32,6 +32,9 @@ namespace Hulla.Application.ViewModels
         /// <summary>The friend whose table to offer, or null.</summary>
         public FriendPresence? Hero { get; private set; }
 
+        /// <summary>With no table to join, a friend's round to watch instead.</summary>
+        public FriendPresence? WatchHero { get; private set; }
+
         /// <summary>Friends who are online in any way, joinable lobbies first.</summary>
         public IReadOnlyList<FriendPresence> Online => _online;
 
@@ -65,6 +68,7 @@ namespace Hulla.Application.ViewModels
 
                 _online.Clear();
                 Hero = null;
+                WatchHero = null;
                 foreach (var friend in friends.Value)
                 {
                     if (friend.State == PresenceState.Offline || friend.State == PresenceState.Hidden)
@@ -76,6 +80,11 @@ namespace Hulla.Application.ViewModels
                     if (Hero == null && friend.Joinable && friend.TableCode != null)
                     {
                         Hero = friend;
+                    }
+
+                    if (WatchHero == null && friend.Watchable && !friend.Joinable && friend.TableCode != null)
+                    {
+                        WatchHero = friend;
                     }
                 }
 

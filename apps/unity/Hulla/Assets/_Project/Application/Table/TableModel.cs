@@ -51,6 +51,17 @@ namespace Hulla.Application.Table
         /// <summary>The seats that voted to play again.</summary>
         public IReadOnlyList<long> RematchVotes { get; private set; } = Array.Empty<long>();
 
+        /// <summary>The seat's resume token from the last table_state, for a rejoin after a dropped socket.</summary>
+        public string? ResumeToken { get; private set; }
+
+        /// <summary>Who is watching, and who takes a seat at the next round (GDD 7.7, 9.10).</summary>
+        public IReadOnlyList<SpectatorInfo> Spectators => _spectators;
+
+        /// <summary>True when this client watches rather than sits.</summary>
+        public bool Spectating => MySeat == null && Seats.Count > 0;
+
+        private readonly List<SpectatorInfo> _spectators = new List<SpectatorInfo>();
+
         /// <summary>The last rules change in the lobby: who changed it and which keys (E19); null when none.</summary>
         public RulesChanged? LastRulesChange { get; private set; }
 
@@ -229,6 +240,15 @@ namespace Hulla.Application.Table
             Status = state.Status;
             Mode = state.Mode;
             Selection = state.Rules;
+            ResumeToken = state.ResumeToken ?? ResumeToken;
+            _spectators.Clear();
+            if (state.Spectators != null)
+            {
+                foreach (var watcher in state.Spectators)
+                {
+                    _spectators.Add(new SpectatorInfo(watcher.UserId, watcher.DisplayName ?? "?", watcher.SeatNext));
+                }
+            }
             RematchDeadlineTs = state.Rematch?.DeadlineTs;
             RematchVotes = state.Rematch?.Votes ?? (IReadOnlyList<long>)Array.Empty<long>();
             AutoStartAtTs = state.AutoStart?.StartsAtTs;

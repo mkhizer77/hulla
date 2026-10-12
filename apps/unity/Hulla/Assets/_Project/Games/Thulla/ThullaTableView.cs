@@ -591,6 +591,10 @@ namespace Hulla.Games.Thulla
         {
             var model = _client.Model;
             var text = model.IsPrivate && model.Code.Length > 0 ? model.Code : UiText.QuickPlayTable;
+            if (model.Spectating)
+            {
+                text = UiText.Watching + " · " + text;
+            }
             if (model.InRound)
             {
                 text += " · " + string.Format(UiText.Discard, model.DiscardCount);
@@ -607,8 +611,10 @@ namespace Hulla.Games.Thulla
         {
             var model = _client.Model;
             var count = model.SeatCount > 0 ? model.SeatCount : model.Seats.Count;
+            _ring.Spectating = model.Spectating;
             _ring.Layout(count, model.MySeat ?? 0);
-            for (var i = 0; i < count - 1 && i < _ring.Badges.Count; i++)
+            var shown = model.Spectating ? count : count - 1;
+            for (var i = 0; i < shown && i < _ring.Badges.Count; i++)
             {
                 var seat = _ring.SeatAt(i);
                 var info = seat < model.Seats.Count ? model.Seats[(int)seat] : default;

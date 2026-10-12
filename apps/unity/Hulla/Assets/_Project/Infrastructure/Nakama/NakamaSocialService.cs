@@ -177,7 +177,8 @@ namespace Hulla.Infrastructure.Nakama
                         (bool?)item["favourite"] == true,
                         (string?)table?["code"],
                         (long?)table?["open"] ?? 0,
-                        (bool?)table?["joinable"] == true));
+                        (bool?)table?["joinable"] == true,
+                        (bool?)table?["watchable"] == true));
                 }
             }
 
