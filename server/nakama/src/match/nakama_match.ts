@@ -2,6 +2,7 @@ import { OPCODES } from "@hulla/protocol/generated";
 
 import { ROUND_RESULTS_COLLECTION } from "../services/account_deletion";
 import { applyRoundToStats, nkProfileStore } from "../services/profiles";
+import { nkSocialStore, recordRecentPlayers } from "../services/social";
 
 import { tableCore, type PresenceInfo, type TableCore } from "./table_core";
 import { freeSeat, occupiedSeats, tableStatus } from "./view";
@@ -51,6 +52,15 @@ export function storagePersistence(nk: nkruntime.Nakama, logger: nkruntime.Logge
         });
       }
       if (!record.completed) return;
+      try {
+        recordRecentPlayers(
+          nkSocialStore(nk),
+          record.players.filter((p): p is string => p !== null),
+          record.endedTs,
+        );
+      } catch (error: unknown) {
+        logger.warn("recent players not recorded", { error: String(error) });
+      }
       const store = nkProfileStore(nk, logger);
       record.players.forEach((playerId, seat) => {
         if (playerId === null) return;

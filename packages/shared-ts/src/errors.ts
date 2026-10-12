@@ -74,6 +74,12 @@ export const ErrorCodes = {
     unknownAvatar: "profile.unknown_avatar",
     notFound: "profile.not_found",
   },
+  social: {
+    self: "social.self",
+    friendCap: "social.friend_cap",
+    favouriteCap: "social.favourite_cap",
+    notFriends: "social.not_friends",
+  },
 } as const;
 
 type Leaves<T> = T extends string ? T : { [K in keyof T]: Leaves<T[K]> }[keyof T];
