@@ -6,6 +6,7 @@ using Hulla.Games.Thulla;
 using Hulla.Presentation.Navigation;
 using Hulla.Presentation.Screens.Home;
 using Hulla.Presentation.Screens.Lobby;
+using Hulla.Presentation.Text;
 using UnityEngine;
 
 namespace Hulla.Composition
@@ -25,12 +26,16 @@ namespace Hulla.Composition
             Table,
         }
 
+        private const float ReconnectWindowSeconds = 30f;
+        private const float RetrySeconds = 2f;
+
         private readonly AppScope _app;
         private readonly ShellView _shell;
         private Screen _screen;
         private IDisposable? _view;
         private AnimationScheduler? _scheduler;
         private ThullaTableView? _tableView;
+        private bool _reconnecting;
 
         public AppFlow(AppScope app, ShellView shell)
         {
@@ -114,11 +119,57 @@ namespace Hulla.Composition
             ShowHome();
         }
 
-        private void OnDisconnected()
+        /// <summary>
+        /// The socket dropped (a locked phone, a network change). At a table the screen stays and the
+        /// client reconnects and rejoins inside the server's 30 s window (GDD R43); the server answers
+        /// with table_state and any open turn_start. Away from a table the socket is simply reopened.
+        /// </summary>
+        private async void OnDisconnected()
         {
-            _app.Session?.EndTable();
-            _app.EndSession();
-            ShowHome();
+            if (_reconnecting)
+            {
+                return;
+            }
+
+            _reconnecting = true;
+            var table = _app.Session?.Table;
+            try
+            {
+                if (table == null)
+                {
+                    await _app.Sessions.ReconnectAsync(_app.Lifetime);
+                    return;
+                }
+
+                _shell.SetBanner(UiText.Reconnecting);
+                var deadline = Time.realtimeSinceStartup + ReconnectWindowSeconds;
+                while (Time.realtimeSinceStartup < deadline && _app.Session?.Table == table)
+                {
+                    var socket = await _app.Sessions.ReconnectAsync(table.Lifetime);
+                    if (socket.IsOk && (await _app.Tables.EnterAsync(table.Ticket, table.Lifetime)).IsOk)
+                    {
+                        _shell.SetBanner(null);
+                        return;
+                    }
+
+                    await Awaitable.WaitForSecondsAsync(RetrySeconds, table.Lifetime);
+                }
+
+                _shell.SetBanner(null);
+                if (_app.Session?.Table == table)
+                {
+                    _app.Session?.EndTable();
+                    ShowHome();
+                }
+            }
+            catch (OperationCanceledException)
+            {
+                _shell.SetBanner(null);
+            }
+            finally
+            {
+                _reconnecting = false;
+            }
         }
 
         private void FollowModel()

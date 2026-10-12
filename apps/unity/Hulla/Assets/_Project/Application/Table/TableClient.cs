@@ -130,6 +130,14 @@ namespace Hulla.Application.Table
         {
             _snapshotRequested = false;
             _lastSeq = seq;
+
+            // Anything held from before this baseline is already part of it; replaying a stale
+            // turn_start would light cards for a turn that has passed.
+            while (_held.Count > 0 && _held.Keys[0] <= seq)
+            {
+                _held.RemoveAt(0);
+            }
+
             Apply(message);
             Drain();
         }

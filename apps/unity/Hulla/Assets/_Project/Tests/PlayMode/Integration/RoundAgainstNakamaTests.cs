@@ -61,7 +61,13 @@ namespace Hulla.Integration.Tests
 
         [UnityTest]
         [Timeout(300000)]
-        public IEnumerator ThreeClientsCreateJoinByCodeAndPlayARoundToItsResult()
+        public IEnumerator ThreeClientsCreateJoinByCodeAndPlayARoundToItsResult() => Run(false);
+
+        [UnityTest]
+        [Timeout(300000)]
+        public IEnumerator AClientThatDropsMidRoundReconnectsRejoinsAndFinishesTheRound() => Run(true);
+
+        private IEnumerator Run(bool dropOne)
         {
             var host = Environment.GetEnvironmentVariable("HULLA_NAKAMA_HOST");
             if (string.IsNullOrEmpty(host))
@@ -70,7 +76,7 @@ namespace Hulla.Integration.Tests
             }
 
             var port = int.TryParse(Environment.GetEnvironmentVariable("HULLA_NAKAMA_PORT"), out var p) ? p : 7350;
-            var run = PlayRoundAsync(host!, port);
+            var run = PlayRoundAsync(host!, port, dropOne);
             var awaiter = run.GetAwaiter();
             while (!awaiter.IsCompleted)
             {
@@ -80,7 +86,7 @@ namespace Hulla.Integration.Tests
             awaiter.GetResult();
         }
 
-        private async Awaitable PlayRoundAsync(string host, int port)
+        private async Awaitable PlayRoundAsync(string host, int port, bool dropOne)
         {
             var stamp = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds().ToString();
             foreach (var name in new[] { "ana", "bilal", "chand" })
@@ -91,6 +97,7 @@ namespace Hulla.Integration.Tests
                 Assert.IsTrue(signedIn.IsOk, name + " sign-in: " + signedIn.Error);
             }
 
+            var tickets = new Dictionary<Player, TableTicket>();
             var created = await _players[0].Gateway.CreateTableAsync(default);
             Assert.IsTrue(created.IsOk, "table_create: " + created.Error);
             var code = created.Value.Code;
@@ -99,6 +106,7 @@ namespace Hulla.Integration.Tests
                 var ticket = player == _players[0] ? created : await player.Gateway.JoinByCodeAsync(code, default);
                 Assert.IsTrue(ticket.IsOk, player.Name + " join by code: " + ticket.Error);
                 Assert.AreEqual(created.Value.MatchId, ticket.Value.MatchId);
+                tickets[player] = ticket.Value;
                 var client = new TableClient(player.Gateway, ticket.Value, player.Session.Current!.UserId, DateTimeOffset.UtcNow.ToUnixTimeMilliseconds());
                 player.Client = client;
                 var captured = player;
@@ -117,6 +125,19 @@ namespace Hulla.Integration.Tests
             await WaitFor(() => AllReady(_players[0]), 20f, "everyone ready");
             Assert.IsTrue(_players[0].Client!.Model.IsHost);
             _players[0].Client!.StartRound();
+            if (dropOne)
+            {
+                var dropped = _players[2];
+                await WaitFor(() => dropped.Client!.Model.InRound, 20f, "the round started");
+                dropped.Connection.Close();
+                await Awaitable.WaitForSecondsAsync(1f);
+                var reconnected = await dropped.Session.ReconnectAsync(default);
+                Assert.IsTrue(reconnected.IsOk, "reconnect: " + reconnected.Error);
+                var rejoined = await dropped.Gateway.EnterAsync(tickets[dropped], default);
+                Assert.IsTrue(rejoined.IsOk, "rejoin: " + rejoined.Error);
+                await WaitFor(() => dropped.Client!.Model.Hand.Count > 0 || dropped.Client.Model.LastResult != null, 20f, "the hand came back with table_state");
+            }
+
             await WaitFor(() => _players.TrueForAll(pl => pl.Client!.Model.LastResult != null), RoundSeconds, "every client saw round_end");
 
             var first = _players[0].Client!.Model.LastResult!;

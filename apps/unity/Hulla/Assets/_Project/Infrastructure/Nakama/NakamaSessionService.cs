@@ -58,6 +58,40 @@ namespace Hulla.Infrastructure.Nakama
             }
         }
 
+        public async Awaitable<Result<bool>> ReconnectAsync(CancellationToken cancellation)
+        {
+            var session = _connection.Session;
+            if (session == null || Current == null)
+            {
+                return Result<bool>.Fail("session.not_signed_in");
+            }
+
+            try
+            {
+                var client = _connection.Client;
+                if (session.HasExpired(DateTime.UtcNow.AddMinutes(1)))
+                {
+                    session = await client.SessionRefreshAsync(session, null, null, cancellation);
+                    _connection.Session = session;
+                }
+
+                _connection.Close();
+                var socket = client.NewSocket(true);
+                await socket.ConnectAsync(session, true);
+                _connection.Socket = socket;
+                return Result<bool>.Ok(true);
+            }
+            catch (OperationCanceledException)
+            {
+                throw;
+            }
+            catch (Exception error)
+            {
+                Debug.LogWarning($"reconnect failed: {error.Message}");
+                return Result<bool>.Fail("session.unavailable", error.GetType().Name);
+            }
+        }
+
         private static string DeviceId()
         {
             var args = Environment.GetCommandLineArgs();

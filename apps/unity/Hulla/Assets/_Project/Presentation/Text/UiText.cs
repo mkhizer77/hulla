@@ -32,6 +32,7 @@ namespace Hulla.Presentation.Text
         public const string PlayAgain = "Play again";
         public const string Waiting4Rematch = "Waiting for the others…";
         public const string You = "You";
+        public const string Reconnecting = "Reconnecting…";
         public const string Server = "Server (development builds)";
 
         public static string Error(string code) => "Something went wrong (" + code + ")";

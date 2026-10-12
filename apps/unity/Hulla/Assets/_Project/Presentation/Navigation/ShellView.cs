@@ -33,6 +33,27 @@ namespace Hulla.Presentation.Navigation
             return instance;
         }
 
+        /// <summary>A strip across the top of whatever screen is showing; null hides it.</summary>
+        public void SetBanner(string? text)
+        {
+            var root = GetComponent<UIDocument>().rootVisualElement;
+            var banner = root.Q<Label>("shell-banner");
+            if (text == null)
+            {
+                banner?.RemoveFromHierarchy();
+                return;
+            }
+
+            if (banner == null)
+            {
+                banner = new Label { name = "shell-banner" };
+                banner.AddToClassList("banner");
+                root.Add(banner);
+            }
+
+            banner.text = text;
+        }
+
         private void Update() => Ticked?.Invoke(Time.deltaTime);
     }
 }
