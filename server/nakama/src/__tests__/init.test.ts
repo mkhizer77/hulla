@@ -31,4 +31,15 @@ describe("InitModule", () => {
       fields: { env: "test" },
     });
   });
+  it("labels the environment local when HULLA_ENV is unset", async () => {
+    const init = await loadInitModule();
+    const lines: LogLine[] = [];
+    init(
+      { env: {} } as unknown as nkruntime.Context,
+      fakeLogger(lines),
+      fakeNk(),
+      fakeInitializer().initializer,
+    );
+    expect(lines[0]).toMatchObject({ fields: { env: "local" } });
+  });
 });

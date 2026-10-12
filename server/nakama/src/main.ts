@@ -1,5 +1,4 @@
-import { runtimeFrom } from "./infra/nk";
-import { hello } from "./rpc/hello";
+import { rpcHello } from "./rpc/hello";
 
 /** Nakama calls this once at start-up; every RPC, hook and match handler registers here. */
 function InitModule(
@@ -8,9 +7,7 @@ function InitModule(
   _nk: nkruntime.Nakama,
   initializer: nkruntime.Initializer,
 ): void {
-  initializer.registerRpc("hello", (_ctx, rpcLogger, rpcNk) => {
-    return JSON.stringify(hello(runtimeFrom(rpcNk, rpcLogger)));
-  });
+  initializer.registerRpc("hello", rpcHello);
   logger.info("Hulla runtime loaded", { env: ctx.env["HULLA_ENV"] ?? "local" });
 }
 
