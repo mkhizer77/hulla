@@ -7,7 +7,7 @@ M0 complete: the Thulla rulebook runs in TypeScript with full traceability. M1, 
 
 ## Done
 - M1 #16 merged (13 Oct): the Thulla host, named match callbacks, the game registry, `table_create`, and the scripted four-seat round against Nakama in Docker. Nakama facts learned and recorded (ADR-0022, ARCHITECTURE §8.1, server README): handlers resolve by global name, the globals freeze after InitModule, the match state is rebuilt as plain data between callbacks, and a message target needs Nakama's node. Server-side validation moved from zod to compiled checks. A native Nakama plus Postgres runs on the dev Mac for server tickets.
-- M1 #21 and the Unity session/TableClient merged by the Unity session (PRs 152, 153).
+- Unity first playable (13 Oct): #21 project and assemblies, #24 session and socket, #25 TableClient and scheduler, #27 Thulla table, #28 private room, #30 results and rematch, #31 quick chat and emotes, the client side of #19 (reconnect and rejoin), local development builds and `docs/runbooks/play-test-locally.md` (PRs 152, 153, 159, 162 to 164). A play-mode test runs three real clients through a full round, chat and a mid-round reconnect against Nakama. The table kit is UI Toolkit with text card faces until the slice art (#34). The Unity CI job waits for the `UNITY_LICENSE` secret; tests run locally until then.
 - M1 #15 merged (12 Oct): the table core in `server/nakama/src/match` (lifecycle, pipeline with idempotency, deadlines and auto-play, log with state hashes, snapshots, redaction dispatch, rematch and series) and its Nakama binding; OQ-009 and OQ-010 logged.
 - M1 #14 merged (12 Oct): `server/nakama` with the local compose, Dockerfile, config, InitModule with a hello RPC, the esbuild bundler, a fake nk for unit tests and a CI compose smoke test.
 - GDD v1.3 (private, git-ignored at `docs/GDD_Hulla.md`): rules spec with IDs, platform catalogue, economy, UX, compliance, production plan.
@@ -33,7 +33,7 @@ M0 complete: the Thulla rulebook runs in TypeScript with full traceability. M1, 
 - M1 #17 (branch `feat/table-rpcs`, rebased on main): the room-code registry with region and expiry, `table_join_by_code`, `presets_get` from `content/presets` (four presets, a schema and `pnpm content:validate`), and `voice_token` with a pure-TypeScript Agora AccessToken2 builder checked against Agora's own; `voice.*` error codes; OQ-011 logged. Pull request next.
 
 ## Next
-#18 (Quick Play matchmaking with human-only fill), #19 (reconnection), #20 (chat). The Unity client track runs in parallel in its own worktree (the other session).
+#18 (Quick Play matchmaking with human-only fill), #19 (reconnection), #20 (chat). The Unity client track runs in parallel in its own worktree (the other session). Unity next: #33 polish (sounds with the audio set), #29 Quick Play client once #18 merges, #23 theme from the design system (#22), #32 voice, then the Profile screen for #40.
 
 ## Blockers
 - None.
