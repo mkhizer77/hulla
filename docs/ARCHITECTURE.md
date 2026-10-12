@@ -399,7 +399,7 @@ One well-sized node with a managed Postgres serves the first years of expected l
 | `Hulla.Application` | Use cases, `TableClient`, state machines, view models, service interfaces (`ITableSession`, `IVoiceService`, `IWalletGateway`, `IContentService`…) | Domain, Protocol |
 | `Hulla.Infrastructure` | Adapters: Nakama, Agora, IAP, Ads, Firebase, Addressables, Localization, Save, Deep links | Application, Domain, Protocol |
 | `Hulla.Presentation` | UI Toolkit screens, navigation, table scene kit, animation scheduler, theme | Application, Domain |
-| `Hulla.Games.Thulla` | The client module: layout, renderer, input, rulebook, tutorial, results adapter | Application, Domain, Presentation kit |
+| `Hulla.Games.Thulla` | The client module: layout, renderer, input, rulebook, tutorial, results adapter | Application, Domain, Presentation kit, Protocol (its own game messages: the legal mask, results; the engine mirror that would replace them is deferred, ADR-0019) |
 | `Hulla.Composition` | The hand-written composition root: `AppScope`, `SessionScope`, `TableScope` and their factories; the only assembly that references everything | all |
 | `Hulla.Tests.*` | Edit-mode and play-mode tests per assembly | the assembly under test |
 
@@ -418,6 +418,7 @@ flowchart TB
     PRES --> APP
     GAME --> APP
     GAME --> PRES
+    GAME --> PROTO
     INFRA --> APP
     APP --> DOM
     APP --> PROTO
@@ -467,7 +468,7 @@ sequenceDiagram
 | `Analytics` | Typed events, batching, consent |
 
 ### 9.5 Table scene and module kit
-The table scene is a world-space 2D layer (sprites, sorting groups, pooled card views) under a UI Toolkit HUD. The **table kit** provides seat rings, hand fan, pile zones, timer rings, stamps, confetti and the quick-chat strip; game modules configure it through `ITableLayout` and drive it through `IStateRenderer`. Nothing in the kit knows about any specific game.
+The table scene is a world-space 2D layer (sprites, sorting groups, pooled card views) under a UI Toolkit HUD. Until the slice deck and table art arrive (#34), the first playable draws the table kit in UI Toolkit (text card faces, seat badges, the pile) behind the same `IEventPresenter` seam, so the sprite renderer replaces it without touching `TableClient` or the scheduler. The **table kit** provides seat rings, hand fan, pile zones, timer rings, stamps, confetti and the quick-chat strip; game modules configure it through `ITableLayout` and drive it through `IStateRenderer`. Nothing in the kit knows about any specific game.
 
 ### 9.6 UI Toolkit conventions
 One UXML document per screen, one view model per document, Unity 6 runtime data binding (UXML declares the data source and binding paths; view models raise `propertyChanged` on every setter), USS design tokens mirrored from the GDD palette (§15.2) so the web client can share them as CSS variables, the Advanced Text Generator enabled for Nastaliq, Devanagari and Bengali, and RTL mirroring driven by `LocalizationService` (ADR-0007). Mirroring is the shell's job: the Advanced Text Generator shapes bidirectional text, but UI Toolkit does not mirror layout, so `LocalizationService` swaps flex direction and alignment per screen.

@@ -20,6 +20,13 @@ namespace Hulla.Infrastructure.Nakama
 
         public ISocket? Socket { get; set; }
 
+        /// <summary>Closes the socket; the session stays valid for the next connect.</summary>
+        public void Close()
+        {
+            Socket?.CloseAsync();
+            Socket = null;
+        }
+
         /// <summary>Points the connection at another server; the next sign-in starts a fresh session.</summary>
         public void Retarget(string scheme, string host, int port, string serverKey)
         {

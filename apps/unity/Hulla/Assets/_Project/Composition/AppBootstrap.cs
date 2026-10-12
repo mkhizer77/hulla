@@ -14,6 +14,9 @@ namespace Hulla.Composition
         {
             DontDestroyOnLoad(gameObject);
             UnityEngine.Application.targetFrameRate = 60;
+
+            // The socket adapter delivers events from Update; a paused player would never see them.
+            UnityEngine.Application.runInBackground = true;
             _app = new AppScope(AppConfig.FromEnvironment());
             SceneManager.sceneLoaded += OnSceneLoaded;
             SceneManager.LoadScene("Main");
@@ -27,7 +30,7 @@ namespace Hulla.Composition
             }
 
             SceneManager.sceneLoaded -= OnSceneLoaded;
-            var shell = FindFirstObjectByType<ShellView>();
+            var shell = FindAnyObjectByType<ShellView>();
             if (shell == null)
             {
                 Debug.LogError("Main has no ShellView");

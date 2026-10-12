@@ -306,22 +306,23 @@
     border-width: 2px;
     border-color: #C9C2B4;
     padding: 6px 8px;
+}
+
+.card__rank, .card__suit {
     color: var(--suit-black);
 }
 
-.card--red {
+.card--red .card__rank, .card--red .card__suit {
     color: var(--suit-red);
 }
 
 .card__rank {
     font-size: 40px;
     -unity-font-style: bold;
-    color: inherit;
 }
 
 .card__suit {
     font-size: 44px;
-    color: inherit;
 }
 
 .card--legal {
