@@ -50,6 +50,25 @@ namespace Hulla.Application.Tests
             public Awaitable<Result<bool>> SetFavouriteAsync(string userId, bool pinned, CancellationToken cancellation) => throw new NotSupportedException();
 
             public Awaitable<Result<bool>> SetAwayAsync(bool away, CancellationToken cancellation) => throw new NotSupportedException();
+
+            public List<string> Mutes = new List<string>();
+
+            public Awaitable<Result<IReadOnlyList<string>>> MutesAsync(CancellationToken cancellation) => Done(Result<IReadOnlyList<string>>.Ok(new List<string>(Mutes)));
+
+            public Awaitable<Result<IReadOnlyList<string>>> SetMuteAsync(string userId, bool muted, CancellationToken cancellation)
+            {
+                if (muted && !Mutes.Contains(userId))
+                {
+                    Mutes.Add(userId);
+                }
+
+                if (!muted)
+                {
+                    Mutes.Remove(userId);
+                }
+
+                return Done(Result<IReadOnlyList<string>>.Ok(new List<string>(Mutes)));
+            }
         }
 
         [Test]
@@ -70,6 +89,22 @@ namespace Hulla.Application.Tests
             Assert.AreEqual("Ali", model.Hero?.Name);
             Assert.AreEqual("K7Q2MX", model.Hero?.TableCode);
             Assert.AreEqual(2, model.Online.Count);
+        }
+
+        [Test]
+        public void MutesFollowTheServerList()
+        {
+            var social = new FakeSocial { Mutes = { "u7" } };
+            var mutes = new MuteList(social);
+            Assert.IsFalse(mutes.IsMuted("u7"), "nothing until loaded");
+            _ = mutes.RefreshAsync(default);
+            Assert.IsTrue(mutes.IsMuted("u7"));
+            _ = mutes.SetAsync("u3", true, default);
+            Assert.IsTrue(mutes.IsMuted("u3"));
+            _ = mutes.SetAsync("u7", false, default);
+            Assert.IsFalse(mutes.IsMuted("u7"));
+            CollectionAssert.AreEquivalent(new[] { "u3" }, social.Mutes);
+            Assert.IsFalse(mutes.IsMuted(null));
         }
 
         [Test]

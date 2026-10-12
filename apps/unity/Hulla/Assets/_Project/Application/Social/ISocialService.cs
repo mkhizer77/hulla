@@ -39,5 +39,11 @@ namespace Hulla.Application.Social
 
         /// <summary>Shows the player as Away while the app is in the background (presence_set).</summary>
         Awaitable<Result<bool>> SetAwayAsync(bool away, CancellationToken cancellation);
+
+        /// <summary>The players this player has muted, kept across devices (mutes_get).</summary>
+        Awaitable<Result<IReadOnlyList<string>>> MutesAsync(CancellationToken cancellation);
+
+        /// <summary>Mutes or unmutes a player and returns the new list (mute_set).</summary>
+        Awaitable<Result<IReadOnlyList<string>>> SetMuteAsync(string userId, bool muted, CancellationToken cancellation);
     }
 }

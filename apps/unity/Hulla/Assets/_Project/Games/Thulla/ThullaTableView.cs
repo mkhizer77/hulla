@@ -65,6 +65,8 @@ namespace Hulla.Games.Thulla
         private Button _coachButton = null!;
         private Action? _coachAction;
         private ThullaHints? _hints;
+        private Func<string?, bool>? _isMuted;
+        private Action<string, bool>? _setMuted;
         private bool _thullaJustPlayed;
         private readonly Func<string, Awaitable<Domain.Result<bool>>>? _sendText;
         private VisualElement _chatLog = null!;
@@ -97,6 +99,7 @@ namespace Hulla.Games.Thulla
             _hideRecapForGood = hideRecapForGood;
             _felt = root.Q<VisualElement>("felt");
             _ring = new OpponentRing(root.Q<VisualElement>("opponents"));
+            _ring.Tapped += OnBadgeTapped;
             _pile = new PileView(root.Q<VisualElement>("pile")) { ReduceMotion = reduceMotion };
             _pileNote = root.Q<Label>("pile-note");
             _hand = new HandView(root.Q<VisualElement>("hand")) { OneTap = oneTap };
@@ -184,6 +187,43 @@ namespace Hulla.Games.Thulla
         }
 
         public void HideCoach() => _coach.style.display = DisplayStyle.None;
+
+        /// <summary>Hides muted players' text, quick chat and emotes, and offers Mute on a tapped badge (GDD 11.6).</summary>
+        public void UseMutes(Func<string?, bool> isMuted, Action<string, bool> setMuted)
+        {
+            _isMuted = isMuted;
+            _setMuted = setMuted;
+        }
+
+        private void OnBadgeTapped(long seat)
+        {
+            var model = _client.Model;
+            if (_setMuted == null || seat >= model.Seats.Count)
+            {
+                return;
+            }
+
+            var player = model.Seats[(int)seat];
+            if (player.PlayerId == null)
+            {
+                return;
+            }
+
+            var id = player.PlayerId;
+            var muted = _isMuted?.Invoke(id) == true;
+            var name = NameOf(seat);
+            ShowCoach(muted ? name : string.Format(UiText.MutedNote, name), muted ? UiText.Unmute : UiText.Mute, () =>
+            {
+                _setMuted(id, !muted);
+                HideCoach();
+            });
+        }
+
+        private bool Muted(long seat)
+        {
+            var model = _client.Model;
+            return _isMuted != null && seat < model.Seats.Count && _isMuted(model.Seats[(int)seat].PlayerId);
+        }
 
         /// <summary>Turns on the first-rounds hints for a live table (never for the tutorial).</summary>
         public void UseHints(ThullaHints hints)
@@ -357,6 +397,11 @@ namespace Hulla.Games.Thulla
 
         private void OnChat(ChatLine line)
         {
+            if (Muted(line.Seat))
+            {
+                return;
+            }
+
             var text = line.PhraseId != null
                 ? _chat.TextFor(line.PhraseId) ?? line.PhraseId
                 : UiText.EmoteLabel(line.EmoteId ?? "") + (line.TargetSeat == null ? "" : " → " + NameOf(line.TargetSeat.Value));
@@ -374,6 +419,11 @@ namespace Hulla.Games.Thulla
         /// <summary>A free-text line from the table channel: into the log and onto the sender's seat.</summary>
         public void ShowText(TextLine line)
         {
+            if (_isMuted?.Invoke(line.SenderId) == true)
+            {
+                return;
+            }
+
             var model = _client.Model;
             long? seat = null;
             foreach (var info in model.Seats)
@@ -421,7 +471,7 @@ namespace Hulla.Games.Thulla
                 return;
             }
 
-            _chatStatus.text = sent.Error.Code == "network.rate_limited" ? UiText.ChatTooFast : UiText.ChatRefused;
+            _chatStatus.text = UiText.ChatProblem(sent.Error.Code);
         }
 
         private void VoteAgain()

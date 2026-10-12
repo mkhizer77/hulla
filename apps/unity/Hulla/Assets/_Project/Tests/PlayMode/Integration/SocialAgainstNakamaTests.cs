@@ -119,6 +119,13 @@ namespace Hulla.Integration.Tests
                 Assert.AreEqual(PresenceState.Away, amnaHome.Online[0].State, "Away shows to friends");
                 amna.Gateway.Dispose();
 
+                // Mutes follow the account (GDD 11.6).
+                var mutes = new MuteList(amna.Social);
+                await mutes.SetAsync(request.UserId, true, default);
+                var again = new MuteList(amna.Social);
+                await again.RefreshAsync(default);
+                Assert.IsTrue(again.IsMuted(request.UserId), "a mute is kept on the server");
+
                 var handle = "amna_" + stamp.Substring(stamp.Length - 6);
                 await amna.Profile.SaveAsync("Amna K", handle, "Thulla queen", default);
                 Assert.IsTrue(amna.Profile.Saved, amna.Profile.ErrorCode);

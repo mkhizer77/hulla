@@ -275,6 +275,7 @@ namespace Hulla.Composition
 
             FollowModel();
             await _app.TableChat.JoinAsync(ticket.Value.MatchId, table.Lifetime);
+            await _app.Mutes.RefreshAsync(table.Lifetime);
         }
 
         private async void Leave()
@@ -377,6 +378,7 @@ namespace Hulla.Composition
             if (wanted == Screen.Lobby)
             {
                 _lobbyView = new LobbyView(_shell.Show(_shell.Catalog.Lobby), client, () => DateTimeOffset.UtcNow.ToUnixTimeMilliseconds(), Leave, code => _app.ShareSheet.Share(UiText.ShareTitle, string.Format(UiText.ShareText, code)), text => _app.TableChat.SendAsync(text, _app.Lifetime), () => ThullaRulesEditor.Summary(client.Model, _app.Presets), () => OpenRulesEditor(client));
+                _lobbyView.IsMuted = _app.Mutes.IsMuted;
                 _view = _lobbyView;
                 return;
             }
@@ -389,6 +391,8 @@ namespace Hulla.Composition
             {
                 _tableView.UseHints(hints);
             }
+
+            _tableView.UseMutes(_app.Mutes.IsMuted, (id, muted) => _ = _app.Mutes.SetAsync(id, muted, _app.Lifetime));
             _scheduler = new AnimationScheduler(client.Events, _tableView);
             _view = _tableView;
         }

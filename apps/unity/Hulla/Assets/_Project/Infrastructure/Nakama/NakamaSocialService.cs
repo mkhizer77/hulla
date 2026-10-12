@@ -170,6 +170,31 @@ namespace Hulla.Infrastructure.Nakama
             return body.IsOk ? Result<bool>.Ok(true) : Result<bool>.Fail(body.Error);
         }
 
+        public async Awaitable<Result<IReadOnlyList<string>>> MutesAsync(CancellationToken cancellation) =>
+            MutesFrom(await RpcAsync("mutes_get", new JObject(), cancellation));
+
+        public async Awaitable<Result<IReadOnlyList<string>>> SetMuteAsync(string userId, bool muted, CancellationToken cancellation) =>
+            MutesFrom(await RpcAsync("mute_set", new JObject { ["userId"] = userId, ["muted"] = muted }, cancellation));
+
+        private static Result<IReadOnlyList<string>> MutesFrom(Result<JObject> body)
+        {
+            if (!body.IsOk)
+            {
+                return Result<IReadOnlyList<string>>.Fail(body.Error);
+            }
+
+            var ids = new List<string>();
+            if (body.Value["mutes"] is JArray list)
+            {
+                foreach (var id in list)
+                {
+                    ids.Add((string)id!);
+                }
+            }
+
+            return Result<IReadOnlyList<string>>.Ok(ids);
+        }
+
         private static PresenceState StateOf(string? state) => state switch
         {
             "lobby" => PresenceState.Lobby,

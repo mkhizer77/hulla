@@ -114,6 +114,14 @@ namespace Hulla.Integration.Tests
             }
 
             await WaitFor(() => players.TrueForAll(s => s.Client!.Model.Code.Length > 0), 15f, "table_state named the table");
+
+            // A guest can't free-text strangers at a public table until linked (GDD 9.4).
+            var chat = new NakamaTableChat(players[0].Connection);
+            Assert.IsTrue((await chat.JoinAsync(matchId, default)).IsOk);
+            var sent = await chat.SendAsync("salaam", default);
+            Assert.IsFalse(sent.IsOk);
+            Assert.AreEqual("auth.not_linked", sent.Error.Code);
+            chat.Dispose();
             Assert.IsFalse(players[0].Client!.Model.IsPrivate);
             await WaitFor(() => players.TrueForAll(s => s.Client!.Model.LastResult != null), 180f, "the self-dealt round ended");
             var first = players[0].Client!.Model.LastResult!;
