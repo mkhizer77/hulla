@@ -1,0 +1,119 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://hulla.gg/schemas/protocol/shell/profile.json",
+  "title": "Profiles, handles, friend codes and the stats card (GDD 10.1)",
+  "definitions": {
+    "profileStats": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "rounds",
+        "escapes",
+        "bhabhis",
+        "thullasGiven",
+        "thullasReceived",
+        "cardsPickedUp",
+        "biggestPickup",
+        "handsTaken",
+        "currentStreak",
+        "bestStreak",
+        "suits"
+      ],
+      "properties": {
+        "rounds": { "type": "integer", "minimum": 0 },
+        "escapes": { "type": "integer", "minimum": 0 },
+        "bhabhis": { "type": "integer", "minimum": 0 },
+        "thullasGiven": { "type": "integer", "minimum": 0 },
+        "thullasReceived": { "type": "integer", "minimum": 0 },
+        "cardsPickedUp": { "type": "integer", "minimum": 0 },
+        "biggestPickup": { "type": "integer", "minimum": 0 },
+        "handsTaken": { "type": "integer", "minimum": 0 },
+        "currentStreak": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Rounds escaped in a row"
+        },
+        "bestStreak": { "type": "integer", "minimum": 0 },
+        "suits": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["S", "H", "C", "D"],
+          "description": "Cards played per suit; the largest is the favourite",
+          "properties": {
+            "S": { "type": "integer", "minimum": 0 },
+            "H": { "type": "integer", "minimum": 0 },
+            "C": { "type": "integer", "minimum": 0 },
+            "D": { "type": "integer", "minimum": 0 }
+          }
+        }
+      }
+    },
+    "profilePrivacy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["showOnline", "visibility"],
+      "properties": {
+        "showOnline": { "type": "boolean" },
+        "visibility": { "type": "string", "enum": ["everyone", "friends"] }
+      }
+    },
+    "profile": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "A profile as a viewer may see it; the owner sees everything, others only the public card",
+      "required": [
+        "userId",
+        "displayName",
+        "handle",
+        "avatar",
+        "frame",
+        "flag",
+        "title",
+        "bio",
+        "stats"
+      ],
+      "properties": {
+        "userId": { "$ref": "../common.json#/definitions/playerId" },
+        "displayName": { "$ref": "../common.json#/definitions/displayName" },
+        "handle": { "type": "string", "pattern": "^[A-Za-z0-9_]{3,16}$" },
+        "friendCode": {
+          "type": "string",
+          "pattern": "^[ABCDEFGHJKLMNPQRSTUVWXYZ23456789]{8}$",
+          "description": "Owner and friends only"
+        },
+        "avatar": { "type": "string", "pattern": "^[a-z0-9_]{1,32}$" },
+        "frame": { "type": "string", "pattern": "^[a-z0-9_]{1,32}$" },
+        "flag": { "type": ["string", "null"], "pattern": "^[A-Z]{2}$" },
+        "title": { "type": ["string", "null"] },
+        "bio": { "type": "string", "maxLength": 60 },
+        "stats": { "$ref": "#/definitions/profileStats" },
+        "online": { "type": "boolean", "description": "Present only when the owner shows it" },
+        "privacy": { "$ref": "#/definitions/profilePrivacy", "description": "Owner only" },
+        "nameChanges": { "type": "integer", "minimum": 0, "description": "Owner only" }
+      }
+    },
+    "profile_update": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Any subset of the editable fields",
+      "properties": {
+        "displayName": { "$ref": "../common.json#/definitions/displayName" },
+        "handle": { "type": "string", "pattern": "^[A-Za-z0-9_]{3,16}$" },
+        "avatar": { "type": "string", "pattern": "^[a-z0-9_]{1,32}$" },
+        "frame": { "type": "string", "pattern": "^[a-z0-9_]{1,32}$" },
+        "flag": { "type": ["string", "null"], "pattern": "^[A-Z]{2}$" },
+        "bio": { "type": "string", "maxLength": 60 },
+        "privacy": { "$ref": "#/definitions/profilePrivacy" }
+      }
+    },
+    "profile_get": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Nothing for the caller's own profile; a userId or a handle for someone else's",
+      "properties": {
+        "userId": { "$ref": "../common.json#/definitions/playerId" },
+        "handle": { "type": "string", "pattern": "^[A-Za-z0-9_]{3,16}$" }
+      }
+    }
+  }
+}

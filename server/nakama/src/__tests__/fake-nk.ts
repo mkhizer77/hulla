@@ -60,6 +60,21 @@ export function fakeInitializer(): FakeInitializer {
     registerRtBefore: (id: string, fn: (...args: unknown[]) => unknown) => {
       hooks.set(`rtBefore:${id}`, fn);
     },
+    registerAfterAuthenticateDevice: (fn: (...args: unknown[]) => unknown) => {
+      hooks.set("afterAuthenticateDevice", fn);
+    },
+    registerAfterAuthenticateApple: (fn: (...args: unknown[]) => unknown) => {
+      hooks.set("afterAuthenticateApple", fn);
+    },
+    registerAfterAuthenticateGoogle: (fn: (...args: unknown[]) => unknown) => {
+      hooks.set("afterAuthenticateGoogle", fn);
+    },
+    registerAfterAuthenticateFacebook: (fn: (...args: unknown[]) => unknown) => {
+      hooks.set("afterAuthenticateFacebook", fn);
+    },
+    registerAfterAuthenticateCustom: (fn: (...args: unknown[]) => unknown) => {
+      hooks.set("afterAuthenticateCustom", fn);
+    },
   } as unknown as nkruntime.Initializer;
   return { rpcs, matches, hooks, initializer };
 }

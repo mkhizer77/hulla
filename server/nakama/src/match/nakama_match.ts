@@ -1,5 +1,7 @@
 import { OPCODES } from "@hulla/protocol/generated";
 
+import { applyRoundToStats, nkProfileStore } from "../services/profiles";
+
 import { tableCore, type PresenceInfo, type TableCore } from "./table_core";
 import { freeSeat, occupiedSeats, tableStatus } from "./view";
 
@@ -47,6 +49,21 @@ export function storagePersistence(nk: nkruntime.Nakama, logger: nkruntime.Logge
           error: String(error),
         });
       }
+      if (!record.completed) return;
+      const store = nkProfileStore(nk, logger);
+      record.players.forEach((playerId, seat) => {
+        if (playerId === null) return;
+        try {
+          const profile = store.read(playerId);
+          if (profile === null) return;
+          store.write(playerId, {
+            ...profile,
+            stats: applyRoundToStats(profile.stats, seat, record),
+          });
+        } catch (error: unknown) {
+          logger.warn("stats card not updated", { seat, error: String(error) });
+        }
+      });
     },
   };
 }

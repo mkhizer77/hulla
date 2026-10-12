@@ -87,6 +87,10 @@ export function buildRoot(opcodes: readonly OpcodeEntry[]): JsonSchema {
     seriesState: { $ref: `${PROTOCOL_BASE}common.json#/definitions/seriesState` },
     seatStats: { $ref: `${PROTOCOL_BASE}common.json#/definitions/seatStats` },
     ruleError: { $ref: `${PROTOCOL_BASE}shell/errors.json#/definitions/ruleError` },
+    profile: { $ref: `${PROTOCOL_BASE}shell/profile.json#/definitions/profile` },
+    profileStats: { $ref: `${PROTOCOL_BASE}shell/profile.json#/definitions/profileStats` },
+    profileUpdate: { $ref: `${PROTOCOL_BASE}shell/profile.json#/definitions/profile_update` },
+    profileGet: { $ref: `${PROTOCOL_BASE}shell/profile.json#/definitions/profile_get` },
   };
   for (const entry of opcodes) {
     properties[`${camel(entry.type)}Payload`] = { $ref: entryRef(entry) };

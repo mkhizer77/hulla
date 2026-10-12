@@ -27,10 +27,14 @@ describe("InitModule", () => {
       "table_join_by_code",
       "presets_get",
       "voice_token",
+      "profile_get",
+      "profile_update",
     ]);
     expect([...matches.keys()]).toEqual(["thulla"]);
     expect(hooks.get("rtBefore:ChannelMessageSend")?.name).toBe("beforeChannelMessageSend");
     expect(hooks.get("matchmakerMatched")?.name).toBe("matchmakerMatched");
+    expect(hooks.get("afterAuthenticateDevice")?.name).toBe("afterAuthenticateDevice");
+    expect(hooks.get("afterAuthenticateFacebook")?.name).toBe("afterAuthenticateFacebook");
     const handler = matches.get("thulla");
     expect(Object.keys(handler ?? {}).sort()).toEqual([
       "matchInit",
