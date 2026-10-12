@@ -38,6 +38,9 @@ export interface SeatSlot {
   /** Consecutive timeouts for R45. */
   timeouts: number;
   rematch: boolean | null;
+  /** Cooldowns for quick chat and emotes (GDD 11.2). */
+  quickChatTs: number;
+  emoteTs: number;
 }
 
 /** What `matchJoinAttempt` decided for a session, consumed by `matchJoin`. */
@@ -105,6 +108,9 @@ export interface TableConfig {
   readonly defaultTurnSeconds: Readonly<Record<TableMode, number>>;
   readonly snapshotEvery: number;
   readonly maxSpectators: number;
+  /** One quick-chat phrase or emote per sender per this many ms (GDD 11.2). */
+  readonly quickChatCooldownMs: number;
+  readonly emoteCooldownMs: number;
 }
 
 /** GDD R43, R46, R52, 9.1 and 9.10. */
@@ -118,6 +124,8 @@ export const DEFAULT_TABLE_CONFIG: TableConfig = {
   defaultTurnSeconds: { private: 20, public: 15, ranked: 12 },
   snapshotEvery: 25,
   maxSpectators: 10,
+  quickChatCooldownMs: 3_000,
+  emoteCooldownMs: 3_000,
 };
 
 export interface AppliedMove<M> {

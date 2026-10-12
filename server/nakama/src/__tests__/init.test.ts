@@ -13,7 +13,7 @@ async function loadInitModule(): Promise<nkruntime.InitModule> {
 describe("InitModule", () => {
   it("registers the hello RPC and the RPC answers JSON", async () => {
     const init = await loadInitModule();
-    const { rpcs, matches, initializer } = fakeInitializer();
+    const { rpcs, matches, hooks, initializer } = fakeInitializer();
     const lines: LogLine[] = [];
     init(
       { env: { HULLA_ENV: "test" } } as unknown as nkruntime.Context,
@@ -29,6 +29,7 @@ describe("InitModule", () => {
       "voice_token",
     ]);
     expect([...matches.keys()]).toEqual(["thulla"]);
+    expect(hooks.get("rtBefore:ChannelMessageSend")?.name).toBe("beforeChannelMessageSend");
     const handler = matches.get("thulla");
     expect(Object.keys(handler ?? {}).sort()).toEqual([
       "matchInit",

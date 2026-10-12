@@ -20,6 +20,8 @@ export function emptySlot(): SeatSlot {
     disconnectedTs: null,
     timeouts: 0,
     rematch: null,
+    quickChatTs: 0,
+    emoteTs: 0,
   };
 }
 
