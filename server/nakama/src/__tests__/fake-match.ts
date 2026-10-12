@@ -18,6 +18,10 @@ export function fakeDispatcher(): FakeDispatcher {
   const labels: string[] = [];
   const dispatcher = {
     broadcastMessage(opcode: number, data: string, presences: nkruntime.Presence[] | null) {
+      for (const p of presences ?? []) {
+        if (p.node === "")
+          throw new Error(`message to ${p.sessionId} has no node; Nakama would drop it`);
+      }
       broadcasts.push({
         opcode,
         envelope: JSON.parse(data) as Broadcast["envelope"],

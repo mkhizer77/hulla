@@ -74,7 +74,7 @@ jobs:
       - run: pnpm build
 
   server-smoke:
-    name: Nakama boots with the bundle and answers hello
+    name: Nakama boots with the bundle, answers hello and plays a round
     needs: detect
     if: needs.detect.outputs.server == 'true'
     runs-on: ubuntu-latest
@@ -95,6 +95,10 @@ jobs:
           body=$(curl -sf "http://127.0.0.1:7350/v2/rpc/hello?http_key=local-only-http-key")
           echo "$body"
           echo "$body" | jq -r '.payload' | jq -e '.ok == true and .protocolMajor == 1' > /dev/null
+      - name: Scripted clients play a four-seat round
+        run: pnpm --filter @hulla/server test:integration
+        env:
+          HULLA_NAKAMA_HOST: 127.0.0.1
       - name: Logs and shutdown
         if: always()
         working-directory: server/nakama

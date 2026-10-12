@@ -70,7 +70,7 @@ describe("starting a round", () => {
     for (const s of ["s0", "s2", "s3"]) h.send(s, "ready", { ready: true });
     h.send("s0", "start_round", {});
     expect(h.state.seats.map((s) => s.playerId)).toEqual(["u0", "u2", "u3", null]);
-    expect(h.state.presences.get("s3")?.seat).toBe(2);
+    expect(h.state.presences["s3"]?.seat).toBe(2);
     expect(h.state.hostSeat).toBe(0);
   });
 });
@@ -328,7 +328,7 @@ describe("reconnection and snapshots", () => {
     h.core.joinAttempt(h.state, twin, {}, h.now);
     const batch = h.core.join(h.state, [twin], h.now);
     expect(batch.kicks).toEqual(["s0"]);
-    expect(h.state.presences.get("s0")).toBeUndefined();
+    expect(h.state.presences["s0"]).toBeUndefined();
     expect(h.state.seats[0]?.sessionId).toBe("s0b");
   });
 
@@ -460,7 +460,7 @@ describe("round end, series and rematch", () => {
     const resolved = h.tick(20_000);
     expect(h.state.phase).toBe("inRound");
     expect(h.state.round?.seatCount).toBe(3);
-    expect(h.state.presences.get("s3")?.seat).toBeNull();
+    expect(h.state.presences["s3"]?.seat).toBeNull();
     expect(broadcasts(resolved).find((e) => e.type === "presence")?.payload).toMatchObject({
       playerId: "u3",
       status: "spectating",

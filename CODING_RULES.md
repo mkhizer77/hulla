@@ -49,7 +49,7 @@ Code, tests, docs and content for the change are merged; CI green; traceability 
 - `camelCase` for values and functions, `PascalCase` for types, classes and enums, `UPPER_SNAKE_CASE` for true constants, kebab-case file names, one exported concept per file where practical.
 - Named exports only; no default exports. Barrel files only at package roots.
 - Prefer `readonly` arrays and properties; prefer `interface` for object shapes and discriminated unions for variants; `enum` only in generated protocol code, otherwise string literal unions.
-- No `any`. `unknown` at boundaries, narrowed by zod validators.
+- No `any`. `unknown` at boundaries, narrowed by the generated validators.
 - No `null` and `undefined` mixing: optional values are `T | undefined`; `null` only where an external schema demands it.
 - Functions under 40 lines and files under 400 lines are the default; exceeding either needs a reason in the review.
 - Comments explain why, never what; a comment that restates the code is deleted.
@@ -70,7 +70,7 @@ Code, tests, docs and content for the change are merged; CI green; traceability 
 - Match handlers are synchronous; no `async`, no promises, no timers. Deadlines are ticks and timestamps checked in `matchLoop`.
 - Only `nk` performs IO. Wrap `nk` in `server/nakama/src/infra` so services and the table core depend on narrow interfaces that tests can fake.
 - Keep the bundle small and the transpile target at the level the runtime supports; verify with the local Nakama container on every change.
-- Every inbound payload passes the generated zod validator before any logic runs.
+- Every inbound payload passes the generated check before any logic runs (ADR-0022).
 
 ### 3.6 Testing in TypeScript
 - Unit tests next to the code in `__tests__/` folders; test names read as sentences with the rule ID first: `R20_thulla_ends_the_trick_immediately`.

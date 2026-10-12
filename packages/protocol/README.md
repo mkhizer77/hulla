@@ -1,6 +1,6 @@
 # @hulla/protocol
 
-The wire protocol, schema first (ADR-0005). `schemas/` is the source of truth; `generated/` (TypeScript types with zod validators, C# DTOs) arrives with codegen and is never edited by hand.
+The wire protocol, schema first (ADR-0005). `schemas/` is the source of truth; `generated/` (TypeScript types with zod validators for the web and standalone checks for the server, C# DTOs) arrives with codegen and is never edited by hand.
 
 ## Layout
 - `schemas/envelope.json`: every socket message is `{ v, type, tableId, seq, ts, payload }`.

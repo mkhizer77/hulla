@@ -25,8 +25,8 @@ export function freeSeat(seats: readonly SeatSlot[]): SeatIndex | null {
   return index === -1 ? null : index;
 }
 
-export function spectatorCount(presences: ReadonlyMap<string, PresenceRecord>): number {
-  return [...presences.values()].filter((p) => p.seat === null).length;
+export function spectatorCount(presences: Readonly<Record<string, PresenceRecord>>): number {
+  return Object.values(presences).filter((p) => p.seat === null).length;
 }
 
 export function tableStatus<S, M>(state: TableState<S, M>): TableStatePayload["status"] {

@@ -38,17 +38,22 @@ export function fakeRuntime(
 /** The pieces of Nakama's Initializer the module registers against, recorded for assertions. */
 export interface FakeInitializer {
   readonly rpcs: Map<string, nkruntime.RpcFunction>;
+  readonly matches: Map<string, nkruntime.MatchHandler>;
   readonly initializer: nkruntime.Initializer;
 }
 
 export function fakeInitializer(): FakeInitializer {
   const rpcs = new Map<string, nkruntime.RpcFunction>();
+  const matches = new Map<string, nkruntime.MatchHandler>();
   const initializer = {
     registerRpc: (id: string, fn: nkruntime.RpcFunction) => {
       rpcs.set(id, fn);
     },
+    registerMatch: (name: string, handler: nkruntime.MatchHandler) => {
+      matches.set(name, handler);
+    },
   } as unknown as nkruntime.Initializer;
-  return { rpcs, initializer };
+  return { rpcs, matches, initializer };
 }
 
 export function fakeNk(): nkruntime.Nakama {

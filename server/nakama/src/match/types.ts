@@ -1,6 +1,6 @@
-import type { RulesSelection } from "@hulla/protocol/generated";
+import type { Check, RulesSelection } from "@hulla/protocol/generated";
 import type { GameId, GameModule, RoundResult, SeriesState } from "@hulla/rules-engine";
-import type { Result, Rng, RuleError, SeatIndex } from "@hulla/shared-ts";
+import type { Result, RuleError, SeatIndex, Xoshiro128State } from "@hulla/shared-ts";
 
 export type TableMode = "private" | "public" | "ranked";
 
@@ -17,6 +17,8 @@ export interface PresenceRecord {
   readonly sessionId: string;
   readonly userId: string;
   readonly username: string;
+  /** Nakama's node for the session; a message addressed without it is dropped by the router. */
+  readonly node: string;
   seat: SeatIndex | null;
 }
 
@@ -71,9 +73,14 @@ export interface EncodeContext<S> {
  */
 export interface GameHost<S, M, V, E, R> {
   readonly module: GameModule<S, M, V, E, R>;
-  resolveRules(selection: RulesSelection): Result<R, RuleError>;
+  resolveRules(selection: RulesSelection, mode: TableMode): Result<R, RuleError>;
   isMoveType(type: string): boolean;
-  decodeMove(type: string, payload: Record<string, unknown>): Result<M, RuleError>;
+  /** `check` is the generated validator for `type`; a game applies it before reading fields. */
+  decodeMove(
+    type: string,
+    payload: Record<string, unknown>,
+    check: Check | undefined,
+  ): Result<M, RuleError>;
   roundStartEvents(state: S): readonly E[];
   encodeEvents(ctx: EncodeContext<S>, events: readonly E[]): readonly GameMessage[];
   turnStart(
@@ -157,7 +164,8 @@ export interface RoundRuntime<S, M> {
   readonly roundId: string;
   readonly index: number;
   readonly seedHex: string;
-  readonly rng: Rng;
+  /** The PRNG words after the deal and every draw; rebuilt into an Rng per use (ADR-0009). */
+  rngState: Xoshiro128State;
   readonly seatCount: number;
   state: S;
   phase: string;
@@ -171,6 +179,7 @@ export interface RoundRuntime<S, M> {
   result: RoundResult | null;
 }
 
+/** Plain data only: Nakama exports it to Go and rebuilds it between callbacks. */
 export interface TableState<S, M> {
   readonly tableId: string;
   readonly code: string;
@@ -181,8 +190,8 @@ export interface TableState<S, M> {
   hostSeat: SeatIndex | null;
   rules: RulesSelection;
   seats: SeatSlot[];
-  presences: Map<string, PresenceRecord>;
-  admissions: Map<string, Admission>;
+  presences: Record<string, PresenceRecord>;
+  admissions: Record<string, Admission>;
   /** User ids that may not rejoin (GDD 9.9). */
   kicked: string[];
   series: SeriesState | null;
@@ -219,6 +228,18 @@ export interface Batch {
   readonly outbound: Outbound[];
   readonly kicks: string[];
   end: boolean;
+}
+
+/**
+ * A copy of the record without one key. Nakama hands the match state back as plain data after
+ * every callback, so the state holds records, never Maps, and nothing is deleted in place.
+ */
+export function without<T>(record: Readonly<Record<string, T>>, key: string): Record<string, T> {
+  const out: Record<string, T> = {};
+  for (const [k, v] of Object.entries(record)) {
+    if (k !== key) out[k] = v;
+  }
+  return out;
 }
 
 export function newBatch(): Batch {

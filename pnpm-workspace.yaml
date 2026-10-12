@@ -14,3 +14,5 @@ minimumReleaseAgeExclude:
 allowBuilds:
   unrs-resolver: true
   esbuild: true
+  # Telemetry postinstall pulled in by nakama-js; never run it.
+  "@scarf/scarf": false
