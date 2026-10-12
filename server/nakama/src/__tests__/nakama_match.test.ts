@@ -20,6 +20,9 @@ function booted() {
     mode: "public",
   });
   let state = init.state;
+  // Nakama exports the state to Go after every callback and rebuilds it as plain data, so
+  // the state must survive a JSON round trip: no Maps, no class instances, no functions.
+  const rebuilt = <T>(value: T): T => JSON.parse(JSON.stringify(value)) as T;
   const presences = [0, 1, 2].map(nkPresence);
   for (const p of presences) {
     const attempt = handler.matchJoinAttempt(ctx, logger, nk, d.dispatcher, 1, state, p, {});
@@ -37,9 +40,6 @@ function booted() {
     ts: 0,
     payload,
   });
-  // Nakama exports the state to Go after every callback and rebuilds it as plain data, so
-  // the state must survive a JSON round trip: no Maps, no class instances, no functions.
-  const rebuilt = <T>(value: T): T => JSON.parse(JSON.stringify(value)) as T;
   const loop = (messages: nkruntime.MatchMessage[]) => {
     const result = handler.matchLoop(ctx, logger, nk, d.dispatcher, 2, state, messages);
     if (result !== null) state = rebuilt(result.state);
