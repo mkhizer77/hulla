@@ -130,6 +130,56 @@ namespace Hulla.Infrastructure.Nakama
             return body.IsOk ? Result<bool>.Ok(true) : Result<bool>.Fail(body.Error);
         }
 
+        public async Awaitable<Result<IReadOnlyList<FriendPresence>>> PresenceAsync(CancellationToken cancellation)
+        {
+            var body = await RpcAsync("table_list_friends", new JObject(), cancellation);
+            if (!body.IsOk)
+            {
+                return Result<IReadOnlyList<FriendPresence>>.Fail(body.Error);
+            }
+
+            var friends = new List<FriendPresence>();
+            if (body.Value["friends"] is JArray list)
+            {
+                foreach (var item in list)
+                {
+                    var id = (string?)item["userId"];
+                    if (id == null)
+                    {
+                        continue;
+                    }
+
+                    var table = item["table"] as JObject;
+                    friends.Add(new FriendPresence(
+                        id,
+                        (string?)item["displayName"] ?? (string?)item["handle"] ?? "?",
+                        StateOf((string?)item["state"]),
+                        (bool?)item["favourite"] == true,
+                        (string?)table?["code"],
+                        (long?)table?["open"] ?? 0,
+                        (bool?)table?["joinable"] == true));
+                }
+            }
+
+            return Result<IReadOnlyList<FriendPresence>>.Ok(friends);
+        }
+
+        public async Awaitable<Result<bool>> SetAwayAsync(bool away, CancellationToken cancellation)
+        {
+            var body = await RpcAsync("presence_set", new JObject { ["away"] = away }, cancellation);
+            return body.IsOk ? Result<bool>.Ok(true) : Result<bool>.Fail(body.Error);
+        }
+
+        private static PresenceState StateOf(string? state) => state switch
+        {
+            "lobby" => PresenceState.Lobby,
+            "round" => PresenceState.Round,
+            "online" => PresenceState.Online,
+            "away" => PresenceState.Away,
+            "hidden" => PresenceState.Hidden,
+            _ => PresenceState.Offline,
+        };
+
         private static Result<Profile> ProfileFrom(Result<JObject> body)
         {
             if (!body.IsOk)

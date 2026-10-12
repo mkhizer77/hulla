@@ -2,6 +2,8 @@
     <ui:VisualElement name="home" class="screen screen--center">
         <ui:Label name="title" class="title" />
         <ui:Label name="tagline" class="subtitle" />
+        <ui:Button name="hero" class="button button--primary hero" />
+        <ui:Label name="online" class="status" />
         <ui:VisualElement class="panel">
             <ui:TextField name="name" class="field" />
             <ui:Label name="seats-label" class="caption" />

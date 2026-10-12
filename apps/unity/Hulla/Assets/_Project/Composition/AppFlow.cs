@@ -38,6 +38,9 @@ namespace Hulla.Composition
         private const float ReconnectWindowSeconds = 30f;
         private const float RetrySeconds = 2f;
 
+        /// <summary>The name the player last signed in with, offered next launch.</summary>
+        private const string NamePrefKey = "hulla.name";
+
 
         private readonly AppScope _app;
         private readonly ShellView _shell;
@@ -64,7 +67,12 @@ namespace Hulla.Composition
         public async void Start()
         {
             ApplySettings();
+            _app.Home.LastName = PlayerPrefs.GetString(NamePrefKey, "");
             ShowHome();
+            if (_app.Home.LastName.Length > 0)
+            {
+                SignInQuietly();
+            }
             try
             {
                 await _app.Chat.LoadAsync(_app.Lifetime);
@@ -91,7 +99,9 @@ namespace Hulla.Composition
             _screen = Screen.Home;
             var root = _shell.Show(_shell.Catalog.Home);
             var server = Debug.isDebugBuild ? _app.Config.HostAndPort : null;
-            _view = new HomeView(root, _app.Home, server, OnCreate, OnJoin, OnQuickPlay, OpenSettings, OnFriends, OnProfile);
+            _view = new HomeView(root, _app.Home, server, OnCreate, OnJoin, OnQuickPlay, OpenSettings, OnFriends, OnProfile, _app.HomeFriends);
+            _app.HomeFriends.Active = _app.Sessions.Current != null;
+            _app.HomeFriends.RefreshSoon();
         }
 
         private async void OnCreate(string name, string? server)
@@ -160,7 +170,39 @@ namespace Hulla.Composition
         private async Awaitable<bool> SignedInAsync(string name, string? server)
         {
             ApplyServer(server);
-            return (await _app.Home.SignInAsync(name, _app.Lifetime)).IsOk;
+            var ok = (await _app.Home.SignInAsync(name, _app.Lifetime)).IsOk;
+            if (ok)
+            {
+                RememberName(name);
+            }
+
+            return ok;
+        }
+
+        /// <summary>A returning player is signed in at launch so Home can show friends' tables (GDD 14.10).</summary>
+        private async void SignInQuietly()
+        {
+            var signedIn = await _app.Home.SignInAsync(_app.Home.LastName, _app.Lifetime);
+            if (signedIn.IsOk && _screen == Screen.Home)
+            {
+                _app.HomeFriends.Active = true;
+                _app.HomeFriends.RefreshSoon();
+            }
+        }
+
+        private static void RememberName(string name)
+        {
+            PlayerPrefs.SetString(NamePrefKey, name.Trim());
+            PlayerPrefs.Save();
+        }
+
+        /// <summary>The app went to the background or came back: friends see Away meanwhile (GDD 10.4).</summary>
+        public void SetAway(bool away)
+        {
+            if (_app.Sessions.Current != null)
+            {
+                _ = _app.Social.SetAwayAsync(away, _app.Lifetime);
+            }
         }
 
         private async void CancelQuickPlay()
@@ -186,6 +228,11 @@ namespace Hulla.Composition
 
         private async Awaitable EnterAsync(Result<TableTicket> ticket)
         {
+            if (ticket.IsOk)
+            {
+                RememberName(_app.Home.LastName);
+            }
+
             var player = _app.Sessions.Current;
             if (!ticket.IsOk || player == null)
             {
@@ -383,6 +430,7 @@ namespace Hulla.Composition
         private void Tick(float deltaSeconds)
         {
             _app.QuickPlay.Tick(deltaSeconds);
+            _app.HomeFriends.Tick(deltaSeconds, _app.Lifetime);
             _lobbyView?.Tick();
             _scheduler?.Tick(deltaSeconds);
             _tableView?.Tick(deltaSeconds);
@@ -390,6 +438,7 @@ namespace Hulla.Composition
 
         private void CloseView()
         {
+            _app.HomeFriends.Active = false;
             _view?.Dispose();
             _view = null;
             _tableView = null;
