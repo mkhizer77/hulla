@@ -1,0 +1,13 @@
+{
+  "v": 1,
+  "type": "presence",
+  "tableId": "t_7KQ2MX",
+  "seq": 2305,
+  "ts": 1760200051000,
+  "payload": {
+    "seat": 2,
+    "playerId": "u_bilal",
+    "status": "disconnected",
+    "deadlineTs": 1760200081000
+  }
+}

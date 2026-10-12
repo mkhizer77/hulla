@@ -1,0 +1,36 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://hulla.gg/schemas/protocol/shell/presence.json",
+  "title": "Presence at the table",
+  "definitions": {
+    "presence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["seat", "playerId", "status"],
+      "properties": {
+        "seat": {
+          "$ref": "../common.json#/definitions/seatIndexOrNull",
+          "description": "null for a spectator"
+        },
+        "playerId": { "$ref": "../common.json#/definitions/playerId" },
+        "displayName": { "$ref": "../common.json#/definitions/displayName" },
+        "status": {
+          "type": "string",
+          "enum": [
+            "joined",
+            "left",
+            "disconnected",
+            "reconnected",
+            "auto_play",
+            "kicked",
+            "spectating"
+          ]
+        },
+        "deadlineTs": {
+          "$ref": "../common.json#/definitions/timestamp",
+          "description": "When a disconnected seat's window closes (R46)"
+        }
+      }
+    }
+  }
+}

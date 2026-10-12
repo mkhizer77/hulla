@@ -1,0 +1,8 @@
+{
+  "v": 1,
+  "type": "join_table",
+  "tableId": "t_7KQ2MX",
+  "seq": 1,
+  "ts": 1760199980000,
+  "payload": { "code": "7KQ2MX", "clientVersion": "0.1.0" }
+}

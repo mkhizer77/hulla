@@ -1,0 +1,15 @@
+{
+  "v": 1,
+  "type": "private_draw",
+  "tableId": "t_7KQ2MX",
+  "seq": 2301,
+  "ts": 1760200050000,
+  "payload": {
+    "roundId": "r_3",
+    "seat": 3,
+    "card": "8D",
+    "source": "discard",
+    "from": null,
+    "autoLead": true
+  }
+}

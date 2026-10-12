@@ -1,0 +1,121 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://hulla.gg/schemas/protocol/games/thulla/views.json",
+  "title": "The Thulla round as one recipient may see it (engine redact)",
+  "definitions": {
+    "seatView": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["handCount", "hand", "escaped", "escapeRank"],
+      "properties": {
+        "handCount": { "type": "integer", "minimum": 0 },
+        "hand": {
+          "oneOf": [{ "$ref": "../../common.json#/definitions/cards" }, { "type": "null" }],
+          "description": "Only the viewer's own seat"
+        },
+        "escaped": { "type": "boolean" },
+        "escapeRank": { "type": ["integer", "null"], "minimum": 1 }
+      }
+    },
+    "trick": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["ledSuit", "plays", "thullaBy"],
+      "properties": {
+        "ledSuit": {
+          "oneOf": [{ "$ref": "../../common.json#/definitions/suit" }, { "type": "null" }]
+        },
+        "plays": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["seat", "card"],
+            "properties": {
+              "seat": { "$ref": "../../common.json#/definitions/seatIndex" },
+              "card": { "$ref": "../../common.json#/definitions/card" }
+            }
+          }
+        },
+        "thullaBy": { "$ref": "../../common.json#/definitions/seatIndexOrNull" }
+      }
+    },
+    "view": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "viewer",
+        "rulesVersion",
+        "rules",
+        "seatCount",
+        "dealerSeat",
+        "leaderSeat",
+        "turnSeat",
+        "phase",
+        "trickIndex",
+        "seats",
+        "trick",
+        "discardCount",
+        "openingPending",
+        "handTakeUsed",
+        "pendingAutoLead",
+        "stats",
+        "escapeOrder",
+        "bhabhiSeat",
+        "confirmedBhabhi",
+        "commitment",
+        "seedHex",
+        "deckOrder",
+        "canTakeHand"
+      ],
+      "properties": {
+        "viewer": {
+          "oneOf": [
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["kind", "seat"],
+              "properties": {
+                "kind": { "const": "seat" },
+                "seat": { "$ref": "../../common.json#/definitions/seatIndex" }
+              }
+            },
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["kind"],
+              "properties": { "kind": { "const": "spectator" } }
+            }
+          ]
+        },
+        "rulesVersion": { "type": "string" },
+        "rules": { "$ref": "https://hulla.gg/schemas/games/thulla/rules.json" },
+        "seatCount": { "type": "integer", "minimum": 2, "maximum": 8 },
+        "dealerSeat": { "$ref": "../../common.json#/definitions/seatIndex" },
+        "leaderSeat": { "$ref": "../../common.json#/definitions/seatIndex" },
+        "turnSeat": { "$ref": "../../common.json#/definitions/seatIndexOrNull" },
+        "phase": { "type": "string", "enum": ["opening", "play", "ended"] },
+        "trickIndex": { "type": "integer", "minimum": 0 },
+        "seats": { "type": "array", "items": { "$ref": "#/definitions/seatView" } },
+        "trick": { "$ref": "#/definitions/trick" },
+        "discardCount": { "type": "integer", "minimum": 0 },
+        "openingPending": { "$ref": "../../common.json#/definitions/seatList" },
+        "handTakeUsed": { "type": "boolean" },
+        "pendingAutoLead": { "type": "boolean" },
+        "stats": {
+          "type": "array",
+          "items": { "$ref": "../../common.json#/definitions/seatStats" }
+        },
+        "escapeOrder": { "$ref": "../../common.json#/definitions/seatList" },
+        "bhabhiSeat": { "$ref": "../../common.json#/definitions/seatIndexOrNull" },
+        "confirmedBhabhi": { "$ref": "../../common.json#/definitions/seatIndexOrNull" },
+        "commitment": { "type": "string" },
+        "seedHex": { "type": ["string", "null"] },
+        "deckOrder": {
+          "oneOf": [{ "$ref": "../../common.json#/definitions/cards" }, { "type": "null" }]
+        },
+        "canTakeHand": { "type": ["boolean", "null"] }
+      }
+    }
+  }
+}

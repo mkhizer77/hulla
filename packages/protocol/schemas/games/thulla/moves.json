@@ -1,0 +1,67 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://hulla.gg/schemas/protocol/games/thulla/moves.json",
+  "title": "Thulla moves (client to server)",
+  "definitions": {
+    "moveBase": {
+      "type": "object",
+      "required": ["roundId", "clientSeq"],
+      "properties": {
+        "roundId": { "$ref": "../../common.json#/definitions/roundId" },
+        "clientSeq": {
+          "$ref": "../../common.json#/definitions/sequence",
+          "description": "Idempotency key with the seat (ARCHITECTURE 8.4)"
+        }
+      }
+    },
+    "play_card": {
+      "allOf": [{ "$ref": "#/definitions/moveBase" }],
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["roundId", "clientSeq", "card"],
+      "properties": {
+        "roundId": { "$ref": "../../common.json#/definitions/roundId" },
+        "clientSeq": { "$ref": "../../common.json#/definitions/sequence" },
+        "card": { "$ref": "../../common.json#/definitions/card" }
+      }
+    },
+    "take_hand": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["roundId", "clientSeq"],
+      "properties": {
+        "roundId": { "$ref": "../../common.json#/definitions/roundId" },
+        "clientSeq": { "$ref": "../../common.json#/definitions/sequence" }
+      }
+    },
+    "cancel_take": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Cancels a hold before its confirmation lands (R34); the engine never sees it",
+      "required": ["roundId", "clientSeq"],
+      "properties": {
+        "roundId": { "$ref": "../../common.json#/definitions/roundId" },
+        "clientSeq": { "$ref": "../../common.json#/definitions/sequence" }
+      }
+    },
+    "move": {
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["type", "card"],
+          "properties": {
+            "type": { "const": "play_card" },
+            "card": { "$ref": "../../common.json#/definitions/card" }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["type"],
+          "properties": { "type": { "const": "take_hand" } }
+        }
+      ]
+    }
+  }
+}

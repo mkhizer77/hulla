@@ -22,10 +22,10 @@ M0 complete: the Thulla rulebook runs in TypeScript with full traceability. M1, 
 - 12 Oct decisions: C# mirror deferred past v1.0 (ADR-0019), no clock in engines (ADR-0020), JSON Schema draft-07 (ADR-0021), one deck and 3–6 seats until v1.2, web client before Rung (M5 → web → Rung → M6, dates in the execution plan), Facebook login stays, Unity stays on 6000.4.9f1.
 
 ## Doing
-- Nothing in progress.
+- M1 #12: `@hulla/protocol` with draft-07 schemas for the envelope, the opcode registry with direction and redaction class, the shell messages, the Thulla moves, events, view and rules, and the Appendix D examples as validated fixtures.
 
 ## Next
-Work the M0 milestone issue by issue, starting with #1 (pnpm workspace and root tooling). Order and dependencies are in each issue; the map is `docs/EXECUTION_PLAN.md`, the brief is `docs/milestones/M0.md`. M1 #12: protocol schemas for the envelope, the shell messages and the Thulla messages, in JSON Schema draft-07 (ADR-0021); then #13 codegen.
+Work the M0 milestone issue by issue, starting with #1 (pnpm workspace and root tooling). Order and dependencies are in each issue; the map is `docs/EXECUTION_PLAN.md`, the brief is `docs/milestones/M0.md`. M1 #13: codegen for TypeScript types with zod validators and C# DTOs into committed generated folders, with the drift check; then #14, the Nakama compose and server skeleton.
 
 ## Blockers
 - None.

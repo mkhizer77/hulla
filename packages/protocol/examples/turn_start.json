@@ -1,0 +1,14 @@
+{
+  "v": 1,
+  "type": "turn_start",
+  "tableId": "t_7KQ2MX",
+  "seq": 2302,
+  "ts": 1760200050100,
+  "payload": {
+    "roundId": "r_3",
+    "seat": 0,
+    "legal": ["2D", "9D"],
+    "canTakeHand": false,
+    "deadlineTs": 1760200065100
+  }
+}

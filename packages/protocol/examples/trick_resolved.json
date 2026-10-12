@@ -1,0 +1,18 @@
+{
+  "v": 1,
+  "type": "trick_resolved",
+  "tableId": "t_7KQ2MX",
+  "seq": 2212,
+  "ts": 1760200001010,
+  "payload": {
+    "roundId": "r_3",
+    "trickIndex": 5,
+    "ledSuit": "H",
+    "cards": ["6H", "KH", "QS"],
+    "thullaBy": 2,
+    "picker": 1,
+    "nextLeader": 1,
+    "handCounts": [9, 12, 8, 6],
+    "escapes": []
+  }
+}

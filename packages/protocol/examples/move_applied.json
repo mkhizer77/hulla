@@ -1,0 +1,15 @@
+{
+  "v": 1,
+  "type": "move_applied",
+  "tableId": "t_7KQ2MX",
+  "seq": 2210,
+  "ts": 1760200000241,
+  "payload": {
+    "roundId": "r_3",
+    "seat": 1,
+    "move": { "type": "play_card", "card": "KH" },
+    "trickIndex": 5,
+    "thulla": false,
+    "clientSeq": 42
+  }
+}
