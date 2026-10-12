@@ -4,6 +4,7 @@ using Hulla.Application.Services;
 using Hulla.Application.Table;
 using Hulla.Application.Tutorial;
 using Hulla.Domain;
+using Hulla.Protocol;
 using Hulla.Games.Thulla;
 using Hulla.Presentation.Navigation;
 using Hulla.Presentation.Screens.Home;
@@ -53,6 +54,7 @@ namespace Hulla.Composition
         private SettingsView? _settingsView;
         private LobbyView? _lobbyView;
         private string _friendsForRound = "";
+        private AnalyticsTracker? _tracker;
         private ScriptedTableGateway? _tutorial;
         private TableClient? _tutorialClient;
 
@@ -73,6 +75,7 @@ namespace Hulla.Composition
         public async void Start()
         {
             ApplySettings();
+            _app.Analytics.Track(AnalyticsEvents.AppOpen(true, "none"));
             _app.Home.LastName = PlayerPrefs.GetString(NamePrefKey, "");
             var returning = _app.Home.LastName.Length > 0;
             if (!returning)
@@ -84,6 +87,10 @@ namespace Hulla.Composition
             if (PlayerPrefs.GetInt(TutorialSeenPrefKey, 0) == 0 && !returning)
             {
                 _shell.ShowDialog(TutorialText.Gate, TutorialText.GateYes, TutorialText.GateNo, OfferRefresher, () => StartTutorial(false));
+            }
+            else if (_app.Settings.AnalyticsConsent == null)
+            {
+                AskConsent();
             }
             if (returning)
             {
@@ -124,6 +131,11 @@ namespace Hulla.Composition
         {
             ApplyServer(server);
             var ticket = await _app.Home.CreateAsync(name, _app.Lifetime);
+            if (ticket.IsOk)
+            {
+                _app.Analytics.Track(AnalyticsEvents.TableCreate("private"));
+            }
+
             await EnterAsync(ticket);
         }
 
@@ -169,7 +181,11 @@ namespace Hulla.Composition
             var friends = _app.Friends;
             var lifetime = _app.Lifetime;
             _view = new FriendsView(_shell.Show(_shell.Catalog.Friends), friends, ShowHome, new FriendsView.Actions(
-                code => _ = friends.AddByCodeAsync(code, lifetime),
+                code =>
+                {
+                    _app.Analytics.Track(AnalyticsEvents.FriendAdd("code"));
+                    _ = friends.AddByCodeAsync(code, lifetime);
+                },
                 id => _ = friends.AddAsync(id, lifetime),
                 id => _ = friends.RemoveAsync(id, lifetime),
                 id => _ = friends.BlockAsync(id, lifetime),
@@ -230,6 +246,11 @@ namespace Hulla.Composition
         /// <summary>The app went to the background or came back: friends see Away meanwhile (GDD 10.4).</summary>
         public void SetAway(bool away)
         {
+            if (away)
+            {
+                _app.Analytics.Flush();
+            }
+
             if (_app.Sessions.Current != null)
             {
                 _ = _app.Social.SetAwayAsync(away, _app.Lifetime);
@@ -238,11 +259,16 @@ namespace Hulla.Composition
 
         private async void CancelQuickPlay()
         {
+            _app.Analytics.Track(AnalyticsEvents.MatchSearch(_app.QuickPlay.Seats, _app.QuickPlay.Elapsed, "abandoned"));
             await _app.QuickPlay.CancelAsync();
             ShowHome();
         }
 
-        private async void OnQuickPlayFound(TableTicket ticket) => await EnterAsync(Result<TableTicket>.Ok(ticket));
+        private async void OnQuickPlayFound(TableTicket ticket)
+        {
+            _app.Analytics.Track(AnalyticsEvents.MatchSearch(_app.QuickPlay.Seats, _app.QuickPlay.Elapsed, "humans"));
+            await EnterAsync(Result<TableTicket>.Ok(ticket));
+        }
 
         private void ApplyServer(string? server)
         {
@@ -274,6 +300,8 @@ namespace Hulla.Composition
             var table = session.BeginTable(ticket.Value);
             table.Client.Model.SetSort(_app.Settings.HandSort == HandSort.RankThenSuit ? CardOrder.CompareByRank : CardOrder.Compare);
             table.Client.Model.Changed += FollowModel;
+            _tracker?.Dispose();
+            _tracker = new AnalyticsTracker(_app.Analytics, table.Client);
             var entered = await _app.Tables.EnterAsync(ticket.Value, table.Lifetime);
             if (!entered.IsOk)
             {
@@ -318,7 +346,8 @@ namespace Hulla.Composition
                 }
 
                 _shell.SetBanner(UiText.Reconnecting);
-                var deadline = Time.realtimeSinceStartup + ReconnectWindowSeconds;
+                var started = Time.realtimeSinceStartup;
+                var deadline = started + ReconnectWindowSeconds;
                 while (Time.realtimeSinceStartup < deadline && _app.Session?.Table == table)
                 {
                     var socket = await _app.Sessions.ReconnectAsync(table.Lifetime);
@@ -326,6 +355,7 @@ namespace Hulla.Composition
                     if (socket.IsOk && (await _app.Tables.EnterAsync(rejoin, table.Lifetime)).IsOk)
                     {
                         await _app.TableChat.JoinAsync(table.Ticket.MatchId, table.Lifetime);
+                        _app.Analytics.Track(AnalyticsEvents.Reconnect("rejoined", Time.realtimeSinceStartup - started));
                         _shell.SetBanner(null);
                         return;
                     }
@@ -334,6 +364,7 @@ namespace Hulla.Composition
                 }
 
                 _shell.SetBanner(null);
+                _app.Analytics.Track(AnalyticsEvents.Reconnect("gave_up", Time.realtimeSinceStartup - started));
                 if (_app.Session?.Table == table)
                 {
                     _app.Session?.EndTable();
@@ -387,7 +418,7 @@ namespace Hulla.Composition
             _screen = wanted;
             if (wanted == Screen.Lobby)
             {
-                _lobbyView = new LobbyView(_shell.Show(_shell.Catalog.Lobby), client, () => DateTimeOffset.UtcNow.ToUnixTimeMilliseconds(), Leave, code => _app.ShareSheet.Share(UiText.ShareTitle, string.Format(UiText.ShareText, code)), text => _app.TableChat.SendAsync(text, _app.Lifetime), () => ThullaRulesEditor.Summary(client.Model, _app.Presets), () => OpenRulesEditor(client));
+                _lobbyView = new LobbyView(_shell.Show(_shell.Catalog.Lobby), client, () => DateTimeOffset.UtcNow.ToUnixTimeMilliseconds(), Leave, code => ShareCode(code), text => _app.TableChat.SendAsync(text, _app.Lifetime), () => ThullaRulesEditor.Summary(client.Model, _app.Presets), () => OpenRulesEditor(client));
                 _lobbyView.IsMuted = _app.Mutes.IsMuted;
                 _lobbyView.SeatSpectator = client.SeatSpectator;
                 _view = _lobbyView;
@@ -424,12 +455,17 @@ namespace Hulla.Composition
             }
 
             var me = _app.Sessions.Current?.UserId;
-            _tableView?.SetFriendActions(id => id != me && !known.Contains(id), id => _ = friends.AddAsync(id, _app.Lifetime));
+            _tableView?.SetFriendActions(id => id != me && !known.Contains(id), id =>
+            {
+                _app.Analytics.Track(AnalyticsEvents.FriendAdd("results"));
+                _ = friends.AddAsync(id, _app.Lifetime);
+            });
         }
 
         /// <summary>A block hides the player at once and holds both ways on the server (GDD 10.11).</summary>
         private async void BlockPlayer(string userId)
         {
+            _app.Analytics.Track(AnalyticsEvents.Block("table"));
             await _app.Mutes.SetAsync(userId, true, _app.Lifetime);
             await _app.Social.BlockAsync(userId, _app.Lifetime);
         }
@@ -439,7 +475,19 @@ namespace Hulla.Composition
             var model = client.Model;
             var tableId = client.Ticket.TableId.Length > 0 ? client.Ticket.TableId : model.Code.Length > 0 ? "t_" + model.Code : null;
             var sent = await _app.Social.ReportAsync(userId, reason, tableId, model.RoundId.Length > 0 ? model.RoundId : null, _app.Lifetime);
+            if (sent.IsOk)
+            {
+                _app.Analytics.Track(AnalyticsEvents.Report("table", reason));
+            }
+
             done(sent.IsOk);
+        }
+
+        private bool ShareCode(string code)
+        {
+            var shared = _app.ShareSheet.Share(UiText.ShareTitle, string.Format(UiText.ShareText, code));
+            _app.Analytics.Track(AnalyticsEvents.InviteSent(shared ? "share" : "copy"));
+            return shared;
         }
 
         private void OnText(TextLine line)
@@ -543,6 +591,7 @@ namespace Hulla.Composition
         private void ApplySettings()
         {
             var settings = _app.Settings;
+            _app.Analytics.SetConsent(settings.AnalyticsConsent == true);
             ThemeClasses.Apply(_shell.Root, settings);
             _tableView?.ApplySettings(settings.OneTapPlay, settings.ReduceMotion, settings.LargeCards, settings.Haptics, settings.ShowRulesRecap ? HideRecap : null);
             _app.Session?.Table?.Client.Model.SetSort(settings.HandSort == HandSort.RankThenSuit ? CardOrder.CompareByRank : CardOrder.Compare);
@@ -551,6 +600,7 @@ namespace Hulla.Composition
         private void Tick(float deltaSeconds)
         {
             _app.QuickPlay.Tick(deltaSeconds);
+            _app.Analytics.Tick(deltaSeconds);
             _tutorial?.Tick(deltaSeconds);
             _app.HomeFriends.Tick(deltaSeconds, _app.Lifetime);
             _lobbyView?.Tick();
@@ -559,6 +609,10 @@ namespace Hulla.Composition
         }
 
         /// <summary>"Yes" to the gate skips to Home with a short refresher offer (GDD 17.2).</summary>
+        /// <summary>Analytics only after the player says yes (GDD 23.6); asked once, then a setting.</summary>
+        private void AskConsent() =>
+            _shell.ShowDialog(UiText.AnalyticsAsk, UiText.AnalyticsYes, UiText.AnalyticsNo, () => _app.Settings.AnalyticsConsent = true, () => _app.Settings.AnalyticsConsent = false);
+
         private void OfferRefresher()
         {
             MarkTutorialSeen();
@@ -581,8 +635,8 @@ namespace Hulla.Composition
             gateway.CoachSaid += text => view.ShowCoach(text);
             gateway.StepFinished += (id, outcome, seconds) =>
             {
-                // The ftue_step event (GDD 17.6); the analytics pipeline (#71) will send it.
-                Debug.Log($"[ftue] ftue_step step={id} outcome={outcome} duration={seconds:0.0}");
+                // The ftue_step event (GDD 17.6).
+                _app.Analytics.Track(AnalyticsEvents.FtueStep(id, outcome, seconds));
                 if (gateway.HasNextStep)
                 {
                     view.ShowCoach(gateway.DoneText, TutorialText.Next, () =>

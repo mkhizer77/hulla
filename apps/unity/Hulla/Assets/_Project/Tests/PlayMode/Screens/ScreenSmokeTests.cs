@@ -180,7 +180,7 @@ namespace Hulla.Screens.Tests
                 root = r;
                 new SettingsView(r, new SettingsModel(new MemoryStore()), () => { }, new SettingsView.AccountActions(_ => { }, _ => { }, _ => { }, () => null));
             });
-            Assert.AreEqual(8, root.Query<Toggle>().ToList().Count, "eight on/off settings");
+            Assert.AreEqual(9, root.Query<Toggle>().ToList().Count, "nine on/off settings, analytics consent among them");
             Assert.IsTrue(root.Query<Button>().ToList().Any(b => b.text == "Delete my account"));
         }
 
