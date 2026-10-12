@@ -1,0 +1,40 @@
+name: nightly
+
+on:
+  schedule:
+    - cron: '30 2 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  detect:
+    name: Detect whether both engines exist
+    runs-on: ubuntu-latest
+    outputs:
+      both: ${{ steps.check.outputs.both }}
+    steps:
+      - uses: actions/checkout@v4
+      - id: check
+        run: |
+          if [ -f pnpm-lock.yaml ] && find packages/rules-engine-cs -name '*.csproj' 2>/dev/null | grep -q .; then both=true; else both=false; fi
+          echo "both=$both" >> "$GITHUB_OUTPUT"
+
+  equivalence:
+    name: Cross-engine equivalence (10,000 rounds)
+    needs: detect
+    if: needs.detect.outputs.both == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .node-version
+          cache: pnpm
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.0.x
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm equivalence -- --rounds 10000

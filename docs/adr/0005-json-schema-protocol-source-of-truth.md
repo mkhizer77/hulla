@@ -1,5 +1,5 @@
 # ADR-0005: JSON Schema is the protocol source of truth, with generated TypeScript and C#
-Status: Accepted
+Status: Accepted (schema draft amended by ADR-0021)
 Date: 2026-10-11
 
 ## Context

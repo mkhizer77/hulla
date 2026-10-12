@@ -1,5 +1,5 @@
 # ADR-0009: Deterministic engines with injected RNG and clock; commitment scheme for fair deals
-Status: Accepted
+Status: Accepted (clock input superseded by ADR-0020)
 Date: 2026-10-11
 
 ## Context

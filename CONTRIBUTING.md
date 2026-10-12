@@ -1,11 +1,11 @@
 # Contributing to Hulla
 
-This guide is for anyone contributing to **Hulla**, a multiplayer platform for the games South Asian friends play in person (Thulla/Bhabhi first, Rung next, then Ludo, Tambola, Antakshari and more). Unity 6 mobile client first, a TypeScript web client later, one authoritative Nakama server in between. Read `docs/CONTEXT.md` first, then this file, then `CODING_RULES.md`, then `docs/ARCHITECTURE.md`, then the GDD sections your task touches (`docs/GDD_Hulla.md`).
+This guide is for anyone contributing to **Hulla**, a multiplayer platform for the games South Asian friends play in person (Thulla/Bhabhi first, Rung next, then Ludo, Tambola, Antakshari and more). Unity 6 mobile client first, a TypeScript web client later, one authoritative Nakama server in between. Read `docs/CONTEXT.md` first, then this file, then `CODING_RULES.md`, then `docs/ARCHITECTURE.md`, then the GDD sections your task touches. The GDD is private and not in this repository; the section numbers and rule IDs cited across these documents refer to it, so ask the owner for access before taking a rules task.
 
 ## Non-negotiables
 - The server is the only authority over game state. Clients render, hint and predict cosmetically.
-- Rules engines are pure and deterministic: injected RNG and clock, immutable state, `Result` instead of exceptions.
-- Every GDD rule ID (`R1`…, `E1`…) has at least one test whose name contains it, in both the TypeScript and the C# engine.
+- Rules engines are pure and deterministic: injected RNG, no clock (ADR-0020), immutable state, `Result` instead of exceptions.
+- Every GDD rule ID (`R1`…, `E1`…) has at least one test whose name contains it in the TypeScript engine (and in the C# mirror once it exists, ADR-0019).
 - Schema first: protocol, content and analytics are defined in schemas; generated code is never hand-edited.
 - No wagering, no currency transfers, no loot boxes, anywhere in the code.
 - No hard-coded user-facing strings, no secrets, no PII or hands in logs.
@@ -16,7 +16,7 @@ This guide is for anyone contributing to **Hulla**, a multiplayer platform for t
 ## Where things live
 | Need | Path |
 |---|---|
-| Product behaviour and rules | `docs/GDD_Hulla.md` (§6 rules, §6.13 toggles, §6.15 edge cases, Appendix C vector format) |
+| Product behaviour and rules | The GDD, a private document held by the owner (§6 rules, §6.13 toggles, §6.15 edge cases, Appendix C vector format); not in this repository |
 | Structure and boundaries | `docs/ARCHITECTURE.md` (§5 packages, §7 module contract, §8 server, §9 Unity) |
 | Why decisions were made | `docs/adr/` |
 | Conventions and prohibited patterns | `CODING_RULES.md` |
@@ -24,7 +24,7 @@ This guide is for anyone contributing to **Hulla**, a multiplayer platform for t
 | Current state and next steps | `docs/STATUS.md` (update it when you finish a work session) |
 | Protocol schemas and generated code | `packages/protocol/` |
 | TypeScript engines (authoritative) | `packages/rules-engine/` |
-| C# engines (client mirror) | `packages/rules-engine-cs/` |
+| C# engines (client mirror, deferred by ADR-0019) | `packages/rules-engine-cs/` |
 | Shared vectors and traceability | `packages/test-vectors/` |
 | Server runtime | `server/nakama/` |
 | Unity client | `apps/unity/Hulla/` |
@@ -41,16 +41,18 @@ This guide is for anyone contributing to **Hulla**, a multiplayer platform for t
 ## Commands
 ```
 pnpm install
-pnpm lint
-pnpm test
+pnpm lint                 # typecheck, eslint, prettier check, dependency-cruiser
+pnpm test                 # vitest with coverage
+pnpm typecheck
+pnpm format
 pnpm vectors
 pnpm codegen
 pnpm content:validate
-pnpm equivalence -- --rounds 1000        # quick; nightly uses 10000
-dotnet test packages/rules-engine-cs
+pnpm equivalence -- --rounds 1000        # when the C# mirror exists (ADR-0019); nightly uses 10000
+dotnet test packages/rules-engine-cs           # when the C# mirror exists (ADR-0019)
 docker compose -f server/nakama/compose.yml up
 ```
-Unity: open `apps/unity/Hulla` in the pinned Unity 6 LTS version; run edit-mode tests from the Test Runner for the assemblies you touched.
+Unity: open `apps/unity/Hulla` in the pinned Unity version (6000.4.9f1, ADR-0016); run edit-mode tests from the Test Runner for the assemblies you touched.
 
 ## Tests gate merges
 `main` is protected. The `ci` workflow (lint, TypeScript and C# tests, shared vectors, codegen drift, content validation, Unity edit-mode tests) must be green before a pull request can merge. Release builds run only from `v*` tags and run the same tests first (ADR-0015).
@@ -65,4 +67,4 @@ Code, tests, docs and content merged together; CI green; traceability matrix upd
 Prefer the conservative reading of the GDD, implement it, record an open question with your interim choice, and point to it from a comment. Ask the owner only when proceeding under any assumption would waste the work.
 
 ## Current phase
-See `docs/STATUS.md`. Pre-production. The next engineering milestone is **M0**: repository tooling, the Thulla rules engine in TypeScript and C#, shared vectors with full rule traceability, and the cross-engine equivalence harness. Nothing in `apps/` or `server/` exists yet beyond placeholders; create structure according to `docs/ARCHITECTURE.md` §5 and §9.1.
+See `docs/STATUS.md`. Pre-production. The next engineering milestone is **M0**: repository tooling, the Thulla rules engine in TypeScript and shared vectors with full rule traceability; the C# mirror and the equivalence harness are deferred (ADR-0019). Nothing in `apps/` or `server/` exists yet beyond placeholders; create structure according to `docs/ARCHITECTURE.md` §5 and §9.1.

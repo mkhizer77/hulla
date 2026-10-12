@@ -12,7 +12,7 @@ permissions:
 
 concurrency:
   group: ci-${{ github.ref }}
-  cancel-in-progress: true
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
   detect:
@@ -32,6 +32,17 @@ jobs:
           printf 'typescript=%s\ncsharp=%s\nunity=%s\n' "$ts" "$cs" "$unity" >> "$GITHUB_OUTPUT"
           printf 'typescript=%s csharp=%s unity=%s\n' "$ts" "$cs" "$unity"
 
+  secrets:
+    name: Secret scan
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
   typescript:
     name: TypeScript packages and server
     needs: detect
@@ -40,11 +51,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: pnpm/action-setup@v4
-        with:
-          version: 9
       - uses: actions/setup-node@v4
         with:
-          node-version: 22
+          node-version-file: .node-version
           cache: pnpm
       - run: pnpm install --frozen-lockfile
       - run: pnpm lint
@@ -65,8 +74,29 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: 8.0.x
+          dotnet-version: 10.0.x
+      - name: Formatting
+        working-directory: packages/rules-engine-cs
+        run: dotnet format --verify-no-changes
       - run: dotnet test packages/rules-engine-cs --configuration Release --nologo
+
+  equivalence:
+    name: Cross-engine equivalence (1,000 rounds)
+    needs: detect
+    if: needs.detect.outputs.typescript == 'true' && needs.detect.outputs.csharp == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .node-version
+          cache: pnpm
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.0.x
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm equivalence -- --rounds 1000
 
   unity-tests:
     name: Unity edit-mode tests
@@ -75,8 +105,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      # LFS objects are cached so each run does not spend the LFS bandwidth quota again.
+      - name: List LFS objects
+        run: git lfs ls-files --long | cut -d' ' -f1 | sort > .lfs-assets-id
+      - uses: actions/cache@v4
         with:
-          lfs: true
+          path: .git/lfs
+          key: lfs-${{ hashFiles('.lfs-assets-id') }}
+          restore-keys: lfs-
+      - run: git lfs pull
       - uses: actions/cache@v4
         with:
           path: apps/unity/Hulla/Library
@@ -97,7 +134,7 @@ jobs:
   # any failed job fails this one.
   ci:
     name: ci
-    needs: [detect, typescript, csharp, unity-tests]
+    needs: [detect, secrets, typescript, csharp, equivalence, unity-tests]
     if: ${{ !cancelled() }}
     runs-on: ubuntu-latest
     steps:

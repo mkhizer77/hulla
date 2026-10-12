@@ -1,0 +1,15 @@
+version: 2
+updates:
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: monthly
+  # Enable once the folders exist (M0 issues #1 and #2); Dependabot reports an error for a missing directory.
+  # - package-ecosystem: npm
+  #   directory: /
+  #   schedule:
+  #     interval: monthly
+  # - package-ecosystem: nuget
+  #   directory: /packages/rules-engine-cs
+  #   schedule:
+  #     interval: monthly
