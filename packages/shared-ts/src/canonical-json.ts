@@ -9,6 +9,20 @@ export interface JsonObject {
 
 export type JsonValue = JsonPrimitive | readonly JsonValue[] | JsonObject;
 
+/**
+ * Satisfied by any type whose reachable values are primitives, arrays or plain objects, so engine
+ * states declared as interfaces or aliases hash without casts. Functions and symbols are rejected.
+ */
+export type JsonCompatible<T> = T extends JsonPrimitive | undefined
+  ? T
+  : T extends readonly (infer U)[]
+    ? readonly JsonCompatible<U>[]
+    : T extends (...args: never[]) => unknown
+      ? never
+      : T extends object
+        ? { readonly [K in keyof T]: JsonCompatible<T[K]> }
+        : never;
+
 function isJsonArray(value: JsonValue): value is readonly JsonValue[] {
   return Array.isArray(value);
 }
@@ -18,7 +32,11 @@ function isJsonArray(value: JsonValue): value is readonly JsonValue[] {
  * whitespace, integers only, strings escaped exactly as `JSON.stringify` does, arrays in stored
  * order, properties whose value is `undefined` omitted. Anything else is a programmer error.
  */
-export function canonicalJson(value: JsonValue): string {
+export function canonicalJson<T>(value: JsonCompatible<T> & T): string {
+  return encode(value as JsonValue);
+}
+
+function encode(value: JsonValue): string {
   if (value === null) {
     return "null";
   }
@@ -42,7 +60,7 @@ export function canonicalJson(value: JsonValue): string {
       if (item === undefined) {
         throw new TypeError("canonical JSON arrays cannot hold undefined");
       }
-      return canonicalJson(item);
+      return encode(item);
     });
     return `[${items.join(",")}]`;
   }
@@ -51,13 +69,13 @@ export function canonicalJson(value: JsonValue): string {
   for (const key of keys) {
     const member = value[key];
     if (member !== undefined) {
-      members.push(`${JSON.stringify(key)}:${canonicalJson(member)}`);
+      members.push(`${JSON.stringify(key)}:${encode(member)}`);
     }
   }
   return `{${members.join(",")}}`;
 }
 
 /** SHA-256 over the canonical JSON of a state, as a lowercase hex string (ADR-0006). */
-export function stateHash(value: JsonValue): string {
+export function stateHash<T>(value: JsonCompatible<T> & T): string {
   return sha256Hex(utf8Encode(canonicalJson(value)));
 }
