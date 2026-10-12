@@ -125,6 +125,20 @@ namespace Hulla.Integration.Tests
 
             await WaitFor(() => Seated(_players[0]) == 3, 20f, "three seats taken");
             await WaitFor(() => _players.TrueForAll(pl => pl.Client!.Model.Code.Length > 0), 10f, "every client got its table_state");
+            if (!dropOne)
+            {
+                // The host's rules reach everyone in the lobby (GDD 6.13, E19).
+                _players[0].Client!.SetRules(new Protocol.RulesSelection
+                {
+                    GameId = Protocol.GameId.Thulla,
+                    Preset = Protocol.Preset.Family,
+                    Settings = new Protocol.Settings { TurnTimerSeconds = 30, LoserTitle = Protocol.LoserTitle.Donkey },
+                });
+                await WaitFor(() => _players.TrueForAll(pl => pl.Client!.Model.Selection?.Preset == Protocol.Preset.Family), 10f, "the rules reached every client");
+                Assert.AreEqual(30, _players[2].Client!.Model.Selection!.Settings!.TurnTimerSeconds);
+                Assert.AreEqual(_players[0].Client!.Model.MySeat, _players[2].Client!.Model.RulesChangedBy);
+            }
+
             foreach (var player in _players)
             {
                 Assert.AreEqual(code, player.Client!.Model.Code);

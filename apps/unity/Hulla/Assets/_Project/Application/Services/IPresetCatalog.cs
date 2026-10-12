@@ -9,7 +9,7 @@ namespace Hulla.Application.Services
     public interface IPresetCatalog
     {
         /// <summary>The preset's toggles over the defaults and its table settings, or null when unknown.</summary>
-        (ThullaRules Rules, TableSettings TableSettings)? Find(string presetId);
+        (ThullaRules Rules, TableSettings Settings)? Find(string presetId);
 
         Awaitable LoadAsync(CancellationToken cancellation);
     }

@@ -96,6 +96,9 @@ namespace Hulla.Application.Table
 
         public void StartRound() => Send(MessageTypes.StartRound, new StartRound());
 
+        /// <summary>The host's rules for the next deal; the server checks the host and the lobby phase.</summary>
+        public void SetRules(RulesSelection rules) => Send(MessageTypes.SetRules, new SetRules { Rules = rules });
+
         /// <summary>The server allows one phrase and one emote per seat every few seconds and refuses the rest.</summary>
         public void SendQuickChat(string phraseId) => Send(MessageTypes.QuickChat, new QuickChat { PhraseId = phraseId });
 

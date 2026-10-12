@@ -14,7 +14,7 @@ namespace Hulla.Games.Thulla.Tests
     {
         private sealed class Presets : IPresetCatalog
         {
-            public (ThullaRules Rules, TableSettings TableSettings)? Find(string presetId) => presetId == "family"
+            public (ThullaRules Rules, TableSettings Settings)? Find(string presetId) => presetId == "family"
                 ? (new ThullaRules { HandTaking = HandTaking.LeaderOnly }, new TableSettings { TurnTimerSeconds = 30, LoserTitle = LoserTitle.Donkey })
                 : (new ThullaRules(), new TableSettings());
 

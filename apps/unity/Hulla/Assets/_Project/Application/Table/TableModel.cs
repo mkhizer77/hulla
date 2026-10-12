@@ -51,6 +51,12 @@ namespace Hulla.Application.Table
         /// <summary>The seats that voted to play again.</summary>
         public IReadOnlyList<long> RematchVotes { get; private set; } = Array.Empty<long>();
 
+        /// <summary>The last rules change in the lobby: who changed it and which keys (E19); null when none.</summary>
+        public RulesChanged? LastRulesChange { get; private set; }
+
+        /// <summary>The seat that last changed the lobby's rules, or null.</summary>
+        public long? RulesChangedBy => LastRulesChange?.ChangedBy;
+
         /// <summary>The toggles the engine resolved for the current round; null before the first deal.</summary>
         public ThullaRules? ActiveRules { get; private set; }
 
@@ -191,6 +197,10 @@ namespace Hulla.Application.Table
                 case HostChanged changed:
                     HostSeat = changed.Seat;
                     break;
+                case RulesChanged rules:
+                    Selection = rules.Rules;
+                    LastRulesChange = rules;
+                    break;
                 case TableClosed _:
                     Closed = true;
                     Status = TableStatus.Closed;
@@ -286,6 +296,7 @@ namespace Hulla.Application.Table
             RoundId = start.RoundId;
             InRound = true;
             AutoStartAtTs = null;
+            LastRulesChange = null;
             Status = TableStatus.InRound;
             LastResult = null;
             _handCounts = start.HandCounts.ToArray();
@@ -377,8 +388,36 @@ namespace Hulla.Application.Table
             TurnSeat = resolved.NextLeader;
         }
 
+        /// <summary>
+        /// A card drawn by a player with the hand but no cards (R26, R28, R38). The drawer and, for a draw
+        /// from a hand, the player drawn from both see it: the card leaves one hand and joins the other.
+        /// </summary>
         private void ApplyPrivateDraw(PrivateDraw draw)
         {
+            var drawer = (int)draw.Seat;
+            if (drawer < _handCounts.Length)
+            {
+                _handCounts[drawer]++;
+            }
+
+            if (draw.From != null)
+            {
+                var from = (int)draw.From.Value;
+                if (from < _handCounts.Length && _handCounts[from] > 0)
+                {
+                    _handCounts[from]--;
+                }
+
+                if (draw.From == MySeat)
+                {
+                    _hand.Remove(draw.Card);
+                }
+            }
+            else if (draw.Source == Source.Discard && DiscardCount > 0)
+            {
+                DiscardCount--;
+            }
+
             if (draw.Seat == MySeat)
             {
                 _hand.Add(draw.Card);

@@ -5,6 +5,11 @@
             <ui:Label name="code" class="code" />
             <ui:Button name="share" class="button button--small" />
         </ui:VisualElement>
+        <ui:VisualElement class="lobby-rules">
+            <ui:Label name="rules" class="lobby-rules__text" />
+            <ui:Button name="edit-rules" class="button button--quiet button--small" />
+        </ui:VisualElement>
+        <ui:Label name="rules-changed" class="caption" />
         <ui:ScrollView name="seats-scroll" class="seats">
             <ui:VisualElement name="seats" />
         </ui:ScrollView>

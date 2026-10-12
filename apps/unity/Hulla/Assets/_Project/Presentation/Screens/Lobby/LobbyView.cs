@@ -25,12 +25,24 @@ namespace Hulla.Presentation.Screens.Lobby
         private readonly TextField _chatInput;
         private readonly Label _chatStatus;
         private readonly bool _canShare;
+        private readonly Label _rules;
+        private readonly Label _rulesChanged;
+        private readonly Button _editRules;
+        private readonly Func<string>? _rulesSummary;
+        private readonly Action? _openEditor;
 
         /// <param name="share">Shares the room code; returns false when it was copied instead of shared.</param>
-        public LobbyView(VisualElement root, TableClient client, Func<long> nowMs, Action leave, Func<string, bool>? share = null, Func<string, Awaitable<Domain.Result<bool>>>? sendText = null)
+        public LobbyView(VisualElement root, TableClient client, Func<long> nowMs, Action leave, Func<string, bool>? share = null, Func<string, Awaitable<Domain.Result<bool>>>? sendText = null, Func<string>? rulesSummary = null, Action? editRules = null)
         {
             _client = client;
             _sendText = sendText;
+            _rulesSummary = rulesSummary;
+            _openEditor = editRules;
+            _rules = root.Q<Label>("rules");
+            _rulesChanged = root.Q<Label>("rules-changed");
+            _editRules = root.Q<Button>("edit-rules");
+            _editRules.text = UiText.EditRules;
+            _editRules.clicked += () => _openEditor?.Invoke();
             _chatLog = root.Q<VisualElement>("chat-log");
             _chatInput = root.Q<TextField>("chat-input");
             _chatInput.maxLength = ITableChat.MaxLength;
@@ -179,6 +191,12 @@ namespace Hulla.Presentation.Screens.Lobby
                 _code.text = UiText.QuickPlayTable;
             }
 
+            _rules.text = _rulesSummary?.Invoke() ?? "";
+            _editRules.style.display = model.IsHost && !matchmade && _openEditor != null ? DisplayStyle.Flex : DisplayStyle.None;
+            var changedBy = model.RulesChangedBy;
+            _rulesChanged.text = changedBy == null || changedBy == model.MySeat
+                ? ""
+                : string.Format(UiText.RulesChangedBy, changedBy < model.Seats.Count ? model.Seats[(int)changedBy.Value].DisplayName ?? "?" : "?");
             _ready.text = MeReady() ? UiText.NotReady : UiText.Ready;
             _ready.style.display = matchmade ? DisplayStyle.None : DisplayStyle.Flex;
             _shareButton.style.display = matchmade || !_canShare ? DisplayStyle.None : DisplayStyle.Flex;
