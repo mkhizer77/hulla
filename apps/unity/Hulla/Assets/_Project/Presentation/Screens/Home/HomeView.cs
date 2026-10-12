@@ -17,6 +17,8 @@ namespace Hulla.Presentation.Screens.Home
         private readonly Label _status;
         private readonly TextField _server;
         private readonly HomeFriendsViewModel? _friendsOnline;
+        private readonly ProgressViewModel? _progress;
+        private readonly Label _progressLine;
         private readonly Button _hero;
         private readonly Label _online;
 
@@ -24,8 +26,16 @@ namespace Hulla.Presentation.Screens.Home
         private readonly Button _quick;
         private int _seats = 4;
 
-        public HomeView(VisualElement root, HomeViewModel model, string? server, Action<string, string?> create, Action<string, string, string?> join, Action<string, int, string?> quickPlay, Action? openSettings = null, Action<string, string?>? openFriends = null, Action<string, string?>? openProfile = null, HomeFriendsViewModel? friendsOnline = null, Action? howToPlay = null, string? howToPlayText = null, Action<string, string, string?>? watch = null)
+        public HomeView(VisualElement root, HomeViewModel model, string? server, Action<string, string?> create, Action<string, string, string?> join, Action<string, int, string?> quickPlay, Action? openSettings = null, Action<string, string?>? openFriends = null, Action<string, string?>? openProfile = null, HomeFriendsViewModel? friendsOnline = null, Action? howToPlay = null, string? howToPlayText = null, Action<string, string, string?>? watch = null, ProgressViewModel? progress = null)
         {
+            _progress = progress;
+            _progressLine = root.Q<Label>("progress");
+            if (_progress != null)
+            {
+                _progress.Changed += RefreshProgress;
+            }
+
+            RefreshProgress();
             var how = root.Q<Button>("how-to-play");
             how.text = howToPlayText ?? "";
             how.clicked += () => howToPlay?.Invoke();
@@ -115,10 +125,33 @@ namespace Hulla.Presentation.Screens.Home
         public void Dispose()
         {
             _model.Changed -= Refresh;
+            if (_progress != null)
+            {
+                _progress.Changed -= RefreshProgress;
+            }
+
             if (_friendsOnline != null)
             {
                 _friendsOnline.Changed -= RefreshFriends;
             }
+        }
+
+        private void RefreshProgress()
+        {
+            var info = _progress?.Info;
+            if (info == null)
+            {
+                _progressLine.text = "";
+                return;
+            }
+
+            var text = string.Format(UiText.ProgressLine, info.Level, info.IntoLevel, info.ToNext, _progress!.Coins.ToString("N0"));
+            if (info.LoginStreak > 1)
+            {
+                text += string.Format(UiText.StreakSuffix, info.LoginStreak);
+            }
+
+            _progressLine.text = text;
         }
 
         private void RefreshFriends()

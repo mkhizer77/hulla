@@ -141,6 +141,11 @@ namespace Hulla.Presentation.Text
         public const string Server = "Server (development builds)";
 
         public const string Profile = "Profile";
+        public const string ProgressLine = "Level {0} · {1}/{2} XP · {3} coins";
+        public const string StreakSuffix = " · day {0} streak";
+        public const string RewardLine = "+{0} XP · +{1} coins";
+        public const string RewardCapped = " (daily cap reached)";
+        public const string LevelUp = "Level up! {0} → {1}";
 
         /// <summary>Starting names for a new player (GDD 17.2), changeable on Home.</summary>
         public static readonly string[] NamePlaces = { "Lahori", "Dilli", "Karachi", "Dhaka", "Pindi", "Mumbai", "Multani", "Jaipuri" };

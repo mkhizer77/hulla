@@ -2,6 +2,7 @@
     <ui:VisualElement name="home" class="screen screen--center">
         <ui:Label name="title" class="title" />
         <ui:Label name="tagline" class="subtitle" />
+        <ui:Label name="progress" class="status progress-line" />
         <ui:Button name="hero" class="button button--primary hero" />
         <ui:Label name="online" class="status" />
         <ui:VisualElement class="panel">

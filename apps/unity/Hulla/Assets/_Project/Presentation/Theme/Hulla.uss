@@ -777,3 +777,13 @@
 .player-sheet {
     top: 30%;
 }
+
+.progress-line {
+    margin-top: 0;
+    margin-bottom: var(--space-1);
+}
+
+.result-reward {
+    -unity-text-align: middle-center;
+    white-space: normal;
+}

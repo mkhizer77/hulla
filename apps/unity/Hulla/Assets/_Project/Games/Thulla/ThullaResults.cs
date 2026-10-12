@@ -21,6 +21,7 @@ namespace Hulla.Games.Thulla
         private readonly Label _status;
         private readonly Func<long, string> _nameOf;
         private long _shownSeconds = -1;
+        private readonly Label _reward;
 
         public ThullaResults(VisualElement root, Func<long, string> nameOf, Action playAgain)
         {
@@ -32,7 +33,11 @@ namespace Hulla.Games.Thulla
             _playAgain.text = UiText.PlayAgain;
             _playAgain.clicked += playAgain;
             _status = root.Q<Label>("result-status");
+            _reward = root.Q<Label>("result-reward");
         }
+
+        /// <summary>The round's XP, coins and any level-up (GDD 14.8), once the server has paid it.</summary>
+        public void ShowReward(string? text) => _reward.text = text ?? "";
 
         /// <summary>Who may get an "Add friend" chip; null hides the chips.</summary>
         public Func<string, bool>? CanAdd { get; set; }
