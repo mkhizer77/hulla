@@ -33,6 +33,7 @@ M0 complete: the Thulla rulebook runs in TypeScript with full traceability. M1, 
 - 12 Oct decisions: C# mirror deferred past v1.0 (ADR-0019), no clock in engines (ADR-0020), JSON Schema draft-07 (ADR-0021), one deck and 3–6 seats until v1.2, web client before Rung (M5 → web → Rung → M6, dates in the execution plan), Facebook login stays, Unity stays on 6000.4.9f1.
 
 ## Doing
+- M2 #49 server part (branch `feat/moderation-admin`, stacked on #48 and the preset fix): strikes, mutes, voice suspensions and bans with expiry, device bans at sign-in, the ban check at match join, admin RPCs (inspect table, replay round, sanction, audit list) gated to the server key or listed owner accounts and audited; round logs now carry the rules, mode and dealer so a round replays from its seed and moves. The presence pointer is written before the table state goes out (a CI flake). OQ-020 logged.
 - M2 #48 server part (branch `feat/block-report`): blocks both ways with Nakama's friend graph, mutes and friend requests honouring them, the matchmaker ticket hook that keeps blocked pairs apart, reports with the table's chat and the target's card, the three-reports auto-mute, triage and chat-log purge RPCs. The report sheet and block buttons are the Unity track. OQ-019 logged.
 
 ## Next

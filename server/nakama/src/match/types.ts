@@ -191,6 +191,7 @@ export interface RoundRuntime<S, M> {
   readonly roundId: string;
   readonly index: number;
   readonly seedHex: string;
+  readonly dealerSeat: SeatIndex;
   /** The PRNG words after the deal and every draw; rebuilt into an Rng per use (ADR-0009). */
   rngState: Xoshiro128State;
   readonly seatCount: number;
@@ -288,6 +289,10 @@ export interface RoundRecord {
   readonly roundId: string;
   readonly gameId: GameId;
   readonly rulesVersion: string;
+  /** What the table ran: enough to replay the round from its seed and moves (ARCHITECTURE 8.11). */
+  readonly rules: RulesSelection;
+  readonly mode: TableMode;
+  readonly dealerSeat: SeatIndex;
   readonly seedHex: string;
   readonly players: readonly (string | null)[];
   readonly moves: readonly { seat: SeatIndex; move: unknown; auto: boolean }[];

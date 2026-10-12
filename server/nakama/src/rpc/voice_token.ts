@@ -10,6 +10,7 @@ import {
 
 import { runtimeFrom, type ServerRuntime } from "../infra/nk";
 import { buildRtcToken, isAgoraId, type AgoraConfig } from "../services/agora_token";
+import { isVoiceSuspended, readModeration } from "../services/sanctions";
 
 /** Tokens last an hour; a client asks again before then (GDD 11.4). */
 export const VOICE_TOKEN_SECONDS = 3_600;
@@ -24,6 +25,8 @@ export interface VoiceTokenDeps {
   readonly runtime: ServerRuntime;
   readonly userId: string | null;
   readonly config: AgoraConfig | null;
+  /** A voice suspension from moderation (GDD 24.3). */
+  readonly suspended?: boolean;
   membership(matchId: string): TableMembership | null;
 }
 
@@ -54,6 +57,7 @@ export function voiceToken(deps: VoiceTokenDeps, payload: string): VoiceTokenRes
   if (typeof matchId !== "string" || matchId === "") {
     return { ok: false, error: ruleError(ErrorCodes.table.invalidPayload, { reason: "match_id" }) };
   }
+  if (deps.suspended === true) return { ok: false, error: ruleError(ErrorCodes.voice.suspended) };
   if (deps.config === null) return { ok: false, error: ruleError(ErrorCodes.voice.unavailable) };
   const membership = deps.membership(matchId);
   if (!membership?.present) {
@@ -101,6 +105,7 @@ export function rpcVoiceToken(
         runtime: runtimeFrom(nk, logger),
         userId: ctx.userId ?? null,
         config: agoraConfigFrom(ctx.env),
+        suspended: isVoiceSuspended(readModeration(nk, ctx.userId ?? ""), Date.now()),
         membership(matchId) {
           try {
             const answer = JSON.parse(

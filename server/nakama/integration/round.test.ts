@@ -253,6 +253,17 @@ describe.skipIf(NAKAMA_HOST === undefined)(
         expect(e.type).not.toBe("private_draw");
       }
 
+      // The round replays from its log with the same final hash (ARCHITECTURE 8.11).
+      const replayUrl = `http://${NAKAMA_HOST ?? ""}:${NAKAMA_PORT}/v2/rpc/admin_round_replay?http_key=local-only-http-key&unwrap`;
+      const replayed = (await (
+        await fetch(replayUrl, {
+          method: "POST",
+          body: JSON.stringify({ tableId: created.tableId, roundId }),
+        })
+      ).json()) as { ok: boolean; matches: boolean; moves: number };
+      expect(replayed).toMatchObject({ ok: true, matches: true });
+      expect(replayed.moves).toBeGreaterThan(0);
+
       // Redaction at the socket: no client ever saw another seat's hand or legal mask.
       for (const c of players) {
         const mine = seatOf.get(c.name);

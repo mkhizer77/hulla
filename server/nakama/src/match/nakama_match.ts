@@ -1,4 +1,5 @@
 import { OPCODES } from "@hulla/protocol/generated";
+import { ErrorCodes } from "@hulla/shared-ts";
 
 import { ROUND_RESULTS_COLLECTION } from "../services/account_deletion";
 import {
@@ -9,6 +10,7 @@ import {
   type PresenceStore,
 } from "../services/presence";
 import { applyRoundToStats, nkProfileStore } from "../services/profiles";
+import { isBanned, readModeration } from "../services/sanctions";
 import { nkSocialStore, recordRecentPlayers } from "../services/social";
 
 import { tableCore, type PresenceInfo, type TableCore } from "./table_core";
@@ -291,7 +293,15 @@ export function tableMatchHandler<S, M, V, E, R>(
     },
 
     matchJoinAttempt(_ctx, logger, nk, _dispatcher, _tick, state, presence, metadata) {
-      const decision = coreFor(nk, logger).joinAttempt(state, info(presence), metadata, Date.now());
+      const now = Date.now();
+      try {
+        if (isBanned(readModeration(nk, presence.userId), now)) {
+          return { state, accept: false, rejectMessage: ErrorCodes.auth.banned };
+        }
+      } catch (error: unknown) {
+        logger.warn("ban state not read", { error: String(error) });
+      }
+      const decision = coreFor(nk, logger).joinAttempt(state, info(presence), metadata, now);
       return decision.accept
         ? { state, accept: true }
         : { state, accept: false, rejectMessage: decision.code };
@@ -301,8 +311,6 @@ export function tableMatchHandler<S, M, V, E, R>(
       const before = labelFor(state);
       const now = Date.now();
       const batch = coreFor(nk, logger).join(state, presences.map(info), now);
-      send(dispatcher, state, batch, presences);
-      relabel(dispatcher, before, state);
       presenceSync(
         ctx,
         logger,
@@ -311,6 +319,8 @@ export function tableMatchHandler<S, M, V, E, R>(
         presences.map((p) => p.userId),
         now,
       );
+      relabel(dispatcher, before, state);
+      send(dispatcher, state, batch, presences);
       return { state };
     },
 
@@ -318,8 +328,6 @@ export function tableMatchHandler<S, M, V, E, R>(
       const before = labelFor(state);
       const now = Date.now();
       const batch = coreFor(nk, logger).leave(state, presences.map(info), now);
-      send(dispatcher, state, batch, presences);
-      relabel(dispatcher, before, state);
       presenceSync(
         ctx,
         logger,
@@ -328,6 +336,8 @@ export function tableMatchHandler<S, M, V, E, R>(
         presences.map((p) => p.userId),
         now,
       );
+      relabel(dispatcher, before, state);
+      send(dispatcher, state, batch, presences);
       return { state };
     },
 

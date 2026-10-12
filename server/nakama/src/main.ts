@@ -14,6 +14,7 @@ import {
   afterAuthenticateFacebook,
   afterAuthenticateGoogle,
 } from "./hooks/after_authenticate";
+import { beforeAuthenticateDevice } from "./hooks/before_authenticate";
 import { beforeChannelMessageSend } from "./hooks/before_channel_message";
 import { beforeMatchmakerAdd } from "./hooks/before_matchmaker_add";
 import { matchmakerMatched } from "./hooks/matchmaker_matched";
@@ -24,6 +25,13 @@ import {
   rpcAdminPurgeDeleted,
 } from "./rpc/account";
 import { rpcAccountMerge, rpcAccountMergePrepare } from "./rpc/account_merge";
+import {
+  rpcAdminAuditList,
+  rpcAdminRoundReplay,
+  rpcAdminSanction,
+  rpcAdminTableInspect,
+  rpcSanctionsGet,
+} from "./rpc/admin";
 import { rpcChatFiltersGet, rpcChatFiltersSet } from "./rpc/chat_filters";
 import { rpcHello } from "./rpc/hello";
 import {
@@ -88,6 +96,12 @@ function InitModule(
   initializer.registerRpc("report_create", rpcReportCreate);
   initializer.registerRpc("reports_list", rpcReportsList);
   initializer.registerRpc("admin_chat_logs_purge", rpcAdminChatLogsPurge);
+  initializer.registerRpc("admin_table_inspect", rpcAdminTableInspect);
+  initializer.registerRpc("admin_round_replay", rpcAdminRoundReplay);
+  initializer.registerRpc("admin_sanction", rpcAdminSanction);
+  initializer.registerRpc("admin_audit_list", rpcAdminAuditList);
+  initializer.registerRpc("sanctions_get", rpcSanctionsGet);
+  initializer.registerBeforeAuthenticateDevice(beforeAuthenticateDevice);
   initializer.registerAfterAuthenticateDevice(afterAuthenticateDevice);
   initializer.registerAfterAuthenticateApple(afterAuthenticateApple);
   initializer.registerAfterAuthenticateGoogle(afterAuthenticateGoogle);

@@ -49,12 +49,18 @@ describe("InitModule", () => {
       "report_create",
       "reports_list",
       "admin_chat_logs_purge",
+      "admin_table_inspect",
+      "admin_round_replay",
+      "admin_sanction",
+      "admin_audit_list",
+      "sanctions_get",
     ]);
     expect([...matches.keys()]).toEqual(["thulla"]);
     expect(hooks.get("rtBefore:ChannelMessageSend")?.name).toBe("beforeChannelMessageSend");
     expect(hooks.get("rtBefore:MatchmakerAdd")?.name).toBe("beforeMatchmakerAdd");
     expect(hooks.get("matchmakerMatched")?.name).toBe("matchmakerMatched");
     expect(hooks.get("afterAuthenticateDevice")?.name).toBe("afterAuthenticateDevice");
+    expect(hooks.get("beforeAuthenticateDevice")?.name).toBe("beforeAuthenticateDevice");
     expect(hooks.get("afterAuthenticateFacebook")?.name).toBe("afterAuthenticateFacebook");
     const handler = matches.get("thulla");
     expect(Object.keys(handler ?? {}).sort()).toEqual([
