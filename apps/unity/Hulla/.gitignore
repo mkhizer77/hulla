@@ -16,3 +16,4 @@
 *.aab
 *.unitypackage
 crashlytics-build.properties
+/.utmp/
