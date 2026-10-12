@@ -729,3 +729,7 @@
 .home__links > .button {
     margin: 0 var(--space-1);
 }
+
+.lobby-chat {
+    margin-top: var(--space-1);
+}

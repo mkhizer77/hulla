@@ -298,7 +298,7 @@ namespace Hulla.Composition
             _screen = wanted;
             if (wanted == Screen.Lobby)
             {
-                _lobbyView = new LobbyView(_shell.Show(_shell.Catalog.Lobby), client, () => DateTimeOffset.UtcNow.ToUnixTimeMilliseconds(), Leave);
+                _lobbyView = new LobbyView(_shell.Show(_shell.Catalog.Lobby), client, () => DateTimeOffset.UtcNow.ToUnixTimeMilliseconds(), Leave, code => _app.ShareSheet.Share(UiText.ShareTitle, string.Format(UiText.ShareText, code)), text => _app.TableChat.SendAsync(text, _app.Lifetime));
                 _view = _lobbyView;
                 return;
             }
@@ -310,7 +310,11 @@ namespace Hulla.Composition
             _view = _tableView;
         }
 
-        private void OnText(TextLine line) => _tableView?.ShowText(line);
+        private void OnText(TextLine line)
+        {
+            _tableView?.ShowText(line);
+            _lobbyView?.ShowText(line);
+        }
 
         private void HideRecap() => _app.Settings.ShowRulesRecap = false;
 

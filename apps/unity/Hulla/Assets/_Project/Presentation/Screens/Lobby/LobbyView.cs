@@ -1,5 +1,7 @@
 using System;
+using Hulla.Application.Services;
 using Hulla.Application.Table;
+using UnityEngine;
 using Hulla.Presentation.Text;
 using UnityEngine.UIElements;
 
@@ -17,10 +19,37 @@ namespace Hulla.Presentation.Screens.Lobby
         private readonly Label _countdown;
         private readonly Func<long> _nowMs;
         private long _shownSeconds = -1;
+        private readonly Button _shareButton;
+        private readonly Func<string, Awaitable<Domain.Result<bool>>>? _sendText;
+        private readonly VisualElement _chatLog;
+        private readonly TextField _chatInput;
+        private readonly Label _chatStatus;
+        private readonly bool _canShare;
 
-        public LobbyView(VisualElement root, TableClient client, Func<long> nowMs, Action leave)
+        /// <param name="share">Shares the room code; returns false when it was copied instead of shared.</param>
+        public LobbyView(VisualElement root, TableClient client, Func<long> nowMs, Action leave, Func<string, bool>? share = null, Func<string, Awaitable<Domain.Result<bool>>>? sendText = null)
         {
             _client = client;
+            _sendText = sendText;
+            _chatLog = root.Q<VisualElement>("chat-log");
+            _chatInput = root.Q<TextField>("chat-input");
+            _chatInput.maxLength = ITableChat.MaxLength;
+            _chatStatus = root.Q<Label>("chat-status");
+            var send = root.Q<Button>("chat-send");
+            send.text = UiText.Send;
+            send.clicked += SendTyped;
+            root.Q<VisualElement>("chat").style.display = sendText == null ? DisplayStyle.None : DisplayStyle.Flex;
+            _shareButton = root.Q<Button>("share");
+            _shareButton.text = UiText.ShareCode;
+            _shareButton.clicked += () =>
+            {
+                var code = _client.Model.Code.Length > 0 ? _client.Model.Code : _client.Ticket.Code;
+                if (share != null && !share(code))
+                {
+                    _shareButton.text = UiText.Copied;
+                }
+            };
+            _canShare = share != null;
             _nowMs = nowMs;
             _countdown = root.Q<Label>("countdown");
             root.Q<Label>("code-label").text = UiText.RoomCode;
@@ -40,6 +69,46 @@ namespace Hulla.Presentation.Screens.Lobby
         }
 
         public void Dispose() => _client.Model.Changed -= Refresh;
+
+        /// <summary>A free-text line on the table channel, newest first, the latest five only.</summary>
+        public void ShowText(TextLine line)
+        {
+            var name = line.SenderName;
+            foreach (var seat in _client.Model.Seats)
+            {
+                if (seat.PlayerId == line.SenderId)
+                {
+                    name = seat.Seat == _client.Model.MySeat ? UiText.You : seat.DisplayName ?? name;
+                }
+            }
+
+            var entry = new Label(name + ": " + line.Text);
+            entry.AddToClassList("chat-log__line");
+            _chatLog.Insert(0, entry);
+            while (_chatLog.childCount > 5)
+            {
+                _chatLog.RemoveAt(_chatLog.childCount - 1);
+            }
+        }
+
+        private async void SendTyped()
+        {
+            var text = _chatInput.value;
+            if (_sendText == null || string.IsNullOrWhiteSpace(text))
+            {
+                return;
+            }
+
+            _chatStatus.text = "";
+            var sent = await _sendText(text);
+            if (sent.IsOk)
+            {
+                _chatInput.value = "";
+                return;
+            }
+
+            _chatStatus.text = sent.Error.Code == "network.rate_limited" ? UiText.ChatTooFast : UiText.ChatRefused;
+        }
 
         /// <summary>Per frame: the auto-start countdown of a public table, redrawn when the second changes.</summary>
         public void Tick()
@@ -112,6 +181,7 @@ namespace Hulla.Presentation.Screens.Lobby
 
             _ready.text = MeReady() ? UiText.NotReady : UiText.Ready;
             _ready.style.display = matchmade ? DisplayStyle.None : DisplayStyle.Flex;
+            _shareButton.style.display = matchmade || !_canShare ? DisplayStyle.None : DisplayStyle.Flex;
             _start.style.display = model.IsHost && !matchmade ? DisplayStyle.Flex : DisplayStyle.None;
             _status.text = model.LastErrorCode != null ? UiText.Error(model.LastErrorCode) : seated < 3 ? UiText.Waiting : "";
         }
