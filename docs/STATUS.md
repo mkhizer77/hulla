@@ -1,11 +1,13 @@
 # Status
 
-Updated: 13 October 2026 (evening)
+Updated: 13 October 2026 (night)
 
 ## Phase
 M0 complete: the Thulla rulebook runs in TypeScript with full traceability. M1, the vertical slice, starts with the protocol schemas.
 
 ## Done
+- M1 #16 merged (13 Oct): the Thulla host, named match callbacks, the game registry, `table_create`, and the scripted four-seat round against Nakama in Docker. Nakama facts learned and recorded (ADR-0022, ARCHITECTURE §8.1, server README): handlers resolve by global name, the globals freeze after InitModule, the match state is rebuilt as plain data between callbacks, and a message target needs Nakama's node. Server-side validation moved from zod to compiled checks. A native Nakama plus Postgres runs on the dev Mac for server tickets.
+- M1 #21 and the Unity session/TableClient merged by the Unity session (PRs 152, 153).
 - M1 #15 merged (12 Oct): the table core in `server/nakama/src/match` (lifecycle, pipeline with idempotency, deadlines and auto-play, log with state hashes, snapshots, redaction dispatch, rematch and series) and its Nakama binding; OQ-009 and OQ-010 logged.
 - M1 #14 merged (12 Oct): `server/nakama` with the local compose, Dockerfile, config, InitModule with a hello RPC, the esbuild bundler, a fake nk for unit tests and a CI compose smoke test.
 - GDD v1.3 (private, git-ignored at `docs/GDD_Hulla.md`): rules spec with IDs, platform catalogue, economy, UX, compliance, production plan.
@@ -25,11 +27,10 @@ M0 complete: the Thulla rulebook runs in TypeScript with full traceability. M1, 
 - 12 Oct decisions: C# mirror deferred past v1.0 (ADR-0019), no clock in engines (ADR-0020), JSON Schema draft-07 (ADR-0021), one deck and 3–6 seats until v1.2, web client before Rung (M5 → web → Rung → M6, dates in the execution plan), Facebook login stays, Unity stays on 6000.4.9f1.
 
 ## Doing
-- M1 #16 (PR 151, CI): the Thulla host, named match callbacks, the game registry, `table_create`, and the scripted four-seat round against Nakama in Docker. Three runtime facts learned on the way, recorded in ADR-0022 and ARCHITECTURE §8.1: Nakama resolves handlers by global name, freezes the globals after InitModule, and rebuilds the match state as plain data between callbacks; server-side validation moved from zod to compiled checks.
-- M1 #17 (branch `feat/table-rpcs`, stacked on #16): the room-code registry with region and expiry, `table_join_by_code`, `presets_get` from `content/presets` (four presets, a schema and `pnpm content:validate`), and `voice_token` with a pure-TypeScript Agora AccessToken2 builder checked against Agora's own; `voice.*` error codes; OQ-011 logged.
+- M1 #17 (branch `feat/table-rpcs`, rebased on main): the room-code registry with region and expiry, `table_join_by_code`, `presets_get` from `content/presets` (four presets, a schema and `pnpm content:validate`), and `voice_token` with a pure-TypeScript Agora AccessToken2 builder checked against Agora's own; `voice.*` error codes; OQ-011 logged. Pull request next.
 
 ## Next
-Merge #16, rebase and open #17, then #18 (Quick Play matchmaking with human-only fill), #19 (reconnection) and #20 (chat).
+#18 (Quick Play matchmaking with human-only fill), #19 (reconnection), #20 (chat). The Unity client track runs in parallel in its own worktree (the other session).
 
 ## Blockers
 - None.
