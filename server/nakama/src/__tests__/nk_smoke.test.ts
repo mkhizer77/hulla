@@ -239,6 +239,8 @@ describe("the RPCs and hooks against an in-memory Nakama", () => {
       partyId: id === "b" ? "p1" : undefined,
     })) as unknown as nkruntime.MatchmakerResult[];
     const matchId = matchmakerMatched(ctxFor(""), log, m.nk, entries);
+    // A linked account: guests may not free-text at a public table (GDD 9.4).
+    m.user("a", { googleId: "g-a" });
     expect(m.matches.get(matchId)?.params).toMatchObject({
       mode: "public",
       autoStart: { expected: 3 },

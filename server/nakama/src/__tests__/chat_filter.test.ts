@@ -7,6 +7,7 @@ import {
   filterText,
   isFilterLists,
   isGuestAccount,
+  normaliseForms,
   normaliseWord,
   roomOfChannel,
 } from "../services/chat_filter";
@@ -23,7 +24,11 @@ describe("the profanity filter (GDD 11.1)", () => {
     expect(normaliseWord("S.H.I.T")).toBe("shit");
     expect(normaliseWord("sh1t")).toBe("shit");
     expect(normaliseWord("shiiiit")).toBe("shit");
-    expect(normaliseWord("$hit!")).toBe("shiti");
+    expect(normaliseForms("$hit!")).toEqual(["shiti", "shit"]);
+    expect(normaliseWord("sh!t")).toBe("shit");
+    expect(normaliseWord("(zorblat)")).toBe("zorblat");
+    expect(normaliseForms("zorblat!")).toEqual(["zorblati", "zorblat"]);
+    expect(normaliseForms("a$$")).toEqual(["as", "a"]);
     expect(normaliseWord("B-h-e-n-c-h-o-d")).toBe("bhenchod");
   });
 
@@ -37,6 +42,7 @@ describe("the profanity filter (GDD 11.1)", () => {
       hits: 1,
     });
     expect(filterText(matcher, "sh1t sh.it shiiit")).toMatchObject({ hits: 3 });
+    expect(filterText(matcher, "a$$ $hit!")).toMatchObject({ hits: 1 });
     expect(filterText(matcher, "ullu ka pattha tu")).toEqual({
       text: "**** ** ****** tu",
       hits: 3,

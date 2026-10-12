@@ -27,18 +27,48 @@ const LOOKALIKES: Record<string, string> = {
 
 const SEPARATORS = /[.\-_*'`"~^+=:;,()[\]{}<>/\\]/g;
 
-/** Lower case, lookalikes undone, separators dropped, runs of a letter collapsed to one. */
-export function normaliseWord(input: string): string {
-  const lowered = input.toLowerCase().replace(SEPARATORS, "");
+const EDGE_PUNCTUATION = ".,?;:'\"()[]{}<>-_*~^+=/\\%&#`";
+const EDGE_LOOKALIKES = "!|@$";
+
+function trimEdges(input: string, set: string): string {
+  let start = 0;
+  let end = input.length;
+  while (start < end && set.includes(input.charAt(start))) start += 1;
+  while (end > start && set.includes(input.charAt(end - 1))) end -= 1;
+  return input.slice(start, end);
+}
+
+function fold(input: string): string {
   let out = "";
   let previous = "";
-  for (const ch of lowered) {
+  for (const ch of input.replace(SEPARATORS, "")) {
     const mapped = LOOKALIKES[ch] ?? ch;
     if (mapped === previous) continue;
     out += mapped;
     previous = mapped;
   }
   return out;
+}
+
+/**
+ * Lower case, plain punctuation trimmed from the ends, lookalikes undone, separators dropped and
+ * runs of a letter collapsed to one: "S.H.1.T" and "sh!t" both become "shit".
+ */
+export function normaliseWord(input: string): string {
+  return fold(trimEdges(input.toLowerCase(), EDGE_PUNCTUATION));
+}
+
+/**
+ * The forms a token is checked under: as written, and with trailing symbols that double as
+ * letters dropped, so "zorblat!" is "zorblat" while "a$$" still reads as "ass".
+ */
+export function normaliseForms(input: string): string[] {
+  const trimmed = trimEdges(input.toLowerCase(), EDGE_PUNCTUATION);
+  const primary = fold(trimmed);
+  let end = trimmed.length;
+  while (end > 0 && EDGE_LOOKALIKES.includes(trimmed.charAt(end - 1))) end -= 1;
+  const secondary = fold(trimmed.slice(0, end));
+  return secondary === primary || secondary === "" ? [primary] : [primary, secondary];
 }
 
 export interface Matcher {
@@ -82,8 +112,9 @@ export function filterText(matcher: Matcher, text: string): FilterResult {
   const tokens = text.split(/(\s+)/);
   const normalised = tokens.map((t) => (/^\s+$/.test(t) || t === "" ? null : normaliseWord(t)));
   const flagged = new Set<number>();
-  normalised.forEach((n, i) => {
-    if (n !== null && n !== "" && matcher.words.has(n)) flagged.add(i);
+  tokens.forEach((t, i) => {
+    if (normalised[i] === null) return;
+    if (normaliseForms(t).some((form) => form !== "" && matcher.words.has(form))) flagged.add(i);
   });
   const wordIndexes = normalised.flatMap((n, i) => (n === null ? [] : [i]));
   for (const phrase of matcher.phrases) {
