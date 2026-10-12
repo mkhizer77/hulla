@@ -20,8 +20,11 @@ namespace Hulla.Presentation.Screens.Home
         private readonly Button _quick;
         private int _seats = 4;
 
-        public HomeView(VisualElement root, HomeViewModel model, string? server, Action<string, string?> create, Action<string, string, string?> join, Action<string, int, string?> quickPlay)
+        public HomeView(VisualElement root, HomeViewModel model, string? server, Action<string, string?> create, Action<string, string, string?> join, Action<string, int, string?> quickPlay, Action? openSettings = null)
         {
+            var settings = root.Q<Button>("settings");
+            settings.text = UiText.Settings;
+            settings.clicked += () => openSettings?.Invoke();
             _model = model;
             root.Q<Label>("title").text = UiText.AppTitle;
             root.Q<Label>("tagline").text = UiText.Tagline;

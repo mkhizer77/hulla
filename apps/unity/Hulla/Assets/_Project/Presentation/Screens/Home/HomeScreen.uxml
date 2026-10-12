@@ -15,5 +15,6 @@
         </ui:VisualElement>
         <ui:Label name="status" class="status" />
         <ui:TextField name="server" class="field field--dev" />
+        <ui:Button name="settings" class="button button--quiet" />
     </ui:VisualElement>
 </ui:UXML>

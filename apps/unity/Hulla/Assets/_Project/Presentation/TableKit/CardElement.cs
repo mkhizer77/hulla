@@ -26,6 +26,8 @@ namespace Hulla.Presentation.TableKit
             _suit.text = SuitGlyph(card[1]);
             var red = card[1] == 'H' || card[1] == 'D';
             EnableInClassList("card--red", red);
+            EnableInClassList("card--suit-d", card[1] == 'D');
+            EnableInClassList("card--suit-c", card[1] == 'C');
             return this;
         }
 

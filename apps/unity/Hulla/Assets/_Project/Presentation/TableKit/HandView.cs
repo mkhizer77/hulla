@@ -12,7 +12,8 @@ namespace Hulla.Presentation.TableKit
     /// </summary>
     public sealed class HandView
     {
-        public const float CardWidth = 120f;
+        public const float NormalCardWidth = 120f;
+        public const float LargeCardWidth = 150f;
         private const float FlickPixels = 40f;
 
         private readonly VisualElement _hand;
@@ -47,6 +48,19 @@ namespace Hulla.Presentation.TableKit
         public event Action<string>? Refused;
 
         public bool OneTap { get; set; }
+
+        /// <summary>Must match the card width the theme gives (.card, or .cards--large .card).</summary>
+        public float CardWidth { get; private set; } = NormalCardWidth;
+
+        public void SetLargeCards(bool large)
+        {
+            var width = large ? LargeCardWidth : NormalCardWidth;
+            if (System.Math.Abs(width - CardWidth) > 0.1f)
+            {
+                CardWidth = width;
+                Rebuild();
+            }
+        }
 
         public void Show(IReadOnlyList<string> cards, Func<string, bool> legal, bool myTurn)
         {
