@@ -769,3 +769,7 @@
     color: var(--ink-ivory);
     margin-bottom: var(--space-1);
 }
+
+.settings__action {
+    margin-bottom: var(--space-1);
+}

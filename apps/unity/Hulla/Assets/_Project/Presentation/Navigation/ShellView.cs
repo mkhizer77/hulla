@@ -70,8 +70,8 @@ namespace Hulla.Presentation.Navigation
         /// <summary>A question with two answers over the current screen; either answer closes it.</summary>
         public void ShowDialog(string question, string yes, string no, Action onYes, Action onNo)
         {
-            CloseOverlay();
-            var overlay = new VisualElement { name = "shell-overlay" };
+            Root.Q("shell-dialog")?.RemoveFromHierarchy();
+            var overlay = new VisualElement { name = "shell-dialog" };
             overlay.AddToClassList("overlay");
             overlay.AddToClassList("results");
             overlay.style.display = DisplayStyle.Flex;
@@ -83,14 +83,14 @@ namespace Hulla.Presentation.Navigation
             panel.Add(title);
             var yesButton = new Button(() =>
             {
-                CloseOverlay();
+                overlay.RemoveFromHierarchy();
                 onYes();
             }) { text = yes };
             yesButton.AddToClassList("button");
             yesButton.AddToClassList("button--primary");
             var noButton = new Button(() =>
             {
-                CloseOverlay();
+                overlay.RemoveFromHierarchy();
                 onNo();
             }) { text = no };
             noButton.AddToClassList("button");

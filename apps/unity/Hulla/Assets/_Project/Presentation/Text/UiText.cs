@@ -64,6 +64,17 @@ namespace Hulla.Presentation.Text
         public const string ChatRefused = "Not sent. Messages can't have links or phone numbers, up to 140 characters.";
         public const string QuickPlay = "Quick Play";
         public const string Settings = "Settings";
+        public const string SettingsAccount = "Account and data";
+        public const string ExportData = "Export my data";
+        public const string ExportShared = "Your data is ready to share.";
+        public const string ExportCopied = "Your data was copied.";
+        public const string DeleteAccount = "Delete my account";
+        public const string DeleteConfirm = "Delete your account? You have 14 days to change your mind.";
+        public const string DeleteYes = "Delete";
+        public const string DeleteNo = "Keep it";
+        public const string DeletePending = "Your account will be deleted on {0}. Cancel any time before then.";
+        public const string CancelDeletion = "Cancel deletion";
+        public const string DeletionCancelled = "Deletion cancelled. Your account stays.";
         public const string Done = "Done";
         public const string SettingsPlay = "Playing";
         public const string SettingsSeeing = "Seeing and moving";

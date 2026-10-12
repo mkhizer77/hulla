@@ -37,6 +37,7 @@ namespace Hulla.Composition
             Social = social;
             HomeFriends = new HomeFriendsViewModel(social);
             Mutes = new Hulla.Application.Social.MuteList(social);
+            Account = new NakamaAccountService(_connection);
             Friends = new FriendsViewModel(social);
             Profile = new ProfileViewModel(social);
             QuickPlay = new QuickPlayViewModel(_matchmaker);
@@ -67,6 +68,8 @@ namespace Hulla.Composition
         public HomeFriendsViewModel HomeFriends { get; }
 
         public Hulla.Application.Social.MuteList Mutes { get; }
+
+        public IAccountService Account { get; }
 
         public ProfileViewModel Profile { get; }
 

@@ -427,7 +427,8 @@ namespace Hulla.Composition
         private void OpenSettings()
         {
             _settingsView?.Dispose();
-            _settingsView = new SettingsView(_shell.ShowOverlay(_shell.Catalog.Settings), _app.Settings, CloseSettings);
+            var account = _app.Sessions.Current == null ? null : new SettingsView.AccountActions(ExportData, DeleteAccount, CancelDeletion, PendingDeletion);
+            _settingsView = new SettingsView(_shell.ShowOverlay(_shell.Catalog.Settings), _app.Settings, CloseSettings, account);
         }
 
         /// <summary>The rulebook opens over the table, so play goes on underneath (GDD 14.11).</summary>
@@ -449,6 +450,60 @@ namespace Hulla.Composition
         {
             CloseSettings();
             _ = new ThullaRulesEditor(_shell.ShowOverlay(_shell.Catalog.Settings), client.Model, _app.Presets, client.SetRules, _shell.CloseOverlay);
+        }
+
+        /// <summary>When a requested deletion happens (Unix ms), kept on the device to show and cancel it.</summary>
+        private const string DeleteAtPrefKey = "hulla.delete_at";
+
+        private async void ExportData(Action<string> status)
+        {
+            var export = await _app.Account.ExportAsync(_app.Lifetime);
+            if (!export.IsOk)
+            {
+                status(UiText.Error(export.Error.Code));
+                return;
+            }
+
+            status(_app.ShareSheet.Share(UiText.ExportData, export.Value) ? UiText.ExportShared : UiText.ExportCopied);
+        }
+
+        private void DeleteAccount(Action<string> status) =>
+            _shell.ShowDialog(UiText.DeleteConfirm, UiText.DeleteYes, UiText.DeleteNo, async () =>
+            {
+                var deleted = await _app.Account.DeleteAsync(_app.Lifetime);
+                if (!deleted.IsOk)
+                {
+                    status(UiText.Error(deleted.Error.Code));
+                    return;
+                }
+
+                PlayerPrefs.SetString(DeleteAtPrefKey, deleted.Value.ToString());
+                PlayerPrefs.Save();
+                status(PendingDeletion() ?? "");
+            }, () => { });
+
+        private async void CancelDeletion(Action<string> status)
+        {
+            var cancelled = await _app.Account.CancelDeleteAsync(_app.Lifetime);
+            if (!cancelled.IsOk)
+            {
+                status(UiText.Error(cancelled.Error.Code));
+                return;
+            }
+
+            PlayerPrefs.DeleteKey(DeleteAtPrefKey);
+            PlayerPrefs.Save();
+            status(UiText.DeletionCancelled);
+        }
+
+        private static string? PendingDeletion()
+        {
+            if (!long.TryParse(PlayerPrefs.GetString(DeleteAtPrefKey, ""), out var at) || at <= DateTimeOffset.UtcNow.ToUnixTimeMilliseconds())
+            {
+                return null;
+            }
+
+            return string.Format(UiText.DeletePending, DateTimeOffset.FromUnixTimeMilliseconds(at).ToLocalTime().ToString("d MMMM yyyy"));
         }
 
         private void CloseSettings()
