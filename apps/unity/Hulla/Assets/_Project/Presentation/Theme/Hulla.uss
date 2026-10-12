@@ -1,0 +1,355 @@
+/* Tokens from the GDD palette (15.2). The design system pass (#23) replaces this file with generated tokens. */
+:root {
+    --surface-table: #1F2A2E;
+    --surface-ui: #141518;
+    --accent-saffron: #F4A300;
+    --accent-teal: #16A085;
+    --ink-ivory: #F6F1E7;
+    --ink-muted: #9AA0A6;
+    --state-thulla: #E53935;
+    --state-escape: #43A047;
+    --suit-red: #D32F2F;
+    --suit-black: #1B1B1F;
+    --card-face: #FBF8F2;
+    --space-1: 8px;
+    --space-2: 16px;
+    --space-3: 24px;
+    --radius: 14px;
+    --font-body: 34px;
+    --font-small: 26px;
+    --font-title: 96px;
+    -unity-font-style: normal;
+    color: var(--ink-ivory);
+    font-size: var(--font-body);
+}
+
+.screen {
+    flex-grow: 1;
+    background-color: var(--surface-ui);
+    padding: var(--space-3);
+}
+
+.screen--center {
+    justify-content: center;
+    align-items: stretch;
+}
+
+.title {
+    font-size: var(--font-title);
+    -unity-font-style: bold;
+    -unity-text-align: middle-center;
+    color: var(--accent-saffron);
+}
+
+.title--small {
+    font-size: 56px;
+}
+
+.subtitle {
+    -unity-text-align: middle-center;
+    color: var(--ink-muted);
+    margin-bottom: var(--space-3);
+}
+
+.caption {
+    font-size: var(--font-small);
+    color: var(--ink-muted);
+}
+
+.panel {
+    background-color: #1C1E22;
+    border-radius: var(--radius);
+    padding: var(--space-3);
+}
+
+.divider {
+    height: 2px;
+    background-color: #2A2D33;
+    margin: var(--space-2) 0;
+}
+
+.field {
+    flex-direction: column;
+    margin-bottom: var(--space-2);
+}
+
+.field > Label {
+    color: var(--ink-muted);
+    font-size: var(--font-small);
+    margin-bottom: 4px;
+}
+
+.field TextInput, .field .unity-base-text-field__input {
+    min-height: 88px;
+    font-size: var(--font-body);
+    background-color: #0E0F11;
+    color: var(--ink-ivory);
+    border-radius: 10px;
+    border-width: 2px;
+    border-color: #2A2D33;
+    padding: 0 var(--space-2);
+}
+
+.button {
+    min-height: 96px;
+    margin: var(--space-1) 0;
+    border-radius: var(--radius);
+    border-width: 0;
+    background-color: #2A2D33;
+    color: var(--ink-ivory);
+    font-size: var(--font-body);
+    -unity-font-style: bold;
+}
+
+.button:hover {
+    background-color: #33373E;
+}
+
+.button:disabled {
+    opacity: 0.4;
+}
+
+.button--primary {
+    background-color: var(--accent-saffron);
+    color: #141518;
+}
+
+.button--primary:hover {
+    background-color: #FFB520;
+}
+
+.button--quiet {
+    background-color: rgba(0, 0, 0, 0);
+    color: var(--ink-muted);
+}
+
+.button--small {
+    min-height: 72px;
+    padding: 0 var(--space-2);
+}
+
+.status {
+    -unity-text-align: middle-center;
+    color: var(--ink-muted);
+    margin-top: var(--space-2);
+    white-space: normal;
+}
+
+.code-box {
+    align-items: center;
+    padding: var(--space-3);
+}
+
+.code {
+    font-size: 120px;
+    -unity-font-style: bold;
+    letter-spacing: 12px;
+    color: var(--accent-saffron);
+}
+
+.seats {
+    flex-grow: 1;
+}
+
+.lobby-seat {
+    flex-direction: row;
+    align-items: center;
+    padding: var(--space-2);
+    margin-bottom: var(--space-1);
+    background-color: #1C1E22;
+    border-radius: var(--radius);
+}
+
+.lobby-seat__name {
+    flex-grow: 1;
+}
+
+.tag, .tag--ok, .tag--muted {
+    font-size: var(--font-small);
+    margin-left: var(--space-1);
+    padding: 4px 12px;
+    border-radius: 8px;
+}
+
+.tag {
+    background-color: #3A2F12;
+    color: var(--accent-saffron);
+}
+
+.tag--ok {
+    background-color: #123A2B;
+    color: var(--state-escape);
+}
+
+.tag--muted {
+    color: var(--ink-muted);
+}
+
+.actions {
+    padding-top: var(--space-2);
+}
+
+/* Table */
+.table {
+    background-color: var(--surface-table);
+    padding: var(--space-2);
+}
+
+.table__top {
+    flex-direction: row;
+    justify-content: flex-end;
+}
+
+.opponents {
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.seat {
+    width: 180px;
+    margin: var(--space-1);
+    padding: var(--space-1);
+    align-items: center;
+    background-color: rgba(0, 0, 0, 0.25);
+    border-radius: var(--radius);
+    border-width: 3px;
+    border-color: rgba(0, 0, 0, 0);
+}
+
+.seat--turn {
+    border-color: var(--accent-saffron);
+}
+
+.seat__name {
+    font-size: var(--font-small);
+    overflow: hidden;
+    max-width: 160px;
+}
+
+.seat__count {
+    font-size: 48px;
+    -unity-font-style: bold;
+}
+
+.seat__state {
+    font-size: 22px;
+    color: var(--ink-muted);
+}
+
+.felt {
+    flex-grow: 1;
+    justify-content: center;
+    align-items: center;
+}
+
+.pile {
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.pile__slot {
+    align-items: center;
+    margin: 6px;
+}
+
+.pile__owner {
+    font-size: 22px;
+    color: var(--ink-muted);
+}
+
+.pile__note {
+    margin-top: var(--space-2);
+    color: var(--ink-muted);
+}
+
+.toast {
+    display: none;
+    position: absolute;
+    font-size: 110px;
+    -unity-font-style: bold;
+    color: var(--state-thulla);
+    -unity-text-outline-width: 3px;
+    -unity-text-outline-color: #141518;
+}
+
+.table__bar {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    min-height: 80px;
+}
+
+.turn {
+    -unity-font-style: bold;
+    color: var(--accent-saffron);
+}
+
+.hand {
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    padding: var(--space-1) 0 var(--space-3) 60px;
+}
+
+.hand > .card {
+    margin-left: -60px;
+    margin-bottom: 12px;
+}
+
+.card {
+    width: 120px;
+    height: 168px;
+    background-color: var(--card-face);
+    border-radius: 10px;
+    border-width: 2px;
+    border-color: #C9C2B4;
+    padding: 6px 8px;
+    color: var(--suit-black);
+}
+
+.card--red {
+    color: var(--suit-red);
+}
+
+.card__rank {
+    font-size: 40px;
+    -unity-font-style: bold;
+    color: inherit;
+}
+
+.card__suit {
+    font-size: 44px;
+    color: inherit;
+}
+
+.card--legal {
+    border-color: var(--accent-saffron);
+    border-width: 4px;
+    translate: 0 -18px;
+}
+
+.card--dim {
+    opacity: 0.45;
+}
+
+.card--faded {
+    opacity: 0.6;
+}
+
+.results {
+    display: none;
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.7);
+    justify-content: center;
+    padding: var(--space-3);
+}
+
+.results__order {
+    margin: var(--space-2) 0;
+}

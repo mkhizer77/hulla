@@ -4,7 +4,8 @@
     "references": [
         "Hulla.Application",
         "Hulla.Domain",
-        "Hulla.Presentation"
+        "Hulla.Presentation",
+        "Hulla.Protocol"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

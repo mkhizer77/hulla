@@ -24,6 +24,8 @@ namespace Hulla.Infrastructure.Nakama
 
         public PlayerSession? Current { get; private set; }
 
+        public void Forget() => Current = null;
+
         public async Awaitable<Result<PlayerSession>> SignInAsync(string displayName, CancellationToken cancellation)
         {
             try

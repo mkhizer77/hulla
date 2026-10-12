@@ -15,7 +15,7 @@ namespace Hulla.Architecture.Tests
             ["Hulla.Application"] = new[] { "Hulla.Domain", "Hulla.Protocol" },
             ["Hulla.Infrastructure"] = new[] { "Hulla.Application", "Hulla.Domain", "Hulla.Protocol" },
             ["Hulla.Presentation"] = new[] { "Hulla.Application", "Hulla.Domain" },
-            ["Hulla.Games.Thulla"] = new[] { "Hulla.Application", "Hulla.Domain", "Hulla.Presentation" },
+            ["Hulla.Games.Thulla"] = new[] { "Hulla.Application", "Hulla.Domain", "Hulla.Presentation", "Hulla.Protocol" },
             ["Hulla.Composition"] = new[]
             {
                 "Hulla.Application", "Hulla.Domain", "Hulla.Protocol", "Hulla.Infrastructure",

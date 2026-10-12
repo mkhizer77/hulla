@@ -181,6 +181,7 @@ namespace Hulla.Application.Table
             if (round == null)
             {
                 InRound = false;
+                LastResult = null;
                 TurnSeat = null;
                 _legal.Clear();
                 _trick.Clear();
