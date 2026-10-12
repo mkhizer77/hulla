@@ -1,0 +1,10 @@
+node_modules
+dist
+coverage
+pnpm-lock.yaml
+**/generated/**
+apps/unity
+*.md
+*.yml
+*.yaml
+LICENSE
