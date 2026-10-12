@@ -64,6 +64,13 @@ namespace Hulla.Games.Thulla
         private long _turnStartMs;
         private long _turnDeadlineMs;
         private bool _voted;
+        private readonly Func<string, Awaitable<Domain.Result<bool>>>? _sendText;
+        private VisualElement _chatLog = null!;
+        private TextField _chatInput = null!;
+        private Label _chatStatus = null!;
+
+        /// <summary>The chat log keeps the latest lines only.</summary>
+        private const int ChatLogLines = 30;
 
         /// <param name="oneTap">Play on the first tap instead of tap-to-raise (a setting, GDD 14.4).</param>
         /// <param name="hideRecapForGood">Remembers "don't show again"; null when the player already chose it.</param>
@@ -77,8 +84,10 @@ namespace Hulla.Games.Thulla
             Action? hideRecapForGood = null,
             bool oneTap = false,
             Action? openSettings = null,
-            Action<string?>? openRules = null)
+            Action<string?>? openRules = null,
+            Func<string, Awaitable<Domain.Result<bool>>>? sendText = null)
         {
+            _sendText = sendText;
             _client = client;
             _chat = chat;
             _nowMs = nowMs;
@@ -139,6 +148,23 @@ namespace Hulla.Games.Thulla
             closeChat.text = UiText.Close;
             closeChat.clicked += () => SetChatOpen(false);
             BuildChatPanel(root.Q<VisualElement>("chat-phrases"), root.Q<VisualElement>("chat-emotes"));
+            _chatLog = root.Q<VisualElement>("chat-log");
+            _chatStatus = root.Q<Label>("chat-status");
+            _chatInput = root.Q<TextField>("chat-input");
+            _chatInput.maxLength = ITableChat.MaxLength;
+            _chatInput.label = "";
+            var send = root.Q<Button>("chat-send");
+            send.text = UiText.Send;
+            send.clicked += SendTyped;
+            _chatInput.RegisterCallback<KeyDownEvent>(evt =>
+            {
+                if (evt.keyCode == KeyCode.Return || evt.keyCode == KeyCode.KeypadEnter)
+                {
+                    SendTyped();
+                }
+            });
+            var compose = root.Q<VisualElement>(className: "chat-panel__compose");
+            compose.style.display = sendText == null ? DisplayStyle.None : DisplayStyle.Flex;
             _client.Model.Changed += Refresh;
             _client.Model.Chat += OnChat;
             Refresh();
@@ -307,6 +333,59 @@ namespace Hulla.Games.Thulla
             }
 
             _ring.BadgeFor(line.Seat)?.Say(text, SaySeconds);
+        }
+
+        /// <summary>A free-text line from the table channel: into the log and onto the sender's seat.</summary>
+        public void ShowText(TextLine line)
+        {
+            var model = _client.Model;
+            long? seat = null;
+            foreach (var info in model.Seats)
+            {
+                if (info.PlayerId == line.SenderId)
+                {
+                    seat = info.Seat;
+                }
+            }
+
+            var name = seat != null ? NameOf(seat.Value) : line.SenderName;
+            var entry = new Label(name + ": " + line.Text);
+            entry.AddToClassList("chat-log__line");
+            _chatLog.Insert(0, entry);
+            while (_chatLog.childCount > ChatLogLines)
+            {
+                _chatLog.RemoveAt(_chatLog.childCount - 1);
+            }
+
+            if (seat == model.MySeat)
+            {
+                _mySay.text = line.Text;
+                _mySay.style.display = DisplayStyle.Flex;
+                _mySayLeft = SaySeconds;
+            }
+            else if (seat != null)
+            {
+                _ring.BadgeFor(seat.Value)?.Say(line.Text, SaySeconds);
+            }
+        }
+
+        private async void SendTyped()
+        {
+            var text = _chatInput.value;
+            if (_sendText == null || string.IsNullOrWhiteSpace(text))
+            {
+                return;
+            }
+
+            _chatStatus.text = "";
+            var sent = await _sendText(text);
+            if (sent.IsOk)
+            {
+                _chatInput.value = "";
+                return;
+            }
+
+            _chatStatus.text = sent.Error.Code == "network.rate_limited" ? UiText.ChatTooFast : UiText.ChatRefused;
         }
 
         private void VoteAgain()

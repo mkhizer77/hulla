@@ -53,6 +53,7 @@ namespace Hulla.Composition
             _shell.Ticked += Tick;
             _app.Settings.Changed += ApplySettings;
             _app.QuickPlay.Found += OnQuickPlayFound;
+            _app.TableChat.Received += OnText;
             _app.Tables.Disconnected += OnDisconnected;
         }
 
@@ -75,6 +76,7 @@ namespace Hulla.Composition
             _shell.Ticked -= Tick;
             _app.Settings.Changed -= ApplySettings;
             _app.QuickPlay.Found -= OnQuickPlayFound;
+            _app.TableChat.Received -= OnText;
             _app.Tables.Disconnected -= OnDisconnected;
             CloseView();
         }
@@ -159,10 +161,12 @@ namespace Hulla.Composition
             }
 
             FollowModel();
+            await _app.TableChat.JoinAsync(ticket.Value.MatchId, table.Lifetime);
         }
 
         private async void Leave()
         {
+            await _app.TableChat.LeaveAsync();
             await _app.Tables.LeaveAsync();
             _app.Session?.EndTable();
             ShowHome();
@@ -197,6 +201,7 @@ namespace Hulla.Composition
                     var socket = await _app.Sessions.ReconnectAsync(table.Lifetime);
                     if (socket.IsOk && (await _app.Tables.EnterAsync(table.Ticket, table.Lifetime)).IsOk)
                     {
+                        await _app.TableChat.JoinAsync(table.Ticket.MatchId, table.Lifetime);
                         _shell.SetBanner(null);
                         return;
                     }
@@ -257,11 +262,13 @@ namespace Hulla.Composition
             }
 
             client.Events.Clear();
-            _tableView = new ThullaTableView(_shell.Show(_shell.Catalog.Table), client, _app.Chat, () => DateTimeOffset.UtcNow.ToUnixTimeMilliseconds(), Leave, openSettings: OpenSettings, openRules: OpenRules);
+            _tableView = new ThullaTableView(_shell.Show(_shell.Catalog.Table), client, _app.Chat, () => DateTimeOffset.UtcNow.ToUnixTimeMilliseconds(), Leave, openSettings: OpenSettings, openRules: OpenRules, sendText: text => _app.TableChat.SendAsync(text, _app.Lifetime));
             ApplySettings();
             _scheduler = new AnimationScheduler(client.Events, _tableView);
             _view = _tableView;
         }
+
+        private void OnText(TextLine line) => _tableView?.ShowText(line);
 
         private void HideRecap() => _app.Settings.ShowRulesRecap = false;
 

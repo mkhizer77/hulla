@@ -34,6 +34,9 @@ namespace Hulla.Presentation.Text
         public const string You = "You";
         public const string Reconnecting = "Reconnecting…";
         public const string Chat = "Chat";
+        public const string Send = "Send";
+        public const string ChatTooFast = "Slow down a little: one message every 2 seconds.";
+        public const string ChatRefused = "Not sent. Messages can't have links or phone numbers, up to 140 characters.";
         public const string QuickPlay = "Quick Play";
         public const string Settings = "Settings";
         public const string Done = "Done";
