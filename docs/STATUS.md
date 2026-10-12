@@ -6,6 +6,7 @@ Updated: 13 October 2026 (night)
 M0 complete: the Thulla rulebook runs in TypeScript with full traceability. M1, the vertical slice, starts with the protocol schemas.
 
 ## Done
+- M2 #47 server part merged (13 Oct, PR 184): the profanity filter in six scripts with evasion-proof matching, Standard masks and Family blocks, hot-reloadable lists, mutes per account, the guest text lock at public tables. OQ-018 logged.
 - M2 #45 server part merged (13 Oct, PR 181): spectators are friends of a seated player, the host seats them, late arrivals take free seats at the round end; `seat_spectator` and `table_state.spectators` in the protocol. OQ-017 logged.
 - M2 #42 server part merged (13 Oct, PR 172): presence states from Nakama's online flag, the seat pointer, the Away flag and the live match label; `table_list_friends` ordered for the Home hero; an in-memory Nakama now drives every RPC, hook and match callback in unit tests.
 - M2 #41 server part merged (13 Oct, PR 169): add by friend code with the 500 cap, ten pinned favourites, Recent Players written at round end; requests and blocks ride Nakama's friend API. OQ-016 logged.
@@ -32,8 +33,7 @@ M0 complete: the Thulla rulebook runs in TypeScript with full traceability. M1, 
 - 12 Oct decisions: C# mirror deferred past v1.0 (ADR-0019), no clock in engines (ADR-0020), JSON Schema draft-07 (ADR-0021), one deck and 3–6 seats until v1.2, web client before Rung (M5 → web → Rung → M6, dates in the execution plan), Facebook login stays, Unity stays on 6000.4.9f1.
 
 ## Doing
-- M2 #48 server part (branch `feat/block-report`, stacked on #47): blocks both ways with Nakama's friend graph, mutes and friend requests honouring them, the matchmaker ticket hook that keeps blocked pairs apart, reports with the table's chat and the target's card, the three-reports auto-mute, triage and chat-log purge RPCs. The report sheet and block buttons are the Unity track. OQ-019 logged.
-- M2 #47 server part (branch `feat/chat-filters`): the profanity filter with evasion-proof matching in six scripts, Standard masks and Family blocks, hot-reloadable lists through an admin RPC, mutes synced per account, and the guest lock on free text at public tables. The chat panel and the per-user strictness setting are the Unity track (OQ-018).
+- M2 #48 server part (branch `feat/block-report`): blocks both ways with Nakama's friend graph, mutes and friend requests honouring them, the matchmaker ticket hook that keeps blocked pairs apart, reports with the table's chat and the target's card, the three-reports auto-mute, triage and chat-log purge RPCs. The report sheet and block buttons are the Unity track. OQ-019 logged.
 
 ## Next
 Server: after #47 and #48 merge, #49 to #56, #71, #72, #75, #77. Unity: #33 polish, #23 theme from the design system (#22), #32 voice, the Profile screen for #40, the friends screen for #41, parties for Quick Play once friends exist.
