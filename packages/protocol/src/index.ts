@@ -1,4 +1,4 @@
-/** Opcode registry and schema loading helpers; generated types arrive with codegen (#13). */
+/** Opcode registry, schema loading helpers, and the generated types, validators and opcode table. */
 export {
   PROTOCOL_MAJOR,
   loadOpcodes,
@@ -6,3 +6,4 @@ export {
   type OpcodeEntry,
   type Visibility,
 } from "./registry";
+export * from "../generated/ts";

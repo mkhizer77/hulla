@@ -160,7 +160,7 @@ hulla/
 |---|---|---|---|
 | `packages/rules-engine` | TS (no Node APIs) | `shared-ts` | `protocol`, `server`, any client, Node built-ins |
 | `packages/rules-engine-cs` [LATER, ADR-0019] | C# netstandard2.1 | nothing | UnityEngine, System.Random, DateTime.Now |
-| `packages/protocol` | JSON Schema; generated TS and C# | nothing | hand edits in generated folders |
+| `packages/protocol` | JSON Schema; generated TS and C# | `zod` (the generated validators) | hand edits in generated folders |
 | `packages/shared-ts` | TS | nothing | Node built-ins (so the web can use it) |
 | `server/nakama` | TS (Nakama runtime) | `rules-engine`, `protocol`, `shared-ts` | `apps/*` |
 | `apps/unity` | C# | `rules-engine-cs` (as a local UPM package), generated C# protocol | server code |
