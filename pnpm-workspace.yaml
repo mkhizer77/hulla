@@ -1,0 +1,15 @@
+packages:
+  - packages/*
+  - server/nakama
+  - apps/web
+  - tools/*
+minimumReleaseAgeExclude:
+  - '@vitest/coverage-v8@5.0.4'
+  - '@vitest/mocker@5.0.4'
+  - '@vitest/spy@5.0.4'
+  - dependency-cruiser@18.6.0
+  - vitest@5.0.4
+
+# pnpm runs no dependency install scripts unless listed here (CODING_RULES 11: pinned, reviewed dependencies).
+allowBuilds:
+  unrs-resolver: true
