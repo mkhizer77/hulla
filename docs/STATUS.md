@@ -1,6 +1,6 @@
 # Status
 
-Updated: 12 October 2026 (afternoon)
+Updated: 12 October 2026 (evening)
 
 ## Phase
 M0 complete: the Thulla rulebook runs in TypeScript with full traceability. M1, the vertical slice, starts with the protocol schemas.
@@ -23,10 +23,10 @@ M0 complete: the Thulla rulebook runs in TypeScript with full traceability. M1, 
 - 12 Oct decisions: C# mirror deferred past v1.0 (ADR-0019), no clock in engines (ADR-0020), JSON Schema draft-07 (ADR-0021), one deck and 3–6 seats until v1.2, web client before Rung (M5 → web → Rung → M6, dates in the execution plan), Facebook login stays, Unity stays on 6000.4.9f1.
 
 ## Doing
-- M1 #13: `tools/codegen` generates TypeScript interfaces, zod validators, the opcode table and Newtonsoft C# DTOs (a UPM package) from the schemas into committed folders; round-trip tests over the examples in TypeScript and in a .NET 10 test project; CI regenerates and fails on drift and runs every C# project.
+- M1 #14: `server/nakama` with the local compose (Nakama 3.41, Postgres 16), a Dockerfile, `config/local.yml`, the InitModule skeleton with a hello RPC, the esbuild bundler and a fake nk for unit tests. CI builds the bundle and runs a compose smoke test that calls the hello RPC; the image workflow builds on `main` and deploys only by hand.
 
 ## Next
-Work the M0 milestone issue by issue, starting with #1 (pnpm workspace and root tooling). Order and dependencies are in each issue; the map is `docs/EXECUTION_PLAN.md`, the brief is `docs/milestones/M0.md`. M1 #14: the Nakama local compose, Dockerfile, config, InitModule skeleton with a hello RPC, the runtime bundler and a fake nk for unit tests; then #15, the table core.
+M1 #15, the table core (create, join, leave, ready, seat order, host transfer) as pure server code with unit tests; then #16, registering the Thulla module and playing a scripted round through Nakama.
 
 ## Blockers
 - None.

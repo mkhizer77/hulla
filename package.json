@@ -13,7 +13,8 @@
   "scripts": {
     "lint": "pnpm typecheck && eslint . --max-warnings 0 && prettier --check . && pnpm depcruise",
     "typecheck": "pnpm -r --if-present run typecheck",
-    "depcruise": "depcruise --config .dependency-cruiser.cjs packages tools",
+    "build": "pnpm -r --if-present run build",
+    "depcruise": "depcruise --config .dependency-cruiser.cjs packages tools server",
     "test": "vitest run --passWithNoTests --coverage",
     "test:watch": "vitest",
     "vectors": "pnpm -r --if-present run vectors",
@@ -29,6 +30,7 @@
     "@vitest/coverage-v8": "^5.0.4",
     "ajv": "^8.20.0",
     "dependency-cruiser": "^18.6.0",
+    "esbuild": "^0.28.2",
     "eslint": "^10.12.0",
     "eslint-config-prettier": "^10.1.8",
     "eslint-import-resolver-typescript": "^4.4.5",

@@ -56,6 +56,7 @@ jobs:
   deploy-phase0:
     name: Deploy to the phase 0 box (manual approval)
     needs: build
+    if: github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
     environment: phase0
     steps:

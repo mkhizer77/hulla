@@ -32,6 +32,7 @@ export default defineConfig([
       "**/dist/**",
       "**/coverage/**",
       "**/generated/**",
+      "**/build/**",
       "apps/unity/**",
       "**/*.cjs",
     ],
@@ -119,7 +120,7 @@ export default defineConfig([
     },
   },
   {
-    files: ["**/*.config.{js,ts}", "eslint.config.js"],
+    files: ["**/*.config.{js,ts}", "eslint.config.js", "**/*.mjs"],
     extends: [tseslint.configs.disableTypeChecked],
     rules: { "import-x/no-default-export": "off" },
   },

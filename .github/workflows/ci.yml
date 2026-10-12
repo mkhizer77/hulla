@@ -22,6 +22,7 @@ jobs:
       typescript: ${{ steps.check.outputs.typescript }}
       csharp: ${{ steps.check.outputs.csharp }}
       unity: ${{ steps.check.outputs.unity }}
+      server: ${{ steps.check.outputs.server }}
     steps:
       - uses: actions/checkout@v4
       - id: check
@@ -29,8 +30,9 @@ jobs:
           if [ -f pnpm-lock.yaml ]; then ts=true; else ts=false; fi
           if find packages -name '*.csproj' -not -path '*/node_modules/*' 2>/dev/null | grep -q .; then cs=true; else cs=false; fi
           if [ -f apps/unity/Hulla/ProjectSettings/ProjectVersion.txt ]; then unity=true; else unity=false; fi
-          printf 'typescript=%s\ncsharp=%s\nunity=%s\n' "$ts" "$cs" "$unity" >> "$GITHUB_OUTPUT"
-          printf 'typescript=%s csharp=%s unity=%s\n' "$ts" "$cs" "$unity"
+          if [ -f server/nakama/compose.yml ]; then server=true; else server=false; fi
+          printf 'typescript=%s\ncsharp=%s\nunity=%s\nserver=%s\n' "$ts" "$cs" "$unity" "$server" >> "$GITHUB_OUTPUT"
+          printf 'typescript=%s csharp=%s unity=%s server=%s\n' "$ts" "$cs" "$unity" "$server"
 
   secrets:
     name: Secret scan
@@ -64,6 +66,34 @@ jobs:
           pnpm codegen
           git diff --exit-code -- packages/protocol/generated
       - run: pnpm content:validate
+      - run: pnpm build
+
+  server-smoke:
+    name: Nakama boots with the bundle and answers hello
+    needs: detect
+    if: needs.detect.outputs.server == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .node-version
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm --filter @hulla/server build
+      - name: Start Postgres and Nakama
+        working-directory: server/nakama
+        run: docker compose up -d --wait --wait-timeout 120
+      - name: The hello RPC answers
+        run: |
+          body=$(curl -sf "http://127.0.0.1:7350/v2/rpc/hello?http_key=local-only-http-key")
+          echo "$body"
+          echo "$body" | jq -r '.payload' | jq -e '.ok == true and .protocolMajor == 1' > /dev/null
+      - name: Logs and shutdown
+        if: always()
+        working-directory: server/nakama
+        run: docker compose logs nakama | tail -40; docker compose down -v
 
   csharp:
     name: C# packages
@@ -138,7 +168,7 @@ jobs:
   # any failed job fails this one.
   ci:
     name: ci
-    needs: [detect, secrets, typescript, csharp, equivalence, unity-tests]
+    needs: [detect, secrets, typescript, server-smoke, csharp, equivalence, unity-tests]
     if: ${{ !cancelled() }}
     runs-on: ubuntu-latest
     steps:

@@ -1,0 +1,21 @@
+{
+  "name": "@hulla/server",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Hulla runtime modules for Nakama: RPCs, hooks, the table core and the game modules, bundled into one file for the JS runtime",
+  "license": "PolyForm-Noncommercial-1.0.0",
+  "type": "module",
+  "scripts": {
+    "typecheck": "tsc -p tsconfig.json",
+    "test": "vitest run",
+    "build": "node scripts/build.mjs"
+  },
+  "dependencies": {
+    "@hulla/protocol": "workspace:*",
+    "@hulla/rules-engine": "workspace:*",
+    "@hulla/shared-ts": "workspace:*"
+  },
+  "devDependencies": {
+    "nakama-runtime": "github:heroiclabs/nakama-common#v1.48.0"
+  }
+}
