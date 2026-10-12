@@ -321,11 +321,18 @@ describe("reconnection and snapshots", () => {
     expect(h.core.inbound(h.state, "s0", "{}", h.now).outbound).toEqual([]);
   });
 
-  it("a second session for the same player replaces the first", () => {
+  it("a second device is refused while the seat's session is live, and the resume token takes it over", () => {
     const h = harness();
     seated(h, 3);
     const twin = { sessionId: "s0b", userId: "u0", username: "Player0" };
-    h.core.joinAttempt(h.state, twin, {}, h.now);
+    expect(h.core.joinAttempt(h.state, twin, {}, h.now)).toEqual({
+      accept: false,
+      code: "auth.device_limit",
+    });
+    const token = h.state.seats[0]?.resumeToken ?? "";
+    expect(h.core.joinAttempt(h.state, twin, { resumeToken: token }, h.now)).toEqual({
+      accept: true,
+    });
     const batch = h.core.join(h.state, [twin], h.now);
     expect(batch.kicks).toEqual(["s0"]);
     expect(h.state.presences["s0"]).toBeUndefined();
