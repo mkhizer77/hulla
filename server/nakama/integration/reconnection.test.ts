@@ -147,14 +147,14 @@ describe.skipIf(NAKAMA_HOST === undefined)(
       if (back === null) throw new Error("p2 never returned");
 
       // Back within the window: the presence says so and its next moves are its own, not the policy's.
-      expect(
-        p0.received.some(
-          (e) =>
-            e.type === "presence" &&
-            (e.payload as { seat: number; status: string }).seat === seat2 &&
-            (e.payload as { status: string }).status === "reconnected",
-        ),
-      ).toBe(true);
+      // It travels on the host's socket, so it is awaited rather than assumed delivered.
+      await p0.next(
+        (e) =>
+          e.type === "presence" &&
+          (e.payload as { seat: number; status: string }).seat === seat2 &&
+          (e.payload as { status: string }).status === "reconnected",
+        20_000,
+      );
       const backPlays = play(back, matchId, roundId);
       await Promise.all([...others, backPlays]);
       const human = p0.received.filter(
