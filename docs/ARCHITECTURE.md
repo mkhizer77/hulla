@@ -202,7 +202,7 @@ export interface GameModule<S, M, V, R extends RuleSet = RuleSet> {
   readonly rulesSchema: JsonSchema;          // toggles, defaults per mode, presets
   readonly phases: readonly PhaseSpec[];     // ordered phases with allowed ActionKinds and deadline policy
 
-  createRound(input: CreateRoundInput<R>): S;
+  createRound(input: CreateRoundInput<R>, rng: Rng): Result<S, RuleError>;   // total: bad input is an error, not a throw
   currentPhase(state: S): PhaseId;
   legalMoves(state: S, seat: SeatIndex): readonly M[];
   applyMove(state: S, seat: SeatIndex, move: M, rng: Rng): ApplyResult<S>;
@@ -220,7 +220,7 @@ export type ApplyResult<S> =
   | { ok: true; state: S; events: readonly GameEvent[] }
   | { ok: false; error: RuleError };        // code from the error catalogue, never a thrown exception
 ```
-Rules of the contract [MUST]: pure functions; no IO; no clock at all (ADR-0020); no randomness except through the injected `Rng`; state is never mutated; `redact` is total (works for every state and viewer, including spectators); `onDeadline` always returns a legal move; `legalMoves` and `applyMove` agree (a move is legal if and only if `applyMove` returns `ok`); a replay needs only the seed and the move log.
+`rulesSchema` covers only the toggles that change legality or outcomes; table settings such as timers, the loser's title, card-count display and the memory assist are table-core configuration delivered through the same preset files. Rules of the contract [MUST]: pure functions; no IO; no clock at all (ADR-0020); no randomness except through the injected `Rng`; state is never mutated; `redact` is total (works for every state and viewer, including spectators); `onDeadline` always returns a legal move; `legalMoves` and `applyMove` agree (a move is legal if and only if `applyMove` returns `ok`); a replay needs only the seed and the move log.
 
 ### 7.2 Table core
 `TableCore` is the generic host for any module. It owns seats and teams, presences and reconnection tokens, phase deadlines and the tick clock, the event log and snapshots, redaction dispatch, idempotency, the rematch loop and series state, and the bridge to shell services (rewards, stats, missions) at round end.

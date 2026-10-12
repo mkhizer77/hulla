@@ -97,12 +97,11 @@ export default defineConfig([
       "no-restricted-imports": [
         "error",
         {
-          patterns: [
-            {
-              group: ["node:*", ...nodeBuiltins],
-              message: "No Node built-ins in engines or shared-ts.",
-            },
-          ],
+          paths: nodeBuiltins.map((name) => ({
+            name,
+            message: "No Node built-ins in engines or shared-ts.",
+          })),
+          patterns: [{ group: ["node:*"], message: "No Node built-ins in engines or shared-ts." }],
         },
       ],
     },

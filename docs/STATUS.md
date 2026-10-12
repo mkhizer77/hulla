@@ -18,10 +18,10 @@ Pre-production. Design and architecture complete; no application code yet.
 - 12 Oct decisions: C# mirror deferred past v1.0 (ADR-0019), no clock in engines (ADR-0020), JSON Schema draft-07 (ADR-0021), one deck and 3–6 seats until v1.2, web client before Rung (M5 → web → Rung → M6, dates in the execution plan), Facebook login stays, Unity stays on 6000.4.9f1.
 
 ## Doing
-- M0 #1 (workspace and root tooling) and #3 (`@hulla/shared-ts`) are built and green locally: `pnpm lint`, `pnpm test` (39 tests, 98% lines), dependency-cruiser rejects Node built-ins from the engine. Waiting to be committed and opened as pull requests.
+- M0 #1 and #3 are in pull requests #135 (stacked on the audit PR #134). #4, the Thulla rules schema, presets, state and seeded deal with the fair-deal commitment, is built and green locally on `feat/thulla-engine-deal`, stacked on #135.
 
 ## Next
-Work the M0 milestone issue by issue, starting with #1 (pnpm workspace and root tooling). Order and dependencies are in each issue; the map is `docs/EXECUTION_PLAN.md`, the brief is `docs/milestones/M0.md`. Open two pull requests: the audit and decision changes, then M0 #1 and #3. Next ticket: #4, the Thulla engine state, rules schema, presets and deal.
+Work the M0 milestone issue by issue, starting with #1 (pnpm workspace and root tooling). Order and dependencies are in each issue; the map is `docs/EXECUTION_PLAN.md`, the brief is `docs/milestones/M0.md`. Merge #134 then #135 when `ci` is green, rebase the stacked branches, then #5: opening trick, normal tricks, thulla, pick-up and hand-taking.
 
 ## Blockers
 - None.

@@ -29,7 +29,10 @@ module.exports = {
         "Engines and shared-ts ship inside the server bundle and the web client: no npm runtime dependencies.",
       severity: "error",
       from: { path: "^packages/(rules-engine|shared-ts)/src", pathNot: "__tests__" },
-      to: { dependencyTypes: ["npm", "npm-dev", "npm-optional", "npm-peer"] },
+      to: {
+        dependencyTypes: ["npm", "npm-dev", "npm-optional", "npm-peer"],
+        pathNot: "^packages/",
+      },
     },
     {
       name: "server-not-apps",

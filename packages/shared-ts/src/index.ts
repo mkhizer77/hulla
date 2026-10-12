@@ -18,5 +18,5 @@ export type { Xoshiro128State } from "./prng";
 export { sha256, sha256Hex } from "./sha256";
 export { utf8Encode } from "./utf8";
 export { bytesToHex, hexToBytes } from "./hex";
-export type { JsonObject, JsonPrimitive, JsonValue } from "./canonical-json";
+export type { JsonCompatible, JsonObject, JsonPrimitive, JsonValue } from "./canonical-json";
 export { canonicalJson, stateHash } from "./canonical-json";
