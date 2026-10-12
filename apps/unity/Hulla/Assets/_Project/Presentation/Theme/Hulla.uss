@@ -750,3 +750,22 @@
     white-space: normal;
     color: var(--ink-muted);
 }
+
+.coach {
+    display: none;
+    position: absolute;
+    left: var(--space-2);
+    right: var(--space-2);
+    top: 32%;
+    padding: var(--space-2);
+    border-radius: var(--radius);
+    background-color: #2B2412;
+    border-width: 3px;
+    border-color: var(--accent-saffron);
+}
+
+.coach__text {
+    white-space: normal;
+    color: var(--ink-ivory);
+    margin-bottom: var(--space-1);
+}

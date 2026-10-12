@@ -60,6 +60,10 @@ namespace Hulla.Games.Thulla
         private long _turnStartMs;
         private long _turnDeadlineMs;
         private bool _voted;
+        private VisualElement _coach = null!;
+        private Label _coachText = null!;
+        private Button _coachButton = null!;
+        private Action? _coachAction;
         private readonly Func<string, Awaitable<Domain.Result<bool>>>? _sendText;
         private VisualElement _chatLog = null!;
         private TextField _chatInput = null!;
@@ -155,10 +159,29 @@ namespace Hulla.Games.Thulla
             });
             var compose = root.Q<VisualElement>(className: "chat-panel__compose");
             compose.style.display = sendText == null ? DisplayStyle.None : DisplayStyle.Flex;
+            _coach = root.Q<VisualElement>("coach");
+            _coachText = root.Q<Label>("coach-text");
+            _coachButton = root.Q<Button>("coach-next");
+            _coachButton.clicked += () => _coachAction?.Invoke();
             _client.Model.Changed += Refresh;
             _client.Model.Chat += OnChat;
             Refresh();
         }
+
+        /// <summary>Raised when the player taps a card that can't be played (the tutorial counts these).</summary>
+        public event Action<string>? CardRefused;
+
+        /// <summary>The tutorial coach's bubble over the table; a button when the step waits for the player.</summary>
+        public void ShowCoach(string text, string? button = null, Action? onButton = null)
+        {
+            _coachText.text = text;
+            _coachAction = onButton;
+            _coachButton.text = button ?? "";
+            _coachButton.style.display = button == null ? DisplayStyle.None : DisplayStyle.Flex;
+            _coach.style.display = DisplayStyle.Flex;
+        }
+
+        public void HideCoach() => _coach.style.display = DisplayStyle.None;
 
         public float Present(ServerMessage message)
         {
@@ -257,6 +280,7 @@ namespace Hulla.Games.Thulla
 
         private void ShowHint(string card)
         {
+            CardRefused?.Invoke(card);
             var model = _client.Model;
             string text;
             switch (PlayHint.For(model, card))

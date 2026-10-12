@@ -279,6 +279,8 @@ namespace Hulla.Application.Table
             _escapeOrder.Clear();
             _escapeOrder.AddRange(round.EscapeOrder);
             _trick.Clear();
+            _lastTrick.Clear();
+            LastPicker = null;
             foreach (var play in round.Trick.Plays)
             {
                 _trick.Add(new TrickPlay(play.Seat, play.Card));
@@ -360,7 +362,9 @@ namespace Hulla.Application.Table
             }
 
             _trick.Add(new TrickPlay(applied.Seat, applied.Move.Card));
-            TurnSeat = NextActiveSeat(seat);
+
+            // A thulla ends the trick (R20); who leads next arrives with trick_resolved.
+            TurnSeat = applied.Thulla == true ? null : NextActiveSeat(seat);
         }
 
         private void ApplyTrickResolved(TrickResolved resolved)
