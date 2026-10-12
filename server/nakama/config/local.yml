@@ -30,6 +30,8 @@ runtime:
     - "HULLA_REGION=local"
     - "AGORA_APP_ID="
     - "AGORA_APP_CERTIFICATE="
+    # Owner accounts allowed to call the admin RPCs with a session (comma-separated user ids); the server key always may.
+    - "HULLA_ADMIN_USER_IDS="
 match:
   input_queue_size: 128
   call_queue_size: 128

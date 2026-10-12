@@ -1,3 +1,4 @@
+import { Client } from "@heroiclabs/nakama-js";
 import { afterAll, describe, expect, it } from "vitest";
 
 import {
@@ -5,6 +6,7 @@ import {
   NAKAMA_PORT,
   rpc,
   scriptedClient,
+  SERVER_KEY,
   setTableId,
   type ScriptedClient,
 } from "./nakama-client";
@@ -143,6 +145,58 @@ describe.skipIf(NAKAMA_HOST === undefined)(
         ok: false,
         error: { code: "table.not_authorised" },
       });
+    }, 90_000);
+
+    it("a banned account cannot join a table, a banned device cannot sign in, and clear lifts both", async () => {
+      const suffix = `${String(Date.now())}b`;
+      const host = await scriptedClient("bh", suffix);
+      const banned = await scriptedClient("bz", suffix);
+      clients.push(host, banned);
+      const bannedId = banned.session.user_id ?? "";
+      const created = await rpc<Created>(host, "table_create", {
+        gameId: "thulla",
+        mode: "private",
+      });
+      await host.socket.joinMatch(created.matchId);
+
+      const admin = async (id: string, body: object): Promise<Record<string, unknown>> => {
+        const url = `http://${NAKAMA_HOST ?? ""}:${NAKAMA_PORT}/v2/rpc/${id}?http_key=local-only-http-key&unwrap`;
+        return (await (
+          await fetch(url, { method: "POST", body: JSON.stringify(body) })
+        ).json()) as Record<string, unknown>;
+      };
+      const sanction = await admin("admin_sanction", {
+        userId: bannedId,
+        action: "ban",
+        hours: 1,
+        device: true,
+        reason: "cheating",
+      });
+      expect(sanction).toMatchObject({
+        ok: true,
+        sanctions: { bannedUntilTs: expect.any(Number) as number },
+      });
+      await expect(banned.socket.joinMatch(created.matchId)).rejects.toBeDefined();
+      const client = new Client(SERVER_KEY, NAKAMA_HOST ?? "", NAKAMA_PORT, false);
+      await expect(client.authenticateDevice(`hulla-it-bz-${suffix}`, false)).rejects.toBeDefined();
+      expect(await rpc<object>(host, "sanctions_get", {})).toMatchObject({
+        ok: true,
+        bannedUntilTs: null,
+      });
+
+      expect(
+        await admin("admin_sanction", { userId: bannedId, action: "clear", reason: "appeal" }),
+      ).toMatchObject({
+        ok: true,
+        sanctions: { bannedUntilTs: null },
+      });
+      const back = await client.authenticateDevice(`hulla-it-bz-${suffix}`, false);
+      expect(back.user_id).toBe(bannedId);
+      const audit = await admin("admin_audit_list", { limit: 5 });
+      expect((audit["entries"] as { action: string }[]).map((e) => e.action)).toContain(
+        "sanction_ban",
+      );
+      expect(await rpc<object>(host, "admin_audit_list", {})).toMatchObject({ ok: false });
     }, 90_000);
   },
 );

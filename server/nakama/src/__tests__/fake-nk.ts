@@ -60,6 +60,9 @@ export function fakeInitializer(): FakeInitializer {
     registerRtBefore: (id: string, fn: (...args: unknown[]) => unknown) => {
       hooks.set(`rtBefore:${id}`, fn);
     },
+    registerBeforeAuthenticateDevice: (fn: (...args: unknown[]) => unknown) => {
+      hooks.set("beforeAuthenticateDevice", fn);
+    },
     registerAfterAuthenticateDevice: (fn: (...args: unknown[]) => unknown) => {
       hooks.set("afterAuthenticateDevice", fn);
     },
@@ -130,6 +133,8 @@ export interface MemoryNk {
   readonly online: Set<string>;
   readonly matches: Map<string, { label: string; size: number; params: Record<string, unknown> }>;
   readonly wallets: Map<string, Record<string, number>>;
+  /** userId -> device ids, as `accountGetId` lists them. */
+  readonly devices: Map<string, string[]>;
   readonly deleted: string[];
   readonly loggedOut: string[];
   readonly signals: { matchId: string; data: string }[];
@@ -155,6 +160,7 @@ export function memoryNk(): MemoryNk {
     { label: string; size: number; params: Record<string, unknown> }
   >();
   const wallets = new Map<string, Record<string, number>>();
+  const devices = new Map<string, string[]>();
   const deleted: string[] = [];
   const loggedOut: string[] = [];
   const signals: { matchId: string; data: string }[] = [];
@@ -257,7 +263,7 @@ export function memoryNk(): MemoryNk {
         user: toUser(u),
         wallet: JSON.stringify(wallets.get(id) ?? {}),
         email: u.email,
-        devices: [],
+        devices: (devices.get(id) ?? []).map((deviceId) => ({ id: deviceId })),
         customId: u.customId,
         verifyTime: 0,
         disableTime: 0,
@@ -366,6 +372,7 @@ export function memoryNk(): MemoryNk {
     online,
     matches,
     wallets,
+    devices,
     deleted,
     loggedOut,
     signals,

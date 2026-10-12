@@ -70,7 +70,17 @@ export interface ReportIndexEntry {
 
 export interface Moderation {
   readonly mutedUntilTs: number;
+  readonly voiceSuspendedUntilTs?: number;
+  readonly bannedUntilTs?: number;
   readonly reason: string;
+  /** Every sanction ever applied, newest last (services/sanctions.ts). */
+  readonly strikes?: readonly {
+    readonly action: string;
+    readonly reason: string;
+    readonly untilTs: number | null;
+    readonly by: string;
+    readonly ts: number;
+  }[];
 }
 
 export interface ReportStore {
@@ -211,13 +221,17 @@ export function appendChatLog(nk: nkruntime.Nakama, tableId: string, line: ChatL
 
 export function readModeration(nk: nkruntime.Nakama, userId: string): Moderation | null {
   const objects = nk.storageRead([{ collection: MODERATION_COLLECTION, key: "state", userId }]);
-  const value = objects[0]?.value as { mutedUntilTs?: unknown; reason?: unknown } | undefined;
-  return typeof value?.mutedUntilTs === "number"
-    ? {
-        mutedUntilTs: value.mutedUntilTs,
-        reason: typeof value.reason === "string" ? value.reason : "",
-      }
-    : null;
+  const value = objects[0]?.value as Partial<Moderation> | undefined;
+  if (typeof value?.mutedUntilTs !== "number") return null;
+  return {
+    mutedUntilTs: value.mutedUntilTs,
+    reason: typeof value.reason === "string" ? value.reason : "",
+    ...(typeof value.voiceSuspendedUntilTs === "number"
+      ? { voiceSuspendedUntilTs: value.voiceSuspendedUntilTs }
+      : {}),
+    ...(typeof value.bannedUntilTs === "number" ? { bannedUntilTs: value.bannedUntilTs } : {}),
+    ...(Array.isArray(value.strikes) ? { strikes: value.strikes } : {}),
+  };
 }
 
 export function nkReportStore(

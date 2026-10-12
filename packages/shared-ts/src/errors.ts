@@ -41,6 +41,7 @@ export const ErrorCodes = {
     notLinked: "auth.not_linked",
     deviceLimit: "auth.device_limit",
     mergeCodeInvalid: "auth.merge_code_invalid",
+    banned: "auth.banned",
   },
   economy: {
     insufficientFunds: "economy.insufficient_funds",
@@ -65,6 +66,7 @@ export const ErrorCodes = {
   voice: {
     unavailable: "voice.unavailable",
     notAtTable: "voice.not_at_table",
+    suspended: "voice.suspended",
   },
   profile: {
     invalidName: "profile.invalid_name",
