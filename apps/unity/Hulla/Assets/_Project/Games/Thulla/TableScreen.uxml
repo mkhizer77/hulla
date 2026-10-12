@@ -35,7 +35,13 @@
             </ui:VisualElement>
         </ui:VisualElement>
         <ui:VisualElement name="chat-panel" class="chat-panel">
+            <ui:VisualElement class="chat-panel__compose">
+                <ui:TextField name="chat-input" class="field chat-panel__input" />
+                <ui:Button name="chat-send" class="button button--primary button--small" />
+            </ui:VisualElement>
+            <ui:Label name="chat-status" class="caption" />
             <ui:ScrollView class="chat-panel__scroll">
+                <ui:VisualElement name="chat-log" class="chat-log" />
                 <ui:VisualElement name="chat-emotes" class="chips" />
                 <ui:VisualElement name="chat-phrases" class="chips" />
             </ui:ScrollView>

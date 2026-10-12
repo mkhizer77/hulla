@@ -691,3 +691,24 @@
 .hint {
     cursor: link;
 }
+
+.chat-panel__compose {
+    flex-direction: row;
+    align-items: center;
+}
+
+.chat-panel__input {
+    flex-grow: 1;
+    margin-bottom: 0;
+    margin-right: var(--space-1);
+}
+
+.chat-log {
+    margin-bottom: var(--space-2);
+}
+
+.chat-log__line {
+    white-space: normal;
+    font-size: var(--font-small);
+    margin-bottom: 4px;
+}

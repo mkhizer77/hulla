@@ -20,6 +20,7 @@ namespace Hulla.Composition
         private readonly NakamaSessionService _sessionService;
         private readonly NakamaTableGateway _tables;
         private readonly NakamaMatchmaker _matchmaker;
+        private readonly NakamaTableChat _tableChat;
         private SessionScope? _session;
 
         public AppScope(AppConfig config)
@@ -30,6 +31,7 @@ namespace Hulla.Composition
             _tables = new NakamaTableGateway(_connection);
             Home = new HomeViewModel(_sessionService, _tables);
             _matchmaker = new NakamaMatchmaker(_connection);
+            _tableChat = new NakamaTableChat(_connection);
             QuickPlay = new QuickPlayViewModel(_matchmaker);
         }
 
@@ -48,6 +50,8 @@ namespace Hulla.Composition
         public IPresetCatalog Presets { get; } = new StreamingPresetCatalog();
 
         public QuickPlayViewModel QuickPlay { get; }
+
+        public ITableChat TableChat => _tableChat;
 
         public SettingsModel Settings { get; } = new SettingsModel(new PlayerPrefsSettingsStore());
 
@@ -89,6 +93,7 @@ namespace Hulla.Composition
             EndSession();
             QuickPlay.Dispose();
             _matchmaker.Dispose();
+            _tableChat.Dispose();
             _tables.Dispose();
             _lifetime.Cancel();
             _lifetime.Dispose();

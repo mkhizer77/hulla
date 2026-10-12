@@ -44,6 +44,10 @@ namespace Hulla.Integration.Tests
             public bool SawRoundStart { get; set; }
 
             public List<ChatLine> Chat { get; } = new List<ChatLine>();
+
+            public List<TextLine> Texts { get; } = new List<TextLine>();
+
+            public NakamaTableChat? TableChat { get; set; }
         }
 
         private readonly List<Player> _players = new List<Player>();
@@ -54,6 +58,7 @@ namespace Hulla.Integration.Tests
             foreach (var player in _players)
             {
                 player.Client?.Dispose();
+                player.TableChat?.Dispose();
                 player.Gateway.Dispose();
                 player.Connection.Close();
             }
@@ -135,6 +140,21 @@ namespace Hulla.Integration.Tests
                 Assert.AreEqual("T01", said.PhraseId);
                 Assert.AreEqual(_players[1].Client!.Model.MySeat, said.Seat);
                 Assert.AreEqual(_players[0].Client!.Model.MySeat, _players[0].Chat.Find(c => c.EmoteId == "chai").TargetSeat);
+
+                foreach (var player in _players)
+                {
+                    player.TableChat = new NakamaTableChat(player.Connection);
+                    var captured = player;
+                    player.TableChat.Received += captured.Texts.Add;
+                    Assert.IsTrue((await player.TableChat.JoinAsync(created.Value.MatchId, default)).IsOk, player.Name + " joins the table channel");
+                }
+
+                Assert.IsTrue((await _players[1].TableChat!.SendAsync("salaam sab ko", default)).IsOk);
+                Assert.IsFalse((await _players[1].TableChat!.SendAsync("again", default)).IsOk, "one message per 2 s");
+                Assert.IsFalse((await _players[2].TableChat!.SendAsync("see www.example.com", default)).IsOk, "no links");
+                await WaitFor(() => _players.TrueForAll(pl => pl.Texts.Count >= 1), 10f, "the text reached every client");
+                Assert.AreEqual("salaam sab ko", _players[0].Texts[0].Text);
+                Assert.AreEqual(_players[1].Session.Current!.UserId, _players[0].Texts[0].SenderId);
             }
 
             Assert.IsTrue(_players[0].Client!.Model.IsHost);
