@@ -1,7 +1,7 @@
 import { mkdirSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 
-import { ASMDEF, UPM_PACKAGE, generateCSharp } from "./csharp";
+import { ASMDEF, CSHARP_JSON, UPM_PACKAGE, generateCSharp, generateCSharpOpcodes } from "./csharp";
 import { buildRoot, loadOpcodes, loadSchemas } from "./schemas";
 import { generateOpcodes, generateTypes, generateValidators } from "./typescript";
 
@@ -30,6 +30,8 @@ writeFileSync(
   ].join("\n"),
 );
 writeFileSync(join(csDir, "Protocol.cs"), await generateCSharp(root, byId));
+writeFileSync(join(csDir, "Opcodes.cs"), generateCSharpOpcodes(opcodes));
+writeFileSync(join(csDir, "ProtocolJson.cs"), CSHARP_JSON);
 writeFileSync(join(csDir, "package.json"), `${JSON.stringify(UPM_PACKAGE, null, 2)}\n`);
 writeFileSync(join(csDir, "Hulla.Protocol.asmdef"), `${JSON.stringify(ASMDEF, null, 2)}\n`);
 console.log(`codegen: ${opcodes.length} message types → ${tsDir} and ${csDir}`);

@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "com.heroiclabs.nakama-unity": "https://github.com/heroiclabs/nakama-unity.git?path=/Packages/Nakama#v3.22.1",
     "com.hulla.protocol": "file:../../../../packages/protocol/generated/csharp",
     "com.unity.addressables": "2.9.1",
     "com.unity.inputsystem": "1.19.0",
