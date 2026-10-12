@@ -65,7 +65,12 @@ export function labelFor<S, M>(state: TableState<S, M>): string {
 }
 
 function info(presence: nkruntime.Presence): PresenceInfo {
-  return { sessionId: presence.sessionId, userId: presence.userId, username: presence.username };
+  return {
+    sessionId: presence.sessionId,
+    userId: presence.userId,
+    username: presence.username,
+    node: presence.node,
+  };
 }
 
 function presenceFor<S, M>(
@@ -81,7 +86,7 @@ function presenceFor<S, M>(
     sessionId: record.sessionId,
     userId: record.userId,
     username: record.username,
-    node: "",
+    node: record.node,
   };
 }
 
@@ -248,6 +253,14 @@ export function tableMatchHandler<S, M, V, E, R>(
           seq: state.seq,
           seated: occupiedSeats(state.seats).length,
           roundId: state.round?.roundId ?? null,
+          deadline: state.round?.deadline ?? null,
+          seats: state.seats.map((s) => ({
+            playerId: s.playerId,
+            connected: s.connected,
+            autoPlay: s.autoPlay,
+            left: s.left,
+            hasSession: s.sessionId !== null,
+          })),
         }),
       };
     },

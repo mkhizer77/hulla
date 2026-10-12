@@ -17,6 +17,8 @@ export interface PresenceRecord {
   readonly sessionId: string;
   readonly userId: string;
   readonly username: string;
+  /** Nakama's node for the session; a message addressed without it is dropped by the router. */
+  readonly node: string;
   seat: SeatIndex | null;
 }
 

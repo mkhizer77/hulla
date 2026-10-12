@@ -57,6 +57,7 @@ export interface PresenceInfo {
   readonly sessionId: string;
   readonly userId: string;
   readonly username: string;
+  readonly node?: string;
 }
 
 export type JoinDecision =
@@ -431,6 +432,7 @@ export function tableCore<S, M, V, E, R>(
           sessionId: victim.sessionId ?? "",
           userId: victim.playerId,
           username: victim.displayName ?? "",
+          node: "",
           seat: target,
         };
         emit.public("presence", presencePayload(kickedPresence, victim.displayName, "kicked"));
@@ -577,7 +579,7 @@ export function tableCore<S, M, V, E, R>(
       for (const info of presences) {
         const admission = state.admissions[info.sessionId] ?? { kind: "spectator" };
         state.admissions = without(state.admissions, info.sessionId);
-        const record: PresenceRecord = { ...info, seat: null };
+        const record: PresenceRecord = { ...info, node: info.node ?? "", seat: null };
         const displayName = displayNameOf(info.username);
         let status: "joined" | "reconnected" | "spectating" = "spectating";
         if (admission.kind === "seat") {

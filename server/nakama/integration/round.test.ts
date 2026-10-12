@@ -18,6 +18,30 @@ describe.skipIf(NAKAMA_HOST === undefined)(
   "a scripted four-seat Thulla round against Nakama",
   () => {
     const clients: ScriptedClient[] = [];
+    let live: ScriptedClient[] = [];
+    const tail = (c: ScriptedClient, n = 14): string =>
+      c.received
+        .slice(-n)
+        .map((e) => {
+          const p = e.payload as {
+            seat?: number;
+            clientSeq?: number;
+            legal?: string[];
+            auto?: boolean;
+            status?: string;
+          };
+          const bits = [
+            p.seat === undefined ? "" : `s${String(p.seat)}`,
+            p.clientSeq === undefined ? "" : `c${String(p.clientSeq)}`,
+            p.legal === undefined ? "" : `L${String(p.legal.length)}`,
+            p.auto === true ? "auto" : "",
+            p.status ?? "",
+          ].filter((b) => b !== "");
+          return `${String(e.seq)}:${e.type}${bits.length > 0 ? `(${bits.join(",")})` : ""}`;
+        })
+        .join(" ");
+    const dump = (): string =>
+      live.map((c) => `${c.name}[${String(c.received.length)}]: ${tail(c)}`).join("\n");
     afterAll(() => {
       for (const c of clients) c.close();
     });
@@ -75,14 +99,15 @@ describe.skipIf(NAKAMA_HOST === undefined)(
       clients.push(returned);
       await returned.socket.joinMatch(matchId);
       await returned.next((e) => e.type === "table_state");
-      const players = [clients[0], clients[1], clients[2], returned].filter(
+      live = [clients[0], clients[1], clients[2], returned].filter(
         (c): c is ScriptedClient => c !== undefined,
       );
+      const players = live;
 
       const play = async (c: ScriptedClient): Promise<void> => {
         let handled = 0;
         for (let guard = 0; guard < 200; guard += 1) {
-          const turn = await c
+          const next = await c
             .next(
               (e) =>
                 e.type === "round_end" ||
@@ -92,9 +117,10 @@ describe.skipIf(NAKAMA_HOST === undefined)(
               60_000,
             )
             .catch(() => null);
-          if (turn === null || turn.type === "round_end") return;
-          (turn as { handled?: boolean }).handled = true;
-          const legal = (turn.payload as TurnStart).legal;
+          if (next === null) throw new Error(`${c.name} stalled waiting for a turn\n${dump()}`);
+          if (next.type === "round_end") return;
+          (next as { handled?: boolean }).handled = true;
+          const legal = (next.payload as TurnStart).legal;
           if (legal.length === 0) continue;
           handled += 1;
           await c.send(matchId, "play_card", OPCODES.play_card.opcode, {
