@@ -9,6 +9,7 @@ namespace Hulla.Presentation.Tests
         [TestCase(4)]
         [TestCase(5)]
         [TestCase(6)]
+        [TestCase(7, Description = "a watcher at a six-seat table sees all six")]
         public void OpponentsReadLeftToRightInPlayOrderAndStayOnScreen(int seats)
         {
             var previous = -1f;

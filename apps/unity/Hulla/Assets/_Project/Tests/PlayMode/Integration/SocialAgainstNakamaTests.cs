@@ -63,6 +63,20 @@ namespace Hulla.Integration.Tests
             awaiter.GetResult();
         }
 
+        private static async Awaitable WaitFor(Func<bool> condition, float seconds, string what)
+        {
+            var deadline = Time.realtimeSinceStartup + seconds;
+            while (!condition())
+            {
+                if (Time.realtimeSinceStartup > deadline)
+                {
+                    Assert.Fail("timed out waiting: " + what);
+                }
+
+                await Awaitable.NextFrameAsync();
+            }
+        }
+
         private static async Awaitable RunAsync(string host, int port)
         {
             var stamp = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds().ToString();
@@ -112,6 +126,18 @@ namespace Hulla.Integration.Tests
                 Assert.AreEqual(table.Value.Code, home.Hero!.TableCode);
                 Assert.AreEqual(PresenceState.Lobby, home.Hero.State);
                 Assert.Greater(home.Hero.OpenSeats, 0);
+
+                // Watching a friend's table (GDD 7.7), then the host gives the watcher a seat.
+                var watch = await basit.Gateway.JoinByCodeAsync(table.Value.Code, default);
+                Assert.IsTrue(watch.IsOk, "join by code");
+                var watcher = new Hulla.Application.Table.TableClient(basit.Gateway, watch.Value.Watching(), basit.Session.Current!.UserId, 1);
+                Assert.IsTrue((await basit.Gateway.EnterAsync(watch.Value.Watching(), default)).IsOk, "a friend may watch");
+                await WaitFor(() => watcher.Model.Seats.Count > 0, 10f, "the watcher's table_state");
+                Assert.IsTrue(watcher.Model.Spectating, "watching, not sitting");
+                amna.Gateway.Send(Protocol.MessageTypes.SeatSpectator, new Protocol.SeatSpectator { UserId = basit.Session.Current!.UserId });
+                await WaitFor(() => watcher.Model.MySeat != null, 10f, "the host seated the watcher");
+                watcher.Dispose();
+                await basit.Gateway.LeaveAsync();
 
                 Assert.IsTrue((await basit.Social.SetAwayAsync(true, default)).IsOk);
                 var amnaHome = new HomeFriendsViewModel(amna.Social);

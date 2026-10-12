@@ -21,11 +21,15 @@ namespace Hulla.Presentation.TableKit
         /// <summary>Raised with the seat number when an opponent's badge is tapped.</summary>
         public event System.Action<long>? Tapped;
 
+        /// <summary>For a watcher every seat is an opponent: the arc of a table one larger, empty at the bottom.</summary>
+        public bool Spectating { get; set; }
+
         public void Layout(int seatCount, long mySeat)
         {
             _seatCount = seatCount;
-            _mySeat = mySeat;
-            var needed = seatCount > 1 ? seatCount - 1 : 0;
+            _mySeat = Spectating ? seatCount - 1 : mySeat;
+            var needed = Spectating ? seatCount : seatCount > 1 ? seatCount - 1 : 0;
+            var arcSize = Spectating ? seatCount + 1 : seatCount;
             while (_badges.Count < needed)
             {
                 var badge = new SeatBadge();
@@ -45,7 +49,7 @@ namespace Hulla.Presentation.TableKit
                     continue;
                 }
 
-                var at = SeatArc.Position(seatCount, i);
+                var at = SeatArc.Position(arcSize, i);
                 badge.style.display = DisplayStyle.Flex;
                 badge.style.left = Length.Percent(at.x * 100f);
                 badge.style.top = Length.Percent(at.y * 100f);
@@ -53,16 +57,16 @@ namespace Hulla.Presentation.TableKit
         }
 
         /// <summary>The seat number shown in opponent slot <paramref name="index"/>.</summary>
-        public long SeatAt(int index) => _seatCount == 0 ? 0 : (_mySeat + 1 + index) % _seatCount;
+        public long SeatAt(int index) => _seatCount == 0 ? 0 : Spectating ? index : (_mySeat + 1 + index) % _seatCount;
 
         public SeatBadge? BadgeFor(long seat)
         {
-            if (_seatCount <= 1 || seat == _mySeat)
+            if (_seatCount <= 1 || (!Spectating && seat == _mySeat))
             {
                 return null;
             }
 
-            var index = SeatArc.IndexOf(seat, _mySeat, _seatCount);
+            var index = Spectating ? (int)seat : SeatArc.IndexOf(seat, _mySeat, _seatCount);
             return index < _badges.Count ? _badges[index] : null;
         }
     }

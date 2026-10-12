@@ -50,7 +50,24 @@ namespace Hulla.Infrastructure.Nakama
             socket.Closed += OnClosed;
             try
             {
-                await socket.JoinMatchAsync(ticket.MatchId);
+                // join_table metadata: the room code, the resume token for a rejoin, and whether to watch.
+                var metadata = new System.Collections.Generic.Dictionary<string, string>();
+                if (!ticket.IsMatchmade)
+                {
+                    metadata["code"] = ticket.Code;
+                }
+
+                if (!string.IsNullOrEmpty(ticket.ResumeToken))
+                {
+                    metadata["resumeToken"] = ticket.ResumeToken!;
+                }
+
+                if (ticket.AsSpectator)
+                {
+                    metadata["asSpectator"] = "true";
+                }
+
+                await socket.JoinMatchAsync(ticket.MatchId, metadata);
                 return Result<bool>.Ok(true);
             }
             catch (Exception error)
