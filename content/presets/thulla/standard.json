@@ -1,0 +1,10 @@
+{
+  "schema": "../../../tools/content-schemas/preset.schema.json",
+  "id": "standard",
+  "gameId": "thulla",
+  "name": "preset.standard.name",
+  "description": "preset.standard.description",
+  "order": 0,
+  "overrides": {},
+  "settings": {}
+}

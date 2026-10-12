@@ -239,6 +239,19 @@ export function tableMatchHandler<S, M, V, E, R>(
     matchSignal(_ctx, logger, nk, dispatcher, _tick, state, data) {
       const signal = parseSignal(data);
       if (signal === null) return { state, data: JSON.stringify({ ok: false }) };
+      if (signal.kind === "has_user") {
+        const userId = (signal as { userId?: unknown }).userId;
+        const record = Object.values(state.presences).find((p) => p.userId === userId);
+        return {
+          state,
+          data: JSON.stringify({
+            ok: true,
+            tableId: state.tableId,
+            present: record !== undefined,
+            seat: record?.seat ?? null,
+          }),
+        };
+      }
       if (signal.kind === "close") {
         const batch = coreFor(nk, logger).close(state, "host_closed", Date.now());
         send(dispatcher, state, batch, []);

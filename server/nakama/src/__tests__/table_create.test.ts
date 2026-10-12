@@ -4,13 +4,28 @@ import { tableCreate, type TableCreateDeps } from "../rpc/table_create";
 
 import { fakeRuntime } from "./fake-nk";
 
+import type { CodeEntry } from "../services/table_registry";
+
 function deps(
   userId: string | null = "u1",
 ): TableCreateDeps & { readonly created: { module: string; params: unknown }[] } {
   const created: { module: string; params: unknown }[] = [];
+  const entries = new Map<string, CodeEntry>();
   return {
     runtime: fakeRuntime(),
     userId,
+    region: "test",
+    store: {
+      read: (code) => entries.get(code) ?? null,
+      create(code, entry) {
+        if (entries.has(code)) return false;
+        entries.set(code, entry);
+        return true;
+      },
+      remove(code) {
+        entries.delete(code);
+      },
+    },
     created,
     matchCreate(module, params) {
       created.push({ module, params });

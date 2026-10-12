@@ -4207,9 +4207,9 @@ return errors === 0;
 
 const check_error = validate63;
 const schema102 = {"type":"object","additionalProperties":false,"required":["code"],"properties":{"code":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/errorCode"},"detail":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/errorDetail"},"refSeq":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/sequence","description":"The client message this answers"}}};
-const schema103 = {"type":"string","pattern":"^(rules|table|auth|economy|content|network)\\.[a-z0-9_]+$"};
+const schema103 = {"type":"string","pattern":"^(rules|table|auth|economy|content|network|voice)\\.[a-z0-9_]+$"};
 const schema104 = {"type":"object","additionalProperties":{"type":["string","number","boolean"]}};
-const pattern11 = new RegExp("^(rules|table|auth|economy|content|network)\\.[a-z0-9_]+$", "");
+const pattern11 = new RegExp("^(rules|table|auth|economy|content|network|voice)\\.[a-z0-9_]+$", "");
 
 function validate63(data, {instancePath="", parentData, parentDataProperty, rootData=data}={}){
 let vErrors = null;
@@ -4238,7 +4238,7 @@ const _errs3 = errors;
 if(errors === _errs3){
 if(typeof data0 === "string"){
 if(!pattern11.test(data0)){
-validate63.errors = [{instancePath:instancePath+"/code",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/errorCode/pattern",keyword:"pattern",params:{pattern: "^(rules|table|auth|economy|content|network)\\.[a-z0-9_]+$"}}];
+validate63.errors = [{instancePath:instancePath+"/code",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/errorCode/pattern",keyword:"pattern",params:{pattern: "^(rules|table|auth|economy|content|network|voice)\\.[a-z0-9_]+$"}}];
 return false;
 }
 }
@@ -5572,7 +5572,7 @@ const _errs3 = errors;
 if(errors === _errs3){
 if(typeof data0 === "string"){
 if(!pattern11.test(data0)){
-validate80.errors = [{instancePath:instancePath+"/code",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/errorCode/pattern",keyword:"pattern",params:{pattern: "^(rules|table|auth|economy|content|network)\\.[a-z0-9_]+$"}}];
+validate80.errors = [{instancePath:instancePath+"/code",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/errorCode/pattern",keyword:"pattern",params:{pattern: "^(rules|table|auth|economy|content|network|voice)\\.[a-z0-9_]+$"}}];
 return false;
 }
 }

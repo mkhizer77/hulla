@@ -1,6 +1,6 @@
 # Status
 
-Updated: 13 October 2026
+Updated: 13 October 2026 (evening)
 
 ## Phase
 M0 complete: the Thulla rulebook runs in TypeScript with full traceability. M1, the vertical slice, starts with the protocol schemas.
@@ -25,10 +25,11 @@ M0 complete: the Thulla rulebook runs in TypeScript with full traceability. M1, 
 - 12 Oct decisions: C# mirror deferred past v1.0 (ADR-0019), no clock in engines (ADR-0020), JSON Schema draft-07 (ADR-0021), one deck and 3–6 seats until v1.2, web client before Rung (M5 → web → Rung → M6, dates in the execution plan), Facebook login stays, Unity stays on 6000.4.9f1.
 
 ## Doing
-- M1 #16: the Thulla host for the table core (`src/games/thulla`): moves decoded with the generated validators, engine events encoded to the wire (round_start with the commitment, turn_start with the legal mask and deadline, round_end with the seed reveal), named match callbacks registered as `thulla`, a game registry, a minimal `table_create` RPC, and a scripted four-seat round with `nakama-js` clients against Nakama in Docker, run by the CI compose job.
+- M1 #16 (PR 151, CI): the Thulla host, named match callbacks, the game registry, `table_create`, and the scripted four-seat round against Nakama in Docker. Three runtime facts learned on the way, recorded in ADR-0022 and ARCHITECTURE §8.1: Nakama resolves handlers by global name, freezes the globals after InitModule, and rebuilds the match state as plain data between callbacks; server-side validation moved from zod to compiled checks.
+- M1 #17 (branch `feat/table-rpcs`, stacked on #16): the room-code registry with region and expiry, `table_join_by_code`, `presets_get` from `content/presets` (four presets, a schema and `pnpm content:validate`), and `voice_token` with a pure-TypeScript Agora AccessToken2 builder checked against Agora's own; `voice.*` error codes; OQ-011 logged.
 
 ## Next
-M1 #17, the table RPCs: the code registry (code to match id with region and expiry), `table_join_by_code`, `presets_get` from `content/presets` and `voice_token`, with integration tests; then #18, matchmaking.
+Merge #16, rebase and open #17, then #18 (Quick Play matchmaking with human-only fill), #19 (reconnection) and #20 (chat).
 
 ## Blockers
 - None.

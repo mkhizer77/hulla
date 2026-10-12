@@ -8,7 +8,10 @@ import {
   thullaMatchTerminate,
 } from "./games/thulla/match";
 import { rpcHello } from "./rpc/hello";
+import { rpcPresetsGet } from "./rpc/presets_get";
 import { rpcTableCreate } from "./rpc/table_create";
+import { rpcTableJoinByCode } from "./rpc/table_join_by_code";
+import { rpcVoiceToken } from "./rpc/voice_token";
 
 /**
  * Nakama calls this once at start-up; every RPC, hook and match handler registers here. Handlers
@@ -23,6 +26,9 @@ function InitModule(
 ): void {
   initializer.registerRpc("hello", rpcHello);
   initializer.registerRpc("table_create", rpcTableCreate);
+  initializer.registerRpc("table_join_by_code", rpcTableJoinByCode);
+  initializer.registerRpc("presets_get", rpcPresetsGet);
+  initializer.registerRpc("voice_token", rpcVoiceToken);
   initializer.registerMatch("thulla", {
     matchInit: thullaMatchInit,
     matchJoinAttempt: thullaMatchJoinAttempt,

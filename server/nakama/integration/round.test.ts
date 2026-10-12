@@ -61,6 +61,38 @@ describe.skipIf(NAKAMA_HOST === undefined)(
       setTableId(created.tableId);
       const matchId = created.matchId;
 
+      // The table RPCs: the code resolves to the match, a wrong code does not, presets come from
+      // content, and voice stays off until the box has Agora credentials.
+      const byCode = await rpc<{ ok: boolean; matchId: string }>(
+        clients[1] ?? host,
+        "table_join_by_code",
+        {
+          code: created.code.toLowerCase(),
+        },
+      );
+      expect(byCode).toMatchObject({ ok: true, matchId });
+      expect(
+        await rpc<{ ok: boolean }>(host, "table_join_by_code", { code: "ZZZZZZ" }),
+      ).toMatchObject({
+        ok: false,
+        error: { code: "table.not_found" },
+      });
+      const presets = await rpc<{ ok: boolean; presets: { id: string }[] }>(
+        host,
+        "presets_get",
+        {},
+      );
+      expect(presets.presets.map((p) => p.id)).toEqual([
+        "standard",
+        "family",
+        "hardcore",
+        "classicPagat",
+      ]);
+      expect(await rpc<{ ok: boolean }>(host, "voice_token", { matchId })).toMatchObject({
+        ok: false,
+        error: { code: "voice.unavailable" },
+      });
+
       for (const c of clients) await c.socket.joinMatch(matchId);
       const seatOf = new Map<string, number>();
       for (const c of clients) {

@@ -13,6 +13,7 @@ import {
 
 import { runtimeFrom, type ServerRuntime } from "../infra/nk";
 import { gameEntry } from "../match/registry";
+import { nkCodeStore, type CodeStore } from "../services/table_registry";
 
 import type { CreateTableParams, TableMode } from "../match/types";
 import type { RulesSelection } from "@hulla/protocol/generated";
@@ -20,8 +21,14 @@ import type { RulesSelection } from "@hulla/protocol/generated";
 export interface TableCreateDeps {
   readonly runtime: ServerRuntime;
   readonly userId: string | null;
+  readonly region: string;
+  readonly store: CodeStore;
   matchCreate(module: string, params: CreateTableParams): string;
 }
+
+/** A code lives a day unless the caller asks for less (tests) or the match ends first. */
+export const DEFAULT_CODE_TTL_SECONDS = 24 * 3_600;
+const MAX_CODE_ATTEMPTS = 5;
 
 export type TableCreateResponse =
   | { readonly ok: true; readonly matchId: string; readonly code: string; readonly tableId: string }
@@ -66,15 +73,41 @@ export function tableCreate(deps: TableCreateDeps, payload: string): TableCreate
   const rules = rulesInput as RulesSelection;
   const resolved = entry.host.resolveRules(rules, mode as TableMode);
   if (!resolved.ok) return fail(resolved.error);
+  const ttlInput = input["codeTtlSeconds"];
+  const ttlSeconds =
+    typeof ttlInput === "number" &&
+    Number.isInteger(ttlInput) &&
+    ttlInput >= 1 &&
+    ttlInput <= DEFAULT_CODE_TTL_SECONDS
+      ? ttlInput
+      : DEFAULT_CODE_TTL_SECONDS;
   const seed = sha256(utf8Encode(deps.runtime.uuidv4() + deps.runtime.uuidv4()));
-  const code = generateRoomCode(Xoshiro128StarStar.fromState(stateFromSeed(seed)));
-  const matchId = deps.matchCreate(entry.matchName, {
-    code,
-    gameId: rules.gameId,
-    mode: mode as TableMode,
-    rules,
-  });
-  return { ok: true, matchId, code, tableId: tableId(code) };
+  const rng = Xoshiro128StarStar.fromState(stateFromSeed(seed));
+  const now = deps.runtime.nowMs();
+  for (let attempt = 0; attempt < MAX_CODE_ATTEMPTS; attempt += 1) {
+    const code = generateRoomCode(rng);
+    const existing = deps.store.read(code);
+    if (existing !== null && existing.expiresTs > now) continue;
+    if (existing !== null) deps.store.remove(code);
+    const matchId = deps.matchCreate(entry.matchName, {
+      code,
+      gameId: rules.gameId,
+      mode: mode as TableMode,
+      rules,
+    });
+    const registered = deps.store.create(code, {
+      matchId,
+      tableId: tableId(code),
+      gameId: rules.gameId,
+      mode: mode as TableMode,
+      region: deps.region,
+      createdTs: now,
+      expiresTs: now + ttlSeconds * 1000,
+    });
+    // A lost race leaves a match nobody can find; it closes itself after the empty-table time.
+    if (registered) return { ok: true, matchId, code, tableId: tableId(code) };
+  }
+  return fail(ruleError(ErrorCodes.table.invalidCode, { reason: "exhausted" }));
 }
 
 /** Registered as `table_create`; a named top-level function because Nakama resolves it by name. */
@@ -88,6 +121,8 @@ export function rpcTableCreate(
     {
       runtime: runtimeFrom(nk, logger),
       userId: ctx.userId ?? null,
+      region: ctx.env["HULLA_REGION"] ?? "local",
+      store: nkCodeStore(nk, logger),
       matchCreate: (module, params) => nk.matchCreate(module, params),
     },
     payload,

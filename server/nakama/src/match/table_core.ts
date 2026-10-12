@@ -548,6 +548,9 @@ export function tableCore<S, M, V, E, R>(
         return { accept: false, code: ErrorCodes.table.invalidPayload };
       }
       const parsed = { data: meta as JoinTable };
+      if (parsed.data.code !== undefined && parsed.data.code !== state.code) {
+        return { accept: false, code: ErrorCodes.table.invalidCode };
+      }
       const own = state.seats.findIndex((slot) => slot.playerId === presence.userId);
       if (own !== -1) {
         state.admissions[presence.sessionId] = { kind: "seat", seat: own, reattach: true };
