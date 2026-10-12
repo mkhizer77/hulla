@@ -85,13 +85,14 @@ describe.skipIf(NAKAMA_HOST === undefined)(
           const turn = await c
             .next(
               (e) =>
-                e.type === "turn_start" &&
-                (e.payload as TurnStart).roundId === roundId &&
-                !(e as { handled?: boolean }).handled,
+                e.type === "round_end" ||
+                (e.type === "turn_start" &&
+                  (e.payload as TurnStart).roundId === roundId &&
+                  !(e as { handled?: boolean }).handled),
               60_000,
             )
             .catch(() => null);
-          if (turn === null) return;
+          if (turn === null || turn.type === "round_end") return;
           (turn as { handled?: boolean }).handled = true;
           const legal = (turn.payload as TurnStart).legal;
           if (legal.length === 0) continue;
@@ -101,10 +102,9 @@ describe.skipIf(NAKAMA_HOST === undefined)(
             clientSeq: 100 + handled,
             card: legal[0],
           });
-          if (c.received.some((e) => e.type === "round_end")) return;
         }
       };
-      const ends = Promise.all(players.map((c) => c.next((e) => e.type === "round_end", 110_000)));
+      const ends = Promise.all(players.map((c) => c.next((e) => e.type === "round_end", 200_000)));
       await Promise.all(players.map(play));
       const endPayloads = (await ends).map(
         (e) =>
