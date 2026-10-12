@@ -1,0 +1,21 @@
+{
+    "name": "Hulla.Composition",
+    "rootNamespace": "Hulla.Composition",
+    "references": [
+        "Hulla.Application",
+        "Hulla.Domain",
+        "Hulla.Protocol",
+        "Hulla.Infrastructure",
+        "Hulla.Presentation",
+        "Hulla.Games.Thulla"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

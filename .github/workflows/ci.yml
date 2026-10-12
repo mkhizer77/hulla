@@ -22,16 +22,21 @@ jobs:
       typescript: ${{ steps.check.outputs.typescript }}
       csharp: ${{ steps.check.outputs.csharp }}
       unity: ${{ steps.check.outputs.unity }}
+      unity_license: ${{ steps.check.outputs.unity_license }}
       server: ${{ steps.check.outputs.server }}
     steps:
       - uses: actions/checkout@v4
       - id: check
+        env:
+          HAS_UNITY_LICENSE: ${{ secrets.UNITY_LICENSE != '' }}
         run: |
           if [ -f pnpm-lock.yaml ]; then ts=true; else ts=false; fi
           if find packages -name '*.csproj' -not -path '*/node_modules/*' 2>/dev/null | grep -q .; then cs=true; else cs=false; fi
           if [ -f apps/unity/Hulla/ProjectSettings/ProjectVersion.txt ]; then unity=true; else unity=false; fi
           if [ -f server/nakama/compose.yml ]; then server=true; else server=false; fi
           printf 'typescript=%s\ncsharp=%s\nunity=%s\nserver=%s\n' "$ts" "$cs" "$unity" "$server" >> "$GITHUB_OUTPUT"
+          # Unity tests need the licence secret; until it is set they run locally (apps/unity/Hulla/README.md).
+          echo "unity_license=$HAS_UNITY_LICENSE" >> "$GITHUB_OUTPUT"
           printf 'typescript=%s csharp=%s unity=%s server=%s\n' "$ts" "$cs" "$unity" "$server"
 
   secrets:
@@ -135,7 +140,7 @@ jobs:
   unity-tests:
     name: Unity edit-mode tests
     needs: detect
-    if: needs.detect.outputs.unity == 'true'
+    if: needs.detect.outputs.unity == 'true' && needs.detect.outputs.unity_license == 'true'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
