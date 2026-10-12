@@ -45,6 +45,8 @@ namespace Hulla.Composition
 
         public IChatCatalog Chat { get; } = new StreamingChatCatalog();
 
+        public IPresetCatalog Presets { get; } = new StreamingPresetCatalog();
+
         public QuickPlayViewModel QuickPlay { get; }
 
         public SettingsModel Settings { get; } = new SettingsModel(new PlayerPrefsSettingsStore());

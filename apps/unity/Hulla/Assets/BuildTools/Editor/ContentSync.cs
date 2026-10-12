@@ -18,6 +18,10 @@ namespace Hulla.BuildTools
         {
             "quick-chat/v1.en.json",
             "emotes/v1.json",
+            "presets/thulla/standard.json",
+            "presets/thulla/family.json",
+            "presets/thulla/hardcore.json",
+            "presets/thulla/classicPagat.json",
         };
 
         static ContentSync() => Copy();

@@ -4,6 +4,7 @@
     "references": [
         "Hulla.Games.Thulla",
         "Hulla.Application",
+        "Hulla.Presentation",
         "Hulla.Protocol",
         "UnityEngine.TestRunner",
         "UnityEditor.TestRunner"

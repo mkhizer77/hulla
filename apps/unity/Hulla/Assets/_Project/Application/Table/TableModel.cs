@@ -42,6 +42,12 @@ namespace Hulla.Application.Table
 
         public TableMode Mode { get; private set; } = TableMode.Private;
 
+        /// <summary>The preset, overrides and table settings the table was opened with.</summary>
+        public RulesSelection? Selection { get; private set; }
+
+        /// <summary>The toggles the engine resolved for the current round; null before the first deal.</summary>
+        public ThullaRules? ActiveRules { get; private set; }
+
         public bool IsPrivate => Mode == TableMode.Private;
 
         /// <summary>When a public table deals itself (GDD 9.5); null when no countdown is running.</summary>
@@ -206,6 +212,7 @@ namespace Hulla.Application.Table
             Code = state.Code;
             Status = state.Status;
             Mode = state.Mode;
+            Selection = state.Rules;
             AutoStartAtTs = state.AutoStart?.StartsAtTs;
             HostSeat = state.HostSeat;
             _seats.Clear();
@@ -232,6 +239,7 @@ namespace Hulla.Application.Table
             }
 
             InRound = round.Phase != Phase.Ended && state.Status == TableStatus.InRound;
+            ActiveRules = round.Rules;
             DiscardCount = round.DiscardCount;
             FairDealCommitted = !string.IsNullOrEmpty(round.Commitment);
             var count = (int)round.SeatCount;

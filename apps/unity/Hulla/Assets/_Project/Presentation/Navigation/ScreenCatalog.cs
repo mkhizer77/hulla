@@ -12,5 +12,6 @@ namespace Hulla.Presentation.Navigation
         public VisualTreeAsset? Table;
         public VisualTreeAsset? QuickPlay;
         public VisualTreeAsset? Settings;
+        public VisualTreeAsset? Rulebook;
     }
 }
