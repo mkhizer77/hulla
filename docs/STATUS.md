@@ -27,6 +27,7 @@ M0 complete: the Thulla rulebook runs in TypeScript with full traceability. M1, 
 - 12 Oct decisions: C# mirror deferred past v1.0 (ADR-0019), no clock in engines (ADR-0020), JSON Schema draft-07 (ADR-0021), one deck and 3–6 seats until v1.2, web client before Rung (M5 → web → Rung → M6, dates in the execution plan), Facebook login stays, Unity stays on 6000.4.9f1.
 
 ## Doing
+- M1 #19 (branch `feat/reconnection-tests`): scripted reconnection suite against Nakama: a seat that drops mid-round is auto-played, regains control on return, a snapshot since its last seq replays exactly the public stream; host migration to the longest-seated player and kicked-cannot-rejoin. The core already carried the behaviour; the tests prove it end to end.
 - M1 #17 (branch `feat/table-rpcs`, rebased on main): the room-code registry with region and expiry, `table_join_by_code`, `presets_get` from `content/presets` (four presets, a schema and `pnpm content:validate`), and `voice_token` with a pure-TypeScript Agora AccessToken2 builder checked against Agora's own; `voice.*` error codes; OQ-011 logged. Pull request next.
 
 ## Next
