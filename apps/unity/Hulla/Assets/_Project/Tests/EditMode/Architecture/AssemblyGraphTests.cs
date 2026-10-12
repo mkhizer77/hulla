@@ -23,6 +23,12 @@ namespace Hulla.Architecture.Tests
             },
         };
 
+        /// <summary>Only the adapter and view layers may reference SDKs; Domain and Application stay plain.</summary>
+        private static readonly HashSet<string> ThirdPartyAllowed = new HashSet<string>
+        {
+            "Hulla.Infrastructure", "Hulla.Presentation", "Hulla.Games.Thulla", "Hulla.Composition",
+        };
+
         private static Dictionary<string, AsmDef> LoadProjectAssemblies()
         {
             var root = Path.Combine(Application.dataPath, "_Project");
@@ -43,7 +49,10 @@ namespace Hulla.Architecture.Tests
         {
             foreach (var asm in LoadProjectAssemblies().Values)
             {
-                var forbidden = asm.references.Except(Allowed[asm.name]).ToArray();
+                var forbidden = asm.references
+                    .Where(r => r.StartsWith("Hulla.") || !ThirdPartyAllowed.Contains(asm.name))
+                    .Except(Allowed[asm.name])
+                    .ToArray();
                 Assert.IsEmpty(forbidden, $"{asm.name} references {string.Join(", ", forbidden)}");
             }
         }
@@ -52,6 +61,13 @@ namespace Hulla.Architecture.Tests
         public void DomainHasNoEngineReferences()
         {
             Assert.IsTrue(LoadProjectAssemblies()["Hulla.Domain"].noEngineReferences);
+        }
+
+        [Test]
+        public void ApplicationMayNotReferenceAnSdk()
+        {
+            Assert.IsFalse(ThirdPartyAllowed.Contains("Hulla.Application"));
+            Assert.IsFalse(ThirdPartyAllowed.Contains("Hulla.Domain"));
         }
 
         [Test]
