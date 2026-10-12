@@ -45,12 +45,15 @@ export interface RoundResult {
   /** Seats in finishing order, best first. For Thulla: the escape order then the Bhabhi. */
   readonly finishOrder: readonly SeatIndex[];
   readonly loserSeat: SeatIndex | null;
+  /** Points this round per seat, in seat order (GDD R50 for Thulla). */
   readonly points: readonly number[];
 }
 
 export interface SeriesState {
   readonly roundsPlayed: number;
+  /** Cumulative points per seat, in seat order. */
   readonly points: readonly number[];
+  /** How often each seat lost, in seat order (the Bhabhi tally for Thulla). */
   readonly loserTally: readonly number[];
   readonly nextDealerSeat: SeatIndex;
   readonly finished: boolean;
@@ -73,7 +76,8 @@ export interface GameModule<S, M, V, E, R> {
   currentPhase(state: S): string;
   legalMoves(state: S, seat: SeatIndex): readonly M[];
   applyMove(state: S, seat: SeatIndex, move: M, rng: Rng): ApplyResult<S, E>;
-  onDeadline(state: S, seat: SeatIndex): M;
+  /** The R44 move for the acting seat; null when that seat has nothing to play (total, no throw). */
+  onDeadline(state: S, seat: SeatIndex): M | null;
   redact(state: S, viewer: Viewer): V;
   isRoundOver(state: S): boolean;
   results(state: S): RoundResult;

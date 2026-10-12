@@ -10,6 +10,9 @@ The authoritative rules engines (ADR-0003). Pure and deterministic: no IO, no cl
 ## The endgame and the forced outcome
 With two players left, a resolution that empties the leader's hand plans a draw (`pendingDraw`) rather than executing it. `applyMove` then runs the R41 search on that state, enumerating every legal choice of both players and every card the draw could produce, memoised over canonical state and capped at 50,000 nodes; only afterwards does it execute the draw with the `Rng`. When every continuation names the same Bhabhi the engine emits `confirmed`, and with `confirmedFastForward` on it plays the rest of the round out with the R44 auto-play policy in the same call. A state handed to the table core never carries a pending draw.
 
+## Views, results and the module
+`redact` builds the view for a seat or a spectator: own hand, counts for everyone else, the public pile, a discard count, and the seed and deck order only once the round has ended (R6). `redactEvent` drops a `private_draw` for anyone it does not name. `results` yields the escape order, the Bhabhi, the Baithak points of R50 and the per-seat stats; `seriesUpdate` applies the R51 formats and rotates the dealer. `thullaModule` bundles all of it as the `GameModule` the table core registers, with `onDeadline` on the R44 policy.
+
 ## Moves and events
 A seat sends `play_card` or `take_hand`. A move is legal exactly when `applyMove` accepts it; a property test replays random rounds under every toggle and checks that for every seat and every card at every step. Failures are `RuleError`s from the catalogue, never throws (R47). Each accepted move yields events in order: `card_played`, then on resolution `trick_resolved`, any `escape`, a `private_draw`, `endgame_started` and finally `round_ended`.
 
