@@ -38,6 +38,7 @@ M0 complete: the Thulla rulebook runs in TypeScript with full traceability. M1, 
 - 12 Oct decisions: C# mirror deferred past v1.0 (ADR-0019), no clock in engines (ADR-0020), JSON Schema draft-07 (ADR-0021), one deck and 3–6 seats until v1.2, web client before Rung (M5 → web → Rung → M6, dates in the execution plan), Facebook login stays, Unity stays on 6000.4.9f1.
 
 ## Doing
+- M2 #53 server part (branch `feat/daily-reward`, stacked on the fixes): the 7-day calendar in content, a claim per local day through the ledger that is idempotent across devices, the cycle that continues after a missed day, and the sign-in notice. The Home card is the Unity track; the push hook waits for #46. OQ-023 logged.
 - Fixes (branch `fix/guest-name-return-timer`, stacked on #52): leaving the generated guest name no longer spends the free rename; a seat that returns during its own turn gets a full turn timer again, which also removes a flaky reconnection assertion.
 
 ## Next

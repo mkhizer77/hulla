@@ -1,0 +1,29 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://hulla.gg/schemas/content/daily-rewards.json",
+  "title": "Daily reward calendar",
+  "description": "The 7-day cycle of modest rewards (GDD 12.6); a missed day does not reset the cycle",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema", "id", "version", "days"],
+  "properties": {
+    "schema": { "type": "string" },
+    "id": { "type": "string", "pattern": "^[a-z0-9-]+$" },
+    "version": { "type": "integer", "minimum": 1 },
+    "days": {
+      "type": "array",
+      "minItems": 7,
+      "maxItems": 7,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["day", "coins"],
+        "properties": {
+          "day": { "type": "integer", "minimum": 1, "maximum": 7 },
+          "coins": { "type": "integer", "minimum": 0, "maximum": 10000 },
+          "gems": { "type": "integer", "minimum": 0, "maximum": 1000 }
+        }
+      }
+    }
+  }
+}

@@ -33,6 +33,7 @@ import {
   rpcSanctionsGet,
 } from "./rpc/admin";
 import { rpcChatFiltersGet, rpcChatFiltersSet } from "./rpc/chat_filters";
+import { rpcDailyRewardClaim, rpcDailyRewardGet } from "./rpc/daily_reward";
 import { rpcProgressGet, rpcWalletGet } from "./rpc/economy";
 import { rpcHello } from "./rpc/hello";
 import {
@@ -114,6 +115,8 @@ function InitModule(
   initializer.registerRpc("missions_claim", rpcMissionsClaim);
   initializer.registerRpc("missions_reroll", rpcMissionsReroll);
   initializer.registerRpc("missions_set", rpcMissionsSet);
+  initializer.registerRpc("daily_reward_get", rpcDailyRewardGet);
+  initializer.registerRpc("daily_reward_claim", rpcDailyRewardClaim);
   initializer.registerBeforeAuthenticateDevice(beforeAuthenticateDevice);
   initializer.registerAfterAuthenticateDevice(afterAuthenticateDevice);
   initializer.registerAfterAuthenticateApple(afterAuthenticateApple);

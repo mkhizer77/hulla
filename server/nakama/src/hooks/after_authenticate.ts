@@ -1,5 +1,6 @@
 import { sha256, stateFromSeed, utf8Encode, Xoshiro128StarStar } from "@hulla/shared-ts";
 
+import { noteDailyRewardReady } from "../services/daily_reward";
 import { nkPresenceStore, touch } from "../services/presence";
 import { bootstrapProfile, nkProfileStore } from "../services/profiles";
 import { forDay, nkProgressStore, touchLogin } from "../services/progression";
@@ -21,6 +22,11 @@ function bootstrap(ctx: nkruntime.Context, logger: nkruntime.Logger, nk: nkrunti
     if (after !== before) progress.write(userId, after);
   } catch (error: unknown) {
     logger.warn("login streak not updated", { error: String(error) });
+  }
+  try {
+    noteDailyRewardReady(nk, userId, Date.now());
+  } catch (error: unknown) {
+    logger.warn("daily reward notice not sent", { error: String(error) });
   }
   const store = nkProfileStore(nk, logger);
   if (store.read(userId) !== null) return;

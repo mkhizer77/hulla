@@ -60,6 +60,8 @@ describe("InitModule", () => {
       "missions_claim",
       "missions_reroll",
       "missions_set",
+      "daily_reward_get",
+      "daily_reward_claim",
     ]);
     expect([...matches.keys()]).toEqual(["thulla"]);
     expect(hooks.get("rtBefore:ChannelMessageSend")?.name).toBe("beforeChannelMessageSend");
