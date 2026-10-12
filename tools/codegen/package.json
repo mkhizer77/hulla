@@ -1,0 +1,15 @@
+{
+  "name": "@hulla/codegen",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Generates TypeScript types, zod validators and C# DTOs from packages/protocol/schemas",
+  "license": "PolyForm-Noncommercial-1.0.0",
+  "type": "module",
+  "scripts": {
+    "typecheck": "tsc -p tsconfig.json",
+    "codegen": "tsx src/generate.ts"
+  },
+  "dependencies": {
+    "@hulla/protocol": "workspace:*"
+  }
+}

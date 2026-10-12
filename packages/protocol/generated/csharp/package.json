@@ -1,0 +1,7 @@
+{
+  "name": "com.hulla.protocol",
+  "version": "0.1.0",
+  "displayName": "Hulla Protocol",
+  "description": "Generated wire-protocol DTOs; never edit, run pnpm codegen",
+  "unity": "6000.0"
+}

@@ -1,0 +1,7 @@
+<Project>
+  <!-- Build output lives outside the package tree so Unity never imports bin/ or obj/ (PROJECT_STRUCTURE 4). -->
+  <PropertyGroup>
+    <BaseOutputPath>$(MSBuildThisFileDirectory)../../../artifacts/protocol-tests/bin/</BaseOutputPath>
+    <BaseIntermediateOutputPath>$(MSBuildThisFileDirectory)../../../artifacts/protocol-tests/obj/</BaseIntermediateOutputPath>
+  </PropertyGroup>
+</Project>

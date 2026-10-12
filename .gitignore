@@ -22,6 +22,7 @@ server/nakama/build/
 bin/
 obj/
 artifacts/
+TestResults/
 
 # unity (project-specific ignores live in apps/unity/Hulla/.gitignore)
 apps/unity/Hulla/Library/

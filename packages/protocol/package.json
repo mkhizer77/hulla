@@ -8,13 +8,19 @@
   "sideEffects": false,
   "types": "./src/index.ts",
   "exports": {
-    ".": "./src/index.ts"
+    ".": "./src/index.ts",
+    "./generated": "./generated/ts/index.ts"
   },
   "scripts": {
     "typecheck": "tsc -p tsconfig.json",
-    "test": "vitest run"
+    "test": "vitest run",
+    "codegen:check": "git diff --exit-code -- generated"
   },
   "devDependencies": {
-    "@hulla/rules-engine": "workspace:*"
+    "@hulla/rules-engine": "workspace:*",
+    "@hulla/shared-ts": "workspace:*"
+  },
+  "dependencies": {
+    "zod": "^4.6.5"
   }
 }
