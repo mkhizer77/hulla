@@ -67,6 +67,18 @@ namespace Hulla.Application.Settings
             set => Set("rules_recap", value ? 1 : 0);
         }
 
+        /// <summary>Null until the player has been asked (GDD 23.6).</summary>
+        public bool? AnalyticsConsent
+        {
+            get => Get("analytics", 0) switch
+            {
+                1 => true,
+                2 => false,
+                _ => (bool?)null,
+            };
+            set => Set("analytics", value == null ? 0 : value.Value ? 1 : 2);
+        }
+
         public TextScale TextScale
         {
             get => Get("text_scale", (int)TextScale.Normal) switch

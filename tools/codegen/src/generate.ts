@@ -1,6 +1,7 @@
 import { mkdirSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 
+import { analyticsEvents, generateAnalyticsCs, generateAnalyticsTs } from "./analytics";
 import { ASMDEF, CSHARP_JSON, UPM_PACKAGE, generateCSharp, generateCSharpOpcodes } from "./csharp";
 import { buildRoot, loadOpcodes, loadSchemas } from "./schemas";
 import { generateChecks } from "./standalone";
@@ -28,11 +29,17 @@ writeFileSync(
     'export * from "./protocol";',
     'export * from "./validators";',
     'export * from "./checks";',
+    'export * from "./analytics";',
     'export * from "./opcodes";',
     "",
   ].join("\n"),
 );
 writeFileSync(join(csDir, "Protocol.cs"), await generateCSharp(root, byId));
+const analytics = byId.get("https://hulla.gg/schemas/analytics/events.json");
+if (analytics === undefined) throw new Error("schemas/analytics/events.json is missing");
+const events = analyticsEvents(analytics);
+writeFileSync(join(tsDir, "analytics.ts"), generateAnalyticsTs(events));
+writeFileSync(join(csDir, "AnalyticsEvents.cs"), generateAnalyticsCs(events));
 writeFileSync(join(csDir, "Opcodes.cs"), generateCSharpOpcodes(opcodes));
 writeFileSync(join(csDir, "ProtocolJson.cs"), CSHARP_JSON);
 writeFileSync(join(csDir, "package.json"), `${JSON.stringify(UPM_PACKAGE, null, 2)}\n`);

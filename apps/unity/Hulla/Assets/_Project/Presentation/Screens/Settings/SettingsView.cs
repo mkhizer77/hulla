@@ -67,6 +67,8 @@ namespace Hulla.Presentation.Screens.Settings
             Choice(UiText.TextSizeLabel, new[] { "100%", "125%", "150%", "200%" }, () => Array.IndexOf(scales, _settings.TextScale), i => _settings.TextScale = scales[i]);
             Toggle(UiText.ReduceMotionLabel, () => _settings.ReduceMotion, v => _settings.ReduceMotion = v);
             Toggle(UiText.LeftHandedLabel, () => _settings.LeftHanded, v => _settings.LeftHanded = v);
+            Heading(UiText.SettingsPrivacy);
+            Toggle(UiText.AnalyticsLabel, () => _settings.AnalyticsConsent == true, v => _settings.AnalyticsConsent = v);
             if (_account != null)
             {
                 Heading(UiText.SettingsAccount);

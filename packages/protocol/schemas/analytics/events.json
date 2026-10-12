@@ -1,0 +1,520 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://hulla.gg/schemas/analytics/events.json",
+  "title": "Analytics events (GDD 23.3)",
+  "description": "Every analytics event and its parameters. Pseudonymous: no names, chat or voice content, hands or card lists (GDD 23.6, ARCHITECTURE 12.4). Codegen emits the C# builders and the TypeScript types from this file.",
+  "definitions": {
+    "app_open": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "cold": {
+          "type": "boolean"
+        },
+        "deep_link_type": {
+          "type": "string",
+          "enum": ["none", "invite", "referral"]
+        }
+      },
+      "required": ["cold"]
+    },
+    "ftue_step": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "step": {
+          "type": "string"
+        },
+        "outcome": {
+          "type": "string",
+          "enum": ["clean", "hinted", "coached", "skipped"]
+        },
+        "duration": {
+          "type": "number",
+          "minimum": 0
+        }
+      },
+      "required": ["step", "outcome", "duration"]
+    },
+    "table_create": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "mode": {
+          "type": "string",
+          "enum": ["private", "public", "ranked"]
+        },
+        "preset": {
+          "type": "string"
+        },
+        "seats": {
+          "type": "integer",
+          "minimum": 3
+        },
+        "voice_mode": {
+          "type": "string",
+          "enum": ["openMic", "pushToTalk", "off"]
+        }
+      },
+      "required": ["mode"]
+    },
+    "invite_sent": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "channel": {
+          "type": "string",
+          "enum": ["whatsapp", "in_app", "copy", "qr", "share"]
+        }
+      },
+      "required": ["channel"]
+    },
+    "invite_opened": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "latency": {
+          "type": "number",
+          "minimum": 0
+        }
+      }
+    },
+    "invite_seated": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "latency": {
+          "type": "number",
+          "minimum": 0
+        }
+      }
+    },
+    "match_search": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "seats": {
+          "type": "integer",
+          "minimum": 3
+        },
+        "wait_time": {
+          "type": "number",
+          "minimum": 0
+        },
+        "outcome": {
+          "type": "string",
+          "enum": ["humans", "backfilled", "abandoned"]
+        }
+      },
+      "required": ["seats", "wait_time", "outcome"]
+    },
+    "round_start": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "mode": {
+          "type": "string",
+          "enum": ["private", "public", "ranked"]
+        },
+        "seats": {
+          "type": "integer",
+          "minimum": 2
+        },
+        "humans": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "bots": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "preset_hash": {
+          "type": "string"
+        },
+        "region": {
+          "type": "string"
+        }
+      },
+      "required": ["mode", "seats"]
+    },
+    "move_played": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "legal_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "decision_ms": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "timeout": {
+          "type": "boolean"
+        },
+        "auto": {
+          "type": "boolean"
+        }
+      },
+      "required": ["legal_count", "decision_ms"]
+    },
+    "thulla": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "pile_size": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "giver": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "picker": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "trick_index": {
+          "type": "integer",
+          "minimum": 0
+        }
+      },
+      "required": ["pile_size"]
+    },
+    "pickup": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "cards": {
+          "type": "integer",
+          "minimum": 0
+        }
+      },
+      "required": ["cards"]
+    },
+    "hand_taken": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "cards": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "players_active": {
+          "type": "integer",
+          "minimum": 0
+        }
+      },
+      "required": ["cards"]
+    },
+    "empty_hand_draw": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "source": {
+          "type": "string",
+          "enum": ["discard", "next_player", "opponent"]
+        }
+      },
+      "required": ["source"]
+    },
+    "endgame_draw": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "source": {
+          "type": "string",
+          "enum": ["discard", "next_player", "opponent"]
+        }
+      },
+      "required": ["source"]
+    },
+    "confirmed": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "cards_remaining": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "fast_forwarded": {
+          "type": "boolean"
+        }
+      }
+    },
+    "escape": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "rank": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "trick_index": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "cards_picked_total": {
+          "type": "integer",
+          "minimum": 0
+        }
+      },
+      "required": ["rank"]
+    },
+    "round_end": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "duration": {
+          "type": "number",
+          "minimum": 0
+        },
+        "bhabhi_cards": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "rematch_vote": {
+          "type": "boolean"
+        }
+      },
+      "required": ["duration"]
+    },
+    "quick_chat": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "pack": {
+          "type": "string"
+        },
+        "phrase_id": {
+          "type": "string"
+        },
+        "context": {
+          "type": "string"
+        },
+        "target": {
+          "type": "boolean"
+        }
+      },
+      "required": ["phrase_id"]
+    },
+    "emote": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "pack": {
+          "type": "string"
+        },
+        "phrase_id": {
+          "type": "string"
+        },
+        "context": {
+          "type": "string"
+        },
+        "target": {
+          "type": "boolean"
+        }
+      },
+      "required": ["phrase_id"]
+    },
+    "chat_text": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "context": {
+          "type": "string"
+        }
+      }
+    },
+    "voice_join": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "mode": {
+          "type": "string",
+          "enum": ["openMic", "pushToTalk"]
+        },
+        "duration": {
+          "type": "number",
+          "minimum": 0
+        }
+      }
+    },
+    "voice_speak": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "mode": {
+          "type": "string",
+          "enum": ["openMic", "pushToTalk"]
+        },
+        "duration": {
+          "type": "number",
+          "minimum": 0
+        }
+      }
+    },
+    "friend_add": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "source": {
+          "type": "string",
+          "enum": ["code", "recent", "results", "request", "qr"]
+        }
+      },
+      "required": ["source"]
+    },
+    "block": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "source": {
+          "type": "string",
+          "enum": ["table", "friends", "results"]
+        }
+      },
+      "required": ["source"]
+    },
+    "report": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "source": {
+          "type": "string",
+          "enum": ["table", "friends", "results"]
+        },
+        "reason": {
+          "type": "string",
+          "enum": [
+            "cheating",
+            "abusive_text",
+            "abusive_voice",
+            "inappropriate_profile",
+            "spam",
+            "underage"
+          ]
+        }
+      },
+      "required": ["source", "reason"]
+    },
+    "mission_complete": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string"
+        }
+      },
+      "required": ["id"]
+    },
+    "pass_tier": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string"
+        }
+      },
+      "required": ["id"]
+    },
+    "shop_view": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "item": {
+          "type": "string"
+        },
+        "placement": {
+          "type": "string"
+        }
+      }
+    },
+    "purchase": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "item": {
+          "type": "string"
+        },
+        "price": {
+          "type": "number",
+          "minimum": 0
+        },
+        "placement": {
+          "type": "string"
+        }
+      },
+      "required": ["item"]
+    },
+    "ad_impression": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "placement": {
+          "type": "string"
+        }
+      },
+      "required": ["placement"]
+    },
+    "ad_reward": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "placement": {
+          "type": "string"
+        }
+      },
+      "required": ["placement"]
+    },
+    "reconnect": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "duration": {
+          "type": "number",
+          "minimum": 0
+        },
+        "outcome": {
+          "type": "string",
+          "enum": ["rejoined", "gave_up"]
+        }
+      },
+      "required": ["outcome"]
+    },
+    "disconnect": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "duration": {
+          "type": "number",
+          "minimum": 0
+        },
+        "outcome": {
+          "type": "string",
+          "enum": ["dropped", "left"]
+        }
+      },
+      "required": ["outcome"]
+    },
+    "perf_sample": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "fps_avg": {
+          "type": "number",
+          "minimum": 0
+        },
+        "mem_mb": {
+          "type": "number",
+          "minimum": 0
+        },
+        "device_tier": {
+          "type": "string",
+          "enum": ["low", "mid", "high"]
+        }
+      },
+      "required": ["fps_avg"]
+    }
+  }
+}

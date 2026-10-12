@@ -38,6 +38,9 @@ namespace Hulla.Application.Table
 
         public EventQueue Events { get; } = new EventQueue();
 
+        /// <summary>Raised after each message applies, in order (analytics listens here).</summary>
+        public event Action<ServerMessage>? Applied;
+
         public long LastSeq => _lastSeq;
 
         public void Receive(ServerMessage message)
@@ -119,6 +122,7 @@ namespace Hulla.Application.Table
             }
 
             Model.MarkPending(card);
+            LastPlayLegalCount = CountLegal();
             _clientSeq++;
             Send(MessageTypes.PlayCard, new PlayCard { RoundId = Model.RoundId, ClientSeq = _clientSeq, Card = card });
             return true;
@@ -137,6 +141,20 @@ namespace Hulla.Application.Table
         }
 
         public void Dispose() => _gateway.MessageReceived -= Receive;
+
+        /// <summary>How many cards were lit when the player last played (move_played.legal_count).</summary>
+        public int LastPlayLegalCount { get; private set; }
+
+        private int CountLegal()
+        {
+            var count = 0;
+            foreach (var card in Model.Hand)
+            {
+                count += Model.IsLegal(card) || card == Model.PendingCard ? 1 : 0;
+            }
+
+            return count;
+        }
 
         private void ApplyBaseline(ServerMessage message, long seq)
         {
@@ -158,6 +176,7 @@ namespace Hulla.Application.Table
         {
             Model.Apply(message);
             Events.Enqueue(message);
+            Applied?.Invoke(message);
             if (Model.NeedsSnapshotAfter(message.Payload))
             {
                 RequestSnapshot();

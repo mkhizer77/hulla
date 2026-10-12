@@ -2,4 +2,5 @@
 export * from "./protocol";
 export * from "./validators";
 export * from "./checks";
+export * from "./analytics";
 export * from "./opcodes";

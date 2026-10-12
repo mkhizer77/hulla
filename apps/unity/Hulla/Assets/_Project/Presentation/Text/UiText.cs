@@ -81,6 +81,11 @@ namespace Hulla.Presentation.Text
         public const string QuickPlay = "Quick Play";
         public const string Settings = "Settings";
         public const string SettingsAccount = "Account and data";
+        public const string SettingsPrivacy = "Privacy";
+        public const string AnalyticsLabel = "Share anonymous usage data";
+        public const string AnalyticsAsk = "Help us improve Hulla? We'd count anonymous things like round length and taps, never your chat, cards or name.";
+        public const string AnalyticsYes = "Yes, share";
+        public const string AnalyticsNo = "No thanks";
         public const string ExportData = "Export my data";
         public const string ExportShared = "Your data is ready to share.";
         public const string ExportCopied = "Your data was copied.";

@@ -71,6 +71,8 @@ namespace Hulla.Composition
 
         public IAccountService Account { get; }
 
+        public Hulla.Application.Analytics.AnalyticsClient Analytics { get; } = new Hulla.Application.Analytics.AnalyticsClient(new Hulla.Infrastructure.Analytics.LogAnalyticsSink());
+
         public ProfileViewModel Profile { get; }
 
         public IShareSheet ShareSheet { get; } = new Hulla.Infrastructure.Platform.NativeShareSheet();
