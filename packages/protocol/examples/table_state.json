@@ -1,0 +1,65 @@
+{
+  "v": 1,
+  "type": "table_state",
+  "tableId": "t_7KQ2MX",
+  "seq": 2,
+  "ts": 1760199980200,
+  "payload": {
+    "code": "7KQ2MX",
+    "gameId": "thulla",
+    "mode": "private",
+    "status": "open",
+    "hostSeat": 0,
+    "rules": {
+      "gameId": "thulla",
+      "preset": "standard",
+      "overrides": { "handTaking": "leaderOnly" },
+      "settings": { "turnTimerSeconds": 20, "loserTitle": "bhabhi", "voiceDefault": "openMic" }
+    },
+    "seats": [
+      {
+        "seat": 0,
+        "playerId": "u_ali",
+        "displayName": "Ali",
+        "ready": true,
+        "connected": true,
+        "autoPlay": false
+      },
+      {
+        "seat": 1,
+        "playerId": "u_sara",
+        "displayName": "Sara",
+        "ready": false,
+        "connected": true,
+        "autoPlay": false
+      },
+      {
+        "seat": 2,
+        "playerId": null,
+        "displayName": null,
+        "ready": false,
+        "connected": false,
+        "autoPlay": false
+      },
+      {
+        "seat": 3,
+        "playerId": null,
+        "displayName": null,
+        "ready": false,
+        "connected": false,
+        "autoPlay": false
+      }
+    ],
+    "spectatorCount": 0,
+    "series": {
+      "roundsPlayed": 0,
+      "points": [0, 0, 0, 0],
+      "loserTally": [0, 0, 0, 0],
+      "nextDealerSeat": 0,
+      "finished": false
+    },
+    "round": null,
+    "lastSeq": 2,
+    "resumeToken": "rt_example_resume_token_000001"
+  }
+}

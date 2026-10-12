@@ -1,0 +1,8 @@
+{
+  "v": 1,
+  "type": "confirmed",
+  "tableId": "t_7KQ2MX",
+  "seq": 2400,
+  "ts": 1760200300000,
+  "payload": { "roundId": "r_3", "bhabhiSeat": 0, "cardsRemaining": 3, "fastForward": true }
+}

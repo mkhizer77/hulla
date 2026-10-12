@@ -1,0 +1,16 @@
+{
+  "v": 1,
+  "type": "round_start",
+  "tableId": "t_7KQ2MX",
+  "seq": 2000,
+  "ts": 1760199990000,
+  "payload": {
+    "roundId": "r_3",
+    "commitment": "5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8",
+    "seatCount": 4,
+    "dealerSeat": 2,
+    "leaderSeat": 0,
+    "handCounts": [13, 13, 13, 13],
+    "rulesVersion": "1.0.0"
+  }
+}

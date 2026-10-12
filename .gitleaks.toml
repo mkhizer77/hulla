@@ -1,0 +1,11 @@
+# Secret scanning (ci.yml). Fixtures hold made-up ids, hashes and tokens; nothing real is ever committed.
+[extend]
+useDefault = true
+
+[allowlist]
+description = "Test fixtures with deliberately fake identifiers"
+paths = [
+  '''packages/protocol/examples/.*''',
+  '''packages/test-vectors/thulla/V-.*\.json''',
+  '''packages/shared-ts/src/__tests__/fixtures/.*''',
+]

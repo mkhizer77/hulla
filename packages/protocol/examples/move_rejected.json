@@ -1,0 +1,12 @@
+{
+  "v": 1,
+  "type": "move_rejected",
+  "tableId": "t_7KQ2MX",
+  "seq": 2211,
+  "ts": 1760200000300,
+  "payload": {
+    "roundId": "r_3",
+    "clientSeq": 43,
+    "error": { "code": "rules.must_follow_suit", "detail": { "ledSuit": "H" } }
+  }
+}

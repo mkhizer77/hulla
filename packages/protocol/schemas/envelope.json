@@ -1,0 +1,17 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://hulla.gg/schemas/protocol/envelope.json",
+  "title": "Message envelope",
+  "description": "Every message on the table socket (GDD 20.6, ARCHITECTURE 8.4). v is the protocol major; within a major, changes are additive only. seq is server-assigned on messages to clients and the client's own counter on messages to the server; a move repeats it as clientSeq for idempotency.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["v", "type", "tableId", "seq", "ts", "payload"],
+  "properties": {
+    "v": { "type": "integer", "const": 1 },
+    "type": { "type": "string", "pattern": "^[a-z_]+$" },
+    "tableId": { "$ref": "common.json#/definitions/tableId" },
+    "seq": { "$ref": "common.json#/definitions/sequence" },
+    "ts": { "$ref": "common.json#/definitions/timestamp" },
+    "payload": { "type": "object" }
+  }
+}

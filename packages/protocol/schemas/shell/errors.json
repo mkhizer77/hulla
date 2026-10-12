@@ -1,0 +1,39 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://hulla.gg/schemas/protocol/shell/errors.json",
+  "title": "Errors carry a catalogue code; the client maps it to a localisation key (ARCHITECTURE 12.5)",
+  "definitions": {
+    "ruleError": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["code"],
+      "properties": {
+        "code": { "$ref": "../common.json#/definitions/errorCode" },
+        "detail": { "$ref": "../common.json#/definitions/errorDetail" }
+      }
+    },
+    "error": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["code"],
+      "properties": {
+        "code": { "$ref": "../common.json#/definitions/errorCode" },
+        "detail": { "$ref": "../common.json#/definitions/errorDetail" },
+        "refSeq": {
+          "$ref": "../common.json#/definitions/sequence",
+          "description": "The client message this answers"
+        }
+      }
+    },
+    "move_rejected": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["roundId", "clientSeq", "error"],
+      "properties": {
+        "roundId": { "$ref": "../common.json#/definitions/roundId" },
+        "clientSeq": { "$ref": "../common.json#/definitions/sequence" },
+        "error": { "$ref": "#/definitions/ruleError" }
+      }
+    }
+  }
+}

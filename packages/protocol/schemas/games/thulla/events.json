@@ -1,0 +1,195 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://hulla.gg/schemas/protocol/games/thulla/events.json",
+  "title": "Thulla events (server to clients); per-seat values are arrays in seat order",
+  "definitions": {
+    "round_start": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "roundId",
+        "commitment",
+        "seatCount",
+        "dealerSeat",
+        "leaderSeat",
+        "handCounts",
+        "rulesVersion"
+      ],
+      "properties": {
+        "roundId": { "$ref": "../../common.json#/definitions/roundId" },
+        "commitment": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$",
+          "description": "SHA-256(seed || canonicalJson(deckOrder)) published before the deal (R6)"
+        },
+        "seatCount": { "type": "integer", "minimum": 3, "maximum": 8 },
+        "dealerSeat": { "$ref": "../../common.json#/definitions/seatIndex" },
+        "leaderSeat": { "$ref": "../../common.json#/definitions/seatIndex" },
+        "handCounts": { "$ref": "../../common.json#/definitions/handCounts" },
+        "rulesVersion": { "type": "string" }
+      }
+    },
+    "turn_start": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Sent to the acting seat only: the legal mask reveals suit holdings",
+      "required": ["roundId", "seat", "legal", "canTakeHand", "deadlineTs"],
+      "properties": {
+        "roundId": { "$ref": "../../common.json#/definitions/roundId" },
+        "seat": { "$ref": "../../common.json#/definitions/seatIndex" },
+        "legal": { "$ref": "../../common.json#/definitions/cards" },
+        "canTakeHand": { "type": "boolean" },
+        "deadlineTs": { "$ref": "../../common.json#/definitions/timestamp" },
+        "simultaneous": {
+          "type": "boolean",
+          "description": "The opening window: every pending seat acts at once (R13)"
+        }
+      }
+    },
+    "move_applied": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["roundId", "seat", "move", "trickIndex"],
+      "properties": {
+        "roundId": { "$ref": "../../common.json#/definitions/roundId" },
+        "seat": { "$ref": "../../common.json#/definitions/seatIndex" },
+        "move": { "$ref": "moves.json#/definitions/move" },
+        "trickIndex": { "type": "integer", "minimum": 0 },
+        "thulla": { "type": "boolean" },
+        "clientSeq": { "$ref": "../../common.json#/definitions/sequence" },
+        "auto": { "type": "boolean", "description": "Played by the auto-play policy (R44)" }
+      }
+    },
+    "trick_resolved": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "roundId",
+        "trickIndex",
+        "ledSuit",
+        "cards",
+        "thullaBy",
+        "picker",
+        "nextLeader",
+        "handCounts",
+        "escapes"
+      ],
+      "properties": {
+        "roundId": { "$ref": "../../common.json#/definitions/roundId" },
+        "trickIndex": { "type": "integer", "minimum": 0 },
+        "ledSuit": { "$ref": "../../common.json#/definitions/suit" },
+        "cards": { "$ref": "../../common.json#/definitions/cards" },
+        "thullaBy": { "$ref": "../../common.json#/definitions/seatIndexOrNull" },
+        "picker": { "$ref": "../../common.json#/definitions/seatIndexOrNull" },
+        "nextLeader": { "$ref": "../../common.json#/definitions/seatIndex" },
+        "handCounts": { "$ref": "../../common.json#/definitions/handCounts" },
+        "escapes": { "type": "array", "items": { "$ref": "#/definitions/escape" } }
+      }
+    },
+    "pickup": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["roundId", "seat", "cards", "trickIndex"],
+      "properties": {
+        "roundId": { "$ref": "../../common.json#/definitions/roundId" },
+        "seat": { "$ref": "../../common.json#/definitions/seatIndex" },
+        "cards": { "$ref": "../../common.json#/definitions/cards" },
+        "trickIndex": { "type": "integer", "minimum": 0 }
+      }
+    },
+    "escape": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["roundId", "seat", "rank"],
+      "properties": {
+        "roundId": { "$ref": "../../common.json#/definitions/roundId" },
+        "seat": { "$ref": "../../common.json#/definitions/seatIndex" },
+        "rank": { "type": "integer", "minimum": 1 }
+      }
+    },
+    "hand_taken": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["roundId", "taker", "target", "cardCount"],
+      "properties": {
+        "roundId": { "$ref": "../../common.json#/definitions/roundId" },
+        "taker": { "$ref": "../../common.json#/definitions/seatIndex" },
+        "target": { "$ref": "../../common.json#/definitions/seatIndex" },
+        "cardCount": { "type": "integer", "minimum": 1 }
+      }
+    },
+    "private_draw": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Sent to the seats the engine names: the drawer, and the seat the card left",
+      "required": ["roundId", "seat", "card", "source", "from", "autoLead"],
+      "properties": {
+        "roundId": { "$ref": "../../common.json#/definitions/roundId" },
+        "seat": { "$ref": "../../common.json#/definitions/seatIndex" },
+        "card": { "$ref": "../../common.json#/definitions/card" },
+        "source": { "type": "string", "enum": ["discard", "nextPlayer", "opponent"] },
+        "from": { "$ref": "../../common.json#/definitions/seatIndexOrNull" },
+        "autoLead": { "type": "boolean" }
+      }
+    },
+    "endgame_started": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["roundId", "seats"],
+      "properties": {
+        "roundId": { "$ref": "../../common.json#/definitions/roundId" },
+        "seats": { "$ref": "../../common.json#/definitions/seatList" }
+      }
+    },
+    "confirmed": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["roundId", "bhabhiSeat", "cardsRemaining", "fastForward"],
+      "properties": {
+        "roundId": { "$ref": "../../common.json#/definitions/roundId" },
+        "bhabhiSeat": { "$ref": "../../common.json#/definitions/seatIndex" },
+        "cardsRemaining": { "type": "integer", "minimum": 0 },
+        "fastForward": { "type": "boolean" }
+      }
+    },
+    "round_end": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "roundId",
+        "escapeOrder",
+        "bhabhiSeat",
+        "bhabhiCards",
+        "points",
+        "stats",
+        "fairness"
+      ],
+      "properties": {
+        "roundId": { "$ref": "../../common.json#/definitions/roundId" },
+        "escapeOrder": { "$ref": "../../common.json#/definitions/seatList" },
+        "bhabhiSeat": { "$ref": "../../common.json#/definitions/seatIndex" },
+        "bhabhiCards": { "type": "integer", "minimum": 0 },
+        "points": { "$ref": "../../common.json#/definitions/points" },
+        "stats": {
+          "type": "array",
+          "items": { "$ref": "../../common.json#/definitions/seatStats" }
+        },
+        "fairness": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["commitment", "seed", "deckOrder"],
+          "properties": {
+            "commitment": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+            "seed": {
+              "type": "string",
+              "pattern": "^[0-9a-f]+$",
+              "description": "Revealed so any client can recompute the commitment (R6)"
+            },
+            "deckOrder": { "$ref": "../../common.json#/definitions/cards" }
+          }
+        },
+        "series": { "$ref": "../../common.json#/definitions/seriesState" }
+      }
+    }
+  }
+}

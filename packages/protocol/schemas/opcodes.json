@@ -1,0 +1,307 @@
+{
+  "$comment": "Every message type on the table socket (GDD 20.6) with its Nakama opcode, direction and who may receive it: public to seats and spectators, seat (one seat only), recipient (built per recipient). Opcodes are stable; new types append.",
+  "messages": [
+    {
+      "type": "join_table",
+      "opcode": 1,
+      "direction": "c2s",
+      "visibility": "public",
+      "schema": "shell/table.json#/definitions/join_table"
+    },
+    {
+      "type": "leave_table",
+      "opcode": 2,
+      "direction": "c2s",
+      "visibility": "public",
+      "schema": "shell/table.json#/definitions/leave_table"
+    },
+    {
+      "type": "ready",
+      "opcode": 3,
+      "direction": "c2s",
+      "visibility": "public",
+      "schema": "shell/table.json#/definitions/ready"
+    },
+    {
+      "type": "set_rules",
+      "opcode": 4,
+      "direction": "c2s",
+      "visibility": "public",
+      "schema": "shell/table.json#/definitions/set_rules"
+    },
+    {
+      "type": "add_bot",
+      "opcode": 5,
+      "direction": "c2s",
+      "visibility": "public",
+      "schema": "shell/table.json#/definitions/add_bot"
+    },
+    {
+      "type": "remove_bot",
+      "opcode": 6,
+      "direction": "c2s",
+      "visibility": "public",
+      "schema": "shell/table.json#/definitions/remove_bot"
+    },
+    {
+      "type": "kick",
+      "opcode": 7,
+      "direction": "c2s",
+      "visibility": "public",
+      "schema": "shell/table.json#/definitions/kick"
+    },
+    {
+      "type": "transfer_host",
+      "opcode": 8,
+      "direction": "c2s",
+      "visibility": "public",
+      "schema": "shell/table.json#/definitions/transfer_host"
+    },
+    {
+      "type": "start_round",
+      "opcode": 9,
+      "direction": "c2s",
+      "visibility": "public",
+      "schema": "shell/table.json#/definitions/start_round"
+    },
+    {
+      "type": "vote_rematch",
+      "opcode": 10,
+      "direction": "c2s",
+      "visibility": "public",
+      "schema": "shell/table.json#/definitions/vote_rematch"
+    },
+    {
+      "type": "request_snapshot",
+      "opcode": 11,
+      "direction": "c2s",
+      "visibility": "public",
+      "schema": "shell/table.json#/definitions/request_snapshot"
+    },
+    {
+      "type": "ping",
+      "opcode": 12,
+      "direction": "c2s",
+      "visibility": "public",
+      "schema": "shell/table.json#/definitions/ping"
+    },
+    {
+      "type": "chat_text",
+      "opcode": 20,
+      "direction": "c2s",
+      "visibility": "public",
+      "schema": "shell/chat.json#/definitions/chat_text"
+    },
+    {
+      "type": "quick_chat",
+      "opcode": 21,
+      "direction": "c2s",
+      "visibility": "public",
+      "schema": "shell/chat.json#/definitions/quick_chat"
+    },
+    {
+      "type": "emote",
+      "opcode": 22,
+      "direction": "c2s",
+      "visibility": "public",
+      "schema": "shell/chat.json#/definitions/emote"
+    },
+    {
+      "type": "play_card",
+      "opcode": 40,
+      "direction": "c2s",
+      "visibility": "public",
+      "game": "thulla",
+      "schema": "games/thulla/moves.json#/definitions/play_card"
+    },
+    {
+      "type": "take_hand",
+      "opcode": 41,
+      "direction": "c2s",
+      "visibility": "public",
+      "game": "thulla",
+      "schema": "games/thulla/moves.json#/definitions/take_hand"
+    },
+    {
+      "type": "cancel_take",
+      "opcode": 42,
+      "direction": "c2s",
+      "visibility": "public",
+      "game": "thulla",
+      "schema": "games/thulla/moves.json#/definitions/cancel_take"
+    },
+    {
+      "type": "table_state",
+      "opcode": 100,
+      "direction": "s2c",
+      "visibility": "recipient",
+      "schema": "shell/table.json#/definitions/table_state"
+    },
+    {
+      "type": "rules_changed",
+      "opcode": 101,
+      "direction": "s2c",
+      "visibility": "public",
+      "schema": "shell/table.json#/definitions/rules_changed"
+    },
+    {
+      "type": "presence",
+      "opcode": 102,
+      "direction": "s2c",
+      "visibility": "public",
+      "schema": "shell/presence.json#/definitions/presence"
+    },
+    {
+      "type": "host_changed",
+      "opcode": 103,
+      "direction": "s2c",
+      "visibility": "public",
+      "schema": "shell/table.json#/definitions/host_changed"
+    },
+    {
+      "type": "table_closed",
+      "opcode": 104,
+      "direction": "s2c",
+      "visibility": "public",
+      "schema": "shell/table.json#/definitions/table_closed"
+    },
+    {
+      "type": "error",
+      "opcode": 105,
+      "direction": "s2c",
+      "visibility": "seat",
+      "schema": "shell/errors.json#/definitions/error"
+    },
+    {
+      "type": "snapshot",
+      "opcode": 106,
+      "direction": "s2c",
+      "visibility": "recipient",
+      "schema": "shell/table.json#/definitions/snapshot"
+    },
+    {
+      "type": "pong",
+      "opcode": 107,
+      "direction": "s2c",
+      "visibility": "seat",
+      "schema": "shell/table.json#/definitions/pong"
+    },
+    {
+      "type": "chat",
+      "opcode": 120,
+      "direction": "s2c",
+      "visibility": "public",
+      "schema": "shell/chat.json#/definitions/chat"
+    },
+    {
+      "type": "quick_chat_sent",
+      "opcode": 121,
+      "direction": "s2c",
+      "visibility": "public",
+      "schema": "shell/chat.json#/definitions/quick_chat_sent"
+    },
+    {
+      "type": "emote_sent",
+      "opcode": 122,
+      "direction": "s2c",
+      "visibility": "public",
+      "schema": "shell/chat.json#/definitions/emote_sent"
+    },
+    {
+      "type": "round_start",
+      "opcode": 140,
+      "direction": "s2c",
+      "visibility": "public",
+      "game": "thulla",
+      "schema": "games/thulla/events.json#/definitions/round_start"
+    },
+    {
+      "type": "turn_start",
+      "opcode": 141,
+      "direction": "s2c",
+      "visibility": "seat",
+      "game": "thulla",
+      "schema": "games/thulla/events.json#/definitions/turn_start"
+    },
+    {
+      "type": "move_applied",
+      "opcode": 142,
+      "direction": "s2c",
+      "visibility": "public",
+      "game": "thulla",
+      "schema": "games/thulla/events.json#/definitions/move_applied"
+    },
+    {
+      "type": "move_rejected",
+      "opcode": 143,
+      "direction": "s2c",
+      "visibility": "seat",
+      "game": "thulla",
+      "schema": "shell/errors.json#/definitions/move_rejected"
+    },
+    {
+      "type": "trick_resolved",
+      "opcode": 144,
+      "direction": "s2c",
+      "visibility": "public",
+      "game": "thulla",
+      "schema": "games/thulla/events.json#/definitions/trick_resolved"
+    },
+    {
+      "type": "pickup",
+      "opcode": 145,
+      "direction": "s2c",
+      "visibility": "public",
+      "game": "thulla",
+      "schema": "games/thulla/events.json#/definitions/pickup"
+    },
+    {
+      "type": "escape",
+      "opcode": 146,
+      "direction": "s2c",
+      "visibility": "public",
+      "game": "thulla",
+      "schema": "games/thulla/events.json#/definitions/escape"
+    },
+    {
+      "type": "hand_taken",
+      "opcode": 147,
+      "direction": "s2c",
+      "visibility": "public",
+      "game": "thulla",
+      "schema": "games/thulla/events.json#/definitions/hand_taken"
+    },
+    {
+      "type": "private_draw",
+      "opcode": 148,
+      "direction": "s2c",
+      "visibility": "seat",
+      "game": "thulla",
+      "schema": "games/thulla/events.json#/definitions/private_draw"
+    },
+    {
+      "type": "endgame_started",
+      "opcode": 149,
+      "direction": "s2c",
+      "visibility": "public",
+      "game": "thulla",
+      "schema": "games/thulla/events.json#/definitions/endgame_started"
+    },
+    {
+      "type": "confirmed",
+      "opcode": 150,
+      "direction": "s2c",
+      "visibility": "public",
+      "game": "thulla",
+      "schema": "games/thulla/events.json#/definitions/confirmed"
+    },
+    {
+      "type": "round_end",
+      "opcode": 151,
+      "direction": "s2c",
+      "visibility": "public",
+      "game": "thulla",
+      "schema": "games/thulla/events.json#/definitions/round_end"
+    }
+  ]
+}

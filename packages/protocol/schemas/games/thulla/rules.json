@@ -1,0 +1,35 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://hulla.gg/schemas/games/thulla/rules.json",
+  "title": "Thulla rules",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "deckCount": { "type": "integer", "enum": [1], "default": 1 },
+    "openingSimultaneous": { "type": "boolean", "default": true },
+    "openingThullaApplies": { "type": "boolean", "default": false },
+    "thullaEndsTrick": { "type": "boolean", "default": true },
+    "emptyHandLeader": {
+      "type": "string",
+      "enum": ["drawDiscard", "drawNextPlayer", "instantExit"],
+      "default": "drawDiscard"
+    },
+    "handTaking": {
+      "type": "string",
+      "enum": ["off", "leaderOnly", "anyone"],
+      "default": "leaderOnly"
+    },
+    "twoPlayerEndgame": {
+      "type": "string",
+      "enum": ["drawOpponent", "drawDiscard", "thullaEndsRound"],
+      "default": "drawOpponent"
+    },
+    "confirmedFastForward": { "type": "boolean", "default": true },
+    "bigBhabhiPenalty": { "type": "boolean", "default": false },
+    "format": {
+      "type": "string",
+      "enum": ["single", "bestOf3", "bestOf5", "bestOf7", "firstTo3Bhabhis", "session"],
+      "default": "session"
+    }
+  }
+}

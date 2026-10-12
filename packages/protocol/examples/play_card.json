@@ -1,0 +1,8 @@
+{
+  "v": 1,
+  "type": "play_card",
+  "tableId": "t_7KQ2MX",
+  "seq": 118,
+  "ts": 1760200000123,
+  "payload": { "roundId": "r_3", "card": "KH", "clientSeq": 42 }
+}

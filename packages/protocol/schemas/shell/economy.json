@@ -1,0 +1,47 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://hulla.gg/schemas/protocol/shell/economy.json",
+  "title": "Wallet shapes used by economy RPC responses (GDD 12.3, 12.4; no transfers, no wagering)",
+  "definitions": {
+    "wallet": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["coins", "gems"],
+      "properties": {
+        "coins": { "type": "integer", "minimum": 0 },
+        "gems": { "type": "integer", "minimum": 0 }
+      }
+    },
+    "ledgerEntry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "ts", "coins", "gems", "reason"],
+      "properties": {
+        "id": { "type": "string" },
+        "ts": { "$ref": "../common.json#/definitions/timestamp" },
+        "coins": { "type": "integer" },
+        "gems": { "type": "integer" },
+        "reason": {
+          "type": "string",
+          "enum": [
+            "round_reward",
+            "mission",
+            "daily_reward",
+            "level_up",
+            "achievement",
+            "rewarded_ad",
+            "purchase",
+            "pass",
+            "shop",
+            "refund",
+            "admin"
+          ]
+        },
+        "ref": {
+          "type": "string",
+          "description": "Idempotency key: round id, receipt id or mission id"
+        }
+      }
+    }
+  }
+}
