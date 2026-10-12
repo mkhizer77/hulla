@@ -30,7 +30,11 @@ namespace Hulla.Application.Social
         /// <summary>Removes a friend, declines a request or cancels one sent.</summary>
         Awaitable<Result<bool>> RemoveAsync(string userId, CancellationToken cancellation);
 
-        Awaitable<Result<bool>> BlockAsync(string userId, CancellationToken cancellation);
+        /// <summary>Blocks or unblocks (block_set): both ways, in matchmaking, and on the friend graph (GDD 10.11).</summary>
+        Awaitable<Result<bool>> BlockAsync(string userId, CancellationToken cancellation, bool blocked = true);
+
+        /// <summary>Reports a player with a reason (GDD 10.11); the server attaches the table's recent chat.</summary>
+        Awaitable<Result<bool>> ReportAsync(string userId, string reason, string? tableId, string? roundId, CancellationToken cancellation);
 
         Awaitable<Result<bool>> SetFavouriteAsync(string userId, bool pinned, CancellationToken cancellation);
 

@@ -66,7 +66,7 @@ namespace Hulla.Infrastructure.Nakama
             catch (Exception error)
             {
                 // The before-message hook refuses with its code as the message (server hooks/before_channel_message).
-                foreach (var code in new[] { "network.rate_limited", "auth.not_linked", "content.filtered" })
+                foreach (var code in new[] { "network.rate_limited", "auth.not_linked", "content.filtered", "social.muted" })
                 {
                     if (error.Message.Contains(code))
                     {

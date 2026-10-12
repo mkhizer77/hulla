@@ -118,6 +118,9 @@ namespace Hulla.Application.ViewModels
         public async Awaitable BlockAsync(string userId, CancellationToken cancellation) =>
             await AfterAsync(await _social.BlockAsync(userId, cancellation), cancellation);
 
+        public async Awaitable UnblockAsync(string userId, CancellationToken cancellation) =>
+            await AfterAsync(await _social.BlockAsync(userId, cancellation, false), cancellation);
+
         public async Awaitable ToggleFavouriteAsync(FriendEntry friend, CancellationToken cancellation) =>
             await AfterAsync(await _social.SetFavouriteAsync(friend.UserId, !friend.Favourite, cancellation), cancellation);
 

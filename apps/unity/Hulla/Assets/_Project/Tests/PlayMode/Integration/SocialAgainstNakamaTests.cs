@@ -138,6 +138,15 @@ namespace Hulla.Integration.Tests
                 var cancel = await account.CancelDeleteAsync(default);
                 Assert.IsTrue(cancel.IsOk && cancel.Value, "a pending deletion can be cancelled");
 
+                // Reports and blocks (GDD 10.11): a report is accepted; a block mutes both ways.
+                var amnaId = amna.Session.Current!.UserId;
+                var report = await basit.Social.ReportAsync(amnaId, "spam", "t_" + table.Value.Code, null, default);
+                Assert.IsTrue(report.IsOk, report.Error.ToString());
+                Assert.IsTrue((await basit.Social.BlockAsync(amnaId, default)).IsOk);
+                var amnaMutes = new MuteList(amna.Social);
+                await amnaMutes.RefreshAsync(default);
+                Assert.IsTrue(amnaMutes.IsMuted(basit.Session.Current!.UserId), "a block mutes both ways");
+
                 var handle = "amna_" + stamp.Substring(stamp.Length - 6);
                 // Sign-in already set the profile name to the one typed (one free change), so keep it.
                 await amna.Profile.RefreshAsync(default);

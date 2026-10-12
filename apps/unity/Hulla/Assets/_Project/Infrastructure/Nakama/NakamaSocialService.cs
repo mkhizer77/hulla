@@ -121,8 +121,28 @@ namespace Hulla.Infrastructure.Nakama
         public Awaitable<Result<bool>> RemoveAsync(string userId, CancellationToken cancellation) =>
             FriendCallAsync((client, session) => client.DeleteFriendsAsync(session, new[] { userId }, null, null, cancellation));
 
-        public Awaitable<Result<bool>> BlockAsync(string userId, CancellationToken cancellation) =>
-            FriendCallAsync((client, session) => client.BlockFriendsAsync(session, new[] { userId }, null, null, cancellation));
+        public async Awaitable<Result<bool>> BlockAsync(string userId, CancellationToken cancellation, bool blocked = true)
+        {
+            var body = await RpcAsync("block_set", new JObject { ["userId"] = userId, ["blocked"] = blocked }, cancellation);
+            return body.IsOk ? Result<bool>.Ok(true) : Result<bool>.Fail(body.Error);
+        }
+
+        public async Awaitable<Result<bool>> ReportAsync(string userId, string reason, string? tableId, string? roundId, CancellationToken cancellation)
+        {
+            var input = new JObject { ["userId"] = userId, ["reason"] = reason };
+            if (!string.IsNullOrEmpty(tableId))
+            {
+                input["tableId"] = tableId;
+            }
+
+            if (!string.IsNullOrEmpty(roundId))
+            {
+                input["roundId"] = roundId;
+            }
+
+            var body = await RpcAsync("report_create", input, cancellation);
+            return body.IsOk ? Result<bool>.Ok(true) : Result<bool>.Fail(body.Error);
+        }
 
         public async Awaitable<Result<bool>> SetFavouriteAsync(string userId, bool pinned, CancellationToken cancellation)
         {

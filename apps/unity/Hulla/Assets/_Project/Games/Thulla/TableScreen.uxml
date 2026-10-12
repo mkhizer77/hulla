@@ -14,6 +14,11 @@
             <ui:Label name="pile-note" class="pile__note" />
             <ui:Label name="toast" class="toast" />
         </ui:VisualElement>
+        <ui:VisualElement name="player-sheet" class="coach player-sheet">
+            <ui:Label name="sheet-title" class="coach__text" />
+            <ui:VisualElement name="sheet-actions" class="chips" />
+            <ui:Label name="sheet-status" class="caption" />
+        </ui:VisualElement>
         <ui:VisualElement name="coach" class="coach">
             <ui:Label name="coach-text" class="coach__text" />
             <ui:Button name="coach-next" class="button button--primary button--small" />
