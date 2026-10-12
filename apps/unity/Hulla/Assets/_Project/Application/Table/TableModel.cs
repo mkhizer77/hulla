@@ -45,6 +45,12 @@ namespace Hulla.Application.Table
         /// <summary>The preset, overrides and table settings the table was opened with.</summary>
         public RulesSelection? Selection { get; private set; }
 
+        /// <summary>When the rematch vote closes (R52); null when no vote is open.</summary>
+        public long? RematchDeadlineTs { get; private set; }
+
+        /// <summary>The seats that voted to play again.</summary>
+        public IReadOnlyList<long> RematchVotes { get; private set; } = Array.Empty<long>();
+
         /// <summary>The toggles the engine resolved for the current round; null before the first deal.</summary>
         public ThullaRules? ActiveRules { get; private set; }
 
@@ -213,6 +219,8 @@ namespace Hulla.Application.Table
             Status = state.Status;
             Mode = state.Mode;
             Selection = state.Rules;
+            RematchDeadlineTs = state.Rematch?.DeadlineTs;
+            RematchVotes = state.Rematch?.Votes ?? (IReadOnlyList<long>)Array.Empty<long>();
             AutoStartAtTs = state.AutoStart?.StartsAtTs;
             HostSeat = state.HostSeat;
             _seats.Clear();
