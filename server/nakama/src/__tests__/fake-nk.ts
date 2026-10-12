@@ -97,3 +97,280 @@ export function fakeLogger(lines: LogLine[] = []): nkruntime.Logger {
     error: push("error"),
   } as unknown as nkruntime.Logger;
 }
+
+interface StoredObject {
+  collection: string;
+  key: string;
+  userId: string;
+  value: Record<string, unknown>;
+  version: string;
+  permissionRead: number;
+  permissionWrite: number;
+}
+
+interface MemoryUser {
+  userId: string;
+  username: string;
+  displayName: string;
+  avatarUrl: string;
+  email: string;
+  customId: string;
+  appleId: string;
+  googleId: string;
+  facebookId: string;
+}
+
+/** What an in-memory Nakama remembers, for assertions. */
+export interface MemoryNk {
+  readonly nk: nkruntime.Nakama;
+  readonly storage: Map<string, StoredObject>;
+  readonly users: Map<string, MemoryUser>;
+  /** userId -> otherId -> friend state (0 friend, 1 sent, 2 received, 3 blocked). */
+  readonly friends: Map<string, Map<string, number>>;
+  readonly online: Set<string>;
+  readonly matches: Map<string, { label: string; size: number; params: Record<string, unknown> }>;
+  readonly wallets: Map<string, Record<string, number>>;
+  readonly deleted: string[];
+  readonly loggedOut: string[];
+  readonly signals: { matchId: string; data: string }[];
+  readonly notifications: { userId: string; subject: string }[];
+  user(id: string, overrides?: Partial<MemoryUser>): MemoryUser;
+  object(collection: string, key: string, userId: string): Record<string, unknown> | undefined;
+}
+
+const storageKey = (collection: string, userId: string, key: string): string =>
+  `${collection}/${userId}/${key}`;
+
+/**
+ * A Nakama that keeps everything in maps: storage with versions, users, the friend graph,
+ * matches and wallets. Enough for the RPCs and hooks to run end to end in a unit test.
+ */
+export function memoryNk(): MemoryNk {
+  const storage = new Map<string, StoredObject>();
+  const users = new Map<string, MemoryUser>();
+  const friends = new Map<string, Map<string, number>>();
+  const online = new Set<string>();
+  const matches = new Map<
+    string,
+    { label: string; size: number; params: Record<string, unknown> }
+  >();
+  const wallets = new Map<string, Record<string, number>>();
+  const deleted: string[] = [];
+  const loggedOut: string[] = [];
+  const signals: { matchId: string; data: string }[] = [];
+  const notifications: { userId: string; subject: string }[] = [];
+  let uuids = 0;
+  let versions = 0;
+  const user = (id: string, overrides: Partial<MemoryUser> = {}): MemoryUser => {
+    const existing = users.get(id) ?? {
+      userId: id,
+      username: `user_${id}`,
+      displayName: "",
+      avatarUrl: "",
+      email: "",
+      customId: "",
+      appleId: "",
+      googleId: "",
+      facebookId: "",
+    };
+    const merged = { ...existing, ...overrides };
+    users.set(id, merged);
+    return merged;
+  };
+  const edges = (id: string): Map<string, number> => {
+    const found = friends.get(id);
+    if (found !== undefined) return found;
+    const created = new Map<string, number>();
+    friends.set(id, created);
+    return created;
+  };
+  const toUser = (u: MemoryUser): nkruntime.User =>
+    ({
+      userId: u.userId,
+      username: u.username,
+      displayName: u.displayName,
+      avatarUrl: u.avatarUrl,
+      appleId: u.appleId,
+      googleId: u.googleId,
+      facebookId: u.facebookId,
+      online: online.has(u.userId),
+      createTime: 0,
+      updateTime: 0,
+      metadata: {},
+    }) as unknown as nkruntime.User;
+  const nk = {
+    uuidv4: () => {
+      uuids += 1;
+      return `00000000-0000-4000-8000-${String(uuids).padStart(12, "0")}`;
+    },
+    sha256Hash: (input: string) => `sha256(${input})`,
+    binaryToString: (data: ArrayBuffer) => new TextDecoder().decode(data),
+    storageWrite(requests: nkruntime.StorageWriteRequest[]) {
+      return requests.map((r) => {
+        const k = storageKey(r.collection, r.userId ?? "", r.key);
+        const existing = storage.get(k);
+        if (r.version === "*" && existing !== undefined)
+          throw new Error("storage version conflict");
+        versions += 1;
+        const object: StoredObject = {
+          collection: r.collection,
+          key: r.key,
+          userId: r.userId ?? "",
+          value: JSON.parse(JSON.stringify(r.value)) as Record<string, unknown>,
+          version: `v${String(versions)}`,
+          permissionRead: r.permissionRead ?? 1,
+          permissionWrite: r.permissionWrite ?? 1,
+        };
+        storage.set(k, object);
+        return {
+          collection: r.collection,
+          key: r.key,
+          userId: r.userId ?? "",
+          version: object.version,
+        };
+      });
+    },
+    storageRead(reads: nkruntime.StorageReadRequest[]) {
+      return reads.flatMap((r) => {
+        const found = storage.get(storageKey(r.collection, r.userId, r.key));
+        return found === undefined ? [] : [{ ...found, createTime: 0, updateTime: 0 }];
+      });
+    },
+    storageList(userId: string, collection: string, limit: number, cursor?: string) {
+      const all = [...storage.values()]
+        .filter((o) => o.collection === collection && (userId === "" || o.userId === userId))
+        .sort((a, b) => a.key.localeCompare(b.key));
+      const start = cursor === undefined || cursor === "" ? 0 : Number(cursor);
+      const page = all.slice(start, start + limit);
+      const next = start + limit < all.length ? String(start + limit) : undefined;
+      return { objects: page.map((o) => ({ ...o, createTime: 0, updateTime: 0 })), cursor: next };
+    },
+    storageDelete(deletes: nkruntime.StorageDeleteRequest[]) {
+      for (const d of deletes) storage.delete(storageKey(d.collection, d.userId, d.key));
+    },
+    usersGetId: (ids: string[]) => ids.map((id) => toUser(user(id))),
+    usersGetUsername: (names: string[]) =>
+      [...users.values()].filter((u) => names.includes(u.username)).map(toUser),
+    accountGetId(id: string) {
+      const u = user(id);
+      return {
+        user: toUser(u),
+        wallet: JSON.stringify(wallets.get(id) ?? {}),
+        email: u.email,
+        devices: [],
+        customId: u.customId,
+        verifyTime: 0,
+        disableTime: 0,
+        providers: [],
+      };
+    },
+    accountUpdateId(id: string, username?: string | null, displayName?: string | null) {
+      user(id, {
+        ...(username === null || username === undefined ? {} : { username }),
+        ...(displayName === null || displayName === undefined ? {} : { displayName }),
+      });
+    },
+    accountExportId: (id: string) => JSON.stringify({ account: { user: toUser(user(id)) } }),
+    accountDeleteId(id: string) {
+      deleted.push(id);
+    },
+    sessionLogout(id: string) {
+      loggedOut.push(id);
+    },
+    walletUpdate(id: string, changeset: Record<string, number>) {
+      const current = { ...(wallets.get(id) ?? {}) };
+      for (const [k, v] of Object.entries(changeset)) current[k] = (current[k] ?? 0) + v;
+      wallets.set(id, current);
+      return { updated: current, previous: wallets.get(id) ?? {} };
+    },
+    friendsList(id: string, limit = 100, state?: number | null, cursor?: string) {
+      const rows = [...edges(id).entries()]
+        .filter(([, s]) => state === undefined || state === null || s === state)
+        .map(([other, s]) => ({ user: toUser(user(other)), state: s, updateTime: 0 }));
+      const start = cursor === undefined || cursor === "" ? 0 : Number(cursor);
+      const page = rows.slice(start, start + limit);
+      return {
+        friends: page,
+        cursor: start + limit < rows.length ? String(start + limit) : undefined,
+      };
+    },
+    friendsAdd(id: string, _username: string, ids: string[]) {
+      for (const other of ids) {
+        if (edges(other).get(id) === 3) continue;
+        if (edges(other).get(id) === 1) {
+          edges(other).set(id, 0);
+          edges(id).set(other, 0);
+        } else if (edges(id).get(other) !== 0) {
+          edges(id).set(other, 1);
+          edges(other).set(id, 2);
+        }
+      }
+      return { friends: [] };
+    },
+    friendsBlock(id: string, _username: string, ids: string[]) {
+      for (const other of ids) {
+        edges(id).set(other, 3);
+        edges(other).delete(id);
+      }
+      return { friends: [] };
+    },
+    friendsDelete(id: string, _username: string, ids: string[]) {
+      for (const other of ids) {
+        edges(id).delete(other);
+        edges(other).delete(id);
+      }
+      return { friends: [] };
+    },
+    matchCreate(module: string, params: Record<string, unknown>) {
+      const matchId = `${String(matches.size + 1).padStart(8, "0")}-0000-4000-8000-000000000000.n1`;
+      const rules = params["rules"] as { preset?: string } | undefined;
+      matches.set(matchId, {
+        size: 0,
+        params,
+        label: JSON.stringify({
+          code: params["code"],
+          gameId: params["gameId"] ?? module,
+          mode: params["mode"],
+          preset: rules?.preset ?? null,
+          status: "open",
+          seated: 0,
+          open: 4,
+          watching: 0,
+          watchable: true,
+        }),
+      });
+      return matchId;
+    },
+    matchGet(matchId: string) {
+      const found = matches.get(matchId);
+      return found === undefined
+        ? null
+        : { matchId, authoritative: true, size: found.size, label: found.label };
+    },
+    matchList: () => [],
+    matchSignal(matchId: string, data: string) {
+      signals.push({ matchId, data });
+      return JSON.stringify({ ok: true, present: true });
+    },
+    streamCount: (stream: { subject?: string }) =>
+      stream.subject !== undefined && online.has(stream.subject) ? 1 : 0,
+    notificationSend(userId: string, subject: string) {
+      notifications.push({ userId, subject });
+    },
+  } as unknown as nkruntime.Nakama;
+  return {
+    nk,
+    storage,
+    users,
+    friends,
+    online,
+    matches,
+    wallets,
+    deleted,
+    loggedOut,
+    signals,
+    notifications,
+    user,
+    object: (collection, key, userId) => storage.get(storageKey(collection, userId, key))?.value,
+  };
+}
