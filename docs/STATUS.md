@@ -6,6 +6,7 @@ Updated: 13 October 2026 (morning)
 M0 complete: the Thulla rulebook runs in TypeScript with full traceability. M1, the vertical slice, starts with the protocol schemas.
 
 ## Done
+- M2 #50 and #51 server parts merged (13 Oct, PR 193): XP, levels, titles and coins per round from the GDD tables, the login streak and the daily soft cap at local midnight, level grants, and the append-only ledger with idempotent source ids and no transfers. OQ-021 logged.
 - M2 #49 server part merged (13 Oct, PR 190): strikes and bans with expiry, device bans, the ban check at join, audited admin RPCs and round replay from the log. OQ-020 logged.
 - M2 #48 server part merged (13 Oct, PR 186) and the preset settings fix (PR 187): blocks both ways on the friend graph, the matchmaker exclusion, reports with the table's chat and the auto-mute; a preset's table settings now apply from a preset-only selection. OQ-019 logged.
 - M2 #47 server part merged (13 Oct, PR 184): the profanity filter in six scripts with evasion-proof matching, Standard masks and Family blocks, hot-reloadable lists, mutes per account, the guest text lock at public tables. OQ-018 logged.
@@ -36,7 +37,7 @@ M0 complete: the Thulla rulebook runs in TypeScript with full traceability. M1, 
 - 12 Oct decisions: C# mirror deferred past v1.0 (ADR-0019), no clock in engines (ADR-0020), JSON Schema draft-07 (ADR-0021), one deck and 3–6 seats until v1.2, web client before Rung (M5 → web → Rung → M6, dates in the execution plan), Facebook login stays, Unity stays on 6000.4.9f1.
 
 ## Doing
-- M2 #50 and #51 server parts (branch `feat/progression`, stacked on #49): XP, levels, titles and coins per round from the GDD tables with the friend bonus, the login streak and the daily soft cap at local midnight; level grants; the append-only ledger with idempotent source ids and no transfers (proven by a test); `wallet_get` and `progress_get`. The rewards block on the results screen is the Unity track. OQ-021 logged.
+- M2 #52 server part (branch `feat/missions`, stacked on #50 and #51): the mission pools in content with a schema, seeded daily and weekly draws per player at local midnight, progress from round events and voice, the in-app progress notification, idempotent claims through the ledger, the free daily re-roll and the live pool reload. The Missions panel on Home is the Unity track. OQ-022 logged.
 
 ## Next
 Server: after #47 and #48 merge, #49 to #56, #71, #72, #75, #77. Unity: #33 polish, #23 theme from the design system (#22), #32 voice, the Profile screen for #40, the friends screen for #41, parties for Quick Play once friends exist.

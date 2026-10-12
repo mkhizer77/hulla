@@ -1,0 +1,105 @@
+{
+  "schema": "../../tools/content-schemas/missions.schema.json",
+  "id": "missions-v1",
+  "version": 1,
+  "daily": [
+    {
+      "id": "d_thullas_3",
+      "name": "mission.d_thullas_3.name",
+      "description": "mission.d_thullas_3.description",
+      "metric": "thullas_given",
+      "target": 3,
+      "reward": { "coins": 60 }
+    },
+    {
+      "id": "d_escape_first",
+      "name": "mission.d_escape_first.name",
+      "description": "mission.d_escape_first.description",
+      "metric": "escaped_first",
+      "target": 1,
+      "reward": { "coins": 60 }
+    },
+    {
+      "id": "d_friend_rounds_2",
+      "name": "mission.d_friend_rounds_2.name",
+      "description": "mission.d_friend_rounds_2.description",
+      "metric": "rounds_with_friend",
+      "target": 2,
+      "reward": { "coins": 80 }
+    },
+    {
+      "id": "d_voice_private",
+      "name": "mission.d_voice_private.name",
+      "description": "mission.d_voice_private.description",
+      "metric": "voice_private",
+      "target": 1,
+      "reward": { "coins": 40 }
+    },
+    {
+      "id": "d_low_pickup",
+      "name": "mission.d_low_pickup.name",
+      "description": "mission.d_low_pickup.description",
+      "metric": "low_pickup_rounds",
+      "target": 1,
+      "reward": { "coins": 50 }
+    },
+    {
+      "id": "d_rounds_3",
+      "name": "mission.d_rounds_3.name",
+      "description": "mission.d_rounds_3.description",
+      "metric": "rounds_played",
+      "target": 3,
+      "reward": { "coins": 50 }
+    },
+    {
+      "id": "d_escapes_2",
+      "name": "mission.d_escapes_2.name",
+      "description": "mission.d_escapes_2.description",
+      "metric": "escapes",
+      "target": 2,
+      "reward": { "coins": 60 }
+    }
+  ],
+  "weekly": [
+    {
+      "id": "w_rounds_15",
+      "name": "mission.w_rounds_15.name",
+      "description": "mission.w_rounds_15.description",
+      "metric": "rounds_played",
+      "target": 15,
+      "reward": { "coins": 250, "gems": 5 }
+    },
+    {
+      "id": "w_series_won",
+      "name": "mission.w_series_won.name",
+      "description": "mission.w_series_won.description",
+      "metric": "series_won",
+      "target": 1,
+      "reward": { "coins": 200, "gems": 5 }
+    },
+    {
+      "id": "w_thullas_15",
+      "name": "mission.w_thullas_15.name",
+      "description": "mission.w_thullas_15.description",
+      "metric": "thullas_given",
+      "target": 15,
+      "reward": { "coins": 200 }
+    },
+    {
+      "id": "w_clean_rounds_3",
+      "name": "mission.w_clean_rounds_3.name",
+      "description": "mission.w_clean_rounds_3.description",
+      "metric": "clean_rounds",
+      "target": 3,
+      "reward": { "coins": 200, "gems": 5 }
+    },
+    {
+      "id": "w_friend_rounds_8",
+      "name": "mission.w_friend_rounds_8.name",
+      "description": "mission.w_friend_rounds_8.description",
+      "metric": "rounds_with_friend",
+      "target": 8,
+      "reward": { "coins": 250, "gems": 5 }
+    }
+  ]
+}

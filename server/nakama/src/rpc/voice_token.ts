@@ -10,6 +10,7 @@ import {
 
 import { runtimeFrom, type ServerRuntime } from "../infra/nk";
 import { buildRtcToken, isAgoraId, type AgoraConfig } from "../services/agora_token";
+import { recordMissionMetrics } from "../services/missions";
 import { isVoiceSuspended, readModeration } from "../services/sanctions";
 
 /** Tokens last an hour; a client asks again before then (GDD 11.4). */
@@ -99,33 +100,59 @@ export function rpcVoiceToken(
   nk: nkruntime.Nakama,
   payload: string,
 ): string {
-  return JSON.stringify(
-    voiceToken(
-      {
-        runtime: runtimeFrom(nk, logger),
-        userId: ctx.userId ?? null,
-        config: agoraConfigFrom(ctx.env),
-        suspended: isVoiceSuspended(readModeration(nk, ctx.userId ?? ""), Date.now()),
-        membership(matchId) {
-          try {
-            const answer = JSON.parse(
-              nk.matchSignal(
-                matchId,
-                JSON.stringify({ kind: "has_user", userId: ctx.userId ?? "" }),
-              ),
-            ) as { ok?: boolean; present?: boolean; seat?: number | null; tableId?: string };
-            if (answer.ok !== true || typeof answer.tableId !== "string") return null;
-            return {
-              present: answer.present === true,
-              seat: answer.seat ?? null,
-              tableId: answer.tableId,
-            };
-          } catch {
-            return null;
-          }
-        },
+  const response = voiceTokenFor(ctx, logger, nk, payload);
+  if (response.ok) noteVoiceInPrivateRoom(ctx, logger, nk, response.channel);
+  return JSON.stringify(response);
+}
+
+/** Voice in a private room counts for the mission of GDD 12.5. */
+function noteVoiceInPrivateRoom(
+  ctx: nkruntime.Context,
+  logger: nkruntime.Logger,
+  nk: nkruntime.Nakama,
+  tableId: string,
+): void {
+  const userId = ctx.userId ?? "";
+  if (userId === "") return;
+  try {
+    const code = tableId.startsWith("t_") ? tableId.slice(2) : tableId;
+    const match = nk.matchList(1, true, null, null, null, `+label.code:${code}`)[0];
+    const label = match === undefined ? null : (JSON.parse(match.label) as { mode?: unknown });
+    if (label?.mode !== "private") return;
+    recordMissionMetrics(nk, userId, { voice_private: 1 }, Date.now());
+  } catch (error: unknown) {
+    logger.warn("voice mission not noted", { error: String(error) });
+  }
+}
+
+function voiceTokenFor(
+  ctx: nkruntime.Context,
+  logger: nkruntime.Logger,
+  nk: nkruntime.Nakama,
+  payload: string,
+): VoiceTokenResponse {
+  return voiceToken(
+    {
+      runtime: runtimeFrom(nk, logger),
+      userId: ctx.userId ?? null,
+      config: agoraConfigFrom(ctx.env),
+      suspended: isVoiceSuspended(readModeration(nk, ctx.userId ?? ""), Date.now()),
+      membership(matchId) {
+        try {
+          const answer = JSON.parse(
+            nk.matchSignal(matchId, JSON.stringify({ kind: "has_user", userId: ctx.userId ?? "" })),
+          ) as { ok?: boolean; present?: boolean; seat?: number | null; tableId?: string };
+          if (answer.ok !== true || typeof answer.tableId !== "string") return null;
+          return {
+            present: answer.present === true,
+            seat: answer.seat ?? null,
+            tableId: answer.tableId,
+          };
+        } catch {
+          return null;
+        }
       },
-      payload,
-    ),
+    },
+    payload,
   );
 }
