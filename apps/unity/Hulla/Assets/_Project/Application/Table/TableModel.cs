@@ -70,6 +70,31 @@ namespace Hulla.Application.Table
 
         public long? LastPicker { get; private set; }
 
+        /// <summary>Cards out of play this round (resolved tricks nobody picked up).</summary>
+        public long DiscardCount { get; private set; }
+
+        /// <summary>True once the round's fairness commitment arrived (R6); the seed is revealed at round end.</summary>
+        public bool FairDealCommitted { get; private set; }
+
+        /// <summary>Who leads the open trick, or leads next when it is empty.</summary>
+        public long? LeaderSeat => _trick.Count > 0 ? _trick[0].Seat : TurnSeat;
+
+        /// <summary>The suit the open trick asks for, or null when nobody has led yet.</summary>
+        public char? LedSuit => _trick.Count > 0 ? _trick[0].Card[1] : (char?)null;
+
+        public bool HoldsSuit(char suit)
+        {
+            foreach (var card in _hand)
+            {
+                if (card[1] == suit)
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
         public long? TurnSeat { get; private set; }
 
         public bool MyTurn => MySeat != null && TurnSeat == MySeat && _legal.Count > 0;
@@ -207,6 +232,8 @@ namespace Hulla.Application.Table
             }
 
             InRound = round.Phase != Phase.Ended && state.Status == TableStatus.InRound;
+            DiscardCount = round.DiscardCount;
+            FairDealCommitted = !string.IsNullOrEmpty(round.Commitment);
             var count = (int)round.SeatCount;
             _handCounts = new long[count];
             _escaped = new bool[count];
@@ -251,6 +278,8 @@ namespace Hulla.Application.Table
             _trick.Clear();
             _lastTrick.Clear();
             LastPicker = null;
+            DiscardCount = 0;
+            FairDealCommitted = !string.IsNullOrEmpty(start.Commitment);
             TurnSeat = start.LeaderSeat;
         }
 
@@ -313,6 +342,11 @@ namespace Hulla.Application.Table
             _lastTrick.AddRange(_trick);
             _trick.Clear();
             LastPicker = resolved.Picker;
+            if (resolved.Picker == null)
+            {
+                DiscardCount += resolved.Cards.Count;
+            }
+
             _handCounts = resolved.HandCounts.ToArray();
             if (_escaped.Length != _handCounts.Length)
             {

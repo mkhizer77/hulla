@@ -196,14 +196,25 @@
 }
 
 .table__top {
-    flex-direction: row;
-    justify-content: flex-end;
+    flex-direction: row-reverse;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.table__info {
+    font-size: var(--font-small);
+    color: var(--ink-muted);
 }
 
 .opponents {
-    flex-direction: row;
-    flex-wrap: wrap;
-    justify-content: center;
+    flex-shrink: 0;
+    height: 24%;
+    min-height: 280px;
+}
+
+.seat--placed {
+    position: absolute;
+    translate: -50% -50%;
 }
 
 .seat {
@@ -239,6 +250,9 @@
 
 .felt {
     flex-grow: 1;
+    flex-shrink: 1;
+    min-height: 0;
+    overflow: hidden;
     justify-content: center;
     align-items: center;
 }
@@ -287,15 +301,22 @@
 }
 
 .hand {
-    flex-direction: row;
-    flex-wrap: wrap;
-    justify-content: center;
-    padding: var(--space-1) 0 var(--space-3) 60px;
+    flex-shrink: 0;
+    padding: 30px 0 var(--space-3) 0;
 }
 
-.hand > .card {
-    margin-left: -60px;
-    margin-bottom: 12px;
+.hand__row {
+    flex-direction: row;
+    justify-content: center;
+}
+
+.hand__row--stacked {
+    margin-bottom: -60px;
+}
+
+.hand .card {
+    transition-property: translate, scale;
+    transition-duration: 120ms;
 }
 
 .card {
@@ -328,7 +349,15 @@
 .card--legal {
     border-color: var(--accent-saffron);
     border-width: 4px;
-    translate: 0 -18px;
+}
+
+.card--raised {
+    translate: 0 -34px;
+}
+
+.card--hover {
+    scale: 1.15 1.15;
+    translate: 0 -24px;
 }
 
 .card--dim {
@@ -466,4 +495,45 @@
 
 .elapsed {
     -unity-text-align: middle-center;
+}
+
+.table__turn {
+    flex-direction: row;
+    align-items: center;
+}
+
+.timer {
+    width: 56px;
+    height: 56px;
+    margin-right: var(--space-1);
+}
+
+.timer-ring {
+    flex-grow: 1;
+}
+
+.hint {
+    display: none;
+    align-self: center;
+    padding: 8px 18px;
+    border-radius: 999px;
+    background-color: #3A1F1F;
+    color: var(--ink-ivory);
+    font-size: 28px;
+}
+
+.pile__slot--fly {
+    transition-property: translate;
+    transition-duration: 220ms;
+    transition-timing-function: ease-out-cubic;
+}
+
+.pile__slot--fade-start {
+    opacity: 0;
+}
+
+.pile__slot--fade {
+    opacity: 1;
+    transition-property: opacity;
+    transition-duration: 200ms;
 }

@@ -1,0 +1,26 @@
+{
+    "name": "Hulla.Tests.Games.Thulla",
+    "rootNamespace": "Hulla.Games.Thulla.Tests",
+    "references": [
+        "Hulla.Games.Thulla",
+        "Hulla.Application",
+        "Hulla.Protocol",
+        "UnityEngine.TestRunner",
+        "UnityEditor.TestRunner"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": true,
+    "precompiledReferences": [
+        "nunit.framework.dll"
+    ],
+    "autoReferenced": false,
+    "defineConstraints": [
+        "UNITY_INCLUDE_TESTS"
+    ],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
