@@ -1,4 +1,4 @@
-import { check_envelope, payloadChecks } from "@hulla/protocol/generated";
+import { createChecks } from "@hulla/protocol/generated";
 import {
   createThullaRound,
   fairDealCommitment,
@@ -119,10 +119,11 @@ describe("the Thulla host at the table core", () => {
     const steps = playRound(t);
     expect(t.state.phase).toBe("roundEnded");
     expect(steps).toBeLessThan(600);
+    const checks = createChecks();
     let checked = 0;
     for (const { envelope } of t.sent) {
-      expect(check_envelope(envelope)).toBe(true);
-      const check = payloadChecks[envelope.type];
+      expect(checks.envelope(envelope)).toBe(true);
+      const check = checks.payload[envelope.type];
       if (check === undefined) throw new Error(`no check for ${envelope.type}`);
       if (!check(envelope.payload)) {
         throw new Error(
@@ -259,12 +260,22 @@ describe("the Thulla host at the table core", () => {
     ).toMatchObject({
       error: { code: "table.invalid_payload", detail: { reason: "schema", type: "play_card" } },
     });
-    expect(decodeThullaMove("cancel_take", { roundId: "r_1", clientSeq: 3 })).toMatchObject({
+    const checks = createChecks();
+    expect(
+      decodeThullaMove(
+        "cancel_take",
+        { roundId: "r_1", clientSeq: 3 },
+        checks.payload["cancel_take"],
+      ),
+    ).toMatchObject({ ok: false });
+    expect(
+      decodeThullaMove("take_hand", { roundId: "r_1", clientSeq: 3 }, checks.payload["take_hand"]),
+    ).toEqual({ ok: true, value: { type: "take_hand" } });
+    expect(
+      decodeThullaMove("take_hand", { roundId: "r_1" }, checks.payload["take_hand"]),
+    ).toMatchObject({
       ok: false,
-    });
-    expect(decodeThullaMove("take_hand", { roundId: "r_1", clientSeq: 3 })).toEqual({
-      ok: true,
-      value: { type: "take_hand" },
+      error: { detail: { reason: "schema" } },
     });
   });
 

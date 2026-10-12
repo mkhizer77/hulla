@@ -1,4 +1,3 @@
-import { check_play_card, check_take_hand } from "@hulla/protocol/generated";
 import {
   canTakeHand,
   legalMoves,
@@ -12,7 +11,7 @@ import { ErrorCodes, err, ok, ruleError, stateHash } from "@hulla/shared-ts";
 import { seriesPayload } from "../../match/view";
 
 import type { EncodeContext, GameHost, GameMessage } from "../../match/types";
-import type { PlayCard } from "@hulla/protocol/generated";
+import type { Check } from "@hulla/protocol/generated";
 import type {
   Card,
   ThullaEvent,
@@ -196,23 +195,22 @@ export function encodeThullaEvents(
   return out;
 }
 
+/** Validates the payload with the generated check for its type, then maps it to an engine move. */
 export function decodeThullaMove(
   type: string,
   payload: Record<string, unknown>,
+  check: Check | undefined,
 ): Result<ThullaMove, RuleError> {
+  if (type !== "play_card" && type !== "take_hand") {
+    return err(ruleError(ErrorCodes.table.invalidPayload, { reason: "unsupported_type", type }));
+  }
+  if (check?.(payload) !== true) {
+    return err(ruleError(ErrorCodes.table.invalidPayload, { reason: "schema", type }));
+  }
   if (type === "play_card") {
-    if (!check_play_card(payload)) {
-      return err(ruleError(ErrorCodes.table.invalidPayload, { reason: "schema", type }));
-    }
-    return ok({ type: "play_card", card: (payload as unknown as PlayCard).card as Card });
+    return ok({ type: "play_card", card: payload["card"] as Card });
   }
-  if (type === "take_hand") {
-    if (!check_take_hand(payload)) {
-      return err(ruleError(ErrorCodes.table.invalidPayload, { reason: "schema", type }));
-    }
-    return ok({ type: "take_hand" });
-  }
-  return err(ruleError(ErrorCodes.table.invalidPayload, { reason: "unsupported_type", type }));
+  return ok({ type: "take_hand" });
 }
 
 /** Thulla at the table core: moves in, events out, the legal mask per turn, the seed reveal. */

@@ -1,4 +1,4 @@
-import type { RulesSelection } from "@hulla/protocol/generated";
+import type { Check, RulesSelection } from "@hulla/protocol/generated";
 import type { GameId, GameModule, RoundResult, SeriesState } from "@hulla/rules-engine";
 import type { Result, Rng, RuleError, SeatIndex } from "@hulla/shared-ts";
 
@@ -73,7 +73,12 @@ export interface GameHost<S, M, V, E, R> {
   readonly module: GameModule<S, M, V, E, R>;
   resolveRules(selection: RulesSelection, mode: TableMode): Result<R, RuleError>;
   isMoveType(type: string): boolean;
-  decodeMove(type: string, payload: Record<string, unknown>): Result<M, RuleError>;
+  /** `check` is the generated validator for `type`; a game applies it before reading fields. */
+  decodeMove(
+    type: string,
+    payload: Record<string, unknown>,
+    check: Check | undefined,
+  ): Result<M, RuleError>;
   roundStartEvents(state: S): readonly E[];
   encodeEvents(ctx: EncodeContext<S>, events: readonly E[]): readonly GameMessage[];
   turnStart(

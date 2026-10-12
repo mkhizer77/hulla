@@ -32,20 +32,44 @@ export function generateChecks(
   for (const entry of opcodes) {
     mapping[`check_${entry.type}`] = entryRef(entry);
   }
-  const code = standaloneCode(ajv, mapping);
-  const table = opcodes.map((entry) => `  ${entry.type}: check_${entry.type},`);
+  // Nakama freezes the global object after InitModule, so the validators (which write their
+  // `errors` property on every call) are created by a factory at call time, never at load time.
+  const code = standaloneCode(ajv, mapping)
+    .split("\n")
+    .map((line) => (line.startsWith("export const ") ? line.slice("export ".length) : line))
+    .join("\n");
+  const table = opcodes.map((entry) => `      ${entry.type}: check_${entry.type},`);
   return [
     BANNER,
     "// @ts-nocheck",
     "/* eslint-disable */",
-    code,
     "",
-    "/** `true` when the value matches the message type's schema; the value is left untouched. */",
+    "/** `true` when the value matches the schema; the value is left untouched. */",
     "export type Check = (data: unknown) => boolean;",
     "",
-    "export const payloadChecks: Readonly<Record<string, Check>> = {",
+    "export interface Checks {",
+    "  readonly envelope: Check;",
+    "  readonly rulesSelection: Check;",
+    "  readonly thullaView: Check;",
+    "  /** One check per message type in the opcode table. */",
+    "  readonly payload: Readonly<Record<string, Check>>;",
+    "}",
+    "",
+    "/**",
+    " * Builds the validators. Call it where they are used (per match or per RPC call): Nakama's",
+    " * runtime freezes everything reachable from the global object after InitModule (ADR-0022).",
+    " */",
+    "export function createChecks(): Checks {",
+    code,
+    "  return {",
+    "    envelope: check_envelope,",
+    "    rulesSelection: check_rules_selection,",
+    "    thullaView: check_thulla_view,",
+    "    payload: {",
     ...table,
-    "};",
+    "    },",
+    "  };",
+    "}",
     "",
   ].join("\n");
 }

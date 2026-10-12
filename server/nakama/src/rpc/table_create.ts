@@ -1,4 +1,4 @@
-import { check_rules_selection } from "@hulla/protocol/generated";
+import { createChecks } from "@hulla/protocol/generated";
 import {
   ErrorCodes,
   generateRoomCode,
@@ -59,7 +59,8 @@ export function tableCreate(deps: TableCreateDeps, payload: string): TableCreate
     return fail(ruleError(ErrorCodes.table.invalidPayload, { reason: "mode" }));
   }
   const rulesInput = input["rules"] ?? { gameId };
-  if (!check_rules_selection(rulesInput) || (rulesInput as RulesSelection).gameId !== gameId) {
+  const checks = createChecks();
+  if (!checks.rulesSelection(rulesInput) || (rulesInput as RulesSelection).gameId !== gameId) {
     return fail(ruleError(ErrorCodes.table.invalidPayload, { reason: "rules" }));
   }
   const rules = rulesInput as RulesSelection;

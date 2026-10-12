@@ -1,9 +1,4 @@
-import {
-  check_envelope,
-  check_join_table,
-  OPCODES,
-  payloadChecks,
-} from "@hulla/protocol/generated";
+import { createChecks, OPCODES } from "@hulla/protocol/generated";
 import {
   ErrorCodes,
   ruleError,
@@ -48,7 +43,7 @@ import {
 import { activeSeats, displayNameOf, spectatorCount, tableStateFor } from "./view";
 
 import type { RoundDeps } from "./round";
-import type { JoinTable, MessageEnvelope, RulesSelection } from "@hulla/protocol/generated";
+import type { Check, JoinTable, MessageEnvelope, RulesSelection } from "@hulla/protocol/generated";
 
 const PROTOCOL_MAJOR = 1;
 
@@ -124,6 +119,7 @@ export function tableCore<S, M, V, E, R>(
   deps: TableCoreDeps,
 ): TableCore<S, M> {
   const config: TableConfig = { ...DEFAULT_TABLE_CONFIG, ...deps.config };
+  const checks = createChecks();
   const round: RoundDeps<S, M, V, E, R> = { host, config, persist: deps.persist };
 
   const emitFor = (state: TableState<S, M>, now: number, batch: Batch = newBatch()): Emitter =>
@@ -265,6 +261,7 @@ export function tableCore<S, M, V, E, R>(
     presence: PresenceRecord,
     type: string,
     payload: Record<string, unknown>,
+    check: Check | undefined,
     refSeq: number,
     emit: Emitter,
     now: number,
@@ -303,7 +300,7 @@ export function tableCore<S, M, V, E, R>(
       emit.session(presence.sessionId, ack.type, ack.payload);
       return;
     }
-    const decoded = host.decodeMove(type, payload);
+    const decoded = host.decodeMove(type, payload, check);
     if (!decoded.ok) {
       const rejection = {
         type: "move_rejected",
@@ -544,7 +541,9 @@ export function tableCore<S, M, V, E, R>(
         return { accept: false, code: ErrorCodes.table.banned };
       }
       const meta = normaliseMetadata(metadata);
-      if (!check_join_table(meta)) return { accept: false, code: ErrorCodes.table.invalidPayload };
+      if (!checks.payload["join_table"]?.(meta)) {
+        return { accept: false, code: ErrorCodes.table.invalidPayload };
+      }
       const parsed = { data: meta as JoinTable };
       const own = state.seats.findIndex((slot) => slot.playerId === presence.userId);
       if (own !== -1) {
@@ -707,7 +706,7 @@ export function tableCore<S, M, V, E, R>(
           return emit.batch;
         }
       }
-      if (!check_envelope(value)) {
+      if (!checks.envelope(value)) {
         sendError(
           emit,
           sessionId,
@@ -761,12 +760,12 @@ export function tableCore<S, M, V, E, R>(
           emit.public("presence", presencePayload(presence, slot.displayName, "reconnected"));
         }
       }
+      const entry = opcodeTable[type];
+      const check = checks.payload[type];
       if (host.isMoveType(type)) {
-        handleMove(state, presence, type, payload, refSeq, emit, now);
+        handleMove(state, presence, type, payload, check, refSeq, emit, now);
         return emit.batch;
       }
-      const entry = opcodeTable[type];
-      const check = payloadChecks[type];
       if (
         entry === undefined ||
         check === undefined ||
