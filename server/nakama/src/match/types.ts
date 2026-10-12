@@ -100,6 +100,11 @@ export interface GameHost<S, M, V, E, R> {
   presentationDelayMs(events: readonly E[]): number;
   stateHash(state: S): string;
   /** Per-seat numbers for the stats card, read from the round's logged messages (GDD 10.1). */
+  /**
+   * A selection as the table keeps it: a preset's table settings merged under the explicit ones,
+   * so a selection that names a preset alone runs that preset's timer and titles (GDD 6.13).
+   */
+  normaliseRules?(selection: RulesSelection): RulesSelection;
   highlights?(
     messages: readonly LoggedMessage[],
     seatCount: number,

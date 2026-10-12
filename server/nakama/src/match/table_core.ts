@@ -166,6 +166,9 @@ export function tableCore<S, M, V, E, R>(
     }
   };
 
+  const normalised = (selection: RulesSelection): RulesSelection =>
+    host.normaliseRules?.(selection) ?? selection;
+
   const newToken = (): string =>
     deps.ids.uuid().replace(/-/g, "") + deps.ids.uuid().replace(/-/g, "");
 
@@ -471,7 +474,8 @@ export function tableCore<S, M, V, E, R>(
           reject(ruleError(ErrorCodes.table.locked, { reason: "phase" }));
           return;
         }
-        const rules = payload["rules"] as RulesSelection;
+        const input = payload["rules"] as RulesSelection;
+        const rules = host.normaliseRules?.(input) ?? input;
         if (rules.gameId !== state.gameId) {
           reject(ruleError(ErrorCodes.table.invalidPayload, { reason: "game_id" }));
           return;
@@ -673,7 +677,7 @@ export function tableCore<S, M, V, E, R>(
         phase: "lobby",
         lockedByHost: false,
         hostSeat: null,
-        rules: params.rules ?? { gameId: params.gameId },
+        rules: normalised(params.rules ?? { gameId: params.gameId }),
         seats: Array.from({ length: host.module.seats.max }, emptySlot),
         presences: {},
         admissions: {},
