@@ -2,6 +2,7 @@ import { sha256, stateFromSeed, utf8Encode, Xoshiro128StarStar } from "@hulla/sh
 
 import { nkPresenceStore, touch } from "../services/presence";
 import { bootstrapProfile, nkProfileStore } from "../services/profiles";
+import { forDay, nkProgressStore, touchLogin } from "../services/progression";
 
 /** Every sign-in path lands here: a first sign-in gets a profile and its friend code (ARCHITECTURE 8.10). */
 function bootstrap(ctx: nkruntime.Context, logger: nkruntime.Logger, nk: nkruntime.Nakama): void {
@@ -11,6 +12,15 @@ function bootstrap(ctx: nkruntime.Context, logger: nkruntime.Logger, nk: nkrunti
     touch(nkPresenceStore(nk), userId, Date.now());
   } catch (error: unknown) {
     logger.warn("presence not touched", { error: String(error) });
+  }
+  try {
+    const progress = nkProgressStore(nk);
+    const now = Date.now();
+    const before = progress.read(userId);
+    const after = touchLogin(forDay(before, now), now);
+    if (after !== before) progress.write(userId, after);
+  } catch (error: unknown) {
+    logger.warn("login streak not updated", { error: String(error) });
   }
   const store = nkProfileStore(nk, logger);
   if (store.read(userId) !== null) return;

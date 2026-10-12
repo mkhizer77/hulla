@@ -133,6 +133,11 @@ export interface MemoryNk {
   readonly online: Set<string>;
   readonly matches: Map<string, { label: string; size: number; params: Record<string, unknown> }>;
   readonly wallets: Map<string, Record<string, number>>;
+  readonly ledger: readonly {
+    userId: string;
+    changeset: Record<string, number>;
+    metadata: Record<string, unknown>;
+  }[];
   /** userId -> device ids, as `accountGetId` lists them. */
   readonly devices: Map<string, string[]>;
   readonly deleted: string[];
@@ -160,6 +165,14 @@ export function memoryNk(): MemoryNk {
     { label: string; size: number; params: Record<string, unknown> }
   >();
   const wallets = new Map<string, Record<string, number>>();
+  const ledger: {
+    id: string;
+    userId: string;
+    createTime: number;
+    updateTime: number;
+    changeset: Record<string, number>;
+    metadata: Record<string, unknown>;
+  }[] = [];
   const devices = new Map<string, string[]>();
   const deleted: string[] = [];
   const loggedOut: string[] = [];
@@ -283,11 +296,39 @@ export function memoryNk(): MemoryNk {
     sessionLogout(id: string) {
       loggedOut.push(id);
     },
-    walletUpdate(id: string, changeset: Record<string, number>) {
-      const current = { ...(wallets.get(id) ?? {}) };
-      for (const [k, v] of Object.entries(changeset)) current[k] = (current[k] ?? 0) + v;
+    walletUpdate(
+      id: string,
+      changeset: Record<string, number>,
+      metadata: Record<string, unknown> = {},
+      updateLedger = false,
+    ) {
+      const previous = { ...(wallets.get(id) ?? {}) };
+      const current = { ...previous };
+      for (const [k, v] of Object.entries(changeset)) {
+        const next = (current[k] ?? 0) + v;
+        if (next < 0) throw new Error("wallet: insufficient funds");
+        current[k] = next;
+      }
       wallets.set(id, current);
-      return { updated: current, previous: wallets.get(id) ?? {} };
+      if (updateLedger) {
+        ledger.push({
+          id: `l${String(ledger.length + 1)}`,
+          userId: id,
+          createTime: ledger.length + 1,
+          updateTime: ledger.length + 1,
+          changeset: { ...changeset },
+          metadata: { ...metadata },
+        });
+      }
+      return { userId: id, updated: current, previous };
+    },
+    walletLedgerList(id: string, limit = 100) {
+      const items = ledger
+        .filter((l) => l.userId === id)
+        .slice()
+        .reverse()
+        .slice(0, limit);
+      return { items };
     },
     friendsList(id: string, limit = 100, state?: number | null, cursor?: string) {
       const rows = [...edges(id).entries()]
@@ -372,6 +413,7 @@ export function memoryNk(): MemoryNk {
     online,
     matches,
     wallets,
+    ledger,
     devices,
     deleted,
     loggedOut,

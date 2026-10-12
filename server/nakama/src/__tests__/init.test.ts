@@ -54,6 +54,8 @@ describe("InitModule", () => {
       "admin_sanction",
       "admin_audit_list",
       "sanctions_get",
+      "wallet_get",
+      "progress_get",
     ]);
     expect([...matches.keys()]).toEqual(["thulla"]);
     expect(hooks.get("rtBefore:ChannelMessageSend")?.name).toBe("beforeChannelMessageSend");

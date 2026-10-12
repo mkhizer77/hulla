@@ -2,6 +2,7 @@ import { OPCODES } from "@hulla/protocol/generated";
 import { ErrorCodes } from "@hulla/shared-ts";
 
 import { ROUND_RESULTS_COLLECTION } from "../services/account_deletion";
+import { credit, nkLedgerPorts } from "../services/ledger";
 import {
   nkFriendIds,
   nkPresenceStore,
@@ -9,7 +10,8 @@ import {
   seatTaken,
   type PresenceStore,
 } from "../services/presence";
-import { applyRoundToStats, nkProfileStore } from "../services/profiles";
+import { applyRoundToStats, nkAreFriends, nkProfileStore } from "../services/profiles";
+import { applyReward, forDay, nkProgressStore, roundReward } from "../services/progression";
 import { isBanned, readModeration } from "../services/sanctions";
 import { nkSocialStore, recordRecentPlayers } from "../services/social";
 
@@ -72,6 +74,7 @@ export function storagePersistence(nk: nkruntime.Nakama, logger: nkruntime.Logge
         logger.warn("recent players not recorded", { error: String(error) });
       }
       const store = nkProfileStore(nk, logger);
+      const humans = record.players.filter((p): p is string => p !== null);
       record.players.forEach((playerId, seat) => {
         if (playerId === null) return;
         try {
@@ -82,6 +85,7 @@ export function storagePersistence(nk: nkruntime.Nakama, logger: nkruntime.Logge
               stats: applyRoundToStats(profile.stats, seat, record),
             });
           }
+          rewardPlayer(nk, logger, record, playerId, seat, humans);
           nk.storageWrite([
             {
               collection: ROUND_RESULTS_COLLECTION,
@@ -107,6 +111,56 @@ export function storagePersistence(nk: nkruntime.Nakama, logger: nkruntime.Logge
       });
     },
   };
+}
+
+/**
+ * XP, level-ups and coins for one seat of a completed round (GDD 12.2, 12.3), credited through
+ * the ledger with ids derived from the round so a retry pays nothing twice.
+ */
+function rewardPlayer(
+  nk: nkruntime.Nakama,
+  logger: nkruntime.Logger,
+  record: RoundRecord,
+  playerId: string,
+  seat: number,
+  humans: readonly string[],
+): void {
+  try {
+    const progressStore = nkProgressStore(nk);
+    const before = progressStore.read(playerId);
+    const current = forDay(before, record.endedTs);
+    const withFriend = humans.some(
+      (other) => other !== playerId && nkAreFriends(nk, playerId, other),
+    );
+    const reward = roundReward(record, seat, {
+      withFriend,
+      coinsToday: current.coinsToday,
+      loginStreak: current.loginStreak,
+    });
+    if (reward === null) return;
+    const applied = applyReward(current, reward, record, record.endedTs);
+    progressStore.write(playerId, applied.progress);
+    const ledger = nkLedgerPorts(nk);
+    const prefix = `${record.tableId}:${record.roundId}`;
+    credit(ledger, {
+      userId: playerId,
+      sourceId: `${prefix}:round`,
+      reason: "round",
+      coins: reward.coins,
+    });
+    for (const grant of applied.grants) {
+      credit(ledger, {
+        userId: playerId,
+        sourceId: `level:${String(grant.level)}`,
+        reason: "level_up",
+        coins: grant.coins,
+        gems: grant.gems,
+        metadata: { level: grant.level },
+      });
+    }
+  } catch (error: unknown) {
+    logger.warn("round reward not applied", { seat, error: String(error) });
+  }
 }
 
 /** The match label other services query: code, game, mode, status and seat counts. */

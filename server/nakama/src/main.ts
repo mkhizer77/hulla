@@ -33,6 +33,7 @@ import {
   rpcSanctionsGet,
 } from "./rpc/admin";
 import { rpcChatFiltersGet, rpcChatFiltersSet } from "./rpc/chat_filters";
+import { rpcProgressGet, rpcWalletGet } from "./rpc/economy";
 import { rpcHello } from "./rpc/hello";
 import {
   rpcAdminChatLogsPurge,
@@ -101,6 +102,8 @@ function InitModule(
   initializer.registerRpc("admin_sanction", rpcAdminSanction);
   initializer.registerRpc("admin_audit_list", rpcAdminAuditList);
   initializer.registerRpc("sanctions_get", rpcSanctionsGet);
+  initializer.registerRpc("wallet_get", rpcWalletGet);
+  initializer.registerRpc("progress_get", rpcProgressGet);
   initializer.registerBeforeAuthenticateDevice(beforeAuthenticateDevice);
   initializer.registerAfterAuthenticateDevice(afterAuthenticateDevice);
   initializer.registerAfterAuthenticateApple(afterAuthenticateApple);

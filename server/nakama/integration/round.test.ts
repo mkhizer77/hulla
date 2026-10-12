@@ -253,6 +253,26 @@ describe.skipIf(NAKAMA_HOST === undefined)(
         expect(e.type).not.toBe("private_draw");
       }
 
+      // Rewards landed: XP and coins per seat from the GDD tables, through the ledger (GDD 12.2, 12.3).
+      for (const c of players) {
+        const progress = await rpc<{
+          ok: boolean;
+          xp: number;
+          lastReward: { roundId: string; coins: number; xp: number } | null;
+        }>(c, "progress_get", { tzOffsetMinutes: 300 });
+        expect(progress.lastReward).toMatchObject({ roundId });
+        expect(progress.xp).toBeGreaterThanOrEqual(10);
+        const wallet = await rpc<{
+          ok: boolean;
+          balances: { coins: number };
+          ledger: { sourceId: string }[];
+        }>(c, "wallet_get", {});
+        expect(wallet.balances.coins).toBe(progress.lastReward?.coins);
+        expect(wallet.ledger.map((l) => l.sourceId)).toContain(
+          `${created.tableId}:${roundId}:round`,
+        );
+      }
+
       // The round replays from its log with the same final hash (ARCHITECTURE 8.11).
       const replayUrl = `http://${NAKAMA_HOST ?? ""}:${NAKAMA_PORT}/v2/rpc/admin_round_replay?http_key=local-only-http-key&unwrap`;
       const replayed = (await (
