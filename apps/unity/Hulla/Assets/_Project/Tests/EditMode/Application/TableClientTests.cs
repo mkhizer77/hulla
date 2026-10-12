@@ -137,6 +137,31 @@ namespace Hulla.Application.Tests
         }
 
         [Test]
+        public void QuickChatAndEmotesReachTheChatEventOnce()
+        {
+            var lines = new List<ChatLine>();
+            _client.Model.Chat += lines.Add;
+            _gateway.Deliver(Messages.TableState(5, new[] { "AS" }));
+            _gateway.Deliver(new Services.ServerMessage(MessageTypes.QuickChatSent, 6, new QuickChatSent { Seat = 2, PhraseId = "T01" }));
+            _gateway.Deliver(new Services.ServerMessage(MessageTypes.QuickChatSent, 6, new QuickChatSent { Seat = 2, PhraseId = "T01" }));
+            _gateway.Deliver(new Services.ServerMessage(MessageTypes.EmoteSent, 7, new EmoteSent { Seat = 1, EmoteId = "chai", TargetSeat = 0 }));
+            Assert.AreEqual(2, lines.Count);
+            Assert.AreEqual("T01", lines[0].PhraseId);
+            Assert.AreEqual("chai", lines[1].EmoteId);
+            Assert.AreEqual(0, lines[1].TargetSeat);
+        }
+
+        [Test]
+        public void SendingChatUsesTheWireTypes()
+        {
+            _client.SendQuickChat("T02");
+            _client.SendEmote("clap");
+            Assert.AreEqual(MessageTypes.QuickChat, _gateway.Sent[0].Type);
+            Assert.AreEqual("T02", ((QuickChat)_gateway.Sent[0].Payload).PhraseId);
+            Assert.AreEqual(MessageTypes.Emote, _gateway.Sent[1].Type);
+        }
+
+        [Test]
         public void AppliedMessagesJoinTheEventQueue()
         {
             _gateway.Deliver(Messages.TableState(5, new[] { "AS" }));

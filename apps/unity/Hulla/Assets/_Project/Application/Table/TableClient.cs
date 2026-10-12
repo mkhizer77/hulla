@@ -96,6 +96,12 @@ namespace Hulla.Application.Table
 
         public void StartRound() => Send(MessageTypes.StartRound, new StartRound());
 
+        /// <summary>The server allows one phrase and one emote per seat every few seconds and refuses the rest.</summary>
+        public void SendQuickChat(string phraseId) => Send(MessageTypes.QuickChat, new QuickChat { PhraseId = phraseId });
+
+        public void SendEmote(string emoteId, long? targetSeat = null) =>
+            Send(MessageTypes.Emote, new Emote { EmoteId = emoteId, TargetSeat = targetSeat });
+
         public void VoteRematch(bool yes) => Send(MessageTypes.VoteRematch, new VoteRematch { Yes = yes });
 
         /// <summary>Plays a card the server marked legal; returns false when it is not playable now.</summary>

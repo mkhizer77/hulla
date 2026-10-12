@@ -8,6 +8,8 @@ namespace Hulla.Presentation.TableKit
         private readonly Label _name = new Label();
         private readonly Label _count = new Label();
         private readonly Label _state = new Label();
+        private readonly Label _bubble = new Label();
+        private float _bubbleLeft;
 
         public SeatBadge()
         {
@@ -18,6 +20,31 @@ namespace Hulla.Presentation.TableKit
             Add(_name);
             Add(_count);
             Add(_state);
+            _bubble.AddToClassList("bubble");
+            _bubble.style.display = DisplayStyle.None;
+            Add(_bubble);
+        }
+
+        /// <summary>Shows a speech bubble under the badge for a few seconds.</summary>
+        public void Say(string text, float seconds)
+        {
+            _bubble.text = text;
+            _bubble.style.display = DisplayStyle.Flex;
+            _bubbleLeft = seconds;
+        }
+
+        public void Tick(float deltaSeconds)
+        {
+            if (_bubbleLeft <= 0f)
+            {
+                return;
+            }
+
+            _bubbleLeft -= deltaSeconds;
+            if (_bubbleLeft <= 0f)
+            {
+                _bubble.style.display = DisplayStyle.None;
+            }
         }
 
         public void Show(string name, long cards, bool turn, string state)

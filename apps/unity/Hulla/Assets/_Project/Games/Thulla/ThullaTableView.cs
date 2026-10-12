@@ -35,13 +35,21 @@ namespace Hulla.Games.Thulla
         private readonly Button _playAgain;
         private readonly Label _resultStatus;
         private readonly List<SeatBadge> _badges = new List<SeatBadge>();
+        private readonly IChatCatalog _chat;
+        private readonly VisualElement _chatPanel;
+        private readonly Label _mySay;
+        private float _mySayLeft;
         private float _toastLeft;
         private long _shownSeconds = -1;
         private bool _voted;
 
-        public ThullaTableView(VisualElement root, TableClient client, Func<long> nowMs, Action leave)
+        /// <summary>How long a phrase or emote stays on screen.</summary>
+        private const float SaySeconds = 3f;
+
+        public ThullaTableView(VisualElement root, TableClient client, IChatCatalog chat, Func<long> nowMs, Action leave)
         {
             _client = client;
+            _chat = chat;
             _nowMs = nowMs;
             _opponents = root.Q<VisualElement>("opponents");
             _pile = root.Q<VisualElement>("pile");
@@ -62,7 +70,17 @@ namespace Hulla.Games.Thulla
             var leaveButton = root.Q<Button>("leave");
             leaveButton.text = UiText.Leave;
             leaveButton.clicked += leave;
+            _mySay = root.Q<Label>("my-say");
+            _chatPanel = root.Q<VisualElement>("chat-panel");
+            var chatButton = root.Q<Button>("chat");
+            chatButton.text = UiText.Chat;
+            chatButton.clicked += () => SetChatOpen(_chatPanel.style.display != DisplayStyle.Flex);
+            var closeChat = root.Q<Button>("chat-close");
+            closeChat.text = UiText.Close;
+            closeChat.clicked += () => SetChatOpen(false);
+            BuildChatPanel(root.Q<VisualElement>("chat-phrases"), root.Q<VisualElement>("chat-emotes"));
             _client.Model.Changed += Refresh;
+            _client.Model.Chat += OnChat;
             Refresh();
         }
 
@@ -90,6 +108,20 @@ namespace Hulla.Games.Thulla
         /// <summary>Per frame: the toast fade and the turn countdown, redrawn only when the second changes.</summary>
         public void Tick(float deltaSeconds)
         {
+            foreach (var badge in _badges)
+            {
+                badge.Tick(deltaSeconds);
+            }
+
+            if (_mySayLeft > 0f)
+            {
+                _mySayLeft -= deltaSeconds;
+                if (_mySayLeft <= 0f)
+                {
+                    _mySay.style.display = DisplayStyle.None;
+                }
+            }
+
             if (_toastLeft > 0f)
             {
                 _toastLeft -= deltaSeconds;
@@ -113,7 +145,66 @@ namespace Hulla.Games.Thulla
             }
         }
 
-        public void Dispose() => _client.Model.Changed -= Refresh;
+        public void Dispose()
+        {
+            _client.Model.Changed -= Refresh;
+            _client.Model.Chat -= OnChat;
+        }
+
+        private void BuildChatPanel(VisualElement phrases, VisualElement emotes)
+        {
+            foreach (var phrase in _chat.Phrases)
+            {
+                var id = phrase.Id;
+                var button = new Button(() => Say(() => _client.SendQuickChat(id))) { text = phrase.Text, tooltip = phrase.Translation };
+                button.AddToClassList("chip");
+                phrases.Add(button);
+            }
+
+            foreach (var emote in _chat.Emotes)
+            {
+                var id = emote;
+                var button = new Button(() => Say(() => _client.SendEmote(id))) { text = UiText.EmoteLabel(id) };
+                button.AddToClassList("chip");
+                button.AddToClassList("chip--emote");
+                emotes.Add(button);
+            }
+        }
+
+        private void Say(Action send)
+        {
+            send();
+            SetChatOpen(false);
+        }
+
+        private void SetChatOpen(bool open) => _chatPanel.style.display = open ? DisplayStyle.Flex : DisplayStyle.None;
+
+        private void OnChat(ChatLine line)
+        {
+            var text = line.PhraseId != null
+                ? _chat.TextFor(line.PhraseId) ?? line.PhraseId
+                : UiText.EmoteLabel(line.EmoteId ?? "") + (line.TargetSeat == null ? "" : " → " + NameOf(line.TargetSeat.Value));
+            var model = _client.Model;
+            if (line.Seat == model.MySeat)
+            {
+                _mySay.text = text;
+                _mySay.style.display = DisplayStyle.Flex;
+                _mySayLeft = SaySeconds;
+                return;
+            }
+
+            var count = model.SeatCount;
+            if (count == 0)
+            {
+                return;
+            }
+
+            var index = (int)((line.Seat - (model.MySeat ?? 0) - 1 + count) % count);
+            if (index >= 0 && index < _badges.Count)
+            {
+                _badges[index].Say(text, SaySeconds);
+            }
+        }
 
         private void VoteAgain()
         {

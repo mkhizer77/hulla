@@ -42,6 +42,8 @@ namespace Hulla.Integration.Tests
             public int Plays { get; set; }
 
             public bool SawRoundStart { get; set; }
+
+            public List<ChatLine> Chat { get; } = new List<ChatLine>();
         }
 
         private readonly List<Player> _players = new List<Player>();
@@ -111,6 +113,7 @@ namespace Hulla.Integration.Tests
                 player.Client = client;
                 var captured = player;
                 client.Model.Changed += () => Act(captured);
+                client.Model.Chat += captured.Chat.Add;
                 var entered = await player.Gateway.EnterAsync(ticket.Value, default);
                 Assert.IsTrue(entered.IsOk, player.Name + " enter: " + entered.Error);
             }
@@ -123,6 +126,17 @@ namespace Hulla.Integration.Tests
             }
 
             await WaitFor(() => AllReady(_players[0]), 20f, "everyone ready");
+            if (!dropOne)
+            {
+                _players[1].Client!.SendQuickChat("T01");
+                _players[2].Client!.SendEmote("chai", _players[0].Client!.Model.MySeat);
+                await WaitFor(() => _players.TrueForAll(pl => pl.Chat.Count >= 2), 10f, "chat reached every client");
+                var said = _players[0].Chat.Find(c => c.PhraseId != null);
+                Assert.AreEqual("T01", said.PhraseId);
+                Assert.AreEqual(_players[1].Client!.Model.MySeat, said.Seat);
+                Assert.AreEqual(_players[0].Client!.Model.MySeat, _players[0].Chat.Find(c => c.EmoteId == "chai").TargetSeat);
+            }
+
             Assert.IsTrue(_players[0].Client!.Model.IsHost);
             _players[0].Client!.StartRound();
             if (dropOne)
