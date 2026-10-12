@@ -1,5 +1,6 @@
 import { ErrorCodes, ruleError } from "@hulla/shared-ts";
 
+import { isBlockedEitherWay, nkBlockStore } from "../services/blocks";
 import { nkProfileStore } from "../services/profiles";
 import {
   addFriendByCode,
@@ -32,7 +33,7 @@ export function rpcFriendAddByCode(
   return JSON.stringify(
     addFriendByCode(
       nkSocialStore(nk),
-      nkFriendPorts(nk),
+      nkFriendPorts(nk, (userId, otherId) => isBlockedEitherWay(nkBlockStore(nk), userId, otherId)),
       ctx.userId ?? null,
       typeof code === "string" ? code : "",
     ),

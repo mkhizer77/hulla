@@ -15,6 +15,7 @@ import {
   afterAuthenticateGoogle,
 } from "./hooks/after_authenticate";
 import { beforeChannelMessageSend } from "./hooks/before_channel_message";
+import { beforeMatchmakerAdd } from "./hooks/before_matchmaker_add";
 import { matchmakerMatched } from "./hooks/matchmaker_matched";
 import {
   rpcAccountDelete,
@@ -25,6 +26,13 @@ import {
 import { rpcAccountMerge, rpcAccountMergePrepare } from "./rpc/account_merge";
 import { rpcChatFiltersGet, rpcChatFiltersSet } from "./rpc/chat_filters";
 import { rpcHello } from "./rpc/hello";
+import {
+  rpcAdminChatLogsPurge,
+  rpcBlockSet,
+  rpcBlocksGet,
+  rpcReportCreate,
+  rpcReportsList,
+} from "./rpc/moderation";
 import { rpcPresenceSet, rpcTableListFriends } from "./rpc/presence";
 import { rpcPresetsGet } from "./rpc/presets_get";
 import { rpcProfileGet, rpcProfileUpdate } from "./rpc/profile";
@@ -56,6 +64,7 @@ function InitModule(
   initializer.registerRpc("presets_get", rpcPresetsGet);
   initializer.registerRpc("voice_token", rpcVoiceToken);
   initializer.registerRtBefore("ChannelMessageSend", beforeChannelMessageSend);
+  initializer.registerRtBefore("MatchmakerAdd", beforeMatchmakerAdd);
   initializer.registerMatchmakerMatched(matchmakerMatched);
   initializer.registerRpc("profile_get", rpcProfileGet);
   initializer.registerRpc("profile_update", rpcProfileUpdate);
@@ -74,6 +83,11 @@ function InitModule(
   initializer.registerRpc("mutes_get", rpcMutesGet);
   initializer.registerRpc("chat_filters_get", rpcChatFiltersGet);
   initializer.registerRpc("chat_filters_set", rpcChatFiltersSet);
+  initializer.registerRpc("block_set", rpcBlockSet);
+  initializer.registerRpc("blocks_get", rpcBlocksGet);
+  initializer.registerRpc("report_create", rpcReportCreate);
+  initializer.registerRpc("reports_list", rpcReportsList);
+  initializer.registerRpc("admin_chat_logs_purge", rpcAdminChatLogsPurge);
   initializer.registerAfterAuthenticateDevice(afterAuthenticateDevice);
   initializer.registerAfterAuthenticateApple(afterAuthenticateApple);
   initializer.registerAfterAuthenticateGoogle(afterAuthenticateGoogle);

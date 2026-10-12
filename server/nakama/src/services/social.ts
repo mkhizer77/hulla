@@ -33,6 +33,8 @@ export interface SocialStore {
 
 export interface FriendPorts {
   friendCount(userId: string): number;
+  /** Blocked either way: no request in either direction (GDD 10.11). */
+  isBlocked?(userId: string, otherId: string): boolean;
   isFriend(userId: string, otherId: string): boolean;
   /** Sends the request, or completes the friendship when the other side already asked. */
   addFriend(userId: string, otherId: string): void;
@@ -63,6 +65,9 @@ export function addFriendByCode(
   const target = code === undefined ? null : store.userIdForFriendCode(code);
   if (target === null) return { ok: false, error: ruleError(ErrorCodes.profile.notFound) };
   if (target === userId) return { ok: false, error: ruleError(ErrorCodes.social.self) };
+  if (ports.isBlocked?.(userId, target) === true) {
+    return { ok: false, error: ruleError(ErrorCodes.social.blocked) };
+  }
   if (ports.friendCount(userId) >= FRIEND_CAP) {
     return { ok: false, error: ruleError(ErrorCodes.social.friendCap, { cap: FRIEND_CAP }) };
   }
@@ -249,8 +254,12 @@ export function nkSocialStore(nk: nkruntime.Nakama): SocialStore {
   };
 }
 
-export function nkFriendPorts(nk: nkruntime.Nakama): FriendPorts {
+export function nkFriendPorts(
+  nk: nkruntime.Nakama,
+  isBlocked?: (userId: string, otherId: string) => boolean,
+): FriendPorts {
   return {
+    ...(isBlocked === undefined ? {} : { isBlocked }),
     friendCount(userId) {
       let count = 0;
       let cursor: string | undefined;

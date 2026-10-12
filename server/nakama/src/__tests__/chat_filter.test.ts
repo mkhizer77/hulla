@@ -74,6 +74,7 @@ describe("the profanity filter (GDD 11.1)", () => {
         matcher,
         strictness: "standard",
         guestLocked: false,
+        muted: false,
       },
     );
     expect(standard).toEqual({
@@ -86,6 +87,7 @@ describe("the profanity filter (GDD 11.1)", () => {
         matcher,
         strictness: "family",
         guestLocked: false,
+        muted: false,
       }),
     ).toEqual({ ok: false, code: "content.filtered" });
     expect(
@@ -93,6 +95,7 @@ describe("the profanity filter (GDD 11.1)", () => {
         matcher,
         strictness: "family",
         guestLocked: false,
+        muted: false,
       }),
     ).toMatchObject({ ok: true, masked: 0 });
     expect(
@@ -100,8 +103,17 @@ describe("the profanity filter (GDD 11.1)", () => {
         matcher,
         strictness: "standard",
         guestLocked: true,
+        muted: false,
       }),
     ).toEqual({ ok: false, code: "auth.not_linked" });
+    expect(
+      checkChatMessage(rateStore(), "u1", JSON.stringify({ text: "salaam" }), 1_000, {
+        matcher,
+        strictness: "standard",
+        guestLocked: false,
+        muted: true,
+      }),
+    ).toEqual({ ok: false, code: "social.muted" });
   });
 
   it("recognises guests, rooms and well-formed lists", () => {
