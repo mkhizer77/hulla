@@ -1,6 +1,6 @@
 import type { Check, RulesSelection } from "@hulla/protocol/generated";
 import type { GameId, GameModule, RoundResult, SeriesState } from "@hulla/rules-engine";
-import type { Result, Rng, RuleError, SeatIndex } from "@hulla/shared-ts";
+import type { Result, RuleError, SeatIndex, Xoshiro128State } from "@hulla/shared-ts";
 
 export type TableMode = "private" | "public" | "ranked";
 
@@ -162,7 +162,8 @@ export interface RoundRuntime<S, M> {
   readonly roundId: string;
   readonly index: number;
   readonly seedHex: string;
-  readonly rng: Rng;
+  /** The PRNG words after the deal and every draw; rebuilt into an Rng per use (ADR-0009). */
+  rngState: Xoshiro128State;
   readonly seatCount: number;
   state: S;
   phase: string;
@@ -176,6 +177,7 @@ export interface RoundRuntime<S, M> {
   result: RoundResult | null;
 }
 
+/** Plain data only: Nakama exports it to Go and rebuilds it between callbacks. */
 export interface TableState<S, M> {
   readonly tableId: string;
   readonly code: string;
@@ -186,8 +188,8 @@ export interface TableState<S, M> {
   hostSeat: SeatIndex | null;
   rules: RulesSelection;
   seats: SeatSlot[];
-  presences: Map<string, PresenceRecord>;
-  admissions: Map<string, Admission>;
+  presences: Record<string, PresenceRecord>;
+  admissions: Record<string, Admission>;
   /** User ids that may not rejoin (GDD 9.9). */
   kicked: string[];
   series: SeriesState | null;
@@ -224,6 +226,18 @@ export interface Batch {
   readonly outbound: Outbound[];
   readonly kicks: string[];
   end: boolean;
+}
+
+/**
+ * A copy of the record without one key. Nakama hands the match state back as plain data after
+ * every callback, so the state holds records, never Maps, and nothing is deleted in place.
+ */
+export function without<T>(record: Readonly<Record<string, T>>, key: string): Record<string, T> {
+  const out: Record<string, T> = {};
+  for (const [k, v] of Object.entries(record)) {
+    if (k !== key) out[k] = v;
+  }
+  return out;
 }
 
 export function newBatch(): Batch {

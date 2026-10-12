@@ -32,7 +32,7 @@ describe("lobby: joining and seats", () => {
     const h = harness({ config: { maxSpectators: 1 } });
     for (let i = 0; i < 4; i += 1) h.join(presence(i));
     expect(h.core.joinAttempt(h.state, presence(4), {}, h.now)).toEqual({ accept: true });
-    expect(h.state.admissions.get("s4")).toEqual({ kind: "spectator" });
+    expect(h.state.admissions["s4"]).toEqual({ kind: "spectator" });
     h.core.join(h.state, [presence(4)], h.now);
     expect(h.core.joinAttempt(h.state, presence(5), {}, h.now)).toEqual({
       accept: false,
@@ -44,7 +44,7 @@ describe("lobby: joining and seats", () => {
     const h = harness();
     h.join(presence(0));
     const batch = h.join(presence(1), { asSpectator: "true" });
-    expect(h.state.presences.get("s1")?.seat).toBeNull();
+    expect(h.state.presences["s1"]?.seat).toBeNull();
     const state = payloadOf<TableStateFor<ToyView>>(sentTo(batch, "s1")[0]);
     expect(state.spectatorCount).toBe(1);
     expect(state.resumeToken).toBeNull();

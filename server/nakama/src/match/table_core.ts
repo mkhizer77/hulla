@@ -30,6 +30,7 @@ import {
 import {
   DEFAULT_TABLE_CONFIG,
   newBatch,
+  without,
   type Batch,
   type CreateTableParams,
   type GameHost,
@@ -131,7 +132,7 @@ export function tableCore<S, M, V, E, R>(
     );
 
   const broadcastTableState = (state: TableState<S, M>, emit: Emitter): void => {
-    for (const presence of state.presences.values()) {
+    for (const presence of Object.values(state.presences)) {
       emit.session(presence.sessionId, "table_state", tableStateFor(state, host, presence));
     }
   };
@@ -223,7 +224,7 @@ export function tableCore<S, M, V, E, R>(
           slot.ready = true;
           continue;
         }
-        const presence = slot.sessionId === null ? undefined : state.presences.get(slot.sessionId);
+        const presence = slot.sessionId === null ? undefined : state.presences[slot.sessionId];
         freeSlot(state, seat);
         if (presence !== undefined) {
           presence.seat = null;
@@ -343,7 +344,7 @@ export function tableCore<S, M, V, E, R>(
         return;
       }
       case "leave_table": {
-        state.presences.delete(presence.sessionId);
+        state.presences = without(state.presences, presence.sessionId);
         emit.batch.kicks.push(presence.sessionId);
         if (seat === null || slot === undefined) {
           emit.public("presence", presencePayload(presence, null, "left"));
@@ -362,7 +363,7 @@ export function tableCore<S, M, V, E, R>(
           migrateHost(state);
           hostChanged(state, emit, "host_left");
         }
-        if (state.presences.size === 0) state.emptySinceTs = now;
+        if (Object.keys(state.presences).length === 0) state.emptySinceTs = now;
         broadcastTableState(state, emit);
         return;
       }
@@ -421,9 +422,9 @@ export function tableCore<S, M, V, E, R>(
         }
         state.kicked.push(victim.playerId);
         const victimPresence =
-          victim.sessionId === null ? undefined : state.presences.get(victim.sessionId);
+          victim.sessionId === null ? undefined : state.presences[victim.sessionId];
         if (victimPresence !== undefined) {
-          state.presences.delete(victimPresence.sessionId);
+          state.presences = without(state.presences, victimPresence.sessionId);
           emit.batch.kicks.push(victimPresence.sessionId);
         }
         const kickedPresence: PresenceRecord = {
@@ -520,8 +521,8 @@ export function tableCore<S, M, V, E, R>(
         hostSeat: null,
         rules: params.rules ?? { gameId: params.gameId },
         seats: Array.from({ length: host.module.seats.max }, emptySlot),
-        presences: new Map(),
-        admissions: new Map(),
+        presences: {},
+        admissions: {},
         kicked: [],
         series: null,
         round: null,
@@ -547,10 +548,10 @@ export function tableCore<S, M, V, E, R>(
       const parsed = { data: meta as JoinTable };
       const own = state.seats.findIndex((slot) => slot.playerId === presence.userId);
       if (own !== -1) {
-        state.admissions.set(presence.sessionId, { kind: "seat", seat: own, reattach: true });
+        state.admissions[presence.sessionId] = { kind: "seat", seat: own, reattach: true };
         return { accept: true };
       }
-      const pending = [...state.admissions.values()];
+      const pending = Object.values(state.admissions);
       const reserved = new Set(pending.flatMap((a) => (a.kind === "seat" ? [a.seat] : [])));
       const free = state.seats.findIndex(
         (slot, index) => slot.playerId === null && !reserved.has(index),
@@ -558,14 +559,14 @@ export function tableCore<S, M, V, E, R>(
       const wantsSeat =
         parsed.data.asSpectator !== true && state.phase !== "inRound" && !state.lockedByHost;
       if (wantsSeat && free !== -1) {
-        state.admissions.set(presence.sessionId, { kind: "seat", seat: free, reattach: false });
+        state.admissions[presence.sessionId] = { kind: "seat", seat: free, reattach: false };
         return { accept: true };
       }
       const spectatorsAllowed = state.rules.settings?.spectators !== false;
       const spectators =
         spectatorCount(state.presences) + pending.filter((a) => a.kind === "spectator").length;
       if (spectatorsAllowed && spectators < config.maxSpectators) {
-        state.admissions.set(presence.sessionId, { kind: "spectator" });
+        state.admissions[presence.sessionId] = { kind: "spectator" };
         return { accept: true };
       }
       return { accept: false, code: free === -1 ? ErrorCodes.table.full : ErrorCodes.table.locked };
@@ -574,8 +575,8 @@ export function tableCore<S, M, V, E, R>(
     join(state, presences, now) {
       const emit = emitFor(state, now);
       for (const info of presences) {
-        const admission = state.admissions.get(info.sessionId) ?? { kind: "spectator" };
-        state.admissions.delete(info.sessionId);
+        const admission = state.admissions[info.sessionId] ?? { kind: "spectator" };
+        state.admissions = without(state.admissions, info.sessionId);
         const record: PresenceRecord = { ...info, seat: null };
         const displayName = displayNameOf(info.username);
         let status: "joined" | "reconnected" | "spectating" = "spectating";
@@ -583,10 +584,9 @@ export function tableCore<S, M, V, E, R>(
           const slot = state.seats[admission.seat];
           if (slot === undefined) continue;
           if (admission.reattach) {
-            const previous =
-              slot.sessionId === null ? undefined : state.presences.get(slot.sessionId);
+            const previous = slot.sessionId === null ? undefined : state.presences[slot.sessionId];
             if (previous !== undefined && previous.sessionId !== info.sessionId) {
-              state.presences.delete(previous.sessionId);
+              state.presences = without(state.presences, previous.sessionId);
               emit.batch.kicks.push(previous.sessionId);
             }
             status = "reconnected";
@@ -607,7 +607,7 @@ export function tableCore<S, M, V, E, R>(
           slot.resumeToken = newToken();
           record.seat = admission.seat;
         }
-        state.presences.set(info.sessionId, record);
+        state.presences[info.sessionId] = record;
         state.emptySinceTs = null;
         emit.session(info.sessionId, "table_state", tableStateFor(state, host, record));
         emit.public("presence", presencePayload(record, displayName, status));
@@ -639,9 +639,9 @@ export function tableCore<S, M, V, E, R>(
     leave(state, presences, now) {
       const emit = emitFor(state, now);
       for (const info of presences) {
-        const record = state.presences.get(info.sessionId);
+        const record = state.presences[info.sessionId];
         if (record === undefined) continue;
-        state.presences.delete(info.sessionId);
+        state.presences = without(state.presences, info.sessionId);
         const seat = record.seat;
         const slot = seat === null ? undefined : state.seats[seat];
         if (seat === null || slot === undefined) {
@@ -684,13 +684,13 @@ export function tableCore<S, M, V, E, R>(
           broadcastTableState(state, emit);
         }
       }
-      if (state.presences.size === 0) state.emptySinceTs = now;
+      if (Object.keys(state.presences).length === 0) state.emptySinceTs = now;
       return emit.batch;
     },
 
     inbound(state, sessionId, raw, now, expectedType) {
       const emit = emitFor(state, now);
-      const presence = state.presences.get(sessionId);
+      const presence = state.presences[sessionId];
       if (presence === undefined || state.phase === "closing") return emit.batch;
       let value: unknown = raw;
       if (typeof raw === "string") {
@@ -813,7 +813,7 @@ export function tableCore<S, M, V, E, R>(
         for (const seat of escalated) {
           const slot = state.seats[seat];
           const sessionId = slot?.sessionId ?? null;
-          const presence = sessionId === null ? undefined : state.presences.get(sessionId);
+          const presence = sessionId === null ? undefined : state.presences[sessionId];
           if (presence !== undefined && slot !== undefined) {
             emit.public("presence", presencePayload(presence, slot.displayName, "auto_play"));
           }
@@ -830,7 +830,7 @@ export function tableCore<S, M, V, E, R>(
       if (
         !closing(state) &&
         state.emptySinceTs !== null &&
-        state.presences.size === 0 &&
+        Object.keys(state.presences).length === 0 &&
         now - state.emptySinceTs >= config.emptyTtlMs[state.mode]
       ) {
         closeTable(state, emit, "empty", now);

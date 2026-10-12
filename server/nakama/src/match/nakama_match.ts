@@ -75,7 +75,7 @@ function presenceFor<S, M>(
 ): nkruntime.Presence | null {
   const match = known.find((p) => p.sessionId === sessionId);
   if (match !== undefined) return match;
-  const record = state.presences.get(sessionId);
+  const record = state.presences[sessionId];
   if (record === undefined) return null;
   return {
     sessionId: record.sessionId,

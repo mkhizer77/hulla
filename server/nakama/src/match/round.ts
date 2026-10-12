@@ -68,7 +68,7 @@ export function compactSeats<S, M>(state: TableState<S, M>): SeatIndex[] {
       rematch: null,
     })),
   ];
-  for (const presence of state.presences.values()) {
+  for (const presence of Object.values(state.presences)) {
     presence.seat = presence.seat === null ? null : order.indexOf(presence.seat);
     if (presence.seat === -1) presence.seat = null;
   }
@@ -102,7 +102,7 @@ export function startRound<S, M, V, E, R>(
     roundId: `r_${String(state.roundsStarted)}`,
     index: state.roundsStarted,
     seedHex: Array.from(seed, (b) => b.toString(16).padStart(2, "0")).join(""),
-    rng,
+    rngState: rng.state(),
     seatCount,
     state: created.value,
     phase: deps.host.module.currentPhase(created.value),
@@ -262,7 +262,9 @@ export function applyRoundMove<S, M, V, E, R>(
 ): MoveOutcome {
   const round = state.round;
   if (round === null) return { ok: false, error: ruleError(ErrorCodes.table.notInRound) };
-  const applied = deps.host.module.applyMove(round.state, seat, move, round.rng);
+  const rng = Xoshiro128StarStar.fromState(round.rngState);
+  const applied = deps.host.module.applyMove(round.state, seat, move, rng);
+  round.rngState = rng.state();
   if (!applied.ok) {
     if (clientSeq !== null) {
       const ack = {
