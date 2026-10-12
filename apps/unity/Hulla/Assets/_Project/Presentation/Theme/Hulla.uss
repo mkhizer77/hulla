@@ -354,3 +354,15 @@
 .results__order {
     margin: var(--space-2) 0;
 }
+
+.banner {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    padding: var(--space-1);
+    background-color: var(--state-thulla);
+    color: var(--ink-ivory);
+    -unity-text-align: middle-center;
+    -unity-font-style: bold;
+}

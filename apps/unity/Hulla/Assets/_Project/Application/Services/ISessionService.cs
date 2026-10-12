@@ -10,5 +10,8 @@ namespace Hulla.Application.Services
         PlayerSession? Current { get; }
 
         Awaitable<Result<PlayerSession>> SignInAsync(string displayName, CancellationToken cancellation);
+
+        /// <summary>Opens a fresh socket for the signed-in player, refreshing the session if it expired.</summary>
+        Awaitable<Result<bool>> ReconnectAsync(CancellationToken cancellation);
     }
 }

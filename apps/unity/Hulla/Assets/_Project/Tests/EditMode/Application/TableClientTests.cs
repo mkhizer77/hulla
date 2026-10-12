@@ -63,6 +63,17 @@ namespace Hulla.Application.Tests
         }
 
         [Test]
+        public void ABaselineDropsHeldMessagesItAlreadyCovers()
+        {
+            _gateway.Deliver(Messages.TableState(5, new[] { "AS", "2S" }));
+            _gateway.Deliver(Messages.TurnStart(7, 0, "AS"));
+            _gateway.Deliver(Messages.TableState(9, new[] { "2S" }));
+            _gateway.Deliver(Messages.MoveApplied(10, 1, "KS"));
+            Assert.IsFalse(_client.Model.IsLegal("AS"));
+            Assert.IsFalse(_client.Model.MyTurn);
+        }
+
+        [Test]
         public void ASeatMessageWaitsUntilThePublicStreamReachesItsSeq()
         {
             _gateway.Deliver(Messages.TableState(5, new[] { "AS", "2S" }));
