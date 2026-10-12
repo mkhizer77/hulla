@@ -83,6 +83,70 @@ namespace Hulla.Presentation.Text
         }
         public const string Server = "Server (development builds)";
 
-        public static string Error(string code) => "Something went wrong (" + code + ")";
+        public const string Profile = "Profile";
+        public const string Friends = "Friends";
+        public const string Back = "Back";
+        public const string Save = "Save";
+        public const string Saved = "Saved";
+        public const string Copy = "Copy";
+        public const string Copied = "Copied";
+        public const string DisplayNameLabel = "Name";
+        public const string HandleLabel = "Handle (letters, numbers, _)";
+        public const string BioLabel = "About you (60 characters)";
+        public const string FriendCodeLabel = "Your friend code";
+        public const string StatsLine = "{0} rounds · {1} escapes · {2} times Bhabhi · {3} thullas given";
+        public const string AddByCode = "Add a friend by code";
+        public const string Add = "Add";
+        public const string RequestSent = "Request sent";
+        public const string Requests = "Requests";
+        public const string SentRequests = "Waiting for them";
+        public const string FriendsList = "Friends";
+        public const string Recent = "Played with recently";
+        public const string BlockedList = "Blocked";
+        public const string Accept = "Accept";
+        public const string Decline = "Decline";
+        public const string CancelRequest = "Cancel";
+        public const string Remove = "Remove";
+        public const string Block = "Block";
+        public const string Unblock = "Unblock";
+        public const string AddFriend = "Add friend";
+        public const string Favourite = "★";
+        public const string NotFavourite = "☆";
+        public const string Online = "Online";
+        public const string Offline = "Offline";
+        public const string RoundsTogether = "{0} rounds together";
+        public const string NoFriendsYet = "No friends yet. Share your code or add theirs.";
+
+        /// <summary>Plain words for the server's error codes; anything else falls back to the code.</summary>
+        public static string Error(string code)
+        {
+            switch (code)
+            {
+                case "profile.not_found":
+                    return "No player has that code.";
+                case "social.self":
+                    return "That's your own code.";
+                case "social.friend_cap":
+                    return "You have the most friends allowed (500).";
+                case "social.favourite_cap":
+                    return "Ten favourites at most.";
+                case "social.not_friends":
+                    return "Only friends can be favourites.";
+                case "profile.handle_taken":
+                    return "That handle is taken.";
+                case "profile.invalid_handle":
+                    return "Handles are 3 to 16 letters, numbers or _.";
+                case "profile.invalid_name":
+                    return "That name can't be used.";
+                case "profile.name_change_locked":
+                    return "You changed your name recently; try again later.";
+                case "session.unavailable":
+                case "social.unavailable":
+                case "table.unavailable":
+                    return "Can't reach the server. Check the connection and try again.";
+                default:
+                    return "Something went wrong (" + code + ")";
+            }
+        }
     }
 }

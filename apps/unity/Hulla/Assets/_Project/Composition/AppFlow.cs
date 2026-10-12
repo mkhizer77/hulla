@@ -5,7 +5,9 @@ using Hulla.Domain;
 using Hulla.Games.Thulla;
 using Hulla.Presentation.Navigation;
 using Hulla.Presentation.Screens.Home;
+using Hulla.Presentation.Screens.Friends;
 using Hulla.Presentation.Screens.Lobby;
+using Hulla.Presentation.Screens.Profile;
 using Hulla.Presentation.Screens.QuickPlay;
 using Hulla.Presentation.Screens.Rulebook;
 using Hulla.Presentation.Screens.Settings;
@@ -87,7 +89,7 @@ namespace Hulla.Composition
             _screen = Screen.Home;
             var root = _shell.Show(_shell.Catalog.Home);
             var server = Debug.isDebugBuild ? _app.Config.HostAndPort : null;
-            _view = new HomeView(root, _app.Home, server, OnCreate, OnJoin, OnQuickPlay, OpenSettings);
+            _view = new HomeView(root, _app.Home, server, OnCreate, OnJoin, OnQuickPlay, OpenSettings, OnFriends, OnProfile);
         }
 
         private async void OnCreate(string name, string? server)
@@ -117,6 +119,46 @@ namespace Hulla.Composition
             _screen = Screen.QuickPlay;
             _view = new QuickPlayView(_shell.Show(_shell.Catalog.QuickPlay), _app.QuickPlay, CancelQuickPlay);
             await _app.QuickPlay.StartAsync(seats, _app.Lifetime);
+        }
+
+        private async void OnFriends(string name, string? server)
+        {
+            if (!await SignedInAsync(name, server))
+            {
+                return;
+            }
+
+            CloseView();
+            _screen = Screen.Home;
+            var friends = _app.Friends;
+            var lifetime = _app.Lifetime;
+            _view = new FriendsView(_shell.Show(_shell.Catalog.Friends), friends, ShowHome, new FriendsView.Actions(
+                code => _ = friends.AddByCodeAsync(code, lifetime),
+                id => _ = friends.AddAsync(id, lifetime),
+                id => _ = friends.RemoveAsync(id, lifetime),
+                id => _ = friends.BlockAsync(id, lifetime),
+                entry => _ = friends.ToggleFavouriteAsync(entry, lifetime)));
+            await friends.RefreshAsync(lifetime);
+        }
+
+        private async void OnProfile(string name, string? server)
+        {
+            if (!await SignedInAsync(name, server))
+            {
+                return;
+            }
+
+            CloseView();
+            _screen = Screen.Home;
+            var profile = _app.Profile;
+            _view = new ProfileView(_shell.Show(_shell.Catalog.Profile), profile, ShowHome, (display, handle, bio) => _ = profile.SaveAsync(display, handle, bio, _app.Lifetime));
+            await profile.RefreshAsync(_app.Lifetime);
+        }
+
+        private async Awaitable<bool> SignedInAsync(string name, string? server)
+        {
+            ApplyServer(server);
+            return (await _app.Home.SignInAsync(name, _app.Lifetime)).IsOk;
         }
 
         private async void CancelQuickPlay()

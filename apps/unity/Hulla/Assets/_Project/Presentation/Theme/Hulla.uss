@@ -712,3 +712,20 @@
     font-size: var(--font-small);
     margin-bottom: 4px;
 }
+
+.friend-row {
+    flex-wrap: wrap;
+}
+
+.friend-row > .chip {
+    margin: 4px;
+}
+
+.home__links {
+    flex-direction: row;
+    justify-content: center;
+}
+
+.home__links > .button {
+    margin: 0 var(--space-1);
+}

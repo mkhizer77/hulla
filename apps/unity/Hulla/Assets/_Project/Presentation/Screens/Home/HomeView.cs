@@ -20,7 +20,7 @@ namespace Hulla.Presentation.Screens.Home
         private readonly Button _quick;
         private int _seats = 4;
 
-        public HomeView(VisualElement root, HomeViewModel model, string? server, Action<string, string?> create, Action<string, string, string?> join, Action<string, int, string?> quickPlay, Action? openSettings = null)
+        public HomeView(VisualElement root, HomeViewModel model, string? server, Action<string, string?> create, Action<string, string, string?> join, Action<string, int, string?> quickPlay, Action? openSettings = null, Action<string, string?>? openFriends = null, Action<string, string?>? openProfile = null)
         {
             var settings = root.Q<Button>("settings");
             settings.text = UiText.Settings;
@@ -70,6 +70,12 @@ namespace Hulla.Presentation.Screens.Home
             _quick = root.Q<Button>("quick");
             _quick.text = UiText.QuickPlay;
             _quick.clicked += () => quickPlay(_name.value, _seats, Server());
+            var friends = root.Q<Button>("friends");
+            friends.text = UiText.Friends;
+            friends.clicked += () => openFriends?.Invoke(_name.value, Server());
+            var profile = root.Q<Button>("profile");
+            profile.text = UiText.Profile;
+            profile.clicked += () => openProfile?.Invoke(_name.value, Server());
             _model.Changed += Refresh;
             Refresh();
         }
