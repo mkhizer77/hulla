@@ -34,11 +34,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: pnpm/action-setup@v4
-        with:
-          version: 9
       - uses: actions/setup-node@v4
         with:
-          node-version: 22
+          node-version-file: .node-version
           cache: pnpm
       - run: pnpm install --frozen-lockfile
       - run: pnpm --filter ./server/nakama build
@@ -61,14 +59,20 @@ jobs:
     runs-on: ubuntu-latest
     environment: phase0
     steps:
-      - name: Pull and restart over SSH
+      # The box's compose file reads NAKAMA_IMAGE from /opt/hulla/.env; deploying by commit SHA
+      # makes rollback a one-line change of that tag (docs/runbooks/github-and-ci-setup.md).
+      - name: Pull the tagged image and restart over SSH
         uses: appleboy/ssh-action@v1
+        env:
+          IMAGE: ghcr.io/${{ github.repository }}/nakama:${{ github.sha }}
         with:
           host: ${{ secrets.PHASE0_HOST }}
           username: ${{ secrets.PHASE0_USER }}
           key: ${{ secrets.PHASE0_SSH_KEY }}
+          envs: IMAGE
           script: |
             cd /opt/hulla
+            grep -q '^NAKAMA_IMAGE=' .env && sed -i "s|^NAKAMA_IMAGE=.*|NAKAMA_IMAGE=${IMAGE}|" .env || echo "NAKAMA_IMAGE=${IMAGE}" >> .env
             docker compose pull
             docker compose up -d
             docker compose ps

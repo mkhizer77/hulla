@@ -1,0 +1,4 @@
+# Generated code, workflows and decision records need the owner's review (CODING_RULES section 5).
+/packages/protocol/generated/   @mkhizer77
+/.github/workflows/             @mkhizer77
+/docs/adr/                      @mkhizer77

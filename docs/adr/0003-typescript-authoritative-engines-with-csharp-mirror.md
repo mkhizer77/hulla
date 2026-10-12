@@ -1,5 +1,5 @@
 # ADR-0003: TypeScript rules engines are authoritative; C# mirrors pass shared vectors
-Status: Accepted
+Status: Accepted (C# mirror deferred past v1.0 by ADR-0019)
 Date: 2026-10-11
 
 ## Context

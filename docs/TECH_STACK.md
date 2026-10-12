@@ -9,7 +9,7 @@
 | Mobile client | Unity 6000.4.9f1 (pinned), C#, IL2CPP, URP 2D, UI Toolkit with the Advanced Text Generator, Unity 6 runtime data binding, hand-wired composition root, `Awaitable`, LitMotion tweens, Addressables, Localization, Input System | Newest editor on the development machine; complex-script text; no framework dependencies (ADR-0007, ADR-0008, ADR-0016) |
 | Web client (later) | TypeScript 5, React, PixiJS 8, Vite, `@heroiclabs/nakama-js`, Agora Web SDK, Firebase JS | Reuses the server's engine, protocol, content and tokens (ADR-0017) |
 | Server | Nakama 3.x (open source) with Hulla runtime modules in TypeScript, Postgres 16, Docker Compose | Auth, social, matchmaking, wallets and storage built in; authoritative match handler is ours (ADR-0002) |
-| Shared packages | JSON Schema protocol with generated TypeScript and C#; TypeScript rules engines (authoritative) with C# mirrors; shared JSON test vectors; content as signed JSON | One truth, two clients (ADR-0003, ADR-0005, ADR-0011) |
+| Shared packages | JSON Schema (draft-07) protocol with generated TypeScript and C#; TypeScript rules engines (authoritative; C# mirrors deferred, ADR-0019); shared JSON test vectors; content as signed JSON | One truth, two clients (ADR-0003, ADR-0005, ADR-0011) |
 | Source and CI | Public GitHub repository, GitHub Actions, GameCI images, GitHub Container Registry | Free hosted runners including macOS on public repos (ADR-0015) |
 | Hosting | Phase 0: free EU tier for development and testing; Phase 1: small paid boxes (EU for testers, South Asia for players); Phase 2: managed database and a second region | Cost follows users (ADR-0013) |
 | Licence | PolyForm Noncommercial 1.0.0 | Public, readable, not clonable commercially (ADR-0014) |
@@ -29,8 +29,9 @@
 | Composition | Hand-written `AppScope`, `SessionScope`, `TableScope` | our code | No DI container; Reflex is the recorded fallback |
 | Events | Plain C# events; small typed event bus in `Hulla.Application` | our code | No MessagePipe |
 | Tweens | LitMotion | latest stable | Allocation-free, MIT |
-| Haptics | Nice Vibrations (open source) or a thin native bridge | | Decide at vertical slice |
+| Haptics | A thin native bridge (Core Haptics, `VibrationEffect`); the open-source Nice Vibrations fork only if it still compiles on 6000.4 | | Decide at vertical slice |
 | Networking | Nakama Unity client | OpenUPM `com.heroiclabs.nakama-unity`, latest stable | WebSocket, JSON |
+| JSON | `com.unity.nuget.newtonsoft-json` with a `link.xml` that preserves the generated DTOs | 3.2.x | Generated converters; never `JsonUtility` for protocol payloads |
 | Voice | Agora Voice SDK for Unity behind `IVoiceService` | latest stable | Shared with web |
 | Purchases | Unity IAP | latest stable | Store billing; receipts validated on the server |
 | Ads | AppLovin MAX Unity plugin with AdMob, Meta, Unity Ads, Mintegral, ironSource, Liftoff adapters | latest stable | Rewarded and interstitial only; no banners |
@@ -45,8 +46,10 @@
 | Platform | Nakama 3.x open source, Docker image, one node | Clustering only if Heroic Cloud is ever bought |
 | Runtime modules | TypeScript compiled to the ES level Nakama's JS runtime supports (official template settings), bundled with rollup or esbuild into one file | No Node APIs; synchronous match handlers |
 | Database | Postgres 16 in Docker next to Nakama (Phase 0 and 1); managed Postgres in Phase 2 | Nightly `pg_dump` to object storage |
-| Build tooling | Node 22 LTS, pnpm 9, TypeScript 5 strict, Vitest, fast-check, zod, ESLint flat config, Prettier, dependency-cruiser | |
-| Fairness | Seed from four `nk.uuidv4()` values, xoshiro128** or PCG32 implemented identically in TS and C#, `nk.sha256Hash` commitment | ADR-0009 |
+| Build tooling | Node 26 (24 or later), pnpm 12, TypeScript 5.9 strict, Vitest 5, fast-check, zod, ESLint 10 flat config with import-x, Prettier, dependency-cruiser; .NET 10 SDK when the C# mirror exists | |
+| Scheduled jobs | A cron sidecar container in the compose stack calling admin RPCs with the runtime HTTP key | Nakama has no scheduler |
+| Push | FCM HTTP v1 called from the runtime (`nk.jwtGenerate`, `nk.httpRequest`) | Nakama notifications are in-app only |
+| Fairness | Seed from four `nk.uuidv4()` values, xoshiro128** implemented identically in TS and C# (parity rules in ARCHITECTURE §7.5), `nk.sha256Hash` commitment | ADR-0009 |
 | Metrics and logs | Nakama Prometheus endpoint, structured JSON logs, Grafana Cloud free tier | |
 | Admin | Nakama console plus admin RPCs | |
 
@@ -57,7 +60,7 @@ Every table is one authoritative Nakama match. Clients send intents (`play_card`
 | Need | Provider | Plan and cost now | Unity | Web | Swap effort |
 |---|---|---|---|---|---|
 | Sign-in | Nakama auth with Apple, Google, Facebook, device accounts | Free | Yes | Yes | Low |
-| Voice chat | Agora | 10,000 participant-minutes free per month, then about $0.99 per 1,000 | Yes | Yes | One adapter plus the token RPC |
+| Voice chat | Agora | 10,000 participant-minutes free per month, then about $0.99 per 1,000; about $1,500–2,400 a month at the soft-launch scenario before the on-demand join and silence leave cut it (GDD §20.14); kept on 12 Oct 2026 (O19) | Yes | Yes | One adapter plus the token RPC |
 | Text chat, quick chat, emotes | Nakama channels and match data, our own filters | Free | Yes | Yes | n/a |
 | Multiplayer tables, matchmaking, friends, presence | Nakama (self-hosted) | The server box only | Yes | Yes | High (by design the one fixed piece) |
 | Analytics, crash reporting, remote config, push | Firebase | Free tier | Yes | Yes (push via FCM web) | Medium |
@@ -85,7 +88,7 @@ Everything is defined in `infra/` so a region is a copy of a compose file and a 
 |---|---|
 | Wire protocol | JSON Schema source, generated TypeScript (web, server) and C# (Unity) |
 | Rules engines | TypeScript engine runs on the server and in the browser; C# mirror in Unity; same vectors |
-| Content | Presets, quick-chat packs, catalog, missions, strings: the same JSON files and manifest |
+| Content | Presets, quick-chat packs, catalog, missions: the same JSON files and manifest. Strings are authored once in ICU message format (plural, select and simple arguments only) and exported by `tools/strings-export` to Unity Localization tables as Smart Strings and to the web as JSON |
 | Design tokens | USS variables in Unity mirrored to CSS variables on the web from one token file |
 | Backend SDK | Nakama Unity and nakama-js against the same server and RPCs |
 | Voice | Agora Unity and Web SDKs on the same channels |

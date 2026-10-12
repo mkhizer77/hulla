@@ -1,7 +1,7 @@
 # Hulla coding rules
 
 > Version 1.0 · 11 October 2026 · Applies to every contributor in every package of this repository.
-> Precedence when documents disagree: GDD (`docs/GDD_Hulla.md`) for product behaviour → `docs/ARCHITECTURE.md` for structure → `docs/adr/` for recorded decisions → this document for conventions → code comments. Disagreements are logged in `docs/OPEN_QUESTIONS.md`, never resolved silently.
+> Precedence when documents disagree: the GDD (private, held by the owner, not in this repository) for product behaviour → `docs/ARCHITECTURE.md` for structure → `docs/adr/` for recorded decisions → this document for conventions → code comments. Disagreements are logged in `docs/OPEN_QUESTIONS.md`, never resolved silently.
 
 ## 1. Golden rules
 1. **The server is the truth.** No client code decides a game outcome, grants a reward or trusts another client.
@@ -42,7 +42,7 @@ Code, tests, docs and content for the change are merged; CI green; traceability 
 
 ### 3.1 Language and tooling
 - TypeScript 5, `strict: true`, `noUncheckedIndexedAccess: true`, `exactOptionalPropertyTypes: true`, `noImplicitOverride: true`.
-- ESLint flat config with `typescript-eslint` strict and stylistic presets, `eslint-plugin-import` ordering, `dependency-cruiser` for boundaries; Prettier with the repository config. Formatting is never discussed in review.
+- ESLint flat config with `typescript-eslint` strict and stylistic presets, `eslint-plugin-import-x` ordering, `dependency-cruiser` for boundaries; Prettier with the repository config. Formatting is never discussed in review.
 - Vitest for tests, fast-check for property tests.
 
 ### 3.2 Style and naming
@@ -57,7 +57,7 @@ Code, tests, docs and content for the change are merged; CI green; traceability 
 ### 3.3 Domain purity (rules engines and shared)
 - No imports from `node:*`, no `Date`, no `Math.random`, no `setTimeout`, no console. ESLint bans them in these packages.
 - State is immutable: return new objects; use structural sharing; never mutate inputs.
-- Randomness and time come from the injected `Rng` and `Clock` interfaces.
+- Randomness comes from the injected `Rng`; engines have no clock (ADR-0020).
 - All public functions are total over their declared input types and return `Result` instead of throwing.
 - Engines are versioned; a breaking rule change bumps the module version and keeps the previous engine available for the compatibility window.
 
@@ -81,7 +81,7 @@ Code, tests, docs and content for the change are merged; CI green; traceability 
 ## 4. C# and Unity rules
 
 ### 4.1 Language and tooling
-- Unity 6 LTS pinned in `ProjectVersion.txt`; C# features as allowed by Unity's compiler; `Nullable` enabled in all `Hulla.*` assemblies.
+- Unity 6000.4.9f1 pinned in `ProjectVersion.txt` (ADR-0016); C# features as allowed by Unity's compiler; `Nullable` enabled in all `Hulla.*` assemblies.
 - `.editorconfig` at the repository root is the formatter; `dotnet format` runs in CI for the pure packages.
 - Analyzers: `Microsoft.Unity.Analyzers`, `Roslynator.Analyzers`; warnings are errors in `Hulla.Domain` and `Hulla.Application`.
 - Tests: NUnit via `dotnet test` for `packages/rules-engine-cs`; Unity Test Framework for edit-mode and play-mode tests.
@@ -114,7 +114,7 @@ Code, tests, docs and content for the change are merged; CI green; traceability 
 
 ### 4.6 Testing in C#
 - Edit-mode tests for view models, `TableClient` ordering and `AnimationScheduler` timing; play-mode smoke per screen.
-- Engine tests mirror the TS suite one to one and use the same vector files.
+- Engine tests mirror the TS suite one to one and use the same vector files, once the C# mirror exists (ADR-0019).
 - Test names carry rule IDs exactly like the TS suite.
 
 ## 5. Architecture boundaries and dependency rules
@@ -133,7 +133,7 @@ Checklist; every item is an acceptance criterion.
 1. Rules specification in the GDD format with rule IDs, edge cases, toggles with defaults, auto-play policy and worked examples; owner sign-off.
 2. Vectors in `packages/test-vectors/<game>/` covering every rule ID and edge case, including exhaustive enumeration of small endgames; traceability matrix regenerated.
 3. TypeScript engine implementing the `GameModule` contract; purity lint clean; vectors green; property tests green.
-4. C# engine mirroring the TS engine; vectors green; equivalence harness green over 10,000 random rounds.
+4. C# engine mirroring the TS engine, vectors green, equivalence harness green over 10,000 random rounds, once the mirror exists (ADR-0019).
 5. Server registration: rules schema and presets in `content/presets/<game>/`, module in the registry, redaction tests, auto-play tests, phase deadline policies.
 6. Unity module: `ITableLayout`, `IStateRenderer`, `IInputController`, `IRulebook`, `ITutorial`, `IResultsAdapter`; default kit used wherever possible; edit-mode tests for input legality and renderer event coverage.
 7. Content: quick-chat contexts, catalog tags, missions, string tables, bot roster entries if bots exist.
@@ -150,7 +150,7 @@ Checklist; every item is an acceptance criterion.
 ## 8. Content rules
 - Every content type has a JSON Schema in `tools/content-schemas/`; `pnpm content:validate` runs in CI.
 - Content is versioned and signed; the client refuses unsigned or downgraded manifests.
-- Strings: stable ids, ICU message format, no concatenation, no text in images, pseudo-localisation must pass.
+- Strings: stable ids, ICU message format limited to plural, select and simple arguments (exported to Unity Smart Strings by `tools/strings-export`), no concatenation, no text in images, pseudo-localisation must pass.
 - Quick-chat packs follow the tone rules in GDD §11.2; a native speaker reviews every new pack.
 - Presets never contain values outside the module's rules schema.
 
@@ -221,13 +221,15 @@ Checklist; every item is an acceptance criterion.
 ## 17. Quick reference
 ```
 pnpm install                 # workspace install
-pnpm lint                    # eslint, prettier check, dependency-cruiser
-pnpm test                    # vitest across TS packages
+pnpm lint                    # typecheck, eslint, prettier check, dependency-cruiser
+pnpm typecheck               # tsc per package
+pnpm format                  # prettier --write
+pnpm test                    # vitest with coverage across TS packages
 pnpm vectors                 # run shared vectors through the TS engine
 pnpm codegen                 # regenerate protocol TS and C#; CI fails on drift
 pnpm content:validate        # validate content against schemas
-dotnet test packages/rules-engine-cs   # C# engine tests and vectors
-pnpm equivalence -- --rounds 10000     # cross-engine harness
+dotnet test packages/rules-engine-cs   # C# engine tests and vectors, when the mirror exists (ADR-0019)
+pnpm equivalence -- --rounds 10000     # cross-engine harness, when the mirror exists (ADR-0019)
 docker compose -f server/nakama/compose.yml up   # local Nakama and Postgres
 ```
 Unity tests run from the Test Runner window or `-runTests -testPlatform EditMode` on CI.

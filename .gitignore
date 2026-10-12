@@ -1,3 +1,6 @@
+# private documents, never published (the GDD stays in the owner's checkout only)
+docs/GDD_Hulla.md
+
 # local assistant and editor files, never published
 CLAUDE.local.md
 .claude/
@@ -11,10 +14,14 @@ node_modules/
 dist/
 coverage/
 *.log
+*.tsbuildinfo
+.eslintcache
+server/nakama/build/
 
-# dotnet
+# dotnet (package build output is redirected to artifacts/, see PROJECT_STRUCTURE §4)
 bin/
 obj/
+artifacts/
 
 # unity (project-specific ignores live in apps/unity/Hulla/.gitignore)
 apps/unity/Hulla/Library/
