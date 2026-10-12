@@ -1,7 +1,10 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements">
     <ui:VisualElement name="table" class="screen table">
         <ui:VisualElement class="table__top">
-            <ui:Button name="leave" class="button button--quiet button--small" />
+            <ui:VisualElement class="table__top-actions">
+                <ui:Button name="settings" class="button button--quiet button--small" />
+                <ui:Button name="leave" class="button button--quiet button--small" />
+            </ui:VisualElement>
             <ui:Label name="info" class="table__info" />
         </ui:VisualElement>
         <ui:VisualElement name="opponents" class="opponents" />

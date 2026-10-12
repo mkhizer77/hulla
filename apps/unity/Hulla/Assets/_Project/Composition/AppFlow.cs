@@ -7,6 +7,9 @@ using Hulla.Presentation.Navigation;
 using Hulla.Presentation.Screens.Home;
 using Hulla.Presentation.Screens.Lobby;
 using Hulla.Presentation.Screens.QuickPlay;
+using Hulla.Presentation.Screens.Settings;
+using Hulla.Presentation.Theme;
+using Hulla.Application.Settings;
 using Hulla.Presentation.Text;
 using UnityEngine;
 
@@ -31,11 +34,6 @@ namespace Hulla.Composition
         private const float ReconnectWindowSeconds = 30f;
         private const float RetrySeconds = 2f;
 
-        /// <summary>Set to 1 for reduce-motion until the settings screen (#64) offers the switch.</summary>
-        private const string ReduceMotionPrefKey = "hulla.reduce_motion";
-
-        /// <summary>1 once the player chose "don't show again" on the rules recap.</summary>
-        private const string RecapOffPrefKey = "hulla.recap_off";
 
         private readonly AppScope _app;
         private readonly ShellView _shell;
@@ -44,6 +42,7 @@ namespace Hulla.Composition
         private AnimationScheduler? _scheduler;
         private ThullaTableView? _tableView;
         private bool _reconnecting;
+        private SettingsView? _settingsView;
         private LobbyView? _lobbyView;
 
         public AppFlow(AppScope app, ShellView shell)
@@ -51,12 +50,14 @@ namespace Hulla.Composition
             _app = app;
             _shell = shell;
             _shell.Ticked += Tick;
+            _app.Settings.Changed += ApplySettings;
             _app.QuickPlay.Found += OnQuickPlayFound;
             _app.Tables.Disconnected += OnDisconnected;
         }
 
         public async void Start()
         {
+            ApplySettings();
             ShowHome();
             try
             {
@@ -70,6 +71,7 @@ namespace Hulla.Composition
         public void Dispose()
         {
             _shell.Ticked -= Tick;
+            _app.Settings.Changed -= ApplySettings;
             _app.QuickPlay.Found -= OnQuickPlayFound;
             _app.Tables.Disconnected -= OnDisconnected;
             CloseView();
@@ -81,7 +83,7 @@ namespace Hulla.Composition
             _screen = Screen.Home;
             var root = _shell.Show(_shell.Catalog.Home);
             var server = Debug.isDebugBuild ? _app.Config.HostAndPort : null;
-            _view = new HomeView(root, _app.Home, server, OnCreate, OnJoin, OnQuickPlay);
+            _view = new HomeView(root, _app.Home, server, OnCreate, OnJoin, OnQuickPlay, OpenSettings);
         }
 
         private async void OnCreate(string name, string? server)
@@ -144,6 +146,7 @@ namespace Hulla.Composition
 
             var session = _app.BeginSession(player);
             var table = session.BeginTable(ticket.Value);
+            table.Client.Model.SetSort(_app.Settings.HandSort == HandSort.RankThenSuit ? CardOrder.CompareByRank : CardOrder.Compare);
             table.Client.Model.Changed += FollowModel;
             var entered = await _app.Tables.EnterAsync(ticket.Value, table.Lifetime);
             if (!entered.IsOk)
@@ -252,15 +255,34 @@ namespace Hulla.Composition
             }
 
             client.Events.Clear();
-            _tableView = new ThullaTableView(_shell.Show(_shell.Catalog.Table), client, _app.Chat, () => DateTimeOffset.UtcNow.ToUnixTimeMilliseconds(), Leave, PlayerPrefs.GetInt(ReduceMotionPrefKey, 0) == 1, PlayerPrefs.GetInt(RecapOffPrefKey, 0) == 1 ? null : HideRecap);
+            _tableView = new ThullaTableView(_shell.Show(_shell.Catalog.Table), client, _app.Chat, () => DateTimeOffset.UtcNow.ToUnixTimeMilliseconds(), Leave, openSettings: OpenSettings);
+            ApplySettings();
             _scheduler = new AnimationScheduler(client.Events, _tableView);
             _view = _tableView;
         }
 
-        private static void HideRecap()
+        private void HideRecap() => _app.Settings.ShowRulesRecap = false;
+
+        /// <summary>Settings open over the current screen, so play goes on underneath (GDD 14.12).</summary>
+        private void OpenSettings()
         {
-            PlayerPrefs.SetInt(RecapOffPrefKey, 1);
-            PlayerPrefs.Save();
+            _settingsView?.Dispose();
+            _settingsView = new SettingsView(_shell.ShowOverlay(_shell.Catalog.Settings), _app.Settings, CloseSettings);
+        }
+
+        private void CloseSettings()
+        {
+            _settingsView?.Dispose();
+            _settingsView = null;
+            _shell.CloseOverlay();
+        }
+
+        private void ApplySettings()
+        {
+            var settings = _app.Settings;
+            ThemeClasses.Apply(_shell.Root, settings);
+            _tableView?.ApplySettings(settings.OneTapPlay, settings.ReduceMotion, settings.LargeCards, settings.Haptics, settings.ShowRulesRecap ? HideRecap : null);
+            _app.Session?.Table?.Client.Model.SetSort(settings.HandSort == HandSort.RankThenSuit ? CardOrder.CompareByRank : CardOrder.Compare);
         }
 
         private void Tick(float deltaSeconds)

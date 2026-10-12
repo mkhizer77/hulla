@@ -4,6 +4,8 @@ using Hulla.Application.Services;
 using Hulla.Application.ViewModels;
 using Hulla.Infrastructure.Content;
 using Hulla.Infrastructure.Nakama;
+using Hulla.Infrastructure.Settings;
+using Hulla.Application.Settings;
 
 namespace Hulla.Composition
 {
@@ -44,6 +46,8 @@ namespace Hulla.Composition
         public IChatCatalog Chat { get; } = new StreamingChatCatalog();
 
         public QuickPlayViewModel QuickPlay { get; }
+
+        public SettingsModel Settings { get; } = new SettingsModel(new PlayerPrefsSettingsStore());
 
         public SessionScope? Session => _session;
 

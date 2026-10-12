@@ -15,6 +15,8 @@
     --space-2: 16px;
     --space-3: 24px;
     --radius: 14px;
+    /* 48 dp at the 1080 px reference width (GDD 27). */
+    --tap: 132px;
     --font-body: 34px;
     --font-small: 26px;
     --font-title: 96px;
@@ -80,7 +82,7 @@
 }
 
 .field TextInput, .field .unity-base-text-field__input {
-    min-height: 88px;
+    min-height: var(--tap);
     font-size: var(--font-body);
     background-color: #0E0F11;
     color: var(--ink-ivory);
@@ -91,7 +93,7 @@
 }
 
 .button {
-    min-height: 96px;
+    min-height: var(--tap);
     margin: var(--space-1) 0;
     border-radius: var(--radius);
     border-width: 0;
@@ -124,7 +126,7 @@
 }
 
 .button--small {
-    min-height: 72px;
+    min-height: var(--tap);
     padding: 0 var(--space-2);
 }
 
@@ -202,6 +204,9 @@
 }
 
 .table__info {
+    flex-shrink: 1;
+    min-width: 0;
+    white-space: normal;
     font-size: var(--font-small);
     color: var(--ink-muted);
 }
@@ -244,7 +249,7 @@
 }
 
 .seat__state {
-    font-size: 22px;
+    font-size: var(--font-small);
     color: var(--ink-muted);
 }
 
@@ -269,7 +274,7 @@
 }
 
 .pile__owner {
-    font-size: 22px;
+    font-size: var(--font-small);
     color: var(--ink-muted);
 }
 
@@ -410,7 +415,7 @@
     border-radius: 12px;
     background-color: var(--ink-ivory);
     color: #141518;
-    font-size: 24px;
+    font-size: var(--font-small);
     white-space: normal;
     max-width: 200px;
     -unity-text-align: middle-center;
@@ -420,7 +425,7 @@
     display: none;
     align-self: center;
     max-width: 600px;
-    font-size: 30px;
+    font-size: var(--font-body);
 }
 
 .chat-panel {
@@ -447,13 +452,14 @@
 }
 
 .chip {
+    min-height: var(--tap);
     margin: 6px;
     padding: 10px 18px;
     border-radius: 999px;
     border-width: 0;
     background-color: #2A2D33;
     color: var(--ink-ivory);
-    font-size: 28px;
+    font-size: var(--font-small);
 }
 
 .chip--emote {
@@ -519,7 +525,7 @@
     border-radius: 999px;
     background-color: #3A1F1F;
     color: var(--ink-ivory);
-    font-size: 28px;
+    font-size: var(--font-small);
 }
 
 .pile__slot--fly {
@@ -536,4 +542,139 @@
     opacity: 1;
     transition-property: opacity;
     transition-duration: 200ms;
+}
+
+/* Settings (GDD 14.12, 27): classes on the shell root, applied live. */
+.theme--contrast {
+    --surface-ui: #000000;
+    --surface-table: #000000;
+    --ink-muted: #E8E8E8;
+    --card-face: #FFFFFF;
+}
+
+.theme--contrast .card {
+    border-color: #FFFFFF;
+    border-width: 3px;
+}
+
+.theme--contrast .seat, .theme--contrast .panel, .theme--contrast .lobby-seat {
+    border-width: 2px;
+    border-color: #FFFFFF;
+}
+
+/* The root font size is resolved once at :root, so the scaled element sets it again for its subtree. */
+.text--125, .text--150, .text--200 {
+    font-size: var(--font-body);
+}
+
+.text--125 {
+    --font-body: 42px;
+    --font-small: 32px;
+    --font-title: 110px;
+}
+
+.text--150 {
+    --font-body: 51px;
+    --font-small: 39px;
+    --font-title: 120px;
+}
+
+.text--200 {
+    --font-body: 68px;
+    --font-small: 52px;
+    --font-title: 128px;
+}
+
+.deck--four .card--suit-d .card__rank, .deck--four .card--suit-d .card__suit {
+    color: #1E6FD9;
+}
+
+.deck--four .card--suit-c .card__rank, .deck--four .card--suit-c .card__suit {
+    color: #2E7D32;
+}
+
+.cards--large .card {
+    width: 150px;
+    height: 210px;
+}
+
+.cards--large .card__rank {
+    font-size: 52px;
+}
+
+.cards--large .card__suit {
+    font-size: 56px;
+}
+
+.hand--left .table__bar {
+    flex-direction: row-reverse;
+}
+
+.hand--left .table__turn {
+    flex-direction: row-reverse;
+}
+
+.table__top-actions {
+    flex-direction: row;
+    flex-shrink: 0;
+}
+
+.overlay {
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+}
+
+.settings__top {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--space-2);
+}
+
+.settings__scroll {
+    flex-grow: 1;
+}
+
+.settings__heading {
+    margin-top: var(--space-3);
+    margin-bottom: var(--space-1);
+}
+
+.settings__row {
+    min-height: var(--tap);
+    padding: 0 var(--space-2);
+    margin-bottom: var(--space-1);
+    background-color: #1C1E22;
+    border-radius: var(--radius);
+    justify-content: center;
+}
+
+.settings__row.unity-toggle {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.settings__row.unity-toggle > .unity-label {
+    flex-grow: 1;
+    flex-shrink: 1;
+    min-width: 0;
+}
+
+.settings__row > Label, .settings__row Label {
+    font-size: var(--font-body);
+    color: var(--ink-ivory);
+    white-space: normal;
+}
+
+.settings__choice {
+    padding: var(--space-1) var(--space-2);
+}
+
+.settings__row .unity-toggle__checkmark {
+    width: 48px;
+    height: 48px;
 }

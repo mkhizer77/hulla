@@ -11,5 +11,12 @@ namespace Hulla.Application.Table
             var suit = Suits.IndexOf(a[1]).CompareTo(Suits.IndexOf(b[1]));
             return suit != 0 ? suit : Ranks.IndexOf(a[0]).CompareTo(Ranks.IndexOf(b[0]));
         }
+
+        /// <summary>By rank 2 to A, then suit; the alternative sort from the settings (R8).</summary>
+        public static int CompareByRank(string a, string b)
+        {
+            var rank = Ranks.IndexOf(a[0]).CompareTo(Ranks.IndexOf(b[0]));
+            return rank != 0 ? rank : Suits.IndexOf(a[1]).CompareTo(Suits.IndexOf(b[1]));
+        }
     }
 }

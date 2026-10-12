@@ -21,17 +21,51 @@ namespace Hulla.Presentation.Navigation
         public VisualElement Show(VisualTreeAsset? screen)
         {
             var root = GetComponent<UIDocument>().rootVisualElement;
+            if (screen == null)
+            {
+                throw new InvalidOperationException("screen document missing from the catalog");
+            }
+
+            // An open overlay (settings) and the reconnect banner stay on top of the new screen.
+            var overlay = root.Q("shell-overlay");
+            var banner = root.Q("shell-banner");
             root.Clear();
+            var instance = screen.Instantiate();
+            instance.style.flexGrow = 1;
+            root.Add(instance);
+            if (overlay != null)
+            {
+                root.Add(overlay);
+            }
+
+            if (banner != null)
+            {
+                root.Add(banner);
+            }
+
+            return instance;
+        }
+
+        /// <summary>The document root, where the theme classes from the settings live.</summary>
+        public VisualElement Root => GetComponent<UIDocument>().rootVisualElement;
+
+        /// <summary>Puts a screen over the current one without replacing it (settings at the table).</summary>
+        public VisualElement ShowOverlay(VisualTreeAsset? screen)
+        {
+            CloseOverlay();
             if (screen == null)
             {
                 throw new InvalidOperationException("screen document missing from the catalog");
             }
 
             var instance = screen.Instantiate();
-            instance.style.flexGrow = 1;
-            root.Add(instance);
+            instance.name = "shell-overlay";
+            instance.AddToClassList("overlay");
+            Root.Add(instance);
             return instance;
         }
+
+        public void CloseOverlay() => Root.Q("shell-overlay")?.RemoveFromHierarchy();
 
         /// <summary>A strip across the top of whatever screen is showing; null hides it.</summary>
         public void SetBanner(string? text)

@@ -50,9 +50,10 @@ namespace Hulla.Games.Thulla
         private readonly Label _mySay;
         private readonly StampTimeline _stamp = new StampTimeline();
         private readonly VisualElement _felt;
-        private readonly bool _reduceMotion;
+        private bool _reduceMotion;
+        private bool _haptics;
         private readonly VisualElement _recap;
-        private readonly Action? _hideRecapForGood;
+        private Action? _hideRecapForGood;
         private readonly List<(string Card, string Owner, long Seat)> _plays = new List<(string Card, string Owner, long Seat)>();
         private readonly List<string> _handCards = new List<string>();
         private float _mySayLeft;
@@ -74,7 +75,8 @@ namespace Hulla.Games.Thulla
             Action leave,
             bool reduceMotion = false,
             Action? hideRecapForGood = null,
-            bool oneTap = false)
+            bool oneTap = false,
+            Action? openSettings = null)
         {
             _client = client;
             _chat = chat;
@@ -104,6 +106,10 @@ namespace Hulla.Games.Thulla
             _playAgain.text = UiText.PlayAgain;
             _playAgain.clicked += VoteAgain;
             _resultStatus = root.Q<Label>("result-status");
+            var settingsButton = root.Q<Button>("settings");
+            settingsButton.text = UiText.Settings;
+            settingsButton.clicked += () => openSettings?.Invoke();
+            settingsButton.style.display = openSettings == null ? DisplayStyle.None : DisplayStyle.Flex;
             var leaveButton = root.Q<Button>("leave");
             leaveButton.text = UiText.Leave;
             leaveButton.clicked += leave;
@@ -193,6 +199,17 @@ namespace Hulla.Games.Thulla
                 _shownSeconds = seconds;
                 _turn.text = UiText.YourTurn + " · " + seconds + "s";
             }
+        }
+
+        /// <summary>Applies the play settings live; the visual ones arrive as theme classes on the shell.</summary>
+        public void ApplySettings(bool oneTap, bool reduceMotion, bool largeCards, bool haptics, Action? hideRecapForGood)
+        {
+            _hand.OneTap = oneTap;
+            _hand.SetLargeCards(largeCards);
+            _reduceMotion = reduceMotion;
+            _pile.ReduceMotion = reduceMotion;
+            _haptics = haptics;
+            _hideRecapForGood = hideRecapForGood;
         }
 
         public void Dispose()
@@ -358,7 +375,9 @@ namespace Hulla.Games.Thulla
                     ? UiText.Escaped
                     : info.AutoPlay || (info.Occupied && !info.Connected)
                         ? UiText.Away
-                        : model.InRound && model.LeaderSeat == seat ? UiText.Lead : "";
+                        : !model.InRound ? ""
+                        : model.TurnSeat == seat ? UiText.Playing
+                        : model.LeaderSeat == seat ? UiText.Lead : "";
                 _ring.Badges[i].Show(NameOf(seat), model.HandCount((int)seat), model.TurnSeat == seat && model.InRound, state);
             }
         }
@@ -415,6 +434,10 @@ namespace Hulla.Games.Thulla
                 {
                     _turnDeadlineMs = model.DeadlineTs;
                     _turnStartMs = _nowMs();
+                    if (_haptics)
+                    {
+                        HapticTick.Play();
+                    }
                 }
 
                 _turn.text = UiText.YourTurn;

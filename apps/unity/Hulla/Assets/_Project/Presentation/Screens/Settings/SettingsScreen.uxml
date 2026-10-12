@@ -1,0 +1,11 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements">
+    <ui:VisualElement name="settings" class="screen settings">
+        <ui:VisualElement class="settings__top">
+            <ui:Label name="title" class="title title--small" />
+            <ui:Button name="close" class="button button--primary button--small" />
+        </ui:VisualElement>
+        <ui:ScrollView class="settings__scroll">
+            <ui:VisualElement name="list" />
+        </ui:ScrollView>
+    </ui:VisualElement>
+</ui:UXML>

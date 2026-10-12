@@ -459,7 +459,17 @@ namespace Hulla.Application.Table
             return null;
         }
 
-        private void SortHand() => _hand.Sort(CardOrder.Compare);
+        private Comparison<string> _sort = CardOrder.Compare;
+
+        /// <summary>The hand order is cosmetic and client-side (R8); a new order re-sorts at once.</summary>
+        public void SetSort(Comparison<string> sort)
+        {
+            _sort = sort;
+            SortHand();
+            Raise();
+        }
+
+        private void SortHand() => _hand.Sort(_sort);
 
         private void Raise() => Changed?.Invoke();
     }
