@@ -35,6 +35,9 @@ describe("InitModule", () => {
       "admin_purge_deleted",
       "account_merge_prepare",
       "account_merge",
+      "friend_add_by_code",
+      "favourite_set",
+      "social_overview",
     ]);
     expect([...matches.keys()]).toEqual(["thulla"]);
     expect(hooks.get("rtBefore:ChannelMessageSend")?.name).toBe("beforeChannelMessageSend");

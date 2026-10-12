@@ -26,6 +26,7 @@ import { rpcAccountMerge, rpcAccountMergePrepare } from "./rpc/account_merge";
 import { rpcHello } from "./rpc/hello";
 import { rpcPresetsGet } from "./rpc/presets_get";
 import { rpcProfileGet, rpcProfileUpdate } from "./rpc/profile";
+import { rpcFavouriteSet, rpcFriendAddByCode, rpcSocialOverview } from "./rpc/social";
 import { rpcTableCreate } from "./rpc/table_create";
 import { rpcTableJoinByCode } from "./rpc/table_join_by_code";
 import { rpcVoiceToken } from "./rpc/voice_token";
@@ -56,6 +57,9 @@ function InitModule(
   initializer.registerRpc("admin_purge_deleted", rpcAdminPurgeDeleted);
   initializer.registerRpc("account_merge_prepare", rpcAccountMergePrepare);
   initializer.registerRpc("account_merge", rpcAccountMerge);
+  initializer.registerRpc("friend_add_by_code", rpcFriendAddByCode);
+  initializer.registerRpc("favourite_set", rpcFavouriteSet);
+  initializer.registerRpc("social_overview", rpcSocialOverview);
   initializer.registerAfterAuthenticateDevice(afterAuthenticateDevice);
   initializer.registerAfterAuthenticateApple(afterAuthenticateApple);
   initializer.registerAfterAuthenticateGoogle(afterAuthenticateGoogle);

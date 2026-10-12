@@ -201,6 +201,21 @@ describe.skipIf(NAKAMA_HOST === undefined)(
         expect(own.profile?.stats.rounds).toBe(1);
       }
 
+      // Recent Players: everyone remembers the other three (GDD 10.6).
+      for (const c of players) {
+        const overview = await rpc<{ ok: boolean; recent: { userId: string }[] }>(
+          c,
+          "social_overview",
+          {},
+        );
+        expect(overview.recent.map((r) => r.userId).sort()).toEqual(
+          players
+            .filter((o) => o !== c)
+            .map((o) => o.session.user_id)
+            .sort(),
+        );
+      }
+
       // Redaction at the socket: no client ever saw another seat's hand or legal mask.
       for (const c of players) {
         const mine = seatOf.get(c.name);
