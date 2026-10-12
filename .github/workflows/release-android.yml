@@ -35,7 +35,7 @@ jobs:
           key: library-${{ hashFiles('apps/unity/Hulla/Packages/packages-lock.json') }}
           restore-keys: library-
       - name: Build AAB and APK
-        uses: game-ci/unity-builder@v4
+        uses: game-ci/unity-builder@v6
         env:
           UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
           UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
