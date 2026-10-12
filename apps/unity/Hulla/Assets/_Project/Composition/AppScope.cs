@@ -26,6 +26,7 @@ namespace Hulla.Composition
         public AppScope(AppConfig config)
         {
             Config = config;
+            Settings = new SettingsModel(Store);
             _connection = NakamaConnection.Create(config.Scheme, config.Host, config.Port, config.ServerKey);
             _sessionService = new NakamaSessionService(_connection);
             _tables = new NakamaTableGateway(_connection);
@@ -68,7 +69,10 @@ namespace Hulla.Composition
 
         public IShareSheet ShareSheet { get; } = new Hulla.Infrastructure.Platform.NativeShareSheet();
 
-        public SettingsModel Settings { get; } = new SettingsModel(new PlayerPrefsSettingsStore());
+        public SettingsModel Settings { get; }
+
+        /// <summary>Small saved flags (hints seen, rounds played) alongside the settings.</summary>
+        public ISettingsStore Store { get; } = new PlayerPrefsSettingsStore();
 
         public SessionScope? Session => _session;
 

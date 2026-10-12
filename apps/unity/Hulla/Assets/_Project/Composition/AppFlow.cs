@@ -74,12 +74,18 @@ namespace Hulla.Composition
         {
             ApplySettings();
             _app.Home.LastName = PlayerPrefs.GetString(NamePrefKey, "");
+            var returning = _app.Home.LastName.Length > 0;
+            if (!returning)
+            {
+                _app.Home.LastName = GeneratedName();
+            }
+
             ShowHome();
-            if (PlayerPrefs.GetInt(TutorialSeenPrefKey, 0) == 0 && _app.Home.LastName.Length == 0)
+            if (PlayerPrefs.GetInt(TutorialSeenPrefKey, 0) == 0 && !returning)
             {
                 _shell.ShowDialog(TutorialText.Gate, TutorialText.GateYes, TutorialText.GateNo, OfferRefresher, () => StartTutorial(false));
             }
-            if (_app.Home.LastName.Length > 0)
+            if (returning)
             {
                 SignInQuietly();
             }
@@ -199,6 +205,12 @@ namespace Hulla.Composition
                 _app.HomeFriends.RefreshSoon();
             }
         }
+
+        /// <summary>"Lahori Lion 42": a friendly starting name the player can change (GDD 17.2).</summary>
+        private static string GeneratedName() =>
+            UiText.NamePlaces[UnityEngine.Random.Range(0, UiText.NamePlaces.Length)] + " "
+            + UiText.NameAnimals[UnityEngine.Random.Range(0, UiText.NameAnimals.Length)] + " "
+            + UnityEngine.Random.Range(10, 100);
 
         private static void RememberName(string name)
         {
@@ -350,6 +362,7 @@ namespace Hulla.Composition
             if (model.LastResult != null && model.LastResult.RoundId != _friendsForRound)
             {
                 _friendsForRound = model.LastResult.RoundId;
+                new ThullaHints(_app.Store).RoundEnded();
                 OfferFriends();
             }
 
@@ -371,6 +384,11 @@ namespace Hulla.Composition
             client.Events.Clear();
             _tableView = new ThullaTableView(_shell.Show(_shell.Catalog.Table), client, _app.Chat, () => DateTimeOffset.UtcNow.ToUnixTimeMilliseconds(), Leave, openSettings: OpenSettings, openRules: OpenRules, sendText: text => _app.TableChat.SendAsync(text, _app.Lifetime));
             ApplySettings();
+            var hints = new ThullaHints(_app.Store);
+            if (hints.Active)
+            {
+                _tableView.UseHints(hints);
+            }
             _scheduler = new AnimationScheduler(client.Events, _tableView);
             _view = _tableView;
         }
