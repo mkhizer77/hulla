@@ -11,7 +11,6 @@ export default defineConfig({
       thresholds: {
         "packages/shared-ts/src/**": { lines: 95, branches: 90 },
         "packages/rules-engine/src/**": { lines: 95, branches: 90 },
-        "packages/rules-engine/src/**": { lines: 95, branches: 90 },
         "server/**/src/**": { lines: 80 },
       },
     },

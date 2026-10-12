@@ -1,0 +1,29 @@
+# Nakama configuration for local development and the phase 0 box. Secrets below are placeholders for
+# local use only; every deployed box replaces them before the first start (runbook, "Hardening the box").
+name: hulla-local
+data_dir: /nakama/data
+logger:
+  level: INFO
+  stdout: true
+database:
+  address:
+    - postgres:localdb@postgres:5432/nakama
+console:
+  port: 7351
+  username: admin
+  password: local-only-password
+socket:
+  port: 7350
+  server_key: local-only-server-key
+  max_message_size_bytes: 32768
+  ping_period_ms: 15000
+  pong_wait_ms: 25000
+session:
+  token_expiry_sec: 7200
+  refresh_token_expiry_sec: 2592000
+runtime:
+  http_key: local-only-http-key
+  js_entrypoint: index.js
+match:
+  input_queue_size: 128
+  call_queue_size: 128
