@@ -1,0 +1,38 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://hulla.gg/schemas/content/preset.json",
+  "title": "A rules preset: engine toggles and table settings (GDD 6.13)",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema", "id", "gameId", "name", "description", "order", "overrides", "settings"],
+  "properties": {
+    "schema": { "type": "string", "pattern": "preset\\.schema\\.json$" },
+    "id": { "type": "string", "enum": ["standard", "family", "hardcore", "classicPagat"] },
+    "gameId": { "type": "string", "enum": ["thulla", "rung"] },
+    "name": {
+      "type": "string",
+      "pattern": "^preset\\.[a-zA-Z]+\\.name$",
+      "description": "A string id"
+    },
+    "description": { "type": "string", "pattern": "^preset\\.[a-zA-Z]+\\.description$" },
+    "order": { "type": "integer", "minimum": 0 },
+    "overrides": {
+      "type": "object",
+      "description": "Engine toggles; validated against the game's rules schema and kept equal to the engine's own preset table"
+    },
+    "settings": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Table settings that are not engine rules (protocol shell/table.json rulesSelection.settings)",
+      "properties": {
+        "turnTimerSeconds": { "type": ["integer", "null"], "enum": [10, 15, 20, 30, 60, null] },
+        "showCardCounts": { "type": "boolean" },
+        "cardMemoryAssist": { "type": "boolean" },
+        "loserTitle": { "type": "string", "enum": ["bhabhi", "donkey", "thullad"] },
+        "spectators": { "type": "boolean" },
+        "voiceDefault": { "type": "string", "enum": ["openMic", "pushToTalk", "off"] },
+        "direction": { "type": "string", "enum": ["cw", "ccw"] }
+      }
+    }
+  }
+}

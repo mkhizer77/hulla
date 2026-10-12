@@ -1,0 +1,17 @@
+{
+  "name": "@hulla/content-validate",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Validates every file under content/ against the schema it names and the game's rules schema",
+  "license": "PolyForm-Noncommercial-1.0.0",
+  "type": "module",
+  "scripts": {
+    "typecheck": "tsc -p tsconfig.json",
+    "content:validate": "tsx src/validate.ts",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@hulla/rules-engine": "workspace:*",
+    "ajv": "8.20.0"
+  }
+}

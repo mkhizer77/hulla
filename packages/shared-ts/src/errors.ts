@@ -60,6 +60,10 @@ export const ErrorCodes = {
     timeout: "network.timeout",
     rateLimited: "network.rate_limited",
   },
+  voice: {
+    unavailable: "voice.unavailable",
+    notAtTable: "voice.not_at_table",
+  },
 } as const;
 
 type Leaves<T> = T extends string ? T : { [K in keyof T]: Leaves<T[K]> }[keyof T];

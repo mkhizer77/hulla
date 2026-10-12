@@ -24,6 +24,12 @@ session:
 runtime:
   http_key: local-only-http-key
   js_entrypoint: index.js
+  # Read by the modules through ctx.env; deployed boxes set real values (never in the repository).
+  env:
+    - "HULLA_ENV=local"
+    - "HULLA_REGION=local"
+    - "AGORA_APP_ID="
+    - "AGORA_APP_CERTIFICATE="
 match:
   input_queue_size: 128
   call_queue_size: 128

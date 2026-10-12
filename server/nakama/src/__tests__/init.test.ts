@@ -21,7 +21,13 @@ describe("InitModule", () => {
       fakeNk(),
       initializer,
     );
-    expect([...rpcs.keys()]).toEqual(["hello", "table_create"]);
+    expect([...rpcs.keys()]).toEqual([
+      "hello",
+      "table_create",
+      "table_join_by_code",
+      "presets_get",
+      "voice_token",
+    ]);
     expect([...matches.keys()]).toEqual(["thulla"]);
     const handler = matches.get("thulla");
     expect(Object.keys(handler ?? {}).sort()).toEqual([

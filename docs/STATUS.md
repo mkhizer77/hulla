@@ -1,11 +1,13 @@
 # Status
 
-Updated: 13 October 2026
+Updated: 13 October 2026 (night)
 
 ## Phase
 M0 complete: the Thulla rulebook runs in TypeScript with full traceability. M1, the vertical slice, starts with the protocol schemas.
 
 ## Done
+- M1 #16 merged (13 Oct): the Thulla host, named match callbacks, the game registry, `table_create`, and the scripted four-seat round against Nakama in Docker. Nakama facts learned and recorded (ADR-0022, ARCHITECTURE §8.1, server README): handlers resolve by global name, the globals freeze after InitModule, the match state is rebuilt as plain data between callbacks, and a message target needs Nakama's node. Server-side validation moved from zod to compiled checks. A native Nakama plus Postgres runs on the dev Mac for server tickets.
+- M1 #21 and the Unity session/TableClient merged by the Unity session (PRs 152, 153).
 - M1 #15 merged (12 Oct): the table core in `server/nakama/src/match` (lifecycle, pipeline with idempotency, deadlines and auto-play, log with state hashes, snapshots, redaction dispatch, rematch and series) and its Nakama binding; OQ-009 and OQ-010 logged.
 - M1 #14 merged (12 Oct): `server/nakama` with the local compose, Dockerfile, config, InitModule with a hello RPC, the esbuild bundler, a fake nk for unit tests and a CI compose smoke test.
 - GDD v1.3 (private, git-ignored at `docs/GDD_Hulla.md`): rules spec with IDs, platform catalogue, economy, UX, compliance, production plan.
@@ -25,10 +27,10 @@ M0 complete: the Thulla rulebook runs in TypeScript with full traceability. M1, 
 - 12 Oct decisions: C# mirror deferred past v1.0 (ADR-0019), no clock in engines (ADR-0020), JSON Schema draft-07 (ADR-0021), one deck and 3–6 seats until v1.2, web client before Rung (M5 → web → Rung → M6, dates in the execution plan), Facebook login stays, Unity stays on 6000.4.9f1.
 
 ## Doing
-- M1 #16: the Thulla host for the table core (`src/games/thulla`): moves decoded with the generated validators, engine events encoded to the wire (round_start with the commitment, turn_start with the legal mask and deadline, round_end with the seed reveal), named match callbacks registered as `thulla`, a game registry, a minimal `table_create` RPC, and a scripted four-seat round with `nakama-js` clients against Nakama in Docker, run by the CI compose job.
+- M1 #17 (branch `feat/table-rpcs`, rebased on main): the room-code registry with region and expiry, `table_join_by_code`, `presets_get` from `content/presets` (four presets, a schema and `pnpm content:validate`), and `voice_token` with a pure-TypeScript Agora AccessToken2 builder checked against Agora's own; `voice.*` error codes; OQ-011 logged. Pull request next.
 
 ## Next
-M1 #17, the table RPCs: the code registry (code to match id with region and expiry), `table_join_by_code`, `presets_get` from `content/presets` and `voice_token`, with integration tests; then #18, matchmaking.
+#18 (Quick Play matchmaking with human-only fill), #19 (reconnection), #20 (chat). The Unity client track runs in parallel in its own worktree (the other session).
 
 ## Blockers
 - None.

@@ -1,0 +1,12 @@
+{
+  "schema": "../../../tools/content-schemas/preset.schema.json",
+  "id": "classicPagat",
+  "gameId": "thulla",
+  "name": "preset.classicPagat.name",
+  "description": "preset.classicPagat.description",
+  "order": 3,
+  "overrides": {
+    "twoPlayerEndgame": "drawDiscard"
+  },
+  "settings": {}
+}
