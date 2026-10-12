@@ -1,0 +1,33 @@
+{
+  "id": "V-E087-endgame-7SKD-vs-9S-drawOpponent",
+  "version": "1.0.0",
+  "title": "two-player endgame 7S KD against 9S (drawOpponent)",
+  "rules": [
+    "R37",
+    "R40",
+    "R41",
+    "E14"
+  ],
+  "setup": {
+    "hands": [
+      [
+        "7S",
+        "KD"
+      ],
+      [
+        "9S"
+      ]
+    ],
+    "leader": 0,
+    "discard": [],
+    "rules": {
+      "twoPlayerEndgame": "drawOpponent",
+      "confirmedFastForward": false
+    }
+  },
+  "moves": [],
+  "assert": {
+    "forcedBhabhi": null,
+    "stateHash": "303f63aa223e41fc8c8752120441f41b34666d753a0692440b77f589a0e6664f"
+  }
+}

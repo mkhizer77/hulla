@@ -1,0 +1,45 @@
+{
+  "id": "V-066-endgame-lower-last-card",
+  "version": "1.0.0",
+  "title": "the opponent follows lower with their last card: the leader is the Bhabhi",
+  "rules": [
+    "R39"
+  ],
+  "setup": {
+    "hands": [
+      [
+        "9S"
+      ],
+      [
+        "3S"
+      ],
+      []
+    ],
+    "leader": 0,
+    "plays": [
+      {
+        "seat": 0,
+        "card": "9S"
+      }
+    ]
+  },
+  "moves": [
+    {
+      "seat": 1,
+      "move": {
+        "type": "play_card",
+        "card": "3S"
+      }
+    }
+  ],
+  "assert": {
+    "lastEvents": [
+      "card_played",
+      "trick_resolved",
+      "escape",
+      "round_ended"
+    ],
+    "bhabhiSeat": 0,
+    "stateHash": "19000001624320b9c2d7aa3bffa3a5d2871e10b602511c2bc87f64ea0ed65b2d"
+  }
+}

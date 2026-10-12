@@ -1,0 +1,89 @@
+{
+  "id": "V-091-big-bhabhi-penalty",
+  "version": "1.0.0",
+  "title": "the Bhabhi holding eight or more cards scores minus two when toggled",
+  "rules": [
+    "R50",
+    "R49"
+  ],
+  "setup": {
+    "hands": [
+      [
+        "2C"
+      ],
+      [
+        "3C"
+      ],
+      [
+        "4C"
+      ],
+      [
+        "5C"
+      ],
+      [
+        "9C",
+        "6H",
+        "7H",
+        "8H",
+        "9H",
+        "TH",
+        "JH",
+        "QH",
+        "KH"
+      ]
+    ],
+    "leader": 4,
+    "plays": [
+      {
+        "seat": 4,
+        "card": "9C"
+      },
+      {
+        "seat": 0,
+        "card": "2C"
+      },
+      {
+        "seat": 1,
+        "card": "3C"
+      },
+      {
+        "seat": 2,
+        "card": "4C"
+      }
+    ],
+    "rules": {
+      "bigBhabhiPenalty": true
+    }
+  },
+  "moves": [
+    {
+      "seat": 3,
+      "move": {
+        "type": "play_card",
+        "card": "5C"
+      }
+    }
+  ],
+  "assert": {
+    "phase": "ended",
+    "bhabhiSeat": 4,
+    "results": {
+      "points": [
+        3,
+        2,
+        1,
+        0,
+        -2
+      ],
+      "bhabhiCards": 8,
+      "finishOrder": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ]
+    },
+    "stateHash": "dcc870c8251442d8a9f5b14019de8d47e13dd52a5d3e2c33c335786c9fd4a8d7"
+  }
+}

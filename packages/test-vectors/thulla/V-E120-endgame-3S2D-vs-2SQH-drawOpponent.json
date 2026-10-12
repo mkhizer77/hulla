@@ -1,0 +1,34 @@
+{
+  "id": "V-E120-endgame-3S2D-vs-2SQH-drawOpponent",
+  "version": "1.0.0",
+  "title": "two-player endgame 3S 2D against 2S QH (drawOpponent)",
+  "rules": [
+    "R37",
+    "R40",
+    "R41",
+    "E14"
+  ],
+  "setup": {
+    "hands": [
+      [
+        "3S",
+        "2D"
+      ],
+      [
+        "2S",
+        "QH"
+      ]
+    ],
+    "leader": 0,
+    "discard": [],
+    "rules": {
+      "twoPlayerEndgame": "drawOpponent",
+      "confirmedFastForward": false
+    }
+  },
+  "moves": [],
+  "assert": {
+    "forcedBhabhi": 0,
+    "stateHash": "78ac02eefab4528fcf463524dfecb5494d73418f49ba75d0e826b6c1a70c6ff4"
+  }
+}

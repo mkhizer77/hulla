@@ -1,0 +1,61 @@
+{
+  "id": "V-038-instant-exit",
+  "version": "1.0.0",
+  "title": "the instantExit option escapes the leader and the next seat leads",
+  "rules": [
+    "R28"
+  ],
+  "setup": {
+    "hands": [
+      [
+        "9C"
+      ],
+      [
+        "7C",
+        "5D"
+      ],
+      [
+        "4C",
+        "TD"
+      ]
+    ],
+    "leader": 2,
+    "plays": [
+      {
+        "seat": 2,
+        "card": "4C"
+      },
+      {
+        "seat": 0,
+        "card": "9C"
+      }
+    ],
+    "rules": {
+      "emptyHandLeader": "instantExit",
+      "confirmedFastForward": false
+    }
+  },
+  "moves": [
+    {
+      "seat": 1,
+      "move": {
+        "type": "play_card",
+        "card": "7C"
+      }
+    }
+  ],
+  "assert": {
+    "escapeOrder": [
+      0
+    ],
+    "leaderSeat": 1,
+    "turnSeat": 1,
+    "pendingAutoLead": false,
+    "discard": [
+      "4C",
+      "9C",
+      "7C"
+    ],
+    "stateHash": "09667064dc253f1ff056f68ff3628dd6007146881fb7f89369d349de49d07219"
+  }
+}

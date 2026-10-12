@@ -1,0 +1,64 @@
+{
+  "id": "V-040-empty-discard-draws-next-player",
+  "version": "1.0.0",
+  "title": "an empty discard under non-default toggles draws from the next player (OQ-001)",
+  "rules": [
+    "E31",
+    "R26"
+  ],
+  "setup": {
+    "hands": [
+      [
+        "9C"
+      ],
+      [
+        "7C",
+        "5D"
+      ],
+      [
+        "4C",
+        "TD"
+      ]
+    ],
+    "leader": 2,
+    "plays": [
+      {
+        "seat": 2,
+        "card": "4C"
+      },
+      {
+        "seat": 0,
+        "card": "9C"
+      }
+    ],
+    "discard": [],
+    "rules": {
+      "confirmedFastForward": false
+    }
+  },
+  "moves": [
+    {
+      "seat": 1,
+      "move": {
+        "type": "play_card",
+        "card": "7C"
+      },
+      "draw": 0
+    }
+  ],
+  "assert": {
+    "hands": {
+      "0": [
+        "5D"
+      ]
+    },
+    "escapeOrder": [
+      1
+    ],
+    "eventsInclude": [
+      "private_draw",
+      "escape"
+    ],
+    "stateHash": "0c87a7156dfd8ff469651e80a801fefddeb6fe11fee7d72588c56dfac7e8a256"
+  }
+}

@@ -1,0 +1,60 @@
+{
+  "id": "V-022-lead-any-and-skip-escaped",
+  "version": "1.0.0",
+  "title": "the leader leads anything; responses skip escaped seats",
+  "rules": [
+    "R4",
+    "R16",
+    "R17"
+  ],
+  "setup": {
+    "hands": [
+      [
+        "2H",
+        "9S"
+      ],
+      [],
+      [
+        "4H",
+        "5C"
+      ],
+      [
+        "6H"
+      ]
+    ],
+    "leader": 0
+  },
+  "moves": [
+    {
+      "seat": 0,
+      "move": {
+        "type": "play_card",
+        "card": "2H"
+      }
+    },
+    {
+      "seat": 3,
+      "move": {
+        "type": "play_card",
+        "card": "6H"
+      },
+      "expect": {
+        "error": "rules.not_your_turn"
+      }
+    },
+    {
+      "seat": 1,
+      "move": {
+        "type": "play_card",
+        "card": "2H"
+      },
+      "expect": {
+        "error": "rules.seat_not_active"
+      }
+    }
+  ],
+  "assert": {
+    "turnSeat": 2,
+    "stateHash": "a8cd4c05987d9f006640e402bdf6d3bd8b79a72b456669c361401ec7bc3badb0"
+  }
+}

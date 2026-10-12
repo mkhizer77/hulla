@@ -1,0 +1,38 @@
+{
+  "id": "V-069-endgame-no-take",
+  "version": "1.0.0",
+  "title": "the endgame begins with two active and hand-taking is off",
+  "rules": [
+    "R37",
+    "R36"
+  ],
+  "setup": {
+    "hands": [
+      [
+        "9S",
+        "2H"
+      ],
+      [
+        "3S",
+        "7S"
+      ],
+      []
+    ],
+    "leader": 0
+  },
+  "moves": [
+    {
+      "seat": 0,
+      "move": {
+        "type": "take_hand"
+      },
+      "expect": {
+        "error": "rules.hand_take_disabled_endgame"
+      }
+    }
+  ],
+  "assert": {
+    "leaderSeat": 0,
+    "stateHash": "02210ef069b1862a5ff359dfe53dd292d26968a29a220294c3965f4d8f6e2728"
+  }
+}

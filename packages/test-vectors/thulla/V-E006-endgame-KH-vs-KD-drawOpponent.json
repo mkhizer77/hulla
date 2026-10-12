@@ -1,0 +1,32 @@
+{
+  "id": "V-E006-endgame-KH-vs-KD-drawOpponent",
+  "version": "1.0.0",
+  "title": "two-player endgame KH against KD (drawOpponent)",
+  "rules": [
+    "R37",
+    "R40",
+    "R41",
+    "E14"
+  ],
+  "setup": {
+    "hands": [
+      [
+        "KH"
+      ],
+      [
+        "KD"
+      ]
+    ],
+    "leader": 0,
+    "discard": [],
+    "rules": {
+      "twoPlayerEndgame": "drawOpponent",
+      "confirmedFastForward": false
+    }
+  },
+  "moves": [],
+  "assert": {
+    "forcedBhabhi": 0,
+    "stateHash": "a20a552bd05399c9157441419fe1f35630cfc14aff5028665e37bd448d6bb501"
+  }
+}

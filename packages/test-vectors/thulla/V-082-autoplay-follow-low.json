@@ -1,0 +1,37 @@
+{
+  "id": "V-082-autoplay-follow-low",
+  "version": "1.0.0",
+  "title": "auto-play follows suit with the lowest card",
+  "rules": [
+    "R44"
+  ],
+  "setup": {
+    "hands": [
+      [
+        "2H"
+      ],
+      [
+        "4H",
+        "9H",
+        "KS"
+      ],
+      [
+        "6H"
+      ]
+    ],
+    "leader": 0,
+    "plays": [
+      {
+        "seat": 0,
+        "card": "2H"
+      }
+    ]
+  },
+  "moves": [],
+  "assert": {
+    "autoPlay": {
+      "1": "4H"
+    },
+    "stateHash": "527727bc0a8cab393aacc9b1e1b4ff88a7da9b7ba4f4b762ee57f14e1f674593"
+  }
+}

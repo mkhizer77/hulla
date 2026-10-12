@@ -1,0 +1,64 @@
+{
+  "id": "V-015-opening-turn-order-no-thulla",
+  "version": "1.0.0",
+  "title": "turn order without the thulla toggle: an off-suit play is just a play",
+  "rules": [
+    "R13",
+    "R14"
+  ],
+  "setup": {
+    "hands": [
+      [
+        "AS",
+        "2H"
+      ],
+      [
+        "4H",
+        "5H"
+      ],
+      [
+        "6S",
+        "7D"
+      ]
+    ],
+    "leader": 0,
+    "trickIndex": 0,
+    "phase": "opening",
+    "rules": {
+      "openingSimultaneous": false
+    }
+  },
+  "moves": [
+    {
+      "seat": 0,
+      "move": {
+        "type": "play_card",
+        "card": "AS"
+      }
+    },
+    {
+      "seat": 1,
+      "move": {
+        "type": "play_card",
+        "card": "4H"
+      }
+    },
+    {
+      "seat": 2,
+      "move": {
+        "type": "play_card",
+        "card": "6S"
+      }
+    }
+  ],
+  "assert": {
+    "discard": [
+      "AS",
+      "4H",
+      "6S"
+    ],
+    "leaderSeat": 0,
+    "phase": "play",
+    "stateHash": "f7e0a8f1bdb687670e7879bc140bc967eb9b29c0ff28738ae85d7dd6cd6b09b7"
+  }
+}

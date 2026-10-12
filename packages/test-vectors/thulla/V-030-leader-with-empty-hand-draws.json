@@ -1,0 +1,64 @@
+{
+  "id": "V-030-leader-with-empty-hand-draws",
+  "version": "1.0.0",
+  "title": "a seat that wins with its last card is the leader, not an escape; it draws",
+  "rules": [
+    "R25",
+    "R26"
+  ],
+  "setup": {
+    "hands": [
+      [
+        "6H",
+        "2C"
+      ],
+      [
+        "KH"
+      ],
+      [
+        "7H",
+        "4C"
+      ]
+    ],
+    "leader": 0,
+    "plays": [
+      {
+        "seat": 0,
+        "card": "6H"
+      },
+      {
+        "seat": 1,
+        "card": "KH"
+      }
+    ],
+    "discard": [
+      "2S"
+    ]
+  },
+  "moves": [
+    {
+      "seat": 2,
+      "move": {
+        "type": "play_card",
+        "card": "7H"
+      },
+      "draw": 0
+    }
+  ],
+  "assert": {
+    "leaderSeat": 1,
+    "hands": {
+      "1": [
+        "2S"
+      ]
+    },
+    "escapeOrder": [],
+    "pendingAutoLead": true,
+    "lastEvents": [
+      "card_played",
+      "trick_resolved",
+      "private_draw"
+    ],
+    "stateHash": "4466fb239dd557e254e1fc3a34e7be69074b19661806afbfe68a99f5bfef4d77"
+  }
+}

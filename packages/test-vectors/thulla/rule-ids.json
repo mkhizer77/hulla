@@ -1,0 +1,428 @@
+{
+  "game": "thulla",
+  "source": "GDD section 6 (private), rule ids R1 to R53 and edge cases E1 to E31",
+  "ids": [
+    {
+      "id": "R1",
+      "title": "One standard 52-card deck, no jokers; suits have no rank",
+      "scope": "engine"
+    },
+    {
+      "id": "R2",
+      "title": "Rank within a suit: A high, 2 low",
+      "scope": "engine"
+    },
+    {
+      "id": "R3",
+      "title": "Seats 3 to 6 in v1.0; two decks and 7 to 8 seats in v1.2",
+      "scope": "engine"
+    },
+    {
+      "id": "R4",
+      "title": "Play proceeds clockwise",
+      "scope": "engine"
+    },
+    {
+      "id": "R5",
+      "title": "The dealer seat rotates clockwise each round",
+      "scope": "engine"
+    },
+    {
+      "id": "R6",
+      "title": "Cryptographic shuffle with the fair-deal commitment and the seed reveal",
+      "scope": "engine"
+    },
+    {
+      "id": "R7",
+      "title": "Cards dealt one at a time clockwise from the seat left of the dealer",
+      "scope": "engine"
+    },
+    {
+      "id": "R8",
+      "title": "Hands auto-sorted; sorting is cosmetic",
+      "scope": "engine"
+    },
+    {
+      "id": "R9",
+      "title": "The Ace of Spades holder is the opening leader",
+      "scope": "engine"
+    },
+    {
+      "id": "R10",
+      "title": "The round ends when one active player remains: the Bhabhi",
+      "scope": "engine"
+    },
+    {
+      "id": "R11",
+      "title": "Escape order is recorded and never tied",
+      "scope": "engine"
+    },
+    {
+      "id": "R12",
+      "title": "The opening leader must lead the Ace of Spades",
+      "scope": "engine"
+    },
+    {
+      "id": "R13",
+      "title": "The others respond simultaneously and must follow spades if held",
+      "scope": "engine"
+    },
+    {
+      "id": "R14",
+      "title": "The opening trick never causes a pick-up",
+      "scope": "engine"
+    },
+    {
+      "id": "R15",
+      "title": "Toggle: the opening trick in turn order with a thulla",
+      "scope": "engine"
+    },
+    {
+      "id": "R16",
+      "title": "The leader plays any card",
+      "scope": "engine"
+    },
+    {
+      "id": "R17",
+      "title": "Responses proceed clockwise, skipping escaped seats",
+      "scope": "engine"
+    },
+    {
+      "id": "R18",
+      "title": "A responder holding the led suit must follow it",
+      "scope": "engine"
+    },
+    {
+      "id": "R19",
+      "title": "A void responder may play anything: the thulla",
+      "scope": "engine"
+    },
+    {
+      "id": "R20",
+      "title": "A thulla ends the trick immediately",
+      "scope": "engine"
+    },
+    {
+      "id": "R21",
+      "title": "The highest card of the led suit picks up and leads",
+      "scope": "engine"
+    },
+    {
+      "id": "R22",
+      "title": "Without a thulla the cards go to the discard and the highest leads",
+      "scope": "engine"
+    },
+    {
+      "id": "R23",
+      "title": "The pile and picked-up cards are public",
+      "scope": "engine"
+    },
+    {
+      "id": "R24",
+      "title": "Toggle: play continues after a thulla; the highest picks up everything",
+      "scope": "engine"
+    },
+    {
+      "id": "R25",
+      "title": "A player with no cards who is not the next leader has escaped",
+      "scope": "engine"
+    },
+    {
+      "id": "R26",
+      "title": "The leader who wins with the last card draws from the discard, excluding this trick",
+      "scope": "engine"
+    },
+    {
+      "id": "R27",
+      "title": "The next trick resolves normally; escapes follow seat order",
+      "scope": "engine"
+    },
+    {
+      "id": "R28",
+      "title": "Alternatives: draw from the next player, or exit at once",
+      "scope": "engine"
+    },
+    {
+      "id": "R29",
+      "title": "A last card played as a thulla escapes immediately",
+      "scope": "engine"
+    },
+    {
+      "id": "R30",
+      "title": "Under default toggles the discard is never empty when R26 fires",
+      "scope": "engine"
+    },
+    {
+      "id": "R31",
+      "title": "Hand-taking off, leader only, or anyone; off in public and Ranked",
+      "scope": "engine"
+    },
+    {
+      "id": "R32",
+      "title": "Leader only: before leading, from trick two, with three or more active",
+      "scope": "engine"
+    },
+    {
+      "id": "R33",
+      "title": "The target's cards move to the taker, the target escapes, the taker leads",
+      "scope": "engine"
+    },
+    {
+      "id": "R34",
+      "title": "A take needs a confirmation and is never auto-played",
+      "scope": "engine"
+    },
+    {
+      "id": "R35",
+      "title": "Anyone: during the pre-lead window; first accepted wins; one per window",
+      "scope": "engine"
+    },
+    {
+      "id": "R36",
+      "title": "Hand-taking is disabled with exactly two players active",
+      "scope": "engine"
+    },
+    {
+      "id": "R37",
+      "title": "The two-player endgame begins with two active; hand-taking off",
+      "scope": "engine"
+    },
+    {
+      "id": "R38",
+      "title": "The leader with the hand but no cards draws one from the opponent",
+      "scope": "engine"
+    },
+    {
+      "id": "R39",
+      "title": "Endgame outcomes a to d",
+      "scope": "engine"
+    },
+    {
+      "id": "R40",
+      "title": "The endgame always terminates",
+      "scope": "engine"
+    },
+    {
+      "id": "R41",
+      "title": "Forced-outcome detection with 12 or fewer cards; confirmed fast-forward",
+      "scope": "engine"
+    },
+    {
+      "id": "R42",
+      "title": "Endgame toggles: draw opponent, draw discard, thulla ends round",
+      "scope": "engine"
+    },
+    {
+      "id": "R43",
+      "title": "Turn timers; the opening is a simultaneous window",
+      "scope": "engine",
+      "vectorable": false
+    },
+    {
+      "id": "R44",
+      "title": "The deterministic auto-play policy",
+      "scope": "engine"
+    },
+    {
+      "id": "R45",
+      "title": "Absence escalation after consecutive timeouts",
+      "scope": "table-core"
+    },
+    {
+      "id": "R46",
+      "title": "The 30-second reconnection window and auto-play cover",
+      "scope": "table-core"
+    },
+    {
+      "id": "R47",
+      "title": "Illegal actions are rejected with a reason and no penalty",
+      "scope": "engine"
+    },
+    {
+      "id": "R48",
+      "title": "Every action is logged with a sequence number, timestamp and state hash",
+      "scope": "table-core"
+    },
+    {
+      "id": "R49",
+      "title": "What a round yields",
+      "scope": "engine"
+    },
+    {
+      "id": "R50",
+      "title": "Baithak points",
+      "scope": "engine"
+    },
+    {
+      "id": "R51",
+      "title": "Private-room formats",
+      "scope": "engine",
+      "vectorable": false
+    },
+    {
+      "id": "R52",
+      "title": "Quick Play single rounds with a rematch vote",
+      "scope": "table-core"
+    },
+    {
+      "id": "R53",
+      "title": "Ranked rating (v1.1)",
+      "scope": "later"
+    },
+    {
+      "id": "E1",
+      "title": "Opening leader disconnects before leading",
+      "scope": "table-core"
+    },
+    {
+      "id": "E2",
+      "title": "Two off-suit plays in the opening still cause no pick-up",
+      "scope": "engine"
+    },
+    {
+      "id": "E3",
+      "title": "Leader leads the last card; a later thulla; the leader's card is highest",
+      "scope": "engine"
+    },
+    {
+      "id": "E4",
+      "title": "Leader leads the last card; everyone follows lower; draw from the discard",
+      "scope": "engine"
+    },
+    {
+      "id": "E5",
+      "title": "The drawer's led card is beaten and a later seat thullas",
+      "scope": "engine"
+    },
+    {
+      "id": "E6",
+      "title": "A last card played as a thulla",
+      "scope": "engine"
+    },
+    {
+      "id": "E7",
+      "title": "The picker was about to escape but picks up",
+      "scope": "engine"
+    },
+    {
+      "id": "E8",
+      "title": "Hand-take target with one card",
+      "scope": "engine"
+    },
+    {
+      "id": "E9",
+      "title": "A take reduces active players to two",
+      "scope": "engine"
+    },
+    {
+      "id": "E10",
+      "title": "Anyone mode: two take requests in one window",
+      "scope": "engine"
+    },
+    {
+      "id": "E11",
+      "title": "The leader's play closes the take window",
+      "scope": "engine"
+    },
+    {
+      "id": "E12",
+      "title": "The leader draws the opponent's last card",
+      "scope": "engine"
+    },
+    {
+      "id": "E13",
+      "title": "The opponent's last card is a thulla",
+      "scope": "engine"
+    },
+    {
+      "id": "E14",
+      "title": "Confirmed check with random draws",
+      "scope": "engine"
+    },
+    {
+      "id": "E15",
+      "title": "Disconnect mid-hold on a take",
+      "scope": "table-core"
+    },
+    {
+      "id": "E16",
+      "title": "Timer expiry with one legal card",
+      "scope": "table-core"
+    },
+    {
+      "id": "E17",
+      "title": "Host leaves mid-round",
+      "scope": "table-core"
+    },
+    {
+      "id": "E18",
+      "title": "All humans in a public table disconnect",
+      "scope": "table-core"
+    },
+    {
+      "id": "E19",
+      "title": "Rules changed between rounds",
+      "scope": "table-core"
+    },
+    {
+      "id": "E20",
+      "title": "Dealer rotation and extra cards with 5 or 6 seats",
+      "scope": "engine"
+    },
+    {
+      "id": "E21",
+      "title": "Two decks: identical cards in one trick",
+      "scope": "later"
+    },
+    {
+      "id": "E22",
+      "title": "A stale move after reconnect",
+      "scope": "table-core"
+    },
+    {
+      "id": "E23",
+      "title": "A spectator sends chat",
+      "scope": "table-core"
+    },
+    {
+      "id": "E24",
+      "title": "Card sort changes mid-trick",
+      "scope": "client"
+    },
+    {
+      "id": "E25",
+      "title": "Voice channel fails to join",
+      "scope": "client"
+    },
+    {
+      "id": "E26",
+      "title": "A draw on the last trick before the endgame",
+      "scope": "engine"
+    },
+    {
+      "id": "E27",
+      "title": "Offline round interrupted",
+      "scope": "later"
+    },
+    {
+      "id": "E28",
+      "title": "Duplicate play messages",
+      "scope": "table-core"
+    },
+    {
+      "id": "E29",
+      "title": "The opponent beats the leader's last card with their own last card",
+      "scope": "engine"
+    },
+    {
+      "id": "E30",
+      "title": "Everyone else escapes in the trick the leader won with the last card",
+      "scope": "engine"
+    },
+    {
+      "id": "E31",
+      "title": "R26 with an empty discard under non-default toggles",
+      "scope": "engine"
+    }
+  ]
+}

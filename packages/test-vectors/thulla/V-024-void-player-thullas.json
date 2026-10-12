@@ -1,0 +1,53 @@
+{
+  "id": "V-024-void-player-thullas",
+  "version": "1.0.0",
+  "title": "a void responder may play anything and it is a thulla",
+  "rules": [
+    "R19",
+    "R20"
+  ],
+  "setup": {
+    "hands": [
+      [
+        "2H"
+      ],
+      [
+        "5C",
+        "QS"
+      ],
+      [
+        "6H"
+      ]
+    ],
+    "leader": 0,
+    "plays": [
+      {
+        "seat": 0,
+        "card": "2H"
+      }
+    ]
+  },
+  "moves": [
+    {
+      "seat": 1,
+      "move": {
+        "type": "play_card",
+        "card": "QS"
+      }
+    }
+  ],
+  "assert": {
+    "lastEvents": [
+      "card_played",
+      "trick_resolved"
+    ],
+    "hands": {
+      "0": [
+        "2H",
+        "QS"
+      ]
+    },
+    "leaderSeat": 0,
+    "stateHash": "a6e7cf337459ffd86f9cc234d9d91ff726d25a73c672a561e4d2771e8d94e616"
+  }
+}

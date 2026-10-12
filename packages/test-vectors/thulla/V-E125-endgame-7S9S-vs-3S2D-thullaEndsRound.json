@@ -1,0 +1,34 @@
+{
+  "id": "V-E125-endgame-7S9S-vs-3S2D-thullaEndsRound",
+  "version": "1.0.0",
+  "title": "two-player endgame 7S 9S against 3S 2D (thullaEndsRound)",
+  "rules": [
+    "R37",
+    "R40",
+    "R41",
+    "E14"
+  ],
+  "setup": {
+    "hands": [
+      [
+        "7S",
+        "9S"
+      ],
+      [
+        "3S",
+        "2D"
+      ]
+    ],
+    "leader": 0,
+    "discard": [],
+    "rules": {
+      "twoPlayerEndgame": "thullaEndsRound",
+      "confirmedFastForward": false
+    }
+  },
+  "moves": [],
+  "assert": {
+    "forcedBhabhi": 0,
+    "stateHash": "a208d0c6a8ab299ee8d7b5b50254fee19eb1ffd232abcc34aeaccb53b5fd4923"
+  }
+}

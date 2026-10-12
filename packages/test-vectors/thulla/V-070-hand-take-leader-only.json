@@ -1,0 +1,74 @@
+{
+  "id": "V-070-hand-take-leader-only",
+  "version": "1.0.0",
+  "title": "the leader takes the next seat's three cards; the target escapes; the taker leads",
+  "rules": [
+    "R33"
+  ],
+  "setup": {
+    "hands": [
+      [
+        "5H",
+        "6H"
+      ],
+      [
+        "7H",
+        "8H"
+      ],
+      [
+        "2C",
+        "4D",
+        "9S"
+      ],
+      [
+        "TH",
+        "JH"
+      ]
+    ],
+    "leader": 1,
+    "trickIndex": 3,
+    "rules": {
+      "handTaking": "leaderOnly"
+    }
+  },
+  "moves": [
+    {
+      "seat": 1,
+      "move": {
+        "type": "take_hand"
+      }
+    }
+  ],
+  "assert": {
+    "lastEvents": [
+      "hand_taken",
+      "escape"
+    ],
+    "hands": {
+      "1": [
+        "9S",
+        "7H",
+        "8H",
+        "2C",
+        "4D"
+      ]
+    },
+    "escapeOrder": [
+      2
+    ],
+    "leaderSeat": 1,
+    "turnSeat": 1,
+    "handCounts": [
+      2,
+      5,
+      0,
+      2
+    ],
+    "stats": {
+      "1": {
+        "handsTaken": 1
+      }
+    },
+    "stateHash": "2fdd565325d37fe335d8e6c38c2e006b8f24c9c1d80bd9e186e55e58f2ef92fb"
+  }
+}

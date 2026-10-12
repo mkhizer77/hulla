@@ -1,0 +1,33 @@
+{
+  "id": "V-084-autoplay-lead-longest-suit",
+  "version": "1.0.0",
+  "title": "auto-play leads the lowest card of the longest suit",
+  "rules": [
+    "R44"
+  ],
+  "setup": {
+    "hands": [
+      [
+        "9S",
+        "2S",
+        "QH",
+        "3D",
+        "4D"
+      ],
+      [
+        "4H"
+      ],
+      [
+        "6H"
+      ]
+    ],
+    "leader": 0
+  },
+  "moves": [],
+  "assert": {
+    "autoPlay": {
+      "0": "2S"
+    },
+    "stateHash": "153917cd980a98b5700d41869e4a4e3e9344866b014006fccc3eb4b3787e1eec"
+  }
+}

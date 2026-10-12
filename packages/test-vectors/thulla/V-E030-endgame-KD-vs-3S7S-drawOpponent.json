@@ -1,0 +1,33 @@
+{
+  "id": "V-E030-endgame-KD-vs-3S7S-drawOpponent",
+  "version": "1.0.0",
+  "title": "two-player endgame KD against 3S 7S (drawOpponent)",
+  "rules": [
+    "R37",
+    "R40",
+    "R41",
+    "E14"
+  ],
+  "setup": {
+    "hands": [
+      [
+        "KD"
+      ],
+      [
+        "3S",
+        "7S"
+      ]
+    ],
+    "leader": 0,
+    "discard": [],
+    "rules": {
+      "twoPlayerEndgame": "drawOpponent",
+      "confirmedFastForward": false
+    }
+  },
+  "moves": [],
+  "assert": {
+    "forcedBhabhi": null,
+    "stateHash": "d4c36cc51f9b10938146be6520ec90030d02147e3aeb0fb7f0a36bfa6720f247"
+  }
+}

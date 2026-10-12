@@ -1,0 +1,46 @@
+{
+  "id": "V-065-endgame-last-card-thulla",
+  "version": "1.0.0",
+  "title": "the opponent's last card is a thulla: the opponent escapes and the leader is the Bhabhi",
+  "rules": [
+    "E13",
+    "R39"
+  ],
+  "setup": {
+    "hands": [
+      [
+        "9S",
+        "2H"
+      ],
+      [
+        "QH"
+      ],
+      []
+    ],
+    "leader": 0,
+    "plays": [
+      {
+        "seat": 0,
+        "card": "9S"
+      }
+    ]
+  },
+  "moves": [
+    {
+      "seat": 1,
+      "move": {
+        "type": "play_card",
+        "card": "QH"
+      }
+    }
+  ],
+  "assert": {
+    "bhabhiSeat": 0,
+    "escapeOrder": [
+      2,
+      1
+    ],
+    "phase": "ended",
+    "stateHash": "21e95494187ae2baf7797c58d101ede07ea9ac0e144a51ba0e1ac58dd06202b2"
+  }
+}

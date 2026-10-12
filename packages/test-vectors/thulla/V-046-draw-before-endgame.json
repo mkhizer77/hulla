@@ -1,0 +1,90 @@
+{
+  "id": "V-046-draw-before-endgame",
+  "version": "1.0.0",
+  "title": "the trick that leaves two players is followed by the endgame draw from the opponent",
+  "rules": [
+    "E26"
+  ],
+  "setup": {
+    "hands": [
+      [
+        "9C",
+        "KH"
+      ],
+      [
+        "7C"
+      ],
+      [
+        "4C",
+        "TD",
+        "3H",
+        "5D"
+      ]
+    ],
+    "leader": 2,
+    "plays": [
+      {
+        "seat": 2,
+        "card": "4C"
+      },
+      {
+        "seat": 0,
+        "card": "9C"
+      }
+    ],
+    "discard": [
+      "2S",
+      "3S"
+    ],
+    "rules": {
+      "confirmedFastForward": false
+    }
+  },
+  "moves": [
+    {
+      "seat": 1,
+      "move": {
+        "type": "play_card",
+        "card": "7C"
+      }
+    },
+    {
+      "seat": 0,
+      "move": {
+        "type": "play_card",
+        "card": "KH"
+      }
+    },
+    {
+      "seat": 2,
+      "move": {
+        "type": "play_card",
+        "card": "3H"
+      },
+      "draw": 1
+    }
+  ],
+  "assert": {
+    "escapeOrder": [
+      1
+    ],
+    "eventsInclude": [
+      "endgame_started",
+      "private_draw"
+    ],
+    "handCounts": [
+      1,
+      0,
+      1
+    ],
+    "hands": {
+      "0": [
+        "TD"
+      ],
+      "2": [
+        "5D"
+      ]
+    },
+    "stateHash": "d48ef6d5605e8311f8e8ea3c51aff3e23011423d4be85dccf8f40a58ea103fda"
+  }
+}

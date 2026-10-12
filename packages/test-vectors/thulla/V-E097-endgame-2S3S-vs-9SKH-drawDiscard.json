@@ -1,0 +1,37 @@
+{
+  "id": "V-E097-endgame-2S3S-vs-9SKH-drawDiscard",
+  "version": "1.0.0",
+  "title": "two-player endgame 2S 3S against 9S KH (drawDiscard)",
+  "rules": [
+    "R37",
+    "R40",
+    "R41",
+    "E14"
+  ],
+  "setup": {
+    "hands": [
+      [
+        "2S",
+        "3S"
+      ],
+      [
+        "9S",
+        "KH"
+      ]
+    ],
+    "leader": 0,
+    "discard": [
+      "4C",
+      "5C"
+    ],
+    "rules": {
+      "twoPlayerEndgame": "drawDiscard",
+      "confirmedFastForward": false
+    }
+  },
+  "moves": [],
+  "assert": {
+    "forcedBhabhi": 1,
+    "stateHash": "59868da00d9e495d27f7f5b3f9c2c36e30312509d09107e8b1db7165a404f44b"
+  }
+}

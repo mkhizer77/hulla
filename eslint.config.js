@@ -107,6 +107,11 @@ export default defineConfig([
     },
   },
   {
+    // Generators and checks that run from the shell may print.
+    files: ["tools/**", "**/scripts/**"],
+    rules: { "no-console": "off" },
+  },
+  {
     files: ["**/__tests__/**"],
     rules: {
       "@typescript-eslint/no-non-null-assertion": "off",

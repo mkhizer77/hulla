@@ -1,0 +1,33 @@
+{
+  "id": "V-E078-endgame-2SKD-vs-2D-drawOpponent",
+  "version": "1.0.0",
+  "title": "two-player endgame 2S KD against 2D (drawOpponent)",
+  "rules": [
+    "R37",
+    "R40",
+    "R41",
+    "E14"
+  ],
+  "setup": {
+    "hands": [
+      [
+        "2S",
+        "KD"
+      ],
+      [
+        "2D"
+      ]
+    ],
+    "leader": 0,
+    "discard": [],
+    "rules": {
+      "twoPlayerEndgame": "drawOpponent",
+      "confirmedFastForward": false
+    }
+  },
+  "moves": [],
+  "assert": {
+    "forcedBhabhi": 0,
+    "stateHash": "23fbbacee6e055cdf1282fc470ec0c02868938c2a4db5fda8fb787e912f2e476"
+  }
+}

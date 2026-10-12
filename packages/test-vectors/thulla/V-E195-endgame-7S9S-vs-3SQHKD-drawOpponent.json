@@ -1,0 +1,35 @@
+{
+  "id": "V-E195-endgame-7S9S-vs-3SQHKD-drawOpponent",
+  "version": "1.0.0",
+  "title": "two-player endgame 7S 9S against 3S QH KD (drawOpponent)",
+  "rules": [
+    "R37",
+    "R40",
+    "R41",
+    "E14"
+  ],
+  "setup": {
+    "hands": [
+      [
+        "7S",
+        "9S"
+      ],
+      [
+        "3S",
+        "QH",
+        "KD"
+      ]
+    ],
+    "leader": 0,
+    "discard": [],
+    "rules": {
+      "twoPlayerEndgame": "drawOpponent",
+      "confirmedFastForward": false
+    }
+  },
+  "moves": [],
+  "assert": {
+    "forcedBhabhi": 0,
+    "stateHash": "58e1c16c285851e59ddd326d046a6d98ed037aa4a334976cf066520fa57ced55"
+  }
+}

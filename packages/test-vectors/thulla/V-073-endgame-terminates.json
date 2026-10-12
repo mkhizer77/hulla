@@ -1,0 +1,80 @@
+{
+  "id": "V-073-endgame-terminates",
+  "version": "1.0.0",
+  "title": "a longer endgame still ends with one Bhabhi",
+  "rules": [
+    "R40"
+  ],
+  "setup": {
+    "hands": [
+      [
+        "2S",
+        "3H",
+        "4D"
+      ],
+      [
+        "9S",
+        "KH",
+        "QD",
+        "2D"
+      ],
+      []
+    ],
+    "leader": 0,
+    "plays": [
+      {
+        "seat": 0,
+        "card": "2S"
+      }
+    ],
+    "rules": {
+      "confirmedFastForward": false
+    }
+  },
+  "moves": [
+    {
+      "seat": 1,
+      "move": {
+        "type": "play_card",
+        "card": "9S"
+      }
+    },
+    {
+      "seat": 1,
+      "move": {
+        "type": "play_card",
+        "card": "KH"
+      }
+    },
+    {
+      "seat": 0,
+      "move": {
+        "type": "play_card",
+        "card": "3H"
+      }
+    },
+    {
+      "seat": 1,
+      "move": {
+        "type": "play_card",
+        "card": "QD"
+      }
+    },
+    {
+      "seat": 0,
+      "move": {
+        "type": "play_card",
+        "card": "4D"
+      }
+    }
+  ],
+  "assert": {
+    "phase": "ended",
+    "bhabhiSeat": 1,
+    "escapeOrder": [
+      2,
+      0
+    ],
+    "stateHash": "351c9ccc42c3814af4868271860437f90675f053c4648700e548fa7723b5f351"
+  }
+}

@@ -1,0 +1,78 @@
+{
+  "id": "V-010-opening-only-the-ace-leads",
+  "version": "1.0.0",
+  "title": "the opener must lead the Ace of Spades; nobody else may act",
+  "rules": [
+    "R12"
+  ],
+  "setup": {
+    "hands": [
+      [
+        "AS",
+        "2H"
+      ],
+      [
+        "3S",
+        "4H"
+      ],
+      [
+        "5H",
+        "6D"
+      ],
+      [
+        "7S",
+        "8S"
+      ]
+    ],
+    "leader": 0,
+    "trickIndex": 0,
+    "phase": "opening",
+    "openingPending": [
+      1,
+      2,
+      3
+    ]
+  },
+  "moves": [
+    {
+      "seat": 0,
+      "move": {
+        "type": "play_card",
+        "card": "2H"
+      },
+      "expect": {
+        "error": "rules.must_lead_ace_of_spades"
+      }
+    },
+    {
+      "seat": 1,
+      "move": {
+        "type": "play_card",
+        "card": "3S"
+      },
+      "expect": {
+        "error": "rules.not_your_turn"
+      }
+    },
+    {
+      "seat": 0,
+      "move": {
+        "type": "play_card",
+        "card": "AS"
+      }
+    }
+  ],
+  "assert": {
+    "turnSeat": null,
+    "lastEvents": [
+      "card_played"
+    ],
+    "handCounts": [
+      1,
+      2,
+      2,
+      2
+    ],
+    "stateHash": "ced9c9c6e411e753f2ed4cad00b92c6ee5e19c0ec210f94c487443f9d5f47652"
+  }
+}

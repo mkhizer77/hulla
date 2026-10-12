@@ -96,7 +96,7 @@ describe("the deal", () => {
     expect(fairDealCommitment(seed, tampered)).not.toBe(state.commitment);
   });
 
-  it("R7_distribution_by_seat_count_with_extra_cards_left_of_the_dealer", () => {
+  it("R7_E20_distribution_by_seat_count_with_extra_cards_left_of_the_new_dealer", () => {
     const sizes = (state: ThullaState): number[] => state.seats.map((seat) => seat.hand.length);
     expect(sizes(expectOk(deal(3, 2)))).toEqual([18, 17, 17]);
     expect(sizes(expectOk(deal(3, 0)))).toEqual([17, 18, 17]);

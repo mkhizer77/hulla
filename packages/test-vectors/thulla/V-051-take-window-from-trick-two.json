@@ -1,0 +1,38 @@
+{
+  "id": "V-051-take-window-from-trick-two",
+  "version": "1.0.0",
+  "title": "no take before trick two",
+  "rules": [
+    "R32"
+  ],
+  "setup": {
+    "hands": [
+      [
+        "2H"
+      ],
+      [
+        "3H"
+      ],
+      [
+        "4H"
+      ]
+    ],
+    "leader": 0,
+    "trickIndex": 0
+  },
+  "moves": [
+    {
+      "seat": 0,
+      "move": {
+        "type": "take_hand"
+      },
+      "expect": {
+        "error": "rules.hand_take_window_closed"
+      }
+    }
+  ],
+  "assert": {
+    "trickIndex": 0,
+    "stateHash": "a5b56c1f4fe842d44977929412893bcc4159db9dcff0d5bc22a20fdb6ce2d527"
+  }
+}

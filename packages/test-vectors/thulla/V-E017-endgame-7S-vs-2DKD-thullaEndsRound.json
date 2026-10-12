@@ -1,0 +1,33 @@
+{
+  "id": "V-E017-endgame-7S-vs-2DKD-thullaEndsRound",
+  "version": "1.0.0",
+  "title": "two-player endgame 7S against 2D KD (thullaEndsRound)",
+  "rules": [
+    "R37",
+    "R40",
+    "R41",
+    "E14"
+  ],
+  "setup": {
+    "hands": [
+      [
+        "7S"
+      ],
+      [
+        "2D",
+        "KD"
+      ]
+    ],
+    "leader": 0,
+    "discard": [],
+    "rules": {
+      "twoPlayerEndgame": "thullaEndsRound",
+      "confirmedFastForward": false
+    }
+  },
+  "moves": [],
+  "assert": {
+    "forcedBhabhi": 0,
+    "stateHash": "66dc4cd3c862c619d82b731070e77ff145d61bcdeb2822285ff6a71482a7d0de"
+  }
+}

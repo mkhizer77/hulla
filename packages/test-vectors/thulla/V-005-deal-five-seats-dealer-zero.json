@@ -1,0 +1,27 @@
+{
+  "id": "V-005-deal-five-seats-dealer-zero",
+  "version": "1.0.0",
+  "title": "the extra cards follow the new dealer",
+  "rules": [
+    "R5",
+    "R7",
+    "E20"
+  ],
+  "deal": {
+    "seedHex": "0909090909090909090909090909090909090909090909090909090909090909",
+    "seatCount": 5,
+    "dealerSeat": 0
+  },
+  "moves": [],
+  "assert": {
+    "handCounts": [
+      10,
+      11,
+      11,
+      10,
+      10
+    ],
+    "commitment": "77758ecbb09afd34e2cb87b01953708d5b8762afb624a43075de2192ca5e6a02",
+    "stateHash": "db2c3de0d98d37df2bc3df417939b9987811a9fac9fa09787534042dc3666dd5"
+  }
+}

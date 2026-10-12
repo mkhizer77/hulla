@@ -1,0 +1,50 @@
+{
+  "id": "V-058-endgame-not-confirmed",
+  "version": "1.0.0",
+  "title": "not confirmed: one draw lets Sara play K♥ higher",
+  "rules": [
+    "R41",
+    "E14"
+  ],
+  "setup": {
+    "hands": [
+      [
+        "9S"
+      ],
+      [
+        "3S",
+        "7S",
+        "QH",
+        "KH"
+      ]
+    ],
+    "leader": 0,
+    "plays": [
+      {
+        "seat": 0,
+        "card": "9S"
+      }
+    ]
+  },
+  "moves": [
+    {
+      "seat": 1,
+      "move": {
+        "type": "play_card",
+        "card": "3S"
+      },
+      "draw": 0
+    }
+  ],
+  "assert": {
+    "confirmedBhabhi": null,
+    "phase": "play",
+    "lastEvents": [
+      "card_played",
+      "trick_resolved",
+      "private_draw"
+    ],
+    "pendingAutoLead": true,
+    "stateHash": "0e3d29fac659ff8274967db29e02ba63bff5d8ef8329bc8a0e9dce3e23e83fb8"
+  }
+}

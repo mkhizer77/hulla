@@ -1,0 +1,65 @@
+{
+  "id": "V-061-last-card-thulla-escapes",
+  "version": "1.0.0",
+  "title": "a last card played as a thulla escapes while the picker takes the pile; the endgame begins",
+  "rules": [
+    "R29",
+    "E6",
+    "R37"
+  ],
+  "setup": {
+    "hands": [
+      [
+        "5C",
+        "2H"
+      ],
+      [
+        "TC",
+        "3H"
+      ],
+      [
+        "AD"
+      ]
+    ],
+    "leader": 0,
+    "plays": [
+      {
+        "seat": 0,
+        "card": "5C"
+      },
+      {
+        "seat": 1,
+        "card": "TC"
+      }
+    ],
+    "rules": {
+      "confirmedFastForward": false
+    }
+  },
+  "moves": [
+    {
+      "seat": 2,
+      "move": {
+        "type": "play_card",
+        "card": "AD"
+      }
+    }
+  ],
+  "assert": {
+    "escapeOrder": [
+      2
+    ],
+    "handContains": {
+      "1": [
+        "5C",
+        "TC",
+        "AD"
+      ]
+    },
+    "eventsInclude": [
+      "endgame_started"
+    ],
+    "leaderSeat": 1,
+    "stateHash": "82e78e2c1d4c8ca8060a9142decb59b8a577473d8c64a669d01849fe40721843"
+  }
+}

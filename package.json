@@ -13,7 +13,7 @@
   "scripts": {
     "lint": "pnpm typecheck && eslint . --max-warnings 0 && prettier --check . && pnpm depcruise",
     "typecheck": "pnpm -r --if-present run typecheck",
-    "depcruise": "depcruise --config .dependency-cruiser.cjs packages",
+    "depcruise": "depcruise --config .dependency-cruiser.cjs packages tools",
     "test": "vitest run --passWithNoTests --coverage",
     "test:watch": "vitest",
     "vectors": "pnpm -r --if-present run vectors",
@@ -34,6 +34,7 @@
     "eslint-plugin-import-x": "^4.17.1",
     "fast-check": "^4.10.2",
     "prettier": "^3.9.10",
+    "tsx": "^4.23.15",
     "typescript": "~5.9.3",
     "typescript-eslint": "^8.71.1",
     "vite": "^8.3.4",

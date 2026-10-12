@@ -1,0 +1,63 @@
+{
+  "id": "V-067-endgame-draw-discard-option",
+  "version": "1.0.0",
+  "title": "the drawDiscard endgame option draws from the discard when it has cards",
+  "rules": [
+    "R42"
+  ],
+  "setup": {
+    "hands": [
+      [
+        "9S"
+      ],
+      [
+        "3S",
+        "7S",
+        "QH",
+        "KH"
+      ],
+      []
+    ],
+    "leader": 0,
+    "plays": [
+      {
+        "seat": 0,
+        "card": "9S"
+      }
+    ],
+    "discard": [
+      "4C",
+      "5C"
+    ],
+    "rules": {
+      "twoPlayerEndgame": "drawDiscard",
+      "confirmedFastForward": false
+    }
+  },
+  "moves": [
+    {
+      "seat": 1,
+      "move": {
+        "type": "play_card",
+        "card": "3S"
+      },
+      "draw": 1
+    }
+  ],
+  "assert": {
+    "hands": {
+      "0": [
+        "5C"
+      ]
+    },
+    "eventsInclude": [
+      "private_draw"
+    ],
+    "discard": [
+      "4C",
+      "9S",
+      "3S"
+    ],
+    "stateHash": "c0d58fe3457f19e7bcfebf59de917b81fe36226a2a6509f5487616852a2ddcbf"
+  }
+}

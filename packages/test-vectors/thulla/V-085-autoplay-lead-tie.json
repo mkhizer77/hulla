@@ -1,0 +1,30 @@
+{
+  "id": "V-085-autoplay-lead-tie",
+  "version": "1.0.0",
+  "title": "a tie between suits goes to the lowest rank overall",
+  "rules": [
+    "R44"
+  ],
+  "setup": {
+    "hands": [
+      [
+        "9S",
+        "QH"
+      ],
+      [
+        "4H"
+      ],
+      [
+        "6H"
+      ]
+    ],
+    "leader": 0
+  },
+  "moves": [],
+  "assert": {
+    "autoPlay": {
+      "0": "9S"
+    },
+    "stateHash": "221823d8d681ec8b070a5db1e1ae135d010b1d73d996d8703de7bfb23ffdb19d"
+  }
+}

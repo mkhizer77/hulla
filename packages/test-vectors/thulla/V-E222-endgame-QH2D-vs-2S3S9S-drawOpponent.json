@@ -1,0 +1,35 @@
+{
+  "id": "V-E222-endgame-QH2D-vs-2S3S9S-drawOpponent",
+  "version": "1.0.0",
+  "title": "two-player endgame QH 2D against 2S 3S 9S (drawOpponent)",
+  "rules": [
+    "R37",
+    "R40",
+    "R41",
+    "E14"
+  ],
+  "setup": {
+    "hands": [
+      [
+        "QH",
+        "2D"
+      ],
+      [
+        "2S",
+        "3S",
+        "9S"
+      ]
+    ],
+    "leader": 0,
+    "discard": [],
+    "rules": {
+      "twoPlayerEndgame": "drawOpponent",
+      "confirmedFastForward": false
+    }
+  },
+  "moves": [],
+  "assert": {
+    "forcedBhabhi": null,
+    "stateHash": "cbe0c21ce08b2e84216afcec87896cd2bb5aa0abf9db05f6341de12f22c38f06"
+  }
+}

@@ -1,0 +1,83 @@
+{
+  "id": "V-043-everyone-else-escapes-same-trick",
+  "version": "1.0.0",
+  "title": "when everyone else escapes in the trick the leader won, the leader is the Bhabhi without a draw",
+  "rules": [
+    "R10",
+    "E30",
+    "R49",
+    "R50"
+  ],
+  "setup": {
+    "hands": [
+      [
+        "9C"
+      ],
+      [
+        "7C"
+      ],
+      [
+        "4C"
+      ]
+    ],
+    "leader": 2,
+    "plays": [
+      {
+        "seat": 2,
+        "card": "4C"
+      },
+      {
+        "seat": 0,
+        "card": "9C"
+      }
+    ],
+    "discard": [
+      "2S"
+    ]
+  },
+  "moves": [
+    {
+      "seat": 1,
+      "move": {
+        "type": "play_card",
+        "card": "7C"
+      }
+    }
+  ],
+  "assert": {
+    "lastEvents": [
+      "card_played",
+      "trick_resolved",
+      "escape",
+      "escape",
+      "round_ended"
+    ],
+    "phase": "ended",
+    "bhabhiSeat": 0,
+    "escapeOrder": [
+      1,
+      2
+    ],
+    "results": {
+      "finishOrder": [
+        1,
+        2,
+        0
+      ],
+      "loserSeat": 0,
+      "points": [
+        -1,
+        3,
+        2
+      ],
+      "bhabhiCards": 0
+    },
+    "views": [
+      {
+        "viewer": "spectator",
+        "seedHidden": false
+      }
+    ],
+    "stateHash": "54787269d987f6403f31a1980505304cb3b3007648f030a2b0086cd5a18a5eeb"
+  }
+}

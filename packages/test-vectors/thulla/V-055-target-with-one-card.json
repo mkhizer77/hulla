@@ -1,0 +1,52 @@
+{
+  "id": "V-055-target-with-one-card",
+  "version": "1.0.0",
+  "title": "a target with one card can be taken and escapes with that rank",
+  "rules": [
+    "E8",
+    "E9"
+  ],
+  "setup": {
+    "hands": [
+      [
+        "2H"
+      ],
+      [
+        "3H"
+      ],
+      [
+        "4H",
+        "5H"
+      ]
+    ],
+    "leader": 0,
+    "rules": {
+      "confirmedFastForward": false
+    }
+  },
+  "moves": [
+    {
+      "seat": 0,
+      "move": {
+        "type": "take_hand"
+      }
+    }
+  ],
+  "assert": {
+    "hands": {
+      "0": [
+        "2H",
+        "3H"
+      ]
+    },
+    "escapeOrder": [
+      1
+    ],
+    "eventsInclude": [
+      "hand_taken",
+      "escape",
+      "endgame_started"
+    ],
+    "stateHash": "2b742ebdc91d1a824f90fb25830ce15fb7d898daed2c972e6fe4086a9dd1421a"
+  }
+}

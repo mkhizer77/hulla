@@ -43,3 +43,5 @@ export type { ThullaRoundResult } from "./results";
 export { createSeries, results, seriesUpdate } from "./results";
 export type { ThullaModule } from "./module";
 export { THULLA_PHASES, onDeadline, thullaModule } from "./module";
+export type { ThullaSetup } from "./setup";
+export { stateFromSetup } from "./setup";

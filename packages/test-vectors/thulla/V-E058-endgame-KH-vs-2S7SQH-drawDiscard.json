@@ -1,0 +1,37 @@
+{
+  "id": "V-E058-endgame-KH-vs-2S7SQH-drawDiscard",
+  "version": "1.0.0",
+  "title": "two-player endgame KH against 2S 7S QH (drawDiscard)",
+  "rules": [
+    "R37",
+    "R40",
+    "R41",
+    "E14"
+  ],
+  "setup": {
+    "hands": [
+      [
+        "KH"
+      ],
+      [
+        "2S",
+        "7S",
+        "QH"
+      ]
+    ],
+    "leader": 0,
+    "discard": [
+      "4C",
+      "5C"
+    ],
+    "rules": {
+      "twoPlayerEndgame": "drawDiscard",
+      "confirmedFastForward": false
+    }
+  },
+  "moves": [],
+  "assert": {
+    "forcedBhabhi": null,
+    "stateHash": "ffdca59434ddc451be2ceb1b2cbe08e59c4726669d1e208e9e402e73459da5b1"
+  }
+}

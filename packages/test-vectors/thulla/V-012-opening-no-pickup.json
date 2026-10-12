@@ -1,0 +1,85 @@
+{
+  "id": "V-012-opening-no-pickup",
+  "version": "1.0.0",
+  "title": "the opening trick goes to the discard and the Ace holder leads trick two",
+  "rules": [
+    "R14",
+    "R30"
+  ],
+  "setup": {
+    "hands": [
+      [
+        "AS",
+        "2H"
+      ],
+      [
+        "3S",
+        "4H"
+      ],
+      [
+        "5H",
+        "6D"
+      ],
+      [
+        "7S",
+        "8S"
+      ]
+    ],
+    "leader": 0,
+    "trickIndex": 0,
+    "phase": "opening",
+    "openingPending": [
+      1,
+      2,
+      3
+    ]
+  },
+  "moves": [
+    {
+      "seat": 0,
+      "move": {
+        "type": "play_card",
+        "card": "AS"
+      }
+    },
+    {
+      "seat": 2,
+      "move": {
+        "type": "play_card",
+        "card": "6D"
+      }
+    },
+    {
+      "seat": 1,
+      "move": {
+        "type": "play_card",
+        "card": "3S"
+      }
+    },
+    {
+      "seat": 3,
+      "move": {
+        "type": "play_card",
+        "card": "7S"
+      }
+    }
+  ],
+  "assert": {
+    "lastEvents": [
+      "card_played",
+      "trick_resolved"
+    ],
+    "discard": [
+      "AS",
+      "6D",
+      "3S",
+      "7S"
+    ],
+    "leaderSeat": 0,
+    "turnSeat": 0,
+    "trickIndex": 1,
+    "phase": "play",
+    "discardCount": 4,
+    "stateHash": "603d46a939ea9ab3c173ed204c2a7166d584a8713908c36693b08427ac31c39f"
+  }
+}

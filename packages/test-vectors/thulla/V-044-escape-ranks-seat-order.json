@@ -1,0 +1,60 @@
+{
+  "id": "V-044-escape-ranks-seat-order",
+  "version": "1.0.0",
+  "title": "escape ranks follow seat order from the leader and are never tied",
+  "rules": [
+    "R11",
+    "R27"
+  ],
+  "setup": {
+    "hands": [
+      [
+        "9C",
+        "AH"
+      ],
+      [
+        "7C"
+      ],
+      [
+        "4C"
+      ],
+      [
+        "8C"
+      ]
+    ],
+    "leader": 2,
+    "plays": [
+      {
+        "seat": 2,
+        "card": "4C"
+      },
+      {
+        "seat": 3,
+        "card": "8C"
+      },
+      {
+        "seat": 0,
+        "card": "9C"
+      }
+    ]
+  },
+  "moves": [
+    {
+      "seat": 1,
+      "move": {
+        "type": "play_card",
+        "card": "7C"
+      }
+    }
+  ],
+  "assert": {
+    "escapeOrder": [
+      1,
+      2,
+      3
+    ],
+    "bhabhiSeat": 0,
+    "phase": "ended",
+    "stateHash": "4294743dc75f010df8bb010d0e037a27b130455d0dbefadfa498e12c6e9e8933"
+  }
+}

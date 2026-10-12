@@ -1,0 +1,35 @@
+{
+  "id": "V-E216-endgame-9S2D-vs-QHKHKD-drawOpponent",
+  "version": "1.0.0",
+  "title": "two-player endgame 9S 2D against QH KH KD (drawOpponent)",
+  "rules": [
+    "R37",
+    "R40",
+    "R41",
+    "E14"
+  ],
+  "setup": {
+    "hands": [
+      [
+        "9S",
+        "2D"
+      ],
+      [
+        "QH",
+        "KH",
+        "KD"
+      ]
+    ],
+    "leader": 0,
+    "discard": [],
+    "rules": {
+      "twoPlayerEndgame": "drawOpponent",
+      "confirmedFastForward": false
+    }
+  },
+  "moves": [],
+  "assert": {
+    "forcedBhabhi": null,
+    "stateHash": "b3fa9e163219ab5fded4e46006e44c22eba6950942a5f68d36a6541df3109d24"
+  }
+}

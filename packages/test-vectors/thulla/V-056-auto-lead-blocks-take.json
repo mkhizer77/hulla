@@ -1,0 +1,41 @@
+{
+  "id": "V-056-auto-lead-blocks-take",
+  "version": "1.0.0",
+  "title": "a leader who just drew must lead the drawn card and cannot take",
+  "rules": [
+    "R26",
+    "R34"
+  ],
+  "setup": {
+    "hands": [
+      [
+        "8D"
+      ],
+      [
+        "3H"
+      ],
+      [
+        "4H"
+      ]
+    ],
+    "leader": 0,
+    "pendingAutoLead": true
+  },
+  "moves": [
+    {
+      "seat": 0,
+      "move": {
+        "type": "take_hand"
+      },
+      "expect": {
+        "error": "rules.hand_take_window_closed"
+      }
+    }
+  ],
+  "assert": {
+    "autoPlay": {
+      "0": "8D"
+    },
+    "stateHash": "6df7f7ec9615513a9622215c3d51f6abe31c76cd8933148253d2b2d1831ec06f"
+  }
+}

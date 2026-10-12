@@ -1,0 +1,49 @@
+{
+  "id": "V-059-confirmed-without-fast-forward",
+  "version": "1.0.0",
+  "title": "with fast-forward off the confirmed event fires and play continues by hand",
+  "rules": [
+    "R41"
+  ],
+  "setup": {
+    "hands": [
+      [
+        "9S"
+      ],
+      [
+        "3S",
+        "7S",
+        "QH",
+        "2D"
+      ]
+    ],
+    "leader": 0,
+    "plays": [
+      {
+        "seat": 0,
+        "card": "9S"
+      }
+    ],
+    "rules": {
+      "confirmedFastForward": false
+    }
+  },
+  "moves": [
+    {
+      "seat": 1,
+      "move": {
+        "type": "play_card",
+        "card": "3S"
+      },
+      "draw": 1
+    }
+  ],
+  "assert": {
+    "eventsInclude": [
+      "confirmed"
+    ],
+    "phase": "play",
+    "confirmedBhabhi": 0,
+    "stateHash": "33d27efde345c6c300369a4f90fe17cb968568138c61ba4f4e4abad375acdf28"
+  }
+}

@@ -1,0 +1,33 @@
+{
+  "id": "V-E093-endgame-QHKD-vs-7S-drawOpponent",
+  "version": "1.0.0",
+  "title": "two-player endgame QH KD against 7S (drawOpponent)",
+  "rules": [
+    "R37",
+    "R40",
+    "R41",
+    "E14"
+  ],
+  "setup": {
+    "hands": [
+      [
+        "QH",
+        "KD"
+      ],
+      [
+        "7S"
+      ]
+    ],
+    "leader": 0,
+    "discard": [],
+    "rules": {
+      "twoPlayerEndgame": "drawOpponent",
+      "confirmedFastForward": false
+    }
+  },
+  "moves": [],
+  "assert": {
+    "forcedBhabhi": 0,
+    "stateHash": "d84656d728c5a1bef0b1578b1467869f6a55cb78d1c71dfdfd7f9bc3bb33bd30"
+  }
+}

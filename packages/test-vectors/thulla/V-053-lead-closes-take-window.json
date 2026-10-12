@@ -1,0 +1,46 @@
+{
+  "id": "V-053-lead-closes-take-window",
+  "version": "1.0.0",
+  "title": "the leader's play closes the take window",
+  "rules": [
+    "E11",
+    "R35"
+  ],
+  "setup": {
+    "hands": [
+      [
+        "2H",
+        "9S"
+      ],
+      [
+        "3H"
+      ],
+      [
+        "4H"
+      ]
+    ],
+    "leader": 0
+  },
+  "moves": [
+    {
+      "seat": 0,
+      "move": {
+        "type": "play_card",
+        "card": "2H"
+      }
+    },
+    {
+      "seat": 0,
+      "move": {
+        "type": "take_hand"
+      },
+      "expect": {
+        "error": "rules.hand_take_window_closed"
+      }
+    }
+  ],
+  "assert": {
+    "turnSeat": 1,
+    "stateHash": "a9ed9c871e30e9392d52da1b0aa9c20cb375b68f4c2d7d818a303406d2a97802"
+  }
+}

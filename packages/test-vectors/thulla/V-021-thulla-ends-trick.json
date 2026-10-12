@@ -1,0 +1,83 @@
+{
+  "id": "V-021-thulla-ends-trick",
+  "version": "1.0.0",
+  "title": "Ali 6♥, Sara K♥, Bilal Q♠ thulla: the trick ends, Noor does not play, Sara picks up",
+  "rules": [
+    "R19",
+    "R20",
+    "R21"
+  ],
+  "setup": {
+    "hands": [
+      [
+        "6H",
+        "2C"
+      ],
+      [
+        "KH",
+        "3C"
+      ],
+      [
+        "QS",
+        "4C"
+      ],
+      [
+        "9H",
+        "5C"
+      ]
+    ],
+    "leader": 0,
+    "plays": [
+      {
+        "seat": 0,
+        "card": "6H"
+      },
+      {
+        "seat": 1,
+        "card": "KH"
+      }
+    ],
+    "trickIndex": 5
+  },
+  "moves": [
+    {
+      "seat": 2,
+      "move": {
+        "type": "play_card",
+        "card": "QS"
+      }
+    }
+  ],
+  "assert": {
+    "lastEvents": [
+      "card_played",
+      "trick_resolved"
+    ],
+    "hands": {
+      "1": [
+        "6H",
+        "KH",
+        "QS",
+        "3C"
+      ],
+      "3": [
+        "9H",
+        "5C"
+      ]
+    },
+    "leaderSeat": 1,
+    "turnSeat": 1,
+    "discardCount": 0,
+    "trickIndex": 6,
+    "stats": {
+      "1": {
+        "cardsPickedUp": 3,
+        "thullasReceived": 1
+      },
+      "2": {
+        "thullasGiven": 1
+      }
+    },
+    "stateHash": "7f24464d66e360173433039e521d2bfc4cc4195c53ca74e8072b51f69a0bb554"
+  }
+}
