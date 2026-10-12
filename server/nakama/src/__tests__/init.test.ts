@@ -44,9 +44,15 @@ describe("InitModule", () => {
       "mutes_get",
       "chat_filters_get",
       "chat_filters_set",
+      "block_set",
+      "blocks_get",
+      "report_create",
+      "reports_list",
+      "admin_chat_logs_purge",
     ]);
     expect([...matches.keys()]).toEqual(["thulla"]);
     expect(hooks.get("rtBefore:ChannelMessageSend")?.name).toBe("beforeChannelMessageSend");
+    expect(hooks.get("rtBefore:MatchmakerAdd")?.name).toBe("beforeMatchmakerAdd");
     expect(hooks.get("matchmakerMatched")?.name).toBe("matchmakerMatched");
     expect(hooks.get("afterAuthenticateDevice")?.name).toBe("afterAuthenticateDevice");
     expect(hooks.get("afterAuthenticateFacebook")?.name).toBe("afterAuthenticateFacebook");

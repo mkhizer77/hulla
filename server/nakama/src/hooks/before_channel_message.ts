@@ -9,6 +9,7 @@ import {
   type Matcher,
   type Strictness,
 } from "../services/chat_filter";
+import { appendChatLog, isMuted, readModeration } from "../services/reports";
 
 /**
  * Table text chat rides Nakama channels (ADR-0018). Before a message is delivered: at most 140
@@ -32,12 +33,15 @@ export interface ChatPolicy {
   readonly strictness: Strictness;
   /** A guest at a public table: free text is off until the account is linked. */
   readonly guestLocked: boolean;
+  /** Muted by moderation (GDD 24.3): no text until the mute expires. */
+  readonly muted: boolean;
 }
 
 export const OPEN_POLICY: ChatPolicy = {
   matcher: null,
   strictness: "standard",
   guestLocked: false,
+  muted: false,
 };
 
 const LINK_OR_PHONE =
@@ -65,6 +69,7 @@ export function checkChatMessage(
     return { ok: false, code: ErrorCodes.table.invalidPayload };
   }
   if (LINK_OR_PHONE.test(text)) return { ok: false, code: ErrorCodes.table.invalidPayload };
+  if (policy.muted) return { ok: false, code: ErrorCodes.social.muted };
   if (policy.guestLocked) return { ok: false, code: ErrorCodes.auth.notLinked };
   const filtered = policy.matcher === null ? { text, hits: 0 } : filterText(policy.matcher, text);
   if (filtered.hits > 0 && policy.strictness === "family") {
@@ -106,13 +111,19 @@ interface RoomLabel {
   readonly preset?: unknown;
 }
 
-/** Family rooms block; guests at public tables may not free-text (GDD 9.4, 11.1). */
+interface Resolved {
+  readonly policy: ChatPolicy;
+  readonly room: string | null;
+}
+
+/** Family rooms block; guests at public tables may not free-text; a moderation mute wins. */
 function policyFor(
   nk: nkruntime.Nakama,
   logger: nkruntime.Logger,
   userId: string,
   channelId: string,
-): ChatPolicy {
+  now: number,
+): Resolved {
   let strictness: Strictness = "standard";
   let publicTable = false;
   const room = roomOfChannel(channelId);
@@ -134,7 +145,21 @@ function policyFor(
       logger.warn("chat sender not resolved", { error: String(error) });
     }
   }
-  return { matcher: buildMatcher(nkFilterStore(nk).read()), strictness, guestLocked: guest };
+  let muted = false;
+  try {
+    muted = isMuted(readModeration(nk, userId), now);
+  } catch (error: unknown) {
+    logger.warn("moderation state not read", { error: String(error) });
+  }
+  return {
+    room,
+    policy: {
+      matcher: buildMatcher(nkFilterStore(nk).read()),
+      strictness,
+      guestLocked: guest,
+      muted,
+    },
+  };
 }
 
 /** Registered with `registerRtBefore("ChannelMessageSend", ...)`; throwing rejects the message. */
@@ -145,12 +170,19 @@ export function beforeChannelMessageSend(
   envelope: nkruntime.EnvelopeChannelMessageSend,
 ): nkruntime.EnvelopeChannelMessageSend {
   const userId = ctx.userId ?? "";
-  const policy = policyFor(nk, logger, userId, envelope.channelMessageSend.channelId);
+  const now = Date.now();
+  const { policy, room } = policyFor(
+    nk,
+    logger,
+    userId,
+    envelope.channelMessageSend.channelId,
+    now,
+  );
   const verdict = checkChatMessage(
     nkRateStore(nk),
     userId,
     envelope.channelMessageSend.content,
-    Date.now(),
+    now,
     policy,
   );
   if (!verdict.ok) {
@@ -158,5 +190,13 @@ export function beforeChannelMessageSend(
     throw new Error(verdict.code);
   }
   if (verdict.masked > 0) envelope.channelMessageSend.content = verdict.content;
+  if (room !== null) {
+    try {
+      const text = (JSON.parse(verdict.content) as { text: string }).text;
+      appendChatLog(nk, room, { userId, text, ts: now });
+    } catch (error: unknown) {
+      logger.warn("chat line not logged", { error: String(error) });
+    }
+  }
   return envelope;
 }

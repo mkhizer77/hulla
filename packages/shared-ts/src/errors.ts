@@ -80,6 +80,8 @@ export const ErrorCodes = {
     friendCap: "social.friend_cap",
     favouriteCap: "social.favourite_cap",
     notFriends: "social.not_friends",
+    blocked: "social.blocked",
+    muted: "social.muted",
   },
 } as const;
 
