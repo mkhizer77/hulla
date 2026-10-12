@@ -41,6 +41,8 @@ export interface SeatSlot {
   /** Cooldowns for quick chat and emotes (GDD 11.2). */
   quickChatTs: number;
   emoteTs: number;
+  /** Players who queued together (GDD 7.2); null for everyone else. */
+  party: string | null;
 }
 
 /** What `matchJoinAttempt` decided for a session, consumed by `matchJoin`. */
@@ -111,6 +113,9 @@ export interface TableConfig {
   /** One quick-chat phrase or emote per sender per this many ms (GDD 11.2). */
   readonly quickChatCooldownMs: number;
   readonly emoteCooldownMs: number;
+  /** Public tables: the countdown before the first deal and how long matched players may take to arrive (GDD 9.5). */
+  readonly autoStartCountdownMs: number;
+  readonly autoStartJoinWindowMs: number;
 }
 
 /** GDD R43, R46, R52, 9.1 and 9.10. */
@@ -126,6 +131,8 @@ export const DEFAULT_TABLE_CONFIG: TableConfig = {
   maxSpectators: 10,
   quickChatCooldownMs: 3_000,
   emoteCooldownMs: 3_000,
+  autoStartCountdownMs: 5_000,
+  autoStartJoinWindowMs: 20_000,
 };
 
 export interface AppliedMove<M> {
@@ -209,9 +216,19 @@ export interface TableState<S, M> {
   seq: number;
   log: LoggedMessage[];
   rematchDeadlineTs: number | null;
+  autoStart: AutoStart | null;
   readonly createdTs: number;
   emptySinceTs: number | null;
   closeReason: TableCloseReason | null;
+}
+
+/** A matchmade public table: deals itself once everyone is seated or the join window closes. */
+export interface AutoStart {
+  readonly expected: number;
+  readonly joinDeadlineTs: number;
+  startsAtTs: number | null;
+  /** userId to party id for players who queued together. */
+  readonly parties: Readonly<Record<string, string>>;
 }
 
 export interface Envelope {
@@ -283,4 +300,7 @@ export interface CreateTableParams {
   readonly gameId: GameId;
   readonly mode: TableMode;
   readonly rules?: RulesSelection;
+  /** Set by the matchmaker: how many players are on their way. */
+  readonly autoStart?: { readonly expected: number };
+  readonly parties?: readonly { readonly id: string; readonly members: readonly string[] }[];
 }

@@ -68,6 +68,7 @@ function seatPayload(slot: SeatSlot, index: number): SeatPayload {
     ready: slot.ready,
     connected: slot.connected,
     autoPlay: slot.autoPlay,
+    party: slot.party,
   };
 }
 
@@ -95,9 +96,11 @@ export function tableStateFor<S, M, V, E, R>(
     lastSeq: state.seq,
     resumeToken: slot?.resumeToken ?? null,
   };
-  if (state.phase !== "roundEnded" || state.rematchDeadlineTs === null) return base;
+  const starting = state.autoStart?.startsAtTs ?? null;
+  const withStart = starting === null ? base : { ...base, autoStart: { startsAtTs: starting } };
+  if (state.phase !== "roundEnded" || state.rematchDeadlineTs === null) return withStart;
   return {
-    ...base,
+    ...withStart,
     rematch: {
       deadlineTs: state.rematchDeadlineTs,
       votes: state.seats.flatMap((s, index) => (s.rematch === true ? [index] : [])),

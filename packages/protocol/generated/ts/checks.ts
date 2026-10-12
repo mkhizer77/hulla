@@ -3024,10 +3024,10 @@ return errors === 0;
 }
 
 const check_table_state = validate47;
-const schema74 = {"type":"object","additionalProperties":false,"description":"The full table as the recipient may see it; the round view is redacted per recipient","required":["code","gameId","mode","status","hostSeat","rules","seats","spectatorCount","series","round","lastSeq","resumeToken"],"properties":{"code":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/roomCode"},"gameId":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/gameId"},"mode":{"$ref":"https://hulla.gg/schemas/protocol/shell/table.json#/definitions/tableMode"},"status":{"$ref":"https://hulla.gg/schemas/protocol/shell/table.json#/definitions/tableStatus"},"hostSeat":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndexOrNull"},"rules":{"$ref":"https://hulla.gg/schemas/protocol/shell/table.json#/definitions/rulesSelection"},"seats":{"type":"array","items":{"$ref":"https://hulla.gg/schemas/protocol/shell/table.json#/definitions/seat"}},"spectatorCount":{"type":"integer","minimum":0},"series":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/seriesState"},"round":{"oneOf":[{"$ref":"https://hulla.gg/schemas/protocol/games/thulla/views.json#/definitions/view"},{"type":"null"}]},"lastSeq":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/sequence"},"resumeToken":{"type":["string","null"]},"rematch":{"type":"object","additionalProperties":false,"properties":{"deadlineTs":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/timestamp"},"votes":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/seatList"}}}}};
+const schema74 = {"type":"object","additionalProperties":false,"description":"The full table as the recipient may see it; the round view is redacted per recipient","required":["code","gameId","mode","status","hostSeat","rules","seats","spectatorCount","series","round","lastSeq","resumeToken"],"properties":{"code":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/roomCode"},"gameId":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/gameId"},"mode":{"$ref":"https://hulla.gg/schemas/protocol/shell/table.json#/definitions/tableMode"},"status":{"$ref":"https://hulla.gg/schemas/protocol/shell/table.json#/definitions/tableStatus"},"hostSeat":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndexOrNull"},"rules":{"$ref":"https://hulla.gg/schemas/protocol/shell/table.json#/definitions/rulesSelection"},"seats":{"type":"array","items":{"$ref":"https://hulla.gg/schemas/protocol/shell/table.json#/definitions/seat"}},"spectatorCount":{"type":"integer","minimum":0},"series":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/seriesState"},"round":{"oneOf":[{"$ref":"https://hulla.gg/schemas/protocol/games/thulla/views.json#/definitions/view"},{"type":"null"}]},"lastSeq":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/sequence"},"resumeToken":{"type":["string","null"]},"rematch":{"type":"object","additionalProperties":false,"properties":{"deadlineTs":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/timestamp"},"votes":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/seatList"}}},"autoStart":{"type":"object","additionalProperties":false,"required":["startsAtTs"],"description":"A public table counting down to its first deal (GDD 9.5)","properties":{"startsAtTs":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/timestamp"}}}}};
 const schema77 = {"type":"string","enum":["private","public","ranked"]};
 const schema78 = {"type":"string","enum":["open","locked","inRound","closed"]};
-const schema80 = {"type":"object","additionalProperties":false,"required":["seat","playerId","displayName","ready","connected","autoPlay"],"properties":{"seat":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex"},"playerId":{"oneOf":[{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/playerId"},{"type":"null"}]},"displayName":{"type":["string","null"]},"ready":{"type":"boolean"},"connected":{"type":"boolean"},"autoPlay":{"type":"boolean","description":"The auto-play policy holds this seat (R45, R46)"},"bot":{"type":"boolean"}}};
+const schema80 = {"type":"object","additionalProperties":false,"required":["seat","playerId","displayName","ready","connected","autoPlay"],"properties":{"seat":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex"},"playerId":{"oneOf":[{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/playerId"},{"type":"null"}]},"displayName":{"type":["string","null"]},"ready":{"type":"boolean"},"connected":{"type":"boolean"},"autoPlay":{"type":"boolean","description":"The auto-play policy holds this seat (R45, R46)"},"bot":{"type":"boolean"},"party":{"type":["string","null"],"description":"Players who queued together share a party id (GDD 7.2); shown as a link icon"}}};
 const schema82 = {"type":"string","description":"Server-issued; no length constraint because nullable constrained strings crash quicktype's generated converter"};
 
 function validate49(data, {instancePath="", parentData, parentDataProperty, rootData=data}={}){
@@ -3043,7 +3043,7 @@ return false;
 else {
 const _errs1 = errors;
 for(const key0 in data){
-if(!(((((((key0 === "seat") || (key0 === "playerId")) || (key0 === "displayName")) || (key0 === "ready")) || (key0 === "connected")) || (key0 === "autoPlay")) || (key0 === "bot"))){
+if(!((((((((key0 === "seat") || (key0 === "playerId")) || (key0 === "displayName")) || (key0 === "ready")) || (key0 === "connected")) || (key0 === "autoPlay")) || (key0 === "bot")) || (key0 === "party"))){
 validate49.errors = [{instancePath,schemaPath:"#/additionalProperties",keyword:"additionalProperties",params:{additionalProperty: key0}}];
 return false;
 break;
@@ -3210,6 +3210,20 @@ var valid0 = _errs20 === errors;
 }
 else {
 var valid0 = true;
+}
+if(valid0){
+if(data.party !== undefined){
+let data7 = data.party;
+const _errs22 = errors;
+if((typeof data7 !== "string") && (data7 !== null)){
+validate49.errors = [{instancePath:instancePath+"/party",schemaPath:"#/properties/party/type",keyword:"type",params:{type: schema80.properties.party.type}}];
+return false;
+}
+var valid0 = _errs22 === errors;
+}
+else {
+var valid0 = true;
+}
 }
 }
 }
@@ -3803,6 +3817,57 @@ var valid0 = _errs34 === errors;
 else {
 var valid0 = true;
 }
+if(valid0){
+if(data.autoStart !== undefined){
+let data16 = data.autoStart;
+const _errs41 = errors;
+if(errors === _errs41){
+if(data16 && typeof data16 == "object" && !Array.isArray(data16)){
+let missing1;
+if((data16.startsAtTs === undefined) && (missing1 = "startsAtTs")){
+validate47.errors = [{instancePath:instancePath+"/autoStart",schemaPath:"#/properties/autoStart/required",keyword:"required",params:{missingProperty: missing1}}];
+return false;
+}
+else {
+const _errs43 = errors;
+for(const key2 in data16){
+if(!(key2 === "startsAtTs")){
+validate47.errors = [{instancePath:instancePath+"/autoStart",schemaPath:"#/properties/autoStart/additionalProperties",keyword:"additionalProperties",params:{additionalProperty: key2}}];
+return false;
+break;
+}
+}
+if(_errs43 === errors){
+if(data16.startsAtTs !== undefined){
+let data17 = data16.startsAtTs;
+const _errs45 = errors;
+if(!(((typeof data17 == "number") && (!(data17 % 1) && !isNaN(data17))) && (isFinite(data17)))){
+validate47.errors = [{instancePath:instancePath+"/autoStart/startsAtTs",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/timestamp/type",keyword:"type",params:{type: "integer"}}];
+return false;
+}
+if(errors === _errs45){
+if((typeof data17 == "number") && (isFinite(data17))){
+if(data17 < 0 || isNaN(data17)){
+validate47.errors = [{instancePath:instancePath+"/autoStart/startsAtTs",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/timestamp/minimum",keyword:"minimum",params:{comparison: ">=", limit: 0}}];
+return false;
+}
+}
+}
+}
+}
+}
+}
+else {
+validate47.errors = [{instancePath:instancePath+"/autoStart",schemaPath:"#/properties/autoStart/type",keyword:"type",params:{type: "object"}}];
+return false;
+}
+}
+var valid0 = _errs41 === errors;
+}
+else {
+var valid0 = true;
+}
+}
 }
 }
 }
@@ -3828,7 +3893,7 @@ return errors === 0;
 }
 
 const check_rules_changed = validate56;
-const schema90 = {"type":"object","additionalProperties":false,"required":["rules","changedBy"],"properties":{"rules":{"$ref":"https://hulla.gg/schemas/protocol/shell/table.json#/definitions/rulesSelection"},"changedBy":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex"},"changedKeys":{"type":"array","items":{"type":"string"},"description":"For the diff banner (E19)"}}};
+const schema91 = {"type":"object","additionalProperties":false,"required":["rules","changedBy"],"properties":{"rules":{"$ref":"https://hulla.gg/schemas/protocol/shell/table.json#/definitions/rulesSelection"},"changedBy":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex"},"changedKeys":{"type":"array","items":{"type":"string"},"description":"For the diff banner (E19)"}}};
 
 function validate56(data, {instancePath="", parentData, parentDataProperty, rootData=data}={}){
 let vErrors = null;
@@ -3934,8 +3999,8 @@ return errors === 0;
 }
 
 const check_presence = validate59;
-const schema93 = {"type":"object","additionalProperties":false,"required":["seat","playerId","status"],"properties":{"seat":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndexOrNull","description":"null for a spectator"},"playerId":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/playerId"},"displayName":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/displayName"},"status":{"type":"string","enum":["joined","left","disconnected","reconnected","auto_play","kicked","spectating"]},"deadlineTs":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/timestamp","description":"When a disconnected seat's window closes (R46)"}}};
-const schema96 = {"type":"string","minLength":2,"maxLength":20};
+const schema94 = {"type":"object","additionalProperties":false,"required":["seat","playerId","status"],"properties":{"seat":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndexOrNull","description":"null for a spectator"},"playerId":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/playerId"},"displayName":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/displayName"},"status":{"type":"string","enum":["joined","left","disconnected","reconnected","auto_play","kicked","spectating"]},"deadlineTs":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/timestamp","description":"When a disconnected seat's window closes (R46)"}}};
+const schema97 = {"type":"string","minLength":2,"maxLength":20};
 
 function validate59(data, {instancePath="", parentData, parentDataProperty, rootData=data}={}){
 let vErrors = null;
@@ -4033,7 +4098,7 @@ validate59.errors = [{instancePath:instancePath+"/status",schemaPath:"#/properti
 return false;
 }
 if(!(((((((data3 === "joined") || (data3 === "left")) || (data3 === "disconnected")) || (data3 === "reconnected")) || (data3 === "auto_play")) || (data3 === "kicked")) || (data3 === "spectating"))){
-validate59.errors = [{instancePath:instancePath+"/status",schemaPath:"#/properties/status/enum",keyword:"enum",params:{allowedValues: schema93.properties.status.enum}}];
+validate59.errors = [{instancePath:instancePath+"/status",schemaPath:"#/properties/status/enum",keyword:"enum",params:{allowedValues: schema94.properties.status.enum}}];
 return false;
 }
 var valid0 = _errs11 === errors;
@@ -4080,7 +4145,7 @@ return errors === 0;
 }
 
 const check_host_changed = validate60;
-const schema98 = {"type":"object","additionalProperties":false,"required":["seat"],"properties":{"seat":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex"},"reason":{"type":"string","enum":["transfer","host_left"]}}};
+const schema99 = {"type":"object","additionalProperties":false,"required":["seat"],"properties":{"seat":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex"},"reason":{"type":"string","enum":["transfer","host_left"]}}};
 
 function validate60(data, {instancePath="", parentData, parentDataProperty, rootData=data}={}){
 let vErrors = null;
@@ -4138,7 +4203,7 @@ validate60.errors = [{instancePath:instancePath+"/reason",schemaPath:"#/properti
 return false;
 }
 if(!((data1 === "transfer") || (data1 === "host_left"))){
-validate60.errors = [{instancePath:instancePath+"/reason",schemaPath:"#/properties/reason/enum",keyword:"enum",params:{allowedValues: schema98.properties.reason.enum}}];
+validate60.errors = [{instancePath:instancePath+"/reason",schemaPath:"#/properties/reason/enum",keyword:"enum",params:{allowedValues: schema99.properties.reason.enum}}];
 return false;
 }
 var valid0 = _errs5 === errors;
@@ -4160,7 +4225,7 @@ return errors === 0;
 }
 
 const check_table_closed = validate61;
-const schema100 = {"type":"object","additionalProperties":false,"required":["reason"],"properties":{"reason":{"type":"string","enum":["host_closed","empty","dissolved","server"]}}};
+const schema101 = {"type":"object","additionalProperties":false,"required":["reason"],"properties":{"reason":{"type":"string","enum":["host_closed","empty","dissolved","server"]}}};
 
 function validate61(data, {instancePath="", parentData, parentDataProperty, rootData=data}={}){
 let vErrors = null;
@@ -4189,7 +4254,7 @@ validate61.errors = [{instancePath:instancePath+"/reason",schemaPath:"#/properti
 return false;
 }
 if(!((((data0 === "host_closed") || (data0 === "empty")) || (data0 === "dissolved")) || (data0 === "server"))){
-validate61.errors = [{instancePath:instancePath+"/reason",schemaPath:"#/properties/reason/enum",keyword:"enum",params:{allowedValues: schema100.properties.reason.enum}}];
+validate61.errors = [{instancePath:instancePath+"/reason",schemaPath:"#/properties/reason/enum",keyword:"enum",params:{allowedValues: schema101.properties.reason.enum}}];
 return false;
 }
 }
@@ -4206,9 +4271,9 @@ return errors === 0;
 }
 
 const check_error = validate63;
-const schema102 = {"type":"object","additionalProperties":false,"required":["code"],"properties":{"code":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/errorCode"},"detail":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/errorDetail"},"refSeq":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/sequence","description":"The client message this answers"}}};
-const schema103 = {"type":"string","pattern":"^(rules|table|auth|economy|content|network|voice)\\.[a-z0-9_]+$"};
-const schema104 = {"type":"object","additionalProperties":{"type":["string","number","boolean"]}};
+const schema103 = {"type":"object","additionalProperties":false,"required":["code"],"properties":{"code":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/errorCode"},"detail":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/errorDetail"},"refSeq":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/sequence","description":"The client message this answers"}}};
+const schema104 = {"type":"string","pattern":"^(rules|table|auth|economy|content|network|voice)\\.[a-z0-9_]+$"};
+const schema105 = {"type":"object","additionalProperties":{"type":["string","number","boolean"]}};
 const pattern11 = new RegExp("^(rules|table|auth|economy|content|network|voice)\\.[a-z0-9_]+$", "");
 
 function validate63(data, {instancePath="", parentData, parentDataProperty, rootData=data}={}){
@@ -4263,7 +4328,7 @@ for(const key1 in data1){
 let data2 = data1[key1];
 const _errs9 = errors;
 if(((typeof data2 !== "string") && (!((typeof data2 == "number") && (isFinite(data2))))) && (typeof data2 !== "boolean")){
-validate63.errors = [{instancePath:instancePath+"/detail/" + key1.replace(/~/g, "~0").replace(/\//g, "~1"),schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/errorDetail/additionalProperties/type",keyword:"type",params:{type: schema104.additionalProperties.type}}];
+validate63.errors = [{instancePath:instancePath+"/detail/" + key1.replace(/~/g, "~0").replace(/\//g, "~1"),schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/errorDetail/additionalProperties/type",keyword:"type",params:{type: schema105.additionalProperties.type}}];
 return false;
 }
 var valid3 = _errs9 === errors;
@@ -4319,7 +4384,7 @@ return errors === 0;
 }
 
 const check_snapshot = validate64;
-const schema106 = {"type":"object","additionalProperties":false,"description":"A table_state plus the events after sinceSeq, each a full envelope (ARCHITECTURE 8.6)","required":["state","events"],"properties":{"state":{"$ref":"https://hulla.gg/schemas/protocol/shell/table.json#/definitions/table_state"},"events":{"type":"array","items":{"$ref":"https://hulla.gg/schemas/protocol/envelope.json"}}}};
+const schema107 = {"type":"object","additionalProperties":false,"description":"A table_state plus the events after sinceSeq, each a full envelope (ARCHITECTURE 8.6)","required":["state","events"],"properties":{"state":{"$ref":"https://hulla.gg/schemas/protocol/shell/table.json#/definitions/table_state"},"events":{"type":"array","items":{"$ref":"https://hulla.gg/schemas/protocol/envelope.json"}}}};
 
 function validate64(data, {instancePath="", parentData, parentDataProperty, rootData=data}={}){
 let vErrors = null;
@@ -4396,7 +4461,7 @@ return errors === 0;
 }
 
 const check_pong = validate67;
-const schema107 = {"type":"object","additionalProperties":false,"required":["sentTs","serverTs"],"properties":{"sentTs":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/timestamp"},"serverTs":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/timestamp"}}};
+const schema108 = {"type":"object","additionalProperties":false,"required":["sentTs","serverTs"],"properties":{"sentTs":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/timestamp"},"serverTs":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/timestamp"}}};
 
 function validate67(data, {instancePath="", parentData, parentDataProperty, rootData=data}={}){
 let vErrors = null;
@@ -4475,7 +4540,7 @@ return errors === 0;
 }
 
 const check_chat = validate68;
-const schema110 = {"type":"object","additionalProperties":false,"required":["seat","text"],"properties":{"seat":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndexOrNull"},"text":{"type":"string","maxLength":140},"filtered":{"type":"boolean"}}};
+const schema111 = {"type":"object","additionalProperties":false,"required":["seat","text"],"properties":{"seat":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndexOrNull"},"text":{"type":"string","maxLength":140},"filtered":{"type":"boolean"}}};
 
 function validate68(data, {instancePath="", parentData, parentDataProperty, rootData=data}={}){
 let vErrors = null;
@@ -4572,7 +4637,7 @@ return errors === 0;
 }
 
 const check_quick_chat_sent = validate69;
-const schema112 = {"type":"object","additionalProperties":false,"required":["seat","phraseId"],"properties":{"seat":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex"},"phraseId":{"type":"string"},"pack":{"type":"string"}}};
+const schema113 = {"type":"object","additionalProperties":false,"required":["seat","phraseId"],"properties":{"seat":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex"},"phraseId":{"type":"string"},"pack":{"type":"string"}}};
 
 function validate69(data, {instancePath="", parentData, parentDataProperty, rootData=data}={}){
 let vErrors = null;
@@ -4660,7 +4725,7 @@ return errors === 0;
 }
 
 const check_emote_sent = validate70;
-const schema114 = {"type":"object","additionalProperties":false,"required":["seat","emoteId"],"properties":{"seat":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex"},"emoteId":{"type":"string"},"targetSeat":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex"}}};
+const schema115 = {"type":"object","additionalProperties":false,"required":["seat","emoteId"],"properties":{"seat":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex"},"emoteId":{"type":"string"},"targetSeat":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex"}}};
 
 function validate70(data, {instancePath="", parentData, parentDataProperty, rootData=data}={}){
 let vErrors = null;
@@ -4764,8 +4829,8 @@ return errors === 0;
 }
 
 const check_round_start = validate72;
-const schema118 = {"type":"object","additionalProperties":false,"required":["roundId","commitment","seatCount","dealerSeat","leaderSeat","handCounts","rulesVersion"],"properties":{"roundId":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/roundId"},"commitment":{"type":"string","pattern":"^[0-9a-f]{64}$","description":"SHA-256(seed || canonicalJson(deckOrder)) published before the deal (R6)"},"seatCount":{"type":"integer","minimum":3,"maximum":8},"dealerSeat":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex"},"leaderSeat":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex"},"handCounts":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/handCounts"},"rulesVersion":{"type":"string"}}};
-const schema122 = {"type":"array","items":{"type":"integer","minimum":0},"description":"Per seat, in seat order"};
+const schema119 = {"type":"object","additionalProperties":false,"required":["roundId","commitment","seatCount","dealerSeat","leaderSeat","handCounts","rulesVersion"],"properties":{"roundId":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/roundId"},"commitment":{"type":"string","pattern":"^[0-9a-f]{64}$","description":"SHA-256(seed || canonicalJson(deckOrder)) published before the deal (R6)"},"seatCount":{"type":"integer","minimum":3,"maximum":8},"dealerSeat":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex"},"leaderSeat":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex"},"handCounts":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/handCounts"},"rulesVersion":{"type":"string"}}};
+const schema123 = {"type":"array","items":{"type":"integer","minimum":0},"description":"Per seat, in seat order"};
 const pattern13 = new RegExp("^[0-9a-f]{64}$", "");
 
 function validate72(data, {instancePath="", parentData, parentDataProperty, rootData=data}={}){
@@ -4984,7 +5049,7 @@ return errors === 0;
 }
 
 const check_turn_start = validate73;
-const schema123 = {"type":"object","additionalProperties":false,"description":"Sent to the acting seat only: the legal mask reveals suit holdings","required":["roundId","seat","legal","canTakeHand","deadlineTs"],"properties":{"roundId":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/roundId"},"seat":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex"},"legal":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/cards"},"canTakeHand":{"type":"boolean"},"deadlineTs":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/timestamp"},"simultaneous":{"type":"boolean","description":"The opening window: every pending seat acts at once (R13)"}}};
+const schema124 = {"type":"object","additionalProperties":false,"description":"Sent to the acting seat only: the legal mask reveals suit holdings","required":["roundId","seat","legal","canTakeHand","deadlineTs"],"properties":{"roundId":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/roundId"},"seat":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex"},"legal":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/cards"},"canTakeHand":{"type":"boolean"},"deadlineTs":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/timestamp"},"simultaneous":{"type":"boolean","description":"The opening window: every pending seat acts at once (R13)"}}};
 
 function validate74(data, {instancePath="", parentData, parentDataProperty, rootData=data}={}){
 let vErrors = null;
@@ -5170,8 +5235,8 @@ return errors === 0;
 }
 
 const check_move_applied = validate76;
-const schema129 = {"type":"object","additionalProperties":false,"required":["roundId","seat","move","trickIndex"],"properties":{"roundId":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/roundId"},"seat":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex"},"move":{"$ref":"https://hulla.gg/schemas/protocol/games/thulla/moves.json#/definitions/move"},"trickIndex":{"type":"integer","minimum":0},"thulla":{"type":"boolean"},"clientSeq":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/sequence"},"auto":{"type":"boolean","description":"Played by the auto-play policy (R44)"}}};
-const schema132 = {"oneOf":[{"type":"object","additionalProperties":false,"required":["type","card"],"properties":{"type":{"const":"play_card"},"card":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/card"}}},{"type":"object","additionalProperties":false,"required":["type"],"properties":{"type":{"const":"take_hand"}}}]};
+const schema130 = {"type":"object","additionalProperties":false,"required":["roundId","seat","move","trickIndex"],"properties":{"roundId":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/roundId"},"seat":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex"},"move":{"$ref":"https://hulla.gg/schemas/protocol/games/thulla/moves.json#/definitions/move"},"trickIndex":{"type":"integer","minimum":0},"thulla":{"type":"boolean"},"clientSeq":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/sequence"},"auto":{"type":"boolean","description":"Played by the auto-play policy (R44)"}}};
+const schema133 = {"oneOf":[{"type":"object","additionalProperties":false,"required":["type","card"],"properties":{"type":{"const":"play_card"},"card":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/card"}}},{"type":"object","additionalProperties":false,"required":["type"],"properties":{"type":{"const":"take_hand"}}}]};
 
 function validate77(data, {instancePath="", parentData, parentDataProperty, rootData=data}={}){
 let vErrors = null;
@@ -5542,8 +5607,8 @@ return errors === 0;
 }
 
 const check_move_rejected = validate79;
-const schema135 = {"type":"object","additionalProperties":false,"required":["roundId","clientSeq","error"],"properties":{"roundId":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/roundId"},"clientSeq":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/sequence"},"error":{"$ref":"https://hulla.gg/schemas/protocol/shell/errors.json#/definitions/ruleError"}}};
-const schema138 = {"type":"object","additionalProperties":false,"required":["code"],"properties":{"code":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/errorCode"},"detail":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/errorDetail"}}};
+const schema136 = {"type":"object","additionalProperties":false,"required":["roundId","clientSeq","error"],"properties":{"roundId":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/roundId"},"clientSeq":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/sequence"},"error":{"$ref":"https://hulla.gg/schemas/protocol/shell/errors.json#/definitions/ruleError"}}};
+const schema139 = {"type":"object","additionalProperties":false,"required":["code"],"properties":{"code":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/errorCode"},"detail":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/errorDetail"}}};
 
 function validate80(data, {instancePath="", parentData, parentDataProperty, rootData=data}={}){
 let vErrors = null;
@@ -5597,7 +5662,7 @@ for(const key1 in data1){
 let data2 = data1[key1];
 const _errs9 = errors;
 if(((typeof data2 !== "string") && (!((typeof data2 == "number") && (isFinite(data2))))) && (typeof data2 !== "boolean")){
-validate80.errors = [{instancePath:instancePath+"/detail/" + key1.replace(/~/g, "~0").replace(/\//g, "~1"),schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/errorDetail/additionalProperties/type",keyword:"type",params:{type: schema104.additionalProperties.type}}];
+validate80.errors = [{instancePath:instancePath+"/detail/" + key1.replace(/~/g, "~0").replace(/\//g, "~1"),schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/errorDetail/additionalProperties/type",keyword:"type",params:{type: schema105.additionalProperties.type}}];
 return false;
 }
 var valid3 = _errs9 === errors;
@@ -5720,8 +5785,8 @@ return errors === 0;
 }
 
 const check_trick_resolved = validate82;
-const schema141 = {"type":"object","additionalProperties":false,"required":["roundId","trickIndex","ledSuit","cards","thullaBy","picker","nextLeader","handCounts","escapes"],"properties":{"roundId":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/roundId"},"trickIndex":{"type":"integer","minimum":0},"ledSuit":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/suit"},"cards":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/cards"},"thullaBy":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndexOrNull"},"picker":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndexOrNull"},"nextLeader":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex"},"handCounts":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/handCounts"},"escapes":{"type":"array","items":{"$ref":"https://hulla.gg/schemas/protocol/games/thulla/events.json#/definitions/escape"}}}};
-const schema148 = {"type":"object","additionalProperties":false,"required":["roundId","seat","rank"],"properties":{"roundId":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/roundId"},"seat":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex"},"rank":{"type":"integer","minimum":1}}};
+const schema142 = {"type":"object","additionalProperties":false,"required":["roundId","trickIndex","ledSuit","cards","thullaBy","picker","nextLeader","handCounts","escapes"],"properties":{"roundId":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/roundId"},"trickIndex":{"type":"integer","minimum":0},"ledSuit":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/suit"},"cards":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/cards"},"thullaBy":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndexOrNull"},"picker":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndexOrNull"},"nextLeader":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex"},"handCounts":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/handCounts"},"escapes":{"type":"array","items":{"$ref":"https://hulla.gg/schemas/protocol/games/thulla/events.json#/definitions/escape"}}}};
+const schema149 = {"type":"object","additionalProperties":false,"required":["roundId","seat","rank"],"properties":{"roundId":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/roundId"},"seat":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex"},"rank":{"type":"integer","minimum":1}}};
 
 function validate84(data, {instancePath="", parentData, parentDataProperty, rootData=data}={}){
 let vErrors = null;
@@ -5841,7 +5906,7 @@ return false;
 else {
 const _errs1 = errors;
 for(const key0 in data){
-if(!(func2.call(schema141.properties, key0))){
+if(!(func2.call(schema142.properties, key0))){
 validate82.errors = [{instancePath,schemaPath:"#/additionalProperties",keyword:"additionalProperties",params:{additionalProperty: key0}}];
 return false;
 break;
@@ -6094,7 +6159,7 @@ return errors === 0;
 }
 
 const check_pickup = validate86;
-const schema151 = {"type":"object","additionalProperties":false,"required":["roundId","seat","cards","trickIndex"],"properties":{"roundId":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/roundId"},"seat":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex"},"cards":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/cards"},"trickIndex":{"type":"integer","minimum":0}}};
+const schema152 = {"type":"object","additionalProperties":false,"required":["roundId","seat","cards","trickIndex"],"properties":{"roundId":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/roundId"},"seat":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex"},"cards":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/cards"},"trickIndex":{"type":"integer","minimum":0}}};
 
 function validate86(data, {instancePath="", parentData, parentDataProperty, rootData=data}={}){
 let vErrors = null;
@@ -6320,7 +6385,7 @@ return errors === 0;
 }
 
 const check_hand_taken = validate89;
-const schema157 = {"type":"object","additionalProperties":false,"required":["roundId","taker","target","cardCount"],"properties":{"roundId":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/roundId"},"taker":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex"},"target":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex"},"cardCount":{"type":"integer","minimum":1}}};
+const schema158 = {"type":"object","additionalProperties":false,"required":["roundId","taker","target","cardCount"],"properties":{"roundId":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/roundId"},"taker":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex"},"target":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex"},"cardCount":{"type":"integer","minimum":1}}};
 
 function validate89(data, {instancePath="", parentData, parentDataProperty, rootData=data}={}){
 let vErrors = null;
@@ -6456,7 +6521,7 @@ return errors === 0;
 }
 
 const check_private_draw = validate90;
-const schema161 = {"type":"object","additionalProperties":false,"description":"Sent to the seats the engine names: the drawer, and the seat the card left","required":["roundId","seat","card","source","from","autoLead"],"properties":{"roundId":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/roundId"},"seat":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex"},"card":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/card"},"source":{"type":"string","enum":["discard","nextPlayer","opponent"]},"from":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndexOrNull"},"autoLead":{"type":"boolean"}}};
+const schema162 = {"type":"object","additionalProperties":false,"description":"Sent to the seats the engine names: the drawer, and the seat the card left","required":["roundId","seat","card","source","from","autoLead"],"properties":{"roundId":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/roundId"},"seat":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex"},"card":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/card"},"source":{"type":"string","enum":["discard","nextPlayer","opponent"]},"from":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndexOrNull"},"autoLead":{"type":"boolean"}}};
 
 function validate90(data, {instancePath="", parentData, parentDataProperty, rootData=data}={}){
 let vErrors = null;
@@ -6558,7 +6623,7 @@ validate90.errors = [{instancePath:instancePath+"/source",schemaPath:"#/properti
 return false;
 }
 if(!(((data3 === "discard") || (data3 === "nextPlayer")) || (data3 === "opponent"))){
-validate90.errors = [{instancePath:instancePath+"/source",schemaPath:"#/properties/source/enum",keyword:"enum",params:{allowedValues: schema161.properties.source.enum}}];
+validate90.errors = [{instancePath:instancePath+"/source",schemaPath:"#/properties/source/enum",keyword:"enum",params:{allowedValues: schema162.properties.source.enum}}];
 return false;
 }
 var valid0 = _errs11 === errors;
@@ -6624,7 +6689,7 @@ return errors === 0;
 }
 
 const check_endgame_started = validate91;
-const schema166 = {"type":"object","additionalProperties":false,"required":["roundId","seats"],"properties":{"roundId":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/roundId"},"seats":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/seatList"}}};
+const schema167 = {"type":"object","additionalProperties":false,"required":["roundId","seats"],"properties":{"roundId":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/roundId"},"seats":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/seatList"}}};
 
 function validate92(data, {instancePath="", parentData, parentDataProperty, rootData=data}={}){
 let vErrors = null;
@@ -6738,7 +6803,7 @@ return errors === 0;
 }
 
 const check_confirmed = validate94;
-const schema170 = {"type":"object","additionalProperties":false,"required":["roundId","bhabhiSeat","cardsRemaining","fastForward"],"properties":{"roundId":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/roundId"},"bhabhiSeat":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex"},"cardsRemaining":{"type":"integer","minimum":0},"fastForward":{"type":"boolean"}}};
+const schema171 = {"type":"object","additionalProperties":false,"required":["roundId","bhabhiSeat","cardsRemaining","fastForward"],"properties":{"roundId":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/roundId"},"bhabhiSeat":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex"},"cardsRemaining":{"type":"integer","minimum":0},"fastForward":{"type":"boolean"}}};
 
 function validate94(data, {instancePath="", parentData, parentDataProperty, rootData=data}={}){
 let vErrors = null;
@@ -6858,7 +6923,7 @@ return errors === 0;
 }
 
 const check_round_end = validate95;
-const schema173 = {"type":"object","additionalProperties":false,"required":["roundId","escapeOrder","bhabhiSeat","bhabhiCards","points","stats","fairness"],"properties":{"roundId":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/roundId"},"escapeOrder":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/seatList"},"bhabhiSeat":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex"},"bhabhiCards":{"type":"integer","minimum":0},"points":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/points"},"stats":{"type":"array","items":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/seatStats"}},"fairness":{"type":"object","additionalProperties":false,"required":["commitment","seed","deckOrder"],"properties":{"commitment":{"type":"string","pattern":"^[0-9a-f]{64}$"},"seed":{"type":"string","pattern":"^[0-9a-f]+$","description":"Revealed so any client can recompute the commitment (R6)"},"deckOrder":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/cards"}}},"series":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/seriesState"}}};
+const schema174 = {"type":"object","additionalProperties":false,"required":["roundId","escapeOrder","bhabhiSeat","bhabhiCards","points","stats","fairness"],"properties":{"roundId":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/roundId"},"escapeOrder":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/seatList"},"bhabhiSeat":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex"},"bhabhiCards":{"type":"integer","minimum":0},"points":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/points"},"stats":{"type":"array","items":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/seatStats"}},"fairness":{"type":"object","additionalProperties":false,"required":["commitment","seed","deckOrder"],"properties":{"commitment":{"type":"string","pattern":"^[0-9a-f]{64}$"},"seed":{"type":"string","pattern":"^[0-9a-f]+$","description":"Revealed so any client can recompute the commitment (R6)"},"deckOrder":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/cards"}}},"series":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/seriesState"}}};
 const pattern31 = new RegExp("^[0-9a-f]+$", "");
 
 function validate98(data, {instancePath="", parentData, parentDataProperty, rootData=data}={}){

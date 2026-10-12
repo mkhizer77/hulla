@@ -48,6 +48,9 @@ export function fakeInitializer(): FakeInitializer {
   const matches = new Map<string, nkruntime.MatchHandler>();
   const hooks = new Map<string, (...args: unknown[]) => unknown>();
   const initializer = {
+    registerMatchmakerMatched: (fn: (...args: unknown[]) => unknown) => {
+      hooks.set("matchmakerMatched", fn);
+    },
     registerRpc: (id: string, fn: nkruntime.RpcFunction) => {
       rpcs.set(id, fn);
     },

@@ -290,6 +290,15 @@ export interface TableState {
     deadlineTs?: number;
     votes?: SeatList;
   };
+  /**
+   * A public table counting down to its first deal (GDD 9.5)
+   */
+  autoStart?: {
+    /**
+     * Unix milliseconds from the server clock
+     */
+    startsAtTs: number;
+  };
 }
 export interface Seat {
   seat: number;
@@ -302,6 +311,10 @@ export interface Seat {
    */
   autoPlay: boolean;
   bot?: boolean;
+  /**
+   * Players who queued together share a party id (GDD 7.2); shown as a link icon
+   */
+  party?: string | null;
 }
 export interface RulesChanged {
   rules: RulesSelection;
