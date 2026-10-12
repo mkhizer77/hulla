@@ -40,6 +40,10 @@ describe("InitModule", () => {
       "social_overview",
       "table_list_friends",
       "presence_set",
+      "mute_set",
+      "mutes_get",
+      "chat_filters_get",
+      "chat_filters_set",
     ]);
     expect([...matches.keys()]).toEqual(["thulla"]);
     expect(hooks.get("rtBefore:ChannelMessageSend")?.name).toBe("beforeChannelMessageSend");

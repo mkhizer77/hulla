@@ -80,22 +80,22 @@ describe("the text chat hook (GDD 11.1)", () => {
 
   it("allows one message per two seconds and ten per minute", () => {
     const store = memoryRate();
-    expect(checkChatMessage(store, "u1", msg("salaam"), T0)).toEqual({ ok: true });
+    expect(checkChatMessage(store, "u1", msg("salaam"), T0)).toMatchObject({ ok: true });
     expect(checkChatMessage(store, "u1", msg("again"), T0 + 1_000)).toEqual({
       ok: false,
       code: "network.rate_limited",
     });
-    expect(checkChatMessage(store, "u2", msg("other"), T0 + 1_000)).toEqual({ ok: true });
+    expect(checkChatMessage(store, "u2", msg("other"), T0 + 1_000)).toMatchObject({ ok: true });
     let now = T0;
     for (let i = 1; i < 10; i += 1) {
       now += 2_000;
-      expect(checkChatMessage(store, "u1", msg(`m${String(i)}`), now)).toEqual({ ok: true });
+      expect(checkChatMessage(store, "u1", msg(`m${String(i)}`), now)).toMatchObject({ ok: true });
     }
     expect(checkChatMessage(store, "u1", msg("eleventh"), now + 2_000)).toEqual({
       ok: false,
       code: "network.rate_limited",
     });
-    expect(checkChatMessage(store, "u1", msg("later"), T0 + 61_000)).toEqual({ ok: true });
+    expect(checkChatMessage(store, "u1", msg("later"), T0 + 61_000)).toMatchObject({ ok: true });
   });
 
   it("refuses empty, long, link and phone-number messages and bad JSON", () => {
@@ -120,6 +120,6 @@ describe("the text chat hook (GDD 11.1)", () => {
       ok: false,
       code: "table.invalid_payload",
     });
-    expect(checkChatMessage(store, "u1", msg("chai break? 5 min"), T0)).toEqual({ ok: true });
+    expect(checkChatMessage(store, "u1", msg("chai break? 5 min"), T0)).toMatchObject({ ok: true });
   });
 });

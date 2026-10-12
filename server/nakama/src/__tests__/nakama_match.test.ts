@@ -69,6 +69,7 @@ describe("the Nakama binding", () => {
       code: "ABCDEF",
       gameId: "thulla",
       mode: "public",
+      preset: b.state.rules.preset ?? null,
       status: "open",
       seated: 0,
       open: 4,

@@ -9,6 +9,7 @@ import {
   RECENT_CAP,
   recordRecentPlayers,
   setFavourite,
+  setMute,
   socialOverview,
   type FriendPorts,
   type RecentPlayer,
@@ -23,6 +24,7 @@ function store(): SocialStore & {
 } {
   const fav = new Map<string, readonly string[]>();
   const rec = new Map<string, readonly RecentPlayer[]>();
+  const mut = new Map<string, readonly string[]>();
   return {
     fav,
     rec,
@@ -31,6 +33,8 @@ function store(): SocialStore & {
     writeFavourites: (u, ids) => void fav.set(u, ids),
     recent: (u) => rec.get(u) ?? [],
     writeRecent: (u, p) => void rec.set(u, p),
+    mutes: (u) => mut.get(u) ?? [],
+    writeMutes: (u, ids) => void mut.set(u, ids),
   };
 }
 
@@ -158,5 +162,17 @@ describe("friends by code, favourites and recent players (GDD 10.3, 10.6)", () =
         favourite: false,
       },
     ]);
+  });
+
+  it("mutes and unmutes a player, never yourself", () => {
+    const s = store();
+    expect(setMute(s, "u1", "u2", true)).toEqual({ ok: true, mutes: ["u2"] });
+    expect(setMute(s, "u1", "u2", true)).toEqual({ ok: true, mutes: ["u2"] });
+    expect(setMute(s, "u1", "u3", true)).toEqual({ ok: true, mutes: ["u2", "u3"] });
+    expect(setMute(s, "u1", "u2", false)).toEqual({ ok: true, mutes: ["u3"] });
+    expect(setMute(s, "u1", "u1", true)).toMatchObject({
+      error: { code: "table.invalid_payload" },
+    });
+    expect(setMute(s, null, "u2", true)).toMatchObject({ error: { code: "table.not_authorised" } });
   });
 });

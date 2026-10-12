@@ -6,6 +6,7 @@ import {
   nkFriendPorts,
   nkSocialStore,
   setFavourite,
+  setMute,
   socialOverview,
 } from "../services/social";
 
@@ -77,4 +78,35 @@ export function rpcSocialOverview(
     ok: true,
     ...socialOverview(nkSocialStore(nk), nkFriendPorts(nk), nkProfileStore(nk, logger), userId),
   });
+}
+
+/** `{ userId, muted }`: mutes or unmutes a player for every device of the caller. */
+export function rpcMuteSet(
+  ctx: nkruntime.Context,
+  _logger: nkruntime.Logger,
+  nk: nkruntime.Nakama,
+  payload: string,
+): string {
+  const input = parse(payload);
+  const target = input["userId"];
+  return JSON.stringify(
+    setMute(
+      nkSocialStore(nk),
+      ctx.userId ?? null,
+      typeof target === "string" ? target : "",
+      input["muted"] === true,
+    ),
+  );
+}
+
+export function rpcMutesGet(
+  ctx: nkruntime.Context,
+  _logger: nkruntime.Logger,
+  nk: nkruntime.Nakama,
+): string {
+  const userId = ctx.userId ?? null;
+  if (userId === null) {
+    return JSON.stringify({ ok: false, error: ruleError(ErrorCodes.table.notAuthorised) });
+  }
+  return JSON.stringify({ ok: true, mutes: nkSocialStore(nk).mutes(userId) });
 }

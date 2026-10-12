@@ -12,6 +12,8 @@ export const FAVOURITE_CAP = 10;
 export const RECENT_CAP = 50;
 export const FAVOURITES_COLLECTION = "favourites";
 export const RECENT_COLLECTION = "recent_players";
+export const MUTES_COLLECTION = "mutes";
+export const MUTE_CAP = 200;
 
 export interface RecentPlayer {
   readonly userId: string;
@@ -25,6 +27,8 @@ export interface SocialStore {
   writeFavourites(userId: string, ids: readonly string[]): void;
   recent(userId: string): readonly RecentPlayer[];
   writeRecent(userId: string, players: readonly RecentPlayer[]): void;
+  mutes(userId: string): readonly string[];
+  writeMutes(userId: string, ids: readonly string[]): void;
 }
 
 export interface FriendPorts {
@@ -94,6 +98,31 @@ export function setFavourite(
   const next = [...current, targetId];
   store.writeFavourites(userId, next);
   return { ok: true, favourites: next };
+}
+
+export type MuteResponse =
+  | { readonly ok: true; readonly mutes: readonly string[] }
+  | { readonly ok: false; readonly error: RuleError };
+
+/** A mute hides a player's text, quick chat and emotes on every device; the client applies it (GDD 11.1). */
+export function setMute(
+  store: SocialStore,
+  userId: string | null,
+  targetId: string,
+  muted: boolean,
+): MuteResponse {
+  if (userId === null) return { ok: false, error: ruleError(ErrorCodes.table.notAuthorised) };
+  if (targetId === userId || targetId === "") {
+    return { ok: false, error: ruleError(ErrorCodes.table.invalidPayload, { reason: "user_id" }) };
+  }
+  const current = store.mutes(userId);
+  const next = muted
+    ? current.includes(targetId)
+      ? current
+      : [...current.slice(-(MUTE_CAP - 1)), targetId]
+    : current.filter((id) => id !== targetId);
+  if (next !== current) store.writeMutes(userId, next);
+  return { ok: true, mutes: next };
 }
 
 /** After a round: everyone at the table remembers everyone else, most recent first, fifty deep. */
@@ -209,6 +238,13 @@ export function nkSocialStore(nk: nkruntime.Nakama): SocialStore {
     recent: (userId) => readList(RECENT_COLLECTION, userId, "players").filter(isRecentPlayer),
     writeRecent: (userId, players) => {
       writeList(RECENT_COLLECTION, userId, "players", players);
+    },
+    mutes: (userId) =>
+      readList(MUTES_COLLECTION, userId, "ids").filter(
+        (id): id is string => typeof id === "string",
+      ),
+    writeMutes: (userId, ids) => {
+      writeList(MUTES_COLLECTION, userId, "ids", ids);
     },
   };
 }
