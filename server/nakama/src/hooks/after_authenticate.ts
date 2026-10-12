@@ -1,11 +1,17 @@
 import { sha256, stateFromSeed, utf8Encode, Xoshiro128StarStar } from "@hulla/shared-ts";
 
+import { nkPresenceStore, touch } from "../services/presence";
 import { bootstrapProfile, nkProfileStore } from "../services/profiles";
 
 /** Every sign-in path lands here: a first sign-in gets a profile and its friend code (ARCHITECTURE 8.10). */
 function bootstrap(ctx: nkruntime.Context, logger: nkruntime.Logger, nk: nkruntime.Nakama): void {
   const userId = ctx.userId;
   if (userId === undefined || userId === "") return;
+  try {
+    touch(nkPresenceStore(nk), userId, Date.now());
+  } catch (error: unknown) {
+    logger.warn("presence not touched", { error: String(error) });
+  }
   const store = nkProfileStore(nk, logger);
   if (store.read(userId) !== null) return;
   const handle = ctx.username ?? userId.slice(0, 8);

@@ -24,6 +24,7 @@ import {
 } from "./rpc/account";
 import { rpcAccountMerge, rpcAccountMergePrepare } from "./rpc/account_merge";
 import { rpcHello } from "./rpc/hello";
+import { rpcPresenceSet, rpcTableListFriends } from "./rpc/presence";
 import { rpcPresetsGet } from "./rpc/presets_get";
 import { rpcProfileGet, rpcProfileUpdate } from "./rpc/profile";
 import { rpcFavouriteSet, rpcFriendAddByCode, rpcSocialOverview } from "./rpc/social";
@@ -60,6 +61,8 @@ function InitModule(
   initializer.registerRpc("friend_add_by_code", rpcFriendAddByCode);
   initializer.registerRpc("favourite_set", rpcFavouriteSet);
   initializer.registerRpc("social_overview", rpcSocialOverview);
+  initializer.registerRpc("table_list_friends", rpcTableListFriends);
+  initializer.registerRpc("presence_set", rpcPresenceSet);
   initializer.registerAfterAuthenticateDevice(afterAuthenticateDevice);
   initializer.registerAfterAuthenticateApple(afterAuthenticateApple);
   initializer.registerAfterAuthenticateGoogle(afterAuthenticateGoogle);

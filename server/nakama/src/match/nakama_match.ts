@@ -1,6 +1,7 @@
 import { OPCODES } from "@hulla/protocol/generated";
 
 import { ROUND_RESULTS_COLLECTION } from "../services/account_deletion";
+import { nkPresenceStore, seatReleased, seatTaken, type PresenceStore } from "../services/presence";
 import { applyRoundToStats, nkProfileStore } from "../services/profiles";
 import { nkSocialStore, recordRecentPlayers } from "../services/social";
 
@@ -229,6 +230,32 @@ export function tableMatchHandler<S, M, V, E, R>(
     if (after !== before) dispatcher.matchLabelUpdate(after);
   };
 
+  /** Presence (GDD 10.4): who sits at this table, kept in step with the seats. */
+  const presenceSync = (
+    ctx: nkruntime.Context,
+    logger: nkruntime.Logger,
+    nk: nkruntime.Nakama,
+    state: TableState<S, M>,
+    userIds: readonly string[],
+    now: number,
+  ): void => {
+    const matchId = ctx.matchId;
+    if (matchId === undefined || matchId === "") return;
+    let store: PresenceStore | null = null;
+    for (const userId of new Set(userIds)) {
+      try {
+        store ??= nkPresenceStore(nk);
+        const seated = state.phase !== "closing" && state.seats.some((s) => s.playerId === userId);
+        if (seated) seatTaken(store, userId, matchId, now);
+        else seatReleased(store, userId, matchId, now);
+      } catch (error: unknown) {
+        logger.warn("presence not updated", { userId, error: String(error) });
+      }
+    }
+  };
+  const seatedUserIds = (state: TableState<S, M>): string[] =>
+    state.seats.map((s) => s.playerId).filter((id): id is string => id !== null);
+
   return {
     matchInit(_ctx, logger, nk, params) {
       const core = coreFor(nk, logger);
@@ -248,23 +275,42 @@ export function tableMatchHandler<S, M, V, E, R>(
         : { state, accept: false, rejectMessage: decision.code };
     },
 
-    matchJoin(_ctx, logger, nk, dispatcher, _tick, state, presences) {
+    matchJoin(ctx, logger, nk, dispatcher, _tick, state, presences) {
       const before = labelFor(state);
-      const batch = coreFor(nk, logger).join(state, presences.map(info), Date.now());
+      const now = Date.now();
+      const batch = coreFor(nk, logger).join(state, presences.map(info), now);
       send(dispatcher, state, batch, presences);
       relabel(dispatcher, before, state);
+      presenceSync(
+        ctx,
+        logger,
+        nk,
+        state,
+        presences.map((p) => p.userId),
+        now,
+      );
       return { state };
     },
 
-    matchLeave(_ctx, logger, nk, dispatcher, _tick, state, presences) {
+    matchLeave(ctx, logger, nk, dispatcher, _tick, state, presences) {
       const before = labelFor(state);
-      const batch = coreFor(nk, logger).leave(state, presences.map(info), Date.now());
+      const now = Date.now();
+      const batch = coreFor(nk, logger).leave(state, presences.map(info), now);
       send(dispatcher, state, batch, presences);
       relabel(dispatcher, before, state);
+      presenceSync(
+        ctx,
+        logger,
+        nk,
+        state,
+        presences.map((p) => p.userId),
+        now,
+      );
       return { state };
     },
 
-    matchLoop(_ctx, logger, nk, dispatcher, _tick, state, messages) {
+    matchLoop(ctx, logger, nk, dispatcher, _tick, state, messages) {
+      const seatedBefore = seatedUserIds(state);
       const core = coreFor(nk, logger);
       const before = labelFor(state);
       const now = Date.now();
@@ -288,12 +334,17 @@ export function tableMatchHandler<S, M, V, E, R>(
       const batch = core.tick(state, now);
       send(dispatcher, state, batch, senders);
       relabel(dispatcher, before, state);
-      return end || batch.end || state.phase === "closing" ? null : { state };
+      const closing = end || batch.end || state.phase === "closing";
+      if (closing) presenceSync(ctx, logger, nk, { ...state, phase: "closing" }, seatedBefore, now);
+      return closing ? null : { state };
     },
 
-    matchTerminate(_ctx, logger, nk, dispatcher, _tick, state) {
-      const batch = coreFor(nk, logger).close(state, "server", Date.now());
+    matchTerminate(ctx, logger, nk, dispatcher, _tick, state) {
+      const now = Date.now();
+      const seated = seatedUserIds(state);
+      const batch = coreFor(nk, logger).close(state, "server", now);
       send(dispatcher, state, batch, []);
+      presenceSync(ctx, logger, nk, { ...state, phase: "closing" }, seated, now);
       return { state };
     },
 

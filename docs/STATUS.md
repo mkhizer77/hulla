@@ -29,10 +29,11 @@ M0 complete: the Thulla rulebook runs in TypeScript with full traceability. M1, 
 - 12 Oct decisions: C# mirror deferred past v1.0 (ADR-0019), no clock in engines (ADR-0020), JSON Schema draft-07 (ADR-0021), one deck and 3–6 seats until v1.2, web client before Rung (M5 → web → Rung → M6, dates in the execution plan), Facebook login stays, Unity stays on 6000.4.9f1.
 
 ## Doing
+- M2 #42 server part (branch `feat/presence`, stacked on #41): presence states from Nakama's online flag, the seat pointer the match binding writes, the client's Away flag and the live match label; `table_list_friends` ordered for the Home hero; `presence_set`. The Home screen itself, the hero and the offline variant are the Unity track; the client polls or follows status for the 5 s refresh. OQ-017 logged.
 - M2 #41 server part (branch `feat/friends`, stacked on #38): add by friend code with the 500 cap, ten pinned favourites, Recent Players (last fifty co-players, written at round end) with friend and favourite flags for the results screen; requests, accept, decline and block are the client's calls into Nakama's friend API. The friends screen and QR are the Unity track.
 
 ## Next
-Server: after #38 and #41 merge, #42 presence and `table_list_friends`, #45, #47 to #56, #71, #72, #75, #77. Unity: #33 polish, #23 theme from the design system (#22), #32 voice, the Profile screen for #40, the friends screen for #41, parties for Quick Play once friends exist.
+Server: after #38, #41 and #42 merge, #45, #47 to #56, #71, #72, #75, #77. Unity: #33 polish, #23 theme from the design system (#22), #32 voice, the Profile screen for #40, the friends screen for #41, parties for Quick Play once friends exist.
 
 ## Blockers
 - None.

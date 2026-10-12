@@ -38,6 +38,8 @@ describe("InitModule", () => {
       "friend_add_by_code",
       "favourite_set",
       "social_overview",
+      "table_list_friends",
+      "presence_set",
     ]);
     expect([...matches.keys()]).toEqual(["thulla"]);
     expect(hooks.get("rtBefore:ChannelMessageSend")?.name).toBe("beforeChannelMessageSend");
