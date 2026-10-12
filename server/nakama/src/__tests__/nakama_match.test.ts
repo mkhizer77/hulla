@@ -72,6 +72,8 @@ describe("the Nakama binding", () => {
       status: "open",
       seated: 0,
       open: 4,
+      watching: 0,
+      watchable: true,
     });
     expect(JSON.parse(labelFor(b.state))).toMatchObject({ seated: 3, open: 1 });
     expect(b.d.labels.at(-1)).toBe(labelFor(b.state));

@@ -1,4 +1,4 @@
-import { tableCore, type PresenceInfo, type TableCore } from "../match/table_core";
+import { tableCore, type PresenceInfo, type SocialGate, type TableCore } from "../match/table_core";
 
 import { toyHost, type ToyMove, type ToyState } from "./toy-game";
 
@@ -29,6 +29,7 @@ export function harness(
     readonly presentationDelayMs?: number;
     readonly settings?: Record<string, unknown>;
     readonly target?: number;
+    readonly social?: SocialGate;
   } = {},
 ): Harness {
   const records: RoundRecord[] = [];
@@ -42,6 +43,7 @@ export function harness(
     },
     persist: { roundRecord: (record) => records.push(record) },
     ...(options.config === undefined ? {} : { config: options.config }),
+    ...(options.social === undefined ? {} : { social: options.social }),
   });
   const state = core.create(
     {

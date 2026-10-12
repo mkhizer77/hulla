@@ -138,6 +138,9 @@ namespace Hulla.Protocol
         [JsonProperty("rulesChangedPayload", Required = Required.DisallowNull, NullValueHandling = NullValueHandling.Ignore)]
         public RulesChanged? RulesChangedPayload { get; set; }
 
+        [JsonProperty("seatSpectatorPayload", Required = Required.DisallowNull, NullValueHandling = NullValueHandling.Ignore)]
+        public SeatSpectator? SeatSpectatorPayload { get; set; }
+
         [JsonProperty("seatStats", Required = Required.DisallowNull, NullValueHandling = NullValueHandling.Ignore)]
         public SeatStats? SeatStats { get; set; }
 
@@ -905,6 +908,16 @@ namespace Hulla.Protocol
         public VoiceDefault? VoiceDefault { get; set; }
     }
 
+    /// <summary>
+    /// Host only: seats a spectator now, or for the next round while one is in progress (GDD
+    /// 9.10)
+    /// </summary>
+    public partial class SeatSpectator
+    {
+        [JsonProperty("userId", Required = Required.Always)]
+        public string UserId { get; set; }
+    }
+
     public partial class SetRules
     {
         [JsonProperty("rules", Required = Required.Always)]
@@ -969,6 +982,9 @@ namespace Hulla.Protocol
 
         [JsonProperty("spectatorCount", Required = Required.Always)]
         public long SpectatorCount { get; set; }
+
+        [JsonProperty("spectators", Required = Required.Always)]
+        public List<Spectator> Spectators { get; set; }
 
         [JsonProperty("status", Required = Required.Always)]
         public TableStatus Status { get; set; }
@@ -1176,6 +1192,21 @@ namespace Hulla.Protocol
 
         [JsonProperty("seat", Required = Required.Always)]
         public long SeatSeat { get; set; }
+    }
+
+    /// <summary>
+    /// A friend watching the table; seatNext when they take a seat at the next round
+    /// </summary>
+    public partial class Spectator
+    {
+        [JsonProperty("displayName", Required = Required.AllowNull)]
+        public string? DisplayName { get; set; }
+
+        [JsonProperty("seatNext", Required = Required.Always)]
+        public bool SeatNext { get; set; }
+
+        [JsonProperty("userId", Required = Required.Always)]
+        public string UserId { get; set; }
     }
 
     public partial class StartRound

@@ -34,6 +34,8 @@ export interface TableLabel {
   readonly status: string;
   readonly seated: number;
   readonly open: number;
+  readonly watching: number;
+  readonly watchable: boolean;
 }
 
 export interface FriendTable extends TableLabel {
@@ -81,6 +83,8 @@ export function parseLabel(label: string): TableLabel | null {
       status: v["status"],
       seated: typeof v["seated"] === "number" ? v["seated"] : 0,
       open: typeof v["open"] === "number" ? v["open"] : 0,
+      watching: typeof v["watching"] === "number" ? v["watching"] : 0,
+      watchable: v["watchable"] === true,
     };
   } catch {
     return null;
@@ -272,33 +276,37 @@ export function isUserOnline(nk: nkruntime.Nakama, userId: string): boolean {
   return hasSocket(nk, userId);
 }
 
+/** Every mutual friend's id, paged with the usual guard against a cursor on the last page. */
+export function nkFriendIds(nk: nkruntime.Nakama, userId: string): string[] {
+  const ids: string[] = [];
+  let cursor: string | undefined;
+  for (let page = 0; page < 10; page += 1) {
+    const list = nk.friendsList(userId, CHUNK, 0, cursor);
+    const friends = list.friends ?? [];
+    for (const f of friends) {
+      const id = f.user?.userId;
+      if (id !== undefined && !ids.includes(id)) ids.push(id);
+    }
+    if (
+      friends.length < CHUNK ||
+      list.cursor === undefined ||
+      list.cursor === "" ||
+      list.cursor === cursor
+    ) {
+      break;
+    }
+    cursor = list.cursor;
+  }
+  return ids;
+}
+
 export function nkPresencePorts(
   nk: nkruntime.Nakama,
   profiles: { read(userId: string): Profile | null },
   favourites: (userId: string) => readonly string[],
 ): PresencePorts {
   return {
-    friendIds(userId) {
-      const ids: string[] = [];
-      let cursor: string | undefined;
-      for (let page = 0; page < 10; page += 1) {
-        const list = nk.friendsList(userId, CHUNK, 0, cursor);
-        const friends = list.friends ?? [];
-        for (const f of friends) {
-          const id = f.user?.userId;
-          if (id !== undefined && !ids.includes(id)) ids.push(id);
-        }
-        if (
-          friends.length < CHUNK ||
-          list.cursor === undefined ||
-          list.cursor === "" ||
-          list.cursor === cursor
-        )
-          break;
-        cursor = list.cursor;
-      }
-      return ids;
-    },
+    friendIds: (userId) => nkFriendIds(nk, userId),
     onlineIds(userIds) {
       const online = new Set<string>();
       for (const ids of chunks(userIds)) {

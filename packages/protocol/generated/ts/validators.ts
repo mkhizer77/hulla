@@ -27,6 +27,8 @@ export const requestSnapshotPayloadSchema = z.object({ "sinceSeq": z.number().in
 
 export const pingPayloadSchema = z.object({ "sentTs": z.number().int().gte(0).describe("Unix milliseconds from the server clock") }).strict();
 
+export const seatSpectatorPayloadSchema = z.object({ "userId": z.string().describe("Server-issued; no length constraint because nullable constrained strings crash quicktype's generated converter") }).strict().describe("Host only: seats a spectator now, or for the next round while one is in progress (GDD 9.10)");
+
 export const chatTextPayloadSchema = z.object({ "text": z.string().min(1).max(140) }).strict();
 
 export const quickChatPayloadSchema = z.object({ "phraseId": z.string().regex(new RegExp("^[A-Z][0-9]{2}$")), "pack": z.string().optional() }).strict();
@@ -71,7 +73,7 @@ export const tableStatePayloadSchema = z.object({ "code": z.string().regex(new R
         message: "Invalid input: Should pass single schema. Passed " + passed,
       });
     }
-  }), "displayName": z.union([z.string(), z.null()]), "ready": z.boolean(), "connected": z.boolean(), "autoPlay": z.boolean().describe("The auto-play policy holds this seat (R45, R46)"), "bot": z.boolean().optional(), "party": z.union([z.string().describe("Players who queued together share a party id (GDD 7.2); shown as a link icon"), z.null().describe("Players who queued together share a party id (GDD 7.2); shown as a link icon")]).describe("Players who queued together share a party id (GDD 7.2); shown as a link icon").optional() }).strict()), "spectatorCount": z.number().int().gte(0), "series": z.object({ "roundsPlayed": z.number().int().gte(0), "points": z.array(z.number().int()).describe("Per seat, in seat order"), "loserTally": z.array(z.number().int().gte(0)), "nextDealerSeat": z.number().int().gte(0).lte(7), "finished": z.boolean() }).strict(), "round": z.any().superRefine((x, ctx) => {
+  }), "displayName": z.union([z.string(), z.null()]), "ready": z.boolean(), "connected": z.boolean(), "autoPlay": z.boolean().describe("The auto-play policy holds this seat (R45, R46)"), "bot": z.boolean().optional(), "party": z.union([z.string().describe("Players who queued together share a party id (GDD 7.2); shown as a link icon"), z.null().describe("Players who queued together share a party id (GDD 7.2); shown as a link icon")]).describe("Players who queued together share a party id (GDD 7.2); shown as a link icon").optional() }).strict()), "spectatorCount": z.number().int().gte(0), "spectators": z.array(z.object({ "userId": z.string().describe("Server-issued; no length constraint because nullable constrained strings crash quicktype's generated converter"), "displayName": z.union([z.string(), z.null()]), "seatNext": z.boolean() }).strict().describe("A friend watching the table; seatNext when they take a seat at the next round")), "series": z.object({ "roundsPlayed": z.number().int().gte(0), "points": z.array(z.number().int()).describe("Per seat, in seat order"), "loserTally": z.array(z.number().int().gte(0)), "nextDealerSeat": z.number().int().gte(0).lte(7), "finished": z.boolean() }).strict(), "round": z.any().superRefine((x, ctx) => {
     const schemas = [z.object({ "viewer": z.any().superRefine((x, ctx) => {
     const schemas = [z.object({ "kind": z.literal("seat"), "seat": z.number().int().gte(0).lte(7) }).strict(), z.object({ "kind": z.literal("spectator") }).strict()];
     const { errors, failed } = schemas.reduce<{
@@ -275,7 +277,7 @@ export const snapshotPayloadSchema = z.object({ "state": z.object({ "code": z.st
         message: "Invalid input: Should pass single schema. Passed " + passed,
       });
     }
-  }), "displayName": z.union([z.string(), z.null()]), "ready": z.boolean(), "connected": z.boolean(), "autoPlay": z.boolean().describe("The auto-play policy holds this seat (R45, R46)"), "bot": z.boolean().optional(), "party": z.union([z.string().describe("Players who queued together share a party id (GDD 7.2); shown as a link icon"), z.null().describe("Players who queued together share a party id (GDD 7.2); shown as a link icon")]).describe("Players who queued together share a party id (GDD 7.2); shown as a link icon").optional() }).strict()), "spectatorCount": z.number().int().gte(0), "series": z.object({ "roundsPlayed": z.number().int().gte(0), "points": z.array(z.number().int()).describe("Per seat, in seat order"), "loserTally": z.array(z.number().int().gte(0)), "nextDealerSeat": z.number().int().gte(0).lte(7), "finished": z.boolean() }).strict(), "round": z.any().superRefine((x, ctx) => {
+  }), "displayName": z.union([z.string(), z.null()]), "ready": z.boolean(), "connected": z.boolean(), "autoPlay": z.boolean().describe("The auto-play policy holds this seat (R45, R46)"), "bot": z.boolean().optional(), "party": z.union([z.string().describe("Players who queued together share a party id (GDD 7.2); shown as a link icon"), z.null().describe("Players who queued together share a party id (GDD 7.2); shown as a link icon")]).describe("Players who queued together share a party id (GDD 7.2); shown as a link icon").optional() }).strict()), "spectatorCount": z.number().int().gte(0), "spectators": z.array(z.object({ "userId": z.string().describe("Server-issued; no length constraint because nullable constrained strings crash quicktype's generated converter"), "displayName": z.union([z.string(), z.null()]), "seatNext": z.boolean() }).strict().describe("A friend watching the table; seatNext when they take a seat at the next round")), "series": z.object({ "roundsPlayed": z.number().int().gte(0), "points": z.array(z.number().int()).describe("Per seat, in seat order"), "loserTally": z.array(z.number().int().gte(0)), "nextDealerSeat": z.number().int().gte(0).lte(7), "finished": z.boolean() }).strict(), "round": z.any().superRefine((x, ctx) => {
     const schemas = [z.object({ "viewer": z.any().superRefine((x, ctx) => {
     const schemas = [z.object({ "kind": z.literal("seat"), "seat": z.number().int().gte(0).lte(7) }).strict(), z.object({ "kind": z.literal("spectator") }).strict()];
     const { errors, failed } = schemas.reduce<{
@@ -515,6 +517,7 @@ export const payloadValidators = {
   vote_rematch: voteRematchPayloadSchema,
   request_snapshot: requestSnapshotPayloadSchema,
   ping: pingPayloadSchema,
+  seat_spectator: seatSpectatorPayloadSchema,
   chat_text: chatTextPayloadSchema,
   quick_chat: quickChatPayloadSchema,
   emote: emotePayloadSchema,

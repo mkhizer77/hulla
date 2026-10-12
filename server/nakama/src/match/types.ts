@@ -20,6 +20,8 @@ export interface PresenceRecord {
   /** Nakama's node for the session; a message addressed without it is dropped by the router. */
   readonly node: string;
   seat: SeatIndex | null;
+  /** A spectator who takes the next free seat when the round ends (GDD 7.6, 9.10). */
+  seatNext?: boolean;
 }
 
 export interface SeatSlot {
@@ -48,7 +50,7 @@ export interface SeatSlot {
 /** What `matchJoinAttempt` decided for a session, consumed by `matchJoin`. */
 export type Admission =
   | { readonly kind: "seat"; readonly seat: SeatIndex; readonly reattach: boolean }
-  | { readonly kind: "spectator" };
+  | { readonly kind: "spectator"; readonly seatNext?: boolean };
 
 /** A wire message produced from engine events; `seat` set means that seat only. */
 export interface GameMessage {
