@@ -18,6 +18,13 @@
             </ui:VisualElement>
         </ui:VisualElement>
         <ui:VisualElement name="hand" class="hand" />
+        <ui:VisualElement name="recap" class="recap">
+            <ui:VisualElement class="panel">
+                <ui:Label name="recap-title" class="turn" />
+                <ui:Label name="recap-text" class="recap__text" />
+                <ui:Button name="recap-hide" class="button button--quiet button--small" />
+            </ui:VisualElement>
+        </ui:VisualElement>
         <ui:VisualElement name="chat-panel" class="chat-panel">
             <ui:ScrollView class="chat-panel__scroll">
                 <ui:VisualElement name="chat-emotes" class="chips" />

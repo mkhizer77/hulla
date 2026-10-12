@@ -4,7 +4,11 @@
         <ui:Label name="tagline" class="subtitle" />
         <ui:VisualElement class="panel">
             <ui:TextField name="name" class="field" />
-            <ui:Button name="create" class="button button--primary" />
+            <ui:Label name="seats-label" class="caption" />
+            <ui:VisualElement name="seats" class="chips chips--seats" />
+            <ui:Button name="quick" class="button button--primary" />
+            <ui:VisualElement class="divider" />
+            <ui:Button name="create" class="button" />
             <ui:VisualElement class="divider" />
             <ui:TextField name="code" class="field field--code" />
             <ui:Button name="join" class="button" />

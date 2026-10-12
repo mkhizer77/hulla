@@ -14,10 +14,15 @@ namespace Hulla.Presentation.Screens.Lobby
         private readonly Button _ready;
         private readonly Button _start;
         private readonly Label _status;
+        private readonly Label _countdown;
+        private readonly Func<long> _nowMs;
+        private long _shownSeconds = -1;
 
-        public LobbyView(VisualElement root, TableClient client, Action leave)
+        public LobbyView(VisualElement root, TableClient client, Func<long> nowMs, Action leave)
         {
             _client = client;
+            _nowMs = nowMs;
+            _countdown = root.Q<Label>("countdown");
             root.Q<Label>("code-label").text = UiText.RoomCode;
             _code = root.Q<Label>("code");
             _seats = root.Q<VisualElement>("seats");
@@ -35,6 +40,29 @@ namespace Hulla.Presentation.Screens.Lobby
         }
 
         public void Dispose() => _client.Model.Changed -= Refresh;
+
+        /// <summary>Per frame: the auto-start countdown of a public table, redrawn when the second changes.</summary>
+        public void Tick()
+        {
+            var startsAt = _client.Model.AutoStartAtTs;
+            if (startsAt == null)
+            {
+                if (_shownSeconds != -1)
+                {
+                    _shownSeconds = -1;
+                    _countdown.text = "";
+                }
+
+                return;
+            }
+
+            var seconds = Math.Max(0, (startsAt.Value - _nowMs() + 999) / 1000);
+            if (seconds != _shownSeconds)
+            {
+                _shownSeconds = seconds;
+                _countdown.text = string.Format(UiText.StartsIn, seconds);
+            }
+        }
 
         private bool MeReady()
         {
@@ -76,8 +104,15 @@ namespace Hulla.Presentation.Screens.Lobby
                 _seats.Add(row);
             }
 
+            var matchmade = !model.IsPrivate;
+            if (matchmade)
+            {
+                _code.text = UiText.QuickPlayTable;
+            }
+
             _ready.text = MeReady() ? UiText.NotReady : UiText.Ready;
-            _start.style.display = model.IsHost ? DisplayStyle.Flex : DisplayStyle.None;
+            _ready.style.display = matchmade ? DisplayStyle.None : DisplayStyle.Flex;
+            _start.style.display = model.IsHost && !matchmade ? DisplayStyle.Flex : DisplayStyle.None;
             _status.text = model.LastErrorCode != null ? UiText.Error(model.LastErrorCode) : seated < 3 ? UiText.Waiting : "";
         }
     }

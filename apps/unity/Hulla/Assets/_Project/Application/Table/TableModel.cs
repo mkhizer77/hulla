@@ -40,6 +40,13 @@ namespace Hulla.Application.Table
 
         public bool Closed { get; private set; }
 
+        public TableMode Mode { get; private set; } = TableMode.Private;
+
+        public bool IsPrivate => Mode == TableMode.Private;
+
+        /// <summary>When a public table deals itself (GDD 9.5); null when no countdown is running.</summary>
+        public long? AutoStartAtTs { get; private set; }
+
         public long? HostSeat { get; private set; }
 
         public long? MySeat { get; private set; }
@@ -173,6 +180,8 @@ namespace Hulla.Application.Table
         {
             Code = state.Code;
             Status = state.Status;
+            Mode = state.Mode;
+            AutoStartAtTs = state.AutoStart?.StartsAtTs;
             HostSeat = state.HostSeat;
             _seats.Clear();
             MySeat = null;
@@ -233,6 +242,7 @@ namespace Hulla.Application.Table
         {
             RoundId = start.RoundId;
             InRound = true;
+            AutoStartAtTs = null;
             Status = TableStatus.InRound;
             LastResult = null;
             _handCounts = start.HandCounts.ToArray();

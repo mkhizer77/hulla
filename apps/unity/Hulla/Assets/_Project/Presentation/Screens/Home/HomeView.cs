@@ -17,7 +17,10 @@ namespace Hulla.Presentation.Screens.Home
         private readonly TextField _server;
 
         /// <param name="server">The server to show in a development build, or null to hide the field.</param>
-        public HomeView(VisualElement root, HomeViewModel model, string? server, Action<string, string?> create, Action<string, string, string?> join)
+        private readonly Button _quick;
+        private int _seats = 4;
+
+        public HomeView(VisualElement root, HomeViewModel model, string? server, Action<string, string?> create, Action<string, string, string?> join, Action<string, int, string?> quickPlay)
         {
             _model = model;
             root.Q<Label>("title").text = UiText.AppTitle;
@@ -41,6 +44,29 @@ namespace Hulla.Presentation.Screens.Home
             string? Server() => server == null ? null : _server.value;
             _create.clicked += () => create(_name.value, Server());
             _join.clicked += () => join(_name.value, _code.value, Server());
+            root.Q<Label>("seats-label").text = UiText.SeatsLabel;
+            var seatChips = root.Q<VisualElement>("seats");
+            for (var n = 4; n <= 6; n++)
+            {
+                var count = n;
+                var chip = new Button { text = count.ToString() };
+                chip.AddToClassList("chip");
+                chip.AddToClassList("chip--seat");
+                chip.clicked += () =>
+                {
+                    _seats = count;
+                    foreach (var other in seatChips.Children())
+                    {
+                        other.EnableInClassList("chip--on", other == chip);
+                    }
+                };
+                chip.EnableInClassList("chip--on", count == _seats);
+                seatChips.Add(chip);
+            }
+
+            _quick = root.Q<Button>("quick");
+            _quick.text = UiText.QuickPlay;
+            _quick.clicked += () => quickPlay(_name.value, _seats, Server());
             _model.Changed += Refresh;
             Refresh();
         }
@@ -51,6 +77,7 @@ namespace Hulla.Presentation.Screens.Home
         {
             _create.SetEnabled(!_model.Busy);
             _join.SetEnabled(!_model.Busy);
+            _quick.SetEnabled(!_model.Busy);
             _status.text = _model.Busy ? UiText.Connecting : _model.ErrorCode == null ? "" : UiText.Error(_model.ErrorCode);
         }
     }

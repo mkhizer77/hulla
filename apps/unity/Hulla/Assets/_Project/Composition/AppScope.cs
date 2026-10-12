@@ -17,6 +17,7 @@ namespace Hulla.Composition
         private readonly NakamaConnection _connection;
         private readonly NakamaSessionService _sessionService;
         private readonly NakamaTableGateway _tables;
+        private readonly NakamaMatchmaker _matchmaker;
         private SessionScope? _session;
 
         public AppScope(AppConfig config)
@@ -26,6 +27,8 @@ namespace Hulla.Composition
             _sessionService = new NakamaSessionService(_connection);
             _tables = new NakamaTableGateway(_connection);
             Home = new HomeViewModel(_sessionService, _tables);
+            _matchmaker = new NakamaMatchmaker(_connection);
+            QuickPlay = new QuickPlayViewModel(_matchmaker);
         }
 
         public AppConfig Config { get; private set; }
@@ -39,6 +42,8 @@ namespace Hulla.Composition
         public HomeViewModel Home { get; }
 
         public IChatCatalog Chat { get; } = new StreamingChatCatalog();
+
+        public QuickPlayViewModel QuickPlay { get; }
 
         public SessionScope? Session => _session;
 
@@ -76,6 +81,8 @@ namespace Hulla.Composition
         public void Dispose()
         {
             EndSession();
+            QuickPlay.Dispose();
+            _matchmaker.Dispose();
             _tables.Dispose();
             _lifetime.Cancel();
             _lifetime.Dispose();

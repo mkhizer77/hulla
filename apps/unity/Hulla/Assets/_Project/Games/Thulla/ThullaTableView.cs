@@ -42,14 +42,34 @@ namespace Hulla.Games.Thulla
         private readonly StampTimeline _stamp = new StampTimeline();
         private readonly VisualElement _felt;
         private readonly bool _reduceMotion;
+        private readonly VisualElement _recap;
+        private readonly Action? _hideRecapForGood;
+        private bool _recapShown;
+        private float _recapLeft;
+
+        /// <summary>The first round opens with a short rules recap that a player can turn off (GDD 9.5).</summary>
+        private const float RecapSeconds = 3f;
         private long _shownSeconds = -1;
         private bool _voted;
 
         /// <summary>How long a phrase or emote stays on screen.</summary>
         private const float SaySeconds = 3f;
 
-        public ThullaTableView(VisualElement root, TableClient client, IChatCatalog chat, Func<long> nowMs, Action leave, bool reduceMotion = false)
+        /// <param name="hideRecapForGood">Remembers "don't show again"; null when the player already chose it.</param>
+        public ThullaTableView(VisualElement root, TableClient client, IChatCatalog chat, Func<long> nowMs, Action leave, bool reduceMotion = false, Action? hideRecapForGood = null)
         {
+            _hideRecapForGood = hideRecapForGood;
+            _recap = root.Q<VisualElement>("recap");
+            root.Q<Label>("recap-title").text = UiText.RecapTitle;
+            root.Q<Label>("recap-text").text = UiText.Recap;
+            var hideRecap = root.Q<Button>("recap-hide");
+            hideRecap.text = UiText.RecapHide;
+            hideRecap.clicked += () =>
+            {
+                _hideRecapForGood?.Invoke();
+                _recapLeft = 0f;
+                _recap.style.display = DisplayStyle.None;
+            };
             _reduceMotion = reduceMotion;
             _felt = root.Q<VisualElement>("felt");
             _client = client;
@@ -103,6 +123,13 @@ namespace Hulla.Games.Thulla
                     return 0.2f;
                 case RoundStart _:
                     _voted = false;
+                    if (!_recapShown && _hideRecapForGood != null)
+                    {
+                        _recapShown = true;
+                        _recapLeft = RecapSeconds;
+                        _recap.style.display = DisplayStyle.Flex;
+                    }
+
                     return 0.4f;
                 default:
                     return 0f;
@@ -115,6 +142,15 @@ namespace Hulla.Games.Thulla
             foreach (var badge in _badges)
             {
                 badge.Tick(deltaSeconds);
+            }
+
+            if (_recapLeft > 0f)
+            {
+                _recapLeft -= deltaSeconds;
+                if (_recapLeft <= 0f)
+                {
+                    _recap.style.display = DisplayStyle.None;
+                }
             }
 
             if (_mySayLeft > 0f)

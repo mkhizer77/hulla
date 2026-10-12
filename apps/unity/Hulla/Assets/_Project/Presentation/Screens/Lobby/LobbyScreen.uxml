@@ -7,6 +7,7 @@
         <ui:ScrollView name="seats-scroll" class="seats">
             <ui:VisualElement name="seats" />
         </ui:ScrollView>
+        <ui:Label name="countdown" class="turn countdown" />
         <ui:Label name="status" class="status" />
         <ui:VisualElement class="actions">
             <ui:Button name="ready" class="button" />
