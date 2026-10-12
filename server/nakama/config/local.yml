@@ -33,3 +33,7 @@ runtime:
 match:
   input_queue_size: 128
   call_queue_size: 128
+# Groups form every 5 s at the requested size; the fourth pass (20 s) accepts the minimum of three (GDD 9.6, OQ-006).
+matchmaker:
+  interval_sec: 5
+  max_intervals: 3

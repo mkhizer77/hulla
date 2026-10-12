@@ -126,10 +126,23 @@ function parseParams(params: Record<string, unknown>): CreateTableParams {
     gameId: params["gameId"] as CreateTableParams["gameId"],
     mode: (params["mode"] as CreateTableParams["mode"] | undefined) ?? "private",
   };
-  if (typeof rules === "string") return { ...base, rules: JSON.parse(rules) as RulesSelection };
-  if (typeof rules === "object" && rules !== null)
-    return { ...base, rules: rules as RulesSelection };
-  return base;
+  const autoStart = params["autoStart"];
+  const parties = params["parties"];
+  const extras: Pick<CreateTableParams, "autoStart" | "parties"> = {};
+  if (typeof autoStart === "object" && autoStart !== null) {
+    const expected = Number((autoStart as { expected?: unknown }).expected ?? 0);
+    Object.assign(extras, { autoStart: { expected } });
+  }
+  if (Array.isArray(parties)) {
+    Object.assign(extras, { parties: parties as CreateTableParams["parties"] });
+  }
+  if (typeof rules === "string") {
+    return { ...base, ...extras, rules: JSON.parse(rules) as RulesSelection };
+  }
+  if (typeof rules === "object" && rules !== null) {
+    return { ...base, ...extras, rules: rules as RulesSelection };
+  }
+  return { ...base, ...extras };
 }
 
 function parseSignal(data: string): { readonly kind?: string } | null {

@@ -112,9 +112,14 @@ function errorPayload(error: RuleError, refSeq: number): object {
 }
 
 /** Join metadata arrives as strings from the socket; make the booleans real before validating. */
+const JOIN_KEYS = ["code", "resumeToken", "asSpectator", "clientVersion"] as const;
+
+/** Only the join fields are validated: a matchmaker token join may carry ticket properties too. */
 function normaliseMetadata(metadata: Record<string, unknown>): Record<string, unknown> {
   const out: Record<string, unknown> = {};
-  for (const [key, value] of Object.entries(metadata)) {
+  for (const key of JOIN_KEYS) {
+    const value = metadata[key];
+    if (value === undefined) continue;
     out[key] = key === "asSpectator" && typeof value === "string" ? value === "true" : value;
   }
   return out;
@@ -136,6 +141,16 @@ export function tableCore<S, M, V, E, R>(
       () => (state.round === null ? null : host.stateHash(state.round.state)),
       batch,
     );
+
+  /** Everyone expected has arrived: count down to the first deal (GDD 9.5). */
+  const armAutoStart = (state: TableState<S, M>, now: number): void => {
+    const auto = state.autoStart;
+    if (auto === null) return;
+    if (auto.startsAtTs !== null || state.phase !== "lobby") return;
+    if (activeSeats(state.seats).length >= auto.expected) {
+      auto.startsAtTs = now + config.autoStartCountdownMs;
+    }
+  };
 
   const broadcastTableState = (state: TableState<S, M>, emit: Emitter): void => {
     for (const presence of Object.values(state.presences)) {
@@ -581,6 +596,19 @@ export function tableCore<S, M, V, E, R>(
         seq: 0,
         log: [],
         rematchDeadlineTs: null,
+        autoStart:
+          params.autoStart === undefined
+            ? null
+            : {
+                expected: params.autoStart.expected,
+                joinDeadlineTs: now + config.autoStartJoinWindowMs,
+                startsAtTs: null,
+                parties: Object.fromEntries(
+                  (params.parties ?? []).flatMap((party) =>
+                    party.members.map((m) => [m, party.id]),
+                  ),
+                ),
+              },
         createdTs: now,
         emptySinceTs: now,
         closeReason: null,
@@ -648,6 +676,7 @@ export function tableCore<S, M, V, E, R>(
             slot.playerId = info.userId;
             slot.displayName = displayName;
             slot.joinedTs = now;
+            slot.party = state.autoStart?.parties[info.userId] ?? null;
             slot.ready = false;
             slot.left = false;
             status = "joined";
@@ -663,7 +692,18 @@ export function tableCore<S, M, V, E, R>(
         }
         state.presences[info.sessionId] = record;
         state.emptySinceTs = null;
+        const countdownBefore = state.autoStart?.startsAtTs ?? null;
+        armAutoStart(state, now);
+        const countdownArmed =
+          countdownBefore === null && (state.autoStart?.startsAtTs ?? null) !== null;
         emit.session(info.sessionId, "table_state", tableStateFor(state, host, record));
+        if (countdownArmed) {
+          for (const other of Object.values(state.presences)) {
+            if (other.sessionId !== info.sessionId) {
+              emit.session(other.sessionId, "table_state", tableStateFor(state, host, other));
+            }
+          }
+        }
         emit.public("presence", presencePayload(record, displayName, status));
         const current = state.round;
         if (
@@ -880,6 +920,29 @@ export function tableCore<S, M, V, E, R>(
         now >= state.rematchDeadlineTs
       ) {
         resolveRematch(state, emit, now);
+      }
+      const auto = state.autoStart;
+      if (auto !== null && state.phase === "lobby") {
+        const seated = activeSeats(state.seats).length;
+        if (auto.startsAtTs === null && now >= auto.joinDeadlineTs) {
+          if (seated >= host.module.seats.min) {
+            auto.startsAtTs = now + config.autoStartCountdownMs;
+            broadcastTableState(state, emit);
+          } else {
+            closeTable(state, emit, "dissolved", now);
+          }
+        } else if (auto.startsAtTs !== null && now >= auto.startsAtTs) {
+          if (seated >= host.module.seats.min) {
+            for (const seat of activeSeats(state.seats)) {
+              const slot = state.seats[seat];
+              if (slot !== undefined) slot.ready = true;
+            }
+            state.autoStart = null;
+            dealRound(state, emit, now, null);
+          } else {
+            closeTable(state, emit, "dissolved", now);
+          }
+        }
       }
       if (
         !closing(state) &&

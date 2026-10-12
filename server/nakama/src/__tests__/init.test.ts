@@ -30,6 +30,7 @@ describe("InitModule", () => {
     ]);
     expect([...matches.keys()]).toEqual(["thulla"]);
     expect(hooks.get("rtBefore:ChannelMessageSend")?.name).toBe("beforeChannelMessageSend");
+    expect(hooks.get("matchmakerMatched")?.name).toBe("matchmakerMatched");
     const handler = matches.get("thulla");
     expect(Object.keys(handler ?? {}).sort()).toEqual([
       "matchInit",

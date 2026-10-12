@@ -744,6 +744,12 @@ namespace Hulla.Protocol
     /// </summary>
     public partial class TableState
     {
+        /// <summary>
+        /// A public table counting down to its first deal (GDD 9.5)
+        /// </summary>
+        [JsonProperty("autoStart", Required = Required.DisallowNull, NullValueHandling = NullValueHandling.Ignore)]
+        public AutoStart? AutoStart { get; set; }
+
         [JsonProperty("code", Required = Required.Always)]
         public string Code { get; set; }
 
@@ -782,6 +788,15 @@ namespace Hulla.Protocol
 
         [JsonProperty("status", Required = Required.Always)]
         public TableStatus Status { get; set; }
+    }
+
+    /// <summary>
+    /// A public table counting down to its first deal (GDD 9.5)
+    /// </summary>
+    public partial class AutoStart
+    {
+        [JsonProperty("startsAtTs", Required = Required.Always)]
+        public long StartsAtTs { get; set; }
     }
 
     public partial class Rematch
@@ -962,6 +977,12 @@ namespace Hulla.Protocol
 
         [JsonProperty("displayName", Required = Required.AllowNull)]
         public string? DisplayName { get; set; }
+
+        /// <summary>
+        /// Players who queued together share a party id (GDD 7.2); shown as a link icon
+        /// </summary>
+        [JsonProperty("party")]
+        public string? Party { get; set; }
 
         [JsonProperty("playerId", Required = Required.AllowNull)]
         public string? PlayerId { get; set; }

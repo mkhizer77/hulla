@@ -13,8 +13,14 @@
     "rules": {
       "gameId": "thulla",
       "preset": "standard",
-      "overrides": { "handTaking": "leaderOnly" },
-      "settings": { "turnTimerSeconds": 20, "loserTitle": "bhabhi", "voiceDefault": "openMic" }
+      "overrides": {
+        "handTaking": "leaderOnly"
+      },
+      "settings": {
+        "turnTimerSeconds": 20,
+        "loserTitle": "bhabhi",
+        "voiceDefault": "openMic"
+      }
     },
     "seats": [
       {
@@ -23,7 +29,8 @@
         "displayName": "Ali",
         "ready": true,
         "connected": true,
-        "autoPlay": false
+        "autoPlay": false,
+        "party": null
       },
       {
         "seat": 1,
@@ -31,7 +38,8 @@
         "displayName": "Sara",
         "ready": false,
         "connected": true,
-        "autoPlay": false
+        "autoPlay": false,
+        "party": null
       },
       {
         "seat": 2,
@@ -39,7 +47,8 @@
         "displayName": null,
         "ready": false,
         "connected": false,
-        "autoPlay": false
+        "autoPlay": false,
+        "party": null
       },
       {
         "seat": 3,
@@ -47,7 +56,8 @@
         "displayName": null,
         "ready": false,
         "connected": false,
-        "autoPlay": false
+        "autoPlay": false,
+        "party": null
       }
     ],
     "spectatorCount": 0,
