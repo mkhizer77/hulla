@@ -86,6 +86,13 @@
       "schema": "shell/table.json#/definitions/ping"
     },
     {
+      "type": "seat_spectator",
+      "opcode": 13,
+      "direction": "c2s",
+      "visibility": "public",
+      "schema": "shell/table.json#/definitions/seat_spectator"
+    },
+    {
       "type": "chat_text",
       "opcode": 20,
       "direction": "c2s",

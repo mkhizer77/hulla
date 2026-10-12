@@ -101,6 +101,23 @@
         }
       }
     },
+    "spectator": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "A friend watching the table; seatNext when they take a seat at the next round",
+      "required": ["userId", "displayName", "seatNext"],
+      "properties": {
+        "userId": {
+          "$ref": "../common.json#/definitions/playerId"
+        },
+        "displayName": {
+          "type": ["string", "null"]
+        },
+        "seatNext": {
+          "type": "boolean"
+        }
+      }
+    },
     "join_table": {
       "type": "object",
       "additionalProperties": false,
@@ -190,6 +207,17 @@
         }
       }
     },
+    "seat_spectator": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Host only: seats a spectator now, or for the next round while one is in progress (GDD 9.10)",
+      "required": ["userId"],
+      "properties": {
+        "userId": {
+          "$ref": "../common.json#/definitions/playerId"
+        }
+      }
+    },
     "start_round": {
       "type": "object",
       "additionalProperties": false,
@@ -251,6 +279,7 @@
         "rules",
         "seats",
         "spectatorCount",
+        "spectators",
         "series",
         "round",
         "lastSeq",
@@ -284,6 +313,12 @@
         "spectatorCount": {
           "type": "integer",
           "minimum": 0
+        },
+        "spectators": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/spectator"
+          }
         },
         "series": {
           "$ref": "../common.json#/definitions/seriesState"

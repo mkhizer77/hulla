@@ -1,6 +1,15 @@
 import { describe, expect, it } from "vitest";
 
-import { broadcasts, harness, payloadOf, presence, seated, sentTo, types } from "./table-helpers";
+import {
+  broadcasts,
+  harness,
+  opened,
+  payloadOf,
+  presence,
+  seated,
+  sentTo,
+  types,
+} from "./table-helpers";
 
 import type { ToyView } from "./toy-game";
 import type { TableStateFor } from "../match/view";
@@ -167,5 +176,86 @@ describe("lobby: ready, rules and host", () => {
     expect(closed.end).toBe(true);
     expect(h.state.phase).toBe("closing");
     expect(types(h.tick(1))).toEqual([]);
+  });
+});
+
+describe("spectators are friends of the table (GDD 7.6, 7.7, 9.10)", () => {
+  const friendsOf = (userId: string, seatedIds: readonly string[]): boolean =>
+    userId === "u9" && seatedIds.includes("u0");
+
+  it("refuses a stranger who wants to watch and admits a friend of a seated player", () => {
+    const h = harness({ social: { mayWatch: friendsOf } });
+    h.join(presence(0));
+    h.join(presence(1));
+    expect(h.core.joinAttempt(h.state, presence(8), { asSpectator: "true" }, h.now)).toEqual({
+      accept: false,
+      code: "social.not_friends",
+    });
+    const batch = h.join(presence(9), { asSpectator: "true" });
+    const state = payloadOf<TableStateFor<ToyView>>(sentTo(batch, "s9")[0]);
+    expect(state.spectators).toEqual([{ userId: "u9", displayName: "Player9", seatNext: false }]);
+  });
+
+  it("keeps the spectators toggle and the cap ahead of the friend check", () => {
+    const h = harness({ settings: { spectators: false }, social: { mayWatch: friendsOf } });
+    h.join(presence(0));
+    expect(h.core.joinAttempt(h.state, presence(9), { asSpectator: "true" }, h.now)).toEqual({
+      accept: false,
+      code: "table.locked",
+    });
+  });
+
+  it("lets the host seat a spectator in the lobby, and only the host", () => {
+    const h = harness();
+    h.join(presence(0));
+    h.join(presence(1));
+    h.join(presence(9), { asSpectator: "true" });
+    expect(
+      sentTo(h.send("s1", "seat_spectator", { userId: "u9" }), "s1")[0]?.payload,
+    ).toMatchObject({
+      code: "table.not_host",
+    });
+    expect(
+      sentTo(h.send("s0", "seat_spectator", { userId: "nobody" }), "s0")[0]?.payload,
+    ).toMatchObject({
+      code: "table.invalid_payload",
+    });
+    const batch = h.send("s0", "seat_spectator", { userId: "u9" });
+    expect(h.state.presences["s9"]?.seat).toBe(2);
+    expect(h.state.seats[2]).toMatchObject({ playerId: "u9", sessionId: "s9", connected: true });
+    expect(broadcasts(batch)[0]?.payload).toMatchObject({ seat: 2, status: "joined" });
+    const state = payloadOf<TableStateFor<ToyView>>(sentTo(batch, "s9").at(-1));
+    expect(state.spectators).toEqual([]);
+    expect(state.resumeToken).not.toBeNull();
+  });
+
+  it("seats a late arrival and a host-picked spectator when the round ends, in arrival order", () => {
+    const h = harness();
+    opened(h);
+    h.join(presence(7));
+    h.join(presence(8), { asSpectator: "true" });
+    expect(h.state.presences["s7"]?.seatNext).toBe(true);
+    expect(h.state.presences["s8"]?.seatNext).toBeUndefined();
+    h.send("s0", "seat_spectator", { userId: "u8" });
+    expect(h.state.presences["s8"]?.seatNext).toBe(true);
+    expect(h.state.seats.filter((s) => s.playerId !== null)).toHaveLength(3);
+    const roundId = h.state.round?.roundId ?? "";
+    let guard = 0;
+    let last = h.tick();
+    while (h.state.phase === "inRound" && guard < 50) {
+      const seat = h.state.round?.state.turnSeat ?? 0;
+      last = h.send(`s${String(seat)}`, "play_card", { roundId, clientSeq: 200 + guard, card: 2 });
+      guard += 1;
+    }
+    expect(h.state.phase).toBe("roundEnded");
+    expect(h.state.seats).toHaveLength(4);
+    expect(h.state.seats[3]).toMatchObject({ playerId: "u7" });
+    expect(h.state.presences["s7"]).toMatchObject({ seat: 3, seatNext: false });
+    // No seat left for the second one: still watching, still first in line for the next round.
+    expect(h.state.presences["s8"]).toMatchObject({ seat: null, seatNext: true });
+    const joined = broadcasts(last).filter(
+      (e) => e.type === "presence" && (e.payload as { status: string }).status === "joined",
+    );
+    expect(joined.map((e) => (e.payload as { seat: number }).seat)).toEqual([3]);
   });
 });

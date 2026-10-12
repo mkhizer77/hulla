@@ -48,6 +48,7 @@ export interface Protocol {
   voteRematchPayload?: VoteRematch;
   requestSnapshotPayload?: RequestSnapshot;
   pingPayload?: Ping;
+  seatSpectatorPayload?: SeatSpectator;
   chatTextPayload?: ChatText;
   quickChatPayload?: QuickChat;
   emotePayload?: Emote;
@@ -325,6 +326,15 @@ export interface Ping {
    */
   sentTs: number;
 }
+/**
+ * Host only: seats a spectator now, or for the next round while one is in progress (GDD 9.10)
+ */
+export interface SeatSpectator {
+  /**
+   * Server-issued; no length constraint because nullable constrained strings crash quicktype's generated converter
+   */
+  userId: string;
+}
 export interface ChatText {
   text: string;
 }
@@ -370,6 +380,7 @@ export interface TableState {
   rules: RulesSelection;
   seats: Seat[];
   spectatorCount: number;
+  spectators: Spectator[];
   series: SeriesState;
   round: View | null;
   lastSeq: number;
@@ -406,6 +417,17 @@ export interface Seat {
    * Players who queued together share a party id (GDD 7.2); shown as a link icon
    */
   party?: string | null;
+}
+/**
+ * A friend watching the table; seatNext when they take a seat at the next round
+ */
+export interface Spectator {
+  /**
+   * Server-issued; no length constraint because nullable constrained strings crash quicktype's generated converter
+   */
+  userId: string;
+  displayName: string | null;
+  seatNext: boolean;
 }
 export interface RulesChanged {
   rules: RulesSelection;

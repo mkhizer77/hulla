@@ -1,9 +1,18 @@
+import { Client } from "@heroiclabs/nakama-js";
 import { OPCODES, type TableState, type TurnStart } from "@hulla/protocol/generated";
 import { createThullaRound, fairDealCommitment, resolveRules } from "@hulla/rules-engine";
 import { hexToBytes, stateFromSeed, Xoshiro128StarStar } from "@hulla/shared-ts";
 import { afterAll, describe, expect, it } from "vitest";
 
-import { NAKAMA_HOST, rpc, scriptedClient, setTableId, type ScriptedClient } from "./nakama-client";
+import {
+  NAKAMA_HOST,
+  NAKAMA_PORT,
+  SERVER_KEY,
+  rpc,
+  scriptedClient,
+  setTableId,
+  type ScriptedClient,
+} from "./nakama-client";
 
 interface Created {
   readonly ok: boolean;
@@ -115,6 +124,21 @@ describe.skipIf(NAKAMA_HOST === undefined)(
       const roundId = (starts[0]?.payload as { roundId: string }).roundId;
       const commitment = (starts[0]?.payload as { commitment: string }).commitment;
 
+      // A friend of the host arrives mid-round to watch: a spectator's view never carries a hand.
+      const watcher = await scriptedClient("spec", suffix);
+      clients.push(watcher);
+      const hostProfile = await rpc<{ profile?: { friendCode: string } }>(host, "profile_get", {});
+      await rpc<object>(watcher, "friend_add_by_code", {
+        friendCode: hostProfile.profile?.friendCode ?? "",
+      });
+      await new Client(SERVER_KEY, NAKAMA_HOST ?? "", NAKAMA_PORT, false).addFriends(host.session, [
+        watcher.session.user_id ?? "",
+      ]);
+      await watcher.socket.joinMatch(matchId, undefined, { asSpectator: "true" });
+      const watching = (await watcher.next((e) => e.type === "table_state")).payload as TableState;
+      expect(watching.spectators.map((s) => s.userId)).toEqual([watcher.session.user_id]);
+      expect(watching.round).not.toBeNull();
+
       // Seat 3 drops off the socket right after the deal; the policy plays it until it returns.
       const absent = clients[3];
       if (absent === undefined) throw new Error("no fourth client");
@@ -214,6 +238,19 @@ describe.skipIf(NAKAMA_HOST === undefined)(
             .map((o) => o.session.user_id)
             .sort(),
         );
+      }
+
+      // The spectator saw the whole round and never a hand (GDD 7.7).
+      expect(watcher.received.some((e) => e.type === "round_end")).toBe(true);
+      for (const e of watcher.received) {
+        const payload = e.payload as {
+          round?: { seats?: { hand: unknown }[] } | null;
+          seats?: { hand: unknown }[];
+        };
+        const seatsWithHands = [...(payload.round?.seats ?? []), ...(payload.seats ?? [])];
+        for (const seat of seatsWithHands) expect(seat.hand ?? null).toBeNull();
+        expect(e.type).not.toBe("turn_start");
+        expect(e.type).not.toBe("private_draw");
       }
 
       // Redaction at the socket: no client ever saw another seat's hand or legal mask.

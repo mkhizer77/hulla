@@ -63,6 +63,8 @@ const lobby: TableLabel = {
   status: "open",
   seated: 2,
   open: 4,
+  watching: 0,
+  watchable: true,
 };
 const inRound: TableLabel = { ...lobby, code: "GHJKLM", status: "inRound", open: 0 };
 

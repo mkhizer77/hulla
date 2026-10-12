@@ -13,6 +13,7 @@ export const OPCODES = {
   vote_rematch: { opcode: 10, direction: "c2s", visibility: "public" },
   request_snapshot: { opcode: 11, direction: "c2s", visibility: "public" },
   ping: { opcode: 12, direction: "c2s", visibility: "public" },
+  seat_spectator: { opcode: 13, direction: "c2s", visibility: "public" },
   chat_text: { opcode: 20, direction: "c2s", visibility: "public" },
   quick_chat: { opcode: 21, direction: "c2s", visibility: "public" },
   emote: { opcode: 22, direction: "c2s", visibility: "public" },

@@ -5,6 +5,7 @@ import {
   tableId as makeTableId,
   type ErrorCode,
   type RuleError,
+  type SeatIndex,
 } from "@hulla/shared-ts";
 
 import { BUNDLED_CHAT, type ChatContent } from "../content/chat";
@@ -38,12 +39,13 @@ import {
   type GameHost,
   type Persistence,
   type PresenceRecord,
+  type SeatSlot,
   type TableCloseReason,
   type TableConfig,
   type TableIds,
   type TableState,
 } from "./types";
-import { activeSeats, displayNameOf, spectatorCount, tableStateFor } from "./view";
+import { activeSeats, displayNameOf, freeSeat, spectatorCount, tableStateFor } from "./view";
 
 import type { RoundDeps } from "./round";
 import type { Check, JoinTable, MessageEnvelope, RulesSelection } from "@hulla/protocol/generated";
@@ -71,6 +73,12 @@ export interface TableCoreDeps {
   readonly config?: Partial<TableConfig>;
   /** Phrase and emote ids the table accepts; the bundled content unless a test says otherwise. */
   readonly chat?: ChatContent;
+  /** Spectators are friends of someone seated (GDD 7.7); absent, anyone may watch (tests). */
+  readonly social?: SocialGate;
+}
+
+export interface SocialGate {
+  mayWatch(userId: string, seatedIds: readonly string[]): boolean;
 }
 
 /**
@@ -161,6 +169,58 @@ export function tableCore<S, M, V, E, R>(
   const newToken = (): string =>
     deps.ids.uuid().replace(/-/g, "") + deps.ids.uuid().replace(/-/g, "");
 
+  const occupySlot = (
+    slot: SeatSlot,
+    playerId: string,
+    displayName: string | null,
+    now: number,
+    party: string | null,
+  ): void => {
+    slot.playerId = playerId;
+    slot.displayName = displayName;
+    slot.joinedTs = now;
+    slot.party = party;
+    slot.ready = false;
+    slot.left = false;
+  };
+
+  const attachSession = (slot: SeatSlot, sessionId: string): void => {
+    slot.sessionId = sessionId;
+    slot.connected = true;
+    slot.disconnectedTs = null;
+    slot.autoPlay = false;
+    slot.timeouts = 0;
+    slot.resumeToken = newToken();
+  };
+
+  /** Moves a spectator into a free seat; the caller broadcasts the table afterwards. */
+  const seatSpectator = (
+    state: TableState<S, M>,
+    record: PresenceRecord,
+    seat: SeatIndex,
+    emit: Emitter,
+    now: number,
+  ): void => {
+    const slot = state.seats[seat];
+    if (slot === undefined) return;
+    occupySlot(slot, record.userId, displayNameOf(record.username), now, null);
+    attachSession(slot, record.sessionId);
+    const seated: PresenceRecord = { ...record, seat, seatNext: false };
+    state.presences[record.sessionId] = seated;
+    state.hostSeat ??= seat;
+    emit.public("presence", presencePayload(seated, slot.displayName, "joined"));
+  };
+
+  /** Spectators who asked for a seat take the free ones in arrival order (GDD 7.6, 9.10). */
+  const seatWaitingSpectators = (state: TableState<S, M>, emit: Emitter, now: number): void => {
+    for (const record of Object.values(state.presences)) {
+      if (record.seat !== null || record.seatNext !== true) continue;
+      const free = freeSeat(state.seats);
+      if (free === null) return;
+      seatSpectator(state, record, free, emit, now);
+    }
+  };
+
   const closeTable = (
     state: TableState<S, M>,
     emit: Emitter,
@@ -224,6 +284,7 @@ export function tableCore<S, M, V, E, R>(
     state.rematchDeadlineTs = now + config.rematchWindowMs;
     const hostBefore = state.hostSeat;
     settleSeatsAfterRound(state);
+    seatWaitingSpectators(state, emit, now);
     if (state.hostSeat !== hostBefore) hostChanged(state, emit, "host_left");
     if (state.mode !== "private" && humansPresent(state) < 2) {
       closeTable(state, emit, "dissolved", now);
@@ -423,6 +484,33 @@ export function tableCore<S, M, V, E, R>(
         const changedKeys = changedRuleKeys(state.rules, rules);
         state.rules = rules;
         emit.public("rules_changed", { rules, changedBy: seat, changedKeys });
+        broadcastTableState(state, emit);
+        return;
+      }
+      case "seat_spectator": {
+        if (!isHost(state, seat)) {
+          reject(ruleError(ErrorCodes.table.notHost));
+          return;
+        }
+        const target = payload["userId"];
+        const watcher = Object.values(state.presences).find(
+          (p) => p.seat === null && p.userId === target,
+        );
+        if (typeof target !== "string" || watcher === undefined) {
+          reject(ruleError(ErrorCodes.table.invalidPayload, { reason: "user_id" }));
+          return;
+        }
+        if (state.phase === "inRound") {
+          state.presences[watcher.sessionId] = { ...watcher, seatNext: true };
+          broadcastTableState(state, emit);
+          return;
+        }
+        const free = freeSeat(state.seats);
+        if (free === null) {
+          reject(ruleError(ErrorCodes.table.full));
+          return;
+        }
+        seatSpectator(state, watcher, free, emit, now);
         broadcastTableState(state, emit);
         return;
       }
@@ -657,11 +745,22 @@ export function tableCore<S, M, V, E, R>(
       const spectatorsAllowed = state.rules.settings?.spectators !== false;
       const spectators =
         spectatorCount(state.presences) + pending.filter((a) => a.kind === "spectator").length;
-      if (spectatorsAllowed && spectators < config.maxSpectators) {
-        state.admissions[presence.sessionId] = { kind: "spectator" };
-        return { accept: true };
+      if (!spectatorsAllowed || spectators >= config.maxSpectators) {
+        return {
+          accept: false,
+          code: free === -1 ? ErrorCodes.table.full : ErrorCodes.table.locked,
+        };
       }
-      return { accept: false, code: free === -1 ? ErrorCodes.table.full : ErrorCodes.table.locked };
+      const seatedIds = state.seats.flatMap((s) => (s.playerId === null ? [] : [s.playerId]));
+      if (deps.social !== undefined && !deps.social.mayWatch(presence.userId, seatedIds)) {
+        return { accept: false, code: ErrorCodes.social.notFriends };
+      }
+      // A late arrival who wanted a seat takes the next free one when the round ends (GDD 7.6).
+      const late = parsed.data.asSpectator !== true && state.phase === "inRound";
+      state.admissions[presence.sessionId] = late
+        ? { kind: "spectator", seatNext: true }
+        : { kind: "spectator" };
+      return { accept: true };
     },
 
     join(state, presences, now) {
@@ -672,6 +771,7 @@ export function tableCore<S, M, V, E, R>(
         const record: PresenceRecord = { ...info, node: info.node ?? "", seat: null };
         const displayName = displayNameOf(info.username);
         let status: "joined" | "reconnected" | "spectating" = "spectating";
+        if (admission.kind === "spectator" && admission.seatNext === true) record.seatNext = true;
         if (admission.kind === "seat") {
           const slot = state.seats[admission.seat];
           if (slot === undefined) continue;
@@ -683,21 +783,17 @@ export function tableCore<S, M, V, E, R>(
             }
             status = "reconnected";
           } else {
-            slot.playerId = info.userId;
-            slot.displayName = displayName;
-            slot.joinedTs = now;
-            slot.party = state.autoStart?.parties[info.userId] ?? null;
-            slot.ready = false;
-            slot.left = false;
+            occupySlot(
+              slot,
+              info.userId,
+              displayName,
+              now,
+              state.autoStart?.parties[info.userId] ?? null,
+            );
             status = "joined";
             state.hostSeat ??= admission.seat;
           }
-          slot.sessionId = info.sessionId;
-          slot.connected = true;
-          slot.disconnectedTs = null;
-          slot.autoPlay = false;
-          slot.timeouts = 0;
-          slot.resumeToken = newToken();
+          attachSession(slot, info.sessionId);
           record.seat = admission.seat;
         }
         state.presences[info.sessionId] = record;

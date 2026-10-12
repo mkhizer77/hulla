@@ -91,6 +91,13 @@ export function tableStateFor<S, M, V, E, R>(
     rules: state.rules,
     seats: state.seats.map(seatPayload),
     spectatorCount: spectatorCount(state.presences),
+    spectators: Object.values(state.presences)
+      .filter((p) => p.seat === null)
+      .map((p) => ({
+        userId: p.userId,
+        displayName: displayNameOf(p.username),
+        seatNext: p.seatNext === true,
+      })),
     series: seriesPayload(state.series ?? emptySeries(state.seats.length, state.hostSeat ?? 0)),
     round,
     lastSeq: state.seq,

@@ -1,7 +1,16 @@
+import { Client } from "@heroiclabs/nakama-js";
 import { OPCODES, type TableState } from "@hulla/protocol/generated";
 import { afterAll, describe, expect, it } from "vitest";
 
-import { NAKAMA_HOST, rpc, scriptedClient, setTableId, type ScriptedClient } from "./nakama-client";
+import {
+  NAKAMA_HOST,
+  NAKAMA_PORT,
+  rpc,
+  scriptedClient,
+  SERVER_KEY,
+  setTableId,
+  type ScriptedClient,
+} from "./nakama-client";
 
 interface Created {
   readonly ok: boolean;
@@ -41,6 +50,14 @@ describe.skipIf(NAKAMA_HOST === undefined)(
         await c.socket.joinMatch(created.matchId);
         await c.next((e) => e.type === "table_state");
       }
+      // Spectators are friends of someone seated (GDD 7.7): the host befriends the watcher first.
+      const hostProfile = await rpc<{ profile?: { friendCode: string } }>(host, "profile_get", {});
+      await rpc<object>(spectator, "friend_add_by_code", {
+        friendCode: hostProfile.profile?.friendCode ?? "",
+      });
+      await new Client(SERVER_KEY, NAKAMA_HOST ?? "", NAKAMA_PORT, false).addFriends(host.session, [
+        spectator.session.user_id ?? "",
+      ]);
       await spectator.socket.joinMatch(created.matchId, undefined, { asSpectator: "true" });
       const specState = (await spectator.next((e) => e.type === "table_state"))
         .payload as TableState;

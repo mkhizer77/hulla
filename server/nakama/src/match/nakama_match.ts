@@ -1,12 +1,19 @@
 import { OPCODES } from "@hulla/protocol/generated";
 
 import { ROUND_RESULTS_COLLECTION } from "../services/account_deletion";
-import { nkPresenceStore, seatReleased, seatTaken, type PresenceStore } from "../services/presence";
+import {
+  nkFriendIds,
+  nkPresenceStore,
+  seatReleased,
+  seatTaken,
+  type PresenceStore,
+} from "../services/presence";
 import { applyRoundToStats, nkProfileStore } from "../services/profiles";
 import { nkSocialStore, recordRecentPlayers } from "../services/social";
 
 import { tableCore, type PresenceInfo, type TableCore } from "./table_core";
-import { freeSeat, occupiedSeats, tableStatus } from "./view";
+import { DEFAULT_TABLE_CONFIG } from "./types";
+import { freeSeat, occupiedSeats, spectatorCount, tableStatus } from "./view";
 
 import type {
   Batch,
@@ -101,15 +108,23 @@ export function storagePersistence(nk: nkruntime.Nakama, logger: nkruntime.Logge
 }
 
 /** The match label other services query: code, game, mode, status and seat counts. */
-export function labelFor<S, M>(state: TableState<S, M>): string {
+export function labelFor<S, M>(
+  state: TableState<S, M>,
+  maxSpectators: number = DEFAULT_TABLE_CONFIG.maxSpectators,
+): string {
+  const watching = spectatorCount(state.presences);
+  const status = tableStatus(state);
   return JSON.stringify({
     code: state.code,
     gameId: state.gameId,
     mode: state.mode,
-    status: tableStatus(state),
+    status,
     seated: occupiedSeats(state.seats).length,
     open:
       freeSeat(state.seats) === null ? 0 : state.seats.filter((s) => s.playerId === null).length,
+    watching,
+    watchable:
+      status !== "closed" && state.rules.settings?.spectators !== false && watching < maxSpectators,
   });
 }
 
@@ -218,6 +233,12 @@ export function tableMatchHandler<S, M, V, E, R>(
     tableCore(host, {
       ids: { uuid: () => nk.uuidv4() },
       persist: storagePersistence(nk, logger),
+      social: {
+        mayWatch: (userId, seatedIds) => {
+          const friends = nkFriendIds(nk, userId);
+          return seatedIds.some((id) => friends.includes(id));
+        },
+      },
       ...(options.config === undefined ? {} : { config: options.config }),
     });
 
