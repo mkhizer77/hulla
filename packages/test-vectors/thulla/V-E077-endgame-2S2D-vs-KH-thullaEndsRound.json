@@ -1,0 +1,33 @@
+{
+  "id": "V-E077-endgame-2S2D-vs-KH-thullaEndsRound",
+  "version": "1.0.0",
+  "title": "two-player endgame 2S 2D against KH (thullaEndsRound)",
+  "rules": [
+    "R37",
+    "R40",
+    "R41",
+    "E14"
+  ],
+  "setup": {
+    "hands": [
+      [
+        "2S",
+        "2D"
+      ],
+      [
+        "KH"
+      ]
+    ],
+    "leader": 0,
+    "discard": [],
+    "rules": {
+      "twoPlayerEndgame": "thullaEndsRound",
+      "confirmedFastForward": false
+    }
+  },
+  "moves": [],
+  "assert": {
+    "forcedBhabhi": 0,
+    "stateHash": "1281e8777988cce18441ce23718c9e2b47d8b3add73e43835e4281f6994dfaa5"
+  }
+}

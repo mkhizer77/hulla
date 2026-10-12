@@ -1,0 +1,90 @@
+{
+  "id": "V-011-opening-simultaneous-follow-spades",
+  "version": "1.0.0",
+  "title": "the others respond in any order and must follow spades",
+  "rules": [
+    "R13"
+  ],
+  "setup": {
+    "hands": [
+      [
+        "AS",
+        "2H"
+      ],
+      [
+        "3S",
+        "4H"
+      ],
+      [
+        "5H",
+        "6D"
+      ],
+      [
+        "7S",
+        "8S"
+      ]
+    ],
+    "leader": 0,
+    "trickIndex": 0,
+    "phase": "opening",
+    "openingPending": [
+      1,
+      2,
+      3
+    ]
+  },
+  "moves": [
+    {
+      "seat": 0,
+      "move": {
+        "type": "play_card",
+        "card": "AS"
+      }
+    },
+    {
+      "seat": 1,
+      "move": {
+        "type": "play_card",
+        "card": "4H"
+      },
+      "expect": {
+        "error": "rules.must_follow_suit"
+      }
+    },
+    {
+      "seat": 3,
+      "move": {
+        "type": "play_card",
+        "card": "8S"
+      }
+    },
+    {
+      "seat": 3,
+      "move": {
+        "type": "play_card",
+        "card": "7S"
+      },
+      "expect": {
+        "error": "rules.not_your_turn"
+      }
+    },
+    {
+      "seat": 2,
+      "move": {
+        "type": "play_card",
+        "card": "6D"
+      }
+    }
+  ],
+  "assert": {
+    "turnSeat": null,
+    "handCounts": [
+      1,
+      2,
+      1,
+      1
+    ],
+    "phase": "opening",
+    "stateHash": "838d51b56ae18d7c975dab2cafa969e9a7129a38876aaf117115030c761a2e43"
+  }
+}

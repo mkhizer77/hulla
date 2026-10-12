@@ -1,0 +1,39 @@
+{
+  "id": "V-071-hand-take-rejected-two-active",
+  "version": "1.0.0",
+  "title": "a take with two active players is HAND_TAKE_DISABLED_ENDGAME",
+  "rules": [
+    "R36",
+    "R37"
+  ],
+  "setup": {
+    "hands": [
+      [
+        "2H",
+        "9S"
+      ],
+      [
+        "3H"
+      ]
+    ],
+    "leader": 0,
+    "rules": {
+      "handTaking": "leaderOnly"
+    }
+  },
+  "moves": [
+    {
+      "seat": 0,
+      "move": {
+        "type": "take_hand"
+      },
+      "expect": {
+        "error": "rules.hand_take_disabled_endgame"
+      }
+    }
+  ],
+  "assert": {
+    "leaderSeat": 0,
+    "stateHash": "c40eb42c90445d8587ecb3b4894c9cc935258223d6684c53383d84f3a9b14ff0"
+  }
+}

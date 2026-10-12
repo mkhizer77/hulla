@@ -1,0 +1,83 @@
+{
+  "id": "V-034-empty-hand-draw-from-discard",
+  "version": "1.0.0",
+  "title": "Noor wins with her last card and draws from the discard, not this trick",
+  "rules": [
+    "R26",
+    "E4"
+  ],
+  "setup": {
+    "hands": [
+      [
+        "9C",
+        "2D"
+      ],
+      [
+        "7C",
+        "5D"
+      ],
+      [
+        "4C",
+        "TD"
+      ],
+      [
+        "JC"
+      ]
+    ],
+    "leader": 2,
+    "plays": [
+      {
+        "seat": 2,
+        "card": "4C"
+      },
+      {
+        "seat": 3,
+        "card": "JC"
+      },
+      {
+        "seat": 0,
+        "card": "9C"
+      }
+    ],
+    "discard": [
+      "8D",
+      "QH"
+    ]
+  },
+  "moves": [
+    {
+      "seat": 1,
+      "move": {
+        "type": "play_card",
+        "card": "7C"
+      },
+      "draw": 0
+    }
+  ],
+  "assert": {
+    "leaderSeat": 3,
+    "hands": {
+      "3": [
+        "8D"
+      ]
+    },
+    "discard": [
+      "QH",
+      "4C",
+      "JC",
+      "9C",
+      "7C"
+    ],
+    "pendingAutoLead": true,
+    "autoPlay": {
+      "3": "8D"
+    },
+    "handCounts": [
+      1,
+      1,
+      1,
+      1
+    ],
+    "stateHash": "22ba234251d99d89541ad2556c1db99aba8dc4ad10fca968b3a73cb4072da0dd"
+  }
+}

@@ -1,0 +1,35 @@
+{
+  "id": "V-E004-endgame-9S-vs-KD-drawDiscard",
+  "version": "1.0.0",
+  "title": "two-player endgame 9S against KD (drawDiscard)",
+  "rules": [
+    "R37",
+    "R40",
+    "R41",
+    "E14"
+  ],
+  "setup": {
+    "hands": [
+      [
+        "9S"
+      ],
+      [
+        "KD"
+      ]
+    ],
+    "leader": 0,
+    "discard": [
+      "4C",
+      "5C"
+    ],
+    "rules": {
+      "twoPlayerEndgame": "drawDiscard",
+      "confirmedFastForward": false
+    }
+  },
+  "moves": [],
+  "assert": {
+    "forcedBhabhi": 0,
+    "stateHash": "a86b395bff22b5741152cabdad8c99fb10d2dbfeff3191d3e3cb2293f51bcfcf"
+  }
+}

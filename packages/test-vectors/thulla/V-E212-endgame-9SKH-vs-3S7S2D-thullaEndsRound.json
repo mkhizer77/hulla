@@ -1,0 +1,35 @@
+{
+  "id": "V-E212-endgame-9SKH-vs-3S7S2D-thullaEndsRound",
+  "version": "1.0.0",
+  "title": "two-player endgame 9S KH against 3S 7S 2D (thullaEndsRound)",
+  "rules": [
+    "R37",
+    "R40",
+    "R41",
+    "E14"
+  ],
+  "setup": {
+    "hands": [
+      [
+        "9S",
+        "KH"
+      ],
+      [
+        "3S",
+        "7S",
+        "2D"
+      ]
+    ],
+    "leader": 0,
+    "discard": [],
+    "rules": {
+      "twoPlayerEndgame": "thullaEndsRound",
+      "confirmedFastForward": false
+    }
+  },
+  "moves": [],
+  "assert": {
+    "forcedBhabhi": 0,
+    "stateHash": "6adfbe09cede224e88375b7db56fc1766183c30392b699ade80928d5305be946"
+  }
+}

@@ -1,0 +1,37 @@
+{
+  "id": "V-083-autoplay-dump-high",
+  "version": "1.0.0",
+  "title": "a forced thulla dumps the highest card, ties broken ♠ ♥ ♣ ♦",
+  "rules": [
+    "R44"
+  ],
+  "setup": {
+    "hands": [
+      [
+        "2H"
+      ],
+      [
+        "KS",
+        "KD",
+        "3C"
+      ],
+      [
+        "6H"
+      ]
+    ],
+    "leader": 0,
+    "plays": [
+      {
+        "seat": 0,
+        "card": "2H"
+      }
+    ]
+  },
+  "moves": [],
+  "assert": {
+    "autoPlay": {
+      "1": "KS"
+    },
+    "stateHash": "aeba437e220bfbc62c3bfaef6f8fb0658d76ba69ea285bcb938aafb12e6b3f7d"
+  }
+}

@@ -1,0 +1,38 @@
+{
+  "id": "V-050-hand-taking-off-in-public",
+  "version": "1.0.0",
+  "title": "hand-taking is off in public tables",
+  "rules": [
+    "R31"
+  ],
+  "setup": {
+    "hands": [
+      [
+        "2H"
+      ],
+      [
+        "3H"
+      ],
+      [
+        "4H"
+      ]
+    ],
+    "leader": 0,
+    "mode": "public"
+  },
+  "moves": [
+    {
+      "seat": 0,
+      "move": {
+        "type": "take_hand"
+      },
+      "expect": {
+        "error": "rules.hand_take_disabled"
+      }
+    }
+  ],
+  "assert": {
+    "leaderSeat": 0,
+    "stateHash": "631bc51494787040e0ad6cf1622fff9a87d93198c60eee60ef5c07f437eb651f"
+  }
+}

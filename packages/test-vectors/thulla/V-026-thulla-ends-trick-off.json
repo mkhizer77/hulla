@@ -1,0 +1,73 @@
+{
+  "id": "V-026-thulla-ends-trick-off",
+  "version": "1.0.0",
+  "title": "play continues after a thulla and the highest takes everything",
+  "rules": [
+    "R24"
+  ],
+  "setup": {
+    "hands": [
+      [
+        "6H",
+        "2C"
+      ],
+      [
+        "KH",
+        "3C"
+      ],
+      [
+        "QS",
+        "4C"
+      ],
+      [
+        "9H",
+        "5C"
+      ]
+    ],
+    "leader": 0,
+    "plays": [
+      {
+        "seat": 0,
+        "card": "6H"
+      },
+      {
+        "seat": 1,
+        "card": "KH"
+      }
+    ],
+    "preset": "hardcore"
+  },
+  "moves": [
+    {
+      "seat": 2,
+      "move": {
+        "type": "play_card",
+        "card": "QS"
+      }
+    },
+    {
+      "seat": 3,
+      "move": {
+        "type": "play_card",
+        "card": "9H"
+      }
+    }
+  ],
+  "assert": {
+    "lastEvents": [
+      "card_played",
+      "trick_resolved"
+    ],
+    "hands": {
+      "1": [
+        "QS",
+        "6H",
+        "9H",
+        "KH",
+        "3C"
+      ]
+    },
+    "leaderSeat": 1,
+    "stateHash": "595b851b0a4002eb3901c438bba4c7a40590b909ff5d2435171681d9f38a5665"
+  }
+}

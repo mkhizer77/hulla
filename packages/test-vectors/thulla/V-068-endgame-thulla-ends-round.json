@@ -1,0 +1,50 @@
+{
+  "id": "V-068-endgame-thulla-ends-round",
+  "version": "1.0.0",
+  "title": "the thullaEndsRound option: the first endgame thulla decides the Bhabhi",
+  "rules": [
+    "R42"
+  ],
+  "setup": {
+    "hands": [
+      [
+        "9S",
+        "2H"
+      ],
+      [
+        "QH",
+        "KD",
+        "3C"
+      ],
+      []
+    ],
+    "leader": 0,
+    "plays": [
+      {
+        "seat": 0,
+        "card": "9S"
+      }
+    ],
+    "rules": {
+      "twoPlayerEndgame": "thullaEndsRound"
+    }
+  },
+  "moves": [
+    {
+      "seat": 1,
+      "move": {
+        "type": "play_card",
+        "card": "QH"
+      }
+    }
+  ],
+  "assert": {
+    "phase": "ended",
+    "bhabhiSeat": 0,
+    "escapeOrder": [
+      2,
+      1
+    ],
+    "stateHash": "69feb76c09ad5e1dabdec541d56bea332028ef6fac0ec20a5fe93877ba068ac0"
+  }
+}

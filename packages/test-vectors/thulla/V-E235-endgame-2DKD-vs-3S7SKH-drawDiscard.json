@@ -1,0 +1,38 @@
+{
+  "id": "V-E235-endgame-2DKD-vs-3S7SKH-drawDiscard",
+  "version": "1.0.0",
+  "title": "two-player endgame 2D KD against 3S 7S KH (drawDiscard)",
+  "rules": [
+    "R37",
+    "R40",
+    "R41",
+    "E14"
+  ],
+  "setup": {
+    "hands": [
+      [
+        "2D",
+        "KD"
+      ],
+      [
+        "3S",
+        "7S",
+        "KH"
+      ]
+    ],
+    "leader": 0,
+    "discard": [
+      "4C",
+      "5C"
+    ],
+    "rules": {
+      "twoPlayerEndgame": "drawDiscard",
+      "confirmedFastForward": false
+    }
+  },
+  "moves": [],
+  "assert": {
+    "forcedBhabhi": null,
+    "stateHash": "31af80b8dd970821713e49e9c4d89d1a4a3551503c68297848e6e62271683d3c"
+  }
+}

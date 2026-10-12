@@ -1,0 +1,22 @@
+{
+  "id": "V-007-deal-hardcore-preset",
+  "version": "1.0.0",
+  "title": "a deal under the hardcore preset still opens on the Ace",
+  "rules": [
+    "R9",
+    "R15"
+  ],
+  "deal": {
+    "seedHex": "0303030303030303030303030303030303030303030303030303030303030303",
+    "seatCount": 4,
+    "dealerSeat": 1,
+    "preset": "hardcore"
+  },
+  "moves": [],
+  "assert": {
+    "leaderHoldsAceOfSpades": true,
+    "phase": "opening",
+    "commitment": "0732baf91bc5750adff8af88b5436f0144f41ca3cc2094897794e4482dea7295",
+    "stateHash": "f7db1fe5d9f7fd5c04982dfa839803d6adb877078736a300aec1b690df9603cb"
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "id": "V-006-deal-same-seed-same-round",
+  "version": "1.0.0",
+  "title": "the same seed gives the same round (compare stateHash with V-001)",
+  "rules": [
+    "R6"
+  ],
+  "deal": {
+    "seedHex": "0707070707070707070707070707070707070707070707070707070707070707",
+    "seatCount": 4,
+    "dealerSeat": 0
+  },
+  "moves": [],
+  "assert": {
+    "handCounts": [
+      13,
+      13,
+      13,
+      13
+    ],
+    "commitment": "4bf7597e522ad1a1d9a97d3b097a6228f59ff8c18c4daeab7f7e6ee3244047cd",
+    "stateHash": "f1b8a161990520605996bda966836188500068567b71531613e3c3c145065dfa"
+  }
+}

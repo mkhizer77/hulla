@@ -1,0 +1,49 @@
+{
+  "id": "V-086-autoplay-opening",
+  "version": "1.0.0",
+  "title": "the opening auto-play is the Ace of Spades, then the lowest spade or the highest card",
+  "rules": [
+    "R44",
+    "R12",
+    "R13"
+  ],
+  "setup": {
+    "hands": [
+      [
+        "AS",
+        "2H"
+      ],
+      [
+        "3S",
+        "4H"
+      ],
+      [
+        "5H",
+        "6D"
+      ]
+    ],
+    "leader": 0,
+    "trickIndex": 0,
+    "phase": "opening",
+    "openingPending": [
+      1,
+      2
+    ]
+  },
+  "moves": [
+    {
+      "seat": 0,
+      "move": {
+        "type": "play_card",
+        "card": "AS"
+      }
+    }
+  ],
+  "assert": {
+    "autoPlay": {
+      "1": "3S",
+      "2": "6D"
+    },
+    "stateHash": "c1c1bf58e779bedd5645d15e1c6250199edb7a18b7a26bb4f9dcc8403d392990"
+  }
+}

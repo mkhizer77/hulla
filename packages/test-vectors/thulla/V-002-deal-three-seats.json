@@ -1,0 +1,25 @@
+{
+  "id": "V-002-deal-three-seats",
+  "version": "1.0.0",
+  "title": "three seats: 18, 17, 17 from the seat left of the dealer",
+  "rules": [
+    "R3",
+    "R7"
+  ],
+  "deal": {
+    "seedHex": "0707070707070707070707070707070707070707070707070707070707070707",
+    "seatCount": 3,
+    "dealerSeat": 2
+  },
+  "moves": [],
+  "assert": {
+    "handCounts": [
+      18,
+      17,
+      17
+    ],
+    "leaderHoldsAceOfSpades": true,
+    "commitment": "4bf7597e522ad1a1d9a97d3b097a6228f59ff8c18c4daeab7f7e6ee3244047cd",
+    "stateHash": "ced73fb4924985d421c301c7876e649da6b314910d8a882bd84d253d602f86d2"
+  }
+}

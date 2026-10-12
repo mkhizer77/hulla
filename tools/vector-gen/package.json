@@ -1,0 +1,17 @@
+{
+  "name": "@hulla/vector-gen",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Generates the shared Thulla vectors from authored scenarios and exhaustive small endgames",
+  "license": "PolyForm-Noncommercial-1.0.0",
+  "type": "module",
+  "scripts": {
+    "typecheck": "tsc -p tsconfig.json",
+    "generate": "tsx src/generate.ts"
+  },
+  "dependencies": {
+    "@hulla/rules-engine": "workspace:*",
+    "@hulla/shared-ts": "workspace:*",
+    "@hulla/test-vectors": "workspace:*"
+  }
+}

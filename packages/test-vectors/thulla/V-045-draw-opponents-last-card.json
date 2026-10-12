@@ -1,0 +1,55 @@
+{
+  "id": "V-045-draw-opponents-last-card",
+  "version": "1.0.0",
+  "title": "drawing the opponent's last card ends the round with the leader as Bhabhi",
+  "rules": [
+    "E12",
+    "R38"
+  ],
+  "setup": {
+    "hands": [
+      [
+        "9S"
+      ],
+      [
+        "3S",
+        "7S"
+      ],
+      []
+    ],
+    "leader": 0,
+    "plays": [
+      {
+        "seat": 0,
+        "card": "9S"
+      }
+    ]
+  },
+  "moves": [
+    {
+      "seat": 1,
+      "move": {
+        "type": "play_card",
+        "card": "3S"
+      },
+      "draw": 0
+    }
+  ],
+  "assert": {
+    "lastEvents": [
+      "card_played",
+      "trick_resolved",
+      "confirmed",
+      "private_draw",
+      "escape",
+      "round_ended"
+    ],
+    "bhabhiSeat": 0,
+    "hands": {
+      "0": [
+        "7S"
+      ]
+    },
+    "stateHash": "c95e267ccb4c28ed9860a9b93cb4d7f7f67adcfacf4eec488f387c8294aaab70"
+  }
+}

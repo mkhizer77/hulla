@@ -1,0 +1,172 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://hulla.gg/schemas/test-vectors/vector.json",
+  "title": "Shared rules test vector",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["id", "version", "rules", "moves", "assert"],
+  "properties": {
+    "id": { "type": "string", "pattern": "^V-[A-Za-z0-9-]+$" },
+    "version": { "type": "string" },
+    "title": { "type": "string" },
+    "rules": {
+      "type": "array",
+      "items": { "type": "string", "pattern": "^[RE][0-9]+$" },
+      "minItems": 1
+    },
+    "deal": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["seedHex", "seatCount", "dealerSeat"],
+      "properties": {
+        "seedHex": { "type": "string", "pattern": "^[0-9a-f]+$" },
+        "seatCount": { "type": "integer", "minimum": 3, "maximum": 6 },
+        "dealerSeat": { "type": "integer", "minimum": 0 },
+        "mode": { "enum": ["private", "public", "ranked"] },
+        "preset": { "enum": ["standard", "family", "hardcore", "classicPagat"] },
+        "overrides": { "type": "object" }
+      }
+    },
+    "setup": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["hands", "leader"],
+      "properties": {
+        "hands": {
+          "type": "array",
+          "items": { "$ref": "#/definitions/cards" },
+          "minItems": 2,
+          "maxItems": 6
+        },
+        "leader": { "type": "integer", "minimum": 0 },
+        "dealerSeat": { "type": "integer", "minimum": 0 },
+        "trickIndex": { "type": "integer", "minimum": 0 },
+        "discard": { "$ref": "#/definitions/cards" },
+        "mode": { "enum": ["private", "public", "ranked"] },
+        "preset": { "enum": ["standard", "family", "hardcore", "classicPagat"] },
+        "rules": { "type": "object" },
+        "phase": { "enum": ["opening", "play", "ended"] },
+        "plays": { "type": "array", "items": { "$ref": "#/definitions/play" } },
+        "openingPending": { "type": "array", "items": { "type": "integer" } },
+        "handTakeUsed": { "type": "boolean" },
+        "pendingAutoLead": { "type": "boolean" },
+        "escapeOrder": { "type": "array", "items": { "type": "integer" } }
+      }
+    },
+    "moves": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["seat", "move"],
+        "properties": {
+          "seat": { "type": "integer" },
+          "move": {
+            "oneOf": [
+              {
+                "type": "object",
+                "additionalProperties": false,
+                "required": ["type", "card"],
+                "properties": {
+                  "type": { "const": "play_card" },
+                  "card": { "$ref": "#/definitions/card" }
+                }
+              },
+              {
+                "type": "object",
+                "additionalProperties": false,
+                "required": ["type"],
+                "properties": { "type": { "const": "take_hand" } }
+              }
+            ]
+          },
+          "draw": { "type": "integer", "minimum": 0 },
+          "expect": {
+            "oneOf": [
+              { "const": "ok" },
+              {
+                "type": "object",
+                "additionalProperties": false,
+                "required": ["error"],
+                "properties": { "error": { "type": "string" } }
+              }
+            ]
+          }
+        }
+      }
+    },
+    "assert": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "phase": { "enum": ["opening", "play", "ended"] },
+        "leaderSeat": { "type": "integer" },
+        "turnSeat": { "type": ["integer", "null"] },
+        "trickIndex": { "type": "integer" },
+        "hands": { "type": "object", "additionalProperties": { "$ref": "#/definitions/cards" } },
+        "handContains": {
+          "type": "object",
+          "additionalProperties": { "$ref": "#/definitions/cards" }
+        },
+        "handCounts": { "type": "array", "items": { "type": "integer" } },
+        "escapeOrder": { "type": "array", "items": { "type": "integer" } },
+        "bhabhiSeat": { "type": ["integer", "null"] },
+        "confirmedBhabhi": { "type": ["integer", "null"] },
+        "discard": { "$ref": "#/definitions/cards" },
+        "discardCount": { "type": "integer" },
+        "pendingAutoLead": { "type": "boolean" },
+        "lastEvents": { "type": "array", "items": { "type": "string" } },
+        "eventsInclude": { "type": "array", "items": { "type": "string" } },
+        "stats": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "object",
+            "additionalProperties": { "type": "integer" }
+          }
+        },
+        "forcedBhabhi": { "type": ["integer", "null"] },
+        "autoPlay": { "type": "object", "additionalProperties": { "$ref": "#/definitions/card" } },
+        "results": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "finishOrder": { "type": "array", "items": { "type": "integer" } },
+            "loserSeat": { "type": "integer" },
+            "points": { "type": "array", "items": { "type": "integer" } },
+            "bhabhiCards": { "type": "integer" }
+          }
+        },
+        "views": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["viewer"],
+            "properties": {
+              "viewer": { "oneOf": [{ "const": "spectator" }, { "type": "integer" }] },
+              "ownHand": { "oneOf": [{ "$ref": "#/definitions/cards" }, { "type": "null" }] },
+              "handCounts": { "type": "array", "items": { "type": "integer" } },
+              "discardCount": { "type": "integer" },
+              "seedHidden": { "type": "boolean" },
+              "canTakeHand": { "type": ["boolean", "null"] }
+            }
+          }
+        },
+        "commitment": { "type": "string" },
+        "leaderHoldsAceOfSpades": { "type": "boolean" },
+        "stateHash": { "type": "string", "pattern": "^[0-9a-f]{64}$" }
+      }
+    }
+  },
+  "definitions": {
+    "card": { "type": "string", "pattern": "^[2-9TJQKA][SHCD]$" },
+    "cards": { "type": "array", "items": { "$ref": "#/definitions/card" } },
+    "play": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["seat", "card"],
+      "properties": { "seat": { "type": "integer" }, "card": { "$ref": "#/definitions/card" } }
+    }
+  },
+  "oneOf": [{ "required": ["deal"] }, { "required": ["setup"] }]
+}

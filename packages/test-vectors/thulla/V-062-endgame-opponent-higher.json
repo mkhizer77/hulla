@@ -1,0 +1,45 @@
+{
+  "id": "V-062-endgame-opponent-higher",
+  "version": "1.0.0",
+  "title": "the opponent plays higher: the leader escapes and the opponent is the Bhabhi",
+  "rules": [
+    "R39"
+  ],
+  "setup": {
+    "hands": [
+      [
+        "9S"
+      ],
+      [
+        "KS",
+        "7S"
+      ],
+      []
+    ],
+    "leader": 0,
+    "plays": [
+      {
+        "seat": 0,
+        "card": "9S"
+      }
+    ]
+  },
+  "moves": [
+    {
+      "seat": 1,
+      "move": {
+        "type": "play_card",
+        "card": "KS"
+      }
+    }
+  ],
+  "assert": {
+    "phase": "ended",
+    "bhabhiSeat": 1,
+    "escapeOrder": [
+      2,
+      0
+    ],
+    "stateHash": "5bcdeb5200a8ffdfd0174be1ec6b136b394b3cfb8cf6aa44e8ea5fa320424a4c"
+  }
+}

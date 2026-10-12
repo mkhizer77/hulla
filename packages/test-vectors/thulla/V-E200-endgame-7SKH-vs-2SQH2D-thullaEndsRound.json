@@ -1,0 +1,35 @@
+{
+  "id": "V-E200-endgame-7SKH-vs-2SQH2D-thullaEndsRound",
+  "version": "1.0.0",
+  "title": "two-player endgame 7S KH against 2S QH 2D (thullaEndsRound)",
+  "rules": [
+    "R37",
+    "R40",
+    "R41",
+    "E14"
+  ],
+  "setup": {
+    "hands": [
+      [
+        "7S",
+        "KH"
+      ],
+      [
+        "2S",
+        "QH",
+        "2D"
+      ]
+    ],
+    "leader": 0,
+    "discard": [],
+    "rules": {
+      "twoPlayerEndgame": "thullaEndsRound",
+      "confirmedFastForward": false
+    }
+  },
+  "moves": [],
+  "assert": {
+    "forcedBhabhi": 0,
+    "stateHash": "a061db566a352b21ead6e19741f71e7134eaa9c3f775baa8adaf06fffd738f1e"
+  }
+}

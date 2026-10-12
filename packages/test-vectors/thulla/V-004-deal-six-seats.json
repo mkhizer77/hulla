@@ -1,0 +1,27 @@
+{
+  "id": "V-004-deal-six-seats",
+  "version": "1.0.0",
+  "title": "six seats: 9, 9, 9, 9, 8, 8",
+  "rules": [
+    "R7",
+    "E20"
+  ],
+  "deal": {
+    "seedHex": "0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b",
+    "seatCount": 6,
+    "dealerSeat": 5
+  },
+  "moves": [],
+  "assert": {
+    "handCounts": [
+      9,
+      9,
+      9,
+      9,
+      8,
+      8
+    ],
+    "commitment": "6b80b0c56c9ab9a13b332c01e92e01466b80bf4f9e3c2f3d859f925f25b71331",
+    "stateHash": "578e188638152696813a590da80414e53bf081667c443867a110d6e9f12ee64f"
+  }
+}

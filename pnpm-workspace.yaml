@@ -13,3 +13,4 @@ minimumReleaseAgeExclude:
 # pnpm runs no dependency install scripts unless listed here (CODING_RULES 11: pinned, reviewed dependencies).
 allowBuilds:
   unrs-resolver: true
+  esbuild: true

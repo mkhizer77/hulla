@@ -1,0 +1,50 @@
+{
+  "id": "V-023-must-follow-suit",
+  "version": "1.0.0",
+  "title": "a responder holding the led suit must follow it",
+  "rules": [
+    "R18"
+  ],
+  "setup": {
+    "hands": [
+      [
+        "2H"
+      ],
+      [
+        "4H",
+        "5C"
+      ],
+      [
+        "6H"
+      ]
+    ],
+    "leader": 0,
+    "plays": [
+      {
+        "seat": 0,
+        "card": "2H"
+      }
+    ]
+  },
+  "moves": [
+    {
+      "seat": 1,
+      "move": {
+        "type": "play_card",
+        "card": "5C"
+      },
+      "expect": {
+        "error": "rules.must_follow_suit"
+      }
+    }
+  ],
+  "assert": {
+    "turnSeat": 1,
+    "handCounts": [
+      0,
+      2,
+      1
+    ],
+    "stateHash": "e0bb79c9c25080653e70b2fdee56b1f45e7dae53d8d16ee4cd12185631246a9f"
+  }
+}

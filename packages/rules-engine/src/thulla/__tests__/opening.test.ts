@@ -79,7 +79,7 @@ describe("the opening trick", () => {
     expect(!again.ok && again.error.code).toBe("rules.not_your_turn");
   });
 
-  it("R14_the_opening_trick_never_causes_a_pickup_and_the_ace_holder_leads_trick_two", () => {
+  it("R14_R30_the_opening_trick_never_causes_a_pickup_fills_the_discard_and_the_ace_holder_leads_trick_two", () => {
     const state = stateFrom({
       hands: [
         ["AS", "2H"],

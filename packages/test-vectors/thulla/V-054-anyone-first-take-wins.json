@@ -1,0 +1,62 @@
+{
+  "id": "V-054-anyone-first-take-wins",
+  "version": "1.0.0",
+  "title": "in anyone mode any active seat may take and the first accepted wins",
+  "rules": [
+    "R35",
+    "E10"
+  ],
+  "setup": {
+    "hands": [
+      [
+        "2H",
+        "9S"
+      ],
+      [
+        "3H"
+      ],
+      [
+        "4H",
+        "5H"
+      ],
+      [
+        "6H"
+      ]
+    ],
+    "leader": 0,
+    "rules": {
+      "handTaking": "anyone"
+    }
+  },
+  "moves": [
+    {
+      "seat": 2,
+      "move": {
+        "type": "take_hand"
+      }
+    },
+    {
+      "seat": 0,
+      "move": {
+        "type": "take_hand"
+      },
+      "expect": {
+        "error": "rules.hand_take_window_closed"
+      }
+    }
+  ],
+  "assert": {
+    "leaderSeat": 2,
+    "escapeOrder": [
+      3
+    ],
+    "hands": {
+      "2": [
+        "4H",
+        "5H",
+        "6H"
+      ]
+    },
+    "stateHash": "83fd2f03835c8f035957ad9c624831f1c98c98d08b4bfc9c378c442627450164"
+  }
+}

@@ -1,0 +1,65 @@
+{
+  "id": "V-037-draw-next-player",
+  "version": "1.0.0",
+  "title": "the drawNextPlayer option takes a card from the next seat, who sees it go",
+  "rules": [
+    "R28"
+  ],
+  "setup": {
+    "hands": [
+      [
+        "9C"
+      ],
+      [
+        "7C",
+        "5D",
+        "QH"
+      ],
+      [
+        "4C",
+        "TD"
+      ]
+    ],
+    "leader": 2,
+    "plays": [
+      {
+        "seat": 2,
+        "card": "4C"
+      },
+      {
+        "seat": 0,
+        "card": "9C"
+      }
+    ],
+    "rules": {
+      "emptyHandLeader": "drawNextPlayer"
+    }
+  },
+  "moves": [
+    {
+      "seat": 1,
+      "move": {
+        "type": "play_card",
+        "card": "7C"
+      },
+      "draw": 0
+    }
+  ],
+  "assert": {
+    "hands": {
+      "0": [
+        "QH"
+      ],
+      "1": [
+        "5D"
+      ]
+    },
+    "lastEvents": [
+      "card_played",
+      "trick_resolved",
+      "private_draw"
+    ],
+    "pendingAutoLead": true,
+    "stateHash": "f74f075fba3718264e9e98c7b5b1d8872b4be4570604ccc45be7c1c28b98b34f"
+  }
+}

@@ -1,0 +1,26 @@
+{
+  "id": "V-003-deal-five-seats",
+  "version": "1.0.0",
+  "title": "five seats: 11, 11, 10, 10, 10",
+  "rules": [
+    "R7",
+    "E20"
+  ],
+  "deal": {
+    "seedHex": "0909090909090909090909090909090909090909090909090909090909090909",
+    "seatCount": 5,
+    "dealerSeat": 4
+  },
+  "moves": [],
+  "assert": {
+    "handCounts": [
+      11,
+      11,
+      10,
+      10,
+      10
+    ],
+    "commitment": "77758ecbb09afd34e2cb87b01953708d5b8762afb624a43075de2192ca5e6a02",
+    "stateHash": "47194cecac6424999571ef13e97925bb7158cf70e25e4a49467842779aff55f4"
+  }
+}

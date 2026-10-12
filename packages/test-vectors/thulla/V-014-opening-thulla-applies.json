@@ -1,0 +1,85 @@
+{
+  "id": "V-014-opening-thulla-applies",
+  "version": "1.0.0",
+  "title": "with the toggle on, the opening is in turn order and the opener picks up",
+  "rules": [
+    "R15"
+  ],
+  "setup": {
+    "hands": [
+      [
+        "AS",
+        "2H"
+      ],
+      [
+        "4H",
+        "5H"
+      ],
+      [
+        "6S",
+        "7D"
+      ],
+      [
+        "7S",
+        "8S"
+      ]
+    ],
+    "leader": 0,
+    "trickIndex": 0,
+    "phase": "opening",
+    "preset": "hardcore",
+    "rules": {
+      "thullaEndsTrick": true
+    }
+  },
+  "moves": [
+    {
+      "seat": 0,
+      "move": {
+        "type": "play_card",
+        "card": "AS"
+      }
+    },
+    {
+      "seat": 2,
+      "move": {
+        "type": "play_card",
+        "card": "6S"
+      },
+      "expect": {
+        "error": "rules.not_your_turn"
+      }
+    },
+    {
+      "seat": 1,
+      "move": {
+        "type": "play_card",
+        "card": "4H"
+      }
+    }
+  ],
+  "assert": {
+    "lastEvents": [
+      "card_played",
+      "trick_resolved"
+    ],
+    "hands": {
+      "0": [
+        "AS",
+        "2H",
+        "4H"
+      ]
+    },
+    "leaderSeat": 0,
+    "phase": "play",
+    "stats": {
+      "0": {
+        "cardsPickedUp": 2
+      },
+      "1": {
+        "thullasGiven": 1
+      }
+    },
+    "stateHash": "178f075430a6adbfbe757267670810e4abe66e0280ad557cc5b285a288533d14"
+  }
+}

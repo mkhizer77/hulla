@@ -1,0 +1,65 @@
+{
+  "id": "V-036-drawer-picks-up-on-thulla",
+  "version": "1.0.0",
+  "title": "a thulla after the draw makes the drawer pick up and stay in",
+  "rules": [
+    "R27",
+    "E3"
+  ],
+  "setup": {
+    "hands": [
+      [
+        "2D",
+        "3H"
+      ],
+      [
+        "KS",
+        "4H"
+      ],
+      [
+        "TD",
+        "6H"
+      ],
+      [
+        "8D"
+      ]
+    ],
+    "leader": 3,
+    "pendingAutoLead": true
+  },
+  "moves": [
+    {
+      "seat": 3,
+      "move": {
+        "type": "play_card",
+        "card": "8D"
+      }
+    },
+    {
+      "seat": 0,
+      "move": {
+        "type": "play_card",
+        "card": "2D"
+      }
+    },
+    {
+      "seat": 1,
+      "move": {
+        "type": "play_card",
+        "card": "KS"
+      }
+    }
+  ],
+  "assert": {
+    "handContains": {
+      "3": [
+        "KS",
+        "2D",
+        "8D"
+      ]
+    },
+    "escapeOrder": [],
+    "leaderSeat": 3,
+    "stateHash": "ccfc59ddd98952ce06cc866ef5163ec23e753e1d62d9a75c24e9f7c82627f695"
+  }
+}

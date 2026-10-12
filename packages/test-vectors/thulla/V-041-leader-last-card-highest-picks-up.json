@@ -1,0 +1,56 @@
+{
+  "id": "V-041-leader-last-card-highest-picks-up",
+  "version": "1.0.0",
+  "title": "the leader who led the last card picks up when it is highest and stays active",
+  "rules": [
+    "E3",
+    "E7"
+  ],
+  "setup": {
+    "hands": [
+      [
+        "KH"
+      ],
+      [
+        "2H",
+        "4C"
+      ],
+      [
+        "QS",
+        "5C"
+      ]
+    ],
+    "leader": 0,
+    "plays": [
+      {
+        "seat": 0,
+        "card": "KH"
+      },
+      {
+        "seat": 1,
+        "card": "2H"
+      }
+    ]
+  },
+  "moves": [
+    {
+      "seat": 2,
+      "move": {
+        "type": "play_card",
+        "card": "QS"
+      }
+    }
+  ],
+  "assert": {
+    "hands": {
+      "0": [
+        "QS",
+        "2H",
+        "KH"
+      ]
+    },
+    "escapeOrder": [],
+    "leaderSeat": 0,
+    "stateHash": "944af2acb68696cbf929c2796ec7e9d5bc2389d769a56573323f4191b3ef4d3e"
+  }
+}

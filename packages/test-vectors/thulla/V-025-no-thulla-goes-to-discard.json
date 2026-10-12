@@ -1,0 +1,59 @@
+{
+  "id": "V-025-no-thulla-goes-to-discard",
+  "version": "1.0.0",
+  "title": "without a thulla the cards go to the discard and the highest leads",
+  "rules": [
+    "R22",
+    "R23"
+  ],
+  "setup": {
+    "hands": [
+      [
+        "6H",
+        "2C"
+      ],
+      [
+        "KH",
+        "3C"
+      ],
+      [
+        "7H",
+        "4C"
+      ]
+    ],
+    "leader": 0,
+    "plays": [
+      {
+        "seat": 0,
+        "card": "6H"
+      },
+      {
+        "seat": 1,
+        "card": "KH"
+      }
+    ]
+  },
+  "moves": [
+    {
+      "seat": 2,
+      "move": {
+        "type": "play_card",
+        "card": "7H"
+      }
+    }
+  ],
+  "assert": {
+    "discard": [
+      "6H",
+      "KH",
+      "7H"
+    ],
+    "leaderSeat": 1,
+    "turnSeat": 1,
+    "lastEvents": [
+      "card_played",
+      "trick_resolved"
+    ],
+    "stateHash": "6d3ddf75873a0664879dab672385893deaf944e4073173c74cfe37aae7da1f93"
+  }
+}

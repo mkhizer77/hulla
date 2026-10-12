@@ -1,0 +1,33 @@
+{
+  "id": "V-E090-endgame-9S2D-vs-KD-drawOpponent",
+  "version": "1.0.0",
+  "title": "two-player endgame 9S 2D against KD (drawOpponent)",
+  "rules": [
+    "R37",
+    "R40",
+    "R41",
+    "E14"
+  ],
+  "setup": {
+    "hands": [
+      [
+        "9S",
+        "2D"
+      ],
+      [
+        "KD"
+      ]
+    ],
+    "leader": 0,
+    "discard": [],
+    "rules": {
+      "twoPlayerEndgame": "drawOpponent",
+      "confirmedFastForward": false
+    }
+  },
+  "moves": [],
+  "assert": {
+    "forcedBhabhi": null,
+    "stateHash": "d628515f17daa582199057f53ce6c9c8f55da0aece9f05ae404d4c89a3eee078"
+  }
+}

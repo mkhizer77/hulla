@@ -1,0 +1,51 @@
+{
+  "id": "V-057-endgame-draw-from-opponent-confirmed",
+  "version": "1.0.0",
+  "title": "GDD example 3: confirmed the instant Sara plays 3♠; fast-forwarded to Ali as Bhabhi",
+  "rules": [
+    "R38",
+    "R39",
+    "R41",
+    "E14"
+  ],
+  "setup": {
+    "hands": [
+      [
+        "9S"
+      ],
+      [
+        "3S",
+        "7S",
+        "QH",
+        "2D"
+      ]
+    ],
+    "leader": 0,
+    "plays": [
+      {
+        "seat": 0,
+        "card": "9S"
+      }
+    ]
+  },
+  "moves": [
+    {
+      "seat": 1,
+      "move": {
+        "type": "play_card",
+        "card": "3S"
+      },
+      "draw": 2
+    }
+  ],
+  "assert": {
+    "eventsInclude": [
+      "confirmed",
+      "round_ended"
+    ],
+    "confirmedBhabhi": 0,
+    "bhabhiSeat": 0,
+    "phase": "ended",
+    "stateHash": "b19f346f510f8a101ae86e46f2c99ffe788461eb1b0a6624d7daa116ec2b1279"
+  }
+}

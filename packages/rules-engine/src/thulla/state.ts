@@ -1,7 +1,10 @@
+import { THULLA_RULES_VERSION, type ThullaRules } from "./rules";
+
 import type { Card, Suit } from "../card-kit";
 import type { SeatSpec } from "../contract";
-import type { ThullaRules } from "./rules";
 import type { SeatIndex } from "@hulla/shared-ts";
+
+export { THULLA_RULES_VERSION };
 
 /** 3 to 6 seats in v1.0 (GDD R3); 7 and 8 arrive with two decks in v1.2. */
 export const THULLA_SEATS: SeatSpec = { min: 3, max: 6 };

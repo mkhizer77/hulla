@@ -1,0 +1,35 @@
+{
+  "id": "V-E191-endgame-3SKD-vs-2S9SQH-thullaEndsRound",
+  "version": "1.0.0",
+  "title": "two-player endgame 3S KD against 2S 9S QH (thullaEndsRound)",
+  "rules": [
+    "R37",
+    "R40",
+    "R41",
+    "E14"
+  ],
+  "setup": {
+    "hands": [
+      [
+        "3S",
+        "KD"
+      ],
+      [
+        "2S",
+        "9S",
+        "QH"
+      ]
+    ],
+    "leader": 0,
+    "discard": [],
+    "rules": {
+      "twoPlayerEndgame": "thullaEndsRound",
+      "confirmedFastForward": false
+    }
+  },
+  "moves": [],
+  "assert": {
+    "forcedBhabhi": null,
+    "stateHash": "00bfdb7592b6685909eee5e0fd45469a51c241e9c18e78de3ebedbf040e35830"
+  }
+}

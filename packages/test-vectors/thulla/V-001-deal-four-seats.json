@@ -1,0 +1,33 @@
+{
+  "id": "V-001-deal-four-seats",
+  "version": "1.0.0",
+  "title": "four seats deal 13 each; the Ace of Spades holder opens",
+  "rules": [
+    "R1",
+    "R2",
+    "R6",
+    "R7",
+    "R8",
+    "R9"
+  ],
+  "deal": {
+    "seedHex": "0707070707070707070707070707070707070707070707070707070707070707",
+    "seatCount": 4,
+    "dealerSeat": 0
+  },
+  "moves": [],
+  "assert": {
+    "handCounts": [
+      13,
+      13,
+      13,
+      13
+    ],
+    "leaderHoldsAceOfSpades": true,
+    "phase": "opening",
+    "trickIndex": 0,
+    "discardCount": 0,
+    "commitment": "4bf7597e522ad1a1d9a97d3b097a6228f59ff8c18c4daeab7f7e6ee3244047cd",
+    "stateHash": "f1b8a161990520605996bda966836188500068567b71531613e3c3c145065dfa"
+  }
+}

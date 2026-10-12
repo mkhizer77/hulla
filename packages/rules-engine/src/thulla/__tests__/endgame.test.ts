@@ -91,6 +91,19 @@ describe("the two-player endgame", () => {
     expect(result.ok && result.state.escapeOrder).toEqual([2, 0]);
   });
 
+  it("E29_the_opponent_beats_the_leaders_last_card_with_their_own_last_card_and_is_the_bhabhi_with_no_cards", () => {
+    const state = stateFrom({
+      hands: [["9S"], ["KS"], []],
+      leader: 0,
+      plays: [{ seat: 0, card: "9S" }],
+    });
+    const result = play(state, 1, "KS");
+    expect(result.ok && result.state.phase).toBe("ended");
+    expect(result.ok && result.state.bhabhiSeat).toBe(1);
+    expect(result.ok && handOf(result.state, 1)).toEqual([]);
+    expect(result.ok && result.state.escapeOrder).toEqual([2, 0]);
+  });
+
   it("R39b_E13_the_opponent_thullas_so_the_leader_picks_up_and_a_last_card_thulla_makes_the_leader_the_bhabhi", () => {
     const continues = stateFrom({
       hands: [["9S", "2H"], ["QH", "KD"], []],

@@ -1,0 +1,33 @@
+{
+  "id": "V-E032-endgame-KD-vs-KH2D-thullaEndsRound",
+  "version": "1.0.0",
+  "title": "two-player endgame KD against KH 2D (thullaEndsRound)",
+  "rules": [
+    "R37",
+    "R40",
+    "R41",
+    "E14"
+  ],
+  "setup": {
+    "hands": [
+      [
+        "KD"
+      ],
+      [
+        "KH",
+        "2D"
+      ]
+    ],
+    "leader": 0,
+    "discard": [],
+    "rules": {
+      "twoPlayerEndgame": "thullaEndsRound",
+      "confirmedFastForward": false
+    }
+  },
+  "moves": [],
+  "assert": {
+    "forcedBhabhi": 0,
+    "stateHash": "9666489652fcbe1974d5f0830c916813327bb3a44afff616ecfb56e7b339bffb"
+  }
+}

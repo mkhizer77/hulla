@@ -1,0 +1,52 @@
+{
+  "id": "V-064-endgame-thulla-pickup-continues",
+  "version": "1.0.0",
+  "title": "the opponent thullas: the leader picks up and play continues",
+  "rules": [
+    "R39"
+  ],
+  "setup": {
+    "hands": [
+      [
+        "9S",
+        "2H"
+      ],
+      [
+        "QH",
+        "KD"
+      ],
+      []
+    ],
+    "leader": 0,
+    "plays": [
+      {
+        "seat": 0,
+        "card": "9S"
+      }
+    ],
+    "rules": {
+      "confirmedFastForward": false
+    }
+  },
+  "moves": [
+    {
+      "seat": 1,
+      "move": {
+        "type": "play_card",
+        "card": "QH"
+      }
+    }
+  ],
+  "assert": {
+    "hands": {
+      "0": [
+        "9S",
+        "2H",
+        "QH"
+      ]
+    },
+    "phase": "play",
+    "leaderSeat": 0,
+    "stateHash": "ead0891151a854b0c28c76d5fb5ccef71c01279ac794909eb904c635fa5405de"
+  }
+}

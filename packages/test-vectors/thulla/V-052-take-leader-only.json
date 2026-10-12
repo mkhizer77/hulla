@@ -1,0 +1,38 @@
+{
+  "id": "V-052-take-leader-only",
+  "version": "1.0.0",
+  "title": "only the leader may take in leaderOnly mode",
+  "rules": [
+    "R32"
+  ],
+  "setup": {
+    "hands": [
+      [
+        "2H",
+        "9S"
+      ],
+      [
+        "3H"
+      ],
+      [
+        "4H"
+      ]
+    ],
+    "leader": 0
+  },
+  "moves": [
+    {
+      "seat": 1,
+      "move": {
+        "type": "take_hand"
+      },
+      "expect": {
+        "error": "rules.hand_take_not_leader"
+      }
+    }
+  ],
+  "assert": {
+    "leaderSeat": 0,
+    "stateHash": "b528d51200519ac5dc0a0ccb34b0d3c4e2380360b8c15b5cb3f5ca91e9c8c810"
+  }
+}

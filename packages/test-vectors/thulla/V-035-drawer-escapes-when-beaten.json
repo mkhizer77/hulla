@@ -1,0 +1,67 @@
+{
+  "id": "V-035-drawer-escapes-when-beaten",
+  "version": "1.0.0",
+  "title": "after the draw the next trick resolves normally and the drawer escapes",
+  "rules": [
+    "R27"
+  ],
+  "setup": {
+    "hands": [
+      [
+        "2D",
+        "3H"
+      ],
+      [
+        "5D",
+        "4H"
+      ],
+      [
+        "TD",
+        "6H"
+      ],
+      [
+        "8D"
+      ]
+    ],
+    "leader": 3,
+    "pendingAutoLead": true
+  },
+  "moves": [
+    {
+      "seat": 3,
+      "move": {
+        "type": "play_card",
+        "card": "8D"
+      }
+    },
+    {
+      "seat": 0,
+      "move": {
+        "type": "play_card",
+        "card": "2D"
+      }
+    },
+    {
+      "seat": 1,
+      "move": {
+        "type": "play_card",
+        "card": "5D"
+      }
+    },
+    {
+      "seat": 2,
+      "move": {
+        "type": "play_card",
+        "card": "TD"
+      }
+    }
+  ],
+  "assert": {
+    "escapeOrder": [
+      3
+    ],
+    "leaderSeat": 2,
+    "pendingAutoLead": false,
+    "stateHash": "7b0426b3d324e8a03c6578ea5bfb76efff483acb21878d6e5ecae01a831d4a58"
+  }
+}

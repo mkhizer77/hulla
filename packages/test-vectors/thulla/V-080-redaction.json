@@ -1,0 +1,66 @@
+{
+  "id": "V-080-redaction",
+  "version": "1.0.0",
+  "title": "a seat sees its own hand, counts for the others and the public pile; spectators see no hand",
+  "rules": [
+    "R23",
+    "R6"
+  ],
+  "setup": {
+    "hands": [
+      [
+        "2H",
+        "9S"
+      ],
+      [
+        "4H",
+        "5C"
+      ],
+      [
+        "6H"
+      ],
+      [
+        "7D"
+      ]
+    ],
+    "leader": 0,
+    "plays": [
+      {
+        "seat": 0,
+        "card": "2H"
+      }
+    ],
+    "discard": [
+      "3D",
+      "4D"
+    ]
+  },
+  "moves": [],
+  "assert": {
+    "views": [
+      {
+        "viewer": 1,
+        "ownHand": [
+          "4H",
+          "5C"
+        ],
+        "handCounts": [
+          1,
+          2,
+          1,
+          1
+        ],
+        "discardCount": 2,
+        "seedHidden": true,
+        "canTakeHand": false
+      },
+      {
+        "viewer": "spectator",
+        "ownHand": null,
+        "seedHidden": true,
+        "canTakeHand": null
+      }
+    ],
+    "stateHash": "ca1ae069b9bf24505af9b7a679ab4b4dd373cad45b73a243acf620d338ac3d80"
+  }
+}

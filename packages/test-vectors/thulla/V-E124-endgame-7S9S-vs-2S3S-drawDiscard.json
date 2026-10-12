@@ -1,0 +1,37 @@
+{
+  "id": "V-E124-endgame-7S9S-vs-2S3S-drawDiscard",
+  "version": "1.0.0",
+  "title": "two-player endgame 7S 9S against 2S 3S (drawDiscard)",
+  "rules": [
+    "R37",
+    "R40",
+    "R41",
+    "E14"
+  ],
+  "setup": {
+    "hands": [
+      [
+        "7S",
+        "9S"
+      ],
+      [
+        "2S",
+        "3S"
+      ]
+    ],
+    "leader": 0,
+    "discard": [
+      "4C",
+      "5C"
+    ],
+    "rules": {
+      "twoPlayerEndgame": "drawDiscard",
+      "confirmedFastForward": false
+    }
+  },
+  "moves": [],
+  "assert": {
+    "forcedBhabhi": 0,
+    "stateHash": "a87ed3b9872a669b629c8e08896598bc63b7c51fa86c54e0b1eea2204d819f1e"
+  }
+}

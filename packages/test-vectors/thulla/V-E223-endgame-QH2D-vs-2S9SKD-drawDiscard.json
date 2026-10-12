@@ -1,0 +1,38 @@
+{
+  "id": "V-E223-endgame-QH2D-vs-2S9SKD-drawDiscard",
+  "version": "1.0.0",
+  "title": "two-player endgame QH 2D against 2S 9S KD (drawDiscard)",
+  "rules": [
+    "R37",
+    "R40",
+    "R41",
+    "E14"
+  ],
+  "setup": {
+    "hands": [
+      [
+        "QH",
+        "2D"
+      ],
+      [
+        "2S",
+        "9S",
+        "KD"
+      ]
+    ],
+    "leader": 0,
+    "discard": [
+      "4C",
+      "5C"
+    ],
+    "rules": {
+      "twoPlayerEndgame": "drawDiscard",
+      "confirmedFastForward": false
+    }
+  },
+  "moves": [],
+  "assert": {
+    "forcedBhabhi": null,
+    "stateHash": "c750bc3440a7b97dff36d8213887e274a05947d75dbb7afe2e22456b6a83df61"
+  }
+}

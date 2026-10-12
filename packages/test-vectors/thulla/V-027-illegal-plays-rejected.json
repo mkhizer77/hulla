@@ -1,0 +1,71 @@
+{
+  "id": "V-027-illegal-plays-rejected",
+  "version": "1.0.0",
+  "title": "illegal plays are rejected with a reason and change nothing",
+  "rules": [
+    "R47"
+  ],
+  "setup": {
+    "hands": [
+      [
+        "2H"
+      ],
+      [
+        "4H",
+        "5C"
+      ],
+      [
+        "6H"
+      ]
+    ],
+    "leader": 0,
+    "plays": [
+      {
+        "seat": 0,
+        "card": "2H"
+      }
+    ]
+  },
+  "moves": [
+    {
+      "seat": 1,
+      "move": {
+        "type": "play_card",
+        "card": "AS"
+      },
+      "expect": {
+        "error": "rules.card_not_in_hand"
+      }
+    },
+    {
+      "seat": 9,
+      "move": {
+        "type": "play_card",
+        "card": "4H"
+      },
+      "expect": {
+        "error": "rules.invalid_seat"
+      }
+    },
+    {
+      "seat": 2,
+      "move": {
+        "type": "play_card",
+        "card": "6H"
+      },
+      "expect": {
+        "error": "rules.not_your_turn"
+      }
+    }
+  ],
+  "assert": {
+    "hands": {
+      "1": [
+        "4H",
+        "5C"
+      ]
+    },
+    "turnSeat": 1,
+    "stateHash": "e0bb79c9c25080653e70b2fdee56b1f45e7dae53d8d16ee4cd12185631246a9f"
+  }
+}

@@ -1,0 +1,78 @@
+{
+  "id": "V-013-opening-two-off-suit-plays",
+  "version": "1.0.0",
+  "title": "two off-suit plays in the opening still cause no pick-up",
+  "rules": [
+    "E2",
+    "R14"
+  ],
+  "setup": {
+    "hands": [
+      [
+        "AS",
+        "2H"
+      ],
+      [
+        "4H",
+        "5H"
+      ],
+      [
+        "6D",
+        "7D"
+      ],
+      [
+        "7S",
+        "8S"
+      ]
+    ],
+    "leader": 0,
+    "trickIndex": 0,
+    "phase": "opening",
+    "openingPending": [
+      1,
+      2,
+      3
+    ]
+  },
+  "moves": [
+    {
+      "seat": 0,
+      "move": {
+        "type": "play_card",
+        "card": "AS"
+      }
+    },
+    {
+      "seat": 1,
+      "move": {
+        "type": "play_card",
+        "card": "4H"
+      }
+    },
+    {
+      "seat": 2,
+      "move": {
+        "type": "play_card",
+        "card": "6D"
+      }
+    },
+    {
+      "seat": 3,
+      "move": {
+        "type": "play_card",
+        "card": "7S"
+      }
+    }
+  ],
+  "assert": {
+    "discardCount": 4,
+    "handCounts": [
+      1,
+      1,
+      1,
+      1
+    ],
+    "leaderSeat": 0,
+    "stateHash": "b59fd212fee81ec5b7856eb55399c992bee1ef95d22c258e8761ad5f2107b3b4"
+  }
+}

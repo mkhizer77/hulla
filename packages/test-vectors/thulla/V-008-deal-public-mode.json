@@ -1,0 +1,26 @@
+{
+  "id": "V-008-deal-public-mode",
+  "version": "1.0.0",
+  "title": "a public-mode deal: hand-taking off, single round",
+  "rules": [
+    "R31",
+    "R52"
+  ],
+  "deal": {
+    "seedHex": "0505050505050505050505050505050505050505050505050505050505050505",
+    "seatCount": 4,
+    "dealerSeat": 0,
+    "mode": "public"
+  },
+  "moves": [],
+  "assert": {
+    "handCounts": [
+      13,
+      13,
+      13,
+      13
+    ],
+    "commitment": "a424b326aa9eb2fe14e1c1c9d423b1e696f1e929c980543a9a2c59242ec4dbf5",
+    "stateHash": "e70b1af3fc01964f1bdb2429052c9894b391de7b64431577fc013cba5ab38b94"
+  }
+}

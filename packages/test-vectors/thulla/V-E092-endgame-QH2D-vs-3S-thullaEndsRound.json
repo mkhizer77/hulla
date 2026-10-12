@@ -1,0 +1,33 @@
+{
+  "id": "V-E092-endgame-QH2D-vs-3S-thullaEndsRound",
+  "version": "1.0.0",
+  "title": "two-player endgame QH 2D against 3S (thullaEndsRound)",
+  "rules": [
+    "R37",
+    "R40",
+    "R41",
+    "E14"
+  ],
+  "setup": {
+    "hands": [
+      [
+        "QH",
+        "2D"
+      ],
+      [
+        "3S"
+      ]
+    ],
+    "leader": 0,
+    "discard": [],
+    "rules": {
+      "twoPlayerEndgame": "thullaEndsRound",
+      "confirmedFastForward": false
+    }
+  },
+  "moves": [],
+  "assert": {
+    "forcedBhabhi": 0,
+    "stateHash": "548324f252fc6009364ab5e43ef3bb3f834ff13be67f13fc57be9dbb41e92e1d"
+  }
+}

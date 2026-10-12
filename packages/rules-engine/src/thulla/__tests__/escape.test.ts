@@ -24,7 +24,7 @@ describe("escaping and the empty-hand leader", () => {
     expect(result.state.escapeOrder).toEqual([]);
   });
 
-  it("R26_the_leader_who_wins_with_the_last_card_draws_from_the_discard_excluding_this_trick", () => {
+  it("R26_E4_the_leader_who_wins_with_the_last_card_draws_from_the_discard_excluding_this_trick", () => {
     // GDD 6.16 example 2: Noor (3) holds J♣ only; Bilal (2) leads 4♣.
     const state = stateFrom({
       hands: [["9C", "2D"], ["7C", "5D"], ["4C", "TD"], ["JC"]],

@@ -1,0 +1,33 @@
+{
+  "id": "V-E018-endgame-9S-vs-3S7S-drawOpponent",
+  "version": "1.0.0",
+  "title": "two-player endgame 9S against 3S 7S (drawOpponent)",
+  "rules": [
+    "R37",
+    "R40",
+    "R41",
+    "E14"
+  ],
+  "setup": {
+    "hands": [
+      [
+        "9S"
+      ],
+      [
+        "3S",
+        "7S"
+      ]
+    ],
+    "leader": 0,
+    "discard": [],
+    "rules": {
+      "twoPlayerEndgame": "drawOpponent",
+      "confirmedFastForward": false
+    }
+  },
+  "moves": [],
+  "assert": {
+    "forcedBhabhi": 0,
+    "stateHash": "68eb1cb61b56f7885e61ecfc6701e4987153f1037314f0f6858f2cb981b78490"
+  }
+}

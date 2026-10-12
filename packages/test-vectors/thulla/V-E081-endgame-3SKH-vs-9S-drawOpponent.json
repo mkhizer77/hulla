@@ -1,0 +1,33 @@
+{
+  "id": "V-E081-endgame-3SKH-vs-9S-drawOpponent",
+  "version": "1.0.0",
+  "title": "two-player endgame 3S KH against 9S (drawOpponent)",
+  "rules": [
+    "R37",
+    "R40",
+    "R41",
+    "E14"
+  ],
+  "setup": {
+    "hands": [
+      [
+        "3S",
+        "KH"
+      ],
+      [
+        "9S"
+      ]
+    ],
+    "leader": 0,
+    "discard": [],
+    "rules": {
+      "twoPlayerEndgame": "drawOpponent",
+      "confirmedFastForward": false
+    }
+  },
+  "moves": [],
+  "assert": {
+    "forcedBhabhi": null,
+    "stateHash": "c09dd845587dcdcd0c176f59ef9f929a12391250b0490829355b48cd5e5f5f5e"
+  }
+}

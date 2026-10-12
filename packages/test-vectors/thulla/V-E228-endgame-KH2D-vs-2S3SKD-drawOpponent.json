@@ -1,0 +1,35 @@
+{
+  "id": "V-E228-endgame-KH2D-vs-2S3SKD-drawOpponent",
+  "version": "1.0.0",
+  "title": "two-player endgame KH 2D against 2S 3S KD (drawOpponent)",
+  "rules": [
+    "R37",
+    "R40",
+    "R41",
+    "E14"
+  ],
+  "setup": {
+    "hands": [
+      [
+        "KH",
+        "2D"
+      ],
+      [
+        "2S",
+        "3S",
+        "KD"
+      ]
+    ],
+    "leader": 0,
+    "discard": [],
+    "rules": {
+      "twoPlayerEndgame": "drawOpponent",
+      "confirmedFastForward": false
+    }
+  },
+  "moves": [],
+  "assert": {
+    "forcedBhabhi": null,
+    "stateHash": "96fef2acb92685f6a2360cb6c4ddffb08ff145e0c74fb7a849a78ac6ecacf187"
+  }
+}

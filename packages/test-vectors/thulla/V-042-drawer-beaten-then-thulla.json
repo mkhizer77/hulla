@@ -1,0 +1,60 @@
+{
+  "id": "V-042-drawer-beaten-then-thulla",
+  "version": "1.0.0",
+  "title": "the drawer's led card is beaten and a later seat thullas: the highest led card picks up",
+  "rules": [
+    "E5"
+  ],
+  "setup": {
+    "hands": [
+      [
+        "8D"
+      ],
+      [
+        "KD",
+        "2C"
+      ],
+      [
+        "QS",
+        "5C"
+      ]
+    ],
+    "leader": 0,
+    "plays": [
+      {
+        "seat": 0,
+        "card": "8D"
+      },
+      {
+        "seat": 1,
+        "card": "KD"
+      }
+    ],
+    "rules": {
+      "confirmedFastForward": false
+    }
+  },
+  "moves": [
+    {
+      "seat": 2,
+      "move": {
+        "type": "play_card",
+        "card": "QS"
+      }
+    }
+  ],
+  "assert": {
+    "escapeOrder": [
+      0
+    ],
+    "handContains": {
+      "1": [
+        "8D",
+        "KD",
+        "QS"
+      ]
+    },
+    "leaderSeat": 1,
+    "stateHash": "fe46a23b8a157dbc3a536715c8c5e3e78f79964e11cddd16e69cff900798d265"
+  }
+}

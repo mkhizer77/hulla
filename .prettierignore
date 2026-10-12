@@ -8,3 +8,5 @@ apps/unity
 *.yml
 *.yaml
 LICENSE
+packages/test-vectors/thulla/V-*.json
+packages/test-vectors/thulla/traceability.md

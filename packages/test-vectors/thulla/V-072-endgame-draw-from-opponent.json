@@ -1,0 +1,58 @@
+{
+  "id": "V-072-endgame-draw-from-opponent",
+  "version": "1.0.0",
+  "title": "the leader who plays the last card draws one from the opponent, who sees it leave",
+  "rules": [
+    "R38"
+  ],
+  "setup": {
+    "hands": [
+      [
+        "9S"
+      ],
+      [
+        "3S",
+        "7S",
+        "QH",
+        "KH"
+      ],
+      []
+    ],
+    "leader": 0,
+    "plays": [
+      {
+        "seat": 0,
+        "card": "9S"
+      }
+    ]
+  },
+  "moves": [
+    {
+      "seat": 1,
+      "move": {
+        "type": "play_card",
+        "card": "3S"
+      },
+      "draw": 1
+    }
+  ],
+  "assert": {
+    "lastEvents": [
+      "card_played",
+      "trick_resolved",
+      "private_draw"
+    ],
+    "handCounts": [
+      1,
+      2,
+      0
+    ],
+    "pendingAutoLead": true,
+    "hands": {
+      "0": [
+        "QH"
+      ]
+    },
+    "stateHash": "94026a4f0574f8d7bf3d5a683843f3ebd3f6a4ca533a6ead150d26ecd033c7ee"
+  }
+}
