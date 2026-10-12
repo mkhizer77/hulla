@@ -119,14 +119,18 @@ describe("profiles (GDD 10.1)", () => {
       frame: "f01",
       flag: "PK",
       bio: "chai first",
-      nameChanges: 1,
+      // Leaving the generated guest name is not a rename (GDD 9.4).
+      nameChanges: 0,
       updatedTs: T0 + 5,
       privacy: { showOnline: false, visibility: "friends" },
     });
     expect(applyProfileUpdate(first.value, { displayName: "Sara" }, T0)).toMatchObject({
       ok: true,
     });
-    expect(applyProfileUpdate(first.value, { displayName: "Sarah" }, T0)).toMatchObject({
+    const renamed = applyProfileUpdate(first.value, { displayName: "Sarah" }, T0);
+    expect(renamed).toMatchObject({ ok: true, value: { displayName: "Sarah", nameChanges: 1 } });
+    if (!renamed.ok) return;
+    expect(applyProfileUpdate(renamed.value, { displayName: "Sarah K" }, T0)).toMatchObject({
       error: { code: "profile.name_change_locked" },
     });
     expect(applyProfileUpdate(base, { displayName: "x" }, T0)).toMatchObject({
@@ -196,7 +200,7 @@ describe("profiles (GDD 10.1)", () => {
     const updated = profileUpdate(d, JSON.stringify({ displayName: "Ali", handle: "ali_k" }));
     expect(updated).toMatchObject({
       ok: true,
-      profile: { displayName: "Ali", handle: "ali_k", nameChanges: 1 },
+      profile: { displayName: "Ali", handle: "ali_k", nameChanges: 0 },
     });
     expect(d.names).toEqual([{ u: "u1", handle: "ali_k", displayName: "Ali" }]);
     d.taken.add("sara_k");

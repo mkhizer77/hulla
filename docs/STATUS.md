@@ -37,6 +37,7 @@ M0 complete: the Thulla rulebook runs in TypeScript with full traceability. M1, 
 - 12 Oct decisions: C# mirror deferred past v1.0 (ADR-0019), no clock in engines (ADR-0020), JSON Schema draft-07 (ADR-0021), one deck and 3–6 seats until v1.2, web client before Rung (M5 → web → Rung → M6, dates in the execution plan), Facebook login stays, Unity stays on 6000.4.9f1.
 
 ## Doing
+- Fixes (branch `fix/guest-name-return-timer`, stacked on #52): leaving the generated guest name no longer spends the free rename; a seat that returns during its own turn gets a full turn timer again, which also removes a flaky reconnection assertion.
 - M2 #52 server part (branch `feat/missions`, stacked on #50 and #51): the mission pools in content with a schema, seeded daily and weekly draws per player at local midnight, progress from round events and voice, the in-app progress notification, idempotent claims through the ledger, the free daily re-roll and the live pool reload. The Missions panel on Home is the Unity track. OQ-022 logged.
 
 ## Next
