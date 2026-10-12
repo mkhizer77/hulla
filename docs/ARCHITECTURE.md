@@ -206,7 +206,7 @@ export interface GameModule<S, M, V, R extends RuleSet = RuleSet> {
   currentPhase(state: S): PhaseId;
   legalMoves(state: S, seat: SeatIndex): readonly M[];
   applyMove(state: S, seat: SeatIndex, move: M, rng: Rng): ApplyResult<S>;
-  onDeadline(state: S, seat: SeatIndex): M;  // deterministic auto-play (GDD R44)
+  onDeadline(state: S, seat: SeatIndex): M | null;  // deterministic auto-play (GDD R44); null when the seat cannot act
   redact(state: S, viewer: Viewer): V;       // hidden information never leaves here
   isRoundOver(state: S): boolean;
   results(state: S): RoundResult;
@@ -220,7 +220,7 @@ export type ApplyResult<S> =
   | { ok: true; state: S; events: readonly GameEvent[] }
   | { ok: false; error: RuleError };        // code from the error catalogue, never a thrown exception
 ```
-`rulesSchema` covers only the toggles that change legality or outcomes; table settings such as timers, the loser's title, card-count display and the memory assist are table-core configuration delivered through the same preset files. Rules of the contract [MUST]: pure functions; no IO; no clock at all (ADR-0020); no randomness except through the injected `Rng`; state is never mutated; `redact` is total (works for every state and viewer, including spectators); `onDeadline` always returns a legal move; `legalMoves` and `applyMove` agree (a move is legal if and only if `applyMove` returns `ok`); a replay needs only the seed and the move log.
+`rulesSchema` covers only the toggles that change legality or outcomes; table settings such as timers, the loser's title, card-count display and the memory assist are table-core configuration delivered through the same preset files. Rules of the contract [MUST]: pure functions; no IO; no clock at all (ADR-0020); no randomness except through the injected `Rng`; state is never mutated; `redact` is total (works for every state and viewer, including spectators); `onDeadline` returns a legal move for any seat that has one and null otherwise; `legalMoves` and `applyMove` agree (a move is legal if and only if `applyMove` returns `ok`); a replay needs only the seed and the move log.
 
 ### 7.2 Table core
 `TableCore` is the generic host for any module. It owns seats and teams, presences and reconnection tokens, phase deadlines and the tick clock, the event log and snapshots, redaction dispatch, idempotency, the rematch loop and series state, and the bridge to shell services (rewards, stats, missions) at round end.
