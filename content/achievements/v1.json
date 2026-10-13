@@ -1,0 +1,459 @@
+{
+  "schema": "../../tools/content-schemas/achievements.schema.json",
+  "id": "achievements-v1",
+  "version": 1,
+  "achievements": [
+    {
+      "id": "first_thulla",
+      "name": "achievement.first_thulla.name",
+      "description": "achievement.first_thulla.description",
+      "category": "play",
+      "metric": "thullas_given",
+      "target": 1,
+      "reward": {
+        "gems": 5
+      }
+    },
+    {
+      "id": "thullas_100",
+      "name": "achievement.thullas_100.name",
+      "description": "achievement.thullas_100.description",
+      "category": "play",
+      "metric": "thullas_given",
+      "target": 100,
+      "reward": {
+        "gems": 20
+      }
+    },
+    {
+      "id": "thullas_1000",
+      "name": "achievement.thullas_1000.name",
+      "description": "achievement.thullas_1000.description",
+      "category": "play",
+      "metric": "thullas_given",
+      "target": 1000,
+      "reward": {
+        "gems": 60,
+        "title": "thulla_baaz"
+      }
+    },
+    {
+      "id": "first_escape",
+      "name": "achievement.first_escape.name",
+      "description": "achievement.first_escape.description",
+      "category": "play",
+      "metric": "escapes",
+      "target": 1,
+      "reward": {
+        "gems": 5
+      }
+    },
+    {
+      "id": "escapes_100",
+      "name": "achievement.escapes_100.name",
+      "description": "achievement.escapes_100.description",
+      "category": "play",
+      "metric": "escapes",
+      "target": 100,
+      "reward": {
+        "gems": 20
+      }
+    },
+    {
+      "id": "escapes_1000",
+      "name": "achievement.escapes_1000.name",
+      "description": "achievement.escapes_1000.description",
+      "category": "play",
+      "metric": "escapes",
+      "target": 1000,
+      "reward": {
+        "gems": 60,
+        "title": "nikal_gaya"
+      }
+    },
+    {
+      "id": "rounds_10",
+      "name": "achievement.rounds_10.name",
+      "description": "achievement.rounds_10.description",
+      "category": "play",
+      "metric": "rounds",
+      "target": 10,
+      "reward": {
+        "gems": 5
+      }
+    },
+    {
+      "id": "rounds_100",
+      "name": "achievement.rounds_100.name",
+      "description": "achievement.rounds_100.description",
+      "category": "play",
+      "metric": "rounds",
+      "target": 100,
+      "reward": {
+        "gems": 15
+      }
+    },
+    {
+      "id": "rounds_1000",
+      "name": "achievement.rounds_1000.name",
+      "description": "achievement.rounds_1000.description",
+      "category": "play",
+      "metric": "rounds",
+      "target": 1000,
+      "reward": {
+        "gems": 50,
+        "title": "purana_khiladi_ustad"
+      }
+    },
+    {
+      "id": "first_bhabhi",
+      "name": "achievement.first_bhabhi.name",
+      "description": "achievement.first_bhabhi.description",
+      "category": "play",
+      "metric": "bhabhis",
+      "target": 1,
+      "reward": {
+        "gems": 2
+      }
+    },
+    {
+      "id": "bhabhis_50",
+      "name": "achievement.bhabhis_50.name",
+      "description": "achievement.bhabhis_50.description",
+      "category": "play",
+      "metric": "bhabhis",
+      "target": 50,
+      "reward": {
+        "gems": 10,
+        "title": "bhabhi_jaan"
+      }
+    },
+    {
+      "id": "hand_taken_first",
+      "name": "achievement.hand_taken_first.name",
+      "description": "achievement.hand_taken_first.description",
+      "category": "play",
+      "metric": "hands_taken",
+      "target": 1,
+      "reward": {
+        "gems": 5
+      }
+    },
+    {
+      "id": "hands_taken_25",
+      "name": "achievement.hands_taken_25.name",
+      "description": "achievement.hands_taken_25.description",
+      "category": "play",
+      "metric": "hands_taken",
+      "target": 25,
+      "reward": {
+        "gems": 15
+      }
+    },
+    {
+      "id": "pickup_10",
+      "name": "achievement.pickup_10.name",
+      "description": "achievement.pickup_10.description",
+      "category": "play",
+      "metric": "biggest_pickup",
+      "target": 10,
+      "reward": {
+        "gems": 5
+      }
+    },
+    {
+      "id": "pickup_20",
+      "name": "achievement.pickup_20.name",
+      "description": "achievement.pickup_20.description",
+      "category": "play",
+      "metric": "biggest_pickup",
+      "target": 20,
+      "reward": {
+        "gems": 15,
+        "title": "haath_bhar"
+      }
+    },
+    {
+      "id": "picked_up_500",
+      "name": "achievement.picked_up_500.name",
+      "description": "achievement.picked_up_500.description",
+      "category": "play",
+      "metric": "cards_picked_up",
+      "target": 500,
+      "reward": {
+        "gems": 10
+      }
+    },
+    {
+      "id": "thullas_received_100",
+      "name": "achievement.thullas_received_100.name",
+      "description": "achievement.thullas_received_100.description",
+      "category": "play",
+      "metric": "thullas_received",
+      "target": 100,
+      "reward": {
+        "gems": 10
+      }
+    },
+    {
+      "id": "series_first",
+      "name": "achievement.series_first.name",
+      "description": "achievement.series_first.description",
+      "category": "play",
+      "metric": "series_won",
+      "target": 1,
+      "reward": {
+        "gems": 10
+      }
+    },
+    {
+      "id": "series_10",
+      "name": "achievement.series_10.name",
+      "description": "achievement.series_10.description",
+      "category": "play",
+      "metric": "series_won",
+      "target": 10,
+      "reward": {
+        "gems": 25
+      }
+    },
+    {
+      "id": "first_friend",
+      "name": "achievement.first_friend.name",
+      "description": "achievement.first_friend.description",
+      "category": "social",
+      "metric": "friends",
+      "target": 1,
+      "reward": {
+        "gems": 5
+      }
+    },
+    {
+      "id": "friends_10",
+      "name": "achievement.friends_10.name",
+      "description": "achievement.friends_10.description",
+      "category": "social",
+      "metric": "friends",
+      "target": 10,
+      "reward": {
+        "gems": 15
+      }
+    },
+    {
+      "id": "friends_50",
+      "name": "achievement.friends_50.name",
+      "description": "achievement.friends_50.description",
+      "category": "social",
+      "metric": "friends",
+      "target": 50,
+      "reward": {
+        "gems": 30,
+        "title": "mehfil_wala"
+      }
+    },
+    {
+      "id": "rounds_with_friend_10",
+      "name": "achievement.rounds_with_friend_10.name",
+      "description": "achievement.rounds_with_friend_10.description",
+      "category": "social",
+      "metric": "rounds_with_friend",
+      "target": 10,
+      "reward": {
+        "gems": 10
+      }
+    },
+    {
+      "id": "rounds_with_friend_100",
+      "name": "achievement.rounds_with_friend_100.name",
+      "description": "achievement.rounds_with_friend_100.description",
+      "category": "social",
+      "metric": "rounds_with_friend",
+      "target": 100,
+      "reward": {
+        "gems": 30
+      }
+    },
+    {
+      "id": "full_house_friends",
+      "name": "achievement.full_house_friends.name",
+      "description": "achievement.full_house_friends.description",
+      "category": "social",
+      "metric": "rounds_with_four_friends",
+      "target": 1,
+      "reward": {
+        "gems": 15
+      }
+    },
+    {
+      "id": "same_group_10",
+      "name": "achievement.same_group_10.name",
+      "description": "achievement.same_group_10.description",
+      "category": "social",
+      "metric": "same_group_rounds",
+      "target": 10,
+      "reward": {
+        "gems": 25,
+        "title": "baithak_regular"
+      }
+    },
+    {
+      "id": "same_group_50",
+      "name": "achievement.same_group_50.name",
+      "description": "achievement.same_group_50.description",
+      "category": "social",
+      "metric": "same_group_rounds",
+      "target": 50,
+      "reward": {
+        "gems": 50
+      }
+    },
+    {
+      "id": "escaped_first_10",
+      "name": "achievement.escaped_first_10.name",
+      "description": "achievement.escaped_first_10.description",
+      "category": "skill",
+      "metric": "escaped_first",
+      "target": 10,
+      "reward": {
+        "gems": 10
+      }
+    },
+    {
+      "id": "escaped_first_100",
+      "name": "achievement.escaped_first_100.name",
+      "description": "achievement.escaped_first_100.description",
+      "category": "skill",
+      "metric": "escaped_first",
+      "target": 100,
+      "reward": {
+        "gems": 40,
+        "title": "sabse_pehle"
+      }
+    },
+    {
+      "id": "first_escape_streak_5",
+      "name": "achievement.first_escape_streak_5.name",
+      "description": "achievement.first_escape_streak_5.description",
+      "category": "skill",
+      "metric": "first_escape_streak",
+      "target": 5,
+      "reward": {
+        "gems": 30,
+        "title": "ustad_e_farar"
+      }
+    },
+    {
+      "id": "no_bhabhi_20",
+      "name": "achievement.no_bhabhi_20.name",
+      "description": "achievement.no_bhabhi_20.description",
+      "category": "skill",
+      "metric": "no_bhabhi_streak",
+      "target": 20,
+      "reward": {
+        "gems": 30,
+        "title": "kabhi_bhabhi_nahi"
+      }
+    },
+    {
+      "id": "clean_round_first",
+      "name": "achievement.clean_round_first.name",
+      "description": "achievement.clean_round_first.description",
+      "category": "skill",
+      "metric": "clean_rounds",
+      "target": 1,
+      "reward": {
+        "gems": 5
+      }
+    },
+    {
+      "id": "clean_rounds_25",
+      "name": "achievement.clean_rounds_25.name",
+      "description": "achievement.clean_rounds_25.description",
+      "category": "skill",
+      "metric": "clean_rounds",
+      "target": 25,
+      "reward": {
+        "gems": 25
+      }
+    },
+    {
+      "id": "houdini",
+      "name": "achievement.houdini.name",
+      "description": "achievement.houdini.description",
+      "category": "skill",
+      "metric": "houdini",
+      "target": 1,
+      "reward": {
+        "gems": 25,
+        "title": "houdini"
+      }
+    },
+    {
+      "id": "houdini_10",
+      "name": "achievement.houdini_10.name",
+      "description": "achievement.houdini_10.description",
+      "category": "skill",
+      "metric": "houdini",
+      "target": 10,
+      "reward": {
+        "gems": 60
+      }
+    },
+    {
+      "id": "first_cosmetic",
+      "name": "achievement.first_cosmetic.name",
+      "description": "achievement.first_cosmetic.description",
+      "category": "collection",
+      "metric": "cosmetics_owned",
+      "target": 1,
+      "reward": {
+        "gems": 5
+      }
+    },
+    {
+      "id": "cosmetics_10",
+      "name": "achievement.cosmetics_10.name",
+      "description": "achievement.cosmetics_10.description",
+      "category": "collection",
+      "metric": "cosmetics_owned",
+      "target": 10,
+      "reward": {
+        "gems": 15
+      }
+    },
+    {
+      "id": "cosmetics_30",
+      "name": "achievement.cosmetics_30.name",
+      "description": "achievement.cosmetics_30.description",
+      "category": "collection",
+      "metric": "cosmetics_owned",
+      "target": 30,
+      "reward": {
+        "gems": 40,
+        "title": "shaukeen"
+      }
+    },
+    {
+      "id": "seasonal_rounds_10",
+      "name": "achievement.seasonal_rounds_10.name",
+      "description": "achievement.seasonal_rounds_10.description",
+      "category": "seasonal",
+      "metric": "seasonal_rounds",
+      "target": 10,
+      "reward": {
+        "gems": 10
+      }
+    },
+    {
+      "id": "seasonal_rounds_50",
+      "name": "achievement.seasonal_rounds_50.name",
+      "description": "achievement.seasonal_rounds_50.description",
+      "category": "seasonal",
+      "metric": "seasonal_rounds",
+      "target": 50,
+      "reward": {
+        "gems": 30
+      }
+    }
+  ]
+}

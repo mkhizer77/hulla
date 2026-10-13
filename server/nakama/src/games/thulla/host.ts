@@ -267,19 +267,42 @@ export function thullaHighlights(
     playedH: 0,
     playedC: 0,
     playedD: 0,
+    /** Escaped by playing a single card drawn from the discard (GDD 12.7, "Houdini"). */
+    houdini: 0,
   }));
+  // The card each seat last drew from the discard, until it is played; then the escape counts.
+  const drawnFromDiscard = new Map<number, string>();
+  const playedDrawn = new Set<number>();
   const bump = (seat: unknown, key: keyof (typeof out)[number], by = 1): void => {
     const row = typeof seat === "number" ? out[seat] : undefined;
     if (row !== undefined) row[key] += by;
   };
   for (const m of messages) {
     const p = m.payload as Record<string, unknown>;
-    if (m.type === "move_applied") {
+    if (m.type === "private_draw") {
+      const seat = p["seat"];
+      if (typeof seat === "number" && p["source"] === "discard" && typeof p["card"] === "string") {
+        drawnFromDiscard.set(seat, p["card"]);
+        playedDrawn.delete(seat);
+      }
+    } else if (m.type === "escape") {
+      const seat = p["seat"];
+      if (typeof seat === "number" && playedDrawn.has(seat)) {
+        bump(seat, "houdini");
+        playedDrawn.delete(seat);
+      }
+    } else if (m.type === "move_applied") {
       const move = p["move"] as { type?: string; card?: string } | undefined;
+      const seat = p["seat"];
       if (move?.type === "play_card" && typeof move.card === "string") {
         const suit = move.card.slice(-1);
         if (suit === "S" || suit === "H" || suit === "C" || suit === "D")
           bump(p["seat"], `played${suit}`);
+        if (typeof seat === "number") {
+          if (drawnFromDiscard.get(seat) === move.card) playedDrawn.add(seat);
+          else playedDrawn.delete(seat);
+          drawnFromDiscard.delete(seat);
+        }
       }
       if (move?.type === "take_hand") bump(p["seat"], "handsTaken");
     } else if (m.type === "trick_resolved" && p["thullaBy"] !== null && p["picker"] !== null) {
