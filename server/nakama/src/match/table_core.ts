@@ -76,6 +76,12 @@ export interface TableCoreDeps {
   readonly chat?: ChatContent;
   /** Spectators are friends of someone seated (GDD 7.7); absent, anyone may watch (tests). */
   readonly social?: SocialGate;
+  /** The names players chose (profile, account); absent, the Nakama username shows (tests). */
+  readonly names?: NameSource;
+}
+
+export interface NameSource {
+  displayNameOf(userId: string): string | null;
 }
 
 export interface SocialGate {
@@ -140,6 +146,11 @@ export function tableCore<S, M, V, E, R>(
 ): TableCore<S, M> {
   const config: TableConfig = { ...DEFAULT_TABLE_CONFIG, ...deps.config };
   const chat = deps.chat ?? BUNDLED_CHAT;
+  /** The chosen name when there is one (2 to 20 characters), else the username (GDD 17.2). */
+  const nameOf = (userId: string, username: string): string | null => {
+    const chosen = deps.names?.displayNameOf(userId) ?? null;
+    return (chosen === null ? null : displayNameOf(chosen)) ?? displayNameOf(username);
+  };
   const checks = createChecks();
   const round: RoundDeps<S, M, V, E, R> = { host, config, persist: deps.persist };
 
@@ -222,7 +233,13 @@ export function tableCore<S, M, V, E, R>(
   ): void => {
     const slot = state.seats[seat];
     if (slot === undefined) return;
-    occupySlot(slot, record.userId, displayNameOf(record.username), now, null);
+    occupySlot(
+      slot,
+      record.userId,
+      record.displayName ?? displayNameOf(record.username),
+      now,
+      null,
+    );
     attachSession(slot, record.sessionId);
     const seated: PresenceRecord = { ...record, seat, seatNext: false };
     state.presences[record.sessionId] = seated;
@@ -788,8 +805,8 @@ export function tableCore<S, M, V, E, R>(
       for (const info of presences) {
         const admission = state.admissions[info.sessionId] ?? { kind: "spectator" };
         state.admissions = without(state.admissions, info.sessionId);
-        const record: PresenceRecord = { ...info, node: info.node ?? "", seat: null };
-        const displayName = displayNameOf(info.username);
+        const displayName = nameOf(info.userId, info.username);
+        const record: PresenceRecord = { ...info, node: info.node ?? "", seat: null, displayName };
         let status: "joined" | "reconnected" | "spectating" = "spectating";
         if (admission.kind === "spectator" && admission.seatNext === true) record.seatNext = true;
         if (admission.kind === "seat") {

@@ -96,7 +96,7 @@ export function tableStateFor<S, M, V, E, R>(
       .filter((p) => p.seat === null)
       .map((p) => ({
         userId: p.userId,
-        displayName: displayNameOf(p.username),
+        displayName: p.displayName ?? displayNameOf(p.username),
         seatNext: p.seatNext === true,
       })),
     series: seriesPayload(state.series ?? emptySeries(state.seats.length, state.hostSeat ?? 0)),
