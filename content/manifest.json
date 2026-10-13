@@ -1,8 +1,8 @@
 {
   "schema": "../tools/content-schemas/manifest.schema.json",
   "id": "content-manifest",
-  "version": 3,
-  "digest": "37ce1074883264c43eb94aa525a6cc40878786db1c5101f5a1931ad455a13c1f",
+  "version": 4,
+  "digest": "26806fefeda99c4251d7cffd788fbcce8616f10c77b22f6bac922a95974218d6",
   "files": [
     {
       "path": "achievements/v1.json",
@@ -91,6 +91,14 @@
       "version": 1,
       "sha256": "9e9a845f527ed7e769d2b571d71aee1d800f0f0ff21b19e0c702c9b8be3a1b38",
       "bytes": 259
+    },
+    {
+      "path": "products/v1.json",
+      "type": "products",
+      "id": "products-v1",
+      "version": 1,
+      "sha256": "b0231ebf704628ee3646a17aa05ec30d0dbbdbb7aab7c752efbd04d55fd42915",
+      "bytes": 1606
     },
     {
       "path": "quick-chat/v1.en.json",

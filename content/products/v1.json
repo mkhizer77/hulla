@@ -1,0 +1,70 @@
+{
+  "schema": "../../tools/content-schemas/products.schema.json",
+  "id": "products-v1",
+  "version": 1,
+  "products": [
+    {
+      "id": "remove_ads",
+      "name": "product.remove_ads",
+      "kind": "nonConsumable",
+      "usd": 2.99,
+      "grants": { "entitlements": ["removeAds"] }
+    },
+    {
+      "id": "gems_120",
+      "name": "product.gems_120",
+      "kind": "consumable",
+      "usd": 0.99,
+      "grants": { "gems": 120 }
+    },
+    {
+      "id": "gems_650",
+      "name": "product.gems_650",
+      "kind": "consumable",
+      "usd": 4.99,
+      "grants": { "gems": 650 }
+    },
+    {
+      "id": "gems_1400",
+      "name": "product.gems_1400",
+      "kind": "consumable",
+      "usd": 9.99,
+      "grants": { "gems": 1400 }
+    },
+    {
+      "id": "gems_3000",
+      "name": "product.gems_3000",
+      "kind": "consumable",
+      "usd": 19.99,
+      "grants": { "gems": 3000 }
+    },
+    {
+      "id": "gems_8000",
+      "name": "product.gems_8000",
+      "kind": "consumable",
+      "usd": 49.99,
+      "grants": { "gems": 8000 }
+    },
+    {
+      "id": "pass_premium",
+      "name": "product.pass_premium",
+      "kind": "consumable",
+      "usd": 4.99,
+      "grants": { "pass": "premium" }
+    },
+    {
+      "id": "pass_premium_plus",
+      "name": "product.pass_premium_plus",
+      "kind": "consumable",
+      "usd": 9.99,
+      "grants": { "pass": "plus" }
+    },
+    {
+      "id": "starter_bundle",
+      "name": "product.starter_bundle",
+      "kind": "nonConsumable",
+      "usd": 1.99,
+      "grants": { "gems": 200, "items": ["back_ajrak"], "frames": ["f01"] }
+    }
+  ]
+}
