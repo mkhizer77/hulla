@@ -380,6 +380,20 @@ export function tableMatchHandler<S, M, V, E, R>(
           return seatedIds.some((id) => friends.includes(id));
         },
       },
+      names: {
+        // The profile's name, else the account's display name; the random device username only
+        // when the player never chose one.
+        displayNameOf: (userId) => {
+          try {
+            const profile = nkProfileStore(nk, logger).read(userId);
+            if (profile !== null && profile.displayName !== "") return profile.displayName;
+            const account = nk.usersGetId([userId])[0]?.displayName ?? "";
+            return account === "" ? null : account;
+          } catch {
+            return null;
+          }
+        },
+      },
       ...(options.config === undefined ? {} : { config: options.config }),
     });
 

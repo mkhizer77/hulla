@@ -591,3 +591,18 @@ describe("round end, series and rematch", () => {
     expect(h.core.close(h.state, "server", h.now).outbound).toEqual([]);
   });
 });
+
+describe("seat names", () => {
+  it("shows the name a player chose, not the random device username (GDD 17.2)", () => {
+    const chosen: Record<string, string> = { u0: "Karachi Tiger 81", u1: " " };
+    const h = harness({ names: { displayNameOf: (id) => chosen[id] ?? null } });
+    h.join(presence(0));
+    h.join(presence(1));
+    h.join(presence(2));
+    expect(h.state.seats.slice(0, 3).map((s) => s.displayName)).toEqual([
+      "Karachi Tiger 81",
+      "Player1",
+      "Player2",
+    ]);
+  });
+});

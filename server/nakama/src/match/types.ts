@@ -17,6 +17,8 @@ export interface PresenceRecord {
   readonly sessionId: string;
   readonly userId: string;
   readonly username: string;
+  /** The name shown for this player: their chosen display name, else the username. */
+  readonly displayName?: string | null;
   /** Nakama's node for the session; a message addressed without it is dropped by the router. */
   readonly node: string;
   seat: SeatIndex | null;
