@@ -1,0 +1,8 @@
+<!--
+  Keeps the generated protocol types whole in IL2CPP builds. Newtonsoft reads and writes them through
+  reflection, so the linker cannot see that a getter like Ready.ReadyReady is used and strips it; the
+  message then goes out as {} (a phone's Ready did nothing).
+-->
+<linker>
+  <assembly fullname="Hulla.Protocol" preserve="all" />
+</linker>
