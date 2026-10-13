@@ -138,6 +138,13 @@
       "schema": "games/thulla/moves.json#/definitions/cancel_take"
     },
     {
+      "type": "answer_hand",
+      "opcode": 43,
+      "direction": "c2s",
+      "visibility": "public",
+      "schema": "shell/table.json#/definitions/answer_hand"
+    },
+    {
       "type": "table_state",
       "opcode": 100,
       "direction": "s2c",
@@ -309,6 +316,22 @@
       "visibility": "public",
       "game": "thulla",
       "schema": "games/thulla/events.json#/definitions/round_end"
+    },
+    {
+      "type": "hand_asked",
+      "opcode": 152,
+      "direction": "s2c",
+      "visibility": "public",
+      "game": "thulla",
+      "schema": "games/thulla/events.json#/definitions/hand_asked"
+    },
+    {
+      "type": "hand_answered",
+      "opcode": 153,
+      "direction": "s2c",
+      "visibility": "public",
+      "game": "thulla",
+      "schema": "games/thulla/events.json#/definitions/hand_answered"
     }
   ]
 }

@@ -16,6 +16,7 @@ namespace Hulla.Presentation.TableKit
         private readonly Label _crown = new Label(Text.UiText.Crown);
         private readonly TimerRing _timer = new TimerRing();
         private readonly Label _name = new Label();
+        private readonly Label _state = new Label();
 
         public PlayerBadge()
         {
@@ -34,9 +35,15 @@ namespace Hulla.Presentation.TableKit
             _you.style.display = DisplayStyle.None;
             _avatar.Add(_you);
             _name.AddToClassList("seat__name");
+            _state.AddToClassList("seat__state");
+            _state.style.display = DisplayStyle.None;
             Add(_avatar);
             Add(_name);
+            Add(_state);
         }
+
+        /// <summary>The state line under the name, such as "Out · watching"; empty when there is none.</summary>
+        public string State => _state.style.display == DisplayStyle.None ? "" : _state.text;
 
         public string Name => _name.text;
 
@@ -50,9 +57,14 @@ namespace Hulla.Presentation.TableKit
 
         /// <param name="turn">It is this player's turn: the ring lights up.</param>
         /// <param name="leader">This player leads the trick: the crown (GDD 14.5).</param>
-        public void Show(string name, string? avatar, bool me, bool turn, bool leader = false)
+        /// <param name="state">A line under the name, such as "Out · watching" once the hand is empty (R25).</param>
+        public void Show(string name, string? avatar, bool me, bool turn, bool leader = false, string state = "")
         {
             _name.text = name;
+            _state.text = state;
+            _state.style.display = state.Length == 0 ? DisplayStyle.None : DisplayStyle.Flex;
+            _state.EnableInClassList("seat__state--out", state.Length > 0);
+            EnableInClassList("seat--out", state.Length > 0);
             AvatarArt.Apply(_avatar, _initial, avatar, name);
             _you.style.display = me ? DisplayStyle.Flex : DisplayStyle.None;
             _crown.style.display = leader ? DisplayStyle.Flex : DisplayStyle.None;

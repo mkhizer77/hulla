@@ -24,7 +24,17 @@ namespace Hulla.Presentation.Text
         public const string Host = "host";
         public const string Waiting = "Waiting for players";
         public const string Empty = "Open seat";
-        public const string TakeHand = "Take hand";
+        public const string TakeHand = "Ask for hand";
+        public const string AskNamed = "Ask {0}";
+        public const string AskedWaiting = "Asked {0} for their hand…";
+        public const string AsksForHand = "asks {0} for their hand";
+        public const string KeepsCards = "{0} keeps their cards";
+        public const string AskSheetTitle = "{0} asks for your hand";
+        public const string AskSheetBody = "Hand over all {0} cards and sit out safe for the round? You can still watch, chat and talk.";
+        public const string HandOver = "Hand over";
+        public const string KeepPlaying = "Keep playing";
+        public const string YouAreOut = "You're out, safe for this round! Watch the rest; chat and voice stay on.";
+        public const string OutWatching = "Out · watching";
         public const string Escaped = "Out";
         public const string Away = "Away";
 
@@ -435,6 +445,12 @@ namespace Hulla.Presentation.Text
             {
                 case "profile.not_found":
                     return "No player has that code.";
+                case "rules.hand_take_declined":
+                    return "They kept their cards.";
+                case "rules.hand_ask_pending":
+                    return "Waiting for their answer.";
+                case "rules.hand_ask_none":
+                    return "Nothing to answer.";
                 case "table.not_found":
                 case "table.invalid_code":
                     return "No table has that code. Check it with the host.";

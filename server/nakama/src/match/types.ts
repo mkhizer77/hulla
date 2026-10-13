@@ -104,6 +104,17 @@ export interface GameHost<S, M, V, E, R> {
   ): object;
   /** How long clients animate the events before the next deadline may start (ARCHITECTURE 8.4). */
   presentationDelayMs(events: readonly E[]): number;
+  /**
+   * Whether `seat` may ask for a hand now and whose (R31 to R36); the move the core applies for
+   * the asker once the target accepts. Absent for games without hand-taking.
+   */
+  askHand?(
+    state: S,
+    seat: SeatIndex,
+  ): Result<
+    { readonly target: SeatIndex; readonly cardCount: number; readonly move: M },
+    RuleError
+  >;
   stateHash(state: S): string;
   /** Per-seat numbers for the stats card, read from the round's logged messages (GDD 10.1). */
   /**
@@ -193,6 +204,21 @@ export interface Ack {
   readonly payload: object;
 }
 
+/** Why a hand request ended; `accepted` is the only yes. */
+export type HandAnswerReason = "accepted" | "declined" | "lead" | "timeout" | "left";
+
+/**
+ * A hand request waiting for the target's answer (R33, R34). The asker's `clientSeq` is answered
+ * when it resolves: by the take's own move_applied, or by a move_rejected naming the reason.
+ */
+export interface HandAsk {
+  asker: SeatIndex;
+  target: SeatIndex;
+  cardCount: number;
+  clientSeq: number;
+  deadlineTs: number;
+}
+
 export interface RoundRuntime<S, M> {
   readonly roundId: string;
   readonly index: number;
@@ -211,6 +237,10 @@ export interface RoundRuntime<S, M> {
   deadline: Deadline | null;
   readonly startedTs: number;
   result: RoundResult | null;
+  /** The open hand request, if any. */
+  handAsk: HandAsk | null;
+  /** `moves.length` when a request was declined or lapsed: no second ask until a move is applied. */
+  askClosedAtMove: number | null;
 }
 
 /** Plain data only: Nakama exports it to Go and rebuilds it between callbacks. */

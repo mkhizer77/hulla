@@ -24,6 +24,7 @@ namespace Hulla.Protocol
         public const long PlayCard = 40;
         public const long TakeHand = 41;
         public const long CancelTake = 42;
+        public const long AnswerHand = 43;
         public const long TableState = 100;
         public const long RulesChanged = 101;
         public const long Presence = 102;
@@ -47,6 +48,8 @@ namespace Hulla.Protocol
         public const long EndgameStarted = 149;
         public const long Confirmed = 150;
         public const long RoundEnd = 151;
+        public const long HandAsked = 152;
+        public const long HandAnswered = 153;
     }
 
     public static class MessageTypes
@@ -70,6 +73,7 @@ namespace Hulla.Protocol
         public const string PlayCard = "play_card";
         public const string TakeHand = "take_hand";
         public const string CancelTake = "cancel_take";
+        public const string AnswerHand = "answer_hand";
         public const string TableState = "table_state";
         public const string RulesChanged = "rules_changed";
         public const string Presence = "presence";
@@ -93,6 +97,8 @@ namespace Hulla.Protocol
         public const string EndgameStarted = "endgame_started";
         public const string Confirmed = "confirmed";
         public const string RoundEnd = "round_end";
+        public const string HandAsked = "hand_asked";
+        public const string HandAnswered = "hand_answered";
 
         /// <summary>The wire type for an opcode, or null when the opcode is unknown.</summary>
         public static string? ForOpcode(long opcode)
@@ -118,6 +124,7 @@ namespace Hulla.Protocol
                 case 40: return PlayCard;
                 case 41: return TakeHand;
                 case 42: return CancelTake;
+                case 43: return AnswerHand;
                 case 100: return TableState;
                 case 101: return RulesChanged;
                 case 102: return Presence;
@@ -141,6 +148,8 @@ namespace Hulla.Protocol
                 case 149: return EndgameStarted;
                 case 150: return Confirmed;
                 case 151: return RoundEnd;
+                case 152: return HandAsked;
+                case 153: return HandAnswered;
                 default: return null;
             }
         }
@@ -169,6 +178,7 @@ namespace Hulla.Protocol
                 case PlayCard:
                 case TakeHand:
                 case CancelTake:
+                case AnswerHand:
                 case RulesChanged:
                 case Presence:
                 case HostChanged:
@@ -185,6 +195,8 @@ namespace Hulla.Protocol
                 case EndgameStarted:
                 case Confirmed:
                 case RoundEnd:
+                case HandAsked:
+                case HandAnswered:
                     return true;
                 default:
                     return false;
@@ -215,6 +227,7 @@ namespace Hulla.Protocol
                 case PlayCard: return Opcodes.PlayCard;
                 case TakeHand: return Opcodes.TakeHand;
                 case CancelTake: return Opcodes.CancelTake;
+                case AnswerHand: return Opcodes.AnswerHand;
                 case TableState: return Opcodes.TableState;
                 case RulesChanged: return Opcodes.RulesChanged;
                 case Presence: return Opcodes.Presence;
@@ -238,6 +251,8 @@ namespace Hulla.Protocol
                 case EndgameStarted: return Opcodes.EndgameStarted;
                 case Confirmed: return Opcodes.Confirmed;
                 case RoundEnd: return Opcodes.RoundEnd;
+                case HandAsked: return Opcodes.HandAsked;
+                case HandAnswered: return Opcodes.HandAnswered;
                 default: return -1;
             }
         }

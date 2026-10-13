@@ -32,7 +32,14 @@ export {
   nextActiveSeat,
 } from "./state";
 export type { ThullaMove } from "./moves";
-export { applyMove, canTakeHand, currentPhase, isRoundOver, legalMoves } from "./engine";
+export {
+  applyMove,
+  canTakeHand,
+  currentPhase,
+  isRoundOver,
+  legalMoves,
+  takeHandError,
+} from "./engine";
 export { autoPlayMove } from "./autoplay";
 export { CONFIRM_NODE_CAP, cardsInPlay, forcedBhabhi, shouldSearch } from "./confirm";
 export type { ThullaEvent } from "./events";

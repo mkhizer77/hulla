@@ -98,6 +98,34 @@ namespace Hulla.Application.Tests
         }
 
         [Test]
+        public void OnlyTheAskedPlayerCanAnswerAHandRequest()
+        {
+            _gateway.Deliver(Messages.TableState(5, new[] { "AS", "2H" }));
+            Assert.IsFalse(_client.AnswerHand(true), "nothing was asked");
+            _gateway.Deliver(Messages.HandAsked(6, asker: 3, target: 0, cards: 2));
+            Assert.IsTrue(_client.Model.AskedForMyHand);
+            Assert.IsTrue(_client.AnswerHand(false));
+            var sent = (AnswerHand)_gateway.Sent.Find(s => s.Type == MessageTypes.AnswerHand).Payload;
+            Assert.IsFalse(sent.Accept);
+            _gateway.Deliver(Messages.HandAnswered(7, asker: 3, target: 0, accepted: false, reason: HandAnsweredPayloadReason.Declined));
+            Assert.IsNull(_client.Model.PendingAsk);
+            Assert.AreEqual(HandAnsweredPayloadReason.Declined, _client.Model.LastAskAnswer!.Reason);
+            Assert.IsFalse(_client.AnswerHand(true), "the request is over");
+        }
+
+        [Test]
+        public void ARequestForSomeoneElsesHandIsSeenButNotAnswerable()
+        {
+            _gateway.Deliver(Messages.TableState(5, new[] { "AS", "2H" }));
+            _gateway.Deliver(Messages.HandAsked(6, asker: 1, target: 2, cards: 5));
+            Assert.AreEqual(2, _client.Model.PendingAsk!.Target);
+            Assert.IsFalse(_client.Model.AskedForMyHand);
+            Assert.IsFalse(_client.AnswerHand(true));
+            _gateway.Deliver(Messages.MoveApplied(7, 1, "AS"));
+            Assert.IsNull(_client.Model.PendingAsk, "a lead closes the window");
+        }
+
+        [Test]
         public void ARejectedMoveReturnsTheCard()
         {
             _gateway.Deliver(Messages.TableState(5, new[] { "AS" }));

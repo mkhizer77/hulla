@@ -30,6 +30,9 @@ namespace Hulla.Protocol
         [JsonProperty("addBotPayload", Required = Required.DisallowNull, NullValueHandling = NullValueHandling.Ignore)]
         public AddBot? AddBotPayload { get; set; }
 
+        [JsonProperty("answerHandPayload", Required = Required.DisallowNull, NullValueHandling = NullValueHandling.Ignore)]
+        public AnswerHand? AnswerHandPayload { get; set; }
+
         [JsonProperty("cancelTakePayload", Required = Required.DisallowNull, NullValueHandling = NullValueHandling.Ignore)]
         public CancelTake? CancelTakePayload { get; set; }
 
@@ -59,6 +62,12 @@ namespace Hulla.Protocol
 
         [JsonProperty("escapePayload", Required = Required.DisallowNull, NullValueHandling = NullValueHandling.Ignore)]
         public Escape? EscapePayload { get; set; }
+
+        [JsonProperty("handAnsweredPayload", Required = Required.DisallowNull, NullValueHandling = NullValueHandling.Ignore)]
+        public HandAnswered? HandAnsweredPayload { get; set; }
+
+        [JsonProperty("handAskedPayload", Required = Required.DisallowNull, NullValueHandling = NullValueHandling.Ignore)]
+        public HandAsked? HandAskedPayload { get; set; }
 
         [JsonProperty("handTakenPayload", Required = Required.DisallowNull, NullValueHandling = NullValueHandling.Ignore)]
         public HandTaken? HandTakenPayload { get; set; }
@@ -206,6 +215,19 @@ namespace Hulla.Protocol
     }
 
     /// <summary>
+    /// The asked player's answer to a hand request (R33, R34); on accept the table core applies
+    /// the take for the asker
+    /// </summary>
+    public partial class AnswerHand
+    {
+        [JsonProperty("accept", Required = Required.Always)]
+        public bool Accept { get; set; }
+
+        [JsonProperty("roundId", Required = Required.Always)]
+        public string RoundId { get; set; }
+    }
+
+    /// <summary>
     /// Cancels a hold before its confirmation lands (R34); the engine never sees it
     /// </summary>
     public partial class CancelTake
@@ -335,6 +357,48 @@ namespace Hulla.Protocol
 
         [JsonProperty("seat", Required = Required.Always)]
         public long Seat { get; set; }
+    }
+
+    /// <summary>
+    /// How a hand request ended; an accepted one is followed by move_applied and hand_taken
+    /// </summary>
+    public partial class HandAnswered
+    {
+        [JsonProperty("accepted", Required = Required.Always)]
+        public bool Accepted { get; set; }
+
+        [JsonProperty("asker", Required = Required.Always)]
+        public long Asker { get; set; }
+
+        [JsonProperty("reason", Required = Required.Always)]
+        public HandAnsweredPayloadReason Reason { get; set; }
+
+        [JsonProperty("roundId", Required = Required.Always)]
+        public string RoundId { get; set; }
+
+        [JsonProperty("target", Required = Required.Always)]
+        public long Target { get; set; }
+    }
+
+    /// <summary>
+    /// The asker wants the target's whole hand (R32, R35); the target answers before deadlineTs
+    /// </summary>
+    public partial class HandAsked
+    {
+        [JsonProperty("asker", Required = Required.Always)]
+        public long Asker { get; set; }
+
+        [JsonProperty("cardCount", Required = Required.Always)]
+        public long CardCount { get; set; }
+
+        [JsonProperty("deadlineTs", Required = Required.Always)]
+        public long DeadlineTs { get; set; }
+
+        [JsonProperty("roundId", Required = Required.Always)]
+        public string RoundId { get; set; }
+
+        [JsonProperty("target", Required = Required.Always)]
+        public long Target { get; set; }
     }
 
     public partial class HandTaken
@@ -985,6 +1049,12 @@ namespace Hulla.Protocol
         [JsonProperty("gameId", Required = Required.Always)]
         public GameId GameId { get; set; }
 
+        /// <summary>
+        /// A hand request still waiting for its answer (R33), so a rejoining player sees it
+        /// </summary>
+        [JsonProperty("handAsk", Required = Required.DisallowNull, NullValueHandling = NullValueHandling.Ignore)]
+        public HandAsk? HandAsk { get; set; }
+
         [JsonProperty("hostSeat", Required = Required.AllowNull)]
         public long? HostSeat { get; set; }
 
@@ -1029,6 +1099,24 @@ namespace Hulla.Protocol
     {
         [JsonProperty("startsAtTs", Required = Required.Always)]
         public long StartsAtTs { get; set; }
+    }
+
+    /// <summary>
+    /// A hand request still waiting for its answer (R33), so a rejoining player sees it
+    /// </summary>
+    public partial class HandAsk
+    {
+        [JsonProperty("asker", Required = Required.Always)]
+        public long Asker { get; set; }
+
+        [JsonProperty("cardCount", Required = Required.Always)]
+        public long CardCount { get; set; }
+
+        [JsonProperty("deadlineTs", Required = Required.Always)]
+        public long DeadlineTs { get; set; }
+
+        [JsonProperty("target", Required = Required.Always)]
+        public long Target { get; set; }
     }
 
     public partial class Rematch
@@ -1397,6 +1485,8 @@ namespace Hulla.Protocol
 
     public enum Tier { Learner, Regular, Ustad };
 
+    public enum HandAnsweredPayloadReason { Accepted, Declined, Lead, Left, Timeout };
+
     public enum HostChangedPayloadReason { HostLeft, Transfer };
 
     public enum TypeEnum { PlayCard, TakeHand };
@@ -1475,6 +1565,7 @@ namespace Hulla.Protocol
             {
                 TierConverter.Singleton,
                 ErrorDetailConverter.Singleton,
+                HandAnsweredPayloadReasonConverter.Singleton,
                 HostChangedPayloadReasonConverter.Singleton,
                 TypeEnumConverter.Singleton,
                 StatusConverter.Singleton,
@@ -1677,6 +1768,62 @@ namespace Hulla.Protocol
         }
 
         public static readonly ErrorDetailConverter Singleton = new ErrorDetailConverter();
+    }
+
+    internal class HandAnsweredPayloadReasonConverter : JsonConverter
+    {
+        public override bool CanConvert(Type t) => t == typeof(HandAnsweredPayloadReason) || t == typeof(HandAnsweredPayloadReason?);
+
+        public override object ReadJson(JsonReader reader, Type t, object existingValue, JsonSerializer serializer)
+        {
+            if (reader.TokenType == JsonToken.Null) return null;
+            var value = serializer.Deserialize<string>(reader);
+            switch (value)
+            {
+                case "accepted":
+                    return HandAnsweredPayloadReason.Accepted;
+                case "declined":
+                    return HandAnsweredPayloadReason.Declined;
+                case "lead":
+                    return HandAnsweredPayloadReason.Lead;
+                case "left":
+                    return HandAnsweredPayloadReason.Left;
+                case "timeout":
+                    return HandAnsweredPayloadReason.Timeout;
+            }
+            throw new Exception("Cannot unmarshal type HandAnsweredPayloadReason");
+        }
+
+        public override void WriteJson(JsonWriter writer, object untypedValue, JsonSerializer serializer)
+        {
+            if (untypedValue == null)
+            {
+                serializer.Serialize(writer, null);
+                return;
+            }
+            var value = (HandAnsweredPayloadReason)untypedValue;
+            switch (value)
+            {
+                case HandAnsweredPayloadReason.Accepted:
+                    serializer.Serialize(writer, "accepted");
+                    return;
+                case HandAnsweredPayloadReason.Declined:
+                    serializer.Serialize(writer, "declined");
+                    return;
+                case HandAnsweredPayloadReason.Lead:
+                    serializer.Serialize(writer, "lead");
+                    return;
+                case HandAnsweredPayloadReason.Left:
+                    serializer.Serialize(writer, "left");
+                    return;
+                case HandAnsweredPayloadReason.Timeout:
+                    serializer.Serialize(writer, "timeout");
+                    return;
+            }
+            throw new Exception("Cannot marshal type HandAnsweredPayloadReason");
+        }
+
+        public static readonly HandAnsweredPayloadReasonConverter Singleton = new HandAnsweredPayloadReasonConverter();
     }
 
     internal class HostChangedPayloadReasonConverter : JsonConverter

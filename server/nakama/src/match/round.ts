@@ -14,6 +14,8 @@ import type {
   Deadline,
   EncodeContext,
   GameHost,
+  HandAnswerReason,
+  HandAsk,
   Persistence,
   RoundRecord,
   RoundRuntime,
@@ -117,6 +119,8 @@ export function startRound<S, M, V, E, R>(
     snapshots: [],
     sinceSnapshot: 0,
     deadline: null,
+    handAsk: null,
+    askClosedAtMove: null,
     startedTs: now,
     result: null,
   };
@@ -282,6 +286,11 @@ export function applyRoundMove<S, M, V, E, R>(
     }
     return { ok: false, error: applied.error };
   }
+  if (round.handAsk !== null) {
+    // Any move applied while a request waits closes its window (R35, E11); the take itself was
+    // cleared by the accept path before it got here.
+    resolveHandAsk(state, emit, false, "lead");
+  }
   round.state = applied.state;
   round.moves.push({ seat, move, auto: clientSeq === null, clientSeq, seq: state.seq + 1 });
   const over = deps.host.module.isRoundOver(round.state);
@@ -312,6 +321,43 @@ export function applyRoundMove<S, M, V, E, R>(
     armDeadline(deps, state, emit, now, deps.host.presentationDelayMs(applied.events));
   }
   return { ok: true, error: null };
+}
+
+/**
+ * Close the open hand request (R33, R34): the table hears how it ended, and a request that was not
+ * accepted answers the asker's clientSeq with move_rejected and shuts the window until the next move.
+ */
+export function resolveHandAsk<S, M>(
+  state: TableState<S, M>,
+  emit: Emitter,
+  accepted: boolean,
+  reason: HandAnswerReason,
+): HandAsk | null {
+  const round = state.round;
+  const ask = round?.handAsk ?? null;
+  if (round === null || ask === null) return null;
+  round.handAsk = null;
+  emit.public("hand_answered", {
+    roundId: round.roundId,
+    asker: ask.asker,
+    target: ask.target,
+    accepted,
+    reason,
+  });
+  if (!accepted) {
+    const rejection = {
+      type: "move_rejected",
+      payload: {
+        roundId: round.roundId,
+        clientSeq: ask.clientSeq,
+        error: ruleError(ErrorCodes.rules.handTakeDeclined, { reason }),
+      },
+    };
+    round.acks[`${String(ask.asker)}:${String(ask.clientSeq)}`] = rejection;
+    emit.seat(ask.asker, rejection.type, rejection.payload);
+    round.askClosedAtMove = round.moves.length;
+  }
+  return ask;
 }
 
 export function roundRecord<S, M, V, E, R>(
@@ -356,6 +402,16 @@ export function fireDeadlines<S, M, V, E, R>(
   now: number,
 ): SeatIndex[] {
   const escalated: SeatIndex[] = [];
+  const ask = state.round?.handAsk ?? null;
+  if (ask !== null && state.round !== null) {
+    const asker = state.seats[ask.asker];
+    const target = state.seats[ask.target];
+    if (asker?.left === true || target?.left === true) {
+      resolveHandAsk(state, emit, false, "left");
+    } else if (now >= ask.deadlineTs) {
+      resolveHandAsk(state, emit, false, "timeout");
+    }
+  }
   for (let guard = 0; guard < state.seats.length * 2; guard += 1) {
     const round = state.round;
     if (round === null) break;

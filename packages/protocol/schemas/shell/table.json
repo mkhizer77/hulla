@@ -237,6 +237,16 @@
         }
       }
     },
+    "answer_hand": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "The asked player's answer to a hand request (R33, R34); on accept the table core applies the take for the asker",
+      "required": ["roundId", "accept"],
+      "properties": {
+        "roundId": { "$ref": "../common.json#/definitions/roundId" },
+        "accept": { "type": "boolean" }
+      }
+    },
     "seat_spectator": {
       "type": "object",
       "additionalProperties": false,
@@ -388,6 +398,27 @@
           "description": "A public table counting down to its first deal (GDD 9.5)",
           "properties": {
             "startsAtTs": {
+              "$ref": "../common.json#/definitions/timestamp"
+            }
+          }
+        },
+        "handAsk": {
+          "type": "object",
+          "additionalProperties": false,
+          "description": "A hand request still waiting for its answer (R33), so a rejoining player sees it",
+          "required": ["asker", "target", "cardCount", "deadlineTs"],
+          "properties": {
+            "asker": {
+              "$ref": "../common.json#/definitions/seatIndex"
+            },
+            "target": {
+              "$ref": "../common.json#/definitions/seatIndex"
+            },
+            "cardCount": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "deadlineTs": {
               "$ref": "../common.json#/definitions/timestamp"
             }
           }

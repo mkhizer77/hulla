@@ -70,6 +70,15 @@ namespace Hulla.Application.Table
         /// <summary>The last rules change in the lobby: who changed it and which keys (E19); null when none.</summary>
         public RulesChanged? LastRulesChange { get; private set; }
 
+        /// <summary>A hand request waiting for its answer (R33, R34); the target is asked, everyone sees it.</summary>
+        public HandAsk? PendingAsk { get; private set; }
+
+        /// <summary>How the last hand request ended, for the table's reaction.</summary>
+        public HandAnswered? LastAskAnswer { get; private set; }
+
+        /// <summary>The request is for my hand and still open.</summary>
+        public bool AskedForMyHand => PendingAsk != null && MySeat != null && PendingAsk.Target == MySeat;
+
         /// <summary>The seat that last changed the lobby's rules, or null.</summary>
         public long? RulesChangedBy => LastRulesChange?.ChangedBy;
 
@@ -183,12 +192,15 @@ namespace Hulla.Application.Table
                     ApplyTableState(snapshot.State);
                     break;
                 case RoundStart start:
+                    PendingAsk = null;
+                    LastAskAnswer = null;
                     ApplyRoundStart(start);
                     break;
                 case TurnStart turn:
                     ApplyTurnStart(turn);
                     break;
                 case MoveApplied applied:
+                    PendingAsk = null;
                     ApplyMoveApplied(applied);
                     break;
                 case MoveRejected _:
@@ -214,7 +226,15 @@ namespace Hulla.Application.Table
                 case HandTaken taken:
                     ApplyHandTaken(taken);
                     break;
+                case HandAsked asked:
+                    PendingAsk = new HandAsk { Asker = asked.Asker, Target = asked.Target, CardCount = asked.CardCount, DeadlineTs = asked.DeadlineTs };
+                    break;
+                case HandAnswered answered:
+                    PendingAsk = null;
+                    LastAskAnswer = answered;
+                    break;
                 case RoundEnd end:
+                    PendingAsk = null;
                     LastResult = end;
                     InRound = false;
                     TurnSeat = null;
@@ -259,6 +279,7 @@ namespace Hulla.Application.Table
             Status = state.Status;
             Mode = state.Mode;
             Selection = state.Rules;
+            PendingAsk = state.HandAsk;
             ResumeToken = state.ResumeToken ?? ResumeToken;
             _spectators.Clear();
             if (state.Spectators != null)

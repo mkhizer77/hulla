@@ -57,6 +57,7 @@ export interface Protocol {
   playCardPayload?: PlayCard;
   takeHandPayload?: TakeHand;
   cancelTakePayload?: CancelTake;
+  answerHandPayload?: AnswerHand;
   tableStatePayload?: TableState;
   rulesChangedPayload?: RulesChanged;
   presencePayload?: Presence;
@@ -80,6 +81,8 @@ export interface Protocol {
   endgameStartedPayload?: EndgameStarted;
   confirmedPayload?: Confirmed;
   roundEndPayload?: RoundEnd;
+  handAskedPayload?: HandAsked;
+  handAnsweredPayload?: HandAnswered;
 }
 /**
  * Every message on the table socket (GDD 20.6, ARCHITECTURE 8.4). v is the protocol major; within a major, changes are additive only. seq is server-assigned on messages to clients and the client's own counter on messages to the server; a move repeats it as clientSeq for idempotency.
@@ -398,6 +401,13 @@ export interface CancelTake {
   clientSeq: number;
 }
 /**
+ * The asked player's answer to a hand request (R33, R34); on accept the table core applies the take for the asker
+ */
+export interface AnswerHand {
+  roundId: string;
+  accept: boolean;
+}
+/**
  * The full table as the recipient may see it; the round view is redacted per recipient
  */
 export interface TableState {
@@ -429,6 +439,18 @@ export interface TableState {
      * Unix milliseconds from the server clock
      */
     startsAtTs: number;
+  };
+  /**
+   * A hand request still waiting for its answer (R33), so a rejoining player sees it
+   */
+  handAsk?: {
+    asker: number;
+    target: number;
+    cardCount: number;
+    /**
+     * Unix milliseconds from the server clock
+     */
+    deadlineTs: number;
   };
 }
 export interface Seat {
@@ -669,4 +691,27 @@ export interface RoundEnd {
     deckOrder: Cards;
   };
   series?: SeriesState;
+}
+/**
+ * The asker wants the target's whole hand (R32, R35); the target answers before deadlineTs
+ */
+export interface HandAsked {
+  roundId: string;
+  asker: number;
+  target: number;
+  cardCount: number;
+  /**
+   * Unix milliseconds from the server clock
+   */
+  deadlineTs: number;
+}
+/**
+ * How a hand request ended; an accepted one is followed by move_applied and hand_taken
+ */
+export interface HandAnswered {
+  roundId: string;
+  asker: number;
+  target: number;
+  accepted: boolean;
+  reason: "accepted" | "declined" | "lead" | "timeout" | "left";
 }

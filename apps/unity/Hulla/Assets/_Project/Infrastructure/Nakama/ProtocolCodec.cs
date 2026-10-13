@@ -32,6 +32,8 @@ namespace Hulla.Infrastructure.Nakama
             [MessageTypes.Pickup] = typeof(Pickup),
             [MessageTypes.Escape] = typeof(Escape),
             [MessageTypes.HandTaken] = typeof(HandTaken),
+            [MessageTypes.HandAsked] = typeof(HandAsked),
+            [MessageTypes.HandAnswered] = typeof(HandAnswered),
             [MessageTypes.PrivateDraw] = typeof(PrivateDraw),
             [MessageTypes.EndgameStarted] = typeof(EndgameStarted),
             [MessageTypes.Confirmed] = typeof(Confirmed),
