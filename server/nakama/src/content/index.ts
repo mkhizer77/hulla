@@ -11,6 +11,7 @@ import family from "../../../../content/presets/thulla/family.json";
 import hardcore from "../../../../content/presets/thulla/hardcore.json";
 import standard from "../../../../content/presets/thulla/standard.json";
 import quickChat from "../../../../content/quick-chat/v1.en.json";
+import basant from "../../../../content/seasons/basant-2026.json";
 
 /**
  * Every content file the server bundles, by its manifest path, so `content_get` can serve the
@@ -29,6 +30,7 @@ export const CONTENT_FILES: Readonly<Record<string, object>> = {
   "presets/thulla/hardcore.json": hardcore,
   "presets/thulla/standard.json": standard,
   "quick-chat/v1.en.json": quickChat,
+  "seasons/basant-2026.json": basant,
 };
 
 export interface ContentManifest {

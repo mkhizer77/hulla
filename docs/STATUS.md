@@ -41,11 +41,12 @@ M0 complete: the Thulla rulebook runs in TypeScript with full traceability. M1, 
 - 12 Oct decisions: C# mirror deferred past v1.0 (ADR-0019), no clock in engines (ADR-0020), JSON Schema draft-07 (ADR-0021), one deck and 3–6 seats until v1.2, web client before Rung (M5 → web → Rung → M6, dates in the execution plan), Facebook login stays, Unity stays on 6000.4.9f1.
 
 ## Doing
+- M2 #59 server part (branch `feat/season-pass`, stacked on #57): the first season in content with a schema (forty tiers, free and premium tracks, catch-up XP), pass XP from rounds and mission claims, idempotent claims through the ledger and the inventory, premium and Premium+ grants with an audit row. The Pass screen is the Unity track; the premium purchase itself is #58 (owner). OQ-030 logged.
 - M2 #57 server part (branch `feat/catalog`): the catalog in content with a schema, thirty-three placeholder items across every category, idempotent purchases through the ledger, the weekly spotlight, equip globally or per game, seat cosmetics in `table_state`, `catalog_set` and `admin_grant`. The Shop, the Collection and the live preview are the Unity track; the art is #66 to #68 (OQ-029).
 - M2 #77 scenarios (branch `feat/load-test`, PR 210): the k6 table scenario, thresholds, the chaos recipe and the results note; the runs wait for the phase 0 box and a machine with k6.
 
 ## Next
-Server: #57 and #77 in review, then #59 (season pass) and the first-week live operations (#97).
+Server: #57, #59 and #77 in review, then the first-week live operations (#97) and the M3 server items (#90).
 
 ## Blockers
 - None.

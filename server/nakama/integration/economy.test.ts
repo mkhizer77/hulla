@@ -97,3 +97,38 @@ describe.skipIf(NAKAMA_HOST === undefined)(
     }, 60_000);
   },
 );
+
+describe.skipIf(NAKAMA_HOST === undefined)("the season pass against Nakama (GDD 12.10)", () => {
+  it("earns pass XP from a claim, opens premium with the server key, and claims a tier once", async () => {
+    const suffix = `${String(Date.now())}p`;
+    const player = await scriptedClient("pass", suffix);
+    const pass = await rpc<{ ok: boolean; season: unknown; tier?: number }>(player, "pass_get", {});
+    expect(pass.ok).toBe(true);
+    if (pass.season === null) {
+      player.close();
+      return;
+    }
+    const url = `http://${NAKAMA_HOST ?? ""}:${NAKAMA_PORT}/v2/rpc/pass_premium_grant?http_key=local-only-http-key&unwrap`;
+    const granted = (await (
+      await fetch(url, {
+        method: "POST",
+        body: JSON.stringify({ userId: player.session.user_id, plus: true }),
+      })
+    ).json()) as { ok: boolean; tier: number };
+    expect(granted).toMatchObject({ ok: true, tier: 10 });
+    expect(await rpc<object>(player, "pass_claim", { tier: 1, track: "premium" })).toMatchObject({
+      ok: true,
+      applied: true,
+    });
+    expect(await rpc<object>(player, "pass_claim", { tier: 1, track: "premium" })).toMatchObject({
+      ok: true,
+      applied: false,
+    });
+    expect(await rpc<object>(player, "pass_claim", { tier: 11, track: "free" })).toMatchObject({
+      error: { code: "economy.already_granted" },
+    });
+    const wallet = await rpc<{ balances: { gems: number } }>(player, "wallet_get", {});
+    expect(wallet.balances.gems).toBe(5);
+    player.close();
+  }, 60_000);
+});
