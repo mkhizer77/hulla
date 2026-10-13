@@ -26,6 +26,13 @@ namespace Hulla.Application.ViewModels
 
         public string LastName { get; set; } = "";
 
+        /// <summary>Shows a refusal that happened after Home handed over (a join the table refused).</summary>
+        public void ShowError(string code)
+        {
+            ErrorCode = code;
+            Changed?.Invoke();
+        }
+
         public Awaitable<Result<TableTicket>> CreateAsync(string name, CancellationToken cancellation) =>
             RunAsync(name, null, cancellation);
 

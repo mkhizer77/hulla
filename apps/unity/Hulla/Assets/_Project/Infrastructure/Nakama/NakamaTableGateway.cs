@@ -74,7 +74,7 @@ namespace Hulla.Infrastructure.Nakama
             {
                 Detach();
                 Debug.LogWarning($"join failed: {error.Message}");
-                return Result<bool>.Fail("table.join_failed", error.GetType().Name);
+                return Result<bool>.Fail(ServerErrors.CodeOf(error, "table.join_failed"), error.GetType().Name);
             }
         }
 
