@@ -8,11 +8,24 @@ namespace Hulla.Presentation.TableKit
     /// <summary>
     /// The open trick (GDD 14.3, 14.5, 14.6): cards fan in, and a card added to the trick slides from
     /// the seat that played it (220 ms); with reduce-motion it fades in instead. Only the new card is
-    /// added, so a redraw never restarts a flight. When a trick is picked up the cards fly to the
-    /// picker 40 ms apart; a discarded trick fades out.
+    /// added, so a redraw never restarts a flight. When the trick resolves the cards leave 40 ms apart:
+    /// to the picker's badge, into the slots the picker's own hand made for them, or to the discard.
     /// </summary>
     public sealed class PileView
     {
+        /// <summary>Where a resolved trick goes.</summary>
+        public enum Flight
+        {
+            /// <summary>Shrinks into an opponent's badge.</summary>
+            Pickup,
+
+            /// <summary>Glides at full size into the player's hand, each card to its own slot.</summary>
+            SlotIn,
+
+            /// <summary>Shrinks into the discard stack.</summary>
+            Discard,
+        }
+
         public const int StaggerMs = 40;
         public const int PickupMs = 400;
 
@@ -28,8 +41,8 @@ namespace Hulla.Presentation.TableKit
 
         public bool ReduceMotion { get; set; }
 
-        /// <summary>Raised for each card as it reaches the picker during a pick-up flight.</summary>
-        public event Action? CardArrived;
+        /// <summary>Raised with the card as it lands at the end of a flight.</summary>
+        public event Action<string>? CardArrived;
 
         /// <param name="origin">Where each card comes from, in panel space, or null for no flight.</param>
         public void Show(IReadOnlyList<(string Card, string Owner, long Seat)> plays, bool faded, Func<long, Rect?> origin)
@@ -83,11 +96,12 @@ namespace Hulla.Presentation.TableKit
         }
 
         /// <summary>
-        /// The pick-up (GDD 14.6): the cards on the pile lift and fly to <paramref name="target"/> one
-        /// after another, each raising <see cref="CardArrived"/> as it lands. With reduce-motion they fade.
-        /// The pile then stays empty until the next trick draws.
+        /// The trick leaves (GDD 14.6): the cards lift and fly one after another, each raising
+        /// <see cref="CardArrived"/> as it lands. <paramref name="targetOf"/> gives a card its own
+        /// destination (a slot in the hand), <paramref name="fallback"/> serves the rest. With
+        /// reduce-motion they fade. The pile then stays empty until the next trick draws.
         /// </summary>
-        public void FlyTo(Rect target)
+        public void FlyTo(Flight flight, Func<string, Rect?> targetOf, Rect fallback)
         {
             if (_pile.childCount == 0)
             {
@@ -101,40 +115,42 @@ namespace Hulla.Presentation.TableKit
                 var delay = index * StaggerMs;
                 index++;
                 var card = slot;
+                var face = slot.Q<CardElement>();
+                var id = face?.Card ?? "";
                 if (ReduceMotion)
                 {
                     card.schedule.Execute(() =>
                     {
                         card.AddToClassList("pile__slot--gone");
-                        CardArrived?.Invoke();
+                        CardArrived?.Invoke(id);
                     }).StartingIn(delay);
                     continue;
                 }
 
                 card.schedule.Execute(() =>
                 {
-                    var delta = target.center - card.worldBound.center;
-                    card.AddToClassList("pile__slot--pickup");
+                    var target = targetOf(id) ?? fallback;
+                    var from = face?.worldBound ?? card.worldBound;
+                    var delta = target.center - from.center;
+                    if (flight == Flight.SlotIn)
+                    {
+                        // The card keeps its size and straightens as it settles into the fan; the
+                        // owner's tag stays behind.
+                        card.Q<Label>(className: "pile__owner")?.RemoveFromHierarchy();
+                        card.AddToClassList("pile__slot--slot-in");
+                        card.style.rotate = new Rotate(0f);
+                    }
+                    else
+                    {
+                        card.AddToClassList("pile__slot--pickup");
+                        var shrink = flight == Flight.Discard ? 0.45f : 0.5f;
+                        card.style.scale = new Scale(new Vector2(shrink, shrink));
+                    }
+
                     card.style.translate = new Translate(delta.x, delta.y);
-                    card.style.scale = new Scale(new Vector2(0.5f, 0.5f));
                     card.style.opacity = 0f;
                 }).StartingIn(delay);
-                card.schedule.Execute(() => CardArrived?.Invoke()).StartingIn(delay + PickupMs);
-            }
-        }
-
-        /// <summary>A trick nobody picked up fades to the discard.</summary>
-        public void Discard()
-        {
-            if (_pile.childCount == 0)
-            {
-                return;
-            }
-
-            _leaving = true;
-            foreach (var slot in _pile.Children())
-            {
-                slot.AddToClassList("pile__slot--gone");
+                card.schedule.Execute(() => CardArrived?.Invoke(id)).StartingIn(delay + PickupMs);
             }
         }
 

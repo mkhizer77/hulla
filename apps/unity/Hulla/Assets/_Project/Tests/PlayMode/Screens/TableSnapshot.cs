@@ -42,7 +42,7 @@ namespace Hulla.Screens.Tests
             {
                 Code = "K7Q2MX", Mode = TableMode.Private, Status = TableStatus.InRound, HostSeat = 0, LastSeq = 5,
                 Seats = seats, Spectators = new List<Spectator>(), Rules = new RulesSelection { GameId = GameId.Thulla },
-                Round = new View { Phase = Phase.Play, SeatCount = 5, Seats = views, EscapeOrder = new List<long>(), LeaderSeat = 2,
+                Round = new View { Phase = Phase.Play, SeatCount = 5, Seats = views, EscapeOrder = new List<long>(), LeaderSeat = 2, DiscardCount = 11,
                     Trick = new Trick { Plays = new List<Play> { new Play { Seat = 2, Card = "KH" }, new Play { Seat = 3, Card = "6H" }, new Play { Seat = 4, Card = "TH" } } }, TurnSeat = 0 },
             };
             // HULLA_SNAPSHOT_SIZE as WIDTHxHEIGHT in panel units; 1080 wide is every phone since the UI matches width.

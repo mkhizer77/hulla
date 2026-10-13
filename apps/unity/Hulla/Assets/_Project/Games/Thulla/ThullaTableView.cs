@@ -30,6 +30,9 @@ namespace Hulla.Games.Thulla
         private const float PickupStartSeconds = 0.45f;
         private const float StingSeconds = 0.9f;
 
+        /// <summary>A trick nobody picked up rests this long before it slides to the discard.</summary>
+        private const float DiscardStartSeconds = 0.3f;
+
         /// <summary>A pile this big gets the louder stamp and the big-pick-up phrases (GDD 14.6).</summary>
         private const int BigPickup = 5;
 
@@ -46,6 +49,7 @@ namespace Hulla.Games.Thulla
         private readonly Func<long> _nowMs;
         private readonly OpponentRing _ring;
         private readonly PileView _pile;
+        private readonly DiscardView _discard;
         private readonly Label _pileNote;
         private readonly HandView _hand;
         private readonly Label _turn;
@@ -82,10 +86,14 @@ namespace Hulla.Games.Thulla
         private long _opponentTurnStartMs;
         private float _pulseElapsed;
         private long _tickedAt = -1;
-        private float _pickupLeft;
+        private float _flightLeft;
+        private PileView.Flight? _flight;
+        private PileView.Flight _landing;
+        private Func<string, Rect?> _flightTarget = _ => null;
+        private Rect _flightFallback;
+        private long _discardShown;
         private float _stingLeft;
         private bool _stampSounded;
-        private Rect? _pickupTarget;
         private float _singleLegalLeft;
         private string? _singleLegal;
         private int _escapes;
@@ -145,7 +153,8 @@ namespace Hulla.Games.Thulla
             _ring = new OpponentRing(root.Q<VisualElement>("opponents"));
             _ring.Tapped += OnBadgeTapped;
             _pile = new PileView(root.Q<VisualElement>("pile")) { ReduceMotion = reduceMotion };
-            _pile.CardArrived += OnPickupCardArrived;
+            _pile.CardArrived += OnPileCardArrived;
+            _discard = new DiscardView(root.Q<VisualElement>("discard"), UiText.DiscardPile);
             _pileNote = root.Q<Label>("pile-note");
             _hand = new HandView(root.Q<VisualElement>("hand")) { OneTap = oneTap };
             _hand.Played += card =>
@@ -407,10 +416,19 @@ namespace Hulla.Games.Thulla
 
                     return 0.2f;
                 case TrickResolved resolved when resolved.Picker != null:
-                    // The pick-up: the pile flies to the picker, the count bumps as each card lands.
+                    // The pick-up: the pile flies to the picker, the count bumps as each card lands;
+                    // when the picker is me each card glides into the slot the hand made for it.
                     var picker = resolved.Picker.Value;
-                    _pickupTarget = picker == model.MySeat ? HandTarget() : _ring.BadgeFor(picker)?.worldBound;
-                    _pickupLeft = PickupStartSeconds;
+                    var mine = picker == model.MySeat;
+                    var landing = mine ? HandTarget() : _ring.BadgeFor(picker)?.worldBound;
+                    if (landing != null)
+                    {
+                        _flight = mine ? PileView.Flight.SlotIn : PileView.Flight.Pickup;
+                        _flightTarget = mine ? card => _hand.SlotOf(card) : (Func<string, Rect?>)(_ => null);
+                        _flightFallback = landing.Value;
+                        _flightLeft = PickupStartSeconds;
+                    }
+
                     _sounds?.Play(Sound.Pickup, resolved.Cards.Count >= BigPickup ? 0.8f : 1f);
                     if (picker == model.MySeat)
                     {
@@ -425,8 +443,12 @@ namespace Hulla.Games.Thulla
 
                     return resolved.ThullaBy != null ? ThullaMomentSeconds : 0.8f;
                 case TrickResolved _:
-                    _pile.Discard();
-                    return 0.6f;
+                    // Nobody picked up: the trick rests a moment, then slides onto the discard stack.
+                    _flight = PileView.Flight.Discard;
+                    _flightTarget = _ => null;
+                    _flightFallback = _discard.Target;
+                    _flightLeft = DiscardStartSeconds;
+                    return 0.9f;
                 case RoundStart _:
                     _voted = false;
                     _escapes = 0;
@@ -475,13 +497,15 @@ namespace Hulla.Games.Thulla
                 ApplyStamp();
             }
 
-            if (_pickupLeft > 0f)
+            if (_flightLeft > 0f)
             {
-                _pickupLeft -= deltaSeconds;
-                if (_pickupLeft <= 0f && _pickupTarget != null)
+                _flightLeft -= deltaSeconds;
+                if (_flightLeft <= 0f && _flight != null)
                 {
-                    _pile.FlyTo(_pickupTarget.Value);
-                    _pickupTarget = null;
+                    _landing = _flight.Value;
+                    var fallback = _landing == PileView.Flight.Discard ? _discard.Target : _flightFallback;
+                    _pile.FlyTo(_landing, _flightTarget, fallback);
+                    _flight = null;
                 }
             }
 
@@ -800,17 +824,24 @@ namespace Hulla.Games.Thulla
             }
         }
 
-        private void OnPickupCardArrived()
+        private void OnPileCardArrived(string card)
         {
-            var picker = _client.Model.LastPicker;
-            if (picker == null)
+            switch (_landing)
             {
-                return;
-            }
+                case PileView.Flight.Discard:
+                    _discard.Arrive();
+                    break;
+                case PileView.Flight.SlotIn:
+                    _hand.Reveal(card);
+                    break;
+                default:
+                    var picker = _client.Model.LastPicker;
+                    if (picker != null && picker != _client.Model.MySeat)
+                    {
+                        _ring.BadgeFor(picker.Value)?.Bump();
+                    }
 
-            if (picker != _client.Model.MySeat)
-            {
-                _ring.BadgeFor(picker.Value)?.Bump();
+                    break;
             }
         }
 
@@ -895,13 +926,9 @@ namespace Hulla.Games.Thulla
             {
                 text = UiText.Watching + " · " + text;
             }
-            if (model.InRound)
+            if (model.InRound && model.FairDealCommitted)
             {
-                text += " · " + string.Format(UiText.Discard, model.DiscardCount);
-                if (model.FairDealCommitted)
-                {
-                    text += " · " + UiText.FairDeal;
-                }
+                text += " · " + UiText.FairDeal;
             }
 
             _info.text = text;
@@ -949,6 +976,15 @@ namespace Hulla.Games.Thulla
             }
 
             _pile.Show(_plays, showingLast, SeatOrigin);
+            var discarded = model.DiscardCount - _discardShown;
+            if (discarded > 0 && showingLast && model.LastPicker == null && model.LastTrick.Count == discarded)
+            {
+                // The trick that just resolved is on its way; the stack counts each card as it lands.
+                _discard.Expect((int)discarded);
+            }
+
+            _discardShown = model.DiscardCount;
+            _discard.Show(model.DiscardCount);
             _pileNote.text = showingLast && model.LastPicker != null ? string.Format(UiText.PickedUp, NameOf(model.LastPicker.Value)) : "";
         }
 
@@ -988,7 +1024,12 @@ namespace Hulla.Games.Thulla
             }
 
             _hand.Show(_handCards, model.IsLegal, model.MyTurn);
-            if (arrived.Count > 1)
+            if (arrived.Count > 1 && !_reduceMotion && model.LastPicker == model.MySeat && model.Trick.Count == 0 && arrived.TrueForAll(card => InLastTrick(model, card)))
+            {
+                // My pick-up: the cards keep their slots but stay hidden until each flies in from the table.
+                _hand.Hold(arrived);
+            }
+            else if (arrived.Count > 1)
             {
                 // More than one card at once is a pick-up or a hand-take; a single draw is not lit.
                 _hand.MarkNew(arrived);
@@ -1003,6 +1044,19 @@ namespace Hulla.Games.Thulla
             {
                 _singleLegal = null;
             }
+        }
+
+        private static bool InLastTrick(TableModel model, string card)
+        {
+            foreach (var play in model.LastTrick)
+            {
+                if (play.Card == card)
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
 
         private void RefreshTurn()

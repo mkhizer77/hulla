@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using UnityEngine;
 using UnityEngine.UIElements;
 
 namespace Hulla.Presentation.TableKit
@@ -20,6 +21,9 @@ namespace Hulla.Presentation.TableKit
         /// <summary>How long a picked-up card stays highlighted in the fan (GDD 14.6).</summary>
         public const int NewCardMs = 1000;
 
+        /// <summary>Held cards show themselves after this even if their flight never lands.</summary>
+        public const int HoldMaxMs = 2500;
+
         /// <summary>Space kept at each side of the hand for the tilted end cards.</summary>
         private const float ArcMargin = 36f;
         private const float FlickPixels = 40f;
@@ -27,6 +31,7 @@ namespace Hulla.Presentation.TableKit
         private readonly VisualElement _hand;
         private readonly List<CardElement> _cards = new List<CardElement>();
         private readonly HashSet<string> _new = new HashSet<string>();
+        private readonly HashSet<string> _arriving = new HashSet<string>();
         private IReadOnlyList<string> _shown = Array.Empty<string>();
         private Func<string, bool> _legal = _ => false;
         private bool _myTurn;
@@ -75,6 +80,79 @@ namespace Hulla.Presentation.TableKit
                 CardWidth = width;
                 Rebuild();
             }
+        }
+
+        /// <summary>The slot a card holds in the fan, in panel space; null before layout or when absent.</summary>
+        public Rect? SlotOf(string card)
+        {
+            foreach (var element in _cards)
+            {
+                if (element.Card == card)
+                {
+                    var bounds = element.worldBound;
+                    return bounds.width > 0f ? bounds : (Rect?)null;
+                }
+            }
+
+            return null;
+        }
+
+        /// <summary>
+        /// Picked-up cards keep their slots but stay out of sight until each one is
+        /// <see cref="Reveal"/>ed as it flies in from the table (GDD 14.6); after
+        /// <see cref="HoldMaxMs"/> they show themselves regardless.
+        /// </summary>
+        public void Hold(IEnumerable<string> cards)
+        {
+            foreach (var card in cards)
+            {
+                _arriving.Add(card);
+            }
+
+            foreach (var element in _cards)
+            {
+                element.EnableInClassList("card--arriving", _arriving.Contains(element.Card));
+            }
+
+            _hand.schedule.Execute(RevealAll).StartingIn(HoldMaxMs);
+        }
+
+        public bool IsHeld(string card) => _arriving.Contains(card);
+
+        /// <summary>A held card landed: it appears in its slot, lit as new.</summary>
+        public void Reveal(string card)
+        {
+            if (!_arriving.Remove(card))
+            {
+                return;
+            }
+
+            foreach (var element in _cards)
+            {
+                if (element.Card == card)
+                {
+                    element.RemoveFromClassList("card--arriving");
+                }
+            }
+
+            MarkNew(new[] { card });
+        }
+
+        private void RevealAll()
+        {
+            if (_arriving.Count == 0)
+            {
+                return;
+            }
+
+            var held = new List<string>(_arriving);
+            _arriving.Clear();
+            foreach (var element in _cards)
+            {
+                element.RemoveFromClassList("card--arriving");
+            }
+
+            MarkNew(held);
         }
 
         /// <summary>Lights the cards that just joined the hand for a second (GDD 14.6).</summary>
@@ -159,6 +237,7 @@ namespace Hulla.Presentation.TableKit
                 element.EnableInClassList("card--dim", _myTurn && !legal);
                 element.EnableInClassList("card--raised", card == _raised);
                 element.EnableInClassList("card--new", _new.Contains(card));
+                element.EnableInClassList("card--arriving", _arriving.Contains(card));
                 if (i % fan.PerRow != 0)
                 {
                     element.style.marginLeft = fan.Strip - CardWidth;

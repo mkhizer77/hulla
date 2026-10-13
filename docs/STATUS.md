@@ -6,6 +6,7 @@ Updated: 13 October 2026 (evening)
 M0 complete: the Thulla rulebook runs in TypeScript with full traceability. M1, the vertical slice, starts with the protocol schemas.
 
 ## Done
+- Unity, 13 Oct evening: the discard stack on the felt with its count, tricks that fly to the discard or into the picker's badge, and my own picked-up cards gliding from the table into the slots the hand keeps for them (GDD 14.5, 14.6).
 - Unity (13 Oct, PR 238): the host picks what happens when you win with your last card (R26, R28) in the private rules editor; the lobby line and rulebook show it; the default stays draw-from-discard.
 - UX/UI pass, Unity, part 1 merged (13 Oct, PR 236): the thulla moment to the spec (2 px shake, stamp at 120 ms, the pile flying to the picker with the count bumping, the sting, new cards lit), the crown and the thulla flag on seats, void chips and the picked-up tray, the amber and red timer phases with ticks and a ring on the active opponent, the contextual quick-chat strip, placeholder sounds synthesised at start-up with an SFX slider, six haptic events, a lone legal card that plays itself (OQ-036), the reconnect pill.
 - UX/UI pass, research and design merged (13 Oct, PR 235): `docs/research/competitor-ux-scan.md` (Bhabhi and Rung apps, category leaders, poker, Teen Patti, voice rooms, party games) and `docs/design/ux-ui-pass.md` (shell, theme, every screen, the table and the thulla moment by the millisecond, what ships now and what waits for art or voice). OQ-036 to OQ-038 logged.
