@@ -17,7 +17,7 @@ namespace Hulla.Games.Thulla.Tests
             public (ThullaRules Rules, TableSettings Settings)? Find(string presetId) => presetId switch
             {
                 "family" => (new ThullaRules(), new TableSettings { TurnTimerSeconds = 30, LoserTitle = LoserTitle.Donkey, CardMemoryAssist = true }),
-                "hardcore" => (new ThullaRules(), new TableSettings { TurnTimerSeconds = 10 }),
+                "hardcore" => (new ThullaRules { EmptyHandLeader = EmptyHandLeader.DrawNextPlayer }, new TableSettings { TurnTimerSeconds = 10 }),
                 _ => (new ThullaRules(), new TableSettings()),
             };
 
@@ -78,6 +78,45 @@ namespace Hulla.Games.Thulla.Tests
         {
             var model = Lobby(new RulesSelection { GameId = GameId.Thulla, Preset = Preset.Family });
             Assert.AreEqual("Family · 30 s turns · loser: Donkey", ThullaRulesEditor.Summary(model, new Presets()));
+        }
+
+        [Test]
+        public void TheLastCardRuleTravelsAsAnOverrideOnlyWhenItDiffersFromThePreset()
+        {
+            var editor = new ThullaRulesEditor(Root(), Lobby(null), new Presets(), _ => { }, () => { });
+            Assert.IsNull(editor.Build().Overrides, "Standard draws from the discard, so nothing to override");
+            editor.ChooseEmptyHand(EmptyHandLeader.InstantExit);
+            var rules = editor.Build();
+            Assert.AreEqual("instantExit", rules.Overrides!["emptyHandLeader"]);
+            Assert.AreEqual(Preset.Standard, rules.Preset);
+            editor.ChooseEmptyHand(EmptyHandLeader.DrawDiscard);
+            Assert.IsNull(editor.Build().Overrides);
+        }
+
+        [Test]
+        public void APresetResetsTheLastCardRuleToItsOwn()
+        {
+            var editor = new ThullaRulesEditor(Root(), Lobby(null), new Presets(), _ => { }, () => { });
+            editor.ChooseEmptyHand(EmptyHandLeader.InstantExit);
+            editor.ChoosePreset(Preset.Hardcore);
+            Assert.IsNull(editor.Build().Overrides, "Hardcore already draws from the next player");
+            editor.ChooseEmptyHand(EmptyHandLeader.DrawDiscard);
+            Assert.AreEqual("drawDiscard", editor.Build().Overrides!["emptyHandLeader"]);
+        }
+
+        [Test]
+        public void TheEditorAndTheLobbyLineStartFromTheTablesOverride()
+        {
+            var selection = new RulesSelection
+            {
+                GameId = GameId.Thulla,
+                Preset = Preset.Standard,
+                Overrides = new Dictionary<string, object> { ["emptyHandLeader"] = "instantExit" },
+            };
+            var model = Lobby(selection);
+            Assert.AreEqual("Standard · 20 s turns · loser: Bhabhi · last card: You're out", ThullaRulesEditor.Summary(model, new Presets()));
+            var editor = new ThullaRulesEditor(Root(), model, new Presets(), _ => { }, () => { });
+            Assert.AreEqual("instantExit", editor.Build().Overrides!["emptyHandLeader"]);
         }
     }
 }

@@ -23,6 +23,9 @@ namespace Hulla.Application.Table
         private HashSet<char>[] _voids = new HashSet<char>[0];
         private List<string>[] _pickedUp = new List<string>[0];
 
+        /// <summary>True while this seat's turn_start was for the opening window (R13), where plays do not rotate the turn.</summary>
+        private bool _simultaneous;
+
         public TableModel(string userId)
         {
             UserId = userId;
@@ -334,6 +337,7 @@ namespace Hulla.Application.Table
         {
             RoundId = start.RoundId;
             InRound = true;
+            _simultaneous = false;
             AutoStartAtTs = null;
             LastRulesChange = null;
             Status = TableStatus.InRound;
@@ -361,6 +365,7 @@ namespace Hulla.Application.Table
             TurnSeat = turn.Seat;
             DeadlineTs = turn.DeadlineTs;
             CanTakeHand = turn.CanTakeHand;
+            _simultaneous = turn.Simultaneous == true;
             _legal.Clear();
             foreach (var card in turn.Legal)
             {
@@ -406,12 +411,26 @@ namespace Hulla.Application.Table
 
             _trick.Add(new TrickPlay(applied.Seat, applied.Move.Card));
 
+            if (_simultaneous)
+            {
+                // The opening window (R13): everyone answers at once, so another seat's play does not
+                // take the turn away; this seat's own play ends its part of the window.
+                if (applied.Seat == MySeat)
+                {
+                    TurnSeat = null;
+                    _simultaneous = false;
+                }
+
+                return;
+            }
+
             // A thulla ends the trick (R20); who leads next arrives with trick_resolved.
             TurnSeat = applied.Thulla == true ? null : NextActiveSeat(seat);
         }
 
         private void ApplyTrickResolved(TrickResolved resolved)
         {
+            _simultaneous = false;
             _lastTrick.Clear();
             _lastTrick.AddRange(_trick);
             _trick.Clear();

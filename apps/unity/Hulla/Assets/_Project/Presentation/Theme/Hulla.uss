@@ -1731,6 +1731,354 @@
     justify-content: center;
 }
 
+/* The look (design §3, until the art lands): two typefaces, a textured ground, felt and rail,
+   gradients and a bottom shadow on controls, shaded avatars, drawn card faces, a rubber stamp. */
+:root {
+    -unity-font-definition: url("/Assets/_Project/Presentation/Theme/Fonts/Nunito.ttf");
+}
+
+.title, .code, .toast, .results__stamp, .home__title, .seat__initial, .card__rank, .card__court, .nav__glyph, .podium__rank, .turn, .hero, .button--primary, .countdown, .results__title, .coach__text, .daily__text {
+    -unity-font-definition: url("/Assets/_Project/Presentation/Theme/Fonts/LilitaOne.ttf");
+    -unity-font-style: normal;
+}
+
+.title, .home__title, .code {
+    text-shadow: 0 6px 0 rgba(0, 0, 0, 0.55);
+}
+
+.home__title {
+    font-size: 128px;
+    letter-spacing: 6px;
+    color: var(--accent-saffron);
+}
+
+.screen {
+    background-color: var(--surface-ui);
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/ground.png");
+    background-repeat: repeat;
+    background-size: 512px 512px;
+}
+
+.table {
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/ground.png");
+    background-repeat: repeat;
+    background-size: 512px 512px;
+}
+
+.rail {
+    flex-grow: 1;
+    flex-shrink: 1;
+    min-height: 0;
+    margin: var(--space-1) 0;
+    padding: 18px;
+    border-radius: 400px;
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/rail.png");
+    background-repeat: repeat;
+    background-size: 512px 512px;
+}
+
+.felt {
+    flex-grow: 1;
+    margin: 0;
+    border-width: 0;
+    border-radius: 380px;
+    background-color: var(--felt);
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/felt.png");
+    -unity-background-scale-mode: scale-and-crop;
+}
+
+.button {
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/grad-raised.png");
+    -unity-background-scale-mode: stretch-to-fill;
+    border-bottom-width: 6px;
+    border-bottom-color: #121316;
+    border-radius: 18px;
+}
+
+.button--primary {
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/grad-saffron.png");
+    border-bottom-color: #8F6200;
+    color: #2A1A00;
+    font-size: 40px;
+    text-shadow: 0 1px 0 rgba(255, 255, 255, 0.35);
+}
+
+.button--secondary {
+    background-image: none;
+    background-color: rgba(22, 160, 133, 0.08);
+    border-bottom-width: 3px;
+    border-bottom-color: var(--accent-teal);
+}
+
+.button--quiet {
+    background-image: none;
+    background-color: rgba(0, 0, 0, 0);
+    border-bottom-width: 0;
+}
+
+.button:disabled {
+    opacity: 0.45;
+}
+
+.chip {
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/grad-raised.png");
+    -unity-background-scale-mode: stretch-to-fill;
+    border-bottom-width: 4px;
+    border-bottom-color: #121316;
+}
+
+.chip--on {
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/grad-saffron.png");
+    border-bottom-color: #8F6200;
+    color: #2A1A00;
+}
+
+.chip--share {
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/grad-teal.png");
+    border-bottom-color: #0B5A4B;
+}
+
+.chip--emote, .chip--fair, .quick-strip__more {
+    background-image: none;
+}
+
+.panel {
+    background-color: rgba(0, 0, 0, 0);
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/panel9.png");
+    -unity-slice-left: 52;
+    -unity-slice-right: 52;
+    -unity-slice-top: 52;
+    -unity-slice-bottom: 52;
+    -unity-slice-scale: 1px;
+    padding: 36px 40px 44px 40px;
+    margin: -8px 0 4px 0;
+}
+
+.lobby-seat, .settings__row, .leaderboard__row {
+    background-color: rgba(255, 255, 255, 0.04);
+    border-width: 1px;
+    border-color: rgba(255, 255, 255, 0.06);
+}
+
+.seat__avatar, .home__avatar, .party__avatar, .podium__avatar {
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/sphere.png");
+    -unity-background-scale-mode: stretch-to-fill;
+    -unity-background-image-tint-color: #607D8B;
+    border-color: rgba(255, 255, 255, 0.35);
+}
+
+.seat__avatar--a { -unity-background-image-tint-color: #9B59B6; background-color: #9B59B6; }
+.seat__avatar--b { -unity-background-image-tint-color: #2E86C1; background-color: #2E86C1; }
+.seat__avatar--c { -unity-background-image-tint-color: #E67E22; background-color: #E67E22; }
+.seat__avatar--d { -unity-background-image-tint-color: #17A589; background-color: #17A589; }
+.seat__avatar--e { -unity-background-image-tint-color: #CB4335; background-color: #CB4335; }
+.seat__avatar--f { -unity-background-image-tint-color: #7F8C8D; background-color: #7F8C8D; }
+
+.seat--empty .seat__avatar {
+    background-image: none;
+}
+
+.seat__initial {
+    font-size: 60px;
+    text-shadow: 0 3px 0 rgba(0, 0, 0, 0.45);
+}
+
+.seat__back {
+    width: 24px;
+    height: 34px;
+    border-width: 0;
+    background-color: rgba(0, 0, 0, 0);
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/card-back.png");
+    -unity-background-scale-mode: scale-to-fit;
+}
+
+.seat__chip {
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/grad-raised.png");
+    -unity-background-scale-mode: stretch-to-fill;
+    border-color: rgba(255, 255, 255, 0.35);
+}
+
+.nav {
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/ground.png");
+    background-repeat: repeat;
+    background-size: 512px 512px;
+    border-top-color: rgba(244, 163, 0, 0.35);
+}
+
+.nav__tab--on {
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/glow-saffron.png");
+    -unity-background-scale-mode: scale-to-fit;
+    -unity-background-image-tint-color: rgba(255, 255, 255, 0.3);
+}
+
+.card {
+    border-width: 2px;
+    border-bottom-width: 8px;
+    border-color: #E6DFD0;
+    border-bottom-color: #9C9280;
+    border-radius: 16px;
+}
+
+.card__field {
+    position: absolute;
+    left: 24px;
+    right: 24px;
+    top: 50px;
+    bottom: 50px;
+}
+
+.card__court {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    -unity-text-align: middle-center;
+    font-size: 88px;
+    color: var(--suit-black);
+    text-shadow: 0 2px 0 rgba(255, 255, 255, 0.6);
+}
+
+.card--red .card__court {
+    color: var(--suit-red);
+}
+
+.deck--four .card--suit-d .card__court {
+    color: var(--suit-blue);
+}
+
+.deck--four .card--suit-c .card__court {
+    color: var(--suit-green);
+}
+
+.cards--large .card__field {
+    left: 28px;
+    right: 28px;
+    top: 60px;
+    bottom: 60px;
+}
+
+.cards--large .card__court {
+    font-size: 104px;
+}
+
+.card__rank {
+    font-size: 46px;
+}
+
+.card--legal {
+    border-color: var(--accent-saffron);
+    border-bottom-color: #B07500;
+}
+
+.toast {
+    font-size: 124px;
+    padding: 18px 54px;
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/stamp9.png");
+    -unity-slice-left: 34;
+    -unity-slice-right: 34;
+    -unity-slice-top: 34;
+    -unity-slice-bottom: 34;
+    -unity-slice-scale: 1px;
+    -unity-text-outline-width: 0;
+    text-shadow: 0 4px 0 rgba(0, 0, 0, 0.5);
+    letter-spacing: 4px;
+}
+
+.results__stamp {
+    border-width: 0;
+    padding: 10px 28px;
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/stamp9.png");
+    -unity-slice-left: 34;
+    -unity-slice-right: 34;
+    -unity-slice-top: 34;
+    -unity-slice-bottom: 34;
+    -unity-slice-scale: 0.6px;
+    letter-spacing: 2px;
+}
+
+.hero {
+    min-height: 190px;
+    font-size: 48px;
+    white-space: normal;
+}
+
+.turn {
+    font-size: 36px;
+    letter-spacing: 1px;
+}
+
+.turn--mine {
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/grad-saffron.png");
+    -unity-background-scale-mode: stretch-to-fill;
+    color: #2A1A00;
+}
+
+.code {
+    letter-spacing: 16px;
+}
+
+.seat--turn .seat__avatar {
+    border-color: var(--accent-saffron);
+}
+
+.timer-ring {
+    opacity: 0.95;
+}
+
+.daily {
+    padding: var(--space-2);
+    border-radius: var(--radius);
+    background-color: rgba(244, 163, 0, 0.08);
+    border-width: 2px;
+    border-color: rgba(244, 163, 0, 0.35);
+}
+
+.results__panel {
+    max-height: 92%;
+}
+
+.settings__heading {
+    color: var(--accent-saffron);
+    -unity-font-style: bold;
+    letter-spacing: 2px;
+}
+
+.screen, .table, .nav {
+    background-size: 768px 768px;
+}
+
+.chip {
+    min-width: 150px;
+    border-radius: 30px;
+    padding: 0 28px;
+    -unity-text-align: middle-center;
+}
+
+.chip--seat {
+    min-width: 132px;
+}
+
+.seat__flag {
+    top: -44px;
+}
+
+.card__court {
+    font-size: 72px;
+}
+
+.cards--large .card__court {
+    font-size: 88px;
+}
+
+.card__field {
+    top: 54px;
+    bottom: 54px;
+}
+
+.hand {
+    padding-bottom: 52px;
+
 /* Avatars (GDD 15.6): a face from the set on the circle, the "You" tag on the player's own seat. */
 .seat__avatar--image {
     background-color: rgba(0, 0, 0, 0);

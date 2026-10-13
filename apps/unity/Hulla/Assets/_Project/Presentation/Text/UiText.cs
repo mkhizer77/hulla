@@ -11,6 +11,7 @@ namespace Hulla.Presentation.Text
         public const string AppTitle = "Hulla";
         public const string Tagline = "Thulla with friends";
         public const string NameLabel = "Your name";
+        public const string NameTooShort = "A name needs at least 2 characters.";
         public const string CreateTable = "Create a table";
         public const string CodeLabel = "Room code";
         public const string JoinTable = "Join";
@@ -366,6 +367,11 @@ namespace Hulla.Presentation.Text
         public const string TurnTimerLabel = "Turn timer";
         public const string LoserTitleLabel = "The loser is called";
         public const string RulesSummary = "{0} · {1} · loser: {2}";
+        public const string RulesSummaryLastCard = "{0} · last card: {1}";
+        public const string EmptyHandLabel = "If you win with your last card";
+        public const string EmptyHandDrawDiscard = "Draw from the discard";
+        public const string EmptyHandDrawNext = "Draw from the next player";
+        public const string EmptyHandInstantExit = "You're out";
         public const string TurnSeconds = "{0} s turns";
         public const string NoTimer = "No timer";
         public const string RulesChangedBy = "{0} changed the rules";
