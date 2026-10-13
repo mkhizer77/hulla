@@ -98,6 +98,31 @@
         "party": {
           "type": ["string", "null"],
           "description": "Players who queued together share a party id (GDD 7.2); shown as a link icon"
+        },
+        "cosmetics": {
+          "type": ["object", "null"],
+          "description": "What the seat has equipped for this table, by catalog category; null until the inventory is read",
+          "additionalProperties": false,
+          "properties": {
+            "cardBack": {
+              "type": "string"
+            },
+            "cardFace": {
+              "type": "string"
+            },
+            "table": {
+              "type": "string"
+            },
+            "emotePack": {
+              "type": "string"
+            },
+            "celebration": {
+              "type": "string"
+            },
+            "soundSet": {
+              "type": "string"
+            }
+          }
         }
       }
     },

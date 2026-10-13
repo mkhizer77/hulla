@@ -1,0 +1,87 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://hulla.gg/schemas/content/catalog.json",
+  "title": "Cosmetic catalog",
+  "description": "Every cosmetic with its category, rarity, price and Addressables address (GDD 12.11, 13.4); common and rare items take coins, epic and legendary gems",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema", "id", "version", "items"],
+  "properties": {
+    "schema": {
+      "type": "string"
+    },
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z0-9-]+$"
+    },
+    "version": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "items": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "name", "category", "rarity", "price", "address"],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[a-z0-9_]+$"
+          },
+          "name": {
+            "type": "string",
+            "pattern": "^item\\.[a-z0-9_.]+$"
+          },
+          "category": {
+            "type": "string",
+            "enum": [
+              "cardBack",
+              "cardFace",
+              "table",
+              "emotePack",
+              "voPack",
+              "celebration",
+              "soundSet"
+            ]
+          },
+          "rarity": {
+            "type": "string",
+            "enum": ["common", "rare", "epic", "legendary"]
+          },
+          "price": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "coins": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "gems": {
+                "type": "integer",
+                "minimum": 0
+              }
+            }
+          },
+          "address": {
+            "type": "string",
+            "pattern": "^[a-z0-9-]+/[a-z0-9-]+$"
+          },
+          "starter": {
+            "type": "boolean"
+          },
+          "gameIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "season": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}

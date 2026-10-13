@@ -4066,7 +4066,7 @@ const check_table_state = validate52;
 const schema87 = {"type":"object","additionalProperties":false,"description":"The full table as the recipient may see it; the round view is redacted per recipient","required":["code","gameId","mode","status","hostSeat","rules","seats","spectatorCount","spectators","series","round","lastSeq","resumeToken"],"properties":{"code":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/roomCode"},"gameId":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/gameId"},"mode":{"$ref":"https://hulla.gg/schemas/protocol/shell/table.json#/definitions/tableMode"},"status":{"$ref":"https://hulla.gg/schemas/protocol/shell/table.json#/definitions/tableStatus"},"hostSeat":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndexOrNull"},"rules":{"$ref":"https://hulla.gg/schemas/protocol/shell/table.json#/definitions/rulesSelection"},"seats":{"type":"array","items":{"$ref":"https://hulla.gg/schemas/protocol/shell/table.json#/definitions/seat"}},"spectatorCount":{"type":"integer","minimum":0},"spectators":{"type":"array","items":{"$ref":"https://hulla.gg/schemas/protocol/shell/table.json#/definitions/spectator"}},"series":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/seriesState"},"round":{"oneOf":[{"$ref":"https://hulla.gg/schemas/protocol/games/thulla/views.json#/definitions/view"},{"type":"null"}]},"lastSeq":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/sequence"},"resumeToken":{"type":["string","null"]},"rematch":{"type":"object","additionalProperties":false,"properties":{"deadlineTs":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/timestamp"},"votes":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/seatList"}}},"autoStart":{"type":"object","additionalProperties":false,"required":["startsAtTs"],"description":"A public table counting down to its first deal (GDD 9.5)","properties":{"startsAtTs":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/timestamp"}}}}};
 const schema90 = {"type":"string","enum":["private","public","ranked"]};
 const schema91 = {"type":"string","enum":["open","locked","inRound","closed"]};
-const schema93 = {"type":"object","additionalProperties":false,"required":["seat","playerId","displayName","ready","connected","autoPlay"],"properties":{"seat":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex"},"playerId":{"oneOf":[{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/playerId"},{"type":"null"}]},"displayName":{"type":["string","null"]},"ready":{"type":"boolean"},"connected":{"type":"boolean"},"autoPlay":{"type":"boolean","description":"The auto-play policy holds this seat (R45, R46)"},"bot":{"type":"boolean"},"party":{"type":["string","null"],"description":"Players who queued together share a party id (GDD 7.2); shown as a link icon"}}};
+const schema93 = {"type":"object","additionalProperties":false,"required":["seat","playerId","displayName","ready","connected","autoPlay"],"properties":{"seat":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex"},"playerId":{"oneOf":[{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/playerId"},{"type":"null"}]},"displayName":{"type":["string","null"]},"ready":{"type":"boolean"},"connected":{"type":"boolean"},"autoPlay":{"type":"boolean","description":"The auto-play policy holds this seat (R45, R46)"},"bot":{"type":"boolean"},"party":{"type":["string","null"],"description":"Players who queued together share a party id (GDD 7.2); shown as a link icon"},"cosmetics":{"type":["object","null"],"description":"What the seat has equipped for this table, by catalog category; null until the inventory is read","additionalProperties":false,"properties":{"cardBack":{"type":"string"},"cardFace":{"type":"string"},"table":{"type":"string"},"emotePack":{"type":"string"},"celebration":{"type":"string"},"soundSet":{"type":"string"}}}}};
 
 function validate54(data, {instancePath="", parentData, parentDataProperty, rootData=data}={}){
 let vErrors = null;
@@ -4081,7 +4081,7 @@ return false;
 else {
 const _errs1 = errors;
 for(const key0 in data){
-if(!((((((((key0 === "seat") || (key0 === "playerId")) || (key0 === "displayName")) || (key0 === "ready")) || (key0 === "connected")) || (key0 === "autoPlay")) || (key0 === "bot")) || (key0 === "party"))){
+if(!(func2.call(schema93.properties, key0))){
 validate54.errors = [{instancePath,schemaPath:"#/additionalProperties",keyword:"additionalProperties",params:{additionalProperty: key0}}];
 return false;
 break;
@@ -4261,6 +4261,110 @@ var valid0 = _errs22 === errors;
 }
 else {
 var valid0 = true;
+}
+if(valid0){
+if(data.cosmetics !== undefined){
+let data8 = data.cosmetics;
+const _errs24 = errors;
+if((!(data8 && typeof data8 == "object" && !Array.isArray(data8))) && (data8 !== null)){
+validate54.errors = [{instancePath:instancePath+"/cosmetics",schemaPath:"#/properties/cosmetics/type",keyword:"type",params:{type: schema93.properties.cosmetics.type}}];
+return false;
+}
+if(errors === _errs24){
+if(data8 && typeof data8 == "object" && !Array.isArray(data8)){
+const _errs26 = errors;
+for(const key1 in data8){
+if(!((((((key1 === "cardBack") || (key1 === "cardFace")) || (key1 === "table")) || (key1 === "emotePack")) || (key1 === "celebration")) || (key1 === "soundSet"))){
+validate54.errors = [{instancePath:instancePath+"/cosmetics",schemaPath:"#/properties/cosmetics/additionalProperties",keyword:"additionalProperties",params:{additionalProperty: key1}}];
+return false;
+break;
+}
+}
+if(_errs26 === errors){
+if(data8.cardBack !== undefined){
+const _errs27 = errors;
+if(typeof data8.cardBack !== "string"){
+validate54.errors = [{instancePath:instancePath+"/cosmetics/cardBack",schemaPath:"#/properties/cosmetics/properties/cardBack/type",keyword:"type",params:{type: "string"}}];
+return false;
+}
+var valid4 = _errs27 === errors;
+}
+else {
+var valid4 = true;
+}
+if(valid4){
+if(data8.cardFace !== undefined){
+const _errs29 = errors;
+if(typeof data8.cardFace !== "string"){
+validate54.errors = [{instancePath:instancePath+"/cosmetics/cardFace",schemaPath:"#/properties/cosmetics/properties/cardFace/type",keyword:"type",params:{type: "string"}}];
+return false;
+}
+var valid4 = _errs29 === errors;
+}
+else {
+var valid4 = true;
+}
+if(valid4){
+if(data8.table !== undefined){
+const _errs31 = errors;
+if(typeof data8.table !== "string"){
+validate54.errors = [{instancePath:instancePath+"/cosmetics/table",schemaPath:"#/properties/cosmetics/properties/table/type",keyword:"type",params:{type: "string"}}];
+return false;
+}
+var valid4 = _errs31 === errors;
+}
+else {
+var valid4 = true;
+}
+if(valid4){
+if(data8.emotePack !== undefined){
+const _errs33 = errors;
+if(typeof data8.emotePack !== "string"){
+validate54.errors = [{instancePath:instancePath+"/cosmetics/emotePack",schemaPath:"#/properties/cosmetics/properties/emotePack/type",keyword:"type",params:{type: "string"}}];
+return false;
+}
+var valid4 = _errs33 === errors;
+}
+else {
+var valid4 = true;
+}
+if(valid4){
+if(data8.celebration !== undefined){
+const _errs35 = errors;
+if(typeof data8.celebration !== "string"){
+validate54.errors = [{instancePath:instancePath+"/cosmetics/celebration",schemaPath:"#/properties/cosmetics/properties/celebration/type",keyword:"type",params:{type: "string"}}];
+return false;
+}
+var valid4 = _errs35 === errors;
+}
+else {
+var valid4 = true;
+}
+if(valid4){
+if(data8.soundSet !== undefined){
+const _errs37 = errors;
+if(typeof data8.soundSet !== "string"){
+validate54.errors = [{instancePath:instancePath+"/cosmetics/soundSet",schemaPath:"#/properties/cosmetics/properties/soundSet/type",keyword:"type",params:{type: "string"}}];
+return false;
+}
+var valid4 = _errs37 === errors;
+}
+else {
+var valid4 = true;
+}
+}
+}
+}
+}
+}
+}
+}
+}
+var valid0 = _errs24 === errors;
+}
+else {
+var valid0 = true;
+}
 }
 }
 }

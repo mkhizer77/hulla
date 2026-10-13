@@ -30,7 +30,8 @@
         "ready": true,
         "connected": true,
         "autoPlay": false,
-        "party": null
+        "party": null,
+        "cosmetics": null
       },
       {
         "seat": 1,
@@ -39,7 +40,8 @@
         "ready": false,
         "connected": true,
         "autoPlay": false,
-        "party": null
+        "party": null,
+        "cosmetics": null
       },
       {
         "seat": 2,
@@ -48,7 +50,8 @@
         "ready": false,
         "connected": false,
         "autoPlay": false,
-        "party": null
+        "party": null,
+        "cosmetics": null
       },
       {
         "seat": 3,
@@ -57,7 +60,8 @@
         "ready": false,
         "connected": false,
         "autoPlay": false,
-        "party": null
+        "party": null,
+        "cosmetics": null
       }
     ],
     "spectatorCount": 0,

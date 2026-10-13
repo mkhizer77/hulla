@@ -6,6 +6,7 @@ import { METRICS, metrics } from "../infra/metrics";
 import { ROUND_RESULTS_COLLECTION } from "../services/account_deletion";
 import { countRound, nkAchievementStore, settleUnlocks } from "../services/achievements";
 import { emitAnalyticsSafely } from "../services/analytics";
+import { equippedFor, nkCatalogStore } from "../services/catalog";
 import { clientTooOld, nkConfigStore } from "../services/config";
 import { postRoundPoints } from "../services/leaderboards";
 import { credit, nkLedgerPorts } from "../services/ledger";
@@ -36,6 +37,7 @@ import type {
   TableConfig,
   TableState,
 } from "./types";
+import type { Catalog } from "../content/catalog";
 import type { RulesSelection } from "@hulla/protocol/generated";
 
 /** Nakama's system user owns records no player may read or write directly. */
@@ -411,6 +413,27 @@ export function tableMatchHandler<S, M, V, E, R>(
       }
     }
   };
+  /** Equipped cosmetics for the seated players, from their inventories (GDD 12.11). */
+  const refreshCosmetics = (
+    nk: nkruntime.Nakama,
+    logger: nkruntime.Logger,
+    state: TableState<S, M>,
+    userIds: readonly string[] | null,
+  ): void => {
+    const store = nkCatalogStore(nk);
+    let catalog: Catalog | null = null;
+    for (const slot of state.seats) {
+      if (slot.playerId === null) continue;
+      if (userIds !== null && !userIds.includes(slot.playerId)) continue;
+      try {
+        catalog ??= store.catalog();
+        slot.cosmetics = equippedFor(store.inventory(slot.playerId), catalog, state.gameId);
+      } catch (error: unknown) {
+        log.warn(logger, "cosmetics not read", { error: String(error) });
+      }
+    }
+  };
+
   const seatedUserIds = (state: TableState<S, M>): string[] =>
     state.seats.map((s) => s.playerId).filter((id): id is string => id !== null);
 
@@ -452,6 +475,22 @@ export function tableMatchHandler<S, M, V, E, R>(
     matchJoin(ctx, logger, nk, dispatcher, _tick, state, presences) {
       const before = labelFor(state);
       const now = Date.now();
+      // Seats reserved for these presences carry their cosmetics before the first table_state.
+      for (const presence of presences) {
+        const admission = state.admissions[presence.sessionId];
+        const slot = admission?.kind === "seat" ? state.seats[admission.seat] : undefined;
+        if (slot === undefined) continue;
+        try {
+          const store = nkCatalogStore(nk);
+          slot.cosmetics = equippedFor(
+            store.inventory(presence.userId),
+            store.catalog(),
+            state.gameId,
+          );
+        } catch (error: unknown) {
+          log.warn(logger, "cosmetics not read", { error: String(error) });
+        }
+      }
       const batch = coreFor(nk, logger).join(state, presences.map(info), now);
       presenceSync(
         ctx,
@@ -493,6 +532,8 @@ export function tableMatchHandler<S, M, V, E, R>(
       const senders = messages.map((m) => m.sender);
       let end = false;
       for (const message of messages) {
+        if (typeByOpcode[message.opCode] === "start_round")
+          refreshCosmetics(nk, logger, state, null);
         try {
           const batch = core.inbound(
             state,
