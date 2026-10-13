@@ -2078,6 +2078,7 @@
 
 .hand {
     padding-bottom: 52px;
+}
 
 /* Avatars (GDD 15.6): a face from the set on the circle, the "You" tag on the player's own seat. */
 .seat__avatar--image {
