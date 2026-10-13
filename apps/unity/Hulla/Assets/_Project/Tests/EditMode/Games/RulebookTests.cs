@@ -59,6 +59,20 @@ namespace Hulla.Games.Thulla.Tests
         }
 
         [Test]
+        public void BeforeTheDealTheHostsOverridesSitOnThePreset()
+        {
+            var selection = new RulesSelection
+            {
+                GameId = GameId.Thulla,
+                Preset = Preset.Family,
+                Overrides = new Dictionary<string, object> { ["emptyHandLeader"] = "instantExit" },
+            };
+            var lines = TableLines(Table(selection, null));
+            CollectionAssert.Contains(lines, RulebookText.EmptyHandInstantExit);
+            CollectionAssert.Contains(lines, RulebookText.HandTakingLeader, "the preset's other toggles stay");
+        }
+
+        [Test]
         public void DuringARoundTheResolvedTogglesWin()
         {
             var hardcore = new ThullaRules
