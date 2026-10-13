@@ -1,0 +1,139 @@
+#if UNITY_EDITOR
+using System.Collections;
+using System.Collections.Generic;
+using System.IO;
+using Hulla.Application.Services;
+using Hulla.Application.Table;
+using Hulla.Application.ViewModels;
+using Hulla.Games.Thulla;
+using Hulla.Presentation.Navigation;
+using Hulla.Presentation.Screens.Home;
+using Hulla.Presentation.Screens.Lobby;
+using Hulla.Presentation.Share;
+using Hulla.Protocol;
+using NUnit.Framework;
+using UnityEditor;
+using UnityEngine;
+using UnityEngine.TestTools;
+using UnityEngine.UIElements;
+
+namespace Hulla.Screens.Tests
+{
+    /// <summary>
+    /// Draws Home, the lobby, the table at the thulla moment and the results to PNGs for eyeballing
+    /// the look; explicit, so it only runs on request:
+    /// <c>-testFilter Hulla.Screens.Tests.ScreenSnapshots</c>, files in HULLA_SNAPSHOT_DIR.
+    /// </summary>
+    public sealed class ScreenSnapshots
+    {
+        private static ScreenCatalog Catalog => AssetDatabase.LoadAssetAtPath<ScreenCatalog>("Assets/Settings/UI/ScreenCatalog.asset");
+
+        private static PanelSettings Settings => AssetDatabase.LoadAssetAtPath<PanelSettings>("Assets/Settings/UI/PanelSettings.asset");
+
+        private static string Dir => System.Environment.GetEnvironmentVariable("HULLA_SNAPSHOT_DIR") ?? "Temp";
+
+        private static IEnumerator Snap(string name, VisualTreeAsset? screen, System.Action<VisualElement> bind, bool nav = false)
+        {
+            var task = CardRenderer.RenderAsync(Settings, CardRatio.Story, root =>
+            {
+                var instance = screen!.Instantiate();
+                instance.style.flexGrow = 1;
+                root.Add(instance);
+                bind(instance);
+                if (nav)
+                {
+                    var bar = new NavBar(Presentation.Text.UiText.NavLabel, Presentation.Text.UiText.NavGlyph);
+                    bar.Select(NavTab.Home);
+                    bar.SetBadge(NavTab.Friends, 2);
+                    root.Add(bar);
+                }
+            });
+            var awaiter = task.GetAwaiter();
+            while (!awaiter.IsCompleted)
+            {
+                yield return null;
+            }
+
+            Directory.CreateDirectory(Dir);
+            File.WriteAllBytes(Path.Combine(Dir, name + ".png"), awaiter.GetResult());
+        }
+
+        [UnityTest, Explicit]
+        public IEnumerator Home()
+        {
+            var friends = new HomeFriendsViewModel(new Fakes.Social());
+            yield return Snap("home", Catalog.Home, r =>
+            {
+                new HomeView(r, new HomeViewModel(new Fakes.Session(), new Fakes.Gateway()) { LastName = "Khizer" }, null, (_, _) => { }, (_, _, _) => { }, (_, _, _) => { }, () => { }, (_, _) => { }, (_, _) => { }, friends, () => { }, "How to play");
+                _ = friends.RefreshAsync(default);
+                var daily = new DailyRewardViewModel(new Fakes.Daily());
+                new DailyRewardCard(r.Q<VisualElement>("daily"), daily, () => { });
+                _ = daily.RefreshAsync(0, default);
+            }, nav: true);
+        }
+
+        [UnityTest, Explicit]
+        public IEnumerator Lobby()
+        {
+            var gateway = new Fakes.Gateway();
+            var client = new TableClient(gateway, new TableTicket("m", "K7Q2MX", "t_K7Q2MX"), "me", 1);
+            yield return Snap("lobby", Catalog.Lobby, r =>
+            {
+                new LobbyView(r, client, () => 0, () => { }, _ => true, null, () => "Standard · 20 s turns · loser: Bhabhi", () => { });
+                var state = Fakes.InRound(3);
+                state.Status = TableStatus.Open;
+                state.Round = null;
+                state.Seats[3] = new Seat { SeatSeat = 3, Connected = false };
+                state.Seats[1].Ready = true;
+                gateway.Deliver(MessageTypes.TableState, 3, state);
+            });
+        }
+
+        [UnityTest, Explicit]
+        public IEnumerator TableAtTheThulla()
+        {
+            var gateway = new Fakes.Gateway();
+            var client = new TableClient(gateway, new TableTicket("m", "K7Q2MX", "t_K7Q2MX"), "me", 1);
+            yield return Snap("table", Catalog.Table, r =>
+            {
+                var view = new ThullaTableView(r, client, new Fakes.Chat(), () => 5000, () => { });
+                var state = Fakes.InRound(5);
+                state.Round!.Seats[0].Hand = new List<string> { "AS", "KS", "9S", "QH", "8H", "2H", "JD", "9D", "5C", "3C", "TC" };
+                state.Round.Seats[0].HandCount = 11;
+                state.Round.Trick.Plays = new List<Play> { new Play { Seat = 2, Card = "KH" }, new Play { Seat = 3, Card = "6H" } };
+                state.Round.TurnSeat = 1;
+                gateway.Deliver(MessageTypes.TableState, 5, state);
+                gateway.Deliver(MessageTypes.TurnStart, 5, new TurnStart { RoundId = "r", Seat = 0, Legal = new List<string> { "QH", "8H", "2H" }, DeadlineTs = 12000 });
+                var thulla = new ServerMessage(MessageTypes.MoveApplied, 6, new MoveApplied { RoundId = "r", Seat = 1, Move = new Move { Type = TypeEnum.PlayCard, Card = "7C" }, TrickIndex = 2, Thulla = true });
+                gateway.Deliver(MessageTypes.MoveApplied, 6, thulla.Payload);
+                view.Present(thulla);
+                view.Tick(0.3f);
+            });
+        }
+
+        [UnityTest, Explicit]
+        public IEnumerator Results()
+        {
+            var gateway = new Fakes.Gateway();
+            var client = new TableClient(gateway, new TableTicket("m", "K7Q2MX", "t_K7Q2MX"), "me", 1);
+            yield return Snap("results", Catalog.Table, r =>
+            {
+                var view = new ThullaTableView(r, client, new Fakes.Chat(), () => 1000, () => { });
+                view.UseShare(() => { });
+                view.UseFairness(_ => { });
+                view.UseChangeRules(() => { });
+                view.SetFriendActions(_ => true, _ => { });
+                gateway.Deliver(MessageTypes.TableState, 5, Fakes.InRound(5));
+                var stats = new List<SeatStats>();
+                for (var i = 0; i < 4; i++)
+                {
+                    stats.Add(new SeatStats { CardsPickedUp = i == 2 ? 14 : 3, ThullasGiven = i == 1 ? 4 : 1 });
+                }
+
+                gateway.Deliver(MessageTypes.RoundEnd, 6, new RoundEnd { RoundId = "r", BhabhiSeat = 2, EscapeOrder = new List<long> { 3, 0, 1 }, Points = new List<long>(), Stats = stats, Fairness = new Fairness { Seed = "s", Commitment = "c", DeckOrder = new List<string>() } });
+                view.ShowReward("+120 XP · +40 coins");
+            });
+        }
+    }
+}
+#endif
