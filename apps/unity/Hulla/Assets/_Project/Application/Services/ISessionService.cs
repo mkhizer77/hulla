@@ -1,3 +1,4 @@
+using System;
 using System.Threading;
 using Hulla.Domain;
 using UnityEngine;
@@ -8,6 +9,9 @@ namespace Hulla.Application.Services
     public interface ISessionService
     {
         PlayerSession? Current { get; }
+
+        /// <summary>A server notice on the socket: its subject and JSON content (an achievement unlock, the daily reward).</summary>
+        event Action<string, string>? Notified;
 
         Awaitable<Result<PlayerSession>> SignInAsync(string displayName, CancellationToken cancellation);
 

@@ -53,6 +53,12 @@ namespace Hulla.Screens.Tests
         {
             public PlayerSession? Current => null;
 
+            public event Action<string, string>? Notified
+            {
+                add { }
+                remove { }
+            }
+
             public Awaitable<Result<PlayerSession>> SignInAsync(string displayName, CancellationToken cancellation) => Done(Result<PlayerSession>.Fail("fake"));
 
             public Awaitable<Result<bool>> ReconnectAsync(CancellationToken cancellation) => Done(Result<bool>.Fail("fake"));
@@ -109,6 +115,39 @@ namespace Hulla.Screens.Tests
                 source.SetResult();
                 return source.Awaitable;
             }
+        }
+
+        public sealed class Daily : Hulla.Application.Progress.IDailyRewardService
+        {
+            public Awaitable<Result<Hulla.Application.Progress.DailyRewardStatus>> StatusAsync(int tz, CancellationToken c) =>
+                Done(Result<Hulla.Application.Progress.DailyRewardStatus>.Ok(new Hulla.Application.Progress.DailyRewardStatus(true, new Hulla.Application.Progress.DailyRewardDay(4, 80, 2), new Hulla.Application.Progress.DailyRewardDay(5, 90, 0))));
+
+            public Awaitable<Result<Hulla.Application.Progress.DailyRewardStatus>> ClaimAsync(CancellationToken c) =>
+                Done(Result<Hulla.Application.Progress.DailyRewardStatus>.Ok(new Hulla.Application.Progress.DailyRewardStatus(false, new Hulla.Application.Progress.DailyRewardDay(4, 80, 2), new Hulla.Application.Progress.DailyRewardDay(5, 90, 0))));
+        }
+
+        public sealed class Boards : Hulla.Application.Progress.ILeaderboardService
+        {
+            public Awaitable<Result<Hulla.Application.Progress.LeaderboardPage>> BoardAsync(Hulla.Application.Progress.LeaderboardPeriod period, bool friends, CancellationToken c) =>
+                Done(Result<Hulla.Application.Progress.LeaderboardPage>.Ok(new Hulla.Application.Progress.LeaderboardPage(
+                    new List<Hulla.Application.Progress.LeaderboardRow>
+                    {
+                        new Hulla.Application.Progress.LeaderboardRow(1, "u1", "ayesha", 120, 9),
+                        new Hulla.Application.Progress.LeaderboardRow(2, "u2", "bilal", 90, 7),
+                    },
+                    new Hulla.Application.Progress.LeaderboardRow(57, "me", "khizer", 12, 2),
+                    1_000_000_000_000 + 3L * 86_400_000)));
+        }
+
+        public sealed class Achievements : Hulla.Application.Progress.IAchievementsService
+        {
+            public Awaitable<Result<(IReadOnlyList<Hulla.Application.Progress.AchievementInfo> Achievements, IReadOnlyList<string> UnlockedNow)>> AchievementsAsync(CancellationToken c) =>
+                Done(Result<(IReadOnlyList<Hulla.Application.Progress.AchievementInfo> Achievements, IReadOnlyList<string> UnlockedNow)>.Ok((new List<Hulla.Application.Progress.AchievementInfo>
+                {
+                    new Hulla.Application.Progress.AchievementInfo("first_thulla", "play", "thullas_given", 1, 1, 1_000, 5, null),
+                    new Hulla.Application.Progress.AchievementInfo("thullas_1000", "play", "thullas_given", 1000, 37, null, 60, "thulla_baaz"),
+                    new Hulla.Application.Progress.AchievementInfo("first_friend", "social", "friends", 1, 0, null, 5, null),
+                }, new List<string>())));
         }
 
         public sealed class Missions : Hulla.Application.Progress.IMissionsService

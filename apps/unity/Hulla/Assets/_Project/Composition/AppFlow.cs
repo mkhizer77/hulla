@@ -10,6 +10,8 @@ using Hulla.Presentation.Navigation;
 using Hulla.Presentation.Screens.Home;
 using Hulla.Presentation.Screens.Friends;
 using Hulla.Presentation.Screens.Lobby;
+using Hulla.Presentation.Screens.Achievements;
+using Hulla.Presentation.Screens.Leaderboard;
 using Hulla.Presentation.Screens.Missions;
 using Hulla.Presentation.Screens.Profile;
 using Hulla.Presentation.Screens.QuickPlay;
@@ -57,6 +59,7 @@ namespace Hulla.Composition
         private LobbyView? _lobbyView;
         private string _friendsForRound = "";
         private readonly BigThullaOffer _bigThulla = new BigThullaOffer();
+        private DailyRewardCard? _daily;
         private AnalyticsTracker? _tracker;
         private ScriptedTableGateway? _tutorial;
         private TableClient? _tutorialClient;
@@ -73,6 +76,27 @@ namespace Hulla.Composition
             _app.QuickPlay.Found += OnQuickPlayFound;
             _app.TableChat.Received += OnText;
             _app.Tables.Disconnected += OnDisconnected;
+            _app.Sessions.Notified += OnNotice;
+        }
+
+        /// <summary>An unlock shows briefly at the top of whatever screen is open (GDD 12.7).</summary>
+        private async void OnNotice(string subject, string content)
+        {
+            if (subject != Hulla.Infrastructure.Nakama.ServerNotices.AchievementUnlocked)
+            {
+                return;
+            }
+
+            foreach (var id in Hulla.Infrastructure.Nakama.ServerNotices.UnlockedIds(content))
+            {
+                var text = string.Format(UiText.AchievementUnlocked, AchievementText.Name(id, "", 0));
+                _shell.SetBanner(text);
+                await Awaitable.WaitForSecondsAsync(4f);
+                if (UnityEngine.UIElements.UQueryExtensions.Q<UnityEngine.UIElements.Label>(_shell.Root, "shell-banner")?.text == text)
+                {
+                    _shell.SetBanner(null);
+                }
+            }
         }
 
         public async void Start()
@@ -125,12 +149,22 @@ namespace Hulla.Composition
             _screen = Screen.Home;
             var root = _shell.Show(_shell.Catalog.Home);
             var server = Debug.isDebugBuild ? _app.Config.HostAndPort : null;
-            _view = new HomeView(root, _app.Home, server, OnCreate, OnJoin, OnQuickPlay, OpenSettings, OnFriends, OnProfile, _app.HomeFriends, () => StartTutorial(false), TutorialText.HowToPlay, OnWatch, _app.Progress, OnMissions);
+            _view = new HomeView(root, _app.Home, server, OnCreate, OnJoin, OnQuickPlay, OpenSettings, OnFriends, OnProfile, _app.HomeFriends, () => StartTutorial(false), TutorialText.HowToPlay, OnWatch, _app.Progress, OnMissions, OnLeaderboard);
+            _daily = new DailyRewardCard(UnityEngine.UIElements.UQueryExtensions.Q<UnityEngine.UIElements.VisualElement>(root, "daily"), _app.DailyReward, ClaimDailyReward);
             _app.HomeFriends.Active = _app.Sessions.Current != null;
             _app.HomeFriends.RefreshSoon();
             if (_app.Sessions.Current != null)
             {
                 _ = _app.Progress.RefreshAsync(LocalOffsetMinutes(), _app.Lifetime);
+                _ = _app.DailyReward.RefreshAsync(LocalOffsetMinutes(), _app.Lifetime);
+            }
+        }
+
+        private async void ClaimDailyReward()
+        {
+            if (await _app.DailyReward.ClaimAsync(_app.Lifetime))
+            {
+                await _app.Progress.RefreshAsync(LocalOffsetMinutes(), _app.Lifetime);
             }
         }
 
@@ -201,6 +235,21 @@ namespace Hulla.Composition
             await friends.RefreshAsync(lifetime);
         }
 
+        private async void OnLeaderboard(string name, string? server)
+        {
+            if (!await SignedInAsync(name, server))
+            {
+                return;
+            }
+
+            CloseView();
+            _screen = Screen.Home;
+            var board = _app.Leaderboard;
+            _view = new LeaderboardView(_shell.Show(_shell.Catalog.Leaderboard), board, () => DateTimeOffset.UtcNow.ToUnixTimeMilliseconds(), _app.Sessions.Current?.UserId, ShowHome,
+                (period, friends) => _ = board.ShowAsync(period, friends, _app.Lifetime));
+            await board.RefreshAsync(_app.Lifetime);
+        }
+
         private async void OnMissions(string name, string? server)
         {
             if (!await SignedInAsync(name, server))
@@ -228,8 +277,17 @@ namespace Hulla.Composition
             CloseView();
             _screen = Screen.Home;
             var profile = _app.Profile;
-            _view = new ProfileView(_shell.Show(_shell.Catalog.Profile), profile, ShowHome, (display, handle, bio) => _ = profile.SaveAsync(display, handle, bio, _app.Lifetime));
+            _view = new ProfileView(_shell.Show(_shell.Catalog.Profile), profile, ShowHome, (display, handle, bio) => _ = profile.SaveAsync(display, handle, bio, _app.Lifetime), () => OpenAchievements(name, server));
             await profile.RefreshAsync(_app.Lifetime);
+        }
+
+        private async void OpenAchievements(string name, string? server)
+        {
+            CloseView();
+            _screen = Screen.Home;
+            var achievements = _app.Achievements;
+            _view = new AchievementsView(_shell.Show(_shell.Catalog.Achievements), achievements, () => OnProfile(name, server));
+            await achievements.RefreshAsync(_app.Lifetime);
         }
 
         private async Awaitable<bool> SignedInAsync(string name, string? server)
@@ -251,6 +309,7 @@ namespace Hulla.Composition
             if (signedIn.IsOk)
             {
                 await _app.Progress.RefreshAsync(LocalOffsetMinutes(), _app.Lifetime);
+                await _app.DailyReward.RefreshAsync(LocalOffsetMinutes(), _app.Lifetime);
             }
 
             if (signedIn.IsOk && _screen == Screen.Home)
@@ -772,6 +831,8 @@ namespace Hulla.Composition
         private void CloseView()
         {
             _app.HomeFriends.Active = false;
+            _daily?.Dispose();
+            _daily = null;
             _tutorialClient?.Dispose();
             _tutorialClient = null;
             _tutorial = null;

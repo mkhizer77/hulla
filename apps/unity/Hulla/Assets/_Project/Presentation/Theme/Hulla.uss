@@ -923,3 +923,55 @@
 .share-card--story .share-card__footer {
     font-size: 52px;
 }
+
+.daily {
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: var(--space-2);
+}
+
+.daily__text {
+    flex-shrink: 1;
+    white-space: normal;
+    margin-right: var(--space-2);
+    color: var(--accent-saffron);
+}
+
+.leaderboard__row {
+    flex-direction: row;
+    align-items: center;
+    min-height: 96px;
+    padding: 0 var(--space-2);
+    border-bottom-width: 1px;
+    border-color: #2A2D33;
+}
+
+.leaderboard__row--me {
+    background-color: #2B2412;
+    border-radius: var(--radius);
+}
+
+.leaderboard__rank {
+    width: 96px;
+    color: var(--ink-muted);
+}
+
+.leaderboard__name {
+    flex-grow: 1;
+    flex-shrink: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.leaderboard__points {
+    color: var(--accent-saffron);
+}
+
+.leaderboard__me {
+    margin-top: var(--space-1);
+}
+
+.achievement--locked {
+    opacity: 0.6;
+}

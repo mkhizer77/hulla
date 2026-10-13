@@ -230,6 +230,37 @@ namespace Hulla.Integration.Tests
                 Assert.AreEqual(3, missions.Daily.Count, "three dailies");
                 Assert.AreEqual(5, missions.Weekly.Count, "five weeklies");
                 Assert.IsTrue(missions.Weekly.Concat(missions.Daily).Any(m => m.Progress > 0), "the round counted toward something");
+
+                // The daily reward pays once a day through the ledger (GDD 12.6).
+                var progressAfter = new Hulla.Application.ViewModels.ProgressViewModel(new NakamaProgressService(_players[1].Connection));
+                await progressAfter.RefreshAsync(0, default);
+                var coinsBefore = progressAfter.Coins;
+                var daily = new Hulla.Application.ViewModels.DailyRewardViewModel(new NakamaDailyRewardService(_players[1].Connection));
+                await daily.RefreshAsync(0, default);
+                Assert.IsTrue(daily.Status!.Claimable, "a new player's first daily reward is waiting");
+                var dayOne = daily.Status.Today.Coins;
+                Assert.IsTrue(await daily.ClaimAsync(default));
+                Assert.IsFalse(daily.Status!.Claimable, "claimed for today");
+                await progressAfter.RefreshAsync(0, default);
+                Assert.AreEqual(coinsBefore + dayOne, progressAfter.Coins, "the wallet holds the daily coins");
+                await daily.RefreshAsync(0, default);
+                Assert.IsFalse(daily.Status!.Claimable, "still claimed after a refresh");
+
+                // Round points post to the weekly board, friends scope included (GDD 12.8).
+                var board = new Hulla.Application.ViewModels.LeaderboardViewModel(new NakamaLeaderboardService(_players[0].Connection));
+                await board.ShowAsync(Hulla.Application.Progress.LeaderboardPeriod.Weekly, false, default);
+                Assert.IsNull(board.ErrorCode, "the weekly board answers");
+                Assert.Greater(board.Page!.Rows.Count, 0, "the round's points are on the weekly board");
+                await board.ShowAsync(Hulla.Application.Progress.LeaderboardPeriod.Monthly, true, default);
+                Assert.IsNull(board.ErrorCode, "the friends view answers");
+                Debug.Log($"friends' monthly board: {board.Page!.Rows.Count} rows, me {board.Page.Me?.Points}");
+
+                // The round counts toward achievements (GDD 12.7).
+                var achievements = new Hulla.Application.ViewModels.AchievementsViewModel(new NakamaAchievementsService(_players[0].Connection));
+                await achievements.RefreshAsync(default);
+                Assert.IsNull(achievements.ErrorCode);
+                Assert.Greater(achievements.Total, 0, "the list came from content");
+                Assert.IsTrue(achievements.Groups.SelectMany(g => g.Items).Any(a => a.Metric == "rounds" && a.Progress >= 1), "the round counted");
             }
         }
 

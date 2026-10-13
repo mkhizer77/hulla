@@ -163,12 +163,53 @@ namespace Hulla.Presentation.Text
 
         public const string Profile = "Profile";
         public const string Missions = "Missions";
+        public const string Leaderboard = "Leaderboard";
+        public const string Achievements = "Achievements";
+
+        /// <summary>{0} unlocked, {1} total.</summary>
+        public const string AchievementsCount = "{0} of {1} unlocked";
+
+        public const string GemsOnly = "{0} gems";
+
+        /// <summary>{0} gems, {1} the title's name.</summary>
+        public const string GemsAndTitle = "{0} gems + the title \"{1}\"";
+
+        /// <summary>{0} the achievement's name.</summary>
+        public const string AchievementUnlocked = "Achievement unlocked: {0}";
+
+        /// <summary>A title key ("thulla_baaz") as words ("Thulla baaz") until the string tables land (#65).</summary>
+        public static string TitleName(string key)
+        {
+            var words = key.Replace('_', ' ');
+            return words.Length == 0 ? words : char.ToUpperInvariant(words[0]) + words.Substring(1);
+        }
+        public const string ThisWeek = "This week";
+        public const string ThisMonth = "This month";
+        public const string Everyone = "Everyone";
+        public const string FriendsTab = "Friends";
+        public const string BoardEmpty = "No points yet. Win rounds to get on the board.";
+
+        /// <summary>{0} time left, such as "3d 4h".</summary>
+        public const string ResetsIn = "Resets in {0}. Top 10 win gems.";
+
+        public const string PointsShort = "{0:N0} pts";
+
+        /// <summary>{0} the player's own name on a board.</summary>
+        public const string YouAre = "{0} (you)";
         public const string MissionsToday = "Today";
         public const string MissionsWeek = "This week";
         public const string MissionProgress = "{0}/{1} · {2}";
         public const string RewardCoins = "{0} coins";
         public const string RewardGems = "{0} coins, {1} gems";
         public const string Claim = "Claim";
+
+        /// <summary>{0} day of the 7-day calendar, {1} the amount.</summary>
+        public const string DailyReady = "Daily reward, day {0}: {1}";
+
+        public const string DailyClaimed = "Claimed {0}.";
+        public const string DailyTomorrow = "Tomorrow: {0}.";
+        public const string CoinsOnly = "{0:N0} coins";
+        public const string CoinsAndGems = "{0:N0} coins + {1} gems";
         public const string Claimed = "Done";
         public const string Reroll = "Swap";
 

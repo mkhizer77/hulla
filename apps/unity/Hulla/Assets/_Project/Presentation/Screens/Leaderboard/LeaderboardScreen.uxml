@@ -1,0 +1,20 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements">
+    <ui:VisualElement name="leaderboard" class="screen settings">
+        <ui:VisualElement class="settings__top">
+            <ui:Label name="title" class="title title--small" />
+            <ui:Button name="back" class="button button--quiet button--small" />
+        </ui:VisualElement>
+        <ui:VisualElement class="chips">
+            <ui:Button name="weekly" class="chip" />
+            <ui:Button name="monthly" class="chip" />
+            <ui:Button name="everyone" class="chip" />
+            <ui:Button name="friends" class="chip" />
+        </ui:VisualElement>
+        <ui:Label name="reset" class="caption" />
+        <ui:Label name="status" class="status" />
+        <ui:ScrollView class="settings__scroll">
+            <ui:VisualElement name="list" />
+        </ui:ScrollView>
+        <ui:VisualElement name="me" class="lobby-seat leaderboard__me" />
+    </ui:VisualElement>
+</ui:UXML>

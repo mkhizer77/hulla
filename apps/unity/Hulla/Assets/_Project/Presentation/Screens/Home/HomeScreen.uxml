@@ -3,6 +3,10 @@
         <ui:Label name="title" class="title" />
         <ui:Label name="tagline" class="subtitle" />
         <ui:Label name="progress" class="status progress-line" />
+        <ui:VisualElement name="daily" class="daily">
+            <ui:Label name="daily-text" class="daily__text" />
+            <ui:Button name="daily-claim" class="button button--small button--primary" />
+        </ui:VisualElement>
         <ui:Button name="hero" class="button button--primary hero" />
         <ui:Label name="online" class="status" />
         <ui:VisualElement class="panel">
@@ -21,6 +25,7 @@
         <ui:VisualElement class="home__links">
             <ui:Button name="how-to-play" class="button button--quiet" />
             <ui:Button name="missions" class="button button--quiet" />
+            <ui:Button name="leaderboard" class="button button--quiet" />
             <ui:Button name="friends" class="button button--quiet" />
             <ui:Button name="profile" class="button button--quiet" />
             <ui:Button name="settings" class="button button--quiet" />

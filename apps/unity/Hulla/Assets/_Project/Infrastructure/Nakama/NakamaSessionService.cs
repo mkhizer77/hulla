@@ -27,6 +27,10 @@ namespace Hulla.Infrastructure.Nakama
 
         public PlayerSession? Current { get; private set; }
 
+        public event Action<string, string>? Notified;
+
+        private void Listen(ISocket socket) => socket.ReceivedNotification += notice => Notified?.Invoke(notice.Subject, notice.Content);
+
         public void Forget() => Current = null;
 
         public async Awaitable<Result<PlayerSession>> SignInAsync(string displayName, CancellationToken cancellation)
@@ -46,6 +50,7 @@ namespace Hulla.Infrastructure.Nakama
                 }
 
                 var socket = client.NewSocket(true);
+                Listen(socket);
                 await socket.ConnectAsync(session, true);
                 _connection.Session = session;
                 _connection.Socket = socket;
@@ -82,6 +87,7 @@ namespace Hulla.Infrastructure.Nakama
 
                 _connection.Close();
                 var socket = client.NewSocket(true);
+                Listen(socket);
                 await socket.ConnectAsync(session, true);
                 _connection.Socket = socket;
                 return Result<bool>.Ok(true);
