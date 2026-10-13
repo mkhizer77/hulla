@@ -111,6 +111,15 @@ namespace Hulla.Screens.Tests
             }
         }
 
+        public sealed class Daily : Hulla.Application.Progress.IDailyRewardService
+        {
+            public Awaitable<Result<Hulla.Application.Progress.DailyRewardStatus>> StatusAsync(int tz, CancellationToken c) =>
+                Done(Result<Hulla.Application.Progress.DailyRewardStatus>.Ok(new Hulla.Application.Progress.DailyRewardStatus(true, new Hulla.Application.Progress.DailyRewardDay(4, 80, 2), new Hulla.Application.Progress.DailyRewardDay(5, 90, 0))));
+
+            public Awaitable<Result<Hulla.Application.Progress.DailyRewardStatus>> ClaimAsync(CancellationToken c) =>
+                Done(Result<Hulla.Application.Progress.DailyRewardStatus>.Ok(new Hulla.Application.Progress.DailyRewardStatus(false, new Hulla.Application.Progress.DailyRewardDay(4, 80, 2), new Hulla.Application.Progress.DailyRewardDay(5, 90, 0))));
+        }
+
         public sealed class Missions : Hulla.Application.Progress.IMissionsService
         {
             public Awaitable<Result<(IReadOnlyList<Hulla.Application.Progress.MissionInfo> Missions, bool RerollAvailable)>> MissionsAsync(int tz, CancellationToken c) =>

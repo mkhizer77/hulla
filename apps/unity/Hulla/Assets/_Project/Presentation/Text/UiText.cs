@@ -169,6 +169,14 @@ namespace Hulla.Presentation.Text
         public const string RewardCoins = "{0} coins";
         public const string RewardGems = "{0} coins, {1} gems";
         public const string Claim = "Claim";
+
+        /// <summary>{0} day of the 7-day calendar, {1} the amount.</summary>
+        public const string DailyReady = "Daily reward, day {0}: {1}";
+
+        public const string DailyClaimed = "Claimed {0}.";
+        public const string DailyTomorrow = "Tomorrow: {0}.";
+        public const string CoinsOnly = "{0:N0} coins";
+        public const string CoinsAndGems = "{0:N0} coins + {1} gems";
         public const string Claimed = "Done";
         public const string Reroll = "Swap";
 

@@ -57,6 +57,7 @@ namespace Hulla.Composition
         private LobbyView? _lobbyView;
         private string _friendsForRound = "";
         private readonly BigThullaOffer _bigThulla = new BigThullaOffer();
+        private DailyRewardCard? _daily;
         private AnalyticsTracker? _tracker;
         private ScriptedTableGateway? _tutorial;
         private TableClient? _tutorialClient;
@@ -126,11 +127,21 @@ namespace Hulla.Composition
             var root = _shell.Show(_shell.Catalog.Home);
             var server = Debug.isDebugBuild ? _app.Config.HostAndPort : null;
             _view = new HomeView(root, _app.Home, server, OnCreate, OnJoin, OnQuickPlay, OpenSettings, OnFriends, OnProfile, _app.HomeFriends, () => StartTutorial(false), TutorialText.HowToPlay, OnWatch, _app.Progress, OnMissions);
+            _daily = new DailyRewardCard(UnityEngine.UIElements.UQueryExtensions.Q<UnityEngine.UIElements.VisualElement>(root, "daily"), _app.DailyReward, ClaimDailyReward);
             _app.HomeFriends.Active = _app.Sessions.Current != null;
             _app.HomeFriends.RefreshSoon();
             if (_app.Sessions.Current != null)
             {
                 _ = _app.Progress.RefreshAsync(LocalOffsetMinutes(), _app.Lifetime);
+                _ = _app.DailyReward.RefreshAsync(LocalOffsetMinutes(), _app.Lifetime);
+            }
+        }
+
+        private async void ClaimDailyReward()
+        {
+            if (await _app.DailyReward.ClaimAsync(_app.Lifetime))
+            {
+                await _app.Progress.RefreshAsync(LocalOffsetMinutes(), _app.Lifetime);
             }
         }
 
@@ -251,6 +262,7 @@ namespace Hulla.Composition
             if (signedIn.IsOk)
             {
                 await _app.Progress.RefreshAsync(LocalOffsetMinutes(), _app.Lifetime);
+                await _app.DailyReward.RefreshAsync(LocalOffsetMinutes(), _app.Lifetime);
             }
 
             if (signedIn.IsOk && _screen == Screen.Home)
@@ -772,6 +784,8 @@ namespace Hulla.Composition
         private void CloseView()
         {
             _app.HomeFriends.Active = false;
+            _daily?.Dispose();
+            _daily = null;
             _tutorialClient?.Dispose();
             _tutorialClient = null;
             _tutorial = null;

@@ -74,12 +74,17 @@ namespace Hulla.Screens.Tests
                 root = r;
                 new HomeView(r, new HomeViewModel(new Fakes.Session(), new Fakes.Gateway()) { LastName = "Khizer" }, null, (_, _) => { }, (_, _, _) => { }, (_, _, _) => { }, () => { }, (_, _) => { }, (_, _) => { }, friends, () => { }, "How to play");
                 _ = friends.RefreshAsync(default);
+                var daily = new DailyRewardViewModel(new Fakes.Daily());
+                new DailyRewardCard(r.Q<VisualElement>("daily"), daily, () => { });
+                _ = daily.RefreshAsync(0, default);
             });
             Assert.AreEqual("Khizer", root.Q<TextField>("name").value);
             Assert.AreEqual("Quick Play", root.Q<Button>("quick").text);
             Shown(root.Q<Button>("hero"), "the hero");
             StringAssert.Contains("Ayesha", root.Q<Button>("hero").text);
             Assert.AreEqual(3, root.Q<VisualElement>("seats").childCount, "4, 5 and 6 seat chips");
+            Shown(root.Q<VisualElement>("daily"), "the daily reward");
+            Assert.AreEqual("Daily reward, day 4: 80 coins + 2 gems", root.Q<Label>("daily-text").text);
         }
 
         [UnityTest]

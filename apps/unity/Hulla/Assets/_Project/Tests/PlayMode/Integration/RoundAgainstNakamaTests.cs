@@ -230,6 +230,21 @@ namespace Hulla.Integration.Tests
                 Assert.AreEqual(3, missions.Daily.Count, "three dailies");
                 Assert.AreEqual(5, missions.Weekly.Count, "five weeklies");
                 Assert.IsTrue(missions.Weekly.Concat(missions.Daily).Any(m => m.Progress > 0), "the round counted toward something");
+
+                // The daily reward pays once a day through the ledger (GDD 12.6).
+                var progressAfter = new Hulla.Application.ViewModels.ProgressViewModel(new NakamaProgressService(_players[1].Connection));
+                await progressAfter.RefreshAsync(0, default);
+                var coinsBefore = progressAfter.Coins;
+                var daily = new Hulla.Application.ViewModels.DailyRewardViewModel(new NakamaDailyRewardService(_players[1].Connection));
+                await daily.RefreshAsync(0, default);
+                Assert.IsTrue(daily.Status!.Claimable, "a new player's first daily reward is waiting");
+                var dayOne = daily.Status.Today.Coins;
+                Assert.IsTrue(await daily.ClaimAsync(default));
+                Assert.IsFalse(daily.Status!.Claimable, "claimed for today");
+                await progressAfter.RefreshAsync(0, default);
+                Assert.AreEqual(coinsBefore + dayOne, progressAfter.Coins, "the wallet holds the daily coins");
+                await daily.RefreshAsync(0, default);
+                Assert.IsFalse(daily.Status!.Claimable, "still claimed after a refresh");
             }
         }
 
