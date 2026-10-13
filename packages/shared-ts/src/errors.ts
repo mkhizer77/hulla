@@ -40,6 +40,7 @@ export const ErrorCodes = {
     notAuthorised: "table.not_authorised",
     draining: "table.draining",
     notSeated: "table.not_seated",
+    rankedSoloOnly: "table.ranked_solo_only",
   },
   auth: {
     sessionExpired: "auth.session_expired",
@@ -59,6 +60,7 @@ export const ErrorCodes = {
     dailyCapReached: "economy.daily_cap_reached",
     itemUnknown: "economy.item_unknown",
     itemOwned: "economy.item_owned",
+    itemNotForSale: "economy.item_not_for_sale",
   },
   content: {
     manifestUnsigned: "content.manifest_unsigned",
@@ -85,6 +87,7 @@ export const ErrorCodes = {
     notVisible: "profile.not_visible",
     unknownAvatar: "profile.unknown_avatar",
     notFound: "profile.not_found",
+    frameLocked: "profile.frame_locked",
   },
   social: {
     self: "social.self",

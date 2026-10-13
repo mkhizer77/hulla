@@ -27,6 +27,8 @@ describe("InitModule", () => {
       "table_join_by_code",
       "presets_get",
       "voice_token",
+      "ranked_get",
+      "ranked_board",
       "profile_get",
       "profile_update",
       "account_delete",

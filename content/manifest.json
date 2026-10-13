@@ -1,8 +1,8 @@
 {
   "schema": "../tools/content-schemas/manifest.schema.json",
   "id": "content-manifest",
-  "version": 4,
-  "digest": "26806fefeda99c4251d7cffd788fbcce8616f10c77b22f6bac922a95974218d6",
+  "version": 5,
+  "digest": "58e733bfecfb4ca0d999140105e144542c257ccf7120b02f759553904e2c3093",
   "files": [
     {
       "path": "achievements/v1.json",
@@ -17,16 +17,16 @@
       "type": "avatars",
       "id": "v1",
       "version": 1,
-      "sha256": "57f47f5cd4a5913f894489aedb87372bd778042a836d0c12f45c23e7551d97e1",
-      "bytes": 721
+      "sha256": "e6223bb4ae85da870e42d212b837101587167c7a38a7a63fecc86c2e72f9863b",
+      "bytes": 925
     },
     {
       "path": "catalog/v1.json",
       "type": "catalog",
       "id": "catalog-v1",
       "version": 1,
-      "sha256": "15f75d0d81f6d817dcd2e76078793127d1bdd021ab5619b0671544b3781aeb7d",
-      "bytes": 7478
+      "sha256": "9c01580620ea849e74a1f1984cde46a4c4eb979e45b8c38a1d2c1100beb2fc70",
+      "bytes": 8399
     },
     {
       "path": "chat-filters/v1.json",
@@ -107,6 +107,14 @@
       "version": 1,
       "sha256": "1dbbc9420b859b0e7905cf9b4e2dff761d99ce2255c2b8ca66256872dfe337c1",
       "bytes": 7450
+    },
+    {
+      "path": "ranked/v1.json",
+      "type": "ranked",
+      "id": "ranked-v1",
+      "version": 1,
+      "sha256": "31e913fc80c74e0c82498079e313800bb7b6b441dcbd6e81831744244dc73522",
+      "bytes": 1647
     },
     {
       "path": "seasons/basant-2026.json",

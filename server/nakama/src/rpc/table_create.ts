@@ -38,7 +38,8 @@ export type TableCreateResponse =
   | { readonly ok: true; readonly matchId: string; readonly code: string; readonly tableId: string }
   | { readonly ok: false; readonly error: RuleError };
 
-const MODES: readonly TableMode[] = ["private", "public", "ranked"];
+/** Ranked tables come only from the matchmaker (GDD 7.5), so a code can never seat chosen rivals. */
+const MODES: readonly TableMode[] = ["private", "public"];
 
 function fail(error: RuleError): TableCreateResponse {
   return { ok: false, error };

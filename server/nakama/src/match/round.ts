@@ -66,6 +66,8 @@ export function compactSeats<S, M>(state: TableState<S, M>): SeatIndex[] {
       resumeToken: null,
       joinedTs: 0,
       disconnectedTs: null,
+      absentMs: 0,
+      awaySinceTs: null,
       timeouts: 0,
       rematch: null,
       quickChatTs: 0,
@@ -387,6 +389,10 @@ export function roundRecord<S, M, V, E, R>(
     startedTs: round.startedTs,
     endedTs: now,
     completed,
+    absentMs: state.seats
+      .slice(0, round.seatCount)
+      .map((s) => s.absentMs + (s.awaySinceTs === null ? 0 : Math.max(0, now - s.awaySinceTs))),
+    presentAtEnd: state.seats.slice(0, round.seatCount).map((s) => s.connected && !s.left),
   };
 }
 

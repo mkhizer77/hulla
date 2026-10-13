@@ -12,6 +12,7 @@ import hardcore from "../../../../content/presets/thulla/hardcore.json";
 import standard from "../../../../content/presets/thulla/standard.json";
 import products from "../../../../content/products/v1.json";
 import quickChat from "../../../../content/quick-chat/v1.en.json";
+import ranked from "../../../../content/ranked/v1.json";
 import basant from "../../../../content/seasons/basant-2026.json";
 
 /**
@@ -32,6 +33,7 @@ export const CONTENT_FILES: Readonly<Record<string, object>> = {
   "presets/thulla/standard.json": standard,
   "products/v1.json": products,
   "quick-chat/v1.en.json": quickChat,
+  "ranked/v1.json": ranked,
   "seasons/basant-2026.json": basant,
 };
 

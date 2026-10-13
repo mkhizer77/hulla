@@ -267,7 +267,8 @@
     {
       "id": "R53",
       "title": "Ranked rating (v1.1)",
-      "scope": "later"
+      "scope": "engine",
+      "vectorable": false
     },
     {
       "id": "E1",

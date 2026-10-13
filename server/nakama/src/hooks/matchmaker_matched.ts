@@ -46,6 +46,22 @@ export function tableForMatch(deps: MatchmakerDeps, entries: readonly MatchedEnt
     .map(([id, members]) => ({ id, members }));
   const seed = sha256(utf8Encode(deps.runtime.uuidv4() + deps.runtime.uuidv4()));
   const code = generateRoomCode(Xoshiro128StarStar.fromState(stateFromSeed(seed)));
+  if (entries[0]?.properties["mode"] === "ranked") {
+    // Ranked (GDD 7.5, 6.13): standard rules with hand-taking off from the mode, a 12 s timer,
+    // no card-memory assist, no watchers, push-to-talk; nobody queued as a party.
+    return deps.matchCreate(entry.matchName, {
+      code,
+      gameId,
+      mode: "ranked",
+      rules: {
+        gameId,
+        preset: "standard",
+        settings: { cardMemoryAssist: false, spectators: false, voiceDefault: "pushToTalk" },
+      },
+      autoStart: { expected: entries.length },
+      parties: [],
+    });
+  }
   return deps.matchCreate(entry.matchName, {
     code,
     gameId,

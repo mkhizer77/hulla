@@ -127,6 +127,12 @@ export function purchase(
       response: { ok: false, error: ruleError(ErrorCodes.economy.itemOwned, { itemId }) },
     };
   }
+  if (item.earnOnly === true) {
+    return {
+      inventory,
+      response: { ok: false, error: ruleError(ErrorCodes.economy.itemNotForSale, { itemId }) },
+    };
+  }
   const coins = item.price.coins ?? 0;
   const gems = item.price.gems ?? 0;
   const paid = spend(ledger, {

@@ -52,6 +52,10 @@
           "name": {
             "type": "string",
             "pattern": "^frame\\.[a-z0-9_]+$"
+          },
+          "earnOnly": {
+            "description": "Granted by a reward or a purchase; a profile may show it only once owned",
+            "type": "boolean"
           }
         }
       }

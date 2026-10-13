@@ -18,6 +18,8 @@ export function emptySlot(): SeatSlot {
     resumeToken: null,
     joinedTs: 0,
     disconnectedTs: null,
+    absentMs: 0,
+    awaySinceTs: null,
     timeouts: 0,
     rematch: null,
     quickChatTs: 0,

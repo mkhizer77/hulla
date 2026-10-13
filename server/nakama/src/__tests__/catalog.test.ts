@@ -39,7 +39,7 @@ describe("the cosmetic catalog (GDD 12.11, 13.4)", () => {
     expect(items.length).toBeGreaterThanOrEqual(30);
     expect(new Set(items.map((i) => i.id)).size).toBe(items.length);
     for (const item of items) {
-      if (item.starter === true) {
+      if (item.starter === true || item.earnOnly === true) {
         expect(item.price).toEqual({});
         continue;
       }

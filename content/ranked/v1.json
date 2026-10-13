@@ -1,0 +1,72 @@
+{
+  "schema": "../../tools/content-schemas/ranked.schema.json",
+  "id": "ranked-v1",
+  "version": 1,
+  "gameId": "thulla",
+  "seats": 4,
+  "startRating": 1200,
+  "placementRounds": 10,
+  "protectionRounds": 3,
+  "softReset": 0.5,
+  "ustadTop": 500,
+  "abandonAfterMs": 60000,
+  "abandonPenalty": 25,
+  "season": {
+    "anchorTs": 1791763200000,
+    "weeks": 8
+  },
+  "matchmaking": {
+    "band": 150,
+    "widenBy": 150,
+    "maxBand": 600
+  },
+  "leagues": [
+    {
+      "id": "bronze",
+      "name": "league.bronze",
+      "minRating": 0,
+      "reward": { "title": "ranked_bronze", "coins": 200 }
+    },
+    {
+      "id": "silver",
+      "name": "league.silver",
+      "minRating": 1100,
+      "reward": { "title": "ranked_silver", "coins": 400 }
+    },
+    {
+      "id": "gold",
+      "name": "league.gold",
+      "minRating": 1250,
+      "reward": { "title": "ranked_gold", "coins": 600, "items": ["back_ranked_gold"] }
+    },
+    {
+      "id": "platinum",
+      "name": "league.platinum",
+      "minRating": 1400,
+      "reward": { "title": "ranked_platinum", "coins": 800, "items": ["back_ranked_platinum"] }
+    },
+    {
+      "id": "diamond",
+      "name": "league.diamond",
+      "minRating": 1550,
+      "reward": {
+        "title": "ranked_diamond",
+        "coins": 1000,
+        "items": ["back_ranked_diamond"],
+        "frame": "ranked_diamond"
+      }
+    },
+    {
+      "id": "ustad",
+      "name": "league.ustad",
+      "minRating": 1550,
+      "topOnly": true,
+      "reward": {
+        "title": "ranked_ustad",
+        "coins": 1500,
+        "items": ["back_ranked_ustad"],
+        "frame": "ranked_ustad"
+      }
+    }
+  ]
+}

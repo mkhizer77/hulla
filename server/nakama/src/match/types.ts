@@ -39,6 +39,9 @@ export interface SeatSlot {
   resumeToken: string | null;
   joinedTs: number;
   disconnectedTs: number | null;
+  /** Time away during the current round, and since when the seat is away now (R46 abandonment). */
+  absentMs: number;
+  awaySinceTs: number | null;
   /** Consecutive timeouts for R45. */
   timeouts: number;
   rematch: boolean | null;
@@ -340,6 +343,10 @@ export interface RoundRecord {
   readonly startedTs: number;
   readonly endedTs: number;
   readonly completed: boolean;
+  /** Per seat, the time away from the table this round (R46); absent on older records. */
+  readonly absentMs?: readonly number[];
+  /** Per seat, whether the player was connected and seated when the round ended. */
+  readonly presentAtEnd?: readonly boolean[];
 }
 
 export interface Persistence {

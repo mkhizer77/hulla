@@ -21,7 +21,7 @@ import {
 } from "./hooks/after_validate_purchase";
 import { beforeAuthenticateDevice } from "./hooks/before_authenticate";
 import { beforeChannelMessageSend } from "./hooks/before_channel_message";
-import { beforeMatchmakerAdd } from "./hooks/before_matchmaker_add";
+import { beforeMatchmakerAdd, beforePartyMatchmakerAdd } from "./hooks/before_matchmaker_add";
 import { matchmakerMatched } from "./hooks/matchmaker_matched";
 import { log } from "./infra/log";
 import {
@@ -76,6 +76,7 @@ import {
   rpcPushUnregister,
   rpcTableInvite,
 } from "./rpc/push";
+import { rpcRankedBoard, rpcRankedGet } from "./rpc/ranked";
 import {
   rpcCatalogSet,
   rpcEconomyCatalog,
@@ -112,7 +113,10 @@ function InitModule(
   initializer.registerRpc("voice_token", rpcVoiceToken);
   initializer.registerRtBefore("ChannelMessageSend", beforeChannelMessageSend);
   initializer.registerRtBefore("MatchmakerAdd", beforeMatchmakerAdd);
+  initializer.registerRtBefore("PartyMatchmakerAdd", beforePartyMatchmakerAdd);
   initializer.registerMatchmakerMatched(matchmakerMatched);
+  initializer.registerRpc("ranked_get", rpcRankedGet);
+  initializer.registerRpc("ranked_board", rpcRankedBoard);
   initializer.registerRpc("profile_get", rpcProfileGet);
   initializer.registerRpc("profile_update", rpcProfileUpdate);
   initializer.registerRpc("account_delete", rpcAccountDelete);

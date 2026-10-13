@@ -12,6 +12,7 @@ import {
   type ProfileStore,
   type Relation,
 } from "../services/profiles";
+import { nkEntitlementStore } from "../services/purchases";
 
 import type { Profile as ProfileView, ProfileUpdate } from "@hulla/protocol/generated";
 
@@ -24,6 +25,8 @@ export interface ProfileDeps {
   userIdForHandle(handle: string): string | null;
   /** Mirrors the handle and display name onto the Nakama account; false when the handle is taken. */
   setAccountNames(userId: string, handle: string | null, displayName: string | null): boolean;
+  /** Frames the player owns (rewards and purchases); absent, only the open frames can be chosen. */
+  ownedFrames?(userId: string): readonly string[];
 }
 
 export type ProfileResponse =
@@ -74,7 +77,12 @@ export function profileUpdate(deps: ProfileDeps, payload: string): ProfileRespon
   const update = input as ProfileUpdate;
   const current = deps.store.read(deps.userId);
   if (current === null) return { ok: false, error: ruleError(ErrorCodes.profile.notFound) };
-  const applied = applyProfileUpdate(current, update, deps.runtime.nowMs());
+  const applied = applyProfileUpdate(
+    current,
+    update,
+    deps.runtime.nowMs(),
+    deps.ownedFrames?.(deps.userId) ?? [],
+  );
   if (!applied.ok) return applied;
   const next = applied.value;
   const handleChanged = next.handle !== current.handle;
@@ -125,6 +133,7 @@ function nkDeps(
         return false;
       }
     },
+    ownedFrames: (userId) => nkEntitlementStore(nk).read(userId).frames,
   };
 }
 

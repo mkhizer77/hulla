@@ -79,6 +79,10 @@
           },
           "season": {
             "type": "string"
+          },
+          "earnOnly": {
+            "description": "Earned from ranked, the pass or achievements; never sold in the shop",
+            "type": "boolean"
           }
         }
       }
