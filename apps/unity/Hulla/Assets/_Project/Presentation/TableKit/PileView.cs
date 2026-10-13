@@ -66,6 +66,10 @@ namespace Hulla.Presentation.TableKit
             _shown.Add(play.Card);
             var slot = new VisualElement();
             slot.AddToClassList("pile__slot");
+
+            // Cards land a little askew, as on a real table; the angle depends only on the seat and
+            // the position, so a redraw lays the trick out the same way.
+            slot.style.rotate = new Rotate(((play.Seat * 7 + _shown.Count * 11) % 17) - 8);
             var card = new CardElement().Show(play.Card);
             card.EnableInClassList("card--faded", faded);
             slot.Add(card);
