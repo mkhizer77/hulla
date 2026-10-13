@@ -83,6 +83,10 @@ Game rules never live here; the match handler imports them from `packages/rules-
 ## 5. Content
 `content/<type>/<name>.json` with a `schema` field pointing to `tools/content-schemas/<type>.schema.json`. Strings: `content/strings/<locale>.json` exported to the Unity Localization tables and to the web. Quick-chat packs: `content/quick-chat/<pack>.<locale>.json`. Presets: `content/presets/<game>/<preset>.json`. Strings are ICU message format limited to plural, select and simple arguments; `tools/strings-export` produces the Unity Localization tables (Smart Strings) and the web JSON. `content/tokens/tokens.json` is the single design-token source; `tools/tokens-export` writes `tokens.uss` and `tokens.css`.
 
+`tools/content-sign` writes `content/manifest.json` (every file with its type, id, version, SHA-256 and size; the version moves when any file changes) and CI fails on drift; the server serves it through `content_manifest`, signed with RSA-SHA256 when the box holds `HULLA_CONTENT_SIGNING_KEY`, and the files through `content_get`. Clients pin the manifest version for a session, verify the signature and the hashes, and fall back to the bundled copy offline (ADR-0011).
+
+Addressables groups (art and audio referenced by the catalog, never in the base scene): `ui-core` (icons, fonts, the stamp set), `game-thulla` (table layout, pile, card animations), `cards-classic` and `cards-desi` (faces and the twelve backs), `tables` (surfaces), `avatars` (avatars and frames), `emotes` (emote packs), `audio-sfx` and `audio-music`, `vo-<pack>` (voice-over packs), `seasons-<name>` (season themes). Each group streams on demand and is cached; `ui-core` and `game-thulla` ship in the binary.
+
 ## 6. Branches, tags, environments
 `main` is releasable. Branches `feat/…`, `fix/…`, `chore/…`. Tags `v<major>.<minor>.<patch>` trigger release builds; `server-v…` tags mark server deploys. Environments: `local` (compose), `phase0` (free EU box), `phase1-eu`, `phase1-asia`.
 
