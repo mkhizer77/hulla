@@ -11,8 +11,8 @@ One-time steps for the owner. Nothing here is automated on purpose.
 ## Secrets (Settings → Secrets and variables → Actions)
 | Secret | Used by | How to get it |
 |---|---|---|
-| `UNITY_LICENSE` | ci.yml, release-android.yml | Contents of the `.ulf` licence file for Unity 6000.4.9f1. Run the GameCI activation workflow once to produce the `.alf`, upload it at license.unity3d.com/manual, download the `.ulf`, paste its contents. Repeat when the editor version changes. |
-| `UNITY_EMAIL`, `UNITY_PASSWORD` | same | The Unity account the licence belongs to. |
+| `UNITY_LICENSE` | ci.yml, release-android.yml | Contents of a Personal `.ulf` licence file. Unity Hub 3.x no longer writes one and manual activation is closed for Personal, so run Hub's licensing client in a real terminal: `"/Applications/Unity Hub.app/Contents/Frameworks/UnityLicensingClient_V1.app/Contents/MacOS/Unity.Licensing.Client" --activate-ulf --username <email> --password <password>`. It writes `/Library/Application Support/Unity/Unity_lic.ulf`; then `gh secret set UNITY_LICENSE < "/Library/Application Support/Unity/Unity_lic.ulf"`. |
+| `UNITY_EMAIL`, `UNITY_PASSWORD` | same | The Unity account the licence belongs to. Set the password with `gh secret set UNITY_PASSWORD` in a real terminal so it stays out of shell history. |
 | `ANDROID_KEYSTORE_BASE64`, `ANDROID_KEYSTORE_PASS`, `ANDROID_KEYALIAS_NAME`, `ANDROID_KEYALIAS_PASS` | release-android.yml | `keytool -genkey` once, keep the keystore offline, base64-encode it for the secret. Losing it means losing the ability to update the app on Google Play. |
 | `PHASE0_HOST`, `PHASE0_USER`, `PHASE0_SSH_KEY` | server-image.yml | The phase 0 box and a deploy-only SSH key. Create the `phase0` environment with required reviewers so deploys need a manual approval. |
 | `CONTENT_SIGNING_KEY` (M2, #56) | content signing job | RSA-2048 private key in PEM; store it only as an environment secret of a protected environment, never in a checkout. The public key ships in the client. |
