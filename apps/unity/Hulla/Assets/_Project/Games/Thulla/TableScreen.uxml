@@ -9,11 +9,13 @@
             <ui:Label name="info" class="table__info" />
         </ui:VisualElement>
         <ui:VisualElement name="opponents" class="opponents" />
-        <ui:VisualElement name="felt" class="felt">
-            <ui:VisualElement name="discard" class="discard" />
-            <ui:VisualElement name="pile" class="pile" />
-            <ui:Label name="pile-note" class="pile__note" />
-            <ui:Label name="toast" class="toast" />
+        <ui:VisualElement name="rail" class="rail">
+            <ui:VisualElement name="felt" class="felt">
+                <ui:VisualElement name="discard" class="discard" />
+                <ui:VisualElement name="pile" class="pile" />
+                <ui:Label name="pile-note" class="pile__note" />
+                <ui:Label name="toast" class="toast" />
+            </ui:VisualElement>
         </ui:VisualElement>
         <ui:VisualElement name="player-sheet" class="coach player-sheet">
             <ui:Label name="sheet-title" class="coach__text" />
@@ -60,7 +62,7 @@
         </ui:VisualElement>
         <ui:VisualElement name="results" class="results">
             <ui:VisualElement class="panel results__panel">
-                <ui:ScrollView class="results__scroll">
+                <ui:ScrollView class="results__scroll" vertical-scroller-visibility="Hidden">
                     <ui:VisualElement name="result-podium" class="podium" />
                     <ui:VisualElement class="results__loser">
                         <ui:Label name="result-title" class="title title--small results__title" />
