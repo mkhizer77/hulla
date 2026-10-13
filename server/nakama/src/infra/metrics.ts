@@ -20,6 +20,8 @@ export const METRICS = {
   pushSent: "hulla_push_sent",
   pushFailed: "hulla_push_failed",
   invites: "hulla_invites",
+  purchases: "hulla_purchases",
+  purchasesRejected: "hulla_purchases_rejected",
 } as const;
 
 export interface MetricsSink {

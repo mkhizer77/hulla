@@ -44,10 +44,11 @@ M0 complete: the Thulla rulebook runs in TypeScript with full traceability. M1, 
 - 12 Oct decisions: C# mirror deferred past v1.0 (ADR-0019), no clock in engines (ADR-0020), JSON Schema draft-07 (ADR-0021), one deck and 3–6 seats until v1.2, web client before Rung (M5 → web → Rung → M6, dates in the execution plan), Facebook login stays, Unity stays on 6000.4.9f1.
 
 ## Doing
-- M2 #46 server part (branch `feat/push-notifications`): push through FCM HTTP v1 from the runtime, device tokens, per-type settings and quiet hours, table invites with the 20-an-hour cap (the server side of #43), friend-request and favourite-online pushes, the hourly sweep for the daily reward and the season end. #58 receipts follow.
+- M2 #58 server part (branch `feat/iap-receipts`, stacked on `feat/push-notifications`): the products in content, `economy_products`, `iap_verify` through Nakama's Apple and Google validators with the transaction id as the ledger key, `iap_restore`, entitlements (Remove Ads, frames, a pending premium pass) in `wallet_get`, the after-hooks of Nakama's own endpoints. Store credentials and sandbox testers are the owner's (runbook). OQ-033 logged.
+- M2 #46 server part in review (PR 218, auto-merge): push through FCM HTTP v1, device tokens, settings and quiet hours, table invites (the server side of #43), friend-request and favourite-online pushes, the hourly sweep. OQ-032 logged.
 
 ## Next
-Server: #58 receipts after push; then the backlog needs the owner's credentials and the phase 0 box (#76) until M5.
+Server: after #58 the backlog needs the owner's credentials (Firebase, the stores) and the phase 0 box (#76) until M5; the Unity track takes the client side of #43, #46 and #58.
 
 ## Blockers
 - None.

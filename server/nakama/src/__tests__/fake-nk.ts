@@ -86,6 +86,12 @@ export function fakeInitializer(): FakeInitializer {
     registerAfterAddFriends: (fn: (...args: unknown[]) => unknown) => {
       hooks.set("afterAddFriends", fn);
     },
+    registerAfterValidatePurchaseApple: (fn: (...args: unknown[]) => unknown) => {
+      hooks.set("afterValidatePurchaseApple", fn);
+    },
+    registerAfterValidatePurchaseGoogle: (fn: (...args: unknown[]) => unknown) => {
+      hooks.set("afterValidatePurchaseGoogle", fn);
+    },
   } as unknown as nkruntime.Initializer;
   return { rpcs, matches, hooks, initializer };
 }
@@ -159,6 +165,20 @@ export interface MemoryNk {
     content: Record<string, unknown>;
     senderId: string | null;
   }[];
+  /**
+   * Purchases Nakama would hold after `purchaseValidateApple/Google` with persist. A fake receipt
+   * is JSON `{productId, transactionId, refundTime?, environment?}`; "unconfigured" throws the
+   * store's not-configured error, anything else that is not JSON is a tampered receipt.
+   */
+  readonly purchases: {
+    userId: string;
+    productId: string;
+    transactionId: string;
+    store: string;
+    environment: string;
+    purchaseTime: number;
+    refundTime: number;
+  }[];
   /** Every `httpRequest`, for assertions; `http` answers them (a 200 for Google by default). */
   readonly requests: {
     url: string;
@@ -215,6 +235,46 @@ export function memoryNk(): MemoryNk {
   const signals: { matchId: string; data: string }[] = [];
   const notifications: MemoryNk["notifications"][number][] = [];
   const requests: MemoryNk["requests"][number][] = [];
+  const purchases: MemoryNk["purchases"][number][] = [];
+  const validate = (store: string, userId: string, receipt: string, persist: boolean) => {
+    if (receipt === "unconfigured") throw new Error(`${store} IAP is not configured`);
+    let parsed: {
+      productId?: unknown;
+      transactionId?: unknown;
+      refundTime?: unknown;
+      environment?: unknown;
+    };
+    try {
+      parsed = JSON.parse(receipt) as typeof parsed;
+    } catch {
+      throw new Error("invalid receipt");
+    }
+    if (typeof parsed.productId !== "string" || typeof parsed.transactionId !== "string") {
+      throw new Error("invalid receipt");
+    }
+    const existing = purchases.find((p) => p.transactionId === parsed.transactionId);
+    const record = existing ?? {
+      userId,
+      productId: parsed.productId,
+      transactionId: parsed.transactionId,
+      store,
+      environment: typeof parsed.environment === "string" ? parsed.environment : "SANDBOX",
+      purchaseTime: 1,
+      refundTime: typeof parsed.refundTime === "number" ? parsed.refundTime : 0,
+    };
+    if (existing === undefined && persist) purchases.push(record);
+    return {
+      validatedPurchases: [
+        {
+          ...record,
+          createTime: 1,
+          updateTime: 1,
+          providerResponse: "{}",
+          seenBefore: existing !== undefined,
+        },
+      ],
+    };
+  };
   const self: { http: MemoryNk["http"] } = {
     http: (url) => ({
       code: 200,
@@ -467,6 +527,25 @@ export function memoryNk(): MemoryNk {
     ) {
       notifications.push({ userId, subject, code, content, senderId });
     },
+    purchaseValidateApple: (userId: string, receipt: string, persist = true) =>
+      validate("APPLE_APP_STORE", userId, receipt, persist),
+    purchaseValidateGoogle: (userId: string, receipt: string, persist = true) =>
+      validate("GOOGLE_PLAY_STORE", userId, receipt, persist),
+    purchasesList(userId: string, limit = 100, cursor?: string) {
+      const rows = purchases.filter((p) => p.userId === userId);
+      const start = cursor === undefined || cursor === "" ? 0 : Number(cursor);
+      const page = rows.slice(start, start + limit);
+      return {
+        validatedPurchases: page.map((p) => ({
+          ...p,
+          createTime: 1,
+          updateTime: 1,
+          providerResponse: "{}",
+          seenBefore: true,
+        })),
+        cursor: start + limit < rows.length ? String(start + limit) : undefined,
+      };
+    },
     jwtGenerate: (algorithm: string, _key: string, claims: Record<string, unknown>) =>
       `${algorithm}.${Buffer.from(JSON.stringify(claims)).toString("base64url")}.sig`,
     httpRequest(url: string, method: string, headers: Record<string, string> = {}, body = "") {
@@ -566,6 +645,7 @@ export function memoryNk(): MemoryNk {
     signals,
     notifications,
     requests,
+    purchases,
     get http() {
       return self.http;
     },

@@ -17,4 +17,9 @@ The server never writes notification text. The push carries `push.<type>.title` 
 
 ## Purchases (GDD 13.4, 20.9)
 
-Arrives with #58.
+1. Products: create the nine products of `content/products/v1.json` in App Store Connect and Google Play Console with the same ids (`remove_ads`, `gems_120`, `gems_650`, `gems_1400`, `gems_3000`, `gems_8000`, `pass_premium`, `pass_premium_plus`, `starter_bundle`). Remove Ads and the starter bundle are non-consumable, the rest consumable. Set local prices from the USD tier.
+2. Apple: in App Store Connect, generate the app-specific shared secret and put it in the Nakama config as `iap.apple.shared_password`. Add sandbox testers under Users and Access.
+3. Google: in Google Play Console, link a Google Cloud project and create a service account with access to the Play Developer API (role "Finance" is not needed; grant "View financial data" off and "Manage orders and subscriptions" on). Put its `client_email` and `private_key` in the Nakama config under `iap.google`. Add licence testers under Setup, so sandbox purchases cost nothing.
+4. Restart Nakama. `iap_verify` now answers `ok` or `economy.receipt_invalid`; before this step it answers `economy.store_unavailable`.
+5. Check on each store: make a sandbox purchase of `gems_120` from the device; `wallet_get` shows 120 gems once, and sending the same receipt again applies nothing. Buy `remove_ads`, reinstall, sign in and call `iap_restore`: Remove Ads is back. Send a doctored receipt: `economy.receipt_invalid` and a `receipt refused` line in the log.
+6. Refunds: Nakama records Apple refunds through its App Store notifications endpoint and Google refunds through the Voided Purchases check when those are configured; the server does not take gems back on its own (OQ-033). A refund that matters goes through `admin_grant` with a negative-free correction: grant nothing, set a note in the audit, and ban the account if it is abuse (moderation runbook).

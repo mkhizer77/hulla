@@ -15,6 +15,10 @@ import {
   afterAuthenticateFacebook,
   afterAuthenticateGoogle,
 } from "./hooks/after_authenticate";
+import {
+  afterValidatePurchaseApple,
+  afterValidatePurchaseGoogle,
+} from "./hooks/after_validate_purchase";
 import { beforeAuthenticateDevice } from "./hooks/before_authenticate";
 import { beforeChannelMessageSend } from "./hooks/before_channel_message";
 import { beforeMatchmakerAdd } from "./hooks/before_matchmaker_add";
@@ -61,6 +65,7 @@ import { rpcPassClaim, rpcPassGet, rpcPassPremiumGrant } from "./rpc/pass";
 import { rpcPresenceSet, rpcTableListFriends } from "./rpc/presence";
 import { rpcPresetsGet } from "./rpc/presets_get";
 import { rpcProfileGet, rpcProfileUpdate } from "./rpc/profile";
+import { rpcEconomyProducts, rpcIapRestore, rpcIapVerify } from "./rpc/purchases";
 import {
   rpcAdminPushSweep,
   rpcAdminPushTest,
@@ -166,6 +171,11 @@ function InitModule(
   initializer.registerRpc("admin_push_sweep", rpcAdminPushSweep);
   initializer.registerRpc("admin_push_test", rpcAdminPushTest);
   initializer.registerAfterAddFriends(afterAddFriends);
+  initializer.registerRpc("economy_products", rpcEconomyProducts);
+  initializer.registerRpc("iap_verify", rpcIapVerify);
+  initializer.registerRpc("iap_restore", rpcIapRestore);
+  initializer.registerAfterValidatePurchaseApple(afterValidatePurchaseApple);
+  initializer.registerAfterValidatePurchaseGoogle(afterValidatePurchaseGoogle);
   initializer.registerLeaderboardReset(onLeaderboardReset);
   ensureLeaderboards(nk, logger);
   initializer.registerBeforeAuthenticateDevice(beforeAuthenticateDevice);

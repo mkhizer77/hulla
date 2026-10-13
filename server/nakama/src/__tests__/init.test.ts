@@ -85,6 +85,9 @@ describe("InitModule", () => {
       "table_invite",
       "admin_push_sweep",
       "admin_push_test",
+      "economy_products",
+      "iap_verify",
+      "iap_restore",
     ]);
     expect([...matches.keys()]).toEqual(["thulla"]);
     expect(hooks.get("rtBefore:ChannelMessageSend")?.name).toBe("beforeChannelMessageSend");

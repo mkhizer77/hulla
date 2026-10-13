@@ -2,6 +2,7 @@ import { ErrorCodes, ruleError } from "@hulla/shared-ts";
 
 import { ledgerLines, nkLedgerPorts } from "../services/ledger";
 import { forDay, levelFor, nkProgressStore, touchLogin } from "../services/progression";
+import { nkEntitlementStore } from "../services/purchases";
 
 function parse(payload: string): Record<string, unknown> {
   try {
@@ -28,6 +29,7 @@ export function rpcWalletGet(
     ok: true,
     balances: nkLedgerPorts(nk).balances(userId),
     ledger: ledgerLines(nk, userId, 50),
+    entitlements: nkEntitlementStore(nk).read(userId),
   });
 }
 

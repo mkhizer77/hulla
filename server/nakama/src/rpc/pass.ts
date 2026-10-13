@@ -2,6 +2,7 @@ import { ErrorCodes, ruleError } from "@hulla/shared-ts";
 
 import { emitAnalyticsSafely } from "../services/analytics";
 import { nkLedgerPorts } from "../services/ledger";
+import { applyPendingPass, nkPurchasePorts } from "../services/purchases";
 import { audit } from "../services/sanctions";
 import {
   activatePremium,
@@ -43,6 +44,8 @@ export function rpcPassGet(
   const now = Date.now();
   const season = currentSeason(BUNDLED_SEASONS, now);
   if (season === null) return noSeason();
+  // A premium pass bought between seasons opens now (#58).
+  applyPendingPass(nkPurchasePorts(nk), userId, now);
   const state = forSeason(nkPassStore(nk).read(userId), season);
   return JSON.stringify({ ok: true, ...passView(state, season, now) });
 }

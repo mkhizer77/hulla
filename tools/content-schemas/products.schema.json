@@ -1,0 +1,43 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://hulla.gg/schemas/content/products.json",
+  "title": "Store products",
+  "description": "The in-app purchases of GDD 13.4: the product id used on both stores, the USD reference price and what a verified receipt grants; the server grants once per transaction (ARCHITECTURE 8.10)",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema", "id", "version", "products"],
+  "properties": {
+    "schema": { "type": "string" },
+    "id": { "type": "string", "pattern": "^[a-z0-9-]+$" },
+    "version": { "type": "integer", "minimum": 1 },
+    "products": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "name", "kind", "usd", "grants"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^[a-z][a-z0-9_]*$" },
+          "name": { "type": "string", "pattern": "^product\\.[a-z0-9_.]+$" },
+          "kind": { "type": "string", "enum": ["consumable", "nonConsumable"] },
+          "usd": { "type": "number", "minimum": 0 },
+          "grants": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "gems": { "type": "integer", "minimum": 1 },
+              "items": { "type": "array", "items": { "type": "string" } },
+              "frames": { "type": "array", "items": { "type": "string" } },
+              "entitlements": {
+                "type": "array",
+                "items": { "type": "string", "enum": ["removeAds"] }
+              },
+              "pass": { "type": "string", "enum": ["premium", "plus"] }
+            }
+          }
+        }
+      }
+    }
+  }
+}

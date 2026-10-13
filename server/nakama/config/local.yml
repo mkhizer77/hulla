@@ -40,6 +40,15 @@ runtime:
     - "HULLA_FCM_PROJECT_ID="
     - "HULLA_FCM_CLIENT_EMAIL="
     - "HULLA_FCM_PRIVATE_KEY="
+# Store receipt validation (GDD 20.9): Apple's app-specific shared secret and the Google service
+# account with Play Developer API access; empty on a development box, so iap_verify answers
+# economy.store_unavailable (docs/runbooks/push-and-purchases-setup.md).
+iap:
+  apple:
+    shared_password: ""
+  google:
+    client_email: ""
+    private_key: ""
 # Prometheus metrics for infra/observability (docs/runbooks/observability.md).
 metrics:
   prometheus_port: 9100
