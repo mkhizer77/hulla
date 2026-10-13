@@ -10,6 +10,7 @@ using Hulla.Presentation.Navigation;
 using Hulla.Presentation.Screens.Home;
 using Hulla.Presentation.Screens.Friends;
 using Hulla.Presentation.Screens.Lobby;
+using Hulla.Presentation.Screens.Missions;
 using Hulla.Presentation.Screens.Profile;
 using Hulla.Presentation.Screens.QuickPlay;
 using Hulla.Presentation.Screens.Rulebook;
@@ -122,7 +123,7 @@ namespace Hulla.Composition
             _screen = Screen.Home;
             var root = _shell.Show(_shell.Catalog.Home);
             var server = Debug.isDebugBuild ? _app.Config.HostAndPort : null;
-            _view = new HomeView(root, _app.Home, server, OnCreate, OnJoin, OnQuickPlay, OpenSettings, OnFriends, OnProfile, _app.HomeFriends, () => StartTutorial(false), TutorialText.HowToPlay, OnWatch, _app.Progress);
+            _view = new HomeView(root, _app.Home, server, OnCreate, OnJoin, OnQuickPlay, OpenSettings, OnFriends, OnProfile, _app.HomeFriends, () => StartTutorial(false), TutorialText.HowToPlay, OnWatch, _app.Progress, OnMissions);
             _app.HomeFriends.Active = _app.Sessions.Current != null;
             _app.HomeFriends.RefreshSoon();
             if (_app.Sessions.Current != null)
@@ -196,6 +197,23 @@ namespace Hulla.Composition
                 entry => _ = friends.ToggleFavouriteAsync(entry, lifetime),
                 id => _ = friends.UnblockAsync(id, lifetime)));
             await friends.RefreshAsync(lifetime);
+        }
+
+        private async void OnMissions(string name, string? server)
+        {
+            if (!await SignedInAsync(name, server))
+            {
+                return;
+            }
+
+            CloseView();
+            _screen = Screen.Home;
+            var missions = _app.Missions;
+            var tz = LocalOffsetMinutes();
+            _view = new MissionsView(_shell.Show(_shell.Catalog.Missions), missions, ShowHome,
+                id => _ = missions.ClaimAsync(id, tz, _app.Lifetime),
+                id => _ = missions.RerollAsync(id, tz, _app.Lifetime));
+            await missions.RefreshAsync(tz, _app.Lifetime);
         }
 
         private async void OnProfile(string name, string? server)

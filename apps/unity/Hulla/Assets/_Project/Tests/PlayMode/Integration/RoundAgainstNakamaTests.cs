@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Hulla.Application.Services;
 using Hulla.Application.Table;
 using Hulla.Infrastructure.Nakama;
@@ -222,6 +223,13 @@ namespace Hulla.Integration.Tests
                     Assert.Greater(reward!.Xp, 0, player.Name + " got XP");
                     Assert.AreEqual(reward.Coins, progress.Coins, player.Name + "'s wallet holds the round's coins");
                 }
+
+                // Missions count the round (GDD 12.5).
+                var missions = new Hulla.Application.ViewModels.MissionsViewModel(new NakamaMissionsService(_players[0].Connection));
+                await missions.RefreshAsync(0, default);
+                Assert.AreEqual(3, missions.Daily.Count, "three dailies");
+                Assert.AreEqual(5, missions.Weekly.Count, "five weeklies");
+                Assert.IsTrue(missions.Weekly.Concat(missions.Daily).Any(m => m.Progress > 0), "the round counted toward something");
             }
         }
 

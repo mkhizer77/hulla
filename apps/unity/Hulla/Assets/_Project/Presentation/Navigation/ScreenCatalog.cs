@@ -15,5 +15,6 @@ namespace Hulla.Presentation.Navigation
         public VisualTreeAsset? Rulebook;
         public VisualTreeAsset? Profile;
         public VisualTreeAsset? Friends;
+        public VisualTreeAsset? Missions;
     }
 }
