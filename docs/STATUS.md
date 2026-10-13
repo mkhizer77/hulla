@@ -6,6 +6,7 @@ Updated: 13 October 2026 (morning)
 M0 complete: the Thulla rulebook runs in TypeScript with full traceability. M1, the vertical slice, starts with the protocol schemas.
 
 ## Done
+- M2 #77 scenarios merged (13 Oct, PR 210): the k6 table scenario, thresholds, the chaos recipe and the results note; the runs wait for the phase 0 box.
 - Fixes merged (13 Oct, PR 199): leaving the guest name keeps the free rename; a returning seat gets a full turn timer.
 - M2 #52 server part merged (13 Oct, PR 195): mission pools in content, seeded daily and weekly draws, progress from round events, idempotent claims and the free re-roll. OQ-022 logged.
 - M2 #50 and #51 server parts merged (13 Oct, PR 193): XP, levels, titles and coins per round from the GDD tables, the login streak and the daily soft cap at local midnight, level grants, and the append-only ledger with idempotent source ids and no transfers. OQ-021 logged.
@@ -40,7 +41,8 @@ M0 complete: the Thulla rulebook runs in TypeScript with full traceability. M1, 
 - 12 Oct decisions: C# mirror deferred past v1.0 (ADR-0019), no clock in engines (ADR-0020), JSON Schema draft-07 (ADR-0021), one deck and 3–6 seats until v1.2, web client before Rung (M5 → web → Rung → M6, dates in the execution plan), Facebook login stays, Unity stays on 6000.4.9f1.
 
 ## Doing
-- M2 #77 scenarios (branch `feat/load-test`, stacked on #72): the k6 table scenario over Nakama's JSON socket protocol (four seats per virtual user, rounds by legal cards, a drop and resume per table), thresholds for the gates of GDD 28.5, the chaos recipe and the results note. The 1,000-player and chaos runs wait for the phase 0 box and a machine with k6 (the dev Mac's Homebrew cannot install it).
+- M2 #57 server part (branch `feat/catalog`): the catalog in content with a schema, thirty-three placeholder items across every category, idempotent purchases through the ledger, the weekly spotlight, equip globally or per game, seat cosmetics in `table_state`, `catalog_set` and `admin_grant`. The Shop, the Collection and the live preview are the Unity track; the art is #66 to #68 (OQ-029).
+- M2 #59 server part (branch `feat/catalog`, with #57): the first season in content with a schema (forty tiers, free and premium tracks, catch-up XP), pass XP from rounds and mission claims, idempotent claims through the ledger and the inventory, premium and Premium+ grants with an audit row. The Pass screen is the Unity track; the premium purchase itself is #58 (owner). OQ-030 logged.
 - M2 #72 server part (branch `feat/remote-config`, stacked on #75): flags per region and cohort and the minimum client version in one live-replaceable storage object, `config_get` and `config_set`, the version in `hello`, and the join refusal for an old client. Firebase Remote Config, Crashlytics and the update prompt are the Unity track; the flags' Firebase mirror is the owner's setup (OQ-028).
 - M2 #75 server part (branch `feat/observability`, stacked on #71): structured logs with fields as keys and redaction of names, text and hands (every call site migrated, a test guards it), `hulla_*` Prometheus counters and timers, Nakama metrics on port 9100, Prometheus and Grafana with a dashboard and alert rules in `infra/observability`, and the runbook. Alert delivery to the owner's phone and the phase 0 box are owner setup (OQ-027).
 - M2 #71 server part (branch `feat/analytics-server`, stacked on #53 to #56): typed server emitters for the table events and the RPC-side events as structured log lines, with a runtime guard and a test against names, text and cards. Adapters, consent and batching are the Unity track.
@@ -50,7 +52,7 @@ M0 complete: the Thulla rulebook runs in TypeScript with full traceability. M1, 
 - M2 #53 server part (branch `feat/daily-reward`, stacked on the fixes): the 7-day calendar in content, a claim per local day through the ledger that is idempotent across devices, the cycle that continues after a missed day, and the sign-in notice. The Home card is the Unity track; the push hook waits for #46. OQ-023 logged.
 
 ## Next
-Server: after #47 and #48 merge, #49 to #56, #71, #72, #75, #77. Unity: #33 polish, #23 theme from the design system (#22), #32 voice, the Profile screen for #40, the friends screen for #41, parties for Quick Play once friends exist.
+Server: #57 and #59 in review (PR 211), then the drain switch and runbooks of #90, the playbooks of #91 and the first-week operations of #97.
 
 ## Blockers
 - None.
