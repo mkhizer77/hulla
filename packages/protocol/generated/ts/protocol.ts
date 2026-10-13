@@ -417,6 +417,17 @@ export interface Seat {
    * Players who queued together share a party id (GDD 7.2); shown as a link icon
    */
   party?: string | null;
+  /**
+   * What the seat has equipped for this table, by catalog category; null until the inventory is read
+   */
+  cosmetics?: {
+    cardBack?: string;
+    cardFace?: string;
+    table?: string;
+    emotePack?: string;
+    celebration?: string;
+    soundSet?: string;
+  } | null;
 }
 /**
  * A friend watching the table; seatNext when they take a seat at the next round

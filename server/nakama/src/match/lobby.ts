@@ -23,6 +23,7 @@ export function emptySlot(): SeatSlot {
     quickChatTs: 0,
     emoteTs: 0,
     party: null,
+    cosmetics: null,
   };
 }
 

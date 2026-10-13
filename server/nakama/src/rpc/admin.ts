@@ -4,6 +4,7 @@ import { log } from "../infra/log";
 import { ROUND_LOG_COLLECTION } from "../match/nakama_match";
 import { gameEntry } from "../match/registry";
 import { replayRound } from "../match/replay";
+import { credit, nkLedgerPorts } from "../services/ledger";
 import {
   applySanction,
   audit,
@@ -194,6 +195,54 @@ export function rpcAdminSanction(
     ts: now,
   });
   return JSON.stringify({ ok: true, auditId: entry.id, sanctions: sanctionsView(next, now) });
+}
+
+/**
+ * `{ userId, coins?, gems?, reason, sourceId }`: a support or compensation grant through the
+ * ledger, idempotent on the source id and audited. Never a transfer: one account, one direction.
+ */
+export function rpcAdminGrant(
+  ctx: nkruntime.Context,
+  _logger: nkruntime.Logger,
+  nk: nkruntime.Nakama,
+  payload: string,
+): string {
+  if (!isAdmin(ctx)) return refused();
+  const input = parse(payload);
+  const userId = str(input["userId"]);
+  const sourceId = str(input["sourceId"]);
+  const coins = typeof input["coins"] === "number" ? input["coins"] : 0;
+  const gems = typeof input["gems"] === "number" ? input["gems"] : 0;
+  if (userId === "" || sourceId === "" || (coins <= 0 && gems <= 0)) {
+    return JSON.stringify({
+      ok: false,
+      error: ruleError(ErrorCodes.table.invalidPayload, { reason: "grant" }),
+    });
+  }
+  const paid = credit(nkLedgerPorts(nk), {
+    userId,
+    sourceId: `grant:${sourceId}`,
+    reason: "grant",
+    coins,
+    gems,
+    metadata: { by: actorOf(ctx), note: str(input["reason"]).slice(0, 64) },
+  });
+  if (paid.ok) {
+    audit(nk, {
+      actorId: actorOf(ctx),
+      action: "grant",
+      targetId: userId,
+      detail: {
+        coins,
+        gems,
+        sourceId,
+        applied: paid.applied,
+        reason: str(input["reason"]).slice(0, 64),
+      },
+      ts: Date.now(),
+    });
+  }
+  return JSON.stringify(paid);
 }
 
 /** `{ limit? }`: the newest audit rows. */

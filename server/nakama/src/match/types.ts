@@ -45,6 +45,8 @@ export interface SeatSlot {
   emoteTs: number;
   /** Players who queued together (GDD 7.2); null for everyone else. */
   party: string | null;
+  /** What the seat has equipped, read from the inventory at join and at each round start. */
+  cosmetics: Record<string, string> | null;
 }
 
 /** What `matchJoinAttempt` decided for a session, consumed by `matchJoin`. */

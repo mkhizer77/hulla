@@ -1,8 +1,8 @@
 {
   "schema": "../tools/content-schemas/manifest.schema.json",
   "id": "content-manifest",
-  "version": 1,
-  "digest": "092a06d929ca4f2e4aadfaa87ef52dabb9648db2cb8141094c1c24b4df302f12",
+  "version": 3,
+  "digest": "37ce1074883264c43eb94aa525a6cc40878786db1c5101f5a1931ad455a13c1f",
   "files": [
     {
       "path": "achievements/v1.json",
@@ -19,6 +19,14 @@
       "version": 1,
       "sha256": "57f47f5cd4a5913f894489aedb87372bd778042a836d0c12f45c23e7551d97e1",
       "bytes": 721
+    },
+    {
+      "path": "catalog/v1.json",
+      "type": "catalog",
+      "id": "catalog-v1",
+      "version": 1,
+      "sha256": "15f75d0d81f6d817dcd2e76078793127d1bdd021ab5619b0671544b3781aeb7d",
+      "bytes": 7478
     },
     {
       "path": "chat-filters/v1.json",
@@ -91,6 +99,14 @@
       "version": 1,
       "sha256": "1dbbc9420b859b0e7905cf9b4e2dff761d99ce2255c2b8ca66256872dfe337c1",
       "bytes": 7450
+    },
+    {
+      "path": "seasons/basant-2026.json",
+      "type": "seasons",
+      "id": "basant-2026",
+      "version": 1,
+      "sha256": "5b4e67b972730c19dfcc7efe4c4862412f2c1060db34525af9cb56367b29c6fa",
+      "bytes": 5375
     }
   ]
 }
