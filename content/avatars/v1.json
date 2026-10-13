@@ -44,6 +44,16 @@
     {
       "id": "f01",
       "name": "frame.f01"
+    },
+    {
+      "id": "ranked_diamond",
+      "name": "frame.ranked_diamond",
+      "earnOnly": true
+    },
+    {
+      "id": "ranked_ustad",
+      "name": "frame.ranked_ustad",
+      "earnOnly": true
     }
   ]
 }

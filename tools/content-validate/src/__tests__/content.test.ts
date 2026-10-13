@@ -1,4 +1,4 @@
-import { mkdtempSync, mkdirSync, writeFileSync } from "node:fs";
+import { cpSync, mkdtempSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 
@@ -83,5 +83,28 @@ describe("content validation", () => {
     });
     const problems = validateContentTree(dir);
     expect(problems.some((p) => p.includes('no integer "version" field'))).toBe(true);
+  });
+  it("reports ranked leagues that fall back and rewards that are not earn-only", () => {
+    const dir = mkdtempSync(join(tmpdir(), "hulla-ranked-"));
+    for (const folder of ["ranked", "catalog", "avatars"]) {
+      cpSync(join(contentDir, folder), join(dir, folder), { recursive: true });
+    }
+    const path = join(dir, "ranked", "v1.json");
+    const ranked = JSON.parse(readFileSync(path, "utf8")) as {
+      schema: string;
+      leagues: { minRating: number; reward: { items?: string[]; frame?: string } }[];
+    };
+    ranked.schema = join(contentDir, "..", "tools", "content-schemas", "ranked.schema.json");
+    const [first, second] = ranked.leagues;
+    if (first === undefined || second === undefined) throw new Error("no leagues");
+    first.minRating = 5000;
+    second.reward.items = ["back_classic_red"];
+    second.reward.frame = "f01";
+    writeFileSync(path, JSON.stringify(ranked));
+    const problems = validateContentTree(dir).filter((p) => p.startsWith("ranked"));
+    expect(problems).toHaveLength(3);
+    expect(problems.some((p) => p.includes("starts below"))).toBe(true);
+    expect(problems.some((p) => p.includes("back_classic_red"))).toBe(true);
+    expect(problems.some((p) => p.includes("f01"))).toBe(true);
   });
 });

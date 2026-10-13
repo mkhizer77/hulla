@@ -1,6 +1,12 @@
 import { ErrorCodes, err, ok, ruleError, ROOM_CODE_ALPHABET } from "@hulla/shared-ts";
 
-import { avatarForAccount, DEFAULT_FRAME, isAvatar, isFrame } from "../content/avatars";
+import {
+  avatarForAccount,
+  DEFAULT_FRAME,
+  isAvatar,
+  isEarnOnlyFrame,
+  isFrame,
+} from "../content/avatars";
 import { log } from "../infra/log";
 
 import type { RoundRecord } from "../match/types";
@@ -141,6 +147,7 @@ export function applyProfileUpdate(
   profile: Profile,
   update: ProfileUpdate,
   now: number,
+  ownedFrames: readonly string[] = [],
 ): Result<Profile, RuleError> {
   let next: Profile = profile;
   if (update.displayName !== undefined) {
@@ -173,6 +180,8 @@ export function applyProfileUpdate(
   if (update.frame !== undefined) {
     if (!isFrame(update.frame))
       return err(ruleError(ErrorCodes.profile.unknownAvatar, { frame: update.frame }));
+    if (isEarnOnlyFrame(update.frame) && !ownedFrames.includes(update.frame))
+      return err(ruleError(ErrorCodes.profile.frameLocked, { frame: update.frame }));
     next = { ...next, frame: update.frame };
   }
   if (update.flag !== undefined) next = { ...next, flag: update.flag };

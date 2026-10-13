@@ -123,6 +123,42 @@
       "address": "cards-desi/back-diwali"
     },
     {
+      "id": "back_ranked_gold",
+      "name": "item.back_ranked_gold",
+      "category": "cardBack",
+      "rarity": "rare",
+      "price": {},
+      "address": "cards-ranked/back-gold",
+      "earnOnly": true
+    },
+    {
+      "id": "back_ranked_platinum",
+      "name": "item.back_ranked_platinum",
+      "category": "cardBack",
+      "rarity": "epic",
+      "price": {},
+      "address": "cards-ranked/back-platinum",
+      "earnOnly": true
+    },
+    {
+      "id": "back_ranked_diamond",
+      "name": "item.back_ranked_diamond",
+      "category": "cardBack",
+      "rarity": "epic",
+      "price": {},
+      "address": "cards-ranked/back-diamond",
+      "earnOnly": true
+    },
+    {
+      "id": "back_ranked_ustad",
+      "name": "item.back_ranked_ustad",
+      "category": "cardBack",
+      "rarity": "legendary",
+      "price": {},
+      "address": "cards-ranked/back-ustad",
+      "earnOnly": true
+    },
+    {
       "id": "face_classic",
       "name": "item.face_classic",
       "category": "cardFace",

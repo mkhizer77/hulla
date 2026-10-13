@@ -292,7 +292,7 @@ export function memoryNk(): MemoryNk {
       { score: number; numScore: number; expiry: number; metadata: Record<string, unknown> }
     >
   >();
-  const boardMeta = new Map<string, { nextReset: number }>();
+  const boardMeta = new Map<string, { nextReset: number; operator: string }>();
   let uuids = 0;
   let versions = 0;
   const user = (id: string, overrides: Partial<MemoryUser> = {}): MemoryUser => {
@@ -552,9 +552,12 @@ export function memoryNk(): MemoryNk {
       requests.push({ url, method, headers, body });
       return self.http(url, method, headers, body);
     },
-    leaderboardCreate(id: string) {
+    leaderboardCreate(id: string, ...rest: unknown[]) {
+      // Nakama's order: authoritative, sort, operator, reset schedule, metadata, enable rank.
+      const operator = typeof rest[2] === "string" ? rest[2] : "increment";
+      const reset = rest.length > 3 ? rest[3] : "0 0 * * 1";
       if (!boards.has(id)) boards.set(id, new Map());
-      boardMeta.set(id, { nextReset: 1_800_000_000 });
+      boardMeta.set(id, { nextReset: reset === null ? 0 : 1_800_000_000, operator });
     },
     leaderboardsGetId: (ids: string[]) =>
       ids.flatMap((id) => {
@@ -575,7 +578,7 @@ export function memoryNk(): MemoryNk {
       if (board === undefined) throw new Error(`no leaderboard ${id}`);
       const current = board.get(ownerId) ?? { score: 0, numScore: 0, expiry: 0, metadata: {} };
       const next = {
-        score: current.score + score,
+        score: boardMeta.get(id)?.operator === "set" ? score : current.score + score,
         numScore: current.numScore + 1,
         expiry: current.expiry,
         metadata,

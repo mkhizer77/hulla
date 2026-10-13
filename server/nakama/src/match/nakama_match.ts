@@ -20,6 +20,7 @@ import {
 } from "../services/presence";
 import { applyRoundToStats, nkAreFriends, nkProfileStore } from "../services/profiles";
 import { applyReward, forDay, nkProgressStore, roundReward } from "../services/progression";
+import { applyRankedRound } from "../services/ranked";
 import { isBanned, readModeration } from "../services/sanctions";
 import { earnPassXp } from "../services/season_pass";
 import { nkSocialStore, recordRecentPlayers } from "../services/social";
@@ -76,6 +77,13 @@ export function storagePersistence(nk: nkruntime.Nakama, logger: nkruntime.Logge
         });
       }
       if (!record.completed) return;
+      if (record.mode === "ranked") {
+        try {
+          applyRankedRound(nk, logger, record);
+        } catch (error: unknown) {
+          log.warn(logger, "ranked round not rated", { error: String(error) });
+        }
+      }
       try {
         recordRecentPlayers(
           nkSocialStore(nk),

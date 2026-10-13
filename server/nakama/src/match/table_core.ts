@@ -204,12 +204,19 @@ export function tableCore<S, M, V, E, R>(
     slot.left = false;
   };
 
-  const attachSession = (slot: SeatSlot, sessionId: string): void => {
+  /** Closes an absence: the time away counts toward R46's abandonment limit. */
+  const returned = (slot: SeatSlot, now: number): void => {
+    if (slot.awaySinceTs !== null) slot.absentMs += Math.max(0, now - slot.awaySinceTs);
+    slot.awaySinceTs = null;
+  };
+
+  const attachSession = (slot: SeatSlot, sessionId: string, now: number): void => {
     slot.sessionId = sessionId;
     // A player who left mid-round and comes back before it ends takes the seat over from auto-play.
     slot.left = false;
     slot.connected = true;
     slot.disconnectedTs = null;
+    returned(slot, now);
     slot.autoPlay = false;
     slot.timeouts = 0;
     slot.resumeToken = newToken();
@@ -247,7 +254,7 @@ export function tableCore<S, M, V, E, R>(
       now,
       null,
     );
-    attachSession(slot, record.sessionId);
+    attachSession(slot, record.sessionId, now);
     const seated: PresenceRecord = { ...record, seat, seatNext: false };
     state.presences[record.sessionId] = seated;
     state.hostSeat ??= seat;
@@ -313,6 +320,8 @@ export function tableCore<S, M, V, E, R>(
     for (const slot of state.seats) {
       slot.rematch = null;
       slot.timeouts = 0;
+      slot.absentMs = 0;
+      slot.awaySinceTs = slot.playerId !== null && !slot.connected ? now : null;
     }
     broadcastTableState(state, emit);
     announceRound(round, state, emit, now);
@@ -550,6 +559,7 @@ export function tableCore<S, M, V, E, R>(
         if (state.phase === "inRound") {
           slot.left = true;
           slot.autoPlay = true;
+          slot.awaySinceTs ??= now;
         } else {
           freeSlot(state, seat);
         }
@@ -942,7 +952,7 @@ export function tableCore<S, M, V, E, R>(
             status = "joined";
             state.hostSeat ??= admission.seat;
           }
-          attachSession(slot, info.sessionId);
+          attachSession(slot, info.sessionId, now);
           record.seat = admission.seat;
           if (status === "reconnected") freshTurnTimer(state, admission.seat, now);
         }
@@ -1007,6 +1017,7 @@ export function tableCore<S, M, V, E, R>(
         slot.disconnectedTs = now;
         if (state.phase === "inRound") {
           slot.autoPlay = true;
+          slot.awaySinceTs ??= now;
           const current = state.round;
           if (current !== null && current.deadline?.seats.includes(seat) === true) {
             current.deadline = {

@@ -59,6 +59,43 @@ function presetProblems(file: ContentFile, rulesCheck: ValidateFunction): string
   return problems;
 }
 
+/**
+ * The ranked ladder's leagues climb, and its rewards name earn-only card backs from the catalog and
+ * earn-only frames from the avatars file (GDD 7.5, 12.9).
+ */
+function rankedProblems(file: ContentFile, contentDir: string): string[] {
+  const problems: string[] = [];
+  const read = (rel: string): Record<string, unknown> =>
+    JSON.parse(readFileSync(join(contentDir, rel), "utf8")) as Record<string, unknown>;
+  const earnOnly = (list: unknown): Set<string> =>
+    new Set(
+      (Array.isArray(list) ? (list as Record<string, unknown>[]) : [])
+        .filter((entry) => entry["earnOnly"] === true)
+        .map((entry) => String(entry["id"])),
+    );
+  const backs = earnOnly(read("catalog/v1.json")["items"]);
+  const frames = earnOnly(read("avatars/v1.json")["frames"]);
+  const leagues = file.document["leagues"] as {
+    id: string;
+    minRating: number;
+    reward: { items?: string[]; frame?: string };
+  }[];
+  leagues.forEach((league, index) => {
+    const before = leagues[index - 1];
+    if (before !== undefined && league.minRating < before.minRating) {
+      problems.push(`${file.path}: league ${league.id} starts below ${before.id}`);
+    }
+    for (const item of league.reward.items ?? []) {
+      if (!backs.has(item)) problems.push(`${file.path}: ${item} is not an earn-only catalog item`);
+    }
+    const frame = league.reward.frame;
+    if (frame !== undefined && !frames.has(frame)) {
+      problems.push(`${file.path}: ${frame} is not an earn-only frame`);
+    }
+  });
+  return problems;
+}
+
 /** Every content file names its schema; a preset is also checked against the engine. */
 export function validateContentTree(contentDir: string): string[] {
   const compile = compiler();
@@ -103,6 +140,9 @@ export function validateContentTree(contentDir: string): string[] {
     const file: ContentFile = { path: rel, document };
     if (schemaPath.endsWith("preset.schema.json") && document["gameId"] === "thulla") {
       problems.push(...presetProblems(file, ajvRules));
+    }
+    if (schemaPath.endsWith("ranked.schema.json")) {
+      problems.push(...rankedProblems(file, contentDir));
     }
   }
   return problems;

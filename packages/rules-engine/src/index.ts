@@ -11,4 +11,5 @@ export type {
   Viewer,
 } from "./contract";
 export * from "./card-kit";
+export * from "./rating";
 export * from "./thulla";

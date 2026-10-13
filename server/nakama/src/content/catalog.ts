@@ -15,6 +15,8 @@ export interface CatalogItem {
   readonly starter?: boolean;
   readonly gameIds?: readonly string[];
   readonly season?: string;
+  /** Earned from ranked, the pass or achievements; the shop never sells it. */
+  readonly earnOnly?: boolean;
 }
 
 export interface Catalog {
