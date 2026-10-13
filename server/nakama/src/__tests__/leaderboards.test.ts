@@ -93,6 +93,12 @@ describe("Baithak points on the boards (GDD 12.8, R50)", () => {
     expect(global.nextResetTs).toBe(1_800_000_000_000);
     const friends = boardView(m.nk, "u2", "monthly", "friends", ["u1"], 10, undefined);
     expect(friends.ok && friends.rows.map((r) => r.userId)).toEqual(["u1", "u2"]);
+    // No friends: the friends view holds the caller alone, never the global page.
+    const alone = boardView(m.nk, "u2", "monthly", "friends", [], 10, undefined);
+    expect(alone.ok && alone.rows.map((r) => r.userId)).toEqual(["u2"]);
+    const stranger = boardView(m.nk, "nobody", "monthly", "friends", [], 10, undefined);
+    expect(stranger.ok && stranger.rows).toEqual([]);
+    expect(stranger.ok && stranger.me).toBeNull();
     m.nk.friendsAdd("u2", "user_u2", ["u1"], [], {});
     m.nk.friendsAdd("u1", "user_u1", ["u2"], [], {});
     const viaRpc = parse(

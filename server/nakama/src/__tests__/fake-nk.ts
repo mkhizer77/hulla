@@ -496,11 +496,10 @@ export function memoryNk(): MemoryNk {
           expiryTime: r.expiry,
           rank: i + 1,
         }));
-      const records =
-        owners === undefined
-          ? ranked.slice(0, limit)
-          : ranked.filter((r) => owners.includes(r.ownerId)).slice(0, limit);
-      return { records, ownerRecords: [], rankCount: ranked.length };
+      const records = ranked.slice(0, limit);
+      const ownerRecords =
+        owners === undefined ? [] : ranked.filter((r) => owners.includes(r.ownerId));
+      return { records, ownerRecords, rankCount: ranked.length };
     },
   } as unknown as nkruntime.Nakama;
   return {

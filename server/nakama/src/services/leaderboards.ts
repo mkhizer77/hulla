@@ -148,17 +148,20 @@ export function boardView(
       error: ruleError(ErrorCodes.content.packUnknown, { reason: String(error) }),
     };
   }
-  const rows = (list.records ?? []).map(toRow).sort((a, b) => b.score - a.score || a.rank - b.rank);
+  // Nakama keeps the page of top records in `records` and the asked-for owners in `ownerRecords`,
+  // so the friends view reads the latter and the global view the former.
+  const source = scope === "friends" ? (list.ownerRecords ?? []) : (list.records ?? []);
+  const rows = source.map(toRow).sort((a, b) => b.score - a.score || a.rank - b.rank);
   const mine =
     (list.ownerRecords ?? []).find((r) => r.ownerId === userId) ??
-    rows.find((r) => r.userId === userId);
+    (list.records ?? []).find((r) => r.ownerId === userId);
   const nextResetTs = nextResetOf(nk, id);
   return {
     ok: true,
     board,
     scope,
     rows,
-    me: mine === undefined ? null : "rank" in mine ? (mine as BoardRow) : toRow(mine),
+    me: mine === undefined ? null : toRow(mine),
     nextCursor: list.nextCursor ?? null,
     nextResetTs,
   };
