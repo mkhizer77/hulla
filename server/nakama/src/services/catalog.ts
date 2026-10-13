@@ -40,6 +40,8 @@ export interface Inventory {
   readonly equipped: Readonly<Record<string, string>>;
   /** Game id to category to item, when a game has its own choice. */
   readonly perGame: Readonly<Record<string, Readonly<Record<string, string>>>>;
+  /** Item id to the end of a 24-hour trial from a rewarded ad (GDD 13.6). */
+  readonly trials?: Readonly<Record<string, number>>;
   readonly updatedTs: number;
 }
 
@@ -53,11 +55,28 @@ export function starters(catalog: Catalog): readonly CatalogItem[] {
   return catalog.items.filter((i) => i.starter === true);
 }
 
-/** Everyone owns the starter items; the free path is never empty (GDD 13.1). */
-export function owns(inventory: Inventory, catalog: Catalog, id: string): boolean {
+/**
+ * Everyone owns the starter items; the free path is never empty (GDD 13.1). With `now`, a running
+ * trial counts as owned for equipping; without it (a purchase), only what was bought or granted.
+ */
+export function owns(inventory: Inventory, catalog: Catalog, id: string, now?: number): boolean {
   if (id in inventory.owned) return true;
+  if (now !== undefined && (inventory.trials?.[id] ?? 0) > now) return true;
   const item = itemById(catalog, id);
   return item?.starter === true;
+}
+
+/** A 24-hour trial of a table theme from a rewarded ad; equip works until it ends. */
+export function startTrial(
+  inventory: Inventory,
+  itemId: string,
+  until: number,
+  now: number,
+): Inventory {
+  const trials: Record<string, number> = {};
+  for (const [id, end] of Object.entries(inventory.trials ?? {})) if (end > now) trials[id] = end;
+  trials[itemId] = until;
+  return { ...inventory, trials, updatedTs: now };
 }
 
 /** Three items a week, the same for everyone, never starters (GDD 13.3 "the shop rotates weekly"). */
@@ -159,7 +178,7 @@ export function equip(
       response: { ok: false, error: ruleError(ErrorCodes.economy.itemUnknown, { itemId }) },
     };
   }
-  if (!owns(inventory, catalog, itemId)) {
+  if (!owns(inventory, catalog, itemId, now)) {
     return {
       inventory,
       response: {
@@ -197,12 +216,17 @@ export function equip(
 export type SeatCosmetics = Partial<Record<Category, string>>;
 
 /** What a seat shows at a table of `gameId`: the game's choice, else the global one, else the starter. */
-export function equippedFor(inventory: Inventory, catalog: Catalog, gameId: string): SeatCosmetics {
+export function equippedFor(
+  inventory: Inventory,
+  catalog: Catalog,
+  gameId: string,
+  now?: number,
+): SeatCosmetics {
   const out: SeatCosmetics = {};
   for (const category of CATEGORIES) {
     const chosen = inventory.perGame[gameId]?.[category] ?? inventory.equipped[category];
     const fallback = starters(catalog).find((i) => i.category === category)?.id;
-    const id = chosen !== undefined && owns(inventory, catalog, chosen) ? chosen : fallback;
+    const id = chosen !== undefined && owns(inventory, catalog, chosen, now) ? chosen : fallback;
     if (id !== undefined) out[category] = id;
   }
   return out;
@@ -215,22 +239,28 @@ export interface CatalogView {
   readonly items: readonly (CatalogItem & {
     readonly owned: boolean;
     readonly equipped: boolean;
+    /** The end of a running trial from a rewarded ad. */
+    readonly trialUntil?: number;
   })[];
   readonly equipped: Inventory["equipped"];
   readonly perGame: Inventory["perGame"];
 }
 
 export function catalogView(inventory: Inventory, catalog: Catalog, now: number): CatalogView {
-  const global = equippedFor(inventory, catalog, "");
+  const global = equippedFor(inventory, catalog, "", now);
   return {
     id: catalog.id,
     version: catalog.version,
     spotlight: spotlight(catalog, now),
-    items: catalog.items.map((item) => ({
-      ...item,
-      owned: owns(inventory, catalog, item.id),
-      equipped: global[item.category] === item.id,
-    })),
+    items: catalog.items.map((item) => {
+      const trialUntil = inventory.trials?.[item.id];
+      return {
+        ...item,
+        owned: owns(inventory, catalog, item.id),
+        equipped: global[item.category] === item.id,
+        ...(trialUntil !== undefined && trialUntil > now ? { trialUntil } : {}),
+      };
+    }),
     equipped: inventory.equipped,
     perGame: inventory.perGame,
   };

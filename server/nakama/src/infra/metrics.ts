@@ -22,6 +22,8 @@ export const METRICS = {
   invites: "hulla_invites",
   purchases: "hulla_purchases",
   purchasesRejected: "hulla_purchases_rejected",
+  adRewards: "hulla_ad_rewards",
+  adRewardsRejected: "hulla_ad_rewards_rejected",
 } as const;
 
 export interface MetricsSink {

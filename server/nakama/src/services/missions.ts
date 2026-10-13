@@ -296,18 +296,29 @@ export function claim(
 }
 
 export type RerollResponse =
-  | { readonly ok: true; readonly replaced: string; readonly mission: MissionView }
+  | {
+      readonly ok: true;
+      readonly replaced: string;
+      readonly mission: MissionView;
+      /** True when an extra re-roll from a rewarded ad paid for it (GDD 13.6). */
+      readonly usedCredit: boolean;
+    }
   | { readonly ok: false; readonly error: RuleError };
 
-/** Swaps one unclaimed daily mission for the next unassigned one in the player's draw, once a day. */
+/**
+ * Swaps one unclaimed daily mission for the next unassigned one in the player's draw, once a day
+ * for free, then once per re-roll credit earned from a rewarded ad.
+ */
 export function reroll(
   record: MissionsRecord,
   pool: MissionPool,
   userId: string,
   missionId: string,
   now: number,
+  credits = 0,
 ): { record: MissionsRecord; response: RerollResponse } {
-  if (record.rerollDay === record.day) {
+  const usedCredit = record.rerollDay === record.day;
+  if (usedCredit && credits <= 0) {
     return {
       record,
       response: {
@@ -348,7 +359,7 @@ export function reroll(
       response: { ok: false, error: ruleError(ErrorCodes.content.packUnknown, { reason: "pool" }) },
     };
   }
-  return { record: next, response: { ok: true, replaced: missionId, mission: view } };
+  return { record: next, response: { ok: true, replaced: missionId, mission: view, usedCredit } };
 }
 
 export function isMissionPool(value: unknown): value is MissionPool {

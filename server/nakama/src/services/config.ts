@@ -35,6 +35,13 @@ export const DEFAULT_CONFIG: RemoteConfig = {
     voice: [{ value: true }],
     shop: [{ value: false }],
     rewarded_ads: [{ value: false }],
+    interstitials: [{ value: true }],
+    // The placements and caps of GDD 13.6; the server enforces the rewarded caps per local day.
+    ad_cap_double_coins: [{ value: 5 }],
+    ad_cap_reroll: [{ value: 2 }],
+    ad_cap_theme_trial: [{ value: 1 }],
+    interstitial_from_round: [{ value: 4 }],
+    interstitial_interval_seconds: [{ value: 240 }],
     turn_seconds_private: [{ value: 20 }],
     turn_seconds_public: [{ value: 15 }],
     backfill_delay_seconds: [{ value: 20 }],
