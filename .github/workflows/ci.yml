@@ -171,10 +171,13 @@ jobs:
           UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
           UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
           UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
+          # The action looks up its CLI release with this token; without it the call is anonymous and rate-limited.
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           projectPath: apps/unity/Hulla
           unityVersion: 6000.4.9f1
           testMode: EditMode
+          cliVersion: v0.1.72
           githubToken: ${{ secrets.GITHUB_TOKEN }}
 
   # Single required check for branch protection. Skipped jobs count as passing;
