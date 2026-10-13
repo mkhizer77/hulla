@@ -5,8 +5,9 @@ using UnityEngine.UIElements;
 namespace Hulla.Presentation.Navigation
 {
     /// <summary>
-    /// The one UI document in the Main scene. Swaps screen documents in and reports frame time to
-    /// whoever owns the current screen (the table's animation scheduler).
+    /// The one UI document in the Main scene. Swaps screen documents in with a short transition
+    /// (GDD 15.7), keeps the bottom navigation, an open overlay and the top pill across swaps, and
+    /// reports frame time to whoever owns the current screen (the table's animation scheduler).
     /// </summary>
     [RequireComponent(typeof(UIDocument))]
     public sealed class ShellView : MonoBehaviour
@@ -15,13 +16,17 @@ namespace Hulla.Presentation.Navigation
         private ScreenCatalog? _catalog;
 
         private VisualElement? _current;
-
-        private Rect _appliedSafeArea;
-        private float _appliedScale;
+        private NavBar? _nav;
 
         public event Action<float>? Ticked;
 
         public ScreenCatalog Catalog => _catalog != null ? _catalog : throw new InvalidOperationException("ShellView has no screen catalog");
+
+        /// <summary>Swaps the 240 ms rise for a 120 ms fade (GDD 27).</summary>
+        public bool ReduceMotion { get; set; }
+
+        /// <summary>Raised when a bottom-navigation tab is tapped.</summary>
+        public event Action<NavTab>? NavChosen;
 
         public VisualElement Show(VisualTreeAsset? screen)
         {
@@ -31,14 +36,27 @@ namespace Hulla.Presentation.Navigation
                 throw new InvalidOperationException("screen document missing from the catalog");
             }
 
-            // An open overlay (settings) and the reconnect banner stay on top of the new screen.
+            // The navigation, an open overlay (settings) and the top pill stay across the swap.
             var overlay = root.Q("shell-overlay");
             var banner = root.Q("shell-banner");
+            var nav = root.Q("shell-nav");
             root.Clear();
             var instance = screen.Instantiate();
             instance.style.flexGrow = 1;
+            instance.AddToClassList("screen-anim");
+            instance.AddToClassList(ReduceMotion ? "screen--enter-fade" : "screen--enter");
             root.Add(instance);
             _current = instance;
+            instance.schedule.Execute(() =>
+            {
+                instance.RemoveFromClassList("screen--enter");
+                instance.RemoveFromClassList("screen--enter-fade");
+            }).StartingIn(16);
+            if (nav != null)
+            {
+                root.Add(nav);
+            }
+
             if (overlay != null)
             {
                 root.Add(overlay);
@@ -50,6 +68,41 @@ namespace Hulla.Presentation.Navigation
             }
 
             return instance;
+        }
+
+        /// <summary>Shows the bottom navigation with <paramref name="active"/> lit; call after <see cref="Show"/>.</summary>
+        public void ShowNav(NavTab active)
+        {
+            var root = Root;
+            if (_nav == null)
+            {
+                _nav = new NavBar(Text.UiText.NavLabel, Text.UiText.NavGlyph);
+                _nav.Chosen += tab => NavChosen?.Invoke(tab);
+            }
+
+            if (_nav.parent != root)
+            {
+                _nav.RemoveFromHierarchy();
+                var overlay = root.Q("shell-overlay");
+                var index = overlay != null ? root.IndexOf(overlay) : root.childCount;
+                root.Insert(Math.Max(0, Math.Min(index, root.childCount)), _nav);
+            }
+
+            _nav.Select(active);
+        }
+
+        public void HideNav() => _nav?.RemoveFromHierarchy();
+
+        /// <summary>A count on a tab, shown whether or not the bar is on screen right now.</summary>
+        public void SetNavBadge(NavTab tab, int count)
+        {
+            if (_nav == null)
+            {
+                _nav = new NavBar(Text.UiText.NavLabel, Text.UiText.NavGlyph);
+                _nav.Chosen += chosen => NavChosen?.Invoke(chosen);
+            }
+
+            _nav.SetBadge(tab, count);
         }
 
         /// <summary>The app's panel settings, copied for off-screen drawing (share cards).</summary>
@@ -70,7 +123,14 @@ namespace Hulla.Presentation.Navigation
             var instance = screen.Instantiate();
             instance.name = "shell-overlay";
             instance.AddToClassList("overlay");
+            instance.AddToClassList("screen-anim");
+            instance.AddToClassList(ReduceMotion ? "screen--enter-fade" : "screen--enter");
             Root.Add(instance);
+            instance.schedule.Execute(() =>
+            {
+                instance.RemoveFromClassList("screen--enter");
+                instance.RemoveFromClassList("screen--enter-fade");
+            }).StartingIn(16);
             return instance;
         }
 
@@ -109,7 +169,7 @@ namespace Hulla.Presentation.Navigation
             Root.Add(overlay);
         }
 
-        /// <summary>A strip across the top of whatever screen is showing; null hides it.</summary>
+        /// <summary>A pill at the top of whatever screen is showing (GDD 14.5: pills, never modals); null hides it.</summary>
         public void SetBanner(string? text)
         {
             var root = GetComponent<UIDocument>().rootVisualElement;
@@ -132,36 +192,8 @@ namespace Hulla.Presentation.Navigation
 
         private void Update() => Ticked?.Invoke(Time.deltaTime);
 
-        /// <summary>
-        /// The app draws edge to edge; this pads the screens clear of notches, camera cut-outs, the status
-        /// bar and the gesture bar (GDD 14.2), re-applied when the phone rotates or the insets change.
-        /// </summary>
-        private void KeepInSafeArea()
-        {
-            var root = Root;
-            var safe = Screen.safeArea;
-            if (Screen.width <= 0 || float.IsNaN(root.worldBound.width) || root.worldBound.width <= 0f)
-            {
-                return;
-            }
-
-            var scale = root.worldBound.width / Screen.width;
-            if (safe == _appliedSafeArea && Mathf.Approximately(scale, _appliedScale))
-            {
-                return;
-            }
-
-            _appliedSafeArea = safe;
-            _appliedScale = scale;
-            root.style.paddingLeft = safe.xMin * scale;
-            root.style.paddingRight = (Screen.width - safe.xMax) * scale;
-            root.style.paddingBottom = safe.yMin * scale;
-            root.style.paddingTop = (Screen.height - safe.yMax) * scale;
-        }
-
         private void LateUpdate()
         {
-            KeepInSafeArea();
             KeyboardAvoidance.Apply(Root, _current);
             KeyboardAvoidance.Apply(Root, Root.Q("shell-overlay"));
         }

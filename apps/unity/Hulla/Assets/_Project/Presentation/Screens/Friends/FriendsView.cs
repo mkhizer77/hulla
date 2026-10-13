@@ -19,10 +19,17 @@ namespace Hulla.Presentation.Screens.Friends
         private readonly TextField _code;
         private readonly Actions _actions;
 
-        public FriendsView(VisualElement root, FriendsViewModel model, Action back, Actions actions)
+        private readonly Action? _retry;
+        private readonly Action? _showMyCode;
+
+        /// <param name="retry">Loads the lists again after an error; null hides Retry.</param>
+        /// <param name="showMyCode">Opens the profile with the friend code from the empty state.</param>
+        public FriendsView(VisualElement root, FriendsViewModel model, Action back, Actions actions, Action? retry = null, Action? showMyCode = null)
         {
             _model = model;
             _actions = actions;
+            _retry = retry;
+            _showMyCode = showMyCode;
             root.Q<Label>("title").text = UiText.Friends;
             var backButton = root.Q<Button>("back");
             backButton.text = UiText.Back;
@@ -43,13 +50,31 @@ namespace Hulla.Presentation.Screens.Friends
 
         private void Refresh()
         {
-            _status.text = _model.ErrorCode != null ? UiText.Error(_model.ErrorCode) : _model.RequestSent ? UiText.RequestSent : "";
+            _status.text = _model.RequestSent ? UiText.RequestSent : "";
             if (_model.RequestSent)
             {
                 _code.value = "";
             }
 
             _list.Clear();
+            var nothingYet = _model.Received.Count + _model.Friends.Count + _model.Sent.Count + _model.Recent.Count + _model.Blocked.Count == 0;
+            if (_model.ErrorCode != null && nothingYet)
+            {
+                ListState.Error(_list, _model.ErrorCode, _retry);
+                return;
+            }
+
+            if (_model.Busy && nothingYet)
+            {
+                ListState.Loading(_list);
+                return;
+            }
+
+            if (_model.ErrorCode != null)
+            {
+                _status.text = UiText.Error(_model.ErrorCode);
+            }
+
             Section(UiText.Requests, _model.Received, entry => new[]
             {
                 Action(UiText.Accept, () => _actions.Add(entry.UserId), true),
@@ -79,9 +104,7 @@ namespace Hulla.Presentation.Screens.Friends
             _list.Add(heading);
             if (entries.Count == 0)
             {
-                var none = new Label(empty);
-                none.AddToClassList("status");
-                _list.Add(none);
+                ListState.Empty(_list, empty!, _showMyCode == null ? null : UiText.ShowMyCode, _showMyCode);
                 return;
             }
 

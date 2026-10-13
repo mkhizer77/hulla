@@ -135,6 +135,43 @@ namespace Hulla.Presentation.Text
         public const string SortBySuit = "By suit";
         public const string SortByRank = "By rank";
         public const string HapticsLabel = "Vibration";
+        public const string PlayNow = "Play now";
+        public const string CreateRoom = "Create a room";
+        public const string JoinByCode = "Join by code";
+        public const string Retry = "Retry";
+        public const string Loading = "Loading…";
+        public const string ChangeRules = "Change rules";
+        public const string FairDealCheck = "Fair deal · see the shuffle";
+        public const string FairDealExplained = "Before the deal, the server committed to {0}. The seed was {1}. Anyone can rebuild the shuffle from these two, so the deal could not have been changed after the fact.";
+        public const string CopySeed = "Copy the seed";
+        public const string StartWith = "Start · {0} of {1} seated";
+        public const string NoMissionsYet = "New missions arrive at midnight.";
+        public const string NoAchievementsYet = "Play a round to start.";
+        public const string NothingThisWeek = "Nothing here this week.";
+        public const string ShowMyCode = "Show my code";
+        public const string InviteYourGroup = "Invite your group";
+        public const string PartyEmpty = "No friends online. Share your code.";
+        public const string Watching1 = "Watching: {0}";
+
+        /// <summary>The bottom navigation (GDD 14.1).</summary>
+        public static string NavLabel(Navigation.NavTab tab) => tab switch
+        {
+            Navigation.NavTab.Home => "Home",
+            Navigation.NavTab.Friends => Friends,
+            Navigation.NavTab.Shop => Shop,
+            Navigation.NavTab.Pass => "Pass",
+            _ => Profile,
+        };
+
+        /// <summary>Glyphs stand in for the icon set (#23).</summary>
+        public static string NavGlyph(Navigation.NavTab tab) => tab switch
+        {
+            Navigation.NavTab.Home => "⌂",
+            Navigation.NavTab.Friends => "☺",
+            Navigation.NavTab.Shop => "◈",
+            Navigation.NavTab.Pass => "★",
+            _ => "●",
+        };
         public const string SettingsSound = "Sound";
         public const string SfxLabel = "Sound effects";
 

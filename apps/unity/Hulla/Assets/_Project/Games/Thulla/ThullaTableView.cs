@@ -1050,6 +1050,12 @@ namespace Hulla.Games.Thulla
         /// <summary>Shows Share on the results.</summary>
         public void UseShare(Action share) => _results.Share = share;
 
+        /// <summary>Shows the fair-deal chip on the results (ADR-0009).</summary>
+        public void UseFairness(Action<Fairness> explain) => _results.ShowFairness = explain;
+
+        /// <summary>Lets the host change the rules from the results (design §8).</summary>
+        public void UseChangeRules(Action open) => _results.ChangeRules = open;
+
         /// <summary>Lets the results offer "Add friend" for co-players who aren't friends or pending yet.</summary>
         public void SetFriendActions(Func<string, bool> canAdd, Action<string> addFriend)
         {

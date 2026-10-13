@@ -34,6 +34,12 @@ namespace Hulla.Presentation.Screens.Lobby
         private readonly Action? _openEditor;
         private readonly VisualElement _root;
         private readonly Button _inviteButton;
+        private readonly Button _copyButton;
+        private readonly Presentation.TableKit.OpponentRing _ring;
+        private readonly Presentation.TableKit.SeatBadge _me;
+        private readonly VisualElement _watchers;
+        private readonly HashSet<string> _seen = new HashSet<string>();
+        private bool _firstRefresh = true;
         private Func<Awaitable<IReadOnlyList<FriendEntry>>>? _friends;
         private Func<string, Awaitable<string?>>? _invite;
 
@@ -73,11 +79,30 @@ namespace Hulla.Presentation.Screens.Lobby
                 }
             };
             _canShare = share != null;
+            _copyButton = root.Q<Button>("copy");
+            _copyButton.text = UiText.Copy;
+            _copyButton.clicked += () =>
+            {
+                GUIUtility.systemCopyBuffer = _client.Model.Code.Length > 0 ? _client.Model.Code : _client.Ticket.Code;
+                _copyButton.text = UiText.Copied;
+                _copyButton.schedule.Execute(() => _copyButton.text = UiText.Copy).StartingIn(2000);
+            };
             _nowMs = nowMs;
             _countdown = root.Q<Label>("countdown");
             root.Q<Label>("code-label").text = UiText.RoomCode;
             _code = root.Q<Label>("code");
             _seats = root.Q<VisualElement>("seats");
+            _watchers = root.Q<VisualElement>("watchers");
+
+            // The seat ring (GDD 14.9): the table's own arc, so the lobby becomes the table without a re-layout.
+            _ring = new Presentation.TableKit.OpponentRing(_seats);
+            _ring.Tapped += OnSeatTapped;
+            _me = new Presentation.TableKit.SeatBadge();
+            _me.AddToClassList("seat--placed");
+            _me.AddToClassList("seat--me");
+            _me.style.left = Length.Percent(50f);
+            _me.style.top = Length.Percent(88f);
+            _seats.Add(_me);
             _ready = root.Q<Button>("ready");
             _start = root.Q<Button>("start");
             _start.text = UiText.Start;
@@ -175,37 +200,77 @@ namespace Hulla.Presentation.Screens.Lobby
 
         private void ToggleReady() => _client.SetReady(!MeReady());
 
+        /// <summary>An empty seat invites; a taken seat does nothing here (the player sheet is the table's).</summary>
+        private void OnSeatTapped(long seat)
+        {
+            var model = _client.Model;
+            if (seat < model.Seats.Count && model.Seats[(int)seat].Occupied)
+            {
+                return;
+            }
+
+            if (_friends != null && _invite != null)
+            {
+                OpenInvites();
+            }
+            else if (_canShare)
+            {
+                using var click = NavigationSubmitEvent.GetPooled();
+                click.target = _shareButton;
+                _shareButton.SendEvent(click);
+            }
+        }
+
+        private void RefreshSeats(TableModel model, out int seated)
+        {
+            seated = 0;
+            var count = model.Seats.Count;
+            _ring.Spectating = model.Spectating;
+            _ring.Layout(count, model.MySeat ?? 0);
+            _me.style.display = model.Spectating ? DisplayStyle.None : DisplayStyle.Flex;
+            var shown = model.Spectating ? count : count - 1;
+            for (var i = 0; i < shown && i < _ring.Badges.Count; i++)
+            {
+                var seat = _ring.SeatAt(i);
+                var info = seat < model.Seats.Count ? model.Seats[(int)seat] : default;
+                Fill(_ring.Badges[i], info, model);
+                seated += info.Occupied ? 1 : 0;
+            }
+
+            if (!model.Spectating && model.MySeat is long mine && mine < model.Seats.Count)
+            {
+                var info = model.Seats[(int)mine];
+                Fill(_me, info, model, UiText.You);
+                seated += info.Occupied ? 1 : 0;
+            }
+
+            _firstRefresh = false;
+        }
+
+        /// <summary>A seat that has just been taken bounces in (design §6): you know you joined when your seat lights up.</summary>
+        private void Fill(Presentation.TableKit.SeatBadge badge, SeatInfo info, TableModel model, string? nameOverride = null)
+        {
+            if (!info.Occupied)
+            {
+                badge.ShowLobby(null, false, false);
+                return;
+            }
+
+            badge.ShowLobby(nameOverride ?? info.DisplayName ?? "", info.Seat == model.HostSeat, info.Ready);
+            if (info.PlayerId != null && _seen.Add(info.PlayerId) && !_firstRefresh)
+            {
+                badge.AddToClassList("seat--enter");
+                badge.schedule.Execute(() => badge.RemoveFromClassList("seat--enter")).StartingIn(16);
+            }
+        }
+
         private void Refresh()
         {
             var model = _client.Model;
             _code.text = model.Code.Length > 0 ? model.Code : _client.Ticket.Code;
-            _seats.Clear();
-            var seated = 0;
-            foreach (var seat in model.Seats)
-            {
-                if (!seat.Occupied)
-                {
-                    continue;
-                }
-
-                seated++;
-                var row = new VisualElement();
-                row.AddToClassList("lobby-seat");
-                var name = new Label(seat.Seat == model.MySeat ? UiText.You : seat.DisplayName ?? "");
-                name.AddToClassList("lobby-seat__name");
-                row.Add(name);
-                if (seat.Seat == model.HostSeat)
-                {
-                    var host = new Label(UiText.Host);
-                    host.AddToClassList("tag");
-                    row.Add(host);
-                }
-
-                var ready = new Label(seat.Ready ? UiText.Ready : UiText.NotReady);
-                ready.AddToClassList(seat.Ready ? "tag--ok" : "tag--muted");
-                row.Add(ready);
-                _seats.Add(row);
-            }
+            RefreshSeats(model, out var seated);
+            _start.text = model.Seats.Count > 0 ? string.Format(UiText.StartWith, seated, model.Seats.Count) : UiText.Start;
+            _start.SetEnabled(seated >= 3);
 
             var matchmade = !model.IsPrivate;
             if (matchmade)
@@ -214,6 +279,7 @@ namespace Hulla.Presentation.Screens.Lobby
             }
 
             _rules.text = _rulesSummary?.Invoke() ?? "";
+            _watchers.Clear();
             foreach (var watcher in model.Spectators)
             {
                 var row = new VisualElement();
@@ -229,7 +295,7 @@ namespace Hulla.Presentation.Screens.Lobby
                     row.Add(seat);
                 }
 
-                _seats.Add(row);
+                _watchers.Add(row);
             }
             _editRules.style.display = model.IsHost && !matchmade && _openEditor != null ? DisplayStyle.Flex : DisplayStyle.None;
             var changedBy = model.RulesChangedBy;
@@ -239,6 +305,7 @@ namespace Hulla.Presentation.Screens.Lobby
             _ready.text = MeReady() ? UiText.NotReady : UiText.Ready;
             _ready.style.display = matchmade || model.Spectating ? DisplayStyle.None : DisplayStyle.Flex;
             _shareButton.style.display = matchmade || !_canShare ? DisplayStyle.None : DisplayStyle.Flex;
+            _copyButton.style.display = matchmade ? DisplayStyle.None : DisplayStyle.Flex;
             _inviteButton.style.display = matchmade || _invite == null || model.Spectating ? DisplayStyle.None : DisplayStyle.Flex;
             _start.style.display = model.IsHost && !matchmade ? DisplayStyle.Flex : DisplayStyle.None;
             _status.text = model.LastErrorCode != null ? UiText.Error(model.LastErrorCode) : model.Spectating ? UiText.WatchingLobby : seated < 3 ? UiText.Waiting : "";

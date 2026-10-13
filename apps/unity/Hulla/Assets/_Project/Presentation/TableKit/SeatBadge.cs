@@ -6,16 +6,14 @@ using UnityEngine.UIElements;
 namespace Hulla.Presentation.TableKit
 {
     /// <summary>
-    /// An opponent at the table (GDD 14.3, 14.5, 14.7): a round avatar with their initial, a draining
-    /// timer ring and a glowing border on their turn, a card-count chip that bumps as cards arrive, the
-    /// crown when they lead, a short flag when they give a thulla, their name and state (out, away),
-    /// and grey suit chips for the suits they are known to be void in.
+    /// A seat at the table (GDD 14.3, 14.5, 14.7): a round avatar with their initial, a draining timer
+    /// ring and a glowing border on their turn, a card-count chip that bumps as cards arrive, the crown
+    /// when they lead, a short flag when they give a thulla, their name and state (out, away), and grey
+    /// suit chips for the suits they are known to be void in. In the lobby (GDD 14.9) the same badge
+    /// shows the host's crown, a Ready tick and dotted empty seats that invite.
     /// </summary>
     public sealed class SeatBadge : VisualElement
     {
-        /// <summary>Avatar colours; a seat keeps its colour for as long as the name stays the same.</summary>
-        private static readonly string[] Tints = { "seat__avatar--a", "seat__avatar--b", "seat__avatar--c", "seat__avatar--d", "seat__avatar--e", "seat__avatar--f" };
-
         private readonly VisualElement _avatar = new VisualElement();
         private readonly Label _initial = new Label();
         private readonly VisualElement _chip = new VisualElement();
@@ -133,20 +131,16 @@ namespace Hulla.Presentation.TableKit
         /// <param name="voids">Suits the seat is known to be void in, or empty when the assist is off (GDD 14.7).</param>
         public void Show(string name, long cards, bool turn, string state, bool leader = false, IReadOnlyCollection<char>? voids = null)
         {
-            _name.text = name;
-            _initial.text = name.Length == 0 ? "?" : name.Substring(0, 1).ToUpperInvariant();
-            var tint = Tints[(int)((uint)StableHash(name) % (uint)Tints.Length)];
-            foreach (var t in Tints)
-            {
-                _avatar.EnableInClassList(t, t == tint);
-            }
-
+            Identity(name);
+            RemoveFromClassList("seat--empty");
+            _chip.style.display = DisplayStyle.Flex;
             _count.text = cards.ToString();
             _state.text = state;
             _state.style.display = state.Length == 0 ? DisplayStyle.None : DisplayStyle.Flex;
             _crown.style.display = leader ? DisplayStyle.Flex : DisplayStyle.None;
             EnableInClassList("seat--turn", turn);
             EnableInClassList("seat--leader", leader);
+            _state.EnableInClassList("seat__state--ready", false);
             _state.EnableInClassList("seat__state--away", state == Text.UiText.SeatAwayAutoPlay || state == Text.UiText.SeatAutoPlay);
             _state.EnableInClassList("seat__state--out", state == Text.UiText.Escaped);
             EnableInClassList("seat--out", state == Text.UiText.Escaped);
@@ -156,6 +150,50 @@ namespace Hulla.Presentation.TableKit
             }
 
             ShowVoids(voids);
+        }
+
+        /// <summary>
+        /// The lobby face of the seat (GDD 14.9): no cards, the host's crown, a Ready tick; an empty
+        /// seat is a dotted circle that says Invite.
+        /// </summary>
+        public void ShowLobby(string? name, bool host, bool ready)
+        {
+            var empty = name == null;
+            EnableInClassList("seat--empty", empty);
+            EnableInClassList("seat--turn", false);
+            EnableInClassList("seat--leader", host && !empty);
+            EnableInClassList("seat--out", false);
+            HideTimer();
+            _chip.style.display = DisplayStyle.None;
+            ShowVoids(null);
+            if (empty)
+            {
+                foreach (var cls in AvatarTint.Classes)
+                {
+                    _avatar.RemoveFromClassList(cls);
+                }
+
+                _initial.text = "+";
+                _name.text = Text.UiText.Invite;
+                _crown.style.display = DisplayStyle.None;
+                _state.style.display = DisplayStyle.None;
+                return;
+            }
+
+            Identity(name!);
+            _crown.style.display = host ? DisplayStyle.Flex : DisplayStyle.None;
+            _state.text = ready ? Text.UiText.Ready : "";
+            _state.style.display = ready ? DisplayStyle.Flex : DisplayStyle.None;
+            _state.EnableInClassList("seat__state--ready", ready);
+            _state.EnableInClassList("seat__state--away", false);
+            _state.EnableInClassList("seat__state--out", false);
+        }
+
+        private void Identity(string name)
+        {
+            _name.text = name;
+            _initial.text = name.Length == 0 ? "?" : name.Substring(0, 1).ToUpperInvariant();
+            AvatarTint.Apply(_avatar, name);
         }
 
         private void ShowVoids(IReadOnlyCollection<char>? voids)
@@ -186,18 +224,6 @@ namespace Hulla.Presentation.TableKit
                 chip.AddToClassList("seat__void");
                 _voids.Add(chip);
             }
-        }
-
-        /// <summary>The same on every run and platform, unlike string.GetHashCode.</summary>
-        private static int StableHash(string text)
-        {
-            var hash = 17;
-            foreach (var c in text)
-            {
-                hash = unchecked(hash * 31 + c);
-            }
-
-            return hash;
         }
     }
 }

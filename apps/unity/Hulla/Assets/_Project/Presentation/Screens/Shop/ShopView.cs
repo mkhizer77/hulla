@@ -50,13 +50,24 @@ namespace Hulla.Presentation.Screens.Shop
         private void Refresh()
         {
             _balances.text = _model.Coins is long coins && _model.Gems is long gems ? string.Format(UiText.Balances, coins, gems) : "";
-            _status.text = _model.ErrorCode == null ? "" : UiText.Error(_model.ErrorCode);
+            _status.text = "";
             foreach (var chip in _categories.Children())
             {
                 chip.EnableInClassList("chip--on", chip.name == "cat-" + _model.Category);
             }
 
             _list.Clear();
+            if (_model.ErrorCode != null && _model.Shown.Count == 0 && _model.Spotlight.Count == 0)
+            {
+                ListState.Error(_list, _model.ErrorCode, Retry);
+                return;
+            }
+
+            if (_model.ErrorCode != null)
+            {
+                _status.text = UiText.Error(_model.ErrorCode);
+            }
+
             var spotlight = _model.Spotlight;
             if (spotlight.Count > 0)
             {
@@ -68,11 +79,19 @@ namespace Hulla.Presentation.Screens.Shop
             }
 
             Heading(ItemText.Category(_model.Category));
+            if (_model.Shown.Count == 0)
+            {
+                ListState.Empty(_list, UiText.NothingThisWeek);
+            }
+
             foreach (var item in _model.Shown)
             {
                 _list.Add(Row(item));
             }
         }
+
+        /// <summary>Loads the catalog again after an error; null hides Retry.</summary>
+        public Action? Retry { get; set; }
 
         private void Heading(string text)
         {
