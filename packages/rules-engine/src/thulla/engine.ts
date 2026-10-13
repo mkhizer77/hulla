@@ -9,7 +9,7 @@ import type { ThullaMove } from "./moves";
 import type { ThullaState } from "./state";
 import type { Rng, SeatIndex } from "@hulla/shared-ts";
 
-export { canTakeHand, currentPhase, isRoundOver, legalMoves } from "./legal";
+export { canTakeHand, currentPhase, isRoundOver, legalMoves, takeHandError } from "./legal";
 
 /** R40 bounds every round; this only guards the fast-forward loop against a broken invariant. */
 const FAST_FORWARD_CAP = 1000;

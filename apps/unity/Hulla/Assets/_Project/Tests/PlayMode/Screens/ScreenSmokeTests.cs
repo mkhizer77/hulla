@@ -152,6 +152,61 @@ namespace Hulla.Screens.Tests
         }
 
         [UnityTest]
+        public IEnumerator TheAskedPlayerSeesTheRequestAndCanKeepPlaying()
+        {
+            VisualElement root = null!;
+            var gateway = new Fakes.Gateway();
+            var client = new TableClient(gateway, new TableTicket("m", "K7Q2MX", "t_K7Q2MX"), "me", 1);
+            ThullaTableView view = null!;
+            yield return Open(Catalog.Table, r =>
+            {
+                root = r;
+                view = new ThullaTableView(r, client, new Fakes.Chat(), () => 0, () => { });
+                gateway.Deliver(MessageTypes.TableState, 5, Fakes.InRound(5));
+            });
+            var asked = new HandAsked { RoundId = "r", Asker = 3, Target = 0, CardCount = 4, DeadlineTs = 20000 };
+            gateway.Deliver(MessageTypes.HandAsked, 6, asked);
+            view.Present(new ServerMessage(MessageTypes.HandAsked, 6, asked));
+            yield return null;
+            var sheet = root.Q<VisualElement>("player-sheet");
+            Shown(sheet, "the request");
+            Assert.AreEqual("Sana asks for your hand", root.Q<Label>("sheet-title").text);
+            StringAssert.Contains("4 cards", root.Q<Label>("sheet-status").text);
+            var buttons = root.Q<VisualElement>("sheet-actions").Query<Button>().ToList();
+            CollectionAssert.AreEqual(new[] { "Hand over", "Keep playing" }, buttons.Select(b => b.text).ToList());
+            using (var click = NavigationSubmitEvent.GetPooled())
+            {
+                click.target = buttons[1];
+                buttons[1].SendEvent(click);
+            }
+
+            yield return null;
+            var sent = gateway.Sent.Find(s => s.Type == MessageTypes.AnswerHand);
+            Assert.IsFalse(((AnswerHand)sent.Payload).Accept, "Keep playing refuses");
+            Assert.AreEqual(DisplayStyle.None, sheet.resolvedStyle.display);
+        }
+
+        [UnityTest]
+        public IEnumerator AnEscapedPlayerIsToldAndKeepsWatching()
+        {
+            VisualElement root = null!;
+            var gateway = new Fakes.Gateway();
+            var client = new TableClient(gateway, new TableTicket("m", "K7Q2MX", "t_K7Q2MX"), "me", 1);
+            yield return Open(Catalog.Table, r =>
+            {
+                root = r;
+                new ThullaTableView(r, client, new Fakes.Chat(), () => 0, () => { });
+                gateway.Deliver(MessageTypes.TableState, 5, Fakes.InRound(5));
+            });
+            gateway.Deliver(MessageTypes.Escape, 6, new Escape { RoundId = "r", Seat = 0, Rank = 1 });
+            yield return null;
+            Shown(root.Q<VisualElement>("coach"), "the you're-out note");
+            StringAssert.Contains("You're out", root.Q<Label>("coach-text").text);
+            StringAssert.StartsWith("Out · watching", root.Q<Label>("turn").text);
+            Shown(root.Q<Button>("chat"), "chat stays open to an escaped player");
+        }
+
+        [UnityTest]
         public IEnumerator ResultsOpenAtRoundEnd()
         {
             VisualElement root = null!;

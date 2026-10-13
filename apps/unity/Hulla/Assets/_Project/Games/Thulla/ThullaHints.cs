@@ -52,6 +52,9 @@ namespace Hulla.Games.Thulla
             return null;
         }
 
+        /// <summary>True the first time ever a player asks for a hand, so the ask can be explained (GDD 17.4).</summary>
+        public bool ExplainAsk() => Take("ask-hand");
+
         public void RoundEnded()
         {
             _store.SetInt(RoundsKey, _store.GetInt(RoundsKey, 0) + 1);

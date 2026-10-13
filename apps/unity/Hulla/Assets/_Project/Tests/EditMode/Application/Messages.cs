@@ -71,6 +71,12 @@ namespace Hulla.Application.Tests
                 LedSuit = Suit.S,
             });
 
+        public static ServerMessage HandAsked(long seq, long asker, long target, long cards) =>
+            new ServerMessage(MessageTypes.HandAsked, seq, new HandAsked { RoundId = "r1", Asker = asker, Target = target, CardCount = cards, DeadlineTs = 20000 });
+
+        public static ServerMessage HandAnswered(long seq, long asker, long target, bool accepted, HandAnsweredPayloadReason reason) =>
+            new ServerMessage(MessageTypes.HandAnswered, seq, new HandAnswered { RoundId = "r1", Asker = asker, Target = target, Accepted = accepted, Reason = reason });
+
         public static ServerMessage Pickup(long seq, long seat, params string[] cards) =>
             new ServerMessage(MessageTypes.Pickup, seq, new Pickup { RoundId = "r1", Seat = seat, Cards = new List<string>(cards) });
 

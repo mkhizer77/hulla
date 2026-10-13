@@ -150,6 +150,158 @@ describe("the Thulla host at the table core", () => {
     );
   });
 
+  /** Plays first legal cards until a seat may ask for a hand (trick two, pre-lead, R32). */
+  function reachTakeWindow(t: Table): { seat: number; roundId: string; clientSeq: number } {
+    let clientSeq = 100;
+    for (let steps = 0; steps < 200; steps += 1) {
+      const round = t.state.round;
+      if (round === null) throw new Error("no round");
+      for (let seat = 0; seat < SEATS; seat += 1) {
+        if (legalMoves(round.state, seat).some((m) => m.type === "take_hand")) {
+          return { seat, roundId: round.roundId, clientSeq };
+        }
+      }
+      let acted = false;
+      for (let seat = 0; seat < SEATS && !acted; seat += 1) {
+        const card = legalMoves(round.state, seat).find(
+          (m): m is Extract<ThullaMove, { type: "play_card" }> => m.type === "play_card",
+        );
+        if (card === undefined) continue;
+        clientSeq += 1;
+        t.send(`s${String(seat)}`, "play_card", {
+          roundId: round.roundId,
+          clientSeq,
+          card: card.card,
+        });
+        acted = true;
+      }
+      if (!acted) t.tick(1_500);
+    }
+    throw new Error("no take window reached");
+  }
+
+  function sentTypes(batch: Batch): string[] {
+    return batch.outbound.map((o) => o.envelope.type);
+  }
+
+  function payloadOf(batch: Batch, type: string): Record<string, unknown> | undefined {
+    return batch.outbound.find((o) => o.envelope.type === type)?.envelope.payload as
+      Record<string, unknown> | undefined;
+  }
+
+  it("asks the next player for their hand and takes it when they accept (R32, R33)", () => {
+    const t = table();
+    t.send("s0", "start_round", {});
+    const { seat, roundId, clientSeq } = reachTakeWindow(t);
+    const round = t.state.round!;
+    const target = (seat + 1) % SEATS;
+    const targetCards = round.state.seats[target]!.hand.length;
+    const askerCards = round.state.seats[seat]!.hand.length;
+    const asked = t.send(`s${String(seat)}`, "take_hand", { roundId, clientSeq: clientSeq + 1 });
+    expect(payloadOf(asked, "hand_asked")).toMatchObject({
+      asker: seat,
+      target,
+      cardCount: targetCards,
+    });
+    expect(sentTypes(asked)).not.toContain("hand_taken");
+    expect(t.state.round?.handAsk).toMatchObject({ asker: seat, target, clientSeq: clientSeq + 1 });
+    const answered = t.send(`s${String(target)}`, "answer_hand", { roundId, accept: true });
+    expect(payloadOf(answered, "hand_answered")).toMatchObject({
+      asker: seat,
+      target,
+      accepted: true,
+      reason: "accepted",
+    });
+    expect(sentTypes(answered)).toEqual(
+      expect.arrayContaining(["move_applied", "hand_taken", "escape"]),
+    );
+    expect(payloadOf(answered, "move_applied")).toMatchObject({
+      seat,
+      clientSeq: clientSeq + 1,
+      move: { type: "take_hand" },
+    });
+    const after = t.state.round!.state;
+    expect(after.seats[target]!.hand).toHaveLength(0);
+    expect(after.seats[target]!.escaped).toBe(true);
+    expect(after.seats[seat]!.hand).toHaveLength(askerCards + targetCards);
+    expect(t.state.round?.handAsk).toBeNull();
+  });
+
+  it("lets the asked player refuse, answers the asker, and shuts the window until the next move (R34)", () => {
+    const t = table();
+    t.send("s0", "start_round", {});
+    const { seat, roundId, clientSeq } = reachTakeWindow(t);
+    const target = (seat + 1) % SEATS;
+    t.send(`s${String(seat)}`, "take_hand", { roundId, clientSeq: clientSeq + 1 });
+    const refused = t.send(`s${String(target)}`, "answer_hand", { roundId, accept: false });
+    expect(payloadOf(refused, "hand_answered")).toMatchObject({
+      accepted: false,
+      reason: "declined",
+    });
+    const rejection = refused.outbound.find((o) => o.envelope.type === "move_rejected");
+    expect(rejection?.to).toMatchObject({ sessionId: `s${String(seat)}` });
+    expect(rejection?.envelope.payload).toMatchObject({
+      clientSeq: clientSeq + 1,
+      error: { code: "rules.hand_take_declined", detail: { reason: "declined" } },
+    });
+    expect(t.state.round!.state.seats[target]!.escaped).toBe(false);
+    const again = t.send(`s${String(seat)}`, "take_hand", { roundId, clientSeq: clientSeq + 2 });
+    expect(payloadOf(again, "move_rejected")).toMatchObject({
+      error: { code: "rules.hand_take_window_closed", detail: { reason: "refused" } },
+    });
+    expect(sentTypes(again)).not.toContain("hand_asked");
+  });
+
+  it("drops a request when the asker leads instead, and only the asked seat may answer (E11)", () => {
+    const t = table();
+    t.send("s0", "start_round", {});
+    const { seat, roundId, clientSeq } = reachTakeWindow(t);
+    const target = (seat + 1) % SEATS;
+    t.send(`s${String(seat)}`, "take_hand", { roundId, clientSeq: clientSeq + 1 });
+    const pending = t.send(`s${String(seat)}`, "take_hand", { roundId, clientSeq: clientSeq + 2 });
+    expect(payloadOf(pending, "move_rejected")).toMatchObject({
+      error: { code: "rules.hand_ask_pending" },
+    });
+    const other = (target + 1) % SEATS;
+    const wrong = t.send(`s${String(other)}`, "answer_hand", { roundId, accept: true });
+    expect(payloadOf(wrong, "error")).toMatchObject({ code: "rules.hand_ask_none" });
+    expect(t.state.round?.handAsk).not.toBeNull();
+    const card = legalMoves(t.state.round!.state, seat).find(
+      (m): m is Extract<ThullaMove, { type: "play_card" }> => m.type === "play_card",
+    )!;
+    const led = t.send(`s${String(seat)}`, "play_card", {
+      roundId,
+      clientSeq: clientSeq + 3,
+      card: card.card,
+    });
+    const types = sentTypes(led);
+    expect(payloadOf(led, "hand_answered")).toMatchObject({ accepted: false, reason: "lead" });
+    expect(types.indexOf("hand_answered")).toBeLessThan(types.indexOf("move_applied"));
+    expect(t.state.round?.handAsk).toBeNull();
+    const late = t.send(`s${String(target)}`, "answer_hand", { roundId, accept: true });
+    expect(payloadOf(late, "error")).toMatchObject({ code: "rules.hand_ask_none" });
+  });
+
+  it("times a request out with the asker's turn and shows it to a rejoining player (R43)", () => {
+    const t = table();
+    t.send("s0", "start_round", {});
+    const { seat, roundId, clientSeq } = reachTakeWindow(t);
+    const target = (seat + 1) % SEATS;
+    const asked = t.send(`s${String(seat)}`, "take_hand", { roundId, clientSeq: clientSeq + 1 });
+    const deadlineTs = payloadOf(asked, "hand_asked")?.["deadlineTs"] as number;
+    expect(deadlineTs).toBe(t.state.round?.deadline?.humanTs);
+    const snapshot = t.send(`s${String(target)}`, "request_snapshot", { sinceSeq: 0 });
+    expect(
+      (payloadOf(snapshot, "snapshot")?.["state"] as { handAsk?: unknown }).handAsk,
+    ).toMatchObject({ asker: seat, target });
+    const expired = t.tick(deadlineTs - t.now + 1);
+    expect(payloadOf(expired, "hand_answered")).toMatchObject({
+      accepted: false,
+      reason: "timeout",
+    });
+    expect(t.state.round?.handAsk).toBeNull();
+  });
+
   it("never sends another seat's hand, legal mask or private draw (GDD 24.2)", () => {
     const t = table();
     t.send("s0", "start_round", {});

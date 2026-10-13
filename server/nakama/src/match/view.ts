@@ -104,6 +104,15 @@ export function tableStateFor<S, M, V, E, R>(
     lastSeq: state.seq,
     resumeToken: slot?.resumeToken ?? null,
   };
+  const ask = state.round?.handAsk ?? null;
+  if (ask !== null) {
+    base.handAsk = {
+      asker: ask.asker,
+      target: ask.target,
+      cardCount: ask.cardCount,
+      deadlineTs: ask.deadlineTs,
+    };
+  }
   const starting = state.autoStart?.startsAtTs ?? null;
   const withStart = starting === null ? base : { ...base, autoStart: { startsAtTs: starting } };
   if (state.phase !== "roundEnded" || state.rematchDeadlineTs === null) return withStart;

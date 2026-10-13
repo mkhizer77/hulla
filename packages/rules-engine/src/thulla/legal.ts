@@ -70,7 +70,7 @@ export function canTakeHand(state: ThullaState, seat: SeatIndex): boolean {
   return takeHandError(state, seat) === null;
 }
 
-function takeHandError(state: ThullaState, seat: SeatIndex): RuleError | null {
+export function takeHandError(state: ThullaState, seat: SeatIndex): RuleError | null {
   const windowClosed = ruleError(ErrorCodes.rules.handTakeWindowClosed);
   if (state.rules.handTaking === "off") {
     return ruleError(ErrorCodes.rules.handTakeDisabled);

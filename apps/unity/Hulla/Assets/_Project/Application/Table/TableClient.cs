@@ -128,15 +128,28 @@ namespace Hulla.Application.Table
             return true;
         }
 
+        /// <summary>Asks the next player for their whole hand (R32); the table applies the take if they accept.</summary>
         public bool TakeHand()
         {
-            if (!Model.MyTurn || !Model.CanTakeHand)
+            if (!Model.MyTurn || !Model.CanTakeHand || Model.PendingAsk != null)
             {
                 return false;
             }
 
             _clientSeq++;
             Send(MessageTypes.TakeHand, new TakeHand { RoundId = Model.RoundId, ClientSeq = _clientSeq });
+            return true;
+        }
+
+        /// <summary>Answers a request for my hand (R33, R34): hand everything over and sit out safe, or keep playing.</summary>
+        public bool AnswerHand(bool accept)
+        {
+            if (!Model.AskedForMyHand)
+            {
+                return false;
+            }
+
+            Send(MessageTypes.AnswerHand, new AnswerHand { RoundId = Model.RoundId, Accept = accept });
             return true;
         }
 

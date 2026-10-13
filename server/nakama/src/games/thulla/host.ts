@@ -1,9 +1,11 @@
 import {
   canTakeHand,
   legalMoves,
+  nextActiveSeat,
   resolveRules,
   results,
   roundStartedEvent,
+  takeHandError,
   thullaModule,
 } from "@hulla/rules-engine";
 import { ErrorCodes, err, ok, ruleError, stateHash } from "@hulla/shared-ts";
@@ -248,6 +250,13 @@ export const thullaHost: ThullaHost = {
     return simultaneous ? { ...base, simultaneous: true } : base;
   },
   presentationDelayMs: (events) => (events.some(isThulla) ? THULLA_MOMENT_MS : 0),
+  askHand(state, seat) {
+    const error = takeHandError(state, seat);
+    if (error !== null) return err(error);
+    const target = nextActiveSeat(state, seat);
+    const cardCount = state.seats[target]?.hand.length ?? 0;
+    return ok({ target, cardCount, move: { type: "take_hand" } });
+  },
   stateHash: (state) => stateHash(state),
   highlights: thullaHighlights,
 };

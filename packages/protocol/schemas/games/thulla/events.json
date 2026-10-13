@@ -190,6 +190,32 @@
         },
         "series": { "$ref": "../../common.json#/definitions/seriesState" }
       }
+    },
+    "hand_asked": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "The asker wants the target's whole hand (R32, R35); the target answers before deadlineTs",
+      "required": ["roundId", "asker", "target", "cardCount", "deadlineTs"],
+      "properties": {
+        "roundId": { "$ref": "../../common.json#/definitions/roundId" },
+        "asker": { "$ref": "../../common.json#/definitions/seatIndex" },
+        "target": { "$ref": "../../common.json#/definitions/seatIndex" },
+        "cardCount": { "type": "integer", "minimum": 1 },
+        "deadlineTs": { "$ref": "../../common.json#/definitions/timestamp" }
+      }
+    },
+    "hand_answered": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "How a hand request ended; an accepted one is followed by move_applied and hand_taken",
+      "required": ["roundId", "asker", "target", "accepted", "reason"],
+      "properties": {
+        "roundId": { "$ref": "../../common.json#/definitions/roundId" },
+        "asker": { "$ref": "../../common.json#/definitions/seatIndex" },
+        "target": { "$ref": "../../common.json#/definitions/seatIndex" },
+        "accepted": { "type": "boolean" },
+        "reason": { "type": "string", "enum": ["accepted", "declined", "lead", "timeout", "left"] }
+      }
     }
   }
 }

@@ -27,6 +27,7 @@ import {
   applyRoundMove,
   compactSeats,
   fireDeadlines,
+  resolveHandAsk,
   roundRecord,
   startRound,
   turnSeconds,
@@ -40,6 +41,7 @@ import {
   type GameHost,
   type Persistence,
   type PresenceRecord,
+  type RoundRuntime,
   type SeatSlot,
   type TableCloseReason,
   type TableConfig,
@@ -114,6 +116,9 @@ export interface TableCore<S, M> {
   tick(state: TableState<S, M>, now: number): Batch;
   close(state: TableState<S, M>, reason: TableCloseReason, now: number): Batch;
 }
+
+/** With the turn timer off, a hand request waits this long for its answer (OQ-035). */
+const HAND_ASK_NO_TIMER_MS = 30_000;
 
 const opcodeTable = OPCODES as Record<
   string,
@@ -421,6 +426,10 @@ export function tableCore<S, M, V, E, R>(
       emit.session(presence.sessionId, ack.type, ack.payload);
       return;
     }
+    if (type === "take_hand" && host.askHand !== undefined) {
+      askHand(state, current, seat, clientSeq, check?.(payload) === true, emit, now);
+      return;
+    }
     const decoded = host.decodeMove(type, payload, check);
     if (!decoded.ok) {
       const rejection = {
@@ -433,6 +442,72 @@ export function tableCore<S, M, V, E, R>(
     }
     applyRoundMove(round, state, emit, seat, decoded.value, clientSeq, now);
     finishRound(state, emit, now);
+  };
+
+  /**
+   * A hand request (R32, R35): legal now by the game's own check, the target present, no other
+   * request open and none refused since the last move. The target hears it and answers; the asker's
+   * clientSeq is acknowledged when the request resolves.
+   */
+  const askHand = (
+    state: TableState<S, M>,
+    current: RoundRuntime<S, M>,
+    seat: SeatIndex,
+    clientSeq: number,
+    valid: boolean,
+    emit: Emitter,
+    now: number,
+  ): void => {
+    const rejectMove = (error: RuleError, remember: boolean): void => {
+      const rejection = {
+        type: "move_rejected",
+        payload: { roundId: current.roundId, clientSeq, error },
+      };
+      if (remember) current.acks[`${String(seat)}:${String(clientSeq)}`] = rejection;
+      emit.seat(seat, rejection.type, rejection.payload);
+    };
+    if (!valid) {
+      rejectMove(
+        ruleError(ErrorCodes.table.invalidPayload, { reason: "schema", type: "take_hand" }),
+        true,
+      );
+      return;
+    }
+    const open = current.handAsk;
+    if (open !== null) {
+      if (open.asker === seat && open.clientSeq === clientSeq) return;
+      rejectMove(ruleError(ErrorCodes.rules.handAskPending), false);
+      return;
+    }
+    if (current.askClosedAtMove === current.moves.length) {
+      rejectMove(ruleError(ErrorCodes.rules.handTakeWindowClosed, { reason: "refused" }), true);
+      return;
+    }
+    const asked = host.askHand?.(current.state, seat);
+    if (!asked?.ok) {
+      rejectMove(asked?.error ?? ruleError(ErrorCodes.rules.handTakeDisabled), true);
+      return;
+    }
+    const target = state.seats[asked.value.target];
+    if (target === undefined || target.left || !target.connected) {
+      rejectMove(ruleError(ErrorCodes.rules.handTakeWindowClosed, { reason: "target_away" }), true);
+      return;
+    }
+    const deadlineTs = current.deadline?.humanTs ?? now + HAND_ASK_NO_TIMER_MS;
+    current.handAsk = {
+      asker: seat,
+      target: asked.value.target,
+      cardCount: asked.value.cardCount,
+      clientSeq,
+      deadlineTs,
+    };
+    emit.public("hand_asked", {
+      roundId: current.roundId,
+      asker: seat,
+      target: asked.value.target,
+      cardCount: asked.value.cardCount,
+      deadlineTs,
+    });
   };
 
   const handleShell = (
@@ -634,6 +709,41 @@ export function tableCore<S, M, V, E, R>(
           state.rematchDeadlineTs = null;
         }
         dealRound(state, emit, now, presence.sessionId);
+        return;
+      }
+      case "answer_hand": {
+        const current = state.round;
+        const ask = current?.handAsk ?? null;
+        if (current === null || ask === null || seat === null || ask.target !== seat) {
+          reject(ruleError(ErrorCodes.rules.handAskNone));
+          return;
+        }
+        if (payload["roundId"] !== current.roundId) {
+          reject(ruleError(ErrorCodes.table.staleSequence, { reason: "round_id" }));
+          return;
+        }
+        if (payload["accept"] !== true) {
+          resolveHandAsk(state, emit, false, "declined");
+          return;
+        }
+        const asked = host.askHand?.(current.state, ask.asker);
+        if (!asked?.ok) {
+          // The table moved on between the ask and the answer; the asker hears why.
+          resolveHandAsk(state, emit, false, "lead");
+          return;
+        }
+        const accepted = resolveHandAsk(state, emit, true, "accepted");
+        if (accepted === null) return;
+        applyRoundMove(
+          round,
+          state,
+          emit,
+          accepted.asker,
+          asked.value.move,
+          accepted.clientSeq,
+          now,
+        );
+        finishRound(state, emit, now);
         return;
       }
       case "vote_rematch": {

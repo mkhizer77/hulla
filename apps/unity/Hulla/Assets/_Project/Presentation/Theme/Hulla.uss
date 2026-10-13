@@ -252,6 +252,12 @@
     opacity: 0.55;
 }
 
+/* An escaped seat: the avatar wears the escape colour and a tick, so "done, now watching" reads at a glance. */
+.seat--out .seat__avatar {
+    border-width: 4px;
+    border-color: var(--state-escape);
+}
+
 .seat__avatar {
     width: 116px;
     height: 116px;

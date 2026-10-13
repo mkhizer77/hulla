@@ -20,6 +20,7 @@ export const OPCODES = {
   play_card: { opcode: 40, direction: "c2s", visibility: "public", game: "thulla" },
   take_hand: { opcode: 41, direction: "c2s", visibility: "public", game: "thulla" },
   cancel_take: { opcode: 42, direction: "c2s", visibility: "public", game: "thulla" },
+  answer_hand: { opcode: 43, direction: "c2s", visibility: "public" },
   table_state: { opcode: 100, direction: "s2c", visibility: "recipient" },
   rules_changed: { opcode: 101, direction: "s2c", visibility: "public" },
   presence: { opcode: 102, direction: "s2c", visibility: "public" },
@@ -43,6 +44,8 @@ export const OPCODES = {
   endgame_started: { opcode: 149, direction: "s2c", visibility: "public", game: "thulla" },
   confirmed: { opcode: 150, direction: "s2c", visibility: "public", game: "thulla" },
   round_end: { opcode: 151, direction: "s2c", visibility: "public", game: "thulla" },
+  hand_asked: { opcode: 152, direction: "s2c", visibility: "public", game: "thulla" },
+  hand_answered: { opcode: 153, direction: "s2c", visibility: "public", game: "thulla" },
 } as const;
 
 export type OpcodeTable = typeof OPCODES;

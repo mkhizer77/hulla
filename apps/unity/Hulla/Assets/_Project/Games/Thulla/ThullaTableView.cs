@@ -64,6 +64,7 @@ namespace Hulla.Games.Thulla
         private readonly SoundPlayer? _sounds;
         private readonly bool _autoPlaySingle;
         private bool _reduceMotion;
+        private bool _askSheetOpen;
         private bool _haptics;
         private readonly VisualElement _recap;
         private Action? _hideRecapForGood;
@@ -163,7 +164,7 @@ namespace Hulla.Games.Thulla
             _info = root.Q<Label>("info");
             _takeHand = root.Q<Button>("take-hand");
             _takeHand.text = UiText.TakeHand;
-            _takeHand.clicked += () => _client.TakeHand();
+            _takeHand.clicked += AskForHand;
             _toast = root.Q<Label>("toast");
             _results = new ThullaResults(root.Q<VisualElement>("results"), NameOf, VoteAgain);
             var settingsButton = root.Q<Button>("settings");
@@ -452,9 +453,127 @@ namespace Hulla.Games.Thulla
                     }
 
                     return 0f;
+                case HandAsked asked:
+                    PresentAsk(asked);
+                    return 0f;
+                case HandAnswered answered:
+                    PresentAnswer(answered);
+                    return 0f;
                 default:
                     return 0f;
             }
+        }
+
+        /// <summary>The next player's name and card count for the ask (R32): the nearest active seat after me.</summary>
+        private (string Name, long Cards)? AskTarget()
+        {
+            var model = _client.Model;
+            if (model.MySeat == null)
+            {
+                return null;
+            }
+
+            var count = model.Seats.Count;
+            for (var step = 1; step < count; step++)
+            {
+                var seat = (int)((model.MySeat.Value + step) % count);
+                if (!model.IsEscaped(seat) && model.HandCount(seat) > 0)
+                {
+                    return (NameOf(seat), model.HandCount(seat));
+                }
+            }
+
+            return null;
+        }
+
+        /// <summary>
+        /// Ask for hand (R32 to R34): the first time ever, the ask is explained first and the button on
+        /// the explanation sends it; afterwards one tap asks. The asked player can refuse.
+        /// </summary>
+        private void AskForHand()
+        {
+            var target = AskTarget();
+            if (target == null)
+            {
+                return;
+            }
+
+            if (_hints?.ExplainAsk() == true)
+            {
+                var (name, cards) = target.Value;
+                ShowCoach(string.Format(TutorialText.ExplainAsk, name, cards), string.Format(UiText.AskNamed, name), () =>
+                {
+                    HideCoach();
+                    _client.TakeHand();
+                });
+                return;
+            }
+
+            _client.TakeHand();
+        }
+
+        private void PresentAsk(HandAsked asked)
+        {
+            var model = _client.Model;
+            if (asked.Target == model.MySeat)
+            {
+                ShowAskSheet(asked);
+                return;
+            }
+
+            if (asked.Asker == model.MySeat)
+            {
+                _hint.text = string.Format(UiText.AskedWaiting, NameOf(asked.Target));
+                _hint.style.display = DisplayStyle.Flex;
+                _hintLeft = SaySeconds;
+                return;
+            }
+
+            _ring.BadgeFor(asked.Asker)?.Say(string.Format(UiText.AsksForHand, NameOf(asked.Target)), SaySeconds);
+        }
+
+        private void PresentAnswer(HandAnswered answered)
+        {
+            var model = _client.Model;
+            if (_askSheetOpen)
+            {
+                _askSheetOpen = false;
+                _sheet.style.display = DisplayStyle.None;
+            }
+
+            if (answered.Accepted || answered.Reason != HandAnsweredPayloadReason.Declined)
+            {
+                return;
+            }
+
+            if (answered.Asker == model.MySeat)
+            {
+                _hint.text = string.Format(UiText.KeepsCards, NameOf(answered.Target));
+                _hint.style.display = DisplayStyle.Flex;
+                _hintLeft = SaySeconds;
+                return;
+            }
+
+            _ring.BadgeFor(answered.Target)?.Say(UiText.KeepPlaying, SaySeconds);
+        }
+
+        /// <summary>The asked player decides (R33, R34): hand everything over and sit out safe, or keep playing.</summary>
+        private void ShowAskSheet(HandAsked asked)
+        {
+            _sheetTitle.text = string.Format(UiText.AskSheetTitle, NameOf(asked.Asker));
+            _sheetStatus.text = string.Format(UiText.AskSheetBody, asked.CardCount);
+            _sheetActions.Clear();
+            SheetButton(UiText.HandOver, () => AnswerAsk(true));
+            SheetButton(UiText.KeepPlaying, () => AnswerAsk(false));
+            _askSheetOpen = true;
+            _sheet.style.display = DisplayStyle.Flex;
+        }
+
+        private void AnswerAsk(bool accept)
+        {
+            _askSheetOpen = false;
+            _sheet.style.display = DisplayStyle.None;
+            _client.AnswerHand(accept);
         }
 
         /// <summary>Per frame: bubbles, the recap, the stamp, the pick-up flight, the strip and the turn timers.</summary>
@@ -880,6 +999,11 @@ namespace Hulla.Games.Thulla
             {
                 Buzz(Haptic.Escape);
                 SetContext("escaped");
+                if (model.InRound)
+                {
+                    // Told plainly: safe for the round, still at the table for the chat and the voice.
+                    ShowCoach(UiText.YouAreOut, TutorialText.GotIt, HideCoach);
+                }
             }
             else
             {
@@ -1034,13 +1158,19 @@ namespace Hulla.Games.Thulla
                     _turn.text = UiText.Crown + " " + _turn.text;
                 }
 
+                if (model.InRound && model.MySeat is long me && model.IsEscaped((int)me))
+                {
+                    // Out of cards: the seat stays for watching, chat and voice (R25).
+                    _turn.text = _turn.text.Length > 0 ? UiText.OutWatching + " · " + _turn.text : UiText.OutWatching;
+                }
+
                 _turn.RemoveFromClassList("turn--mine");
                 _timer.style.display = DisplayStyle.None;
             }
 
             _turn.style.display = _turn.text.Length == 0 ? DisplayStyle.None : DisplayStyle.Flex;
 
-            _takeHand.style.display = model.MyTurn && model.CanTakeHand ? DisplayStyle.Flex : DisplayStyle.None;
+            _takeHand.style.display = model.MyTurn && model.CanTakeHand && model.PendingAsk == null ? DisplayStyle.Flex : DisplayStyle.None;
         }
 
         private void RefreshResults() => _results.Show(_client.Model, _voted);
