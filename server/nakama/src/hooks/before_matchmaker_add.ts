@@ -1,5 +1,8 @@
+import { ErrorCodes } from "@hulla/shared-ts";
+
 import { log } from "../infra/log";
 import { excludeBlocked, excludedIds, nkBlockStore } from "../services/blocks";
+import { isDraining } from "../services/ops";
 
 /**
  * Registered with `registerRtBefore("MatchmakerAdd", ...)`: every ticket names its owner and
@@ -13,6 +16,8 @@ export function beforeMatchmakerAdd(
 ): nkruntime.EnvelopeMatchmakerAdd {
   const userId = ctx.userId ?? "";
   if (userId === "") return envelope;
+  // A draining node takes no new searches; the client shows the maintenance line (GDD 20.15).
+  if (isDraining(nk)) throw new Error(ErrorCodes.table.draining);
   try {
     const excluded = excludedIds(nkBlockStore(nk), userId);
     const ticket = excludeBlocked(

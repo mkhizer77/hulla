@@ -16,6 +16,7 @@ import { METRICS, metrics } from "../infra/metrics";
 import { runtimeFrom, type ServerRuntime } from "../infra/nk";
 import { gameEntry } from "../match/registry";
 import { emitAnalyticsSafely } from "../services/analytics";
+import { isDraining } from "../services/ops";
 import { nkCodeStore, type CodeStore } from "../services/table_registry";
 
 import type { CreateTableParams, TableMode } from "../match/types";
@@ -120,6 +121,9 @@ export function rpcTableCreate(
   nk: nkruntime.Nakama,
   payload: string,
 ): string {
+  if (isDraining(nk)) {
+    return JSON.stringify({ ok: false, error: ruleError(ErrorCodes.table.draining) });
+  }
   const response = tableCreate(
     {
       runtime: runtimeFrom(nk, logger),
