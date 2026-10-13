@@ -102,7 +102,7 @@ export interface AnalyticsEvents {
     readonly duration?: number;
   };
   readonly friend_add: {
-    readonly source: "code" | "recent" | "results" | "request" | "qr";
+    readonly source: "code" | "recent" | "results" | "request" | "qr" | "referral";
   };
   readonly block: {
     readonly source: "table" | "friends" | "results";

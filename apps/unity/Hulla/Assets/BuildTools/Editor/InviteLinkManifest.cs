@@ -5,8 +5,9 @@ using UnityEditor.Android;
 namespace Hulla.BuildTools
 {
     /// <summary>
-    /// Lets invite links open the game activity (GDD 10.5): <c>hulla://j/CODE</c> now, and
-    /// <c>https://hulla.gg/j/CODE</c> as an App Link once the domain serves its assetlinks.json (#130).
+    /// Lets invite and referral links open the game activity (GDD 10.5, 10.9): <c>hulla://j/CODE</c> and
+    /// <c>hulla://r/FRIENDCODE</c> now, and the same paths on <c>https://hulla.gg</c> as App Links once the
+    /// domain serves its assetlinks.json (#130).
     /// </summary>
     public sealed class InviteLinkManifest : IPostGenerateGradleAndroidProject
     {
@@ -26,18 +27,34 @@ namespace Hulla.BuildTools
                 return;
             }
 
-            // Gradle reuses the exported project, so the filters may already be there.
-            foreach (XmlNode data in activity.SelectNodes("intent-filter/data")!)
+            // j: table invites; r: referral links from share cards (GDD 10.9).
+            foreach (var kind in new[] { "j", "r" })
             {
-                if (data.Attributes?["scheme", Android]?.Value == "hulla")
+                AddOnce(document, activity, autoVerify: false, ("scheme", "hulla"), ("host", kind));
+                AddOnce(document, activity, autoVerify: true, ("scheme", "https"), ("host", "hulla.gg"), ("pathPrefix", "/" + kind + "/"));
+            }
+
+            document.Save(manifestPath);
+        }
+
+        /// <summary>Gradle reuses the exported project, so a filter may already be there.</summary>
+        private static void AddOnce(XmlDocument document, XmlElement activity, bool autoVerify, params (string Name, string Value)[] data)
+        {
+            foreach (XmlNode existing in activity.SelectNodes("intent-filter/data")!)
+            {
+                var same = true;
+                foreach (var (name, value) in data)
+                {
+                    same &= existing.Attributes?[name, Android]?.Value == value;
+                }
+
+                if (same)
                 {
                     return;
                 }
             }
 
-            activity.AppendChild(Filter(document, autoVerify: false, ("scheme", "hulla"), ("host", "j")));
-            activity.AppendChild(Filter(document, autoVerify: true, ("scheme", "https"), ("host", "hulla.gg"), ("pathPrefix", "/j/")));
-            document.Save(manifestPath);
+            activity.AppendChild(Filter(document, autoVerify, data));
         }
 
         private static XmlElement LauncherActivity(XmlDocument document)

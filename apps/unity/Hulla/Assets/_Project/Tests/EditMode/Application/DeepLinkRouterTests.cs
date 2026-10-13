@@ -87,6 +87,57 @@ namespace Hulla.Application.Tests
             var router = new DeepLinkRouter();
             router.Receive("https://example.com", 0f);
             Assert.IsFalse(router.HasPending);
+            Assert.AreEqual("none", router.PendingType);
+        }
+
+        [TestCase("hulla://r/K7Q2MXAB", "K7Q2MXAB")]
+        [TestCase("hulla://r/k7q2mxab/", "K7Q2MXAB")]
+        [TestCase("https://hulla.gg/r/K7Q2MXAB?utm_source=story", "K7Q2MXAB")]
+        public void ReferralLinksGiveTheFriendCode(string url, string friendCode)
+        {
+            Assert.AreEqual(friendCode, InviteLink.FriendCodeFrom(url));
+            Assert.IsNull(InviteLink.CodeFrom(url));
+        }
+
+        [TestCase("hulla://r/K7Q2MX")]
+        [TestCase("hulla://r/K7Q2MXAB1")]
+        [TestCase("hulla://j/K7Q2MXAB")]
+        [TestCase("https://evil.example/r/K7Q2MXAB")]
+        public void OtherLinksGiveNoFriendCode(string url)
+        {
+            Assert.IsNull(InviteLink.FriendCodeFrom(url));
+        }
+
+        [Test]
+        public void TheSharedReferralLinkParsesBack()
+        {
+            Assert.AreEqual("ABCDEFGH", InviteLink.FriendCodeFrom(InviteLink.ReferralFor("ABCDEFGH")));
+        }
+
+        [Test]
+        public void AColdStartReferralWaitsAndIsNotAnInvite()
+        {
+            var router = new DeepLinkRouter();
+            var invites = new List<string>();
+            var referrals = new List<string>();
+            router.InviteOpened += (code, _) => invites.Add(code);
+            router.ReferralOpened += referrals.Add;
+
+            router.Receive("hulla://r/ABCDEFGH", 0f);
+            Assert.AreEqual("referral", router.PendingType);
+            router.Ready();
+
+            Assert.AreEqual(new[] { "ABCDEFGH" }, referrals);
+            Assert.IsEmpty(invites);
+            Assert.AreEqual("none", router.PendingType);
+        }
+
+        [Test]
+        public void AColdStartInviteIsTypedAsAnInvite()
+        {
+            var router = new DeepLinkRouter();
+            router.Receive("hulla://j/ABCDEF", 0f);
+            Assert.AreEqual("invite", router.PendingType);
         }
     }
 }
