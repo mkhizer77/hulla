@@ -28,6 +28,8 @@ runtime:
   env:
     - "HULLA_ENV=local"
     - "HULLA_REGION=local"
+    # Turn timer in seconds for every mode while play-testing (5 to 120); empty keeps the GDD defaults (R43).
+    - "HULLA_TURN_SECONDS="
     - "AGORA_APP_ID="
     - "AGORA_APP_CERTIFICATE="
     # Owner accounts allowed to call the admin RPCs with a session (comma-separated user ids); the server key always may.
