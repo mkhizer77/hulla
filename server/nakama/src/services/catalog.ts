@@ -83,7 +83,9 @@ export function startTrial(
 export function spotlight(catalog: Catalog, now: number): readonly string[] {
   const week = localWeek(now, 0);
   const rng = Xoshiro128StarStar.fromState(stateFromSeed(sha256(utf8Encode(`spotlight:${week}`))));
-  const pool = catalog.items.filter((i) => i.starter !== true).map((i) => i.id);
+  const pool = catalog.items
+    .filter((i) => i.starter !== true && i.earnOnly !== true)
+    .map((i) => i.id);
   for (let i = pool.length - 1; i > 0; i -= 1) {
     const j = rng.nextInt(i + 1);
     const a = pool[i];
@@ -258,15 +260,18 @@ export function catalogView(inventory: Inventory, catalog: Catalog, now: number)
     id: catalog.id,
     version: catalog.version,
     spotlight: spotlight(catalog, now),
-    items: catalog.items.map((item) => {
-      const trialUntil = inventory.trials?.[item.id];
-      return {
-        ...item,
-        owned: owns(inventory, catalog, item.id),
-        equipped: global[item.category] === item.id,
-        ...(trialUntil !== undefined && trialUntil > now ? { trialUntil } : {}),
-      };
-    }),
+    // Earn-only items (ranked, the pass) show once owned; the shop never lists them for sale.
+    items: catalog.items
+      .filter((item) => item.earnOnly !== true || owns(inventory, catalog, item.id))
+      .map((item) => {
+        const trialUntil = inventory.trials?.[item.id];
+        return {
+          ...item,
+          owned: owns(inventory, catalog, item.id),
+          equipped: global[item.category] === item.id,
+          ...(trialUntil !== undefined && trialUntil > now ? { trialUntil } : {}),
+        };
+      }),
     equipped: inventory.equipped,
     perGame: inventory.perGame,
   };

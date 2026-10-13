@@ -11,7 +11,7 @@ import {
 import { tableForMatch } from "../hooks/matchmaker_matched";
 import { rpcRankedBoard, rpcRankedGet } from "../rpc/ranked";
 import { tableCreate } from "../rpc/table_create";
-import { EMPTY_INVENTORY, purchase } from "../services/catalog";
+import { catalogView, EMPTY_INVENTORY, grant, purchase, spotlight } from "../services/catalog";
 import { nkLedgerPorts } from "../services/ledger";
 import { applyProfileUpdate, bootstrapProfile } from "../services/profiles";
 import {
@@ -398,6 +398,15 @@ describe("earn-only rewards", () => {
       ok: false,
       error: { code: "economy.item_not_for_sale" },
     });
+    const ids = (inventory: typeof EMPTY_INVENTORY) =>
+      catalogView(inventory, BUNDLED_CATALOG, S1).items.map((i) => i.id);
+    expect(ids(EMPTY_INVENTORY)).not.toContain("back_ranked_gold");
+    expect(ids(grant(EMPTY_INVENTORY, "back_ranked_gold", S1))).toContain("back_ranked_gold");
+    for (let week = 0; week < 20; week += 1) {
+      expect(
+        spotlight(BUNDLED_CATALOG, S1 + week * WEEK).some((id) => id.startsWith("back_ranked")),
+      ).toBe(false);
+    }
   });
 
   it("a ranked frame shows only once owned", () => {
