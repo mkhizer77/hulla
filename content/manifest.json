@@ -1,0 +1,96 @@
+{
+  "schema": "../tools/content-schemas/manifest.schema.json",
+  "id": "content-manifest",
+  "version": 1,
+  "digest": "092a06d929ca4f2e4aadfaa87ef52dabb9648db2cb8141094c1c24b4df302f12",
+  "files": [
+    {
+      "path": "achievements/v1.json",
+      "type": "achievements",
+      "id": "achievements-v1",
+      "version": 1,
+      "sha256": "70157b7e8314b0046fa5fb0d3e42b2fd94b8dc753bcf3d6a95843aa3505a6c38",
+      "bytes": 11615
+    },
+    {
+      "path": "avatars/v1.json",
+      "type": "avatars",
+      "id": "v1",
+      "version": 1,
+      "sha256": "57f47f5cd4a5913f894489aedb87372bd778042a836d0c12f45c23e7551d97e1",
+      "bytes": 721
+    },
+    {
+      "path": "chat-filters/v1.json",
+      "type": "chat-filters",
+      "id": "chat-filters-v1",
+      "version": 1,
+      "sha256": "6d5b7228ebb31410badc2a51f578fd94f9bedf52423fe16a0f035ebe3f183d5a",
+      "bytes": 1727
+    },
+    {
+      "path": "daily-rewards/v1.json",
+      "type": "daily-rewards",
+      "id": "daily-rewards-v1",
+      "version": 1,
+      "sha256": "dd22c7424102a3a49d2f06bc05f22572fb9516a02feebe046401545a0a86327a",
+      "bytes": 373
+    },
+    {
+      "path": "emotes/v1.json",
+      "type": "emotes",
+      "id": "v1",
+      "version": 1,
+      "sha256": "a81e8a02cee309ef6f3160bd020f750fe298fe146a90f1af4685cb45071ba55c",
+      "bytes": 1565
+    },
+    {
+      "path": "missions/v1.json",
+      "type": "missions",
+      "id": "missions-v1",
+      "version": 1,
+      "sha256": "5cd3169d1ae6b2bdb4ff5897394619b40edd36b8163a3b88e622c3572d94287c",
+      "bytes": 2938
+    },
+    {
+      "path": "presets/thulla/classicPagat.json",
+      "type": "presets",
+      "id": "classicPagat",
+      "version": 1,
+      "sha256": "1d7ba56b7cc5879d9fbfb09159212a771fcaa957789d73725ea5b55ee53e0b1a",
+      "bytes": 312
+    },
+    {
+      "path": "presets/thulla/family.json",
+      "type": "presets",
+      "id": "family",
+      "version": 1,
+      "sha256": "cc6b6645cb81428a7ee2fa091dc340e4372b19b4937b2f6ed77266bb2c49c373",
+      "bytes": 375
+    },
+    {
+      "path": "presets/thulla/hardcore.json",
+      "type": "presets",
+      "id": "hardcore",
+      "version": 1,
+      "sha256": "873d6a9dabe87b0107e60ecf8014ac24bcc6dfc7d8b86ae77a4210c5c1b4bc48",
+      "bytes": 396
+    },
+    {
+      "path": "presets/thulla/standard.json",
+      "type": "presets",
+      "id": "standard",
+      "version": 1,
+      "sha256": "9e9a845f527ed7e769d2b571d71aee1d800f0f0ff21b19e0c702c9b8be3a1b38",
+      "bytes": 259
+    },
+    {
+      "path": "quick-chat/v1.en.json",
+      "type": "quick-chat",
+      "id": "v1",
+      "version": 1,
+      "sha256": "1dbbc9420b859b0e7905cf9b4e2dff761d99ce2255c2b8ca66256872dfe337c1",
+      "bytes": 7450
+    }
+  ]
+}

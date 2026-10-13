@@ -4,10 +4,20 @@
   "title": "An emote pack: the animated stickers a table may send (GDD 11.3)",
   "type": "object",
   "additionalProperties": false,
-  "required": ["schema", "id", "emotes"],
+  "required": ["schema", "id", "version", "emotes"],
   "properties": {
-    "schema": { "type": "string", "pattern": "emotes\\.schema\\.json$" },
-    "id": { "type": "string", "pattern": "^[a-z0-9]+$" },
+    "schema": {
+      "type": "string",
+      "pattern": "emotes\\.schema\\.json$"
+    },
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z0-9]+$"
+    },
+    "version": {
+      "type": "integer",
+      "minimum": 1
+    },
     "emotes": {
       "type": "array",
       "minItems": 1,
@@ -16,13 +26,19 @@
         "additionalProperties": false,
         "required": ["id", "name"],
         "properties": {
-          "id": { "type": "string", "pattern": "^[a-z][a-z0-9_]{1,31}$" },
+          "id": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9_]{1,31}$"
+          },
           "name": {
             "type": "string",
             "pattern": "^emote\\.[a-z0-9_]+$",
             "description": "A string id"
           },
-          "throwable": { "type": "boolean", "description": "May be thrown at a seat" }
+          "throwable": {
+            "type": "boolean",
+            "description": "May be thrown at a seat"
+          }
         }
       }
     }

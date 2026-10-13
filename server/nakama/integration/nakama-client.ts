@@ -31,7 +31,7 @@ export async function scriptedClient(name: string, suffix: string): Promise<Scri
   const session = await client.authenticateDevice(
     `hulla-it-${name}-${suffix}`,
     true,
-    `${name}${suffix.slice(-4)}`,
+    `${name}${suffix.slice(-9)}`,
   );
   const socket = client.createSocket(false, false);
   const received: MessageEnvelope[] = [];

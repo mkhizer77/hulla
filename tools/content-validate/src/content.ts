@@ -80,6 +80,14 @@ export function validateContentTree(contentDir: string): string[] {
       problems.push(`${rel}: no "schema" field`);
       continue;
     }
+    // Every content file is addressable and versioned (PROJECT_STRUCTURE 2, ADR-0011).
+    if (typeof document["id"] !== "string" || document["id"] === "") {
+      problems.push(`${rel}: no "id" field`);
+    }
+    const version = document["version"];
+    if (typeof version !== "number" || !Number.isInteger(version) || version < 1) {
+      problems.push(`${rel}: no integer "version" field`);
+    }
     const schemaPath = resolve(dirname(path), schemaRef);
     let validate: ValidateFunction;
     try {
