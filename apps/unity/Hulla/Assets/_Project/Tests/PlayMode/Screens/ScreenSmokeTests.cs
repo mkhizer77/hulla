@@ -237,6 +237,59 @@ namespace Hulla.Screens.Tests
         }
 
         [UnityTest]
+        public IEnumerator SettingsShowTheNotificationSwitchesOnceLoaded()
+        {
+            VisualElement root = null!;
+            var notifications = new NotificationSettingsViewModel(new Fakes.Notifications());
+            yield return Open(Catalog.Settings, r =>
+            {
+                root = r;
+                new SettingsView(r, new SettingsModel(new MemoryStore()), () => { }, null, notifications, change => _ = notifications.ChangeAsync(change, default));
+                _ = notifications.RefreshAsync(default);
+            });
+            Assert.AreEqual(16, root.Query<Toggle>().ToList().Count, "nine settings and seven notification switches");
+            var online = root.Query<Toggle>().ToList().First(t => t.label == "A friend comes online");
+            Assert.IsFalse(online.value, "loaded from the server");
+        }
+
+        [UnityTest]
+        public IEnumerator LobbyInviteSheetListsFriendsOnlineFirst()
+        {
+            VisualElement root = null!;
+            var gateway = new Fakes.Gateway();
+            var client = new TableClient(gateway, new TableTicket("m", "K7Q2MX", "t_K7Q2MX"), "me", 1);
+            LobbyView lobby = null!;
+            yield return Open(Catalog.Lobby, r =>
+            {
+                root = r;
+                lobby = new LobbyView(r, client, () => 0, () => { });
+                var state = Fakes.InRound(5);
+                state.Status = TableStatus.Open;
+                state.Round = null;
+                gateway.Deliver(MessageTypes.TableState, 5, state);
+                lobby.UseInvites(() => Fakes.Done<IReadOnlyList<Hulla.Application.Social.FriendEntry>>(new List<Hulla.Application.Social.FriendEntry>
+                {
+                    new Hulla.Application.Social.FriendEntry("u9", "Zara", null, false, null, false),
+                    new Hulla.Application.Social.FriendEntry("u8", "Omar", null, true, null, false),
+                    new Hulla.Application.Social.FriendEntry("u1", "Ayesha", null, true, null, false),
+                }), _ => Fakes.Done<string?>(null));
+            });
+            var invite = root.Q<Button>("invite");
+            Shown(invite, "Invite friends in a private room");
+            using (var click = NavigationSubmitEvent.GetPooled())
+            {
+                click.target = invite;
+                invite.SendEvent(click);
+            }
+
+            yield return null;
+            var names = root.Q("invite-sheet").Query<Label>(className: "lobby-seat__name").ToList().Select(l => l.text).ToList();
+            CollectionAssert.AreEqual(new[] { "Ayesha", "Omar", "Zara · Offline" }, names);
+            var chips = root.Q("invite-sheet").Query<Button>(className: "chip").ToList();
+            Assert.AreEqual("At the table", chips[0].text, "Ayesha is seated");
+        }
+
+        [UnityTest]
         public IEnumerator RulebookHasEverySection()
         {
             VisualElement root = null!;

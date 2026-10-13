@@ -1,6 +1,7 @@
 using System;
 using System.Threading;
 using Hulla.Application.Services;
+using Hulla.Application.Social;
 using Hulla.Application.ViewModels;
 using Hulla.Infrastructure.Content;
 using Hulla.Infrastructure.Nakama;
@@ -43,6 +44,8 @@ namespace Hulla.Composition
             Leaderboard = new LeaderboardViewModel(new NakamaLeaderboardService(_connection));
             Achievements = new AchievementsViewModel(new NakamaAchievementsService(_connection));
             Shop = new ShopViewModel(new NakamaShopService(_connection));
+            NotificationsService = new NakamaNotificationsService(_connection);
+            NotificationSettings = new NotificationSettingsViewModel(NotificationsService);
             Pass = new PassViewModel(new NakamaPassService(_connection));
             Missions = new MissionsViewModel(new NakamaMissionsService(_connection));
             Friends = new FriendsViewModel(social);
@@ -87,6 +90,10 @@ namespace Hulla.Composition
         public AchievementsViewModel Achievements { get; }
 
         public ShopViewModel Shop { get; }
+
+        public INotificationsService NotificationsService { get; }
+
+        public NotificationSettingsViewModel NotificationSettings { get; }
 
         public PassViewModel Pass { get; }
 

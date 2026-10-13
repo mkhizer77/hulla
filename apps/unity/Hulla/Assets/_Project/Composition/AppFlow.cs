@@ -81,9 +81,67 @@ namespace Hulla.Composition
             _app.Sessions.Notified += OnNotice;
         }
 
+        private async Awaitable<IReadOnlyList<Hulla.Application.Social.FriendEntry>> FriendsToInviteAsync()
+        {
+            await _app.Friends.RefreshAsync(_app.Lifetime);
+            return _app.Friends.Friends;
+        }
+
+        /// <returns>Null when the invite went, else the skip reason or error code.</returns>
+        private async Awaitable<string?> InviteAsync(string userId)
+        {
+            var result = await _app.NotificationsService.InviteAsync(new[] { userId }, _app.Lifetime);
+            if (!result.IsOk)
+            {
+                return result.Error.Code;
+            }
+
+            if (result.Value.Sent.Count > 0)
+            {
+                return null;
+            }
+
+            return result.Value.Skipped.TryGetValue(userId, out var reason) ? reason : "unknown";
+        }
+
+        /// <summary>
+        /// A friend's invite (GDD 10.5): off a table it asks to join; at a table it only shows the code
+        /// briefly, so a round isn't interrupted.
+        /// </summary>
+        private async void OnInvite(string content)
+        {
+            var invite = Hulla.Infrastructure.Nakama.ServerNotices.Invite(content);
+            if (invite == null)
+            {
+                return;
+            }
+
+            var (from, code, _) = invite.Value;
+            var text = string.Format(UiText.InviteReceived, from, code);
+            if (_screen == Screen.Table || _screen == Screen.Lobby)
+            {
+                _shell.SetBanner(text);
+                await Awaitable.WaitForSecondsAsync(5f);
+                if (UnityEngine.UIElements.UQueryExtensions.Q<UnityEngine.UIElements.Label>(_shell.Root, "shell-banner")?.text == text)
+                {
+                    _shell.SetBanner(null);
+                }
+
+                return;
+            }
+
+            _shell.ShowDialog(text, UiText.JoinTable, UiText.NotNow, () => OnJoin(_app.Home.LastName, code, null), () => { });
+        }
+
         /// <summary>An unlock shows briefly at the top of whatever screen is open (GDD 12.7).</summary>
         private async void OnNotice(string subject, string content)
         {
+            if (subject == Hulla.Infrastructure.Nakama.ServerNotices.TableInvite)
+            {
+                OnInvite(content);
+                return;
+            }
+
             if (subject != Hulla.Infrastructure.Nakama.ServerNotices.AchievementUnlocked)
             {
                 return;
@@ -552,6 +610,10 @@ namespace Hulla.Composition
                 _lobbyView = new LobbyView(_shell.Show(_shell.Catalog.Lobby), client, () => DateTimeOffset.UtcNow.ToUnixTimeMilliseconds(), Leave, code => ShareCode(code), text => _app.TableChat.SendAsync(text, _app.Lifetime), () => ThullaRulesEditor.Summary(client.Model, _app.Presets), () => OpenRulesEditor(client));
                 _lobbyView.IsMuted = _app.Mutes.IsMuted;
                 _lobbyView.SeatSpectator = client.SeatSpectator;
+                if (client.Model.IsPrivate)
+                {
+                    _lobbyView.UseInvites(FriendsToInviteAsync, InviteAsync);
+                }
                 _view = _lobbyView;
                 return;
             }
@@ -700,7 +762,14 @@ namespace Hulla.Composition
         {
             _settingsView?.Dispose();
             var account = _app.Sessions.Current == null ? null : new SettingsView.AccountActions(ExportData, DeleteAccount, CancelDeletion, PendingDeletion);
-            _settingsView = new SettingsView(_shell.ShowOverlay(_shell.Catalog.Settings), _app.Settings, CloseSettings, account);
+            var signedIn = _app.Sessions.Current != null;
+            _settingsView = new SettingsView(_shell.ShowOverlay(_shell.Catalog.Settings), _app.Settings, CloseSettings, account,
+                signedIn ? _app.NotificationSettings : null,
+                change => _ = _app.NotificationSettings.ChangeAsync(change, _app.Lifetime));
+            if (signedIn)
+            {
+                _ = _app.NotificationSettings.RefreshAsync(_app.Lifetime);
+            }
         }
 
         /// <summary>The rulebook opens over the table, so play goes on underneath (GDD 14.11).</summary>

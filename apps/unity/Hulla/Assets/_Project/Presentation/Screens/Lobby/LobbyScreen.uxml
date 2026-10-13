@@ -4,6 +4,7 @@
             <ui:Label name="code-label" class="caption" />
             <ui:Label name="code" class="code" />
             <ui:Button name="share" class="button button--small" />
+            <ui:Button name="invite" class="button button--small" />
         </ui:VisualElement>
         <ui:VisualElement class="lobby-rules">
             <ui:Label name="rules" class="lobby-rules__text" />

@@ -1,5 +1,7 @@
 using System;
 using Hulla.Application.Settings;
+using Hulla.Application.Social;
+using Hulla.Application.ViewModels;
 using Hulla.Presentation.Text;
 using UnityEngine.UIElements;
 
@@ -35,10 +37,20 @@ namespace Hulla.Presentation.Screens.Settings
 
         private readonly AccountActions? _account;
         private Label? _accountStatus;
+        private readonly NotificationSettingsViewModel? _notifications;
+        private readonly Action<Action<NotificationSettings>>? _changeNotifications;
 
-        public SettingsView(VisualElement root, SettingsModel settings, Action close, AccountActions? account = null)
+        /// <param name="notifications">The server-side notification switches; null hides the section.</param>
+        public SettingsView(VisualElement root, SettingsModel settings, Action close, AccountActions? account = null, NotificationSettingsViewModel? notifications = null, Action<Action<NotificationSettings>>? changeNotifications = null)
         {
             _account = account;
+            _notifications = notifications;
+            _changeNotifications = changeNotifications;
+            if (_notifications != null)
+            {
+                _notifications.Changed += Rebuild;
+            }
+
             _settings = settings;
             root.Q<Label>("title").text = UiText.Settings;
             var closeButton = root.Q<Button>("close");
@@ -50,6 +62,21 @@ namespace Hulla.Presentation.Screens.Settings
 
         public void Dispose()
         {
+            if (_notifications != null)
+            {
+                _notifications.Changed -= Rebuild;
+            }
+        }
+
+        private void Rebuild()
+        {
+            var status = _accountStatus?.text;
+            _list.Clear();
+            Build();
+            if (_accountStatus != null && status != null)
+            {
+                _accountStatus.text = status;
+            }
         }
 
         private void Build()
@@ -67,6 +94,20 @@ namespace Hulla.Presentation.Screens.Settings
             Choice(UiText.TextSizeLabel, new[] { "100%", "125%", "150%", "200%" }, () => Array.IndexOf(scales, _settings.TextScale), i => _settings.TextScale = scales[i]);
             Toggle(UiText.ReduceMotionLabel, () => _settings.ReduceMotion, v => _settings.ReduceMotion = v);
             Toggle(UiText.LeftHandedLabel, () => _settings.LeftHanded, v => _settings.LeftHanded = v);
+            var push = _notifications?.Settings;
+            if (push != null && _changeNotifications != null)
+            {
+                Heading(UiText.Notifications);
+                var change = _changeNotifications;
+                Toggle(UiText.NotifyInvites, () => push.TableInvite, v => change(n => n.TableInvite = v));
+                Toggle(UiText.NotifyFriendRequests, () => push.FriendRequest, v => change(n => n.FriendRequest = v));
+                Toggle(UiText.NotifyFriendOnline, () => push.FriendOnline, v => change(n => n.FriendOnline = v));
+                Toggle(UiText.NotifyDailyReward, () => push.DailyReward, v => change(n => n.DailyReward = v));
+                Toggle(UiText.NotifySeasonEnd, () => push.SeasonEnd, v => change(n => n.SeasonEnd = v));
+                Toggle(UiText.NotifyQuietHours, () => push.QuietHours, v => change(n => n.QuietHours = v));
+                Toggle(UiText.NotifyNonFriendInvites, () => push.InvitesFromNonFriends, v => change(n => n.InvitesFromNonFriends = v));
+            }
+
             Heading(UiText.SettingsPrivacy);
             Toggle(UiText.AnalyticsLabel, () => _settings.AnalyticsConsent == true, v => _settings.AnalyticsConsent = v);
             if (_account != null)
