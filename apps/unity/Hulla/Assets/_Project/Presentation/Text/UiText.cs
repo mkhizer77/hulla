@@ -164,6 +164,25 @@ namespace Hulla.Presentation.Text
         public const string Profile = "Profile";
         public const string Missions = "Missions";
         public const string Leaderboard = "Leaderboard";
+        public const string Achievements = "Achievements";
+
+        /// <summary>{0} unlocked, {1} total.</summary>
+        public const string AchievementsCount = "{0} of {1} unlocked";
+
+        public const string GemsOnly = "{0} gems";
+
+        /// <summary>{0} gems, {1} the title's name.</summary>
+        public const string GemsAndTitle = "{0} gems + the title \"{1}\"";
+
+        /// <summary>{0} the achievement's name.</summary>
+        public const string AchievementUnlocked = "Achievement unlocked: {0}";
+
+        /// <summary>A title key ("thulla_baaz") as words ("Thulla baaz") until the string tables land (#65).</summary>
+        public static string TitleName(string key)
+        {
+            var words = key.Replace('_', ' ');
+            return words.Length == 0 ? words : char.ToUpperInvariant(words[0]) + words.Substring(1);
+        }
         public const string ThisWeek = "This week";
         public const string ThisMonth = "This month";
         public const string Everyone = "Everyone";

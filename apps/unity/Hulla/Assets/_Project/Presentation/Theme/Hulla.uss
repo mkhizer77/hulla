@@ -971,3 +971,7 @@
 .leaderboard__me {
     margin-top: var(--space-1);
 }
+
+.achievement--locked {
+    opacity: 0.6;
+}

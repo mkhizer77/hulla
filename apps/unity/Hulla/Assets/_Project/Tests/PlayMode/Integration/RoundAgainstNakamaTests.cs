@@ -254,6 +254,13 @@ namespace Hulla.Integration.Tests
                 await board.ShowAsync(Hulla.Application.Progress.LeaderboardPeriod.Monthly, true, default);
                 Assert.IsNull(board.ErrorCode, "the friends view answers");
                 Debug.Log($"friends' monthly board: {board.Page!.Rows.Count} rows, me {board.Page.Me?.Points}");
+
+                // The round counts toward achievements (GDD 12.7).
+                var achievements = new Hulla.Application.ViewModels.AchievementsViewModel(new NakamaAchievementsService(_players[0].Connection));
+                await achievements.RefreshAsync(default);
+                Assert.IsNull(achievements.ErrorCode);
+                Assert.Greater(achievements.Total, 0, "the list came from content");
+                Assert.IsTrue(achievements.Groups.SelectMany(g => g.Items).Any(a => a.Metric == "rounds" && a.Progress >= 1), "the round counted");
             }
         }
 

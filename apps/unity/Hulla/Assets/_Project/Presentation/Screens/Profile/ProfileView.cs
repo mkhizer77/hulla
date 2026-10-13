@@ -19,7 +19,7 @@ namespace Hulla.Presentation.Screens.Profile
         private readonly Button _copy;
         private bool _filled;
 
-        public ProfileView(VisualElement root, ProfileViewModel model, Action back, Action<string, string, string> save)
+        public ProfileView(VisualElement root, ProfileViewModel model, Action back, Action<string, string, string> save, Action? openAchievements = null)
         {
             _model = model;
             root.Q<Label>("title").text = UiText.Profile;
@@ -36,6 +36,10 @@ namespace Hulla.Presentation.Screens.Profile
                 _copy.text = UiText.Copied;
             };
             _stats = root.Q<Label>("stats");
+            var achievements = root.Q<Button>("achievements");
+            achievements.text = UiText.Achievements;
+            achievements.clicked += () => openAchievements?.Invoke();
+            achievements.style.display = openAchievements == null ? DisplayStyle.None : DisplayStyle.Flex;
             _name = root.Q<TextField>("name");
             _name.label = UiText.DisplayNameLabel;
             _name.maxLength = 16;

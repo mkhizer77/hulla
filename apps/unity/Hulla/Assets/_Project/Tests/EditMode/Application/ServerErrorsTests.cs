@@ -14,3 +14,16 @@ namespace Hulla.Application.Tests
             Assert.AreEqual(expected, ServerErrors.CodeOf(new Exception(message), "table.join_failed"));
     }
 }
+
+namespace Hulla.Application.Tests
+{
+    public sealed class ServerNoticesTests
+    {
+        [Test]
+        public void UnlockedAchievementIdsAreRead()
+        {
+            CollectionAssert.AreEqual(new[] { "first_thulla", "houdini" }, Hulla.Infrastructure.Nakama.ServerNotices.UnlockedIds("{\"unlocked\":[\"first_thulla\",\"houdini\"]}"));
+            Assert.IsEmpty(Hulla.Infrastructure.Nakama.ServerNotices.UnlockedIds("not json"));
+        }
+    }
+}

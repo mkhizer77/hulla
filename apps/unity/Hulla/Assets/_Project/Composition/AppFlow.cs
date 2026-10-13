@@ -10,6 +10,7 @@ using Hulla.Presentation.Navigation;
 using Hulla.Presentation.Screens.Home;
 using Hulla.Presentation.Screens.Friends;
 using Hulla.Presentation.Screens.Lobby;
+using Hulla.Presentation.Screens.Achievements;
 using Hulla.Presentation.Screens.Leaderboard;
 using Hulla.Presentation.Screens.Missions;
 using Hulla.Presentation.Screens.Profile;
@@ -75,6 +76,27 @@ namespace Hulla.Composition
             _app.QuickPlay.Found += OnQuickPlayFound;
             _app.TableChat.Received += OnText;
             _app.Tables.Disconnected += OnDisconnected;
+            _app.Sessions.Notified += OnNotice;
+        }
+
+        /// <summary>An unlock shows briefly at the top of whatever screen is open (GDD 12.7).</summary>
+        private async void OnNotice(string subject, string content)
+        {
+            if (subject != Hulla.Infrastructure.Nakama.ServerNotices.AchievementUnlocked)
+            {
+                return;
+            }
+
+            foreach (var id in Hulla.Infrastructure.Nakama.ServerNotices.UnlockedIds(content))
+            {
+                var text = string.Format(UiText.AchievementUnlocked, AchievementText.Name(id, "", 0));
+                _shell.SetBanner(text);
+                await Awaitable.WaitForSecondsAsync(4f);
+                if (UnityEngine.UIElements.UQueryExtensions.Q<UnityEngine.UIElements.Label>(_shell.Root, "shell-banner")?.text == text)
+                {
+                    _shell.SetBanner(null);
+                }
+            }
         }
 
         public async void Start()
@@ -255,8 +277,17 @@ namespace Hulla.Composition
             CloseView();
             _screen = Screen.Home;
             var profile = _app.Profile;
-            _view = new ProfileView(_shell.Show(_shell.Catalog.Profile), profile, ShowHome, (display, handle, bio) => _ = profile.SaveAsync(display, handle, bio, _app.Lifetime));
+            _view = new ProfileView(_shell.Show(_shell.Catalog.Profile), profile, ShowHome, (display, handle, bio) => _ = profile.SaveAsync(display, handle, bio, _app.Lifetime), () => OpenAchievements(name, server));
             await profile.RefreshAsync(_app.Lifetime);
+        }
+
+        private async void OpenAchievements(string name, string? server)
+        {
+            CloseView();
+            _screen = Screen.Home;
+            var achievements = _app.Achievements;
+            _view = new AchievementsView(_shell.Show(_shell.Catalog.Achievements), achievements, () => OnProfile(name, server));
+            await achievements.RefreshAsync(_app.Lifetime);
         }
 
         private async Awaitable<bool> SignedInAsync(string name, string? server)

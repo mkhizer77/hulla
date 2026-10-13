@@ -53,6 +53,12 @@ namespace Hulla.Screens.Tests
         {
             public PlayerSession? Current => null;
 
+            public event Action<string, string>? Notified
+            {
+                add { }
+                remove { }
+            }
+
             public Awaitable<Result<PlayerSession>> SignInAsync(string displayName, CancellationToken cancellation) => Done(Result<PlayerSession>.Fail("fake"));
 
             public Awaitable<Result<bool>> ReconnectAsync(CancellationToken cancellation) => Done(Result<bool>.Fail("fake"));
@@ -131,6 +137,17 @@ namespace Hulla.Screens.Tests
                     },
                     new Hulla.Application.Progress.LeaderboardRow(57, "me", "khizer", 12, 2),
                     1_000_000_000_000 + 3L * 86_400_000)));
+        }
+
+        public sealed class Achievements : Hulla.Application.Progress.IAchievementsService
+        {
+            public Awaitable<Result<(IReadOnlyList<Hulla.Application.Progress.AchievementInfo> Achievements, IReadOnlyList<string> UnlockedNow)>> AchievementsAsync(CancellationToken c) =>
+                Done(Result<(IReadOnlyList<Hulla.Application.Progress.AchievementInfo> Achievements, IReadOnlyList<string> UnlockedNow)>.Ok((new List<Hulla.Application.Progress.AchievementInfo>
+                {
+                    new Hulla.Application.Progress.AchievementInfo("first_thulla", "play", "thullas_given", 1, 1, 1_000, 5, null),
+                    new Hulla.Application.Progress.AchievementInfo("thullas_1000", "play", "thullas_given", 1000, 37, null, 60, "thulla_baaz"),
+                    new Hulla.Application.Progress.AchievementInfo("first_friend", "social", "friends", 1, 0, null, 5, null),
+                }, new List<string>())));
         }
 
         public sealed class Missions : Hulla.Application.Progress.IMissionsService

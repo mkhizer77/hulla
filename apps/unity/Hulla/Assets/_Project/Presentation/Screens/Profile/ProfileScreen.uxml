@@ -11,6 +11,7 @@
                 <ui:Button name="copy" class="button button--small" />
             </ui:VisualElement>
             <ui:Label name="stats" class="status" />
+            <ui:Button name="achievements" class="button" />
             <ui:VisualElement class="panel">
                 <ui:TextField name="name" class="field" />
                 <ui:TextField name="handle" class="field" />

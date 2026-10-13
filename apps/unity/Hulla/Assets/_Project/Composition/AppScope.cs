@@ -41,6 +41,7 @@ namespace Hulla.Composition
             Progress = new ProgressViewModel(new NakamaProgressService(_connection));
             DailyReward = new DailyRewardViewModel(new NakamaDailyRewardService(_connection));
             Leaderboard = new LeaderboardViewModel(new NakamaLeaderboardService(_connection));
+            Achievements = new AchievementsViewModel(new NakamaAchievementsService(_connection));
             Missions = new MissionsViewModel(new NakamaMissionsService(_connection));
             Friends = new FriendsViewModel(social);
             Profile = new ProfileViewModel(social);
@@ -80,6 +81,8 @@ namespace Hulla.Composition
         public DailyRewardViewModel DailyReward { get; }
 
         public LeaderboardViewModel Leaderboard { get; }
+
+        public AchievementsViewModel Achievements { get; }
 
         public MissionsViewModel Missions { get; }
 

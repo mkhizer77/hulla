@@ -8,6 +8,7 @@ using Hulla.Application.Table;
 using Hulla.Application.ViewModels;
 using Hulla.Games.Thulla;
 using Hulla.Presentation.Navigation;
+using Hulla.Presentation.Screens.Achievements;
 using Hulla.Presentation.Screens.Friends;
 using Hulla.Presentation.Screens.Home;
 using Hulla.Presentation.Screens.Leaderboard;
@@ -291,6 +292,25 @@ namespace Hulla.Screens.Tests
             Assert.AreEqual("Resets in 3d 0h. Top 10 win gems.", root.Q<Label>("reset").text);
             Shown(root.Q<VisualElement>("me"), "my rank off the page");
             StringAssert.Contains("khizer (you)", root.Q<VisualElement>("me").Q<Label>(className: "leaderboard__name").text);
+        }
+
+        [UnityTest]
+        public IEnumerator AchievementsShowCategoriesProgressAndRewards()
+        {
+            VisualElement root = null!;
+            var model = new AchievementsViewModel(new Fakes.Achievements());
+            yield return Open(Catalog.Achievements, r =>
+            {
+                root = r;
+                new AchievementsView(r, model, () => { });
+                _ = model.RefreshAsync(default);
+            });
+            Assert.AreEqual("1 of 3 unlocked", root.Q<Label>("status").text);
+            var labels = root.Q<VisualElement>("list").Query<Label>().ToList().Select(l => l.text).ToList();
+            CollectionAssert.Contains(labels, "Play");
+            CollectionAssert.Contains(labels, "Friends");
+            CollectionAssert.Contains(labels, "37/1,000");
+            CollectionAssert.Contains(labels, "Give 1000 thullas · 60 gems + the title \"Thulla baaz\"");
         }
 
         [UnityTest]
