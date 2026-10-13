@@ -59,11 +59,24 @@
         </ui:VisualElement>
         <ui:VisualElement name="results" class="results">
             <ui:VisualElement class="panel results__panel">
-                <ui:Label name="result-title" class="title title--small" />
-                <ui:Label name="result-reward" class="turn result-reward" />
-                <ui:VisualElement name="result-order" class="results__order" />
-                <ui:Button name="play-again" class="button button--primary" />
-                <ui:Button name="result-share" class="button" />
+                <ui:ScrollView class="results__scroll">
+                    <ui:VisualElement name="result-podium" class="podium" />
+                    <ui:VisualElement class="results__loser">
+                        <ui:Label name="result-title" class="title title--small results__title" />
+                        <ui:Label name="result-stamp" class="results__stamp" />
+                    </ui:VisualElement>
+                    <ui:Label name="result-reward" class="turn result-reward" />
+                    <ui:VisualElement name="result-order" class="results__order" />
+                    <ui:Button name="result-fair" class="chip chip--fair" />
+                </ui:ScrollView>
+                <ui:VisualElement class="results__again">
+                    <ui:Button name="play-again" class="button button--primary results__play" />
+                    <ui:VisualElement name="result-votes" class="podium__votes" />
+                </ui:VisualElement>
+                <ui:VisualElement class="results__quiet">
+                    <ui:Button name="change-rules" class="button button--quiet button--small" />
+                    <ui:Button name="result-share" class="button button--quiet button--small" />
+                </ui:VisualElement>
                 <ui:Label name="result-status" class="status" />
             </ui:VisualElement>
         </ui:VisualElement>

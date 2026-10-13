@@ -88,12 +88,46 @@ namespace Hulla.Composition
             _app = app;
             _shell = shell;
             _shell.Ticked += Tick;
+            _shell.NavChosen += OnNav;
             _app.Settings.Changed += ApplySettings;
             _app.QuickPlay.Found += OnQuickPlayFound;
             _app.TableChat.Received += OnText;
             _app.Tables.Disconnected += OnDisconnected;
             _app.Sessions.Notified += OnNotice;
             _app.Links.InviteOpened += OnInviteLink;
+            _app.Friends.Changed += RefreshBadges;
+            _app.Pass.Changed += RefreshBadges;
+        }
+
+        /// <summary>The bottom navigation (GDD 14.1); every tab opens from wherever the player is.</summary>
+        private void OnNav(Hulla.Presentation.Navigation.NavTab tab)
+        {
+            var name = _app.Home.LastName;
+            switch (tab)
+            {
+                case Hulla.Presentation.Navigation.NavTab.Friends:
+                    OnFriends(name, null);
+                    break;
+                case Hulla.Presentation.Navigation.NavTab.Shop:
+                    OnShop(name, null);
+                    break;
+                case Hulla.Presentation.Navigation.NavTab.Pass:
+                    OnPass(name, null);
+                    break;
+                case Hulla.Presentation.Navigation.NavTab.Profile:
+                    OnProfile(name, null);
+                    break;
+                default:
+                    ShowHome();
+                    break;
+            }
+        }
+
+        /// <summary>Badges on the tabs: requests waiting on Friends, claimable tiers on Pass.</summary>
+        private void RefreshBadges()
+        {
+            _shell.SetNavBadge(Hulla.Presentation.Navigation.NavTab.Friends, _app.Friends.Received.Count);
+            _shell.SetNavBadge(Hulla.Presentation.Navigation.NavTab.Pass, _app.Pass.Claimable);
         }
 
         private async Awaitable<IReadOnlyList<Hulla.Application.Social.FriendEntry>> FriendsToInviteAsync()
@@ -249,6 +283,9 @@ namespace Hulla.Composition
         public void Dispose()
         {
             _shell.Ticked -= Tick;
+            _shell.NavChosen -= OnNav;
+            _app.Friends.Changed -= RefreshBadges;
+            _app.Pass.Changed -= RefreshBadges;
             _app.Settings.Changed -= ApplySettings;
             _app.QuickPlay.Found -= OnQuickPlayFound;
             _app.Links.InviteOpened -= OnInviteLink;
@@ -263,6 +300,7 @@ namespace Hulla.Composition
             CloseView();
             _screen = Screen.Home;
             var root = _shell.Show(_shell.Catalog.Home);
+            _shell.ShowNav(Hulla.Presentation.Navigation.NavTab.Home);
             var server = Debug.isDebugBuild ? _app.Config.HostAndPort : null;
             var home = new HomeView(root, _app.Home, server, OnCreate, OnJoin, OnQuickPlay, OpenSettings, OnFriends, OnProfile, _app.HomeFriends, () => StartTutorial(false), TutorialText.HowToPlay, OnWatch, _app.Progress, OnMissions, OnLeaderboard, OnShop, OnPass);
             _view = home;
@@ -324,6 +362,7 @@ namespace Hulla.Composition
 
             CloseView();
             _screen = Screen.QuickPlay;
+            _shell.HideNav();
             _view = new QuickPlayView(_shell.Show(_shell.Catalog.QuickPlay), _app.QuickPlay, CancelQuickPlay);
             await _app.QuickPlay.StartAsync(seats, _app.Lifetime);
         }
@@ -349,7 +388,10 @@ namespace Hulla.Composition
                 id => _ = friends.RemoveAsync(id, lifetime),
                 id => _ = friends.BlockAsync(id, lifetime),
                 entry => _ = friends.ToggleFavouriteAsync(entry, lifetime),
-                id => _ = friends.UnblockAsync(id, lifetime)));
+                id => _ = friends.UnblockAsync(id, lifetime)),
+                () => _ = friends.RefreshAsync(lifetime),
+                () => OnProfile(name, server));
+            _shell.ShowNav(Hulla.Presentation.Navigation.NavTab.Friends);
             await friends.RefreshAsync(lifetime);
         }
 
@@ -365,6 +407,7 @@ namespace Hulla.Composition
             var pass = _app.Pass;
             _view = new PassView(_shell.Show(_shell.Catalog.Pass), pass, () => DateTimeOffset.UtcNow.ToUnixTimeMilliseconds(), ShowHome,
                 (tier, premium) => _ = pass.ClaimAsync(tier, premium, _app.Lifetime));
+            _shell.ShowNav(Hulla.Presentation.Navigation.NavTab.Pass);
             await pass.RefreshAsync(_app.Lifetime);
         }
 
@@ -378,9 +421,12 @@ namespace Hulla.Composition
             CloseView();
             _screen = Screen.Home;
             var shop = _app.Shop;
-            _view = new ShopView(_shell.Show(_shell.Catalog.Shop), shop, ShowHome, item =>
+            var shopView = new ShopView(_shell.Show(_shell.Catalog.Shop), shop, ShowHome, item =>
                 _shell.ShowDialog(string.Format(UiText.BuyQuestion, ItemText.Name(item.Id), ShopView.Price(item)), UiText.Buy, UiText.Cancel, () => _ = shop.BuyAsync(item.Id, _app.Lifetime), () => { }),
                 item => _ = shop.EquipAsync(item.Id, _app.Lifetime));
+            shopView.Retry = () => _ = shop.RefreshAsync(_app.Lifetime);
+            _view = shopView;
+            _shell.ShowNav(Hulla.Presentation.Navigation.NavTab.Shop);
             await _app.Progress.RefreshAsync(LocalOffsetMinutes(), _app.Lifetime);
             if (_app.Progress.Info != null)
             {
@@ -400,8 +446,11 @@ namespace Hulla.Composition
             CloseView();
             _screen = Screen.Home;
             var board = _app.Leaderboard;
-            _view = new LeaderboardView(_shell.Show(_shell.Catalog.Leaderboard), board, () => DateTimeOffset.UtcNow.ToUnixTimeMilliseconds(), _app.Sessions.Current?.UserId, ShowHome,
+            var boardView = new LeaderboardView(_shell.Show(_shell.Catalog.Leaderboard), board, () => DateTimeOffset.UtcNow.ToUnixTimeMilliseconds(), _app.Sessions.Current?.UserId, ShowHome,
                 (period, friends) => _ = board.ShowAsync(period, friends, _app.Lifetime));
+            boardView.Retry = () => _ = board.RefreshAsync(_app.Lifetime);
+            _view = boardView;
+            _shell.ShowNav(Hulla.Presentation.Navigation.NavTab.Home);
             await board.RefreshAsync(_app.Lifetime);
         }
 
@@ -416,9 +465,12 @@ namespace Hulla.Composition
             _screen = Screen.Home;
             var missions = _app.Missions;
             var tz = LocalOffsetMinutes();
-            _view = new MissionsView(_shell.Show(_shell.Catalog.Missions), missions, ShowHome,
+            var missionsView = new MissionsView(_shell.Show(_shell.Catalog.Missions), missions, ShowHome,
                 id => _ = missions.ClaimAsync(id, tz, _app.Lifetime),
                 id => _ = missions.RerollAsync(id, tz, _app.Lifetime));
+            missionsView.Retry = () => _ = missions.RefreshAsync(tz, _app.Lifetime);
+            _view = missionsView;
+            _shell.ShowNav(Hulla.Presentation.Navigation.NavTab.Home);
             await missions.RefreshAsync(tz, _app.Lifetime);
         }
 
@@ -433,6 +485,7 @@ namespace Hulla.Composition
             _screen = Screen.Home;
             var profile = _app.Profile;
             _view = new ProfileView(_shell.Show(_shell.Catalog.Profile), profile, ShowHome, (display, handle, bio) => _ = profile.SaveAsync(display, handle, bio, _app.Lifetime), () => OpenAchievements(name, server));
+            _shell.ShowNav(Hulla.Presentation.Navigation.NavTab.Profile);
             await profile.RefreshAsync(_app.Lifetime);
         }
 
@@ -441,7 +494,10 @@ namespace Hulla.Composition
             CloseView();
             _screen = Screen.Home;
             var achievements = _app.Achievements;
-            _view = new AchievementsView(_shell.Show(_shell.Catalog.Achievements), achievements, () => OnProfile(name, server));
+            var achievementsView = new AchievementsView(_shell.Show(_shell.Catalog.Achievements), achievements, () => OnProfile(name, server));
+            achievementsView.Retry = () => _ = achievements.RefreshAsync(_app.Lifetime);
+            _view = achievementsView;
+            _shell.ShowNav(Hulla.Presentation.Navigation.NavTab.Profile);
             await achievements.RefreshAsync(_app.Lifetime);
         }
 
@@ -772,6 +828,7 @@ namespace Hulla.Composition
 
             CloseView();
             _screen = wanted;
+            _shell.HideNav();
             if (wanted == Screen.Lobby)
             {
                 _lobbyView = new LobbyView(_shell.Show(_shell.Catalog.Lobby), client, () => DateTimeOffset.UtcNow.ToUnixTimeMilliseconds(), Leave, code => ShareCode(code), text => _app.TableChat.SendAsync(text, _app.Lifetime), () => ThullaRulesEditor.Summary(client.Model, _app.Presets), () => OpenRulesEditor(client));
@@ -797,8 +854,23 @@ namespace Hulla.Composition
             _tableView.UseMutes(_app.Mutes.IsMuted, (id, muted) => _ = _app.Mutes.SetAsync(id, muted, _app.Lifetime));
             _tableView.UseModeration(BlockPlayer, (id, reason, done) => ReportPlayer(client, id, reason, done));
             _tableView.UseShare(() => AskShareRatio(client));
+            _tableView.UseFairness(ExplainFairDeal);
+            if (client.Model.IsPrivate)
+            {
+                _tableView.UseChangeRules(() => OpenRulesEditor(client));
+            }
+
             _scheduler = new AnimationScheduler(client.Events, _tableView);
             _view = _tableView;
+        }
+
+        /// <summary>The fair deal in plain words (ADR-0009): the commitment, the seed, and a copy of the seed to check elsewhere.</summary>
+        private void ExplainFairDeal(Fairness fairness)
+        {
+            var text = string.Format(UiText.FairDealExplained, Short(fairness.Commitment), Short(fairness.Seed));
+            _shell.ShowDialog(text, UiText.Close, UiText.CopySeed, () => { }, () => GUIUtility.systemCopyBuffer = fairness.Seed);
+
+            static string Short(string value) => value.Length > 16 ? value.Substring(0, 8) + "…" + value.Substring(value.Length - 8) : value;
         }
 
         /// <summary>After a round, co-players who aren't friends or pending get an "Add" chip (GDD 14.8, 10.3).</summary>
@@ -1026,6 +1098,7 @@ namespace Hulla.Composition
             var settings = _app.Settings;
             _app.Analytics.SetConsent(settings.AnalyticsConsent == true);
             ThemeClasses.Apply(_shell.Root, settings);
+            _shell.ReduceMotion = settings.ReduceMotion;
             _sounds.Volume = settings.SfxVolume / 100f;
             _tableView?.ApplySettings(settings.OneTapPlay, settings.ReduceMotion, settings.LargeCards, settings.Haptics, settings.ShowRulesRecap ? HideRecap : null);
             _app.Session?.Table?.Client.Model.SetSort(settings.HandSort == HandSort.RankThenSuit ? CardOrder.CompareByRank : CardOrder.Compare);
@@ -1058,6 +1131,7 @@ namespace Hulla.Composition
         {
             CloseView();
             _screen = Screen.Table;
+            _shell.HideNav();
             var steps = ThullaTutorial.Steps();
             var chosen = refresher ? new[] { steps[1], steps[2] } : steps;
             var gateway = new ScriptedTableGateway(chosen, () => DateTimeOffset.UtcNow.ToUnixTimeMilliseconds(), TutorialText.HowToPlay);

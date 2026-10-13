@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Hulla.Application.Table;
+using Hulla.Presentation.TableKit;
 using Hulla.Presentation.Text;
 using Hulla.Protocol;
 using UnityEngine.UIElements;
@@ -8,29 +9,41 @@ using UnityEngine.UIElements;
 namespace Hulla.Games.Thulla
 {
     /// <summary>
-    /// The results overlay (GDD 14.8): the escape-order podium, the loser with the table's title, the
-    /// room's points and Bhabhi tally, a highlight or two, "Add friend" chips for co-players who are
-    /// not friends yet, and the rematch vote with its countdown (R52).
+    /// The results overlay (GDD 14.8, design §8): a podium of avatars in escape order, the loser with
+    /// the stamp and the table's title, the room's points and Bhabhi tally, a highlight or two, the
+    /// fair-deal chip that explains the shuffle, "Add friend" chips for co-players who are not friends
+    /// yet, the rematch vote with the accepted avatars and its countdown (R52), and Change rules for
+    /// the host. Nobody leaves the table unless they tap Leave.
     /// </summary>
     public sealed class ThullaResults
     {
         private readonly VisualElement _root;
         private readonly Label _title;
+        private readonly Label _stamp;
+        private readonly VisualElement _podium;
         private readonly VisualElement _body;
         private readonly Button _playAgain;
+        private readonly VisualElement _votes;
         private readonly Label _status;
         private readonly Func<long, string> _nameOf;
         private long _shownSeconds = -1;
         private readonly Label _reward;
         private readonly Button _share;
+        private readonly Button _fair;
+        private readonly Button _changeRules;
         private Action? _onShare;
+        private Action? _onChangeRules;
+        private Fairness? _fairness;
 
         public ThullaResults(VisualElement root, Func<long, string> nameOf, Action playAgain)
         {
             _root = root;
             _nameOf = nameOf;
             _title = root.Q<Label>("result-title");
+            _stamp = root.Q<Label>("result-stamp");
+            _podium = root.Q<VisualElement>("result-podium");
             _body = root.Q<VisualElement>("result-order");
+            _votes = root.Q<VisualElement>("result-votes");
             _playAgain = root.Q<Button>("play-again");
             _playAgain.text = UiText.PlayAgain;
             _playAgain.clicked += playAgain;
@@ -40,6 +53,19 @@ namespace Hulla.Games.Thulla
             _share.text = UiText.ShareResult;
             _share.clicked += () => _onShare?.Invoke();
             _share.style.display = DisplayStyle.None;
+            _fair = root.Q<Button>("result-fair");
+            _fair.text = UiText.FairDealCheck;
+            _fair.clicked += () =>
+            {
+                if (_fairness != null)
+                {
+                    ShowFairness?.Invoke(_fairness);
+                }
+            };
+            _changeRules = root.Q<Button>("change-rules");
+            _changeRules.text = UiText.ChangeRules;
+            _changeRules.clicked += () => _onChangeRules?.Invoke();
+            _changeRules.style.display = DisplayStyle.None;
         }
 
         /// <summary>Shares the result as a card (GDD 10.9); null hides the button (the tutorial).</summary>
@@ -51,6 +77,16 @@ namespace Hulla.Games.Thulla
                 _onShare = value;
                 _share.style.display = value != null ? DisplayStyle.Flex : DisplayStyle.None;
             }
+        }
+
+        /// <summary>Opens the fair-deal explanation (ADR-0009); null hides the chip.</summary>
+        public Action<Fairness>? ShowFairness { get; set; }
+
+        /// <summary>The host edits the rules from here (design §8); null hides the button.</summary>
+        public Action? ChangeRules
+        {
+            get => _onChangeRules;
+            set => _onChangeRules = value;
         }
 
         /// <summary>The round's XP, coins and any level-up (GDD 14.8), once the server has paid it.</summary>
@@ -71,12 +107,20 @@ namespace Hulla.Games.Thulla
                 return;
             }
 
+            _fairness = result.Fairness;
+            _fair.style.display = ShowFairness != null && _fairness != null ? DisplayStyle.Flex : DisplayStyle.None;
+            _changeRules.style.display = _onChangeRules != null && model.IsHost && model.IsPrivate ? DisplayStyle.Flex : DisplayStyle.None;
             _title.text = string.Format(UiText.LoserIs, _nameOf(result.BhabhiSeat), LoserTitle(model));
+            _stamp.text = LoserTitle(model).ToUpperInvariant();
+            Podium(model, result);
             _body.Clear();
-            Heading(UiText.EscapeOrder);
-            for (var i = 0; i < result.EscapeOrder.Count; i++)
+            if (result.EscapeOrder.Count > 3)
             {
-                Line((i + 1) + ". " + _nameOf(result.EscapeOrder[i]), i == 0 ? "results__first" : null);
+                Heading(UiText.EscapeOrder);
+                for (var i = 3; i < result.EscapeOrder.Count; i++)
+                {
+                    Line((i + 1) + ". " + _nameOf(result.EscapeOrder[i]), null);
+                }
             }
 
             var series = result.Series;
@@ -97,7 +141,55 @@ namespace Hulla.Games.Thulla
             UpdateStatus(model, voted, 0);
         }
 
-        /// <summary>Per frame while the overlay shows: the rematch countdown, redrawn when the second changes.</summary>
+        /// <summary>The first three out on a podium, the loser beside them with the stamp (GDD 14.8).</summary>
+        private void Podium(TableModel model, RoundEnd result)
+        {
+            _podium.Clear();
+            var places = Math.Min(3, result.EscapeOrder.Count);
+            // Second, first, third: the winner stands in the middle and tallest.
+            var order = places == 3 ? new[] { 1, 0, 2 } : places == 2 ? new[] { 1, 0 } : places == 1 ? new[] { 0 } : Array.Empty<int>();
+            foreach (var place in order)
+            {
+                var seat = result.EscapeOrder[place];
+                var column = new VisualElement();
+                column.AddToClassList("podium__place");
+                column.AddToClassList("podium__place--" + (place + 1));
+                column.Add(Avatar(_nameOf(seat), seat == model.MySeat));
+                var name = new Label(_nameOf(seat));
+                name.AddToClassList("podium__name");
+                column.Add(name);
+                var rank = new Label(Ordinal(place + 1));
+                rank.AddToClassList("podium__rank");
+                column.Add(rank);
+                _podium.Add(column);
+            }
+
+            var loser = new VisualElement();
+            loser.AddToClassList("podium__place");
+            loser.AddToClassList("podium__place--loser");
+            loser.Add(Avatar(_nameOf(result.BhabhiSeat), result.BhabhiSeat == model.MySeat));
+            var loserName = new Label(_nameOf(result.BhabhiSeat));
+            loserName.AddToClassList("podium__name");
+            loser.Add(loserName);
+            _podium.Add(loser);
+        }
+
+        private static VisualElement Avatar(string name, bool mine)
+        {
+            var avatar = new VisualElement();
+            avatar.AddToClassList("seat__avatar");
+            avatar.AddToClassList("podium__avatar");
+            avatar.EnableInClassList("podium__avatar--me", mine);
+            AvatarTint.Apply(avatar, name);
+            var initial = new Label(name.Length == 0 ? "?" : name.Substring(0, 1).ToUpperInvariant());
+            initial.AddToClassList("seat__initial");
+            avatar.Add(initial);
+            return avatar;
+        }
+
+        public static string Ordinal(int place) => place switch { 1 => "1st", 2 => "2nd", 3 => "3rd", _ => place + "th" };
+
+        /// <summary>Per frame while the overlay shows: the rematch countdown and the accepted avatars.</summary>
         public void Tick(TableModel model, bool voted, long nowMs)
         {
             if (_root.style.display == DisplayStyle.Flex)
@@ -110,13 +202,24 @@ namespace Hulla.Games.Thulla
         {
             var deadline = model.RematchDeadlineTs;
             var seconds = deadline == null || nowMs == 0 ? -1 : Math.Max(0, (deadline.Value - nowMs + 999) / 1000);
+            var votes = model.RematchVotes.Count;
+            if (votes != _votes.childCount)
+            {
+                _votes.Clear();
+                foreach (var seat in model.RematchVotes)
+                {
+                    var avatar = Avatar(_nameOf(seat), seat == model.MySeat);
+                    avatar.AddToClassList("podium__avatar--vote");
+                    _votes.Add(avatar);
+                }
+            }
+
             if (seconds == _shownSeconds && nowMs != 0)
             {
                 return;
             }
 
             _shownSeconds = seconds;
-            var votes = model.RematchVotes.Count;
             var players = 0;
             foreach (var seat in model.Seats)
             {
@@ -129,11 +232,7 @@ namespace Hulla.Games.Thulla
                 text = (text.Length > 0 ? text + " " : "") + string.Format(UiText.RematchVotes, votes, players);
             }
 
-            if (seconds >= 0)
-            {
-                text = (text.Length > 0 ? text + " · " : "") + seconds + "s";
-            }
-
+            _playAgain.text = seconds >= 0 ? UiText.PlayAgain + " · " + seconds + "s" : UiText.PlayAgain;
             _status.text = text;
         }
 

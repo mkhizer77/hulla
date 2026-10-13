@@ -1,37 +1,54 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements">
-    <ui:VisualElement name="home" class="screen screen--center">
-        <ui:Label name="title" class="title" />
-        <ui:Label name="tagline" class="subtitle" />
-        <ui:Label name="progress" class="status progress-line" />
-        <ui:VisualElement name="daily" class="daily">
-            <ui:Label name="daily-text" class="daily__text" />
-            <ui:Button name="daily-claim" class="button button--small button--primary" />
-        </ui:VisualElement>
-        <ui:Button name="hero" class="button button--primary hero" />
-        <ui:Button name="rejoin" class="button button--primary hero" />
-        <ui:Label name="online" class="status" />
-        <ui:VisualElement class="panel">
-            <ui:TextField name="name" class="field" />
+    <ui:VisualElement name="home" class="screen">
+        <ui:ScrollView class="settings__scroll">
+            <ui:VisualElement class="home__header">
+                <ui:VisualElement name="me" class="home__me">
+                    <ui:VisualElement name="avatar" class="seat__avatar home__avatar">
+                        <ui:Label name="avatar-initial" class="seat__initial" />
+                    </ui:VisualElement>
+                    <ui:VisualElement class="home__who">
+                        <ui:Label name="name-label" class="home__name" />
+                        <ui:Label name="progress" class="caption progress-line" />
+                    </ui:VisualElement>
+                </ui:VisualElement>
+                <ui:Label name="coins" class="home__coins" />
+                <ui:Button name="settings" class="button button--quiet button--small" />
+            </ui:VisualElement>
+            <ui:VisualElement name="name-panel" class="panel">
+                <ui:TextField name="name" class="field" />
+            </ui:VisualElement>
+            <ui:Label name="title" class="title home__title" />
+            <ui:Label name="tagline" class="subtitle" />
+            <ui:VisualElement name="party" class="party" />
+            <ui:Label name="online" class="caption home__online" />
+            <ui:Button name="hero" class="button button--primary hero" />
+            <ui:Button name="rejoin" class="button button--primary hero" />
+            <ui:Button name="quick" class="button button--primary" />
             <ui:Label name="seats-label" class="caption" />
             <ui:VisualElement name="seats" class="chips chips--seats" />
-            <ui:Button name="quick" class="button button--primary" />
-            <ui:VisualElement class="divider" />
-            <ui:Button name="create" class="button" />
-            <ui:VisualElement class="divider" />
-            <ui:TextField name="code" class="field field--code" />
-            <ui:Button name="join" class="button" />
-        </ui:VisualElement>
-        <ui:Label name="status" class="status" />
-        <ui:TextField name="server" class="field field--dev" />
-        <ui:VisualElement class="home__links">
-            <ui:Button name="how-to-play" class="button button--quiet" />
-            <ui:Button name="missions" class="button button--quiet" />
-            <ui:Button name="leaderboard" class="button button--quiet" />
-            <ui:Button name="shop" class="button button--quiet" />
-            <ui:Button name="pass" class="button button--quiet" />
-            <ui:Button name="friends" class="button button--quiet" />
-            <ui:Button name="profile" class="button button--quiet" />
-            <ui:Button name="settings" class="button button--quiet" />
-        </ui:VisualElement>
+            <ui:Button name="create" class="button button--secondary" />
+            <ui:VisualElement class="home__quiet">
+                <ui:Button name="join-toggle" class="button button--quiet" />
+                <ui:Button name="how-to-play" class="button button--quiet" />
+            </ui:VisualElement>
+            <ui:VisualElement name="join-panel" class="panel">
+                <ui:TextField name="code" class="field field--code" />
+                <ui:Button name="join" class="button" />
+            </ui:VisualElement>
+            <ui:Label name="status" class="status" />
+            <ui:VisualElement name="daily" class="daily">
+                <ui:Label name="daily-text" class="daily__text" />
+                <ui:Button name="daily-claim" class="button button--small button--primary" />
+            </ui:VisualElement>
+            <ui:VisualElement class="home__links">
+                <ui:Button name="missions" class="button button--quiet" />
+                <ui:Button name="leaderboard" class="button button--quiet" />
+            </ui:VisualElement>
+            <ui:TextField name="server" class="field field--dev" />
+            <ui:Button name="shop" class="button button--quiet home__hidden" />
+            <ui:Button name="pass" class="button button--quiet home__hidden" />
+            <ui:Button name="friends" class="button button--quiet home__hidden" />
+            <ui:Button name="profile" class="button button--quiet home__hidden" />
+        </ui:ScrollView>
     </ui:VisualElement>
 </ui:UXML>

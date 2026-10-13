@@ -83,7 +83,10 @@ namespace Hulla.Screens.Tests
                 _ = daily.RefreshAsync(0, default);
             });
             Assert.AreEqual("Khizer", root.Q<TextField>("name").value);
-            Assert.AreEqual("Quick Play", root.Q<Button>("quick").text);
+            Assert.AreEqual("Play now", root.Q<Button>("quick").text);
+            Assert.AreEqual("Khizer", root.Q<Label>("name-label").text, "the name sits in the header");
+            Assert.AreEqual(DisplayStyle.None, root.Q<VisualElement>("name-panel").style.display.value, "a known name is not asked again");
+            Assert.AreEqual(1, root.Q<VisualElement>("party").childCount, "the one friend online sits in the party bar");
             Shown(root.Q<Button>("hero"), "the hero");
             StringAssert.Contains("Ayesha", root.Q<Button>("hero").text);
             Assert.AreEqual(3, root.Q<VisualElement>("seats").childCount, "4, 5 and 6 seat chips");

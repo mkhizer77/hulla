@@ -35,11 +35,26 @@ namespace Hulla.Presentation.Screens.Missions
 
         private void Refresh()
         {
-            _status.text = _model.ErrorCode == null ? "" : UiText.Error(_model.ErrorCode);
+            _status.text = "";
             _list.Clear();
+            if (_model.ErrorCode != null)
+            {
+                ListState.Error(_list, _model.ErrorCode, Retry);
+                return;
+            }
+
+            if (_model.Daily.Count + _model.Weekly.Count == 0)
+            {
+                ListState.Empty(_list, UiText.NoMissionsYet);
+                return;
+            }
+
             Section(UiText.MissionsToday, _model.Daily, _model.RerollAvailable);
             Section(UiText.MissionsWeek, _model.Weekly, false);
         }
+
+        /// <summary>Loads the missions again after an error; null hides Retry.</summary>
+        public Action? Retry { get; set; }
 
         private void Section(string title, IReadOnlyList<MissionInfo> missions, bool canReroll)
         {

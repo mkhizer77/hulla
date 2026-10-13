@@ -28,12 +28,25 @@ namespace Hulla.Presentation.Screens.Achievements
 
         public void Dispose() => _model.Changed -= Refresh;
 
+        /// <summary>Loads the list again after an error; null hides Retry.</summary>
+        public Action? Retry { get; set; }
+
         private void Refresh()
         {
-            _status.text = _model.ErrorCode != null
-                ? UiText.Error(_model.ErrorCode)
-                : _model.Total > 0 ? string.Format(UiText.AchievementsCount, _model.UnlockedCount, _model.Total) : "";
+            _status.text = _model.Total > 0 ? string.Format(UiText.AchievementsCount, _model.UnlockedCount, _model.Total) : "";
             _list.Clear();
+            if (_model.ErrorCode != null)
+            {
+                ListState.Error(_list, _model.ErrorCode, Retry);
+                return;
+            }
+
+            if (_model.Total == 0)
+            {
+                ListState.Loading(_list);
+                return;
+            }
+
             foreach (var (category, items) in _model.Groups)
             {
                 var heading = new Label(AchievementText.Category(category));

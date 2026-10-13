@@ -3,17 +3,19 @@
         <ui:VisualElement class="code-box">
             <ui:Label name="code-label" class="caption" />
             <ui:Label name="code" class="code" />
-            <ui:Button name="share" class="button button--small" />
-            <ui:Button name="invite" class="button button--small" />
+            <ui:VisualElement class="chips lobby-share">
+                <ui:Button name="copy" class="chip" />
+                <ui:Button name="share" class="chip chip--share" />
+                <ui:Button name="invite" class="chip" />
+            </ui:VisualElement>
         </ui:VisualElement>
         <ui:VisualElement class="lobby-rules">
             <ui:Label name="rules" class="lobby-rules__text" />
             <ui:Button name="edit-rules" class="button button--quiet button--small" />
         </ui:VisualElement>
         <ui:Label name="rules-changed" class="caption" />
-        <ui:ScrollView name="seats-scroll" class="seats">
-            <ui:VisualElement name="seats" />
-        </ui:ScrollView>
+        <ui:VisualElement name="seats" class="lobby-ring" />
+        <ui:VisualElement name="watchers" class="lobby-watchers" />
         <ui:VisualElement name="chat" class="lobby-chat">
             <ui:VisualElement name="chat-log" class="chat-log" />
             <ui:VisualElement class="chat-panel__compose">
@@ -25,7 +27,7 @@
         <ui:Label name="countdown" class="turn countdown" />
         <ui:Label name="status" class="status" />
         <ui:VisualElement class="actions">
-            <ui:Button name="ready" class="button" />
+            <ui:Button name="ready" class="button button--secondary" />
             <ui:Button name="start" class="button button--primary" />
             <ui:Button name="leave" class="button button--quiet" />
         </ui:VisualElement>

@@ -45,6 +45,10 @@ namespace Hulla.Presentation.Tests
             Assert.GreaterOrEqual(Ratio(t["ink-muted"], t["surface-ui"]), 4.5f, "captions on screens");
             Assert.GreaterOrEqual(Ratio(t["ink-muted"], t["surface-table"]), 4.5f, "captions on the table");
             Assert.GreaterOrEqual(Ratio(t["accent-saffron"], t["surface-ui"]), 3f, "large accent text");
+            Assert.GreaterOrEqual(Ratio(t["accent-teal"], t["surface-ui"]), 3f, "secondary buttons");
+            Assert.GreaterOrEqual(Ratio(t["accent-mustard"], t["surface-ui"]), 3f, "coins");
+            Assert.GreaterOrEqual(Ratio(t["ink-ivory"], t["surface-panel"]), 4.5f, "text on panels");
+            Assert.GreaterOrEqual(Ratio(t["ink-ivory"], t["surface-raised"]), 4.5f, "text on buttons and chips");
             Assert.GreaterOrEqual(Ratio(t["suit-red"], t["card-face"]), 4.5f, "red indices");
             Assert.GreaterOrEqual(Ratio(t["suit-black"], t["card-face"]), 4.5f, "black indices");
         }

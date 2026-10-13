@@ -44,6 +44,9 @@ namespace Hulla.Presentation.Screens.Leaderboard
 
         public void Dispose() => _model.Changed -= Refresh;
 
+        /// <summary>Loads the board again after an error; null hides Retry.</summary>
+        public Action? Retry { get; set; }
+
         private static Button Chip(VisualElement root, string name, string text, Action clicked)
         {
             var chip = root.Q<Button>(name);
@@ -59,14 +62,31 @@ namespace Hulla.Presentation.Screens.Leaderboard
             _everyone.EnableInClassList("chip--on", !_model.Friends);
             _friends.EnableInClassList("chip--on", _model.Friends);
             var page = _model.Page;
-            _status.text = _model.ErrorCode != null ? UiText.Error(_model.ErrorCode) : page != null && page.Rows.Count == 0 && !_model.Loading ? UiText.BoardEmpty : "";
+            _status.text = "";
             _reset.text = page?.NextResetTs is long reset ? string.Format(UiText.ResetsIn, Duration(reset - _nowMs())) : "";
             _list.Clear();
             _me.Clear();
+            if (_model.ErrorCode != null)
+            {
+                _me.style.display = DisplayStyle.None;
+                ListState.Error(_list, _model.ErrorCode, Retry);
+                return;
+            }
+
             if (page == null)
             {
                 _me.style.display = DisplayStyle.None;
+                if (_model.Loading)
+                {
+                    ListState.Loading(_list);
+                }
+
                 return;
+            }
+
+            if (page.Rows.Count == 0 && !_model.Loading)
+            {
+                ListState.Empty(_list, UiText.BoardEmpty);
             }
 
             var meOnPage = false;
