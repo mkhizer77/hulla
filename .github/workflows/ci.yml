@@ -71,6 +71,10 @@ jobs:
           pnpm codegen
           git diff --exit-code -- packages/protocol/generated
       - run: pnpm content:validate
+      - name: The content manifest is up to date
+        run: |
+          pnpm content:manifest
+          git diff --exit-code -- content/manifest.json
       - run: pnpm build
 
   server-smoke:

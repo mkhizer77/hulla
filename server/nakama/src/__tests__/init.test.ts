@@ -60,6 +60,15 @@ describe("InitModule", () => {
       "missions_claim",
       "missions_reroll",
       "missions_set",
+      "daily_reward_get",
+      "daily_reward_claim",
+      "leaderboard_get",
+      "achievements_get",
+      "achievements_set",
+      "content_manifest",
+      "content_get",
+      "config_get",
+      "config_set",
     ]);
     expect([...matches.keys()]).toEqual(["thulla"]);
     expect(hooks.get("rtBefore:ChannelMessageSend")?.name).toBe("beforeChannelMessageSend");
@@ -67,6 +76,7 @@ describe("InitModule", () => {
     expect(hooks.get("matchmakerMatched")?.name).toBe("matchmakerMatched");
     expect(hooks.get("afterAuthenticateDevice")?.name).toBe("afterAuthenticateDevice");
     expect(hooks.get("beforeAuthenticateDevice")?.name).toBe("beforeAuthenticateDevice");
+    expect(hooks.get("leaderboardReset")?.name).toBe("onLeaderboardReset");
     expect(hooks.get("afterAuthenticateFacebook")?.name).toBe("afterAuthenticateFacebook");
     const handler = matches.get("thulla");
     expect(Object.keys(handler ?? {}).sort()).toEqual([
@@ -91,7 +101,11 @@ describe("InitModule", () => {
     expect(callbacks.every((fn) => fn.name.startsWith("thullaMatch"))).toBe(true);
     const rpc = rpcs.get("hello");
     const body = rpc?.({} as nkruntime.Context, fakeLogger(), fakeNk(), "");
-    expect(JSON.parse(String(body))).toMatchObject({ ok: true, protocolMajor: 1 });
+    expect(JSON.parse(String(body))).toMatchObject({
+      ok: true,
+      protocolMajor: 1,
+      minClientVersion: "0.1.0",
+    });
     expect(lines[0]).toMatchObject({
       level: "info",
       message: "Hulla runtime loaded",

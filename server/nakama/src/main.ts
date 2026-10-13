@@ -18,6 +18,7 @@ import { beforeAuthenticateDevice } from "./hooks/before_authenticate";
 import { beforeChannelMessageSend } from "./hooks/before_channel_message";
 import { beforeMatchmakerAdd } from "./hooks/before_matchmaker_add";
 import { matchmakerMatched } from "./hooks/matchmaker_matched";
+import { log } from "./infra/log";
 import {
   rpcAccountDelete,
   rpcAccountDeleteCancel,
@@ -25,6 +26,7 @@ import {
   rpcAdminPurgeDeleted,
 } from "./rpc/account";
 import { rpcAccountMerge, rpcAccountMergePrepare } from "./rpc/account_merge";
+import { rpcAchievementsGet, rpcAchievementsSet } from "./rpc/achievements";
 import {
   rpcAdminAuditList,
   rpcAdminRoundReplay,
@@ -33,8 +35,12 @@ import {
   rpcSanctionsGet,
 } from "./rpc/admin";
 import { rpcChatFiltersGet, rpcChatFiltersSet } from "./rpc/chat_filters";
+import { rpcConfigGet, rpcConfigSet } from "./rpc/config";
+import { rpcContentGet, rpcContentManifest } from "./rpc/content";
+import { rpcDailyRewardClaim, rpcDailyRewardGet } from "./rpc/daily_reward";
 import { rpcProgressGet, rpcWalletGet } from "./rpc/economy";
 import { rpcHello } from "./rpc/hello";
+import { onLeaderboardReset, rpcLeaderboardGet } from "./rpc/leaderboards";
 import {
   rpcMissionsClaim,
   rpcMissionsGet,
@@ -61,6 +67,7 @@ import {
 import { rpcTableCreate } from "./rpc/table_create";
 import { rpcTableJoinByCode } from "./rpc/table_join_by_code";
 import { rpcVoiceToken } from "./rpc/voice_token";
+import { ensureLeaderboards } from "./services/leaderboards";
 
 /**
  * Nakama calls this once at start-up; every RPC, hook and match handler registers here. Handlers
@@ -70,7 +77,7 @@ import { rpcVoiceToken } from "./rpc/voice_token";
 function InitModule(
   ctx: nkruntime.Context,
   logger: nkruntime.Logger,
-  _nk: nkruntime.Nakama,
+  nk: nkruntime.Nakama,
   initializer: nkruntime.Initializer,
 ): void {
   initializer.registerRpc("hello", rpcHello);
@@ -114,6 +121,17 @@ function InitModule(
   initializer.registerRpc("missions_claim", rpcMissionsClaim);
   initializer.registerRpc("missions_reroll", rpcMissionsReroll);
   initializer.registerRpc("missions_set", rpcMissionsSet);
+  initializer.registerRpc("daily_reward_get", rpcDailyRewardGet);
+  initializer.registerRpc("daily_reward_claim", rpcDailyRewardClaim);
+  initializer.registerRpc("leaderboard_get", rpcLeaderboardGet);
+  initializer.registerRpc("achievements_get", rpcAchievementsGet);
+  initializer.registerRpc("achievements_set", rpcAchievementsSet);
+  initializer.registerRpc("content_manifest", rpcContentManifest);
+  initializer.registerRpc("content_get", rpcContentGet);
+  initializer.registerRpc("config_get", rpcConfigGet);
+  initializer.registerRpc("config_set", rpcConfigSet);
+  initializer.registerLeaderboardReset(onLeaderboardReset);
+  ensureLeaderboards(nk, logger);
   initializer.registerBeforeAuthenticateDevice(beforeAuthenticateDevice);
   initializer.registerAfterAuthenticateDevice(afterAuthenticateDevice);
   initializer.registerAfterAuthenticateApple(afterAuthenticateApple);
@@ -129,7 +147,7 @@ function InitModule(
     matchTerminate: thullaMatchTerminate,
     matchSignal: thullaMatchSignal,
   });
-  logger.info("Hulla runtime loaded", { env: ctx.env["HULLA_ENV"] ?? "local" });
+  log.info(logger, "Hulla runtime loaded", { env: ctx.env["HULLA_ENV"] ?? "local" });
 }
 
 // Nakama looks InitModule up on the global object. The explicit assignment keeps the bundler

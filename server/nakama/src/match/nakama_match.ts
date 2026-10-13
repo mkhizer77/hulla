@@ -1,7 +1,13 @@
 import { OPCODES } from "@hulla/protocol/generated";
 import { ErrorCodes } from "@hulla/shared-ts";
 
+import { log } from "../infra/log";
+import { METRICS, metrics } from "../infra/metrics";
 import { ROUND_RESULTS_COLLECTION } from "../services/account_deletion";
+import { countRound, nkAchievementStore, settleUnlocks } from "../services/achievements";
+import { emitAnalyticsSafely } from "../services/analytics";
+import { clientTooOld, nkConfigStore } from "../services/config";
+import { postRoundPoints } from "../services/leaderboards";
 import { credit, nkLedgerPorts } from "../services/ledger";
 import { metricsFromRound, recordMissionMetrics } from "../services/missions";
 import {
@@ -16,6 +22,7 @@ import { applyReward, forDay, nkProgressStore, roundReward } from "../services/p
 import { isBanned, readModeration } from "../services/sanctions";
 import { nkSocialStore, recordRecentPlayers } from "../services/social";
 
+import { analyticsFromBatch, type TableEvent } from "./analytics";
 import { tableCore, type PresenceInfo, type TableCore } from "./table_core";
 import { DEFAULT_TABLE_CONFIG } from "./types";
 import { freeSeat, occupiedSeats, spectatorCount, tableStatus } from "./view";
@@ -58,7 +65,7 @@ export function storagePersistence(nk: nkruntime.Nakama, logger: nkruntime.Logge
           },
         ]);
       } catch (error: unknown) {
-        logger.error("round record not written", {
+        log.error(logger, "round record not written", {
           tableId: record.tableId,
           roundId: record.roundId,
           error: String(error),
@@ -72,7 +79,7 @@ export function storagePersistence(nk: nkruntime.Nakama, logger: nkruntime.Logge
           record.endedTs,
         );
       } catch (error: unknown) {
-        logger.warn("recent players not recorded", { error: String(error) });
+        log.warn(logger, "recent players not recorded", { error: String(error) });
       }
       const store = nkProfileStore(nk, logger);
       const humans = record.players.filter((p): p is string => p !== null);
@@ -107,7 +114,10 @@ export function storagePersistence(nk: nkruntime.Nakama, logger: nkruntime.Logge
             },
           ]);
         } catch (error: unknown) {
-          logger.warn("round result not recorded for a player", { seat, error: String(error) });
+          log.warn(logger, "round result not recorded for a player", {
+            seat,
+            error: String(error),
+          });
         }
       });
     },
@@ -142,6 +152,24 @@ function rewardPlayer(
     const applied = applyReward(current, reward, record, record.endedTs);
     progressStore.write(playerId, applied.progress);
     recordMissionMetrics(nk, playerId, metricsFromRound(record, seat, withFriend), record.endedTs);
+    postRoundPoints(nk, logger, record, playerId, seat);
+    const friendsAtTable = humans.filter(
+      (other) => other !== playerId && nkAreFriends(nk, playerId, other),
+    ).length;
+    const achievements = nkAchievementStore(nk);
+    const counted = countRound(achievements.read(playerId), record, seat, {
+      friendsAtTable,
+      playerIds: humans,
+    });
+    settleUnlocks(
+      nk,
+      nkLedgerPorts(nk),
+      achievements,
+      playerId,
+      counted,
+      achievements.list(),
+      record.endedTs,
+    );
     const ledger = nkLedgerPorts(nk);
     const prefix = `${record.tableId}:${record.roundId}`;
     credit(ledger, {
@@ -161,7 +189,7 @@ function rewardPlayer(
       });
     }
   } catch (error: unknown) {
-    logger.warn("round reward not applied", { seat, error: String(error) });
+    log.warn(logger, "round reward not applied", { seat, error: String(error) });
   }
 }
 
@@ -211,6 +239,56 @@ function presenceFor<S, M>(
     username: record.username,
     node: record.node,
   };
+}
+
+/** The same events feed the Prometheus counters and timers (GDD 20.13). */
+function recordMetric(nk: nkruntime.Nakama, gameId: string, event: TableEvent): void {
+  const tags = { game: gameId };
+  const p = event.params as Record<string, unknown>;
+  switch (event.name) {
+    case "round_start":
+      metrics.count(nk, METRICS.rounds, { ...tags, mode: String(p["mode"]) });
+      break;
+    case "move_played":
+      metrics.count(nk, METRICS.moves, { ...tags, auto: p["auto"] === true ? "true" : "false" });
+      if (p["timeout"] === true) metrics.count(nk, METRICS.timeouts, tags);
+      break;
+    case "thulla":
+      metrics.count(nk, METRICS.thullas, tags);
+      break;
+    case "disconnect":
+      metrics.count(nk, METRICS.disconnects, { ...tags, outcome: String(p["outcome"]) });
+      break;
+    case "reconnect":
+      metrics.count(nk, METRICS.reconnects, tags);
+      break;
+    case "round_end":
+      metrics.count(nk, METRICS.roundsEnded, tags);
+      metrics.time(nk, METRICS.roundDuration, tags, Math.round(Number(p["duration"]) * 1000));
+      break;
+    default:
+      break;
+  }
+}
+
+/** Every public game message that the taxonomy names becomes one analytics log line. */
+function logAnalytics<S, M>(
+  logger: nkruntime.Logger,
+  nk: nkruntime.Nakama,
+  state: TableState<S, M>,
+  batch: Batch,
+  now: number,
+): void {
+  for (const event of analyticsFromBatch(state, batch, now)) {
+    recordMetric(nk, state.gameId, event);
+    emitAnalyticsSafely(logger, event.name, event.params, {
+      gameId: state.gameId,
+      tableId: state.tableId,
+      mode: state.mode,
+      ...(state.round === null ? {} : { roundId: state.round.roundId }),
+      ...(event.seat === null ? {} : { seat: event.seat }),
+    });
+  }
 }
 
 function send<S, M>(
@@ -329,7 +407,7 @@ export function tableMatchHandler<S, M, V, E, R>(
         if (seated) seatTaken(store, userId, matchId, now);
         else seatReleased(store, userId, matchId, now);
       } catch (error: unknown) {
-        logger.warn("presence not updated", { userId, error: String(error) });
+        log.warn(logger, "presence not updated", { userId, error: String(error) });
       }
     }
   };
@@ -340,7 +418,7 @@ export function tableMatchHandler<S, M, V, E, R>(
     matchInit(_ctx, logger, nk, params) {
       const core = coreFor(nk, logger);
       const state = core.create(parseParams(params), Date.now());
-      logger.info("table created", {
+      log.info(logger, "table created", {
         tableId: state.tableId,
         gameId: state.gameId,
         mode: state.mode,
@@ -355,7 +433,15 @@ export function tableMatchHandler<S, M, V, E, R>(
           return { state, accept: false, rejectMessage: ErrorCodes.auth.banned };
         }
       } catch (error: unknown) {
-        logger.warn("ban state not read", { error: String(error) });
+        log.warn(logger, "ban state not read", { error: String(error) });
+      }
+      // An old client is told to update and cannot join a table (GDD 20.15).
+      try {
+        if (clientTooOld(metadata["clientVersion"], nkConfigStore(nk).read())) {
+          return { state, accept: false, rejectMessage: ErrorCodes.auth.updateRequired };
+        }
+      } catch (error: unknown) {
+        log.warn(logger, "remote config not read", { error: String(error) });
       }
       const decision = coreFor(nk, logger).joinAttempt(state, info(presence), metadata, now);
       return decision.accept
@@ -377,6 +463,7 @@ export function tableMatchHandler<S, M, V, E, R>(
       );
       relabel(dispatcher, before, state);
       send(dispatcher, state, batch, presences);
+      logAnalytics(logger, nk, state, batch, now);
       return { state };
     },
 
@@ -394,6 +481,7 @@ export function tableMatchHandler<S, M, V, E, R>(
       );
       relabel(dispatcher, before, state);
       send(dispatcher, state, batch, presences);
+      logAnalytics(logger, nk, state, batch, now);
       return { state };
     },
 
@@ -414,13 +502,16 @@ export function tableMatchHandler<S, M, V, E, R>(
             typeByOpcode[message.opCode],
           );
           send(dispatcher, state, batch, senders);
+          logAnalytics(logger, nk, state, batch, now);
           end = end || batch.end;
         } catch (error: unknown) {
-          logger.error("message dropped", { tableId: state.tableId, error: String(error) });
+          metrics.count(nk, METRICS.messagesDropped, { game: state.gameId });
+          log.error(logger, "message dropped", { tableId: state.tableId, error: String(error) });
         }
       }
       const batch = core.tick(state, now);
       send(dispatcher, state, batch, senders);
+      logAnalytics(logger, nk, state, batch, now);
       relabel(dispatcher, before, state);
       const closing = end || batch.end || state.phase === "closing";
       if (closing) presenceSync(ctx, logger, nk, { ...state, phase: "closing" }, seatedBefore, now);

@@ -1,6 +1,7 @@
 import { THULLA_RULES_VERSION } from "@hulla/rules-engine";
 
 import { runtimeFrom, type ServerRuntime } from "../infra/nk";
+import { nkConfigStore } from "../services/config";
 
 export const SERVER_VERSION = "0.1.0";
 
@@ -32,5 +33,8 @@ export function rpcHello(
   logger: nkruntime.Logger,
   nk: nkruntime.Nakama,
 ): string {
-  return JSON.stringify(hello(runtimeFrom(nk, logger)));
+  return JSON.stringify({
+    ...hello(runtimeFrom(nk, logger)),
+    minClientVersion: nkConfigStore(nk).read().minClientVersion,
+  });
 }

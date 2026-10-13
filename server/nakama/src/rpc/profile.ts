@@ -1,6 +1,7 @@
 import { createChecks } from "@hulla/protocol/generated";
 import { ErrorCodes, ruleError, type RuleError } from "@hulla/shared-ts";
 
+import { log } from "../infra/log";
 import { runtimeFrom, type ServerRuntime } from "../infra/nk";
 import { isUserOnline } from "../services/presence";
 import {
@@ -120,7 +121,7 @@ function nkDeps(
         nk.accountUpdateId(userId, handle, displayName, null, null, null, null, null);
         return true;
       } catch (error: unknown) {
-        logger.info("account names not updated", { error: String(error) });
+        log.info(logger, "account names not updated", { error: String(error) });
         return false;
       }
     },

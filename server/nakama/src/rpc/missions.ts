@@ -1,5 +1,7 @@
 import { ErrorCodes, ruleError } from "@hulla/shared-ts";
 
+import { log } from "../infra/log";
+import { emitAnalyticsSafely } from "../services/analytics";
 import { nkLedgerPorts } from "../services/ledger";
 import {
   claim,
@@ -49,7 +51,7 @@ export function rpcMissionsGet(
 /** `{ missionId }`: pays a finished mission through the ledger, once. */
 export function rpcMissionsClaim(
   ctx: nkruntime.Context,
-  _logger: nkruntime.Logger,
+  logger: nkruntime.Logger,
   nk: nkruntime.Nakama,
   payload: string,
 ): string {
@@ -69,6 +71,11 @@ export function rpcMissionsClaim(
     now,
   );
   if (result.record !== current) store.write(userId, result.record);
+  if (result.response.ok && result.response.applied) {
+    emitAnalyticsSafely(logger, "mission_complete", {
+      id: typeof missionId === "string" ? missionId : "",
+    });
+  }
   return JSON.stringify(result.response);
 }
 
@@ -115,6 +122,6 @@ export function rpcMissionsSet(
     });
   }
   nkMissionsStore(nk).writePool(input);
-  logger.info("mission pool replaced", { id: input.id, version: input.version });
+  log.info(logger, "mission pool replaced", { id: input.id, version: input.version });
   return JSON.stringify({ ok: true, id: input.id, version: input.version });
 }

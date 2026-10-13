@@ -1,0 +1,14 @@
+{
+  "schema": "../../tools/content-schemas/daily-rewards.schema.json",
+  "id": "daily-rewards-v1",
+  "version": 1,
+  "days": [
+    { "day": 1, "coins": 50 },
+    { "day": 2, "coins": 60 },
+    { "day": 3, "coins": 70 },
+    { "day": 4, "coins": 80, "gems": 2 },
+    { "day": 5, "coins": 90 },
+    { "day": 6, "coins": 100 },
+    { "day": 7, "coins": 150, "gems": 5 }
+  ]
+}

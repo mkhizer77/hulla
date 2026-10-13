@@ -1,0 +1,66 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://hulla.gg/schemas/content/achievements.json",
+  "title": "Achievements",
+  "description": "About forty achievements evaluated on the server from round events (GDD 12.7); each names its metric and target, and rewards gems or a title",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema", "id", "version", "achievements"],
+  "properties": {
+    "schema": { "type": "string" },
+    "id": { "type": "string", "pattern": "^[a-z0-9-]+$" },
+    "version": { "type": "integer", "minimum": 1 },
+    "achievements": {
+      "type": "array",
+      "minItems": 30,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "name", "description", "category", "metric", "target", "reward"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^[a-z0-9_]+$" },
+          "name": { "type": "string", "pattern": "^achievement\\.[a-z0-9_.]+$" },
+          "description": { "type": "string", "pattern": "^achievement\\.[a-z0-9_.]+$" },
+          "category": {
+            "type": "string",
+            "enum": ["play", "social", "skill", "collection", "seasonal"]
+          },
+          "metric": {
+            "type": "string",
+            "enum": [
+              "rounds",
+              "escapes",
+              "bhabhis",
+              "thullas_given",
+              "thullas_received",
+              "cards_picked_up",
+              "biggest_pickup",
+              "hands_taken",
+              "escaped_first",
+              "clean_rounds",
+              "series_won",
+              "friends",
+              "rounds_with_friend",
+              "rounds_with_four_friends",
+              "same_group_rounds",
+              "first_escape_streak",
+              "no_bhabhi_streak",
+              "houdini",
+              "cosmetics_owned",
+              "seasonal_rounds"
+            ]
+          },
+          "target": { "type": "integer", "minimum": 1, "maximum": 1000000 },
+          "reward": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "gems": { "type": "integer", "minimum": 0, "maximum": 1000 },
+              "title": { "type": "string", "pattern": "^[a-z0-9_]+$" }
+            }
+          }
+        }
+      }
+    }
+  }
+}

@@ -11,12 +11,15 @@ import {
   type RuleError,
 } from "@hulla/shared-ts";
 
+import { log } from "../infra/log";
+import { METRICS, metrics } from "../infra/metrics";
 import { runtimeFrom, type ServerRuntime } from "../infra/nk";
 import { gameEntry } from "../match/registry";
+import { emitAnalyticsSafely } from "../services/analytics";
 import { nkCodeStore, type CodeStore } from "../services/table_registry";
 
 import type { CreateTableParams, TableMode } from "../match/types";
-import type { RulesSelection } from "@hulla/protocol/generated";
+import type { RulesSelection, AnalyticsEvents } from "@hulla/protocol/generated";
 
 export interface TableCreateDeps {
   readonly runtime: ServerRuntime;
@@ -128,7 +131,33 @@ export function rpcTableCreate(
     payload,
   );
   if (response.ok) {
-    logger.info("table created", { tableId: response.tableId, userId: ctx.userId ?? "" });
+    log.info(logger, "table created", { tableId: response.tableId, userId: ctx.userId ?? "" });
+    metrics.count(nk, METRICS.tablesCreated, { game: "thulla" });
+    emitAnalyticsSafely(logger, "table_create", tableCreateParams(payload), {
+      tableId: response.tableId,
+    });
   }
   return JSON.stringify(response);
+}
+
+/** The taxonomy's view of a create request: mode, preset and seats, nothing else. */
+function tableCreateParams(payload: string): AnalyticsEvents["table_create"] {
+  let input: Record<string, unknown> = {};
+  try {
+    const parsed: unknown = payload === "" ? {} : JSON.parse(payload);
+    if (typeof parsed === "object" && parsed !== null) input = parsed as Record<string, unknown>;
+  } catch {
+    input = {};
+  }
+  const mode = input["mode"];
+  const rules = input["rules"] as { preset?: unknown } | undefined;
+  const voice = input["voiceMode"];
+  return {
+    mode: mode === "public" || mode === "ranked" ? mode : "private",
+    ...(typeof rules?.preset === "string" ? { preset: rules.preset } : {}),
+    ...(typeof input["seats"] === "number" ? { seats: input["seats"] } : {}),
+    ...(voice === "openMic" || voice === "pushToTalk" || voice === "off"
+      ? { voice_mode: voice }
+      : {}),
+  };
 }

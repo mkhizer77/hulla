@@ -1,6 +1,7 @@
 import { ErrorCodes, err, ok, ruleError, ROOM_CODE_ALPHABET } from "@hulla/shared-ts";
 
 import { DEFAULT_AVATAR, DEFAULT_FRAME, isAvatar, isFrame } from "../content/avatars";
+import { log } from "../infra/log";
 
 import type { RoundRecord } from "../match/types";
 import type {
@@ -283,7 +284,7 @@ export function nkProfileStore(nk: nkruntime.Nakama, logger: nkruntime.Logger): 
         ]);
         return true;
       } catch (error: unknown) {
-        logger.warn("friend code taken", { code, error: String(error) });
+        log.warn(logger, "friend code taken", { code, error: String(error) });
         return false;
       }
     },

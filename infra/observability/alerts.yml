@@ -1,0 +1,51 @@
+# Alert rules for the SLOs of GDD 20.13. Delivery (Grafana Cloud or a phone) is the owner's setup.
+groups:
+  - name: hulla
+    rules:
+      - alert: HullaMessagesDropped
+        expr: sum(rate(nakama_custom_hulla_messages_dropped[5m])) > 0.01
+        for: 2m
+        labels:
+          severity: page
+        annotations:
+          summary: "Table messages are being dropped"
+          description: "More than one message in a hundred seconds fails inside a match handler."
+      - alert: HullaRoundErrorRate
+        expr: >
+          sum(increase(nakama_custom_hulla_messages_dropped[1h]))
+            / clamp_min(sum(increase(nakama_custom_hulla_rounds_started[1h])), 1) > 0.01
+        for: 10m
+        labels:
+          severity: page
+        annotations:
+          summary: "More than 1% of rounds hit a server-side error"
+      - alert: HullaNoRounds
+        expr: sum(increase(nakama_custom_hulla_rounds_started[30m])) == 0 and sum(increase(nakama_custom_hulla_tables_created[30m])) > 0
+        for: 30m
+        labels:
+          severity: warn
+        annotations:
+          summary: "Tables are created but no round starts"
+      - alert: HullaDisconnectsHigh
+        expr: >
+          sum(increase(nakama_custom_hulla_disconnects[15m]))
+            / clamp_min(sum(increase(nakama_custom_hulla_moves[15m])), 1) > 0.05
+        for: 15m
+        labels:
+          severity: warn
+        annotations:
+          summary: "Disconnects run above 5% of moves"
+      - alert: HullaRpcErrors
+        expr: sum(rate(nakama_Rpc_errors[5m])) / clamp_min(sum(rate(nakama_Rpc_count[5m])), 0.001) > 0.05
+        for: 5m
+        labels:
+          severity: warn
+        annotations:
+          summary: "More than 5% of RPC calls fail"
+      - alert: NakamaDown
+        expr: up{job="nakama"} == 0
+        for: 1m
+        labels:
+          severity: page
+        annotations:
+          summary: "Nakama is not answering the metrics scrape"

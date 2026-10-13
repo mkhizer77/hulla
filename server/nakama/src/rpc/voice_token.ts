@@ -8,6 +8,7 @@ import {
   type RuleError,
 } from "@hulla/shared-ts";
 
+import { log } from "../infra/log";
 import { runtimeFrom, type ServerRuntime } from "../infra/nk";
 import { buildRtcToken, isAgoraId, type AgoraConfig } from "../services/agora_token";
 import { recordMissionMetrics } from "../services/missions";
@@ -121,7 +122,7 @@ function noteVoiceInPrivateRoom(
     if (label?.mode !== "private") return;
     recordMissionMetrics(nk, userId, { voice_private: 1 }, Date.now());
   } catch (error: unknown) {
-    logger.warn("voice mission not noted", { error: String(error) });
+    log.warn(logger, "voice mission not noted", { error: String(error) });
   }
 }
 

@@ -37,6 +37,7 @@ describe("content validation", () => {
     const base = {
       schema: schemaPath,
       id: "family",
+      version: 1,
       gameId: "thulla",
       name: "preset.family.name",
       description: "preset.family.description",
@@ -65,5 +66,22 @@ describe("content validation", () => {
     expect(problems.some((p) => p.includes("broken.json") && p.includes("not JSON"))).toBe(true);
     expect(problems.some((p) => p.includes("noschema.json") && p.includes('"schema"'))).toBe(true);
     expect(problems.some((p) => p.includes("badsettings.json"))).toBe(true);
+  });
+
+  it("requires an id and an integer version on every file", () => {
+    const dir = tree({
+      "noversion.json": {
+        schema: schemaPath,
+        id: "standard",
+        gameId: "thulla",
+        name: "preset.standard.name",
+        description: "preset.standard.description",
+        order: 0,
+        overrides: {},
+        settings: {},
+      },
+    });
+    const problems = validateContentTree(dir);
+    expect(problems.some((p) => p.includes('no integer "version" field'))).toBe(true);
   });
 });

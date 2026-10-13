@@ -1,3 +1,4 @@
+import { log } from "../infra/log";
 import { excludeBlocked, excludedIds, nkBlockStore } from "../services/blocks";
 
 /**
@@ -25,7 +26,7 @@ export function beforeMatchmakerAdd(
     envelope.matchmakerAdd.query = ticket.query;
     envelope.matchmakerAdd.stringProperties = ticket.stringProperties;
   } catch (error: unknown) {
-    logger.warn("matchmaker ticket not filtered", { error: String(error) });
+    log.warn(logger, "matchmaker ticket not filtered", { error: String(error) });
   }
   return envelope;
 }

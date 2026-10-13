@@ -1,5 +1,6 @@
 import { ErrorCodes } from "@hulla/shared-ts";
 
+import { log } from "../infra/log";
 import { isDeviceBanned } from "../services/sanctions";
 
 /** A banned device cannot sign in at all (GDD 24.3); registered with `registerBeforeAuthenticateDevice`. */
@@ -11,7 +12,7 @@ export function beforeAuthenticateDevice(
 ): nkruntime.AuthenticateDeviceRequest {
   const deviceId = data.account?.id ?? "";
   if (deviceId !== "" && isDeviceBanned(nk, deviceId, Date.now())) {
-    logger.info("banned device refused", { deviceId });
+    log.info(logger, "banned device refused", { deviceId });
     throw new Error(ErrorCodes.auth.banned);
   }
   return data;

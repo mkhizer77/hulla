@@ -1,11 +1,14 @@
 import { ErrorCodes, ruleError } from "@hulla/shared-ts";
 
+import { log } from "../infra/log";
+import { emitAnalyticsSafely } from "../services/analytics";
 import { nkBlockPorts, nkBlockStore, setBlock } from "../services/blocks";
 import { nkProfileStore } from "../services/profiles";
 import {
   CHAT_LOG_COLLECTION,
   CHAT_RETENTION_MS,
   createReport,
+  isReportReason,
   listReports,
   nkReportStore,
   SYSTEM_USER_ID,
@@ -25,6 +28,11 @@ function parse(payload: string): Record<string, unknown> {
 
 const str = (value: unknown): string => (typeof value === "string" ? value : "");
 
+/** Where the client's block or report sheet opened from, in the taxonomy's words. */
+function socialSource(value: unknown): "table" | "friends" | "results" {
+  return value === "friends" || value === "results" ? value : "table";
+}
+
 /** `{ userId, blocked }`: a block is absolute, both ways, and follows the account. */
 export function rpcBlockSet(
   ctx: nkruntime.Context,
@@ -33,16 +41,18 @@ export function rpcBlockSet(
   payload: string,
 ): string {
   const input = parse(payload);
-  return JSON.stringify(
-    setBlock(
-      nkBlockStore(nk),
-      nkSocialStore(nk),
-      nkBlockPorts(nk, logger),
-      ctx.userId ?? null,
-      str(input["userId"]),
-      input["blocked"] === true,
-    ),
+  const result = setBlock(
+    nkBlockStore(nk),
+    nkSocialStore(nk),
+    nkBlockPorts(nk, logger),
+    ctx.userId ?? null,
+    str(input["userId"]),
+    input["blocked"] === true,
   );
+  if (result.ok && input["blocked"] === true) {
+    emitAnalyticsSafely(logger, "block", { source: socialSource(input["source"]) });
+  }
+  return JSON.stringify(result);
 }
 
 export function rpcBlocksGet(
@@ -76,7 +86,16 @@ export function rpcReportCreate(
     now: Date.now(),
   });
   if (response.ok) {
-    logger.info("report filed", { reportId: response.reportId, autoMuted: response.autoMuted });
+    log.info(logger, "report filed", {
+      reportId: response.reportId,
+      autoMuted: response.autoMuted,
+    });
+    if (isReportReason(input["reason"])) {
+      emitAnalyticsSafely(logger, "report", {
+        source: socialSource(input["source"]),
+        reason: input["reason"],
+      });
+    }
   }
   return JSON.stringify(response);
 }
@@ -135,6 +154,6 @@ export function rpcAdminChatLogsPurge(
       stale.map((key) => ({ collection: CHAT_LOG_COLLECTION, key, userId: SYSTEM_USER_ID })),
     );
   }
-  logger.info("chat logs purged", { count: stale.length });
+  log.info(logger, "chat logs purged", { count: stale.length });
   return JSON.stringify({ ok: true, purged: stale.length });
 }
