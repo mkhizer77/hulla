@@ -77,6 +77,7 @@ describe("InitModule", () => {
       "pass_get",
       "pass_claim",
       "pass_premium_grant",
+      "admin_drain",
     ]);
     expect([...matches.keys()]).toEqual(["thulla"]);
     expect(hooks.get("rtBefore:ChannelMessageSend")?.name).toBe("beforeChannelMessageSend");

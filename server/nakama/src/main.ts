@@ -55,6 +55,7 @@ import {
   rpcReportCreate,
   rpcReportsList,
 } from "./rpc/moderation";
+import { rpcAdminDrain } from "./rpc/ops";
 import { rpcPassClaim, rpcPassGet, rpcPassPremiumGrant } from "./rpc/pass";
 import { rpcPresenceSet, rpcTableListFriends } from "./rpc/presence";
 import { rpcPresetsGet } from "./rpc/presets_get";
@@ -146,6 +147,7 @@ function InitModule(
   initializer.registerRpc("pass_get", rpcPassGet);
   initializer.registerRpc("pass_claim", rpcPassClaim);
   initializer.registerRpc("pass_premium_grant", rpcPassPremiumGrant);
+  initializer.registerRpc("admin_drain", rpcAdminDrain);
   initializer.registerRpc("economy_catalog", rpcEconomyCatalog);
   initializer.registerRpc("economy_purchase", rpcEconomyPurchase);
   initializer.registerRpc("inventory_equip", rpcInventoryEquip);
@@ -154,6 +156,7 @@ function InitModule(
   initializer.registerRpc("pass_get", rpcPassGet);
   initializer.registerRpc("pass_claim", rpcPassClaim);
   initializer.registerRpc("pass_premium_grant", rpcPassPremiumGrant);
+  initializer.registerRpc("admin_drain", rpcAdminDrain);
   initializer.registerLeaderboardReset(onLeaderboardReset);
   ensureLeaderboards(nk, logger);
   initializer.registerBeforeAuthenticateDevice(beforeAuthenticateDevice);

@@ -295,7 +295,8 @@ describe.skipIf(NAKAMA_HOST === undefined)(
       const firstBoard = await rpc<{ me: { score: number } | null }>(
         players.find((c) => c.session.user_id === firstId) ?? host,
         "leaderboard_get",
-        { board: "weekly" },
+        // The friends view lists the caller whatever the global rank; the local board holds many runs.
+        { board: "weekly", scope: "friends" },
       );
       expect(firstBoard.me?.score ?? 0).toBeGreaterThanOrEqual(3);
 

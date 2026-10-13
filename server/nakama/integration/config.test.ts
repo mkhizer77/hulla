@@ -1,16 +1,18 @@
-import { describe, expect, it } from "vitest";
+import { afterAll, describe, expect, it } from "vitest";
 
 import {
   NAKAMA_HOST,
   NAKAMA_PORT,
   rpc,
   scriptedClient,
+  setTableId,
   type ScriptedClient,
 } from "./nakama-client";
 
 interface Created {
   readonly ok: boolean;
   readonly matchId: string;
+  readonly tableId: string;
 }
 
 async function configSet(body: object): Promise<Record<string, unknown>> {
@@ -63,6 +65,41 @@ describe.skipIf(NAKAMA_HOST === undefined)("remote config against Nakama (GDD 22
     });
     expect(restored).toMatchObject({ ok: true });
     await client.socket.joinMatch(created.matchId, undefined, { clientVersion: "0.1.0" });
+    client.close();
+  }, 60_000);
+});
+
+describe.skipIf(NAKAMA_HOST === undefined)("draining before a deploy (GDD 20.15)", () => {
+  const admin = async (body: object): Promise<Record<string, unknown>> => {
+    const url = `http://${NAKAMA_HOST ?? ""}:${NAKAMA_PORT}/v2/rpc/admin_drain?http_key=local-only-http-key&unwrap`;
+    return (await (
+      await fetch(url, { method: "POST", body: JSON.stringify(body) })
+    ).json()) as Record<string, unknown>;
+  };
+  afterAll(async () => {
+    await admin({ on: false });
+  });
+
+  it("refuses new tables while draining and lets a running table finish", async () => {
+    const suffix = `${String(Date.now())}d`;
+    const client = await scriptedClient("drain", suffix);
+    const created = await rpc<Created>(client, "table_create", {
+      gameId: "thulla",
+      mode: "private",
+    });
+    setTableId(created.tableId);
+    await client.socket.joinMatch(created.matchId, undefined, { clientVersion: "0.1.0" });
+    expect(await admin({ on: true, reason: "test" })).toMatchObject({ ok: true, draining: true });
+    expect(await rpc<{ ok: boolean }>(client, "hello", {})).toMatchObject({ draining: true });
+    expect(
+      await rpc<object>(client, "table_create", { gameId: "thulla", mode: "private" }),
+    ).toMatchObject({ error: { code: "table.draining" } });
+    await client.send(created.matchId, "ping", 12, { sentTs: Date.now() });
+    await client.next((e) => e.type === "pong");
+    expect(await admin({ on: false })).toMatchObject({ ok: true, draining: false });
+    expect(
+      await rpc<object>(client, "table_create", { gameId: "thulla", mode: "private" }),
+    ).toMatchObject({ ok: true });
     client.close();
   }, 60_000);
 });

@@ -30,6 +30,7 @@ export const DEFAULT_CONFIG: RemoteConfig = {
   version: 1,
   minClientVersion: "0.1.0",
   flags: {
+    maintenance: [{ value: false }],
     quick_play: [{ value: true }],
     voice: [{ value: true }],
     shop: [{ value: false }],

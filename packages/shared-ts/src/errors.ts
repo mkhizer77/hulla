@@ -35,6 +35,7 @@ export const ErrorCodes = {
     unsupportedVersion: "table.unsupported_version",
     invalidPayload: "table.invalid_payload",
     notAuthorised: "table.not_authorised",
+    draining: "table.draining",
   },
   auth: {
     sessionExpired: "auth.session_expired",
