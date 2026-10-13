@@ -45,7 +45,9 @@ namespace Hulla.Screens.Tests
                 Round = new View { Phase = Phase.Play, SeatCount = 5, Seats = views, EscapeOrder = new List<long>(), LeaderSeat = 2,
                     Trick = new Trick { Plays = new List<Play> { new Play { Seat = 2, Card = "KH" }, new Play { Seat = 3, Card = "6H" }, new Play { Seat = 4, Card = "TH" } } }, TurnSeat = 0 },
             };
-            var task = CardRenderer.RenderAsync(settings, CardRatio.Story, root =>
+            // HULLA_SNAPSHOT_SIZE as WIDTHxHEIGHT in panel units; 1080 wide is every phone since the UI matches width.
+            var size = (System.Environment.GetEnvironmentVariable("HULLA_SNAPSHOT_SIZE") ?? "1080x2400").Split('x');
+            var task = CardRenderer.RenderAsync(settings, int.Parse(size[0]), int.Parse(size[1]), root =>
             {
                 var screen = catalog.Table!.Instantiate();
                 screen.style.flexGrow = 1;

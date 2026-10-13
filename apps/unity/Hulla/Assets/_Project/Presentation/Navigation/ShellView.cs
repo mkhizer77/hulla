@@ -16,6 +16,9 @@ namespace Hulla.Presentation.Navigation
 
         private VisualElement? _current;
 
+        private Rect _appliedSafeArea;
+        private float _appliedScale;
+
         public event Action<float>? Ticked;
 
         public ScreenCatalog Catalog => _catalog != null ? _catalog : throw new InvalidOperationException("ShellView has no screen catalog");
@@ -129,8 +132,36 @@ namespace Hulla.Presentation.Navigation
 
         private void Update() => Ticked?.Invoke(Time.deltaTime);
 
+        /// <summary>
+        /// The app draws edge to edge; this pads the screens clear of notches, camera cut-outs, the status
+        /// bar and the gesture bar (GDD 14.2), re-applied when the phone rotates or the insets change.
+        /// </summary>
+        private void KeepInSafeArea()
+        {
+            var root = Root;
+            var safe = Screen.safeArea;
+            if (Screen.width <= 0 || float.IsNaN(root.worldBound.width) || root.worldBound.width <= 0f)
+            {
+                return;
+            }
+
+            var scale = root.worldBound.width / Screen.width;
+            if (safe == _appliedSafeArea && Mathf.Approximately(scale, _appliedScale))
+            {
+                return;
+            }
+
+            _appliedSafeArea = safe;
+            _appliedScale = scale;
+            root.style.paddingLeft = safe.xMin * scale;
+            root.style.paddingRight = (Screen.width - safe.xMax) * scale;
+            root.style.paddingBottom = safe.yMin * scale;
+            root.style.paddingTop = (Screen.height - safe.yMax) * scale;
+        }
+
         private void LateUpdate()
         {
+            KeepInSafeArea();
             KeyboardAvoidance.Apply(Root, _current);
             KeyboardAvoidance.Apply(Root, Root.Q("shell-overlay"));
         }
