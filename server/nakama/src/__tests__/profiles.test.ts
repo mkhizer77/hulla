@@ -1,6 +1,7 @@
 import { stateFromSeed, Xoshiro128StarStar } from "@hulla/shared-ts";
 import { describe, expect, it } from "vitest";
 
+import { avatarForAccount } from "../content/avatars";
 import { thullaHighlights } from "../games/thulla/host";
 import { profileGet, profileUpdate, type ProfileDeps } from "../rpc/profile";
 import {
@@ -72,7 +73,7 @@ describe("profiles (GDD 10.1)", () => {
     expect(first.displayName).toBe(`Guest ${first.friendCode.slice(0, 4)}`);
     expect(first).toMatchObject({
       handle: "nakama_name",
-      avatar: "a01",
+      avatar: avatarForAccount("u1"),
       frame: "f00",
       stats: EMPTY_STATS,
       nameChanges: 0,

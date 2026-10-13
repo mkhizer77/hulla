@@ -3,7 +3,7 @@ namespace Hulla.Application.Table
     /// <summary>One seat as the lobby and the table show it.</summary>
     public readonly struct SeatInfo
     {
-        public SeatInfo(long seat, string? playerId, string? displayName, bool ready, bool connected, bool autoPlay, string? tableSurface = null, string? cardBack = null)
+        public SeatInfo(long seat, string? playerId, string? displayName, bool ready, bool connected, bool autoPlay, string? tableSurface = null, string? cardBack = null, string? avatar = null)
         {
             Seat = seat;
             PlayerId = playerId;
@@ -13,6 +13,7 @@ namespace Hulla.Application.Table
             AutoPlay = autoPlay;
             TableSurface = tableSurface;
             CardBack = cardBack;
+            Avatar = avatar;
         }
 
         /// <summary>The catalog id of the table surface this seat has equipped (GDD 12.11); null for the default.</summary>
@@ -20,6 +21,9 @@ namespace Hulla.Application.Table
 
         /// <summary>The catalog id of this seat's card back; null for the default.</summary>
         public string? CardBack { get; }
+
+        /// <summary>The avatar the server assigned when the player sat (GDD 15.6), unique at the table; null until known.</summary>
+        public string? Avatar { get; }
 
         public long Seat { get; }
 

@@ -240,7 +240,7 @@ namespace Hulla.Presentation.Screens.Lobby
             if (!model.Spectating && model.MySeat is long mine && mine < model.Seats.Count)
             {
                 var info = model.Seats[(int)mine];
-                Fill(_me, info, model, UiText.You);
+                Fill(_me, info, model, me: true);
                 seated += info.Occupied ? 1 : 0;
             }
 
@@ -248,7 +248,7 @@ namespace Hulla.Presentation.Screens.Lobby
         }
 
         /// <summary>A seat that has just been taken bounces in (design §6): you know you joined when your seat lights up.</summary>
-        private void Fill(Presentation.TableKit.SeatBadge badge, SeatInfo info, TableModel model, string? nameOverride = null)
+        private void Fill(Presentation.TableKit.SeatBadge badge, SeatInfo info, TableModel model, bool me = false)
         {
             if (!info.Occupied)
             {
@@ -256,7 +256,7 @@ namespace Hulla.Presentation.Screens.Lobby
                 return;
             }
 
-            badge.ShowLobby(nameOverride ?? info.DisplayName ?? "", info.Seat == model.HostSeat, info.Ready);
+            badge.ShowLobby(info.DisplayName ?? (me ? UiText.You : ""), info.Seat == model.HostSeat, info.Ready, info.Avatar, me);
             if (info.PlayerId != null && _seen.Add(info.PlayerId) && !_firstRefresh)
             {
                 badge.AddToClassList("seat--enter");

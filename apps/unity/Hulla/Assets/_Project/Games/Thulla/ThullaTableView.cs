@@ -48,12 +48,11 @@ namespace Hulla.Games.Thulla
         private readonly TableClient _client;
         private readonly Func<long> _nowMs;
         private readonly OpponentRing _ring;
+        private readonly PlayerBadge _me = new PlayerBadge();
         private readonly PileView _pile;
         private readonly DiscardView _discard;
         private readonly Label _pileNote;
         private readonly HandView _hand;
-        private readonly Label _turn;
-        private readonly TimerRing _timer;
         private readonly Label _hint;
         private readonly Label _info;
         private readonly Button _takeHand;
@@ -151,6 +150,7 @@ namespace Hulla.Games.Thulla
             _hideRecapForGood = hideRecapForGood;
             _felt = root.Q<VisualElement>("felt");
             _ring = new OpponentRing(root.Q<VisualElement>("opponents"));
+            root.Q<VisualElement>("me")?.Add(_me);
             _ring.Tapped += OnBadgeTapped;
             _pile = new PileView(root.Q<VisualElement>("pile")) { ReduceMotion = reduceMotion };
             _pile.CardArrived += OnPileCardArrived;
@@ -164,9 +164,6 @@ namespace Hulla.Games.Thulla
             };
             _hand.Refused += ShowHint;
             _hand.Touched += () => _singleLegal = null;
-            _turn = root.Q<Label>("turn");
-            _timer = new TimerRing();
-            root.Q<VisualElement>("timer").Add(_timer);
             _hint = root.Q<Label>("hint");
             _hint.RegisterCallback<ClickEvent>(_ => openRules?.Invoke(ThullaRulebook.WhyNotSection));
             _info = root.Q<Label>("info");
@@ -174,7 +171,7 @@ namespace Hulla.Games.Thulla
             _takeHand.text = UiText.TakeHand;
             _takeHand.clicked += () => _client.TakeHand();
             _toast = root.Q<Label>("toast");
-            _results = new ThullaResults(root.Q<VisualElement>("results"), NameOf, VoteAgain);
+            _results = new ThullaResults(root.Q<VisualElement>("results"), NameOf, AvatarOf, VoteAgain);
             var settingsButton = root.Q<Button>("settings");
             settingsButton.text = UiText.Settings;
             settingsButton.clicked += () => openSettings?.Invoke();
@@ -545,14 +542,11 @@ namespace Hulla.Games.Thulla
                 var leftMs = Math.Max(0, _turnDeadlineMs - now);
                 var total = Math.Max(1, _turnDeadlineMs - _turnStartMs);
                 var secondsLeft = leftMs / 1000f;
-                _timer.Show((float)leftMs / total, secondsLeft);
-                var pulse = TimerPhase.Pulse(secondsLeft, _pulseElapsed, _reduceMotion);
-                _timer.style.scale = new Scale(new Vector2(pulse, pulse));
+                _me.ShowTimer((float)leftMs / total, secondsLeft, TimerPhase.Pulse(secondsLeft, _pulseElapsed, _reduceMotion));
                 var seconds = (leftMs + 999) / 1000;
                 if (seconds != _shownSeconds)
                 {
                     _shownSeconds = seconds;
-                    _turn.text = seconds <= 10 ? UiText.YourTurn + " · " + seconds + "s" : UiText.YourTurn;
                     if (TimerPhase.TickAt(seconds) && _tickedAt != seconds)
                     {
                         _tickedAt = seconds;
@@ -861,15 +855,34 @@ namespace Hulla.Games.Thulla
             _felt.style.backgroundColor = colour is UnityEngine.Color c ? new StyleColor(c) : new StyleColor(StyleKeyword.Null);
         }
 
+        /// <summary>The seat's display name; the player's own seat is named too, tagged "You" where it is drawn.</summary>
         private string NameOf(long seat)
         {
             var model = _client.Model;
-            if (seat == model.MySeat)
+            var name = seat < model.Seats.Count ? model.Seats[(int)seat].DisplayName : null;
+            return name ?? (seat == model.MySeat ? UiText.You : "?");
+        }
+
+        private string? AvatarOf(long seat)
+        {
+            var model = _client.Model;
+            return seat < model.Seats.Count ? model.Seats[(int)seat].Avatar : null;
+        }
+
+        /// <summary>The player's own face and name in the bar (GDD 15.6); their turn and lead show on it, not as text.</summary>
+        private void RefreshMe()
+        {
+            var model = _client.Model;
+            if (model.Spectating || model.MySeat is not long mine || mine >= model.Seats.Count)
             {
-                return UiText.You;
+                _me.style.display = DisplayStyle.None;
+                return;
             }
 
-            return seat < model.Seats.Count ? model.Seats[(int)seat].DisplayName ?? "?" : "?";
+            var info = model.Seats[(int)mine];
+            _me.style.display = DisplayStyle.Flex;
+            var escaped = model.IsEscaped((int)mine);
+            _me.Show(info.DisplayName ?? UiText.You, info.Avatar, true, model.InRound && model.TurnSeat == mine, model.InRound && model.LeaderSeat == mine && !escaped);
         }
 
         private void Refresh()
@@ -882,6 +895,7 @@ namespace Hulla.Games.Thulla
             NoticeEscapes();
             RefreshInfo();
             RefreshSurface();
+            RefreshMe();
             RefreshOpponents();
             RefreshPile();
             RefreshHand();
@@ -960,7 +974,7 @@ namespace Hulla.Games.Thulla
                         : "";
                 var leader = model.InRound && model.LeaderSeat == seat && !model.IsEscaped((int)seat);
                 var voids = model.InRound && model.CardMemoryAssist ? model.KnownVoids((int)seat) : null;
-                _ring.Badges[i].Show(NameOf(seat), model.HandCount((int)seat), model.TurnSeat == seat && model.InRound, state, leader, voids);
+                _ring.Badges[i].Show(NameOf(seat), model.HandCount((int)seat), model.TurnSeat == seat && model.InRound, state, leader, voids, info.Avatar);
             }
         }
 
@@ -1073,26 +1087,11 @@ namespace Hulla.Games.Thulla
                     _tickedAt = -1;
                     Buzz(Haptic.TurnStart);
                 }
-
-                _turn.text = (model.LeaderSeat == model.MySeat ? UiText.Crown + " " : "") + UiText.YourTurn;
-                _turn.AddToClassList("turn--mine");
-                _timer.style.display = DisplayStyle.Flex;
             }
             else
             {
-                _turn.text = !model.InRound || model.TurnSeat == null
-                    ? ""
-                    : model.TurnSeat == model.MySeat ? UiText.YourTurn : string.Format(UiText.TurnOf, NameOf(model.TurnSeat.Value));
-                if (model.InRound && model.LeaderSeat == model.MySeat && _turn.text.Length > 0)
-                {
-                    _turn.text = UiText.Crown + " " + _turn.text;
-                }
-
-                _turn.RemoveFromClassList("turn--mine");
-                _timer.style.display = DisplayStyle.None;
+                _me.HideTimer();
             }
-
-            _turn.style.display = _turn.text.Length == 0 ? DisplayStyle.None : DisplayStyle.Flex;
 
             _takeHand.style.display = model.MyTurn && model.CanTakeHand ? DisplayStyle.Flex : DisplayStyle.None;
         }

@@ -70,6 +70,7 @@ export function compactSeats<S, M>(state: TableState<S, M>): SeatIndex[] {
       emoteTs: 0,
       party: null,
       cosmetics: null,
+      avatar: null,
     })),
   ];
   for (const presence of Object.values(state.presences)) {

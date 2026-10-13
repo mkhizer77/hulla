@@ -26,6 +26,7 @@ namespace Hulla.Games.Thulla
         private readonly VisualElement _votes;
         private readonly Label _status;
         private readonly Func<long, string> _nameOf;
+        private readonly Func<long, string?> _avatarOf;
         private long _shownSeconds = -1;
         private readonly Label _reward;
         private readonly Button _share;
@@ -35,10 +36,11 @@ namespace Hulla.Games.Thulla
         private Action? _onChangeRules;
         private Fairness? _fairness;
 
-        public ThullaResults(VisualElement root, Func<long, string> nameOf, Action playAgain)
+        public ThullaResults(VisualElement root, Func<long, string> nameOf, Func<long, string?> avatarOf, Action playAgain)
         {
             _root = root;
             _nameOf = nameOf;
+            _avatarOf = avatarOf;
             _title = root.Q<Label>("result-title");
             _stamp = root.Q<Label>("result-stamp");
             _podium = root.Q<VisualElement>("result-podium");
@@ -154,7 +156,7 @@ namespace Hulla.Games.Thulla
                 var column = new VisualElement();
                 column.AddToClassList("podium__place");
                 column.AddToClassList("podium__place--" + (place + 1));
-                column.Add(Avatar(_nameOf(seat), seat == model.MySeat));
+                column.Add(Avatar(_nameOf(seat), _avatarOf(seat), seat == model.MySeat));
                 var name = new Label(_nameOf(seat));
                 name.AddToClassList("podium__name");
                 column.Add(name);
@@ -167,23 +169,31 @@ namespace Hulla.Games.Thulla
             var loser = new VisualElement();
             loser.AddToClassList("podium__place");
             loser.AddToClassList("podium__place--loser");
-            loser.Add(Avatar(_nameOf(result.BhabhiSeat), result.BhabhiSeat == model.MySeat));
+            loser.Add(Avatar(_nameOf(result.BhabhiSeat), _avatarOf(result.BhabhiSeat), result.BhabhiSeat == model.MySeat));
             var loserName = new Label(_nameOf(result.BhabhiSeat));
             loserName.AddToClassList("podium__name");
             loser.Add(loserName);
             _podium.Add(loser);
         }
 
-        private static VisualElement Avatar(string name, bool mine)
+        /// <summary>The face from the avatar set, else the tinted initial; the player's own carries the "You" tag.</summary>
+        private static VisualElement Avatar(string name, string? avatarId, bool mine)
         {
             var avatar = new VisualElement();
             avatar.AddToClassList("seat__avatar");
             avatar.AddToClassList("podium__avatar");
             avatar.EnableInClassList("podium__avatar--me", mine);
-            AvatarTint.Apply(avatar, name);
-            var initial = new Label(name.Length == 0 ? "?" : name.Substring(0, 1).ToUpperInvariant());
+            var initial = new Label();
             initial.AddToClassList("seat__initial");
             avatar.Add(initial);
+            AvatarArt.Apply(avatar, initial, avatarId, name);
+            if (mine)
+            {
+                var you = new Label(UiText.You);
+                you.AddToClassList("seat__you");
+                avatar.Add(you);
+            }
+
             return avatar;
         }
 
@@ -208,7 +218,7 @@ namespace Hulla.Games.Thulla
                 _votes.Clear();
                 foreach (var seat in model.RematchVotes)
                 {
-                    var avatar = Avatar(_nameOf(seat), seat == model.MySeat);
+                    var avatar = Avatar(_nameOf(seat), _avatarOf(seat), seat == model.MySeat);
                     avatar.AddToClassList("podium__avatar--vote");
                     _votes.Add(avatar);
                 }

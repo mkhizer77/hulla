@@ -24,7 +24,6 @@ namespace Hulla.Presentation.Text
         public const string Host = "host";
         public const string Waiting = "Waiting for players";
         public const string Empty = "Open seat";
-        public const string YourTurn = "Your turn";
         public const string TakeHand = "Take hand";
         public const string Escaped = "Out";
         public const string Away = "Away";
@@ -36,7 +35,6 @@ namespace Hulla.Presentation.Text
         public const string SeatAutoPlay = "Auto-play";
 
         /// <summary>Whose turn it is when it is not the player's own.</summary>
-        public const string TurnOf = "{0}'s turn";
         public const string RejoinTable = "Rejoin your table ({0})";
         public const string Thulla = "THULLA!";
         public const string PickedUp = "{0} picks up";

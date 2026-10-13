@@ -31,6 +31,7 @@
         "connected": true,
         "autoPlay": false,
         "party": null,
+        "avatar": "a01",
         "cosmetics": null
       },
       {
@@ -41,6 +42,7 @@
         "connected": true,
         "autoPlay": false,
         "party": null,
+        "avatar": "a02",
         "cosmetics": null
       },
       {
@@ -51,6 +53,7 @@
         "connected": false,
         "autoPlay": false,
         "party": null,
+        "avatar": null,
         "cosmetics": null
       },
       {
@@ -61,6 +64,7 @@
         "connected": false,
         "autoPlay": false,
         "party": null,
+        "avatar": null,
         "cosmetics": null
       }
     ],
