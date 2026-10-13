@@ -256,11 +256,12 @@ export interface PushMessage {
 
 /**
  * The FCM v1 message: data for routing plus localisation keys for the text, so the device renders
- * the title and body from its own string table (no user-facing strings on the server).
+ * the title and body from its own string table (no user-facing strings on the server). The keys
+ * use underscores because Android string resource names cannot contain dots.
  */
 export function fcmMessage(token: string, message: PushMessage): Record<string, unknown> {
-  const titleKey = `push.${message.type}.title`;
-  const bodyKey = `push.${message.type}.body`;
+  const titleKey = `push_${message.type}_title`;
+  const bodyKey = `push_${message.type}_body`;
   const args = [...message.args];
   return {
     token,
