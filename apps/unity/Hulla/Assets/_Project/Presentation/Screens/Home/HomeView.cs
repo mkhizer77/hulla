@@ -107,8 +107,8 @@ namespace Hulla.Presentation.Screens.Home
             _server.value = server ?? "";
             _server.style.display = server == null ? DisplayStyle.None : DisplayStyle.Flex;
             string? Server() => server == null ? null : _server.value;
-            _create.clicked += () => create(_name.value, Server());
-            _join.clicked += () => join(_name.value, _code.value, Server());
+            _create.clicked += () => WithName(name => create(name, Server()));
+            _join.clicked += () => WithName(name => join(name, _code.value, Server()));
             root.Q<Label>("seats-label").text = UiText.SeatsLabel;
             var seatChips = root.Q<VisualElement>("seats");
             for (var n = 4; n <= 6; n++)
@@ -131,22 +131,22 @@ namespace Hulla.Presentation.Screens.Home
 
             _quick = root.Q<Button>("quick");
             _quick.text = UiText.PlayNow;
-            _quick.clicked += () => quickPlay(_name.value, _seats, Server());
-            _hero.clicked += () =>
+            _quick.clicked += () => WithName(name => quickPlay(name, _seats, Server()));
+            _hero.clicked += () => WithName(name =>
             {
                 var code = _friendsOnline?.Hero?.TableCode;
                 if (code != null)
                 {
-                    join(_name.value, code, Server());
+                    join(name, code, Server());
                     return;
                 }
 
                 var watching = _friendsOnline?.WatchHero?.TableCode;
                 if (watching != null)
                 {
-                    watch?.Invoke(_name.value, watching, Server());
+                    watch?.Invoke(name, watching, Server());
                 }
-            };
+            });
             if (_friendsOnline != null)
             {
                 _friendsOnline.Changed += RefreshFriends;
@@ -163,6 +163,22 @@ namespace Hulla.Presentation.Screens.Home
             RefreshProgress();
             RefreshFriends();
             Refresh();
+        }
+
+        /// <summary>The server keeps names of 2 to 20 characters (GDD 9.4); a shorter one is refused here with the reason.</summary>
+        public const int MinNameLength = 2;
+
+        private void WithName(Action<string> go)
+        {
+            var name = _name.value.Trim();
+            if (name.Length > 0 && name.Length < MinNameLength)
+            {
+                _namePanel.style.display = DisplayStyle.Flex;
+                _status.text = UiText.NameTooShort;
+                return;
+            }
+
+            go(name);
         }
 
         private void Link(VisualElement root, string name, string text, Action<string, string?>? open, Func<string?> server)
