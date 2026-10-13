@@ -1,7 +1,12 @@
 import { OPCODES } from "@hulla/protocol/generated";
 import { describe, expect, it } from "vitest";
 
-import { labelFor, ROUND_LOG_COLLECTION, tableMatchHandler } from "../match/nakama_match";
+import {
+  labelFor,
+  ROUND_LOG_COLLECTION,
+  tableMatchHandler,
+  turnSecondsFrom,
+} from "../match/nakama_match";
 
 import { fakeDispatcher, fakeMatchNk, matchMessage, nkPresence } from "./fake-match";
 import { fakeLogger } from "./fake-nk";
@@ -189,5 +194,20 @@ describe("the Nakama binding", () => {
     expect(result).not.toBeNull();
     const terminated = b.handler.matchTerminate(ctx, b.logger, b.nk, b.d.dispatcher, 5, b.state, 0);
     expect(terminated?.state.closeReason).toBe("server");
+  });
+});
+
+describe("turnSecondsFrom", () => {
+  it("replaces the default turn timer for every mode when set (R43)", () => {
+    expect(turnSecondsFrom({ HULLA_TURN_SECONDS: "40" })).toEqual({
+      defaultTurnSeconds: { private: 40, public: 40, ranked: 40 },
+    });
+  });
+
+  it("keeps the defaults when empty, missing or out of range", () => {
+    for (const value of ["", "abc", "4", "121", "12.5"]) {
+      expect(turnSecondsFrom({ HULLA_TURN_SECONDS: value })).toEqual({});
+    }
+    expect(turnSecondsFrom({})).toEqual({});
   });
 });

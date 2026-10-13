@@ -219,6 +219,20 @@ export function labelFor<S, M>(
   });
 }
 
+/**
+ * HULLA_TURN_SECONDS (5 to 120) replaces the default turn timer for every mode, for play-testing on a
+ * development box; empty or invalid keeps the GDD's defaults (R43). A host's own choice still wins.
+ */
+export function turnSecondsFrom(
+  // Unit tests build contexts without an env.
+  env: Readonly<Record<string, string>> | undefined,
+): Partial<TableConfig> {
+  const raw = env?.["HULLA_TURN_SECONDS"] ?? "";
+  const seconds = raw === "" ? NaN : Number(raw);
+  if (!Number.isInteger(seconds) || seconds < 5 || seconds > 120) return {};
+  return { defaultTurnSeconds: { private: seconds, public: seconds, ranked: seconds } };
+}
+
 function info(presence: nkruntime.Presence): PresenceInfo {
   return {
     sessionId: presence.sessionId,
@@ -370,7 +384,11 @@ export function tableMatchHandler<S, M, V, E, R>(
   host: GameHost<S, M, V, E, R>,
   options: MatchHandlerOptions = {},
 ): nkruntime.MatchHandler<TableState<S, M>> {
-  const coreFor = (nk: nkruntime.Nakama, logger: nkruntime.Logger): TableCore<S, M> =>
+  const coreFor = (
+    ctx: nkruntime.Context,
+    nk: nkruntime.Nakama,
+    logger: nkruntime.Logger,
+  ): TableCore<S, M> =>
     tableCore(host, {
       ids: { uuid: () => nk.uuidv4() },
       persist: storagePersistence(nk, logger),
@@ -394,7 +412,7 @@ export function tableMatchHandler<S, M, V, E, R>(
           }
         },
       },
-      ...(options.config === undefined ? {} : { config: options.config }),
+      config: { ...turnSecondsFrom(ctx.env), ...options.config },
     });
 
   const relabel = (
@@ -459,8 +477,8 @@ export function tableMatchHandler<S, M, V, E, R>(
     state.seats.map((s) => s.playerId).filter((id): id is string => id !== null);
 
   return {
-    matchInit(_ctx, logger, nk, params) {
-      const core = coreFor(nk, logger);
+    matchInit(ctx, logger, nk, params) {
+      const core = coreFor(ctx, nk, logger);
       const state = core.create(parseParams(params), Date.now());
       log.info(logger, "table created", {
         tableId: state.tableId,
@@ -470,7 +488,7 @@ export function tableMatchHandler<S, M, V, E, R>(
       return { state, tickRate: core.config.tickRate, label: labelFor(state) };
     },
 
-    matchJoinAttempt(_ctx, logger, nk, _dispatcher, _tick, state, presence, metadata) {
+    matchJoinAttempt(ctx, logger, nk, _dispatcher, _tick, state, presence, metadata) {
       const now = Date.now();
       try {
         if (isBanned(readModeration(nk, presence.userId), now)) {
@@ -487,7 +505,7 @@ export function tableMatchHandler<S, M, V, E, R>(
       } catch (error: unknown) {
         log.warn(logger, "remote config not read", { error: String(error) });
       }
-      const decision = coreFor(nk, logger).joinAttempt(state, info(presence), metadata, now);
+      const decision = coreFor(ctx, nk, logger).joinAttempt(state, info(presence), metadata, now);
       return decision.accept
         ? { state, accept: true }
         : { state, accept: false, rejectMessage: decision.code };
@@ -513,7 +531,7 @@ export function tableMatchHandler<S, M, V, E, R>(
           log.warn(logger, "cosmetics not read", { error: String(error) });
         }
       }
-      const batch = coreFor(nk, logger).join(state, presences.map(info), now);
+      const batch = coreFor(ctx, nk, logger).join(state, presences.map(info), now);
       presenceSync(
         ctx,
         logger,
@@ -531,7 +549,7 @@ export function tableMatchHandler<S, M, V, E, R>(
     matchLeave(ctx, logger, nk, dispatcher, _tick, state, presences) {
       const before = labelFor(state);
       const now = Date.now();
-      const batch = coreFor(nk, logger).leave(state, presences.map(info), now);
+      const batch = coreFor(ctx, nk, logger).leave(state, presences.map(info), now);
       presenceSync(
         ctx,
         logger,
@@ -548,7 +566,7 @@ export function tableMatchHandler<S, M, V, E, R>(
 
     matchLoop(ctx, logger, nk, dispatcher, _tick, state, messages) {
       const seatedBefore = seatedUserIds(state);
-      const core = coreFor(nk, logger);
+      const core = coreFor(ctx, nk, logger);
       const before = labelFor(state);
       const now = Date.now();
       const senders = messages.map((m) => m.sender);
@@ -584,13 +602,13 @@ export function tableMatchHandler<S, M, V, E, R>(
     matchTerminate(ctx, logger, nk, dispatcher, _tick, state) {
       const now = Date.now();
       const seated = seatedUserIds(state);
-      const batch = coreFor(nk, logger).close(state, "server", now);
+      const batch = coreFor(ctx, nk, logger).close(state, "server", now);
       send(dispatcher, state, batch, []);
       presenceSync(ctx, logger, nk, { ...state, phase: "closing" }, seated, now);
       return { state };
     },
 
-    matchSignal(_ctx, logger, nk, dispatcher, _tick, state, data) {
+    matchSignal(ctx, logger, nk, dispatcher, _tick, state, data) {
       const signal = parseSignal(data);
       if (signal === null) return { state, data: JSON.stringify({ ok: false }) };
       if (signal.kind === "has_user") {
@@ -607,7 +625,7 @@ export function tableMatchHandler<S, M, V, E, R>(
         };
       }
       if (signal.kind === "close") {
-        const batch = coreFor(nk, logger).close(state, "host_closed", Date.now());
+        const batch = coreFor(ctx, nk, logger).close(state, "host_closed", Date.now());
         send(dispatcher, state, batch, []);
         return { state, data: JSON.stringify({ ok: true }) };
       }
