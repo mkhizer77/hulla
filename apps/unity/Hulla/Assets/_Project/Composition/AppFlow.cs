@@ -994,7 +994,7 @@ namespace Hulla.Composition
             var (seat, cards) = ThullaShareCard.BiggestPickUp(result);
             if (seat >= 0 && _bigThulla.Consider(cards))
             {
-                _shell.ShowDialog(string.Format(UiText.BigThulla, SeatName(client.Model, seat), cards), UiText.ShareResult, UiText.NotNow, () => ShareResult(client, CardRatio.Feed), () => { });
+                _tableView?.OfferBigThulla(result.RoundId);
             }
         }
 

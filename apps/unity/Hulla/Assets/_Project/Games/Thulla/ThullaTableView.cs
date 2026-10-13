@@ -1229,6 +1229,9 @@ namespace Hulla.Games.Thulla
         /// <summary>Shows Share on the results.</summary>
         public void UseShare(Action share) => _results.Share = share;
 
+        /// <summary>Highlights Share on this round's results for the night's biggest thulla.</summary>
+        public void OfferBigThulla(string roundId) => _results.OfferBigThulla(roundId);
+
         /// <summary>Shows the fair-deal chip on the results (ADR-0009).</summary>
         public void UseFairness(Action<Fairness> explain) => _results.ShowFairness = explain;
 

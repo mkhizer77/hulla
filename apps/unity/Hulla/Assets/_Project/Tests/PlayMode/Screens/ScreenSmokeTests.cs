@@ -21,6 +21,7 @@ using Hulla.Presentation.Screens.Pass;
 using Hulla.Presentation.Screens.Shop;
 using Hulla.Presentation.Share;
 using Hulla.Presentation.TableKit;
+using Hulla.Presentation.Text;
 using Hulla.Protocol;
 using NUnit.Framework;
 using UnityEditor;
@@ -297,6 +298,29 @@ namespace Hulla.Screens.Tests
             });
             Shown(root.Q<VisualElement>("results"), "the results overlay");
             Assert.AreEqual("Bilal is the Bhabhi", root.Q<Label>("result-title").text);
+        }
+
+        [UnityTest]
+        public IEnumerator TheBiggestThullaHighlightsShareInsideTheResults()
+        {
+            VisualElement root = null!;
+            ThullaTableView view = null!;
+            var gateway = new Fakes.Gateway();
+            var client = new TableClient(gateway, new TableTicket("m", "K7Q2MX", "t_K7Q2MX"), "me", 1);
+            yield return Open(Catalog.Table, r =>
+            {
+                root = r;
+                view = new ThullaTableView(r, client, new Fakes.Chat(), () => 0, () => { });
+                view.UseShare(() => { });
+                gateway.Deliver(MessageTypes.TableState, 5, Fakes.InRound(5));
+                gateway.Deliver(MessageTypes.RoundEnd, 6, new RoundEnd { RoundId = "r", BhabhiSeat = 2, EscapeOrder = new List<long> { 0, 1, 3 }, Points = new List<long>(), Stats = new List<SeatStats>(), Fairness = new Fairness { Seed = "s", Commitment = "c", DeckOrder = new List<string>() } });
+                view.OfferBigThulla("r");
+            });
+            var share = root.Q<Button>("result-share");
+            Assert.AreEqual(UiText.ShareBigThulla, share.text);
+            Assert.IsTrue(share.ClassListContains("button--secondary"));
+            Shown(root.Q<Button>("play-again"), "Play again beside the offer");
+            Assert.AreEqual(UiText.RematchHow, root.Q<Label>("result-status").text, "the results say a new round needs everyone");
         }
 
         [UnityTest]

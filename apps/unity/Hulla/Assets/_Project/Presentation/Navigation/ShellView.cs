@@ -140,15 +140,22 @@ namespace Hulla.Presentation.Navigation
         public void ShowDialog(string question, string yes, string no, Action onYes, Action onNo)
         {
             Root.Q("shell-dialog")?.RemoveFromHierarchy();
+            Root.Add(Dialog(question, yes, no, onYes, onNo));
+        }
+
+        /// <summary>The dialog element itself; either answer removes it.</summary>
+        public static VisualElement Dialog(string question, string yes, string no, Action onYes, Action onNo)
+        {
             var overlay = new VisualElement { name = "shell-dialog" };
             overlay.AddToClassList("overlay");
             overlay.AddToClassList("results");
             overlay.style.display = DisplayStyle.Flex;
             var panel = new VisualElement();
             panel.AddToClassList("panel");
+            panel.AddToClassList("dialog");
             var title = new Label(question);
             title.AddToClassList("title");
-            title.AddToClassList("title--small");
+            title.AddToClassList("dialog__text");
             panel.Add(title);
             var yesButton = new Button(() =>
             {
@@ -163,10 +170,12 @@ namespace Hulla.Presentation.Navigation
                 onNo();
             }) { text = no };
             noButton.AddToClassList("button");
+            noButton.AddToClassList("dialog__button");
+            yesButton.AddToClassList("dialog__button");
             panel.Add(yesButton);
             panel.Add(noButton);
             overlay.Add(panel);
-            Root.Add(overlay);
+            return overlay;
         }
 
         /// <summary>A pill at the top of whatever screen is showing (GDD 14.5: pills, never modals); null hides it.</summary>
