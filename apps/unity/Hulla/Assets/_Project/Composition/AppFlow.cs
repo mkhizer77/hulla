@@ -15,6 +15,7 @@ using Hulla.Presentation.Screens.Profile;
 using Hulla.Presentation.Screens.QuickPlay;
 using Hulla.Presentation.Screens.Rulebook;
 using Hulla.Presentation.Screens.Settings;
+using Hulla.Presentation.Share;
 using Hulla.Presentation.Theme;
 using Hulla.Application.Settings;
 using Hulla.Presentation.Text;
@@ -55,6 +56,7 @@ namespace Hulla.Composition
         private SettingsView? _settingsView;
         private LobbyView? _lobbyView;
         private string _friendsForRound = "";
+        private readonly BigThullaOffer _bigThulla = new BigThullaOffer();
         private AnalyticsTracker? _tracker;
         private ScriptedTableGateway? _tutorial;
         private TableClient? _tutorialClient;
@@ -436,6 +438,7 @@ namespace Hulla.Composition
                 ShowReward(model.LastResult.RoundId);
                 new ThullaHints(_app.Store).RoundEnded();
                 OfferFriends();
+                OfferBigThulla(client);
             }
 
             var wanted = model.InRound || model.LastResult != null ? Screen.Table : Screen.Lobby;
@@ -466,6 +469,7 @@ namespace Hulla.Composition
 
             _tableView.UseMutes(_app.Mutes.IsMuted, (id, muted) => _ = _app.Mutes.SetAsync(id, muted, _app.Lifetime));
             _tableView.UseModeration(BlockPlayer, (id, reason, done) => ReportPlayer(client, id, reason, done));
+            _tableView.UseShare(() => AskShareRatio(client));
             _scheduler = new AnimationScheduler(client.Events, _tableView);
             _view = _tableView;
         }
@@ -512,6 +516,46 @@ namespace Hulla.Composition
 
             done(sent.IsOk);
         }
+
+        private void AskShareRatio(TableClient client) =>
+            _shell.ShowDialog(UiText.ShareAs, UiText.SharePost, UiText.ShareStory, () => ShareResult(client, CardRatio.Feed), () => ShareResult(client, CardRatio.Story));
+
+        /// <summary>Once a session, a round with the night's biggest pick-up offers its card (GDD 10.9).</summary>
+        private void OfferBigThulla(TableClient client)
+        {
+            var result = client.Model.LastResult;
+            if (result == null || client.Model.Spectating)
+            {
+                return;
+            }
+
+            var (seat, cards) = ThullaShareCard.BiggestPickUp(result);
+            if (seat >= 0 && _bigThulla.Consider(cards))
+            {
+                _shell.ShowDialog(string.Format(UiText.BigThulla, SeatName(client.Model, seat), cards), UiText.ShareResult, UiText.NotNow, () => ShareResult(client, CardRatio.Feed), () => { });
+            }
+        }
+
+        private async void ShareResult(TableClient client, CardRatio ratio)
+        {
+            var model = client.Model;
+            var result = model.LastResult;
+            if (result == null)
+            {
+                return;
+            }
+
+            var code = model.IsPrivate && model.Code.Length > 0 ? model.Code : null;
+            var footer = code != null ? string.Format(UiText.ShareFooterCode, code) : UiText.ShareFooter;
+            var png = await CardRenderer.RenderAsync(_shell.PanelSettings, ratio, root => ThullaShareCard.Build(root, model, seat => SeatName(model, seat), footer, ratio == CardRatio.Story));
+            var loser = SeatName(model, result.BhabhiSeat);
+            var title = ThullaShareCard.LoserTitle(model);
+            var text = code != null ? string.Format(UiText.ShareResultWithCode, loser, title, code) : string.Format(UiText.ShareResultText, loser, title);
+            _app.ShareSheet.ShareImage(UiText.ShareResultTitle, text, png, "hulla-" + result.RoundId + ".png");
+        }
+
+        private static string SeatName(TableModel model, long seat) =>
+            seat >= 0 && seat < model.Seats.Count ? model.Seats[(int)seat].DisplayName ?? "?" : "?";
 
         private bool ShareCode(string code)
         {

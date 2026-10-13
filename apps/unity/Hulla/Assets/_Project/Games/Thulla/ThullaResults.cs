@@ -22,6 +22,8 @@ namespace Hulla.Games.Thulla
         private readonly Func<long, string> _nameOf;
         private long _shownSeconds = -1;
         private readonly Label _reward;
+        private readonly Button _share;
+        private Action? _onShare;
 
         public ThullaResults(VisualElement root, Func<long, string> nameOf, Action playAgain)
         {
@@ -34,6 +36,21 @@ namespace Hulla.Games.Thulla
             _playAgain.clicked += playAgain;
             _status = root.Q<Label>("result-status");
             _reward = root.Q<Label>("result-reward");
+            _share = root.Q<Button>("result-share");
+            _share.text = UiText.ShareResult;
+            _share.clicked += () => _onShare?.Invoke();
+            _share.style.display = DisplayStyle.None;
+        }
+
+        /// <summary>Shares the result as a card (GDD 10.9); null hides the button (the tutorial).</summary>
+        public Action? Share
+        {
+            get => _onShare;
+            set
+            {
+                _onShare = value;
+                _share.style.display = value != null ? DisplayStyle.Flex : DisplayStyle.None;
+            }
         }
 
         /// <summary>The round's XP, coins and any level-up (GDD 14.8), once the server has paid it.</summary>

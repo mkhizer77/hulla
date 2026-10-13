@@ -46,6 +46,9 @@ namespace Hulla.Presentation.Navigation
             return instance;
         }
 
+        /// <summary>The app's panel settings, copied for off-screen drawing (share cards).</summary>
+        public PanelSettings PanelSettings => GetComponent<UIDocument>().panelSettings;
+
         /// <summary>The document root, where the theme classes from the settings live.</summary>
         public VisualElement Root => GetComponent<UIDocument>().rootVisualElement;
 

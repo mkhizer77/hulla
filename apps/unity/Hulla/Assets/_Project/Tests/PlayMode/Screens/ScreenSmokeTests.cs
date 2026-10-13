@@ -15,6 +15,7 @@ using Hulla.Presentation.Screens.Profile;
 using Hulla.Presentation.Screens.QuickPlay;
 using Hulla.Presentation.Screens.Rulebook;
 using Hulla.Presentation.Screens.Settings;
+using Hulla.Presentation.Share;
 using Hulla.Protocol;
 using NUnit.Framework;
 using UnityEditor;
@@ -154,6 +155,48 @@ namespace Hulla.Screens.Tests
             });
             Shown(root.Q<VisualElement>("results"), "the results overlay");
             Assert.AreEqual("Bilal is the Bhabhi", root.Q<Label>("result-title").text);
+        }
+
+        [UnityTest]
+        public IEnumerator ShareCardDrawsAFeedPostAndAStory()
+        {
+            var gateway = new Fakes.Gateway();
+            var client = new TableClient(gateway, new TableTicket("m", "K7Q2MX", "t_K7Q2MX"), "me", 1);
+            gateway.Deliver(MessageTypes.TableState, 5, Fakes.InRound(5));
+            var stats = new List<SeatStats>();
+            for (var i = 0; i < 4; i++)
+            {
+                stats.Add(new SeatStats { CardsPickedUp = i == 2 ? 14 : 3 });
+            }
+
+            gateway.Deliver(MessageTypes.RoundEnd, 6, new RoundEnd { RoundId = "r", BhabhiSeat = 2, EscapeOrder = new List<long> { 0, 1, 3 }, Points = new List<long>(), Stats = stats, Fairness = new Fairness { Seed = "s", Commitment = "c", DeckOrder = new List<string>() } });
+            var settings = AssetDatabase.LoadAssetAtPath<PanelSettings>("Assets/Settings/UI/PanelSettings.asset");
+            foreach (var ratio in new[] { CardRatio.Feed, CardRatio.Story })
+            {
+                byte[]? png = null;
+                yield return Render(settings, ratio, client.Model, bytes => png = bytes);
+                Assert.IsNotNull(png);
+                var image = new Texture2D(2, 2);
+                Assert.IsTrue(image.LoadImage(png!));
+                Assert.AreEqual(CardRenderer.Width, image.width);
+                Assert.AreEqual(CardRenderer.HeightOf(ratio), image.height);
+                var path = System.IO.Path.Combine(UnityEngine.Application.temporaryCachePath, "share-card-" + ratio + ".png");
+                System.IO.File.WriteAllBytes(path, png!);
+                Debug.Log("share card: " + path);
+                Object.Destroy(image);
+            }
+        }
+
+        private static IEnumerator Render(PanelSettings settings, CardRatio ratio, TableModel model, System.Action<byte[]> done)
+        {
+            var task = CardRenderer.RenderAsync(settings, ratio, root => ThullaShareCard.Build(root, model, seat => model.Seats[(int)seat].DisplayName ?? "?", "Join with code K7Q2MX on Hulla", ratio == CardRatio.Story));
+            var awaiter = task.GetAwaiter();
+            while (!awaiter.IsCompleted)
+            {
+                yield return null;
+            }
+
+            done(awaiter.GetResult());
         }
 
         [UnityTest]
