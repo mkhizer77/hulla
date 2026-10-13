@@ -72,18 +72,8 @@
     "spectators": [],
     "series": {
       "roundsPlayed": 0,
-      "points": [
-        0,
-        0,
-        0,
-        0
-      ],
-      "loserTally": [
-        0,
-        0,
-        0,
-        0
-      ],
+      "points": [0, 0, 0, 0],
+      "loserTally": [0, 0, 0, 0],
       "nextDealerSeat": 0,
       "finished": false
     },
