@@ -50,8 +50,12 @@ namespace Hulla.Infrastructure.Nakama
             socket.Closed += OnClosed;
             try
             {
-                // join_table metadata: the room code, the resume token for a rejoin, and whether to watch.
-                var metadata = new System.Collections.Generic.Dictionary<string, string>();
+                // join_table metadata: the room code, the resume token for a rejoin, whether to watch, and
+                // the build's version so the server can turn away one older than its minimum.
+                var metadata = new System.Collections.Generic.Dictionary<string, string>
+                {
+                    ["clientVersion"] = UnityEngine.Application.version,
+                };
                 if (!ticket.IsMatchmade)
                 {
                     metadata["code"] = ticket.Code;
