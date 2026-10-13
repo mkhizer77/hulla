@@ -2254,3 +2254,220 @@
     justify-content: center;
     align-items: center;
 }
+
+/* Table, final pass (design 7.1): a top bar of small pills, the felt filling the middle with the
+   opponents on its rail and the player's badge docked on the near edge, quick chat as small pills in
+   one row with chat, then the hand. */
+.table {
+    padding: 0;
+}
+
+.table__top {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    height: 112px;
+    flex-shrink: 0;
+    padding: 0 var(--space-2);
+    background-color: rgba(0, 0, 0, 0.35);
+    border-bottom-width: 2px;
+    border-bottom-color: rgba(255, 255, 255, 0.06);
+}
+
+.table__pill {
+    min-height: 72px;
+    min-width: 72px;
+    margin: 0 4px;
+    padding: 0 22px;
+    border-radius: 36px;
+    font-size: var(--font-small);
+    -unity-font-style: bold;
+    background-color: rgba(255, 255, 255, 0.08);
+    color: var(--ink-ivory);
+}
+
+.table__info {
+    flex-grow: 1;
+    flex-shrink: 1;
+    margin: 0 var(--space-1);
+    -unity-text-align: middle-center;
+    font-size: var(--font-small);
+    letter-spacing: 2px;
+    color: var(--ink-muted);
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+
+.table__top-actions {
+    flex-direction: row;
+    flex-shrink: 0;
+}
+
+.table__zone {
+    flex-grow: 1;
+    flex-shrink: 1;
+    min-height: 0;
+}
+
+.table__zone > .rail {
+    position: absolute;
+    left: 7%;
+    right: 7%;
+    top: 9%;
+    bottom: 10%;
+    margin: 0;
+    padding: 20px;
+    border-radius: 300px;
+}
+
+.table__zone > .rail > .felt {
+    border-radius: 280px;
+}
+
+.opponents {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    height: auto;
+    min-height: 0;
+}
+
+.seat {
+    width: 220px;
+    margin: 0;
+}
+
+.seat__name {
+    margin-top: 10px;
+    padding: 2px 16px;
+    border-radius: 999px;
+    background-color: rgba(10, 12, 14, 0.72);
+    font-size: 26px;
+}
+
+.seat--turn .seat__name {
+    background-color: var(--gold);
+    color: #141518;
+}
+
+.seat__flag {
+    top: -40px;
+    left: 30px;
+    right: 30px;
+    font-size: 22px;
+    letter-spacing: 2px;
+}
+
+.table__me {
+    position: absolute;
+    left: 50%;
+    bottom: 10%;
+    translate: -50% 50%;
+}
+
+.me-badge {
+    margin: 0;
+    padding: 8px 26px 8px 8px;
+    border-radius: 999px;
+    background-color: rgba(10, 12, 14, 0.82);
+    border-width: 2px;
+    border-color: rgba(255, 255, 255, 0.1);
+}
+
+.seat--turn.me-badge {
+    border-color: var(--gold);
+}
+
+.me-badge .seat__name {
+    margin-left: 14px;
+    padding: 0;
+    background-color: rgba(0, 0, 0, 0);
+    font-size: 30px;
+}
+
+.seat--turn.me-badge .seat__name {
+    background-color: rgba(0, 0, 0, 0);
+    color: var(--gold);
+}
+
+.table__notes {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 17%;
+    align-items: center;
+}
+
+.pile__owner {
+    margin-top: 10px;
+    font-size: 20px;
+}
+
+.table__bar {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    min-height: 96px;
+    flex-shrink: 0;
+    padding: 0 var(--space-2);
+}
+
+.quick-strip {
+    flex-grow: 1;
+    flex-shrink: 1;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    overflow: hidden;
+    margin: 0;
+}
+
+.quick-strip__chip, .quick-strip__more {
+    min-height: 72px;
+    min-width: 0;
+    margin: 0 10px 0 0;
+    padding: 0 24px;
+    border-radius: 36px;
+    border-bottom-width: 0;
+    background-image: none;
+    background-color: rgba(255, 255, 255, 0.1);
+    font-size: 26px;
+    -unity-font-style: bold;
+    white-space: nowrap;
+    flex-shrink: 1;
+}
+
+.quick-strip__more {
+    min-width: 72px;
+    flex-shrink: 0;
+}
+
+.table__bar-actions {
+    flex-shrink: 0;
+    align-items: center;
+}
+
+.table__bar-actions > .button {
+    min-height: 72px;
+    padding: 0 26px;
+    border-radius: 36px;
+    font-size: 28px;
+}
+
+.table__chat {
+    background-image: none;
+    background-color: rgba(255, 255, 255, 0.1);
+    border-bottom-width: 0;
+    color: var(--ink-ivory);
+}
+
+.hand {
+    padding: 36px 0 44px 0;
+}
+
+.hand--left .table__bar {
+    flex-direction: row-reverse;
+}

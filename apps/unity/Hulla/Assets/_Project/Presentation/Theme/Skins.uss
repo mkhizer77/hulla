@@ -1,0 +1,780 @@
+/*
+ * The five table themes (docs/design/table-themes.md). Each hangs off a class on the shell root
+ * (ThemeClasses: skin--club and so on) and restyles the shared screens: the scene behind every
+ * screen, the table, buttons, panels, name plates, seat frames, card backs, the thulla stamp and
+ * the display face. Art comes from tools/artkit/skins.py; the ambient motion from AmbientLayer.
+ * Kept after Hulla.uss in the runtime theme so these rules win.
+ */
+
+/* ---- Shared by every theme ---- */
+
+.skinned .ambient__glow { background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/shared/glow.png"); -unity-background-scale-mode: stretch-to-fill; }
+.skinned .ambient__mote { background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/shared/mote.png"); -unity-background-scale-mode: stretch-to-fill; }
+.skinned .ambient__bulb { background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/shared/bulb.png"); -unity-background-scale-mode: stretch-to-fill; }
+.skinned .ambient__lamp { background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/shared/lamp.png"); -unity-background-scale-mode: stretch-to-fill; }
+.skinned .ambient__marigolds { background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/shared/marigolds.png"); -unity-background-scale-mode: stretch-to-fill; }
+.skinned .ambient__petal { background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/shared/petal.png"); -unity-background-scale-mode: stretch-to-fill; }
+.skinned .ambient__steam { background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/shared/steam.png"); -unity-background-scale-mode: stretch-to-fill; }
+.skinned .ambient__cone { background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/shared/cone.png"); -unity-background-scale-mode: stretch-to-fill; }
+.skinned .ambient__glass { background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/shared/glass.png"); -unity-background-scale-mode: stretch-to-fill; }
+
+/* The scene fills the screen; the old lattice ground steps aside. */
+.skinned .screen, .skinned .table {
+    background-repeat: no-repeat;
+    -unity-background-scale-mode: scale-and-crop;
+}
+
+/* The table is one picture: rail, felt and watermark; the felt element is the play area inside it. */
+.skinned .table__zone > .rail {
+    padding: 9% 9% 12% 9%;
+    border-radius: 0;
+    background-color: rgba(0, 0, 0, 0);
+    -unity-background-scale-mode: stretch-to-fill;
+}
+
+.skinned .table__zone > .rail > .felt {
+    background-image: none;
+    background-color: rgba(0, 0, 0, 0);
+    border-radius: 0;
+}
+
+/* Seats: the theme's frame over the face, a fan of card backs with the count beside it. */
+.skinned .seat__avatar {
+    border-width: 0;
+    overflow: visible;
+}
+
+.skinned .seat__frame {
+    position: absolute;
+    left: -17px;
+    top: -17px;
+    width: 150px;
+    height: 150px;
+    -unity-background-scale-mode: stretch-to-fill;
+}
+
+.skinned .me-badge .seat__frame {
+    left: -11px;
+    top: -11px;
+    width: 98px;
+    height: 98px;
+}
+
+.skinned .seat__chip {
+    right: -74px;
+    bottom: 6px;
+    width: 70px;
+    height: 64px;
+    padding: 0;
+    border-width: 0;
+    background-image: none;
+    background-color: rgba(0, 0, 0, 0);
+}
+
+.skinned .seat__back {
+    position: absolute;
+    bottom: 8px;
+    width: 34px;
+    height: 48px;
+    margin: 0;
+    border-width: 0;
+    -unity-background-scale-mode: stretch-to-fill;
+    transform-origin: 50% 100%;
+}
+
+.skinned .seat__back--1 { left: 2px; rotate: -18deg; }
+.skinned .seat__back--2 { left: 14px; rotate: -2deg; }
+.skinned .seat__back--3 { left: 26px; rotate: 14deg; }
+
+.skinned .seat__count {
+    position: absolute;
+    right: -6px;
+    bottom: -4px;
+    min-width: 34px;
+    height: 34px;
+    border-radius: 17px;
+    font-size: 22px;
+    -unity-text-align: middle-center;
+    -unity-font-style: bold;
+    background-color: var(--gold);
+    color: #141518;
+}
+
+.skinned .seat__name {
+    margin-top: 12px;
+    padding: 4px 22px 8px 22px;
+    border-radius: 0;
+    background-color: rgba(0, 0, 0, 0);
+    -unity-slice-left: 28;
+    -unity-slice-right: 28;
+    -unity-slice-top: 26;
+    -unity-slice-bottom: 28;
+    -unity-slice-scale: 1px;
+}
+
+.skinned .table__info, .skinned .table__pill {
+    background-color: rgba(0, 0, 0, 0);
+    -unity-slice-left: 30;
+    -unity-slice-right: 30;
+    -unity-slice-top: 30;
+    -unity-slice-bottom: 30;
+    -unity-slice-scale: 1px;
+}
+
+.skinned .table__info {
+    flex-grow: 0;
+    align-self: center;
+    padding: 10px 28px;
+}
+
+.skinned .button, .skinned .chip {
+    background-color: rgba(0, 0, 0, 0);
+    border-width: 0;
+    border-radius: 0;
+    -unity-background-scale-mode: stretch-to-fill;
+    -unity-slice-left: 48;
+    -unity-slice-right: 48;
+    -unity-slice-top: 44;
+    -unity-slice-bottom: 54;
+    -unity-slice-scale: 1px;
+    padding-bottom: 8px;
+}
+
+.skinned .button--quiet {
+    background-image: none;
+}
+
+.skinned .turn--mine {
+    -unity-slice-left: 48;
+    -unity-slice-right: 48;
+    -unity-slice-top: 44;
+    -unity-slice-bottom: 54;
+    -unity-slice-scale: 1px;
+    -unity-background-scale-mode: stretch-to-fill;
+}
+
+.skinned .panel {
+    -unity-slice-left: 72;
+    -unity-slice-right: 72;
+    -unity-slice-top: 72;
+    -unity-slice-bottom: 72;
+    -unity-slice-scale: 1px;
+}
+
+.skinned .nav {
+    background-image: none;
+}
+
+/* The top bar floats over the scene. */
+.skinned .table__top {
+    background-color: rgba(0, 0, 0, 0);
+    border-bottom-width: 0;
+}
+
+/* Small controls take the pill art; the button art's corners are too big for them. */
+.skinned .quick-strip__chip, .skinned .quick-strip__more, .skinned .table__chat, .skinned .table__pill, .skinned .me-badge {
+    background-color: rgba(0, 0, 0, 0);
+    border-width: 0;
+    -unity-slice-left: 30;
+    -unity-slice-right: 30;
+    -unity-slice-top: 30;
+    -unity-slice-bottom: 30;
+    -unity-slice-scale: 1px;
+    -unity-background-scale-mode: stretch-to-fill;
+    padding-bottom: 0;
+}
+
+.skinned .chip {
+    -unity-slice-left: 40;
+    -unity-slice-right: 40;
+    -unity-slice-top: 36;
+    -unity-slice-bottom: 46;
+}
+
+.skinned .me-badge .seat__name {
+    background-image: none;
+    color: var(--ink-ivory);
+}
+
+.skinned .seat--turn.me-badge .seat__name {
+    color: var(--gold);
+}
+
+/* Quiet text sits on busy scenes; a soft shadow keeps it readable. */
+.skinned .caption, .skinned .subtitle, .skinned .lobby-rules__text, .skinned .button--quiet, .skinned .home__links > .button, .skinned .status, .skinned .podium__name, .skinned .podium__rank {
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
+}
+
+.skinned .result-reward {
+    background-color: rgba(0, 0, 0, 0);
+    text-shadow: 0 3px 0 rgba(0, 0, 0, 0.5);
+}
+
+/* The theme picker in settings. */
+.skinned .theme-picker {
+    flex-direction: row;
+    justify-content: space-between;
+    margin: 8px 0 24px 0;
+}
+
+.skinned .theme-tile {
+    width: 19%;
+    margin: 0;
+    padding: 10px 6px 14px 6px;
+    align-items: center;
+    background-image: none;
+    background-color: rgba(255, 255, 255, 0.04);
+    border-width: 3px;
+    border-color: rgba(255, 255, 255, 0.08);
+    border-radius: 22px;
+}
+
+.skinned .theme-tile--on {
+    border-color: var(--accent-saffron);
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.skinned .theme-tile__preview {
+    width: 100%;
+    height: 230px;
+    border-radius: 14px;
+    -unity-background-scale-mode: scale-and-crop;
+}
+
+.skinned .theme-tile__name {
+    margin-top: 10px;
+    font-size: 24px;
+    -unity-font-style: bold;
+    -unity-text-align: middle-center;
+    white-space: normal;
+}
+
+.theme-tile__preview--club { background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/club/preview.png"); }
+.theme-tile__preview--haveli { background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/haveli/preview.png"); }
+.theme-tile__preview--dhaba { background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/dhaba/preview.png"); }
+.theme-tile__preview--mehndi { background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/mehndi/preview.png"); }
+.theme-tile__preview--adda { background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/adda/preview.png"); }
+
+/* ---- Club Classic ---- */
+
+.skin--club {
+    --surface-ui: #0A0F26;
+    --surface-panel: #121A3E;
+    --surface-raised: #1A2350;
+    --accent-saffron: #F2C14E;
+    --accent-teal: #4C8DFF;
+    --ink-ivory: #FFFFFF;
+    --ink-muted: #A9B7E0;
+    --gold: #FFE79A;
+    color: #FFFFFF;
+}
+
+.skin--club .screen, .skin--club .table {
+    background-color: #0A0F26;
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/club/backdrop.png");
+}
+
+.skin--club .table__zone > .rail {
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/club/table.png");
+}
+
+.skin--club .title, .skin--club .code, .skin--club .home__title, .skin--club .seat__initial, .skin--club .card__rank, .skin--club .card__court, .skin--club .podium__rank, .skin--club .turn, .skin--club .hero, .skin--club .button--primary, .skin--club .countdown, .skin--club .results__title, .skin--club .results__stamp, .skin--club .coach__text, .skin--club .daily__text, .skin--club .toast {
+    -unity-font-definition: url("/Assets/_Project/Presentation/Theme/Fonts/TitanOne.ttf");
+}
+
+.skin--club .title, .skin--club .home__title, .skin--club .code, .skin--club .results__title {
+    color: #FFE79A;
+    text-shadow: 0 4px 0 #12347A;
+}
+
+.skin--club .button {
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/club/btn-secondary.png");
+    color: #FFFFFF;
+}
+
+.skin--club .button--secondary, .skin--club .chip, .skin--club .chip--share {
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/club/btn-secondary.png");
+    color: #FFFFFF;
+}
+
+.skin--club .button--primary, .skin--club .chip--on, .skin--club .turn--mine {
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/club/btn-primary.png");
+    color: #FFFFFF;
+    text-shadow: 0 2px 0 rgba(0, 0, 0, 0.35);
+}
+
+.skin--club .button--quiet {
+    background-image: none;
+    color: #A9B7E0;
+}
+
+.skin--club .panel {
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/club/panel.png");
+}
+
+.skin--club .seat__name {
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/club/plate.png");
+    color: #FFFFFF;
+}
+
+.skin--club .seat__frame {
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/club/frame.png");
+}
+
+.skin--club .seat__avatar {
+    border-radius: 999px;
+}
+
+.skin--club .seat__back, .skin--club .discard__card {
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/club/back.png");
+}
+
+.skin--club .table__info, .skin--club .table__pill, .skin--club .quick-strip__chip, .skin--club .quick-strip__more, .skin--club .table__chat, .skin--club .me-badge {
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/club/pill.png");
+    color: #FFFFFF;
+}
+
+.skin--club .card--legal {
+    border-color: #5BE37A;
+}
+
+.skin--club .nav {
+    background-color: #070B1E;
+    border-top-color: #F2C14E;
+}
+
+.skin--club .nav__tab--on .nav__glyph, .skin--club .nav__tab--on .nav__label {
+    color: #FFE79A;
+}
+
+.skin--club .toast {
+    color: #FFF3C4;
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/shared/stamp-ribbon.png");
+    -unity-slice-left: 70;
+    -unity-slice-right: 70;
+    -unity-slice-top: 0;
+    -unity-slice-bottom: 0;
+    -unity-slice-scale: 1px;
+    padding: 6px 110px 24px 110px;
+    -unity-text-outline-width: 0;
+    text-shadow: 0 5px 0 #7A0E14;
+}
+
+/* ---- Haveli Evening ---- */
+
+.skin--haveli {
+    --surface-ui: #1A0A05;
+    --surface-panel: #24130A;
+    --surface-raised: #45260F;
+    --accent-saffron: #F2C76B;
+    --accent-teal: #9FD9B5;
+    --ink-ivory: #F7E6C4;
+    --ink-muted: #C9B08A;
+    --gold: #F6DC96;
+    color: #F7E6C4;
+}
+
+.skin--haveli .screen, .skin--haveli .table {
+    background-color: #1A0A05;
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/haveli/backdrop.png");
+}
+
+.skin--haveli .table__zone > .rail {
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/haveli/table.png");
+}
+
+.skin--haveli .title, .skin--haveli .code, .skin--haveli .home__title, .skin--haveli .seat__initial, .skin--haveli .card__rank, .skin--haveli .card__court, .skin--haveli .podium__rank, .skin--haveli .turn, .skin--haveli .hero, .skin--haveli .button--primary, .skin--haveli .countdown, .skin--haveli .results__title, .skin--haveli .results__stamp, .skin--haveli .coach__text, .skin--haveli .daily__text, .skin--haveli .toast {
+    -unity-font-definition: url("/Assets/_Project/Presentation/Theme/Fonts/RozhaOne.ttf");
+}
+
+.skin--haveli .title, .skin--haveli .home__title, .skin--haveli .code, .skin--haveli .results__title {
+    color: #F6DC96;
+    text-shadow: 0 4px 0 #2E170A;
+}
+
+.skin--haveli .button {
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/haveli/btn-secondary.png");
+    color: #F7E6C4;
+}
+
+.skin--haveli .button--secondary, .skin--haveli .chip, .skin--haveli .chip--share {
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/haveli/btn-secondary.png");
+    color: #F7E6C4;
+}
+
+.skin--haveli .button--primary, .skin--haveli .chip--on, .skin--haveli .turn--mine {
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/haveli/btn-primary.png");
+    color: #2E170A;
+    text-shadow: 0 1px 0 rgba(255, 240, 200, 0.5);
+}
+
+.skin--haveli .button--quiet {
+    background-image: none;
+    color: #C9B08A;
+}
+
+.skin--haveli .panel {
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/haveli/panel.png");
+}
+
+.skin--haveli .seat__name {
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/haveli/plate.png");
+    color: #F7E6C4;
+}
+
+.skin--haveli .seat__frame {
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/haveli/frame.png");
+}
+
+.skin--haveli .seat__avatar {
+    border-radius: 999px;
+}
+
+.skin--haveli .seat__back, .skin--haveli .discard__card {
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/haveli/back.png");
+}
+
+.skin--haveli .table__info, .skin--haveli .table__pill, .skin--haveli .quick-strip__chip, .skin--haveli .quick-strip__more, .skin--haveli .table__chat, .skin--haveli .me-badge {
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/haveli/pill.png");
+    color: #F7E6C4;
+}
+
+.skin--haveli .card--legal {
+    border-color: #F2C76B;
+}
+
+.skin--haveli .nav {
+    background-color: #1A0D07;
+    border-top-color: #F2C76B;
+}
+
+.skin--haveli .nav__tab--on .nav__glyph, .skin--haveli .nav__tab--on .nav__label {
+    color: #F6DC96;
+}
+
+.skin--haveli .toast {
+    color: #FFE4A8;
+    background-image: none;
+    padding: 0;
+    -unity-text-outline-width: 3px;
+    -unity-text-outline-color: #5A0E1C;
+    text-shadow: 0 8px 0 #1A0805;
+}
+
+/* ---- Rooftop ---- */
+
+.skin--dhaba {
+    --surface-ui: #141A4A;
+    --surface-panel: #161E52;
+    --surface-raised: #1E2A6E;
+    --accent-saffron: #FFD23F;
+    --accent-teal: #2EE6A0;
+    --ink-ivory: #FFFFFF;
+    --ink-muted: #B9C0F0;
+    --gold: #FFD23F;
+    color: #FFFFFF;
+}
+
+.skin--dhaba .screen, .skin--dhaba .table {
+    background-color: #141A4A;
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/dhaba/backdrop.png");
+}
+
+.skin--dhaba .table__zone > .rail {
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/dhaba/table.png");
+}
+
+.skin--dhaba .title, .skin--dhaba .code, .skin--dhaba .home__title, .skin--dhaba .seat__initial, .skin--dhaba .card__rank, .skin--dhaba .card__court, .skin--dhaba .podium__rank, .skin--dhaba .turn, .skin--dhaba .hero, .skin--dhaba .button--primary, .skin--dhaba .countdown, .skin--dhaba .results__title, .skin--dhaba .results__stamp, .skin--dhaba .coach__text, .skin--dhaba .daily__text, .skin--dhaba .toast {
+    -unity-font-definition: url("/Assets/_Project/Presentation/Theme/Fonts/LilitaOne.ttf");
+}
+
+.skin--dhaba .title, .skin--dhaba .home__title, .skin--dhaba .code, .skin--dhaba .results__title {
+    color: #FFD23F;
+    text-shadow: 4px 4px 0 #111111;
+}
+
+.skin--dhaba .button {
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/dhaba/btn-secondary.png");
+    color: #111111;
+}
+
+.skin--dhaba .button--secondary, .skin--dhaba .chip, .skin--dhaba .chip--share {
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/dhaba/btn-secondary.png");
+    color: #111111;
+}
+
+.skin--dhaba .button--primary, .skin--dhaba .chip--on, .skin--dhaba .turn--mine {
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/dhaba/btn-primary.png");
+    color: #111111;
+    text-shadow: 0 0 0 rgba(0, 0, 0, 0);
+}
+
+.skin--dhaba .button--quiet {
+    background-image: none;
+    color: #B9C0F0;
+}
+
+.skin--dhaba .panel {
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/dhaba/panel.png");
+}
+
+.skin--dhaba .seat__name {
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/dhaba/plate.png");
+    color: #111111;
+}
+
+.skin--dhaba .seat__frame {
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/dhaba/frame.png");
+}
+
+.skin--dhaba .seat__avatar {
+    border-radius: 34px;
+}
+
+.skin--dhaba .seat__back, .skin--dhaba .discard__card {
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/dhaba/back.png");
+}
+
+.skin--dhaba .table__info, .skin--dhaba .table__pill, .skin--dhaba .quick-strip__chip, .skin--dhaba .quick-strip__more, .skin--dhaba .table__chat, .skin--dhaba .me-badge {
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/dhaba/pill.png");
+    color: #FFFFFF;
+}
+
+.skin--dhaba .card--legal {
+    border-color: #FFD23F;
+}
+
+.skin--dhaba .nav {
+    background-color: #111111;
+    border-top-color: #FFD23F;
+}
+
+.skin--dhaba .nav__tab--on .nav__glyph, .skin--dhaba .nav__tab--on .nav__label {
+    color: #FFD23F;
+}
+
+.skin--dhaba .toast {
+    color: #FFD23F;
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/shared/stamp-burst.png");
+    -unity-slice-left: 0;
+    -unity-slice-right: 0;
+    -unity-slice-top: 0;
+    -unity-slice-bottom: 0;
+    -unity-background-scale-mode: stretch-to-fill;
+    padding: 110px 150px 120px 150px;
+    -unity-text-outline-width: 4px;
+    -unity-text-outline-color: #111111;
+    text-shadow: 5px 5px 0 #111111;
+}
+
+/* ---- Mehndi Night ---- */
+
+.skin--mehndi {
+    --surface-ui: #300520;
+    --surface-panel: #300520;
+    --surface-raised: #4A0A30;
+    --accent-saffron: #FFC233;
+    --accent-teal: #A5E7A9;
+    --ink-ivory: #FFF3E0;
+    --ink-muted: #F2B8D0;
+    --gold: #FFC233;
+    color: #FFF3E0;
+}
+
+.skin--mehndi .screen, .skin--mehndi .table {
+    background-color: #300520;
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/mehndi/backdrop.png");
+}
+
+.skin--mehndi .table__zone > .rail {
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/mehndi/table.png");
+}
+
+.skin--mehndi .title, .skin--mehndi .code, .skin--mehndi .home__title, .skin--mehndi .seat__initial, .skin--mehndi .card__rank, .skin--mehndi .card__court, .skin--mehndi .podium__rank, .skin--mehndi .turn, .skin--mehndi .hero, .skin--mehndi .button--primary, .skin--mehndi .countdown, .skin--mehndi .results__title, .skin--mehndi .results__stamp, .skin--mehndi .coach__text, .skin--mehndi .daily__text, .skin--mehndi .toast {
+    -unity-font-definition: url("/Assets/_Project/Presentation/Theme/Fonts/BalooBhaijaan2.ttf");
+}
+
+.skin--mehndi .title, .skin--mehndi .home__title, .skin--mehndi .code, .skin--mehndi .results__title {
+    color: #FFC233;
+    text-shadow: 0 4px 0 #4A0A30;
+}
+
+.skin--mehndi .button {
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/mehndi/btn-secondary.png");
+    color: #FFFFFF;
+}
+
+.skin--mehndi .button--secondary, .skin--mehndi .chip, .skin--mehndi .chip--share {
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/mehndi/btn-secondary.png");
+    color: #FFFFFF;
+}
+
+.skin--mehndi .button--primary, .skin--mehndi .chip--on, .skin--mehndi .turn--mine {
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/mehndi/btn-primary.png");
+    color: #4A0A30;
+    text-shadow: 0 1px 0 rgba(255, 245, 210, 0.5);
+}
+
+.skin--mehndi .button--quiet {
+    background-image: none;
+    color: #F2B8D0;
+}
+
+.skin--mehndi .panel {
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/mehndi/panel.png");
+}
+
+.skin--mehndi .seat__name {
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/mehndi/plate.png");
+    color: #FFF3E0;
+}
+
+.skin--mehndi .seat__frame {
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/mehndi/frame.png");
+}
+
+.skin--mehndi .seat__avatar {
+    border-radius: 999px;
+}
+
+.skin--mehndi .seat__back, .skin--mehndi .discard__card {
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/mehndi/back.png");
+}
+
+.skin--mehndi .table__info, .skin--mehndi .table__pill, .skin--mehndi .quick-strip__chip, .skin--mehndi .quick-strip__more, .skin--mehndi .table__chat, .skin--mehndi .me-badge {
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/mehndi/pill.png");
+    color: #FFF3E0;
+}
+
+.skin--mehndi .card--legal {
+    border-color: #FFC233;
+}
+
+.skin--mehndi .nav {
+    background-color: #300520;
+    border-top-color: #FFC233;
+}
+
+.skin--mehndi .nav__tab--on .nav__glyph, .skin--mehndi .nav__tab--on .nav__label {
+    color: #FFC233;
+}
+
+.skin--mehndi .toast {
+    color: #FFE082;
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/shared/stamp-oval.png");
+    -unity-slice-left: 0;
+    -unity-slice-right: 0;
+    -unity-slice-top: 0;
+    -unity-slice-bottom: 0;
+    -unity-background-scale-mode: stretch-to-fill;
+    padding: 60px 120px 70px 120px;
+    -unity-text-outline-width: 0;
+    text-shadow: 0 5px 0 #4A0A30;
+}
+
+/* ---- Chai Adda ---- */
+
+.skin--adda {
+    --surface-ui: #2A1608;
+    --surface-panel: #1E0E04;
+    --surface-raised: #2A1608;
+    --accent-saffron: #FFB547;
+    --accent-teal: #3FB8AD;
+    --ink-ivory: #FFF4E2;
+    --ink-muted: #D9B98E;
+    --gold: #FFB547;
+    color: #FFF4E2;
+}
+
+.skin--adda .screen, .skin--adda .table {
+    background-color: #2A1608;
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/adda/backdrop.png");
+}
+
+.skin--adda .table__zone > .rail {
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/adda/table.png");
+}
+
+.skin--adda .title, .skin--adda .code, .skin--adda .home__title, .skin--adda .seat__initial, .skin--adda .card__rank, .skin--adda .card__court, .skin--adda .podium__rank, .skin--adda .turn, .skin--adda .hero, .skin--adda .button--primary, .skin--adda .countdown, .skin--adda .results__title, .skin--adda .results__stamp, .skin--adda .coach__text, .skin--adda .daily__text, .skin--adda .toast {
+    -unity-font-definition: url("/Assets/_Project/Presentation/Theme/Fonts/Baloo2.ttf");
+}
+
+.skin--adda .title, .skin--adda .home__title, .skin--adda .code, .skin--adda .results__title {
+    color: #FFE0A0;
+    text-shadow: 0 4px 0 #3A1E0A;
+}
+
+.skin--adda .button {
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/adda/btn-secondary.png");
+    color: #FFFFFF;
+}
+
+.skin--adda .button--secondary, .skin--adda .chip, .skin--adda .chip--share {
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/adda/btn-secondary.png");
+    color: #FFFFFF;
+}
+
+.skin--adda .button--primary, .skin--adda .chip--on, .skin--adda .turn--mine {
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/adda/btn-primary.png");
+    color: #3A1E0A;
+    text-shadow: 0 1px 0 rgba(255, 245, 210, 0.5);
+}
+
+.skin--adda .button--quiet {
+    background-image: none;
+    color: #D9B98E;
+}
+
+.skin--adda .panel {
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/adda/panel.png");
+}
+
+.skin--adda .seat__name {
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/adda/plate.png");
+    color: #3A1E0A;
+}
+
+.skin--adda .seat__frame {
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/adda/frame.png");
+}
+
+.skin--adda .seat__avatar {
+    border-radius: 999px;
+}
+
+.skin--adda .seat__back, .skin--adda .discard__card {
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/adda/back.png");
+}
+
+.skin--adda .table__info, .skin--adda .table__pill, .skin--adda .quick-strip__chip, .skin--adda .quick-strip__more, .skin--adda .table__chat, .skin--adda .me-badge {
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/adda/pill.png");
+    color: #FFF4E2;
+}
+
+.skin--adda .card--legal {
+    border-color: #FFB547;
+}
+
+.skin--adda .nav {
+    background-color: #1E0E04;
+    border-top-color: #FFB547;
+}
+
+.skin--adda .nav__tab--on .nav__glyph, .skin--adda .nav__tab--on .nav__label {
+    color: #FFB547;
+}
+
+.skin--adda .toast {
+    color: #FFE0A0;
+    background-image: none;
+    padding: 0;
+    -unity-text-outline-width: 3px;
+    -unity-text-outline-color: #A8380E;
+    text-shadow: 0 8px 0 #1A0805;
+}
+
+/* Rozha One is a display serif: titles only; buttons stay in a bold sans so they read at a glance. */
+.skin--haveli .button--primary {
+    -unity-font-definition: url("/Assets/_Project/Presentation/Theme/Fonts/Nunito.ttf");
+    -unity-font-style: bold;
+}

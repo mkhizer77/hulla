@@ -228,12 +228,12 @@ namespace Hulla.Screens.Tests
         }
 
         /// <summary>A four-seat table in round with the player at seat 0 holding a few cards.</summary>
-        public static TableState InRound(long seq)
+        public static TableState InRound(long seq, int count = 4)
         {
-            var names = new[] { "Khizer", "Ayesha", "Bilal", "Sana" };
+            var names = new[] { "Khizer", "Ayesha", "Bilal", "Sana", "Hamza", "Noor" };
             var seats = new List<Seat>();
             var views = new List<SeatView>();
-            for (var i = 0; i < 4; i++)
+            for (var i = 0; i < count; i++)
             {
                 seats.Add(new Seat { SeatSeat = i, PlayerId = i == 0 ? "me" : "u" + i, DisplayName = names[i], Connected = true, Ready = true, Avatar = "a0" + (i + 1) });
                 views.Add(new SeatView { HandCount = 4, Hand = i == 0 ? new List<string> { "AS", "KS", "2H", "9D" } : null });
@@ -249,7 +249,7 @@ namespace Hulla.Screens.Tests
                 Seats = seats,
                 Spectators = new List<Spectator>(),
                 Rules = new RulesSelection { GameId = GameId.Thulla },
-                Round = new View { Phase = Phase.Play, SeatCount = 4, Seats = views, EscapeOrder = new List<long>(), Trick = new Trick { Plays = new List<Play> { new Play { Seat = 3, Card = "7S" } } }, TurnSeat = 0 },
+                Round = new View { Phase = Phase.Play, SeatCount = count, Seats = views, EscapeOrder = new List<long>(), Trick = new Trick { Plays = new List<Play> { new Play { Seat = 3, Card = "7S" } } }, TurnSeat = 0 },
             };
         }
     }

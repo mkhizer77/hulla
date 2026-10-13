@@ -41,6 +41,11 @@ namespace Hulla.Presentation.TableKit
             _avatar.Add(_timer);
             _initial.AddToClassList("seat__initial");
             _avatar.Add(_initial);
+
+            // The theme's frame round the face (docs/design/table-themes.md), over the picture.
+            var frame = new VisualElement { pickingMode = PickingMode.Ignore };
+            frame.AddToClassList("seat__frame");
+            _avatar.Add(frame);
             _you.AddToClassList("seat__you");
             _you.style.display = DisplayStyle.None;
             _avatar.Add(_you);
@@ -48,9 +53,15 @@ namespace Hulla.Presentation.TableKit
             _crown.style.display = DisplayStyle.None;
             _avatar.Add(_crown);
             _chip.AddToClassList("seat__chip");
-            var back = new VisualElement();
-            back.AddToClassList("seat__back");
-            _chip.Add(back);
+            // A small fan of card backs beside the face, the count on top: cards in hand at a glance.
+            for (var k = 1; k <= 3; k++)
+            {
+                var back = new VisualElement { pickingMode = PickingMode.Ignore };
+                back.AddToClassList("seat__back");
+                back.AddToClassList("seat__back--" + k);
+                _chip.Add(back);
+            }
+
             _count.AddToClassList("seat__count");
             _chip.Add(_count);
             _avatar.Add(_chip);
