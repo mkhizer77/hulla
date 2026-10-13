@@ -67,6 +67,13 @@ namespace Hulla.Application.Settings
             set => Set("rules_recap", value ? 1 : 0);
         }
 
+        /// <summary>Sound effects level, 0 to 100 (GDD 16.5); 0 is off.</summary>
+        public int SfxVolume
+        {
+            get => Math.Clamp(Get("sfx", 70), 0, 100);
+            set => Set("sfx", Math.Clamp(value, 0, 100));
+        }
+
         /// <summary>Null until the player has been asked (GDD 23.6).</summary>
         public bool? AnalyticsConsent
         {

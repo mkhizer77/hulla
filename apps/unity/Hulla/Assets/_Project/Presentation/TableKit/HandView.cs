@@ -6,14 +6,19 @@ namespace Hulla.Presentation.TableKit
 {
     /// <summary>
     /// The player's fanned hand (GDD 14.4): at least a 22 px strip per card, rows when it must wrap,
-    /// legal cards lit and the rest dimmed on your turn. Tap to raise, tap again or flick up to play;
-    /// <see cref="OneTap"/> plays on the first tap. Dragging along the fan magnifies the card under
-    /// the finger and releasing raises it. A lone legal card raises itself.
+    /// legal cards lit and the rest dimmed on your turn. Touching a card lifts it; tap to raise, tap
+    /// again or flick up to play; <see cref="OneTap"/> plays on the first tap. Dragging along the fan
+    /// magnifies the card under the finger and releasing raises it. A lone legal card raises itself
+    /// (the view plays it after a beat unless the hand is touched). Cards that just arrived stay lit
+    /// for a second after the re-sort.
     /// </summary>
     public sealed class HandView
     {
         public const float NormalCardWidth = 150f;
         public const float LargeCardWidth = 180f;
+
+        /// <summary>How long a picked-up card stays highlighted in the fan (GDD 14.6).</summary>
+        public const int NewCardMs = 1000;
 
         /// <summary>Space kept at each side of the hand for the tilted end cards.</summary>
         private const float ArcMargin = 36f;
@@ -21,6 +26,7 @@ namespace Hulla.Presentation.TableKit
 
         private readonly VisualElement _hand;
         private readonly List<CardElement> _cards = new List<CardElement>();
+        private readonly HashSet<string> _new = new HashSet<string>();
         private IReadOnlyList<string> _shown = Array.Empty<string>();
         private Func<string, bool> _legal = _ => false;
         private bool _myTurn;
@@ -50,7 +56,13 @@ namespace Hulla.Presentation.TableKit
         /// <summary>Raised when the player taps a card that can't be played now.</summary>
         public event Action<string>? Refused;
 
+        /// <summary>Raised on any touch of the hand; cancels the lone legal card's auto-play.</summary>
+        public event Action? Touched;
+
         public bool OneTap { get; set; }
+
+        /// <summary>The one legal card the hand raised on its own, or null.</summary>
+        public string? OnlyLegal { get; private set; }
 
         /// <summary>Must match the card width the theme gives (.card, or .cards--large .card).</summary>
         public float CardWidth { get; private set; } = NormalCardWidth;
@@ -65,11 +77,35 @@ namespace Hulla.Presentation.TableKit
             }
         }
 
+        /// <summary>Lights the cards that just joined the hand for a second (GDD 14.6).</summary>
+        public void MarkNew(IEnumerable<string> cards)
+        {
+            foreach (var card in cards)
+            {
+                _new.Add(card);
+            }
+
+            foreach (var element in _cards)
+            {
+                element.EnableInClassList("card--new", _new.Contains(element.Card));
+            }
+
+            _hand.schedule.Execute(() =>
+            {
+                _new.Clear();
+                foreach (var element in _cards)
+                {
+                    element.RemoveFromClassList("card--new");
+                }
+            }).StartingIn(NewCardMs);
+        }
+
         public void Show(IReadOnlyList<string> cards, Func<string, bool> legal, bool myTurn)
         {
             _shown = cards;
             _legal = legal;
             _myTurn = myTurn;
+            OnlyLegal = null;
             if (_raised != null && (!myTurn || !legal(_raised)))
             {
                 _raised = null;
@@ -91,6 +127,7 @@ namespace Hulla.Presentation.TableKit
                 if (count == 1)
                 {
                     _raised = only;
+                    OnlyLegal = only;
                 }
             }
 
@@ -121,6 +158,7 @@ namespace Hulla.Presentation.TableKit
                 element.EnableInClassList("card--legal", legal);
                 element.EnableInClassList("card--dim", _myTurn && !legal);
                 element.EnableInClassList("card--raised", card == _raised);
+                element.EnableInClassList("card--new", _new.Contains(card));
                 if (i % fan.PerRow != 0)
                 {
                     element.style.marginLeft = fan.Strip - CardWidth;
@@ -137,8 +175,11 @@ namespace Hulla.Presentation.TableKit
                 {
                     _pressed = element;
                     _pressY = evt.position.y;
+                    element.AddToClassList("card--pressed");
+                    Touched?.Invoke();
                 });
                 element.RegisterCallback<PointerUpEvent>(evt => OnUp(element, evt.position.y));
+                element.RegisterCallback<PointerLeaveEvent>(_ => element.RemoveFromClassList("card--pressed"));
                 _cards.Add(element);
                 row!.Add(element);
             }
@@ -149,6 +190,8 @@ namespace Hulla.Presentation.TableKit
             var card = element.Card;
             var flick = _pressed != null && _pressY - y > FlickPixels;
             var dragged = _pressed != null && _pressed != element;
+            _pressed?.RemoveFromClassList("card--pressed");
+            element.RemoveFromClassList("card--pressed");
             _pressed = null;
             Hover(null);
             if (!_myTurn || !_legal(card))

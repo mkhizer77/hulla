@@ -20,6 +20,8 @@ namespace Hulla.Application.Table
         private readonly List<long> _escapeOrder = new List<long>();
         private long[] _handCounts = new long[0];
         private bool[] _escaped = new bool[0];
+        private HashSet<char>[] _voids = new HashSet<char>[0];
+        private List<string>[] _pickedUp = new List<string>[0];
 
         public TableModel(string userId)
         {
@@ -107,6 +109,20 @@ namespace Hulla.Application.Table
 
         /// <summary>Who leads the open trick, or leads next when it is empty.</summary>
         public long? LeaderSeat => _trick.Count > 0 ? _trick[0].Seat : TurnSeat;
+
+        /// <summary>The table's card-memory assist setting (GDD 6.13, 14.7); on unless the host turned it off.</summary>
+        public bool CardMemoryAssist => Selection?.Settings?.CardMemoryAssist != false;
+
+        /// <summary>
+        /// The suits a seat is certainly void in (GDD 14.7): it played off-suit to a led suit and has not
+        /// picked up a card of that suit since. Public information, mirroring what an attentive player remembers.
+        /// </summary>
+        public IReadOnlyCollection<char> KnownVoids(int seat) =>
+            seat < _voids.Length && _voids[seat] != null ? _voids[seat] : (IReadOnlyCollection<char>)Array.Empty<char>();
+
+        /// <summary>The cards a seat has picked up this round, in order (GDD 14.7); the tray.</summary>
+        public IReadOnlyList<string> PickedUp(int seat) =>
+            seat < _pickedUp.Length && _pickedUp[seat] != null ? _pickedUp[seat] : (IReadOnlyList<string>)Array.Empty<string>();
 
         /// <summary>The suit the open trick asks for, or null when nobody has led yet.</summary>
         public char? LedSuit => _trick.Count > 0 ? _trick[0].Card[1] : (char?)null;
@@ -283,6 +299,7 @@ namespace Hulla.Application.Table
             var count = (int)round.SeatCount;
             _handCounts = new long[count];
             _escaped = new bool[count];
+            ResetMemory(count);
             _hand.Clear();
             for (var i = 0; i < count && i < round.Seats.Count; i++)
             {
@@ -323,6 +340,7 @@ namespace Hulla.Application.Table
             LastResult = null;
             _handCounts = start.HandCounts.ToArray();
             _escaped = new bool[_handCounts.Length];
+            ResetMemory(_handCounts.Length);
             _escapeOrder.Clear();
             _trick.Clear();
             _lastTrick.Clear();
@@ -380,6 +398,11 @@ namespace Hulla.Application.Table
                 _lastTrick.Clear();
                 LastPicker = null;
             }
+            else if (seat < _voids.Length && applied.Move.Card[1] != _trick[0].Card[1])
+            {
+                // Off-suit to the led suit: the seat has none of it (GDD 14.7).
+                _voids[seat].Add(_trick[0].Card[1]);
+            }
 
             _trick.Add(new TrickPlay(applied.Seat, applied.Move.Card));
 
@@ -396,6 +419,16 @@ namespace Hulla.Application.Table
             if (resolved.Picker == null)
             {
                 DiscardCount += resolved.Cards.Count;
+            }
+            else if (resolved.Picker < _voids.Length)
+            {
+                // Picked-up cards are public: the picker holds those suits again and the tray grows.
+                var picker = (int)resolved.Picker.Value;
+                foreach (var card in resolved.Cards)
+                {
+                    _voids[picker].Remove(card[1]);
+                    _pickedUp[picker].Add(card);
+                }
             }
 
             _handCounts = resolved.HandCounts.ToArray();
@@ -510,6 +543,17 @@ namespace Hulla.Application.Table
                     }
 
                     break;
+            }
+        }
+
+        private void ResetMemory(int count)
+        {
+            _voids = new HashSet<char>[count];
+            _pickedUp = new List<string>[count];
+            for (var i = 0; i < count; i++)
+            {
+                _voids[i] = new HashSet<char>();
+                _pickedUp[i] = new List<string>();
             }
         }
 

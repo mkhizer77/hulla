@@ -1181,3 +1181,158 @@
     white-space: normal;
     font-size: var(--font-small);
 }
+
+/* UX pass (docs/design/ux-ui-pass.md): the crown, the thulla flag, void chips, the pick-up flight, the
+   quick-chat strip, the timer on a seat, the reconnect pill, a pressed and a newly arrived card. */
+:root {
+    --accent-magenta: #D81B60;
+    --accent-mustard: #E0B000;
+    --suit-blue: #1E6FD9;
+    --suit-green: #2E7D32;
+}
+
+.seat__crown {
+    position: absolute;
+    top: -46px;
+    left: 0;
+    right: 0;
+    -unity-text-align: middle-center;
+    font-size: 44px;
+    color: var(--accent-saffron);
+    -unity-text-outline-width: 2px;
+    -unity-text-outline-color: #141518;
+}
+
+.seat--leader .seat__avatar {
+    border-color: var(--accent-saffron);
+}
+
+.seat__flag {
+    position: absolute;
+    top: 70px;
+    left: 0;
+    right: 0;
+    align-self: center;
+    padding: 2px 12px;
+    border-radius: 999px;
+    font-size: 22px;
+    -unity-font-style: bold;
+    -unity-text-align: middle-center;
+    background-color: var(--state-thulla);
+    color: var(--ink-ivory);
+}
+
+.seat__voids {
+    flex-direction: row;
+    justify-content: center;
+    margin-top: 4px;
+}
+
+.seat__void {
+    min-width: 34px;
+    margin: 0 2px;
+    padding: 0 6px;
+    border-radius: 8px;
+    font-size: 22px;
+    -unity-text-align: middle-center;
+    background-color: rgba(0, 0, 0, 0.45);
+    color: var(--ink-muted);
+}
+
+.seat__timer {
+    position: absolute;
+    left: -10px;
+    top: -10px;
+    right: -10px;
+    bottom: -10px;
+}
+
+.seat__chip--bump {
+    scale: 1.25 1.25;
+}
+
+.pile__slot--pickup {
+    transition-property: translate, scale, opacity;
+    transition-duration: 400ms;
+    transition-timing-function: ease-in-out-cubic;
+}
+
+.pile__slot--gone {
+    opacity: 0;
+    transition-property: opacity;
+    transition-duration: 300ms;
+}
+
+.quick-strip {
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    flex-shrink: 0;
+    margin: 0 0 var(--space-1) 0;
+}
+
+.quick-strip__chip {
+    margin: 4px;
+}
+
+.quick-strip__more {
+    min-width: var(--tap);
+    -unity-text-align: middle-center;
+}
+
+.hand--left .quick-strip {
+    flex-direction: row-reverse;
+}
+
+.card--pressed {
+    translate: 0 -12px;
+    scale: 1.05 1.05;
+}
+
+.card--new {
+    border-color: var(--accent-teal);
+    border-width: 4px;
+    border-bottom-color: var(--accent-teal);
+}
+
+.banner {
+    left: auto;
+    right: auto;
+    top: var(--space-2);
+    align-self: center;
+    min-width: 0;
+    padding: 8px 26px;
+    border-radius: 999px;
+    background-color: var(--accent-mustard);
+    color: #141518;
+    font-size: var(--font-small);
+}
+
+.settings__level {
+    flex-direction: row;
+    align-items: center;
+}
+
+.settings__level > .unity-label {
+    flex-grow: 1;
+    min-width: 0;
+}
+
+.settings__level .unity-base-slider__input {
+    min-width: 360px;
+}
+
+.settings__level .unity-base-slider__tracker {
+    height: 8px;
+    border-radius: 4px;
+    background-color: #2A2D33;
+}
+
+.settings__level .unity-base-slider__dragger {
+    width: 48px;
+    height: 48px;
+    margin-top: -22px;
+    border-radius: 24px;
+    border-width: 0;
+    background-color: var(--accent-saffron);
+}

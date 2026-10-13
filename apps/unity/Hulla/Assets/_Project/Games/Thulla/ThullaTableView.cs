@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using Hulla.Application.Services;
 using Hulla.Application.Table;
+using Hulla.Presentation.Audio;
 using Hulla.Presentation.TableKit;
 using Hulla.Presentation.Text;
 using Hulla.Presentation.Theme;
@@ -12,16 +13,28 @@ using UnityEngine.UIElements;
 namespace Hulla.Games.Thulla
 {
     /// <summary>
-    /// The Thulla table (GDD 14.3 to 14.5) on the UI Toolkit table kit: opponents on the seat arc,
-    /// the pile fanning in from each seat, the fanned hand with the server's legal cards lit and a
-    /// one-line reason on an illegal tap, the turn timer ring, take-hand, quick chat, the thulla
-    /// moment, the first-round rules recap and the results overlay with the rematch vote. It renders
-    /// from the model; the scheduler only decides how long each event holds the stage.
+    /// The Thulla table (GDD 14.3 to 14.7) on the UI Toolkit table kit: opponents on the seat arc with
+    /// the crown, timer rings and void chips, the pile fanning in from each seat and flying to the
+    /// picker, the fanned hand with the server's legal cards lit and a one-line reason on an illegal
+    /// tap, the turn timer with its amber and red phases, take-hand, the contextual quick-chat strip,
+    /// the thulla moment with its sounds and haptics, the first-round rules recap and the results
+    /// overlay with the rematch vote. It renders from the model; the scheduler only decides how long
+    /// each event holds the stage.
     /// </summary>
     public sealed class ThullaTableView : IEventPresenter, IDisposable
     {
         /// <summary>The thulla moment never delays the next turn by more than this (GDD 14.6).</summary>
         private const float ThullaMomentSeconds = 1.2f;
+
+        /// <summary>When the pile starts flying to the picker, and when the picker's sting plays (GDD 14.6).</summary>
+        private const float PickupStartSeconds = 0.45f;
+        private const float StingSeconds = 0.9f;
+
+        /// <summary>A pile this big gets the louder stamp and the big-pick-up phrases (GDD 14.6).</summary>
+        private const int BigPickup = 5;
+
+        /// <summary>A lone legal card plays itself this long after it rises (R44, OQ-036).</summary>
+        public const float SingleLegalSeconds = 0.7f;
 
         /// <summary>The first round opens with a short rules recap that a player can turn off (GDD 9.5).</summary>
         private const float RecapSeconds = 3f;
@@ -44,15 +57,19 @@ namespace Hulla.Games.Thulla
         private readonly ThullaResults _results;
         private readonly IChatCatalog _chat;
         private readonly VisualElement _chatPanel;
+        private readonly VisualElement _strip;
         private readonly Label _mySay;
         private readonly StampTimeline _stamp = new StampTimeline();
         private readonly VisualElement _felt;
+        private readonly SoundPlayer? _sounds;
+        private readonly bool _autoPlaySingle;
         private bool _reduceMotion;
         private bool _haptics;
         private readonly VisualElement _recap;
         private Action? _hideRecapForGood;
         private readonly List<(string Card, string Owner, long Seat)> _plays = new List<(string Card, string Owner, long Seat)>();
         private readonly List<string> _handCards = new List<string>();
+        private readonly HashSet<string> _handBefore = new HashSet<string>();
         private float _mySayLeft;
         private float _hintLeft;
         private bool _recapShown;
@@ -60,6 +77,20 @@ namespace Hulla.Games.Thulla
         private long _shownSeconds = -1;
         private long _turnStartMs;
         private long _turnDeadlineMs;
+        private long _turnLengthMs;
+        private long? _opponentTurnSeat;
+        private long _opponentTurnStartMs;
+        private float _pulseElapsed;
+        private long _tickedAt = -1;
+        private float _pickupLeft;
+        private float _stingLeft;
+        private bool _stampSounded;
+        private Rect? _pickupTarget;
+        private float _singleLegalLeft;
+        private string? _singleLegal;
+        private int _escapes;
+        private string _context = QuickStrip.Any;
+        private int _stripSeed;
         private bool _voted;
         private VisualElement _coach = null!;
         private Label _coachText = null!;
@@ -85,6 +116,8 @@ namespace Hulla.Games.Thulla
 
         /// <param name="oneTap">Play on the first tap instead of tap-to-raise (a setting, GDD 14.4).</param>
         /// <param name="hideRecapForGood">Remembers "don't show again"; null when the player already chose it.</param>
+        /// <param name="sounds">The table's sounds; null for silence (tests).</param>
+        /// <param name="autoPlaySingle">A lone legal card plays itself after a beat (R44); off in the tutorial.</param>
         public ThullaTableView(
             VisualElement root,
             TableClient client,
@@ -96,22 +129,32 @@ namespace Hulla.Games.Thulla
             bool oneTap = false,
             Action? openSettings = null,
             Action<string?>? openRules = null,
-            Func<string, Awaitable<Domain.Result<bool>>>? sendText = null)
+            Func<string, Awaitable<Domain.Result<bool>>>? sendText = null,
+            SoundPlayer? sounds = null,
+            bool autoPlaySingle = true)
         {
             _sendText = sendText;
             _client = client;
             _chat = chat;
             _nowMs = nowMs;
+            _sounds = sounds;
+            _autoPlaySingle = autoPlaySingle;
             _reduceMotion = reduceMotion;
             _hideRecapForGood = hideRecapForGood;
             _felt = root.Q<VisualElement>("felt");
             _ring = new OpponentRing(root.Q<VisualElement>("opponents"));
             _ring.Tapped += OnBadgeTapped;
             _pile = new PileView(root.Q<VisualElement>("pile")) { ReduceMotion = reduceMotion };
+            _pile.CardArrived += OnPickupCardArrived;
             _pileNote = root.Q<Label>("pile-note");
             _hand = new HandView(root.Q<VisualElement>("hand")) { OneTap = oneTap };
-            _hand.Played += card => _client.PlayCard(card);
+            _hand.Played += card =>
+            {
+                _singleLegal = null;
+                _client.PlayCard(card);
+            };
             _hand.Refused += ShowHint;
+            _hand.Touched += () => _singleLegal = null;
             _turn = root.Q<Label>("turn");
             _timer = new TimerRing();
             root.Q<VisualElement>("timer").Add(_timer);
@@ -147,6 +190,7 @@ namespace Hulla.Games.Thulla
             };
             _mySay = root.Q<Label>("my-say");
             _chatPanel = root.Q<VisualElement>("chat-panel");
+            _strip = root.Q<VisualElement>("quick-strip");
             var chatButton = root.Q<Button>("chat");
             chatButton.text = UiText.Chat;
             chatButton.clicked += () => SetChatOpen(_chatPanel.style.display != DisplayStyle.Flex);
@@ -154,6 +198,7 @@ namespace Hulla.Games.Thulla
             closeChat.text = UiText.Close;
             closeChat.clicked += () => SetChatOpen(false);
             BuildChatPanel(root.Q<VisualElement>("chat-phrases"), root.Q<VisualElement>("chat-emotes"));
+            RefreshStrip();
             _chatLog = root.Q<VisualElement>("chat-log");
             _chatStatus = root.Q<Label>("chat-status");
             _chatInput = root.Q<TextField>("chat-input");
@@ -181,11 +226,20 @@ namespace Hulla.Games.Thulla
             _coachButton.clicked += () => _coachAction?.Invoke();
             _client.Model.Changed += Refresh;
             _client.Model.Chat += OnChat;
+            _escapes = _client.Model.EscapeOrder.Count;
+            foreach (var card in _client.Model.Hand)
+            {
+                _handBefore.Add(card);
+            }
+
             Refresh();
         }
 
         /// <summary>Raised when the player taps a card that can't be played (the tutorial counts these).</summary>
         public event Action<string>? CardRefused;
+
+        /// <summary>The quick-chat context the strip is showing (`gave_thulla`, `any`…); read by tests.</summary>
+        public string StripContext => _context;
 
         /// <summary>The tutorial coach's bubble over the table; a button when the step waits for the player.</summary>
         public void ShowCoach(string text, string? button = null, Action? onButton = null)
@@ -233,6 +287,12 @@ namespace Hulla.Games.Thulla
             _sheetTitle.text = name;
             _sheetStatus.text = "";
             _sheetActions.Clear();
+            var tray = model.CardMemoryAssist ? model.PickedUp((int)seat) : Array.Empty<string>();
+            if (tray.Count > 0)
+            {
+                _sheetStatus.text = string.Format(UiText.PickedUpTray, name, string.Join(" ", TrayGlyphs(tray)));
+            }
+
             SheetButton(muted ? UiText.Unmute : UiText.Mute, () =>
             {
                 _setMuted(id, !muted);
@@ -256,6 +316,14 @@ namespace Hulla.Games.Thulla
 
             SheetButton(UiText.Close, () => _sheet.style.display = DisplayStyle.None);
             _sheet.style.display = DisplayStyle.Flex;
+        }
+
+        private static IEnumerable<string> TrayGlyphs(IReadOnlyList<string> cards)
+        {
+            foreach (var card in cards)
+            {
+                yield return (card[0] == 'T' ? "10" : card.Substring(0, 1)) + CardElement.SuitGlyph(card[1]);
+            }
         }
 
         private void ShowReasons(string id, string name)
@@ -310,21 +378,60 @@ namespace Hulla.Games.Thulla
 
         public float Present(ServerMessage message)
         {
+            var model = _client.Model;
             switch (message.Payload)
             {
                 case MoveApplied applied when applied.Thulla == true:
-                    ShowStamp(UiText.Thulla);
+                    // The slam (GDD 14.6): the shake and the slap now, the stamp 120 ms behind.
+                    _sounds?.Play(Sound.Slam);
+                    ShowStamp(model.Trick.Count >= BigPickup ? UiText.ThullaBig : UiText.Thulla, applied.Seat);
+                    if (applied.Seat == model.MySeat)
+                    {
+                        Buzz(Haptic.ThullaGiven);
+                        SetContext("gave_thulla");
+                    }
+                    else
+                    {
+                        _ring.BadgeFor(applied.Seat)?.Flag(UiText.ThullaFlag, ThullaMomentSeconds);
+                    }
+
                     _thullaJustPlayed = true;
                     ShowDueHint();
                     return ThullaMomentSeconds;
-                case TrickResolved resolved when resolved.ThullaBy != null:
-                    return ThullaMomentSeconds;
-                case TrickResolved _:
-                    return 0.6f;
-                case MoveApplied _:
+                case MoveApplied applied:
+                    _sounds?.Play(Sound.CardTap, SoundKit.TrickPitch(Math.Max(0, model.Trick.Count - 1)));
+                    if (applied.Seat == model.MySeat)
+                    {
+                        Buzz(Haptic.CardPlay);
+                    }
+
                     return 0.2f;
+                case TrickResolved resolved when resolved.Picker != null:
+                    // The pick-up: the pile flies to the picker, the count bumps as each card lands.
+                    var picker = resolved.Picker.Value;
+                    _pickupTarget = picker == model.MySeat ? HandTarget() : _ring.BadgeFor(picker)?.worldBound;
+                    _pickupLeft = PickupStartSeconds;
+                    _sounds?.Play(Sound.Pickup, resolved.Cards.Count >= BigPickup ? 0.8f : 1f);
+                    if (picker == model.MySeat)
+                    {
+                        Buzz(Haptic.ThullaReceived);
+                        _stingLeft = StingSeconds;
+                        SetContext("received_thulla");
+                    }
+                    else if (resolved.Cards.Count >= BigPickup)
+                    {
+                        SetContext("big_pickup");
+                    }
+
+                    return resolved.ThullaBy != null ? ThullaMomentSeconds : 0.8f;
+                case TrickResolved _:
+                    _pile.Discard();
+                    return 0.6f;
                 case RoundStart _:
                     _voted = false;
+                    _escapes = 0;
+                    _sounds?.Play(Sound.Deal);
+                    SetContext(QuickStrip.Any);
                     if (!_recapShown && _hideRecapForGood != null)
                     {
                         _recapShown = true;
@@ -333,12 +440,24 @@ namespace Hulla.Games.Thulla
                     }
 
                     return 0.4f;
+                case RoundEnd end:
+                    if (end.BhabhiSeat == model.MySeat)
+                    {
+                        Buzz(Haptic.Bhabhi);
+                        SetContext("round_end_loser");
+                    }
+                    else
+                    {
+                        SetContext("round_end");
+                    }
+
+                    return 0f;
                 default:
                     return 0f;
             }
         }
 
-        /// <summary>Per frame: bubbles, the recap, the stamp and the turn timer, redrawn only when they change.</summary>
+        /// <summary>Per frame: bubbles, the recap, the stamp, the pick-up flight, the strip and the turn timers.</summary>
         public void Tick(float deltaSeconds)
         {
             foreach (var badge in _ring.Badges)
@@ -356,22 +475,88 @@ namespace Hulla.Games.Thulla
                 ApplyStamp();
             }
 
+            if (_pickupLeft > 0f)
+            {
+                _pickupLeft -= deltaSeconds;
+                if (_pickupLeft <= 0f && _pickupTarget != null)
+                {
+                    _pile.FlyTo(_pickupTarget.Value);
+                    _pickupTarget = null;
+                }
+            }
+
+            if (_stingLeft > 0f)
+            {
+                _stingLeft -= deltaSeconds;
+                if (_stingLeft <= 0f)
+                {
+                    _sounds?.Play(Sound.Sting);
+                }
+            }
+
+            if (_singleLegal != null)
+            {
+                _singleLegalLeft -= deltaSeconds;
+                if (_singleLegalLeft <= 0f)
+                {
+                    var card = _singleLegal;
+                    _singleLegal = null;
+                    if (_client.Model.MyTurn && _client.Model.IsLegal(card))
+                    {
+                        _client.PlayCard(card);
+                    }
+                }
+            }
+
+            TickTimers(deltaSeconds);
+        }
+
+        private void TickTimers(float deltaSeconds)
+        {
             var model = _client.Model;
-            if (!model.MyTurn)
+            _pulseElapsed += deltaSeconds;
+            if (model.MyTurn)
+            {
+                var now = _nowMs();
+                var leftMs = Math.Max(0, _turnDeadlineMs - now);
+                var total = Math.Max(1, _turnDeadlineMs - _turnStartMs);
+                var secondsLeft = leftMs / 1000f;
+                _timer.Show((float)leftMs / total, secondsLeft);
+                var pulse = TimerPhase.Pulse(secondsLeft, _pulseElapsed, _reduceMotion);
+                _timer.style.scale = new Scale(new Vector2(pulse, pulse));
+                var seconds = (leftMs + 999) / 1000;
+                if (seconds != _shownSeconds)
+                {
+                    _shownSeconds = seconds;
+                    _turn.text = seconds <= 10 ? UiText.YourTurn + " · " + seconds + "s" : UiText.YourTurn;
+                    if (TimerPhase.TickAt(seconds) && _tickedAt != seconds)
+                    {
+                        _tickedAt = seconds;
+                        _sounds?.Play(Sound.Tick, seconds == 2 ? 1.3f : 1f);
+                    }
+                }
+
+                return;
+            }
+
+            // Opponents' deadlines are theirs alone (turn_start goes to the acting seat), so the ring on
+            // their badge drains over the length of this player's last turn: a close estimate at one table.
+            if (!model.InRound || model.TurnSeat == null || _turnLengthMs <= 0)
             {
                 return;
             }
 
-            var now = _nowMs();
-            var leftMs = Math.Max(0, _turnDeadlineMs - now);
-            var total = Math.Max(1, _turnDeadlineMs - _turnStartMs);
-            _timer.Show((float)leftMs / total, leftMs / 1000f);
-            var seconds = (leftMs + 999) / 1000;
-            if (seconds != _shownSeconds)
+            var badge = _ring.BadgeFor(model.TurnSeat.Value);
+            if (badge == null)
             {
-                _shownSeconds = seconds;
-                _turn.text = UiText.YourTurn + " · " + seconds + "s";
+                return;
             }
+
+            var elapsed = _nowMs() - _opponentTurnStartMs;
+            var left = Math.Max(0, _turnLengthMs - elapsed);
+            var fraction = (float)left / _turnLengthMs;
+            var theirSeconds = left / 1000f;
+            badge.ShowTimer(fraction, theirSeconds, TimerPhase.Pulse(theirSeconds, _pulseElapsed, _reduceMotion));
         }
 
         /// <summary>Applies the play settings live; the visual ones arrive as theme classes on the shell.</summary>
@@ -389,6 +574,14 @@ namespace Hulla.Games.Thulla
         {
             _client.Model.Changed -= Refresh;
             _client.Model.Chat -= OnChat;
+        }
+
+        private void Buzz(Haptic kind)
+        {
+            if (_haptics)
+            {
+                Haptics.Play(kind);
+            }
         }
 
         private static void Countdown(ref float left, float deltaSeconds, VisualElement element)
@@ -451,6 +644,40 @@ namespace Hulla.Games.Thulla
                 button.AddToClassList("chip--emote");
                 emotes.Add(button);
             }
+        }
+
+        /// <summary>The strip follows the last beat at the table (design 7.6); each change rotates the picks.</summary>
+        private void SetContext(string context)
+        {
+            _context = context;
+            _stripSeed++;
+            RefreshStrip();
+        }
+
+        private void RefreshStrip()
+        {
+            _strip.Clear();
+            var picks = QuickStrip.Pick(_chat.Phrases, _context, _stripSeed);
+            if (picks.Count == 0)
+            {
+                _strip.style.display = DisplayStyle.None;
+                return;
+            }
+
+            _strip.style.display = DisplayStyle.Flex;
+            foreach (var phrase in picks)
+            {
+                var id = phrase.Id;
+                var chip = new Button(() => _client.SendQuickChat(id)) { text = phrase.Text, tooltip = phrase.Translation };
+                chip.AddToClassList("chip");
+                chip.AddToClassList("quick-strip__chip");
+                _strip.Add(chip);
+            }
+
+            var more = new Button(() => SetChatOpen(true)) { text = UiText.More };
+            more.AddToClassList("chip");
+            more.AddToClassList("quick-strip__more");
+            _strip.Add(more);
         }
 
         private void Say(Action send)
@@ -547,19 +774,51 @@ namespace Hulla.Games.Thulla
             Refresh();
         }
 
-        private void ShowStamp(string text)
+        /// <summary>The stamp lands at one of three angles, chosen by the seat so a redraw agrees (GDD 14.6).</summary>
+        private void ShowStamp(string text, long seat)
         {
             _toast.text = text;
+            _toast.style.rotate = new Rotate(StampAngle(seat));
+            _stampSounded = false;
             _stamp.Play(_reduceMotion);
             ApplyStamp();
         }
 
+        public static float StampAngle(long seat) => (seat % 3) switch { 0 => -7f, 1 => 4f, _ => -2f };
+
         private void ApplyStamp()
         {
-            _toast.style.display = _stamp.Active ? DisplayStyle.Flex : DisplayStyle.None;
+            _toast.style.display = _stamp.Visible ? DisplayStyle.Flex : DisplayStyle.None;
             _toast.style.opacity = _stamp.Opacity;
             _toast.style.scale = new Scale(new Vector2(_stamp.Scale, _stamp.Scale));
             _felt.style.translate = new Translate(_stamp.ShakeX, 0f);
+            if (_stamp.Visible && !_stampSounded)
+            {
+                // The stamp's own sound lands with it, 120 ms after the slap (GDD 14.6).
+                _stampSounded = true;
+                _sounds?.Play(Sound.Stamp);
+            }
+        }
+
+        private void OnPickupCardArrived()
+        {
+            var picker = _client.Model.LastPicker;
+            if (picker == null)
+            {
+                return;
+            }
+
+            if (picker != _client.Model.MySeat)
+            {
+                _ring.BadgeFor(picker.Value)?.Bump();
+            }
+        }
+
+        /// <summary>Where picked-up cards fly when they are mine: the top of the hand.</summary>
+        private Rect HandTarget()
+        {
+            var bounds = _mySay.parent.worldBound;
+            return new Rect(bounds.center.x - 1f, bounds.yMax - 1f, 2f, 2f);
         }
 
         /// <summary>Your equipped table surface colours the felt (GDD 12.11) until its art lands.</summary>
@@ -589,6 +848,7 @@ namespace Hulla.Games.Thulla
                 ShowDueHint();
             }
 
+            NoticeEscapes();
             RefreshInfo();
             RefreshSurface();
             RefreshOpponents();
@@ -596,6 +856,35 @@ namespace Hulla.Games.Thulla
             RefreshHand();
             RefreshTurn();
             RefreshResults();
+        }
+
+        /// <summary>An escape (GDD 14.5, 16.2): a chime, a success haptic for the escapee, and the strip follows.</summary>
+        private void NoticeEscapes()
+        {
+            var model = _client.Model;
+            if (model.EscapeOrder.Count <= _escapes)
+            {
+                _escapes = model.EscapeOrder.Count;
+                return;
+            }
+
+            var mine = false;
+            for (var i = _escapes; i < model.EscapeOrder.Count; i++)
+            {
+                mine |= model.EscapeOrder[i] == model.MySeat;
+            }
+
+            _escapes = model.EscapeOrder.Count;
+            _sounds?.Play(Sound.Escape);
+            if (mine)
+            {
+                Buzz(Haptic.Escape);
+                SetContext("escaped");
+            }
+            else
+            {
+                SetContext("escaped_other");
+            }
         }
 
         private void RefreshInfo()
@@ -625,6 +914,12 @@ namespace Hulla.Games.Thulla
             _ring.Spectating = model.Spectating;
             _ring.Layout(count, model.MySeat ?? 0);
             var shown = model.Spectating ? count : count - 1;
+            if (model.TurnSeat != _opponentTurnSeat)
+            {
+                _opponentTurnSeat = model.TurnSeat;
+                _opponentTurnStartMs = _nowMs();
+            }
+
             for (var i = 0; i < shown && i < _ring.Badges.Count; i++)
             {
                 var seat = _ring.SeatAt(i);
@@ -635,10 +930,10 @@ namespace Hulla.Games.Thulla
                         ? UiText.SeatAwayAutoPlay
                     : info.AutoPlay
                         ? UiText.SeatAutoPlay
-                        : !model.InRound ? ""
-                        : model.TurnSeat == seat ? UiText.Playing
-                        : model.LeaderSeat == seat ? UiText.Lead : "";
-                _ring.Badges[i].Show(NameOf(seat), model.HandCount((int)seat), model.TurnSeat == seat && model.InRound, state);
+                        : "";
+                var leader = model.InRound && model.LeaderSeat == seat && !model.IsEscaped((int)seat);
+                var voids = model.InRound && model.CardMemoryAssist ? model.KnownVoids((int)seat) : null;
+                _ring.Badges[i].Show(NameOf(seat), model.HandCount((int)seat), model.TurnSeat == seat && model.InRound, state, leader, voids);
             }
         }
 
@@ -662,8 +957,7 @@ namespace Hulla.Games.Thulla
         {
             if (seat == _client.Model.MySeat)
             {
-                var bounds = _mySay.parent.worldBound;
-                return new Rect(bounds.center.x - 1f, bounds.yMax - 1f, 2f, 2f);
+                return HandTarget();
             }
 
             return _ring.BadgeFor(seat)?.worldBound;
@@ -673,15 +967,42 @@ namespace Hulla.Games.Thulla
         {
             var model = _client.Model;
             _handCards.Clear();
+            var arrived = new List<string>();
             foreach (var card in model.Hand)
             {
                 if (card != model.PendingCard)
                 {
                     _handCards.Add(card);
                 }
+
+                if (!_handBefore.Contains(card))
+                {
+                    arrived.Add(card);
+                }
+            }
+
+            _handBefore.Clear();
+            foreach (var card in model.Hand)
+            {
+                _handBefore.Add(card);
             }
 
             _hand.Show(_handCards, model.IsLegal, model.MyTurn);
+            if (arrived.Count > 1)
+            {
+                // More than one card at once is a pick-up or a hand-take; a single draw is not lit.
+                _hand.MarkNew(arrived);
+            }
+
+            if (_autoPlaySingle && _hand.OnlyLegal != null && _hand.OnlyLegal != _singleLegal)
+            {
+                _singleLegal = _hand.OnlyLegal;
+                _singleLegalLeft = SingleLegalSeconds;
+            }
+            else if (_hand.OnlyLegal == null)
+            {
+                _singleLegal = null;
+            }
         }
 
         private void RefreshTurn()
@@ -694,13 +1015,12 @@ namespace Hulla.Games.Thulla
                 {
                     _turnDeadlineMs = model.DeadlineTs;
                     _turnStartMs = _nowMs();
-                    if (_haptics)
-                    {
-                        HapticTick.Play();
-                    }
+                    _turnLengthMs = Math.Max(0, _turnDeadlineMs - _turnStartMs);
+                    _tickedAt = -1;
+                    Buzz(Haptic.TurnStart);
                 }
 
-                _turn.text = UiText.YourTurn;
+                _turn.text = (model.LeaderSeat == model.MySeat ? UiText.Crown + " " : "") + UiText.YourTurn;
                 _turn.AddToClassList("turn--mine");
                 _timer.style.display = DisplayStyle.Flex;
             }
@@ -709,6 +1029,11 @@ namespace Hulla.Games.Thulla
                 _turn.text = !model.InRound || model.TurnSeat == null
                     ? ""
                     : model.TurnSeat == model.MySeat ? UiText.YourTurn : string.Format(UiText.TurnOf, NameOf(model.TurnSeat.Value));
+                if (model.InRound && model.LeaderSeat == model.MySeat && _turn.text.Length > 0)
+                {
+                    _turn.text = UiText.Crown + " " + _turn.text;
+                }
+
                 _turn.RemoveFromClassList("turn--mine");
                 _timer.style.display = DisplayStyle.None;
             }
