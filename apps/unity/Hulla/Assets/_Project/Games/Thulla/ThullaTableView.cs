@@ -4,6 +4,7 @@ using Hulla.Application.Services;
 using Hulla.Application.Table;
 using Hulla.Presentation.TableKit;
 using Hulla.Presentation.Text;
+using Hulla.Presentation.Theme;
 using Hulla.Protocol;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -561,6 +562,15 @@ namespace Hulla.Games.Thulla
             _felt.style.translate = new Translate(_stamp.ShakeX, 0f);
         }
 
+        /// <summary>Your equipped table surface colours the felt (GDD 12.11) until its art lands.</summary>
+        private void RefreshSurface()
+        {
+            var model = _client.Model;
+            var mine = model.MySeat is long seat && seat < model.Seats.Count ? model.Seats[(int)seat].TableSurface : null;
+            var colour = CosmeticLook.TableColour(mine);
+            _felt.style.backgroundColor = colour is UnityEngine.Color c ? new StyleColor(c) : new StyleColor(StyleKeyword.Null);
+        }
+
         private string NameOf(long seat)
         {
             var model = _client.Model;
@@ -580,6 +590,7 @@ namespace Hulla.Games.Thulla
             }
 
             RefreshInfo();
+            RefreshSurface();
             RefreshOpponents();
             RefreshPile();
             RefreshHand();

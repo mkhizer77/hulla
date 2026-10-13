@@ -17,6 +17,7 @@ using Hulla.Presentation.Screens.Profile;
 using Hulla.Presentation.Screens.QuickPlay;
 using Hulla.Presentation.Screens.Rulebook;
 using Hulla.Presentation.Screens.Settings;
+using Hulla.Presentation.Screens.Shop;
 using Hulla.Presentation.Share;
 using Hulla.Protocol;
 using NUnit.Framework;
@@ -311,6 +312,27 @@ namespace Hulla.Screens.Tests
             CollectionAssert.Contains(labels, "Friends");
             CollectionAssert.Contains(labels, "37/1,000");
             CollectionAssert.Contains(labels, "Give 1000 thullas · 60 gems + the title \"Thulla baaz\"");
+        }
+
+        [UnityTest]
+        public IEnumerator ShopShowsTheSpotlightPricesAndEquip()
+        {
+            VisualElement root = null!;
+            var model = new ShopViewModel(new Fakes.Shop());
+            yield return Open(Catalog.Shop, r =>
+            {
+                root = r;
+                new ShopView(r, model, () => { }, _ => { }, _ => { });
+                model.SetBalances(1200, 50);
+                _ = model.RefreshAsync(default);
+            });
+            Assert.AreEqual("1,200 coins · 50 gems", root.Q<Label>("balances").text);
+            var texts = root.Q<VisualElement>("list").Query<TextElement>().ToList().Select(l => l.text).ToList();
+            CollectionAssert.Contains(texts, "This week");
+            CollectionAssert.Contains(texts, "Marble");
+            CollectionAssert.Contains(texts, "Equipped");
+            CollectionAssert.Contains(texts, "1,000 coins");
+            CollectionAssert.Contains(texts, "Equip");
         }
 
         [UnityTest]

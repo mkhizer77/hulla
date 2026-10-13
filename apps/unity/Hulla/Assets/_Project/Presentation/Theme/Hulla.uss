@@ -975,3 +975,40 @@
 .achievement--locked {
     opacity: 0.6;
 }
+
+.shop__balances {
+    color: var(--accent-saffron);
+}
+
+.shop__tabs {
+    flex-shrink: 0;
+    margin-bottom: var(--space-1);
+}
+
+.shop__chips {
+    flex-wrap: nowrap;
+}
+
+.shop__chips .chip {
+    flex-shrink: 0;
+}
+
+.shop__swatch {
+    width: 72px;
+    height: 96px;
+    border-radius: 10px;
+    margin-right: var(--space-2);
+    border-width: 4px;
+    border-color: var(--card-face);
+}
+
+.shop__swatch--table {
+    width: 120px;
+    height: 72px;
+    border-radius: 36px;
+    border-color: #5D4037;
+}
+
+.rarity--rare { color: #4FC3F7; }
+.rarity--epic { color: #BA68C8; }
+.rarity--legendary { color: var(--accent-saffron); }

@@ -12,6 +12,7 @@ using Hulla.Presentation.Screens.Friends;
 using Hulla.Presentation.Screens.Lobby;
 using Hulla.Presentation.Screens.Achievements;
 using Hulla.Presentation.Screens.Leaderboard;
+using Hulla.Presentation.Screens.Shop;
 using Hulla.Presentation.Screens.Missions;
 using Hulla.Presentation.Screens.Profile;
 using Hulla.Presentation.Screens.QuickPlay;
@@ -149,7 +150,7 @@ namespace Hulla.Composition
             _screen = Screen.Home;
             var root = _shell.Show(_shell.Catalog.Home);
             var server = Debug.isDebugBuild ? _app.Config.HostAndPort : null;
-            _view = new HomeView(root, _app.Home, server, OnCreate, OnJoin, OnQuickPlay, OpenSettings, OnFriends, OnProfile, _app.HomeFriends, () => StartTutorial(false), TutorialText.HowToPlay, OnWatch, _app.Progress, OnMissions, OnLeaderboard);
+            _view = new HomeView(root, _app.Home, server, OnCreate, OnJoin, OnQuickPlay, OpenSettings, OnFriends, OnProfile, _app.HomeFriends, () => StartTutorial(false), TutorialText.HowToPlay, OnWatch, _app.Progress, OnMissions, OnLeaderboard, OnShop);
             _daily = new DailyRewardCard(UnityEngine.UIElements.UQueryExtensions.Q<UnityEngine.UIElements.VisualElement>(root, "daily"), _app.DailyReward, ClaimDailyReward);
             _app.HomeFriends.Active = _app.Sessions.Current != null;
             _app.HomeFriends.RefreshSoon();
@@ -233,6 +234,28 @@ namespace Hulla.Composition
                 entry => _ = friends.ToggleFavouriteAsync(entry, lifetime),
                 id => _ = friends.UnblockAsync(id, lifetime)));
             await friends.RefreshAsync(lifetime);
+        }
+
+        private async void OnShop(string name, string? server)
+        {
+            if (!await SignedInAsync(name, server))
+            {
+                return;
+            }
+
+            CloseView();
+            _screen = Screen.Home;
+            var shop = _app.Shop;
+            _view = new ShopView(_shell.Show(_shell.Catalog.Shop), shop, ShowHome, item =>
+                _shell.ShowDialog(string.Format(UiText.BuyQuestion, ItemText.Name(item.Id), ShopView.Price(item)), UiText.Buy, UiText.Cancel, () => _ = shop.BuyAsync(item.Id, _app.Lifetime), () => { }),
+                item => _ = shop.EquipAsync(item.Id, _app.Lifetime));
+            await _app.Progress.RefreshAsync(LocalOffsetMinutes(), _app.Lifetime);
+            if (_app.Progress.Info != null)
+            {
+                shop.SetBalances(_app.Progress.Coins, _app.Progress.Gems);
+            }
+
+            await shop.RefreshAsync(_app.Lifetime);
         }
 
         private async void OnLeaderboard(string name, string? server)

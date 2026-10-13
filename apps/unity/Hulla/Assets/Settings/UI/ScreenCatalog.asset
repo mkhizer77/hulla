@@ -23,3 +23,4 @@ MonoBehaviour:
   Missions: {fileID: 9197481963319205126, guid: ad711fd5b15dc4b3abfb397a6d0038d0, type: 3}
   Leaderboard: {fileID: 9197481963319205126, guid: 4f3c2a9e8b1d4c6fa0e5d7b9c2a1e3f4, type: 3}
   Achievements: {fileID: 9197481963319205126, guid: 9a7e5c3b1f2d4e8a9c6b0d4f2e1a7c5b, type: 3}
+  Shop: {fileID: 9197481963319205126, guid: 6b2d8e4f0a3c4b7d9e1f5a2c8b6d0e3f, type: 3}

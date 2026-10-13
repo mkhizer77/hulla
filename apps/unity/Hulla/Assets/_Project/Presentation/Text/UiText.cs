@@ -165,6 +165,21 @@ namespace Hulla.Presentation.Text
         public const string Missions = "Missions";
         public const string Leaderboard = "Leaderboard";
         public const string Achievements = "Achievements";
+        public const string Shop = "Shop";
+        public const string Spotlight = "This week";
+        public const string Equip = "Equip";
+        public const string Equipped = "Equipped";
+        public const string Free = "Free";
+        public const string PriceCoins = "{0:N0} coins";
+        public const string PriceGems = "{0:N0} gems";
+
+        /// <summary>{0} coins, {1} gems.</summary>
+        public const string Balances = "{0:N0} coins · {1:N0} gems";
+
+        /// <summary>{0} item name, {1} price.</summary>
+        public const string BuyQuestion = "Buy {0} for {1}?";
+
+        public const string Buy = "Buy";
 
         /// <summary>{0} unlocked, {1} total.</summary>
         public const string AchievementsCount = "{0} of {1} unlocked";
@@ -321,6 +336,12 @@ namespace Hulla.Presentation.Text
                     return "This account can't play right now. Contact support if you think that's wrong.";
                 case "auth.device_limit":
                     return "You're at this table on another device. Close it there first.";
+                case "economy.insufficient_funds":
+                    return "Not enough coins or gems for that.";
+                case "economy.item_owned":
+                    return "You already own that.";
+                case "economy.item_unknown":
+                    return "That item isn't in the shop any more.";
                 case "auth.update_required":
                 case "table.unsupported_version":
                     return "Please update Hulla to keep playing.";
