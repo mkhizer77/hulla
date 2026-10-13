@@ -22,6 +22,7 @@ using Hulla.Presentation.Screens.Settings;
 using Hulla.Presentation.Share;
 using Hulla.Presentation.Theme;
 using Hulla.Application.Settings;
+using Hulla.Application.Social;
 using Hulla.Presentation.Text;
 using UnityEngine;
 
@@ -63,6 +64,9 @@ namespace Hulla.Composition
         private readonly BigThullaOffer _bigThulla = new BigThullaOffer();
         private DailyRewardCard? _daily;
         private AnalyticsTracker? _tracker;
+
+        /// <summary>When the invite link being joined arrived, for invite_seated.</summary>
+        private float? _inviteLinkAt;
         private ScriptedTableGateway? _tutorial;
         private TableClient? _tutorialClient;
 
@@ -79,6 +83,7 @@ namespace Hulla.Composition
             _app.TableChat.Received += OnText;
             _app.Tables.Disconnected += OnDisconnected;
             _app.Sessions.Notified += OnNotice;
+            _app.Links.InviteOpened += OnInviteLink;
         }
 
         private async Awaitable<IReadOnlyList<Hulla.Application.Social.FriendEntry>> FriendsToInviteAsync()
@@ -133,6 +138,35 @@ namespace Hulla.Composition
             _shell.ShowDialog(text, UiText.JoinTable, UiText.NotNow, () => OnJoin(_app.Home.LastName, code, null), () => { });
         }
 
+        /// <summary>
+        /// An invite link (GDD 10.5): it joins the table straight away, unless the player is already at
+        /// one; then it only names the waiting table, so a round isn't interrupted.
+        /// </summary>
+        private async void OnInviteLink(string code, float receivedAt)
+        {
+            _app.Analytics.Track(AnalyticsEvents.InviteOpened(Time.realtimeSinceStartup - receivedAt));
+            if (_screen == Screen.Table || _screen == Screen.Lobby)
+            {
+                var text = string.Format(UiText.InviteLinkWhileSeated, code);
+                _shell.SetBanner(text);
+                await Awaitable.WaitForSecondsAsync(5f);
+                if (UnityEngine.UIElements.UQueryExtensions.Q<UnityEngine.UIElements.Label>(_shell.Root, "shell-banner")?.text == text)
+                {
+                    _shell.SetBanner(null);
+                }
+
+                return;
+            }
+
+            if (_screen == Screen.QuickPlay)
+            {
+                await _app.QuickPlay.CancelAsync();
+            }
+
+            _inviteLinkAt = receivedAt;
+            OnJoin(_app.Home.LastName, code, null);
+        }
+
         /// <summary>An unlock shows briefly at the top of whatever screen is open (GDD 12.7).</summary>
         private async void OnNotice(string subject, string content)
         {
@@ -162,7 +196,8 @@ namespace Hulla.Composition
         public async void Start()
         {
             ApplySettings();
-            _app.Analytics.Track(AnalyticsEvents.AppOpen(true, "none"));
+            var invited = _app.Links.HasPending;
+            _app.Analytics.Track(AnalyticsEvents.AppOpen(true, invited ? "invite" : "none"));
             _app.Home.LastName = PlayerPrefs.GetString(NamePrefKey, "");
             var returning = _app.Home.LastName.Length > 0;
             if (!returning)
@@ -171,18 +206,22 @@ namespace Hulla.Composition
             }
 
             ShowHome();
-            if (PlayerPrefs.GetInt(TutorialSeenPrefKey, 0) == 0 && !returning)
+            // A player who came in on an invite goes to the table first; the tutorial and the consent
+            // question wait for the next launch.
+            if (!invited && PlayerPrefs.GetInt(TutorialSeenPrefKey, 0) == 0 && !returning)
             {
                 _shell.ShowDialog(TutorialText.Gate, TutorialText.GateYes, TutorialText.GateNo, OfferRefresher, () => StartTutorial(false));
             }
-            else if (_app.Settings.AnalyticsConsent == null)
+            else if (!invited && _app.Settings.AnalyticsConsent == null)
             {
                 AskConsent();
             }
-            if (returning)
+            // Joining signs in, so a quiet sign-in alongside it would race.
+            if (returning && !invited)
             {
                 SignInQuietly();
             }
+
             try
             {
                 await _app.Chat.LoadAsync(_app.Lifetime);
@@ -190,7 +229,10 @@ namespace Hulla.Composition
             }
             catch (OperationCanceledException)
             {
+                return;
             }
+
+            _app.Links.Ready();
         }
 
         public void Dispose()
@@ -198,6 +240,7 @@ namespace Hulla.Composition
             _shell.Ticked -= Tick;
             _app.Settings.Changed -= ApplySettings;
             _app.QuickPlay.Found -= OnQuickPlayFound;
+            _app.Links.InviteOpened -= OnInviteLink;
             _app.TableChat.Received -= OnText;
             _app.Tables.Disconnected -= OnDisconnected;
             CloseView();
@@ -470,6 +513,8 @@ namespace Hulla.Composition
 
         private async Awaitable EnterAsync(Result<TableTicket> ticket)
         {
+            var invitedAt = _inviteLinkAt;
+            _inviteLinkAt = null;
             if (ticket.IsOk)
             {
                 RememberName(_app.Home.LastName);
@@ -498,6 +543,11 @@ namespace Hulla.Composition
             }
 
             FollowModel();
+            if (invitedAt != null)
+            {
+                _app.Analytics.Track(AnalyticsEvents.InviteSeated(Time.realtimeSinceStartup - invitedAt.Value));
+            }
+
             await _app.TableChat.JoinAsync(ticket.Value.MatchId, table.Lifetime);
             await _app.Mutes.RefreshAsync(table.Lifetime);
         }
@@ -719,7 +769,7 @@ namespace Hulla.Composition
 
         private bool ShareCode(string code)
         {
-            var shared = _app.ShareSheet.Share(UiText.ShareTitle, string.Format(UiText.ShareText, code));
+            var shared = _app.ShareSheet.Share(UiText.ShareTitle, string.Format(UiText.ShareText, code, InviteLink.For(code)));
             _app.Analytics.Track(AnalyticsEvents.InviteSent(shared ? "share" : "copy"));
             return shared;
         }
