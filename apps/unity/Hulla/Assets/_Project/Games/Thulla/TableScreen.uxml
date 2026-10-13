@@ -62,6 +62,7 @@
                 <ui:Label name="result-reward" class="turn result-reward" />
                 <ui:VisualElement name="result-order" class="results__order" />
                 <ui:Button name="play-again" class="button button--primary" />
+                <ui:Button name="result-share" class="button" />
                 <ui:Label name="result-status" class="status" />
             </ui:VisualElement>
         </ui:VisualElement>

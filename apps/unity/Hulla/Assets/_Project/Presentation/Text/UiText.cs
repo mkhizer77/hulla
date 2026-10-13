@@ -41,6 +41,27 @@ namespace Hulla.Presentation.Text
         public const string RematchVotes = "{0} of {1} want another";
         public const string EscapeOrder = "Escaped in order";
         public const string PlayAgain = "Play again";
+        public const string AppName = "Hulla";
+        public const string ShareCardGame = "Thulla";
+        public const string ShareResult = "Share";
+        public const string ShareAs = "Share the result as";
+        public const string SharePost = "Post";
+        public const string ShareStory = "Story";
+        public const string ShareResultTitle = "Thulla on Hulla";
+
+        /// <summary>{0} loser's name, {1} the table's loser title, {2} room code.</summary>
+        public const string ShareResultWithCode = "{0} is the {1}! Join our table on Hulla with code {2}";
+
+        /// <summary>{0} loser's name, {1} the table's loser title.</summary>
+        public const string ShareResultText = "{0} is the {1}! Play Thulla with us on Hulla.";
+
+        public const string ShareFooterCode = "Join with code {0} on Hulla";
+        public const string ShareFooter = "Play Thulla on Hulla";
+
+        /// <summary>{0} name, {1} cards picked up.</summary>
+        public const string BigThulla = "{0} picked up {1} cards, the biggest thulla of the night. Share it?";
+
+        public const string NotNow = "Not now";
         public const string Waiting4Rematch = "Waiting for the others…";
         public const string You = "You";
         public const string Reconnecting = "Reconnecting…";

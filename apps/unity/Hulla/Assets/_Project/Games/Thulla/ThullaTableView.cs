@@ -705,6 +705,9 @@ namespace Hulla.Games.Thulla
 
         public void ShowReward(string? text) => _results.ShowReward(text);
 
+        /// <summary>Shows Share on the results.</summary>
+        public void UseShare(Action share) => _results.Share = share;
+
         /// <summary>Lets the results offer "Add friend" for co-players who aren't friends or pending yet.</summary>
         public void SetFriendActions(Func<string, bool> canAdd, Action<string> addFriend)
         {
