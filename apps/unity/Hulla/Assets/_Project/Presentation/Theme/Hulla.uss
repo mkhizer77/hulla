@@ -2084,6 +2084,7 @@
 .seat__avatar--image {
     background-color: rgba(0, 0, 0, 0);
     -unity-background-scale-mode: scale-and-crop;
+    -unity-background-image-tint-color: #FFFFFF;
 }
 
 .seat__you {
@@ -2114,14 +2115,14 @@
 }
 
 .me-badge .seat__avatar {
-    width: 64px;
-    height: 64px;
-    border-radius: 32px;
+    width: 76px;
+    height: 76px;
+    border-radius: 38px;
     border-width: 3px;
 }
 
 .me-badge .seat__initial {
-    font-size: 30px;
+    font-size: 34px;
 }
 
 .me-badge .seat__name {
