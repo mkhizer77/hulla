@@ -277,7 +277,7 @@ namespace Hulla.Screens.Tests
             yield return null;
             Shown(root.Q<VisualElement>("coach"), "the you're-out note");
             StringAssert.Contains("You're out", root.Q<Label>("coach-text").text);
-            StringAssert.StartsWith("Out · watching", root.Q<Label>("turn").text);
+            Assert.AreEqual("Out · watching", root.Q<VisualElement>("me").Q<Label>(className: "seat__state").text, "the own badge says so");
             Shown(root.Q<Button>("chat"), "chat stays open to an escaped player");
         }
 

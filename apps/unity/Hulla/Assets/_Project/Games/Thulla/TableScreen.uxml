@@ -31,8 +31,7 @@
         <ui:VisualElement name="quick-strip" class="quick-strip" />
         <ui:VisualElement class="table__bar">
             <ui:VisualElement class="table__turn">
-                <ui:VisualElement name="timer" class="timer" />
-                <ui:Label name="turn" class="turn" />
+                <ui:VisualElement name="me" class="table__me" />
             </ui:VisualElement>
             <ui:VisualElement class="table__bar-actions">
                 <ui:Button name="take-hand" class="button button--primary button--small" />

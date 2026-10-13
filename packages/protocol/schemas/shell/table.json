@@ -99,6 +99,11 @@
           "type": ["string", "null"],
           "description": "Players who queued together share a party id (GDD 7.2); shown as a link icon"
         },
+        "avatar": {
+          "type": ["string", "null"],
+          "pattern": "^[a-z0-9_]{1,32}$",
+          "description": "The avatar this seat shows, assigned when the player sits and unique at the table (GDD 15.6)"
+        },
         "cosmetics": {
           "type": ["object", "null"],
           "description": "What the seat has equipped for this table, by catalog category; null until the inventory is read",

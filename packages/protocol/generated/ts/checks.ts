@@ -4135,7 +4135,7 @@ const check_table_state = validate53;
 const schema89 = {"type":"object","additionalProperties":false,"description":"The full table as the recipient may see it; the round view is redacted per recipient","required":["code","gameId","mode","status","hostSeat","rules","seats","spectatorCount","spectators","series","round","lastSeq","resumeToken"],"properties":{"code":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/roomCode"},"gameId":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/gameId"},"mode":{"$ref":"https://hulla.gg/schemas/protocol/shell/table.json#/definitions/tableMode"},"status":{"$ref":"https://hulla.gg/schemas/protocol/shell/table.json#/definitions/tableStatus"},"hostSeat":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndexOrNull"},"rules":{"$ref":"https://hulla.gg/schemas/protocol/shell/table.json#/definitions/rulesSelection"},"seats":{"type":"array","items":{"$ref":"https://hulla.gg/schemas/protocol/shell/table.json#/definitions/seat"}},"spectatorCount":{"type":"integer","minimum":0},"spectators":{"type":"array","items":{"$ref":"https://hulla.gg/schemas/protocol/shell/table.json#/definitions/spectator"}},"series":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/seriesState"},"round":{"oneOf":[{"$ref":"https://hulla.gg/schemas/protocol/games/thulla/views.json#/definitions/view"},{"type":"null"}]},"lastSeq":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/sequence"},"resumeToken":{"type":["string","null"]},"rematch":{"type":"object","additionalProperties":false,"properties":{"deadlineTs":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/timestamp"},"votes":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/seatList"}}},"autoStart":{"type":"object","additionalProperties":false,"required":["startsAtTs"],"description":"A public table counting down to its first deal (GDD 9.5)","properties":{"startsAtTs":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/timestamp"}}},"handAsk":{"type":"object","additionalProperties":false,"description":"A hand request still waiting for its answer (R33), so a rejoining player sees it","required":["asker","target","cardCount","deadlineTs"],"properties":{"asker":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex"},"target":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex"},"cardCount":{"type":"integer","minimum":1},"deadlineTs":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/timestamp"}}}}};
 const schema92 = {"type":"string","enum":["private","public","ranked"]};
 const schema93 = {"type":"string","enum":["open","locked","inRound","closed"]};
-const schema95 = {"type":"object","additionalProperties":false,"required":["seat","playerId","displayName","ready","connected","autoPlay"],"properties":{"seat":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex"},"playerId":{"oneOf":[{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/playerId"},{"type":"null"}]},"displayName":{"type":["string","null"]},"ready":{"type":"boolean"},"connected":{"type":"boolean"},"autoPlay":{"type":"boolean","description":"The auto-play policy holds this seat (R45, R46)"},"bot":{"type":"boolean"},"party":{"type":["string","null"],"description":"Players who queued together share a party id (GDD 7.2); shown as a link icon"},"cosmetics":{"type":["object","null"],"description":"What the seat has equipped for this table, by catalog category; null until the inventory is read","additionalProperties":false,"properties":{"cardBack":{"type":"string"},"cardFace":{"type":"string"},"table":{"type":"string"},"emotePack":{"type":"string"},"celebration":{"type":"string"},"soundSet":{"type":"string"}}}}};
+const schema95 = {"type":"object","additionalProperties":false,"required":["seat","playerId","displayName","ready","connected","autoPlay"],"properties":{"seat":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex"},"playerId":{"oneOf":[{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/playerId"},{"type":"null"}]},"displayName":{"type":["string","null"]},"ready":{"type":"boolean"},"connected":{"type":"boolean"},"autoPlay":{"type":"boolean","description":"The auto-play policy holds this seat (R45, R46)"},"bot":{"type":"boolean"},"party":{"type":["string","null"],"description":"Players who queued together share a party id (GDD 7.2); shown as a link icon"},"avatar":{"type":["string","null"],"pattern":"^[a-z0-9_]{1,32}$","description":"The avatar this seat shows, assigned when the player sits and unique at the table (GDD 15.6)"},"cosmetics":{"type":["object","null"],"description":"What the seat has equipped for this table, by catalog category; null until the inventory is read","additionalProperties":false,"properties":{"cardBack":{"type":"string"},"cardFace":{"type":"string"},"table":{"type":"string"},"emotePack":{"type":"string"},"celebration":{"type":"string"},"soundSet":{"type":"string"}}}}};
 
 function validate55(data, {instancePath="", parentData, parentDataProperty, rootData=data}={}){
 let vErrors = null;
@@ -4332,40 +4332,49 @@ else {
 var valid0 = true;
 }
 if(valid0){
-if(data.cosmetics !== undefined){
-let data8 = data.cosmetics;
+if(data.avatar !== undefined){
+let data8 = data.avatar;
 const _errs24 = errors;
-if((!(data8 && typeof data8 == "object" && !Array.isArray(data8))) && (data8 !== null)){
-validate55.errors = [{instancePath:instancePath+"/cosmetics",schemaPath:"#/properties/cosmetics/type",keyword:"type",params:{type: schema95.properties.cosmetics.type}}];
+if((typeof data8 !== "string") && (data8 !== null)){
+validate55.errors = [{instancePath:instancePath+"/avatar",schemaPath:"#/properties/avatar/type",keyword:"type",params:{type: schema95.properties.avatar.type}}];
 return false;
 }
 if(errors === _errs24){
-if(data8 && typeof data8 == "object" && !Array.isArray(data8)){
+if(typeof data8 === "string"){
+if(!pattern6.test(data8)){
+validate55.errors = [{instancePath:instancePath+"/avatar",schemaPath:"#/properties/avatar/pattern",keyword:"pattern",params:{pattern: "^[a-z0-9_]{1,32}$"}}];
+return false;
+}
+}
+}
+var valid0 = _errs24 === errors;
+}
+else {
+var valid0 = true;
+}
+if(valid0){
+if(data.cosmetics !== undefined){
+let data9 = data.cosmetics;
 const _errs26 = errors;
-for(const key1 in data8){
+if((!(data9 && typeof data9 == "object" && !Array.isArray(data9))) && (data9 !== null)){
+validate55.errors = [{instancePath:instancePath+"/cosmetics",schemaPath:"#/properties/cosmetics/type",keyword:"type",params:{type: schema95.properties.cosmetics.type}}];
+return false;
+}
+if(errors === _errs26){
+if(data9 && typeof data9 == "object" && !Array.isArray(data9)){
+const _errs28 = errors;
+for(const key1 in data9){
 if(!((((((key1 === "cardBack") || (key1 === "cardFace")) || (key1 === "table")) || (key1 === "emotePack")) || (key1 === "celebration")) || (key1 === "soundSet"))){
 validate55.errors = [{instancePath:instancePath+"/cosmetics",schemaPath:"#/properties/cosmetics/additionalProperties",keyword:"additionalProperties",params:{additionalProperty: key1}}];
 return false;
 break;
 }
 }
-if(_errs26 === errors){
-if(data8.cardBack !== undefined){
-const _errs27 = errors;
-if(typeof data8.cardBack !== "string"){
-validate55.errors = [{instancePath:instancePath+"/cosmetics/cardBack",schemaPath:"#/properties/cosmetics/properties/cardBack/type",keyword:"type",params:{type: "string"}}];
-return false;
-}
-var valid4 = _errs27 === errors;
-}
-else {
-var valid4 = true;
-}
-if(valid4){
-if(data8.cardFace !== undefined){
+if(_errs28 === errors){
+if(data9.cardBack !== undefined){
 const _errs29 = errors;
-if(typeof data8.cardFace !== "string"){
-validate55.errors = [{instancePath:instancePath+"/cosmetics/cardFace",schemaPath:"#/properties/cosmetics/properties/cardFace/type",keyword:"type",params:{type: "string"}}];
+if(typeof data9.cardBack !== "string"){
+validate55.errors = [{instancePath:instancePath+"/cosmetics/cardBack",schemaPath:"#/properties/cosmetics/properties/cardBack/type",keyword:"type",params:{type: "string"}}];
 return false;
 }
 var valid4 = _errs29 === errors;
@@ -4374,10 +4383,10 @@ else {
 var valid4 = true;
 }
 if(valid4){
-if(data8.table !== undefined){
+if(data9.cardFace !== undefined){
 const _errs31 = errors;
-if(typeof data8.table !== "string"){
-validate55.errors = [{instancePath:instancePath+"/cosmetics/table",schemaPath:"#/properties/cosmetics/properties/table/type",keyword:"type",params:{type: "string"}}];
+if(typeof data9.cardFace !== "string"){
+validate55.errors = [{instancePath:instancePath+"/cosmetics/cardFace",schemaPath:"#/properties/cosmetics/properties/cardFace/type",keyword:"type",params:{type: "string"}}];
 return false;
 }
 var valid4 = _errs31 === errors;
@@ -4386,10 +4395,10 @@ else {
 var valid4 = true;
 }
 if(valid4){
-if(data8.emotePack !== undefined){
+if(data9.table !== undefined){
 const _errs33 = errors;
-if(typeof data8.emotePack !== "string"){
-validate55.errors = [{instancePath:instancePath+"/cosmetics/emotePack",schemaPath:"#/properties/cosmetics/properties/emotePack/type",keyword:"type",params:{type: "string"}}];
+if(typeof data9.table !== "string"){
+validate55.errors = [{instancePath:instancePath+"/cosmetics/table",schemaPath:"#/properties/cosmetics/properties/table/type",keyword:"type",params:{type: "string"}}];
 return false;
 }
 var valid4 = _errs33 === errors;
@@ -4398,10 +4407,10 @@ else {
 var valid4 = true;
 }
 if(valid4){
-if(data8.celebration !== undefined){
+if(data9.emotePack !== undefined){
 const _errs35 = errors;
-if(typeof data8.celebration !== "string"){
-validate55.errors = [{instancePath:instancePath+"/cosmetics/celebration",schemaPath:"#/properties/cosmetics/properties/celebration/type",keyword:"type",params:{type: "string"}}];
+if(typeof data9.emotePack !== "string"){
+validate55.errors = [{instancePath:instancePath+"/cosmetics/emotePack",schemaPath:"#/properties/cosmetics/properties/emotePack/type",keyword:"type",params:{type: "string"}}];
 return false;
 }
 var valid4 = _errs35 === errors;
@@ -4410,13 +4419,25 @@ else {
 var valid4 = true;
 }
 if(valid4){
-if(data8.soundSet !== undefined){
+if(data9.celebration !== undefined){
 const _errs37 = errors;
-if(typeof data8.soundSet !== "string"){
-validate55.errors = [{instancePath:instancePath+"/cosmetics/soundSet",schemaPath:"#/properties/cosmetics/properties/soundSet/type",keyword:"type",params:{type: "string"}}];
+if(typeof data9.celebration !== "string"){
+validate55.errors = [{instancePath:instancePath+"/cosmetics/celebration",schemaPath:"#/properties/cosmetics/properties/celebration/type",keyword:"type",params:{type: "string"}}];
 return false;
 }
 var valid4 = _errs37 === errors;
+}
+else {
+var valid4 = true;
+}
+if(valid4){
+if(data9.soundSet !== undefined){
+const _errs39 = errors;
+if(typeof data9.soundSet !== "string"){
+validate55.errors = [{instancePath:instancePath+"/cosmetics/soundSet",schemaPath:"#/properties/cosmetics/properties/soundSet/type",keyword:"type",params:{type: "string"}}];
+return false;
+}
+var valid4 = _errs39 === errors;
 }
 else {
 var valid4 = true;
@@ -4429,10 +4450,11 @@ var valid4 = true;
 }
 }
 }
-var valid0 = _errs24 === errors;
+var valid0 = _errs26 === errors;
 }
 else {
 var valid0 = true;
+}
 }
 }
 }
@@ -5723,7 +5745,7 @@ const check_error = validate71;
 const schema123 = {"type":"object","additionalProperties":false,"required":["code"],"properties":{"code":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/errorCode"},"detail":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/errorDetail"},"refSeq":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/sequence","description":"The client message this answers"}}};
 const schema124 = {"type":"string","pattern":"^(rules|table|auth|economy|content|network|voice|profile|social)\\.[a-z0-9_]+$"};
 const schema125 = {"type":"object","additionalProperties":{"type":["string","number","boolean"]}};
-const pattern22 = new RegExp("^(rules|table|auth|economy|content|network|voice|profile|social)\\.[a-z0-9_]+$", "");
+const pattern23 = new RegExp("^(rules|table|auth|economy|content|network|voice|profile|social)\\.[a-z0-9_]+$", "");
 
 function validate71(data, {instancePath="", parentData, parentDataProperty, rootData=data}={}){
 let vErrors = null;
@@ -5751,7 +5773,7 @@ const _errs2 = errors;
 const _errs3 = errors;
 if(errors === _errs3){
 if(typeof data0 === "string"){
-if(!pattern22.test(data0)){
+if(!pattern23.test(data0)){
 validate71.errors = [{instancePath:instancePath+"/code",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/errorCode/pattern",keyword:"pattern",params:{pattern: "^(rules|table|auth|economy|content|network|voice|profile|social)\\.[a-z0-9_]+$"}}];
 return false;
 }
@@ -6280,7 +6302,7 @@ return errors === 0;
 const check_round_start = validate80;
 const schema139 = {"type":"object","additionalProperties":false,"required":["roundId","commitment","seatCount","dealerSeat","leaderSeat","handCounts","rulesVersion"],"properties":{"roundId":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/roundId"},"commitment":{"type":"string","pattern":"^[0-9a-f]{64}$","description":"SHA-256(seed || canonicalJson(deckOrder)) published before the deal (R6)"},"seatCount":{"type":"integer","minimum":3,"maximum":8},"dealerSeat":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex"},"leaderSeat":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex"},"handCounts":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/handCounts"},"rulesVersion":{"type":"string"}}};
 const schema143 = {"type":"array","items":{"type":"integer","minimum":0},"description":"Per seat, in seat order"};
-const pattern24 = new RegExp("^[0-9a-f]{64}$", "");
+const pattern25 = new RegExp("^[0-9a-f]{64}$", "");
 
 function validate80(data, {instancePath="", parentData, parentDataProperty, rootData=data}={}){
 let vErrors = null;
@@ -6329,7 +6351,7 @@ let data1 = data.commitment;
 const _errs5 = errors;
 if(errors === _errs5){
 if(typeof data1 === "string"){
-if(!pattern24.test(data1)){
+if(!pattern25.test(data1)){
 validate80.errors = [{instancePath:instancePath+"/commitment",schemaPath:"#/properties/commitment/pattern",keyword:"pattern",params:{pattern: "^[0-9a-f]{64}$"}}];
 return false;
 }
@@ -7085,7 +7107,7 @@ const _errs2 = errors;
 const _errs3 = errors;
 if(errors === _errs3){
 if(typeof data0 === "string"){
-if(!pattern22.test(data0)){
+if(!pattern23.test(data0)){
 validate88.errors = [{instancePath:instancePath+"/code",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/errorCode/pattern",keyword:"pattern",params:{pattern: "^(rules|table|auth|economy|content|network|voice|profile|social)\\.[a-z0-9_]+$"}}];
 return false;
 }
@@ -8373,7 +8395,7 @@ return errors === 0;
 
 const check_round_end = validate103;
 const schema194 = {"type":"object","additionalProperties":false,"required":["roundId","escapeOrder","bhabhiSeat","bhabhiCards","points","stats","fairness"],"properties":{"roundId":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/roundId"},"escapeOrder":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/seatList"},"bhabhiSeat":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex"},"bhabhiCards":{"type":"integer","minimum":0},"points":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/points"},"stats":{"type":"array","items":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/seatStats"}},"fairness":{"type":"object","additionalProperties":false,"required":["commitment","seed","deckOrder"],"properties":{"commitment":{"type":"string","pattern":"^[0-9a-f]{64}$"},"seed":{"type":"string","pattern":"^[0-9a-f]+$","description":"Revealed so any client can recompute the commitment (R6)"},"deckOrder":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/cards"}}},"series":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/seriesState"}}};
-const pattern42 = new RegExp("^[0-9a-f]+$", "");
+const pattern43 = new RegExp("^[0-9a-f]+$", "");
 
 function validate106(data, {instancePath="", parentData, parentDataProperty, rootData=data}={}){
 let vErrors = null;
@@ -8842,7 +8864,7 @@ let data13 = data12.commitment;
 const _errs33 = errors;
 if(errors === _errs33){
 if(typeof data13 === "string"){
-if(!pattern24.test(data13)){
+if(!pattern25.test(data13)){
 validate103.errors = [{instancePath:instancePath+"/fairness/commitment",schemaPath:"#/properties/fairness/properties/commitment/pattern",keyword:"pattern",params:{pattern: "^[0-9a-f]{64}$"}}];
 return false;
 }
@@ -8863,7 +8885,7 @@ let data14 = data12.seed;
 const _errs35 = errors;
 if(errors === _errs35){
 if(typeof data14 === "string"){
-if(!pattern42.test(data14)){
+if(!pattern43.test(data14)){
 validate103.errors = [{instancePath:instancePath+"/fairness/seed",schemaPath:"#/properties/fairness/properties/seed/pattern",keyword:"pattern",params:{pattern: "^[0-9a-f]+$"}}];
 return false;
 }

@@ -1289,6 +1289,13 @@ namespace Hulla.Protocol
         [JsonProperty("autoPlay", Required = Required.Always)]
         public bool AutoPlay { get; set; }
 
+        /// <summary>
+        /// The avatar this seat shows, assigned when the player sits and unique at the table (GDD
+        /// 15.6)
+        /// </summary>
+        [JsonProperty("avatar")]
+        public string? Avatar { get; set; }
+
         [JsonProperty("bot", Required = Required.DisallowNull, NullValueHandling = NullValueHandling.Ignore)]
         public bool? Bot { get; set; }
 

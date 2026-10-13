@@ -9,13 +9,13 @@ namespace Hulla.Application.Tests
     {
         public const string Me = "user-me";
 
-        public static ServerMessage TableState(long lastSeq, IList<string>? myHand = null, long mySeat = 0, long seats = 4)
+        public static ServerMessage TableState(long lastSeq, IList<string>? myHand = null, long mySeat = 0, long seats = 4, IList<string>? avatars = null)
         {
             var seatList = new List<Seat>();
             var views = new List<SeatView>();
             for (var i = 0; i < seats; i++)
             {
-                seatList.Add(new Seat { SeatSeat = i, PlayerId = i == mySeat ? Me : "user-" + i, DisplayName = "P" + i, Connected = true });
+                seatList.Add(new Seat { SeatSeat = i, PlayerId = i == mySeat ? Me : "user-" + i, DisplayName = "P" + i, Connected = true, Avatar = avatars != null && i < avatars.Count ? avatars[i] : null });
                 views.Add(new SeatView { HandCount = i == mySeat && myHand != null ? myHand.Count : 13, Hand = i == mySeat && myHand != null ? new List<string>(myHand) : null });
             }
 

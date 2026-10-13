@@ -49,6 +49,8 @@ export interface SeatSlot {
   party: string | null;
   /** What the seat has equipped, read from the inventory at join and at each round start. */
   cosmetics: Record<string, string> | null;
+  /** The avatar shown for this seat (GDD 15.6): assigned when the player sits, unique at the table. */
+  avatar: string | null;
 }
 
 /** What `matchJoinAttempt` decided for a session, consumed by `matchJoin`. */

@@ -469,6 +469,10 @@ export interface Seat {
    */
   party?: string | null;
   /**
+   * The avatar this seat shows, assigned when the player sits and unique at the table (GDD 15.6)
+   */
+  avatar?: string | null;
+  /**
    * What the seat has equipped for this table, by catalog category; null until the inventory is read
    */
   cosmetics?: {

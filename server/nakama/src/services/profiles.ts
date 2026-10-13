@@ -1,6 +1,6 @@
 import { ErrorCodes, err, ok, ruleError, ROOM_CODE_ALPHABET } from "@hulla/shared-ts";
 
-import { DEFAULT_AVATAR, DEFAULT_FRAME, isAvatar, isFrame } from "../content/avatars";
+import { avatarForAccount, DEFAULT_FRAME, isAvatar, isFrame } from "../content/avatars";
 import { log } from "../infra/log";
 
 import type { RoundRecord } from "../match/types";
@@ -86,7 +86,7 @@ export function bootstrapProfile(
     displayName: `Guest ${friendCode.slice(0, 4)}`,
     handle,
     friendCode,
-    avatar: DEFAULT_AVATAR,
+    avatar: avatarForAccount(userId),
     frame: DEFAULT_FRAME,
     flag: null,
     title: null,

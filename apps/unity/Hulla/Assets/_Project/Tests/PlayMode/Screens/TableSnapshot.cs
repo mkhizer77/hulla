@@ -34,7 +34,7 @@ namespace Hulla.Screens.Tests
             var views = new List<SeatView>();
             for (var i = 0; i < 5; i++)
             {
-                seats.Add(new Seat { SeatSeat = i, PlayerId = i == 0 ? "me" : "u" + i, DisplayName = names[i], Connected = i != 3, AutoPlay = i == 3, Ready = true });
+                seats.Add(new Seat { SeatSeat = i, PlayerId = i == 0 ? "me" : "u" + i, DisplayName = names[i], Connected = i != 3, AutoPlay = i == 3, Ready = true, Avatar = "a0" + (i + 2) });
                 views.Add(new SeatView { HandCount = 9 + i, Hand = i == 0 ? new List<string> { "AS", "KS", "9S", "4S", "QH", "8H", "2H", "JD", "9D", "5C", "3C" } : null });
             }
 
@@ -59,6 +59,43 @@ namespace Hulla.Screens.Tests
             var awaiter = task.GetAwaiter();
             while (!awaiter.IsCompleted) yield return null;
             var path = System.Environment.GetEnvironmentVariable("HULLA_SNAPSHOT_OUT") ?? "Temp/table.png";
+            File.WriteAllBytes(path, awaiter.GetResult());
+            Assert.Pass(path);
+        }
+
+        /// <summary>The lobby ring with the same five, the player at the bottom; path in HULLA_SNAPSHOT_OUT.</summary>
+        [UnityTest, Explicit]
+        public IEnumerator RenderLobby()
+        {
+            var catalog = AssetDatabase.LoadAssetAtPath<ScreenCatalog>("Assets/Settings/UI/ScreenCatalog.asset");
+            var settings = AssetDatabase.LoadAssetAtPath<PanelSettings>("Assets/Settings/UI/PanelSettings.asset");
+            var gateway = new Fakes.Gateway();
+            var client = new TableClient(gateway, new TableTicket("m", "K7Q2MX", "t_K7Q2MX"), "me", 1);
+            var names = new[] { "Karachi Tiger 81", "Ali", "Sara", "Noor", null };
+            var seats = new List<Seat>();
+            for (var i = 0; i < 5; i++)
+            {
+                var taken = names[i] != null;
+                seats.Add(new Seat { SeatSeat = i, PlayerId = !taken ? null : i == 0 ? "me" : "u" + i, DisplayName = names[i], Connected = taken, Ready = i != 2 && taken, Avatar = taken ? "a0" + (i + 2) : null });
+            }
+
+            var state = new TableState
+            {
+                Code = "K7Q2MX", Mode = TableMode.Private, Status = TableStatus.Open, HostSeat = 0, LastSeq = 3,
+                Seats = seats, Spectators = new List<Spectator>(), Rules = new RulesSelection { GameId = GameId.Thulla },
+            };
+            var size = (System.Environment.GetEnvironmentVariable("HULLA_SNAPSHOT_SIZE") ?? "1080x2400").Split('x');
+            var task = CardRenderer.RenderAsync(settings, int.Parse(size[0]), int.Parse(size[1]), root =>
+            {
+                var screen = catalog.Lobby!.Instantiate();
+                screen.style.flexGrow = 1;
+                root.Add(screen);
+                new Hulla.Presentation.Screens.Lobby.LobbyView(screen, client, () => 0, () => { }, _ => true, null, () => "Standard · 20 s turns · loser: Bhabhi", () => { });
+                gateway.Deliver(MessageTypes.TableState, 3, state);
+            });
+            var awaiter = task.GetAwaiter();
+            while (!awaiter.IsCompleted) yield return null;
+            var path = System.Environment.GetEnvironmentVariable("HULLA_SNAPSHOT_OUT") ?? "Temp/lobby.png";
             File.WriteAllBytes(path, awaiter.GetResult());
             Assert.Pass(path);
         }
