@@ -334,6 +334,8 @@ namespace Hulla.Composition
             {
                 Debug.LogWarning($"could not enter the table: {entered.Error}");
                 session.EndTable();
+                ShowHome();
+                _app.Home.ShowError(entered.Error.Code);
                 return;
             }
 

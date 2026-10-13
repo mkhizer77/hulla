@@ -59,7 +59,7 @@ namespace Hulla.Infrastructure.Nakama
             catch (Exception error)
             {
                 Debug.LogWarning($"sign-in failed: {error.Message}");
-                return Result<PlayerSession>.Fail("session.unavailable", error.GetType().Name);
+                return Result<PlayerSession>.Fail(ServerErrors.CodeOf(error, "session.unavailable"), error.GetType().Name);
             }
         }
 

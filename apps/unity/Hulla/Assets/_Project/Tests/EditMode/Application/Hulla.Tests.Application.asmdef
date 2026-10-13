@@ -5,6 +5,7 @@
         "Hulla.Application",
         "Hulla.Domain",
         "Hulla.Protocol",
+        "Hulla.Infrastructure",
         "UnityEngine.TestRunner",
         "UnityEditor.TestRunner"
     ],
