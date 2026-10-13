@@ -2,6 +2,7 @@ import { OPCODES } from "@hulla/protocol/generated";
 import { ErrorCodes } from "@hulla/shared-ts";
 
 import { ROUND_RESULTS_COLLECTION } from "../services/account_deletion";
+import { postRoundPoints } from "../services/leaderboards";
 import { credit, nkLedgerPorts } from "../services/ledger";
 import { metricsFromRound, recordMissionMetrics } from "../services/missions";
 import {
@@ -142,6 +143,7 @@ function rewardPlayer(
     const applied = applyReward(current, reward, record, record.endedTs);
     progressStore.write(playerId, applied.progress);
     recordMissionMetrics(nk, playerId, metricsFromRound(record, seat, withFriend), record.endedTs);
+    postRoundPoints(nk, logger, record, playerId, seat);
     const ledger = nkLedgerPorts(nk);
     const prefix = `${record.tableId}:${record.roundId}`;
     credit(ledger, {

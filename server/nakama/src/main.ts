@@ -36,6 +36,7 @@ import { rpcChatFiltersGet, rpcChatFiltersSet } from "./rpc/chat_filters";
 import { rpcDailyRewardClaim, rpcDailyRewardGet } from "./rpc/daily_reward";
 import { rpcProgressGet, rpcWalletGet } from "./rpc/economy";
 import { rpcHello } from "./rpc/hello";
+import { onLeaderboardReset, rpcLeaderboardGet } from "./rpc/leaderboards";
 import {
   rpcMissionsClaim,
   rpcMissionsGet,
@@ -62,6 +63,7 @@ import {
 import { rpcTableCreate } from "./rpc/table_create";
 import { rpcTableJoinByCode } from "./rpc/table_join_by_code";
 import { rpcVoiceToken } from "./rpc/voice_token";
+import { ensureLeaderboards } from "./services/leaderboards";
 
 /**
  * Nakama calls this once at start-up; every RPC, hook and match handler registers here. Handlers
@@ -71,7 +73,7 @@ import { rpcVoiceToken } from "./rpc/voice_token";
 function InitModule(
   ctx: nkruntime.Context,
   logger: nkruntime.Logger,
-  _nk: nkruntime.Nakama,
+  nk: nkruntime.Nakama,
   initializer: nkruntime.Initializer,
 ): void {
   initializer.registerRpc("hello", rpcHello);
@@ -117,6 +119,9 @@ function InitModule(
   initializer.registerRpc("missions_set", rpcMissionsSet);
   initializer.registerRpc("daily_reward_get", rpcDailyRewardGet);
   initializer.registerRpc("daily_reward_claim", rpcDailyRewardClaim);
+  initializer.registerRpc("leaderboard_get", rpcLeaderboardGet);
+  initializer.registerLeaderboardReset(onLeaderboardReset);
+  ensureLeaderboards(nk, logger);
   initializer.registerBeforeAuthenticateDevice(beforeAuthenticateDevice);
   initializer.registerAfterAuthenticateDevice(afterAuthenticateDevice);
   initializer.registerAfterAuthenticateApple(afterAuthenticateApple);

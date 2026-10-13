@@ -148,6 +148,8 @@ export interface Progress {
   readonly tzOffsetMinutes: number;
   readonly titles: readonly string[];
   readonly lastReward: LastReward | null;
+  /** Baithak points posted from private rooms today, against the daily cap (GDD 12.8). */
+  readonly privatePointsToday?: number;
   readonly updatedTs: number;
 }
 
@@ -209,7 +211,9 @@ export function touchLogin(progress: Progress, now: number): Progress {
 /** The daily counters roll over at local midnight. */
 export function forDay(progress: Progress, now: number): Progress {
   const today = localDay(now, progress.tzOffsetMinutes);
-  return progress.day === today ? progress : { ...progress, day: today, coinsToday: 0 };
+  return progress.day === today
+    ? progress
+    : { ...progress, day: today, coinsToday: 0, privatePointsToday: 0 };
 }
 
 export interface LevelGrant {

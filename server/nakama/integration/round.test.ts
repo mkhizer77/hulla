@@ -281,6 +281,24 @@ describe.skipIf(NAKAMA_HOST === undefined)(
       );
       expect(missions.weekly.find((w) => w.id === "w_rounds_15")?.progress).toBe(1);
 
+      // Baithak points reached the weekly board (GDD 12.8): the first escape holds three or more.
+      const board = await rpc<{
+        ok: boolean;
+        rows: { userId: string; score: number }[];
+        me: { score: number } | null;
+      }>(host, "leaderboard_get", { board: "weekly", scope: "friends" });
+      expect(board.ok).toBe(true);
+      const roundEnd = host.received.find((e) => e.type === "round_end")?.payload as
+        { escapeOrder: number[] } | undefined;
+      const firstSeat = roundEnd?.escapeOrder[0];
+      const firstId = players.find((c) => seatOf.get(c.name) === firstSeat)?.session.user_id;
+      const firstBoard = await rpc<{ me: { score: number } | null }>(
+        players.find((c) => c.session.user_id === firstId) ?? host,
+        "leaderboard_get",
+        { board: "weekly" },
+      );
+      expect(firstBoard.me?.score ?? 0).toBeGreaterThanOrEqual(3);
+
       // The round replays from its log with the same final hash (ARCHITECTURE 8.11).
       const replayUrl = `http://${NAKAMA_HOST ?? ""}:${NAKAMA_PORT}/v2/rpc/admin_round_replay?http_key=local-only-http-key&unwrap`;
       const replayed = (await (
