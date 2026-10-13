@@ -8,6 +8,7 @@
             <ui:Button name="daily-claim" class="button button--small button--primary" />
         </ui:VisualElement>
         <ui:Button name="hero" class="button button--primary hero" />
+        <ui:Button name="rejoin" class="button button--primary hero" />
         <ui:Label name="online" class="status" />
         <ui:VisualElement class="panel">
             <ui:TextField name="name" class="field" />

@@ -50,6 +50,13 @@ namespace Hulla.Composition
         /// <summary>The name the player last signed in with, offered next launch.</summary>
         private const string NamePrefKey = "hulla.name";
 
+        /// <summary>The private table the player is at, kept so they can rejoin after leaving mid-round.</summary>
+        private const string LastTableCodeKey = "hulla.lastTable.code";
+        private const string LastTableAtKey = "hulla.lastTable.at";
+
+        /// <summary>A room lives 30 minutes after its last human leaves (GDD 7.5).</summary>
+        private const long RejoinWindowSeconds = 30 * 60;
+
 
         private readonly AppScope _app;
         private readonly ShellView _shell;
@@ -253,7 +260,10 @@ namespace Hulla.Composition
             _screen = Screen.Home;
             var root = _shell.Show(_shell.Catalog.Home);
             var server = Debug.isDebugBuild ? _app.Config.HostAndPort : null;
-            _view = new HomeView(root, _app.Home, server, OnCreate, OnJoin, OnQuickPlay, OpenSettings, OnFriends, OnProfile, _app.HomeFriends, () => StartTutorial(false), TutorialText.HowToPlay, OnWatch, _app.Progress, OnMissions, OnLeaderboard, OnShop, OnPass);
+            var home = new HomeView(root, _app.Home, server, OnCreate, OnJoin, OnQuickPlay, OpenSettings, OnFriends, OnProfile, _app.HomeFriends, () => StartTutorial(false), TutorialText.HowToPlay, OnWatch, _app.Progress, OnMissions, OnLeaderboard, OnShop, OnPass);
+            _view = home;
+            var left = LastTableCode();
+            home.ShowRejoin(left, left == null ? null : () => Rejoin(home, left));
             _daily = new DailyRewardCard(UnityEngine.UIElements.UQueryExtensions.Q<UnityEngine.UIElements.VisualElement>(root, "daily"), _app.DailyReward, ClaimDailyReward);
             _app.HomeFriends.Active = _app.Sessions.Current != null;
             _app.HomeFriends.RefreshSoon();
@@ -548,6 +558,13 @@ namespace Hulla.Composition
             }
 
             FollowModel();
+            if (!ticket.Value.IsMatchmade && !ticket.Value.AsSpectator)
+            {
+                PlayerPrefs.SetString(LastTableCodeKey, ticket.Value.Code);
+                PlayerPrefs.SetString(LastTableAtKey, DateTimeOffset.UtcNow.ToUnixTimeSeconds().ToString());
+                PlayerPrefs.Save();
+            }
+
             if (invitedAt != null)
             {
                 _app.Analytics.Track(AnalyticsEvents.InviteSeated(Time.realtimeSinceStartup - invitedAt.Value));
@@ -559,11 +576,51 @@ namespace Hulla.Composition
 
         private async void Leave()
         {
+            // Leaving mid-round keeps the table on Home to rejoin; leaving between rounds is final.
+            if (_app.Session?.Table?.Client.Model.InRound != true)
+            {
+                ForgetLastTable();
+            }
+
             await _app.TableChat.LeaveAsync();
             await _app.Tables.LeaveAsync();
             _app.Session?.EndTable();
             ShowHome();
             AskForPushIfDue();
+        }
+
+        /// <returns>The code of the table the player left mid-round in the last 30 minutes, else null.</returns>
+        private static string? LastTableCode()
+        {
+            var code = PlayerPrefs.GetString(LastTableCodeKey, "");
+            if (code.Length == 0 || !long.TryParse(PlayerPrefs.GetString(LastTableAtKey, ""), out var at))
+            {
+                return null;
+            }
+
+            return DateTimeOffset.UtcNow.ToUnixTimeSeconds() - at <= RejoinWindowSeconds ? code : null;
+        }
+
+        private static void ForgetLastTable()
+        {
+            PlayerPrefs.DeleteKey(LastTableCodeKey);
+            PlayerPrefs.DeleteKey(LastTableAtKey);
+            PlayerPrefs.Save();
+        }
+
+        /// <summary>Back to the table the player left: the server gives them their seat back (R46).</summary>
+        private async void Rejoin(HomeView home, string code)
+        {
+            var ticket = await _app.Home.JoinAsync(_app.Home.LastName, code, _app.Lifetime);
+            if (!ticket.IsOk)
+            {
+                // The table has closed; the home screen shows why.
+                ForgetLastTable();
+                home.ShowRejoin(null, null);
+                return;
+            }
+
+            await EnterAsync(ticket);
         }
 
         /// <summary>A tapped notification (GDD 10.10) opens its screen; an invite joins like a link.</summary>

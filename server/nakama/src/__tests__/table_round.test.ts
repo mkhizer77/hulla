@@ -321,6 +321,26 @@ describe("reconnection and snapshots", () => {
     expect(h.core.inbound(h.state, "s0", "{}", h.now).outbound).toEqual([]);
   });
 
+  it("lets a player who left mid-round rejoin their seat before the round ends (R46)", () => {
+    const h = harness();
+    opened(h, 4);
+    h.send("s3", "leave_table", {});
+    expect(h.state.seats[3]).toMatchObject({ left: true, autoPlay: true });
+    const again = { sessionId: "s3b", userId: "u3", username: "Player3" };
+    expect(h.core.joinAttempt(h.state, again, { code: h.state.code }, h.now)).toEqual({
+      accept: true,
+    });
+    const batch = h.core.join(h.state, [again], h.now);
+    expect(h.state.seats[3]).toMatchObject({
+      playerId: "u3",
+      sessionId: "s3b",
+      left: false,
+      autoPlay: false,
+      connected: true,
+    });
+    expect(broadcasts(batch)[0]?.payload).toMatchObject({ seat: 3, status: "reconnected" });
+  });
+
   it("gives a seat that returns during its own turn a full turn timer again (GDD 9.8)", () => {
     const h = harness();
     opened(h);
