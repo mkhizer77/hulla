@@ -32,6 +32,9 @@ runtime:
     - "AGORA_APP_CERTIFICATE="
     # Owner accounts allowed to call the admin RPCs with a session (comma-separated user ids); the server key always may.
     - "HULLA_ADMIN_USER_IDS="
+    # RSA private key (PEM) that signs the content manifest; empty on a development box means unsigned.
+    - "HULLA_CONTENT_SIGNING_KEY="
+    - "HULLA_CONTENT_SIGNING_KEY_ID="
 match:
   input_queue_size: 128
   call_queue_size: 128

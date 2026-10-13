@@ -20,6 +20,7 @@
     "vectors": "pnpm -r --if-present run vectors",
     "codegen": "pnpm -r --if-present run codegen",
     "content:validate": "pnpm -r --if-present run content:validate",
+    "content:manifest": "pnpm -r --if-present run content:manifest",
     "equivalence": "pnpm -r --if-present run equivalence",
     "format": "prettier --write ."
   },

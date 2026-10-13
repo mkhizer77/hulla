@@ -1,6 +1,7 @@
 {
   "schema": "../../tools/content-schemas/emotes.schema.json",
   "id": "v1",
+  "version": 1,
   "emotes": [
     {
       "id": "thulla_whistle",

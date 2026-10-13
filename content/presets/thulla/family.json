@@ -1,6 +1,7 @@
 {
   "schema": "../../../tools/content-schemas/preset.schema.json",
   "id": "family",
+  "version": 1,
   "gameId": "thulla",
   "name": "preset.family.name",
   "description": "preset.family.description",

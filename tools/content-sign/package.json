@@ -1,0 +1,13 @@
+{
+  "name": "@hulla/content-sign",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Writes content/manifest.json: every content file with its hash, for the signed manifest the server serves (ADR-0011)",
+  "license": "PolyForm-Noncommercial-1.0.0",
+  "type": "module",
+  "scripts": {
+    "typecheck": "tsc -p tsconfig.json",
+    "content:manifest": "tsx src/generate.ts",
+    "test": "vitest run"
+  }
+}

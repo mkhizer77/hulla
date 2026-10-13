@@ -1,3 +1,5 @@
+import { createSign } from "node:crypto";
+
 import type { ServerLogger, ServerRuntime } from "../infra/nk";
 
 export interface LogLine {
@@ -243,6 +245,8 @@ export function memoryNk(): MemoryNk {
       return `00000000-0000-4000-8000-${String(uuids).padStart(12, "0")}`;
     },
     sha256Hash: (input: string) => `sha256(${input})`,
+    rsaSha256Hash: (input: string, key: string) =>
+      createSign("RSA-SHA256").update(input).sign(key, "base64"),
     binaryToString: (data: ArrayBuffer) => new TextDecoder().decode(data),
     storageWrite(requests: nkruntime.StorageWriteRequest[]) {
       return requests.map((r) => {

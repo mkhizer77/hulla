@@ -65,6 +65,8 @@ describe("InitModule", () => {
       "leaderboard_get",
       "achievements_get",
       "achievements_set",
+      "content_manifest",
+      "content_get",
     ]);
     expect([...matches.keys()]).toEqual(["thulla"]);
     expect(hooks.get("rtBefore:ChannelMessageSend")?.name).toBe("beforeChannelMessageSend");
