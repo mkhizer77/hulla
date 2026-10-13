@@ -283,14 +283,14 @@ describe("push records, settings and quiet hours (GDD 10.10)", () => {
       android: {
         priority: "high",
         notification: {
-          title_loc_key: "push.table_invite.title",
-          body_loc_key: "push.table_invite.body",
+          title_loc_key: "push_table_invite_title",
+          body_loc_key: "push_table_invite_body",
           body_loc_args: ["Ali", "7KQ2M"],
         },
       },
       apns: {
         payload: {
-          aps: { alert: { "loc-key": "push.table_invite.body", "loc-args": ["Ali", "7KQ2M"] } },
+          aps: { alert: { "loc-key": "push_table_invite_body", "loc-args": ["Ali", "7KQ2M"] } },
         },
       },
     });

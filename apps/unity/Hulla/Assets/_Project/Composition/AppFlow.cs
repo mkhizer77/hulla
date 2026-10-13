@@ -233,6 +233,7 @@ namespace Hulla.Composition
             }
 
             _app.Links.Ready();
+            OpenFromPush();
         }
 
         public void Dispose()
@@ -478,6 +479,10 @@ namespace Hulla.Composition
             {
                 _app.Analytics.Flush();
             }
+            else
+            {
+                OpenFromPush();
+            }
 
             if (_app.Sessions.Current != null)
             {
@@ -558,6 +563,56 @@ namespace Hulla.Composition
             await _app.Tables.LeaveAsync();
             _app.Session?.EndTable();
             ShowHome();
+            AskForPushIfDue();
+        }
+
+        /// <summary>A tapped notification (GDD 10.10) opens its screen; an invite joins like a link.</summary>
+        private void OpenFromPush()
+        {
+            var tap = PushTap.From(_app.PushDevice.TakeOpenedData());
+            if (tap == null)
+            {
+                return;
+            }
+
+            if (tap.Value.Route == PushRoute.Lobby)
+            {
+                _app.Links.Receive(InviteLink.For(tap.Value.Code!), Time.realtimeSinceStartup);
+                return;
+            }
+
+            // A tap on a friend or reward notice never pulls the player away from a table.
+            if (_screen == Screen.Table || _screen == Screen.Lobby || _screen == Screen.QuickPlay)
+            {
+                return;
+            }
+
+            switch (tap.Value.Route)
+            {
+                case PushRoute.Friends:
+                    OnFriends(_app.Home.LastName, null);
+                    break;
+                case PushRoute.Pass:
+                    OnPass(_app.Home.LastName, null);
+                    break;
+                default:
+                    ShowHome();
+                    break;
+            }
+        }
+
+        /// <summary>The one-line ask before the system's notification dialog (PushPrompt has the timing).</summary>
+        private void AskForPushIfDue()
+        {
+            var now = DateTimeOffset.Now;
+            var day = (int)((now.ToUnixTimeSeconds() + (long)now.Offset.TotalSeconds) / 86400);
+            if (!_app.PushPrompt.ShouldAsk(_app.PushDevice.CanAsk, day))
+            {
+                return;
+            }
+
+            _app.PushPrompt.Asked(day);
+            _shell.ShowDialog(PushText.AskTitle, PushText.AskYes, PushText.AskNo, () => _app.PushDevice.Ask(_ => { }), () => { });
         }
 
         /// <summary>
@@ -643,6 +698,7 @@ namespace Hulla.Composition
                 _friendsForRound = model.LastResult.RoundId;
                 ShowReward(model.LastResult.RoundId);
                 new ThullaHints(_app.Store).RoundEnded();
+                _app.PushPrompt.RoundFinished();
                 OfferFriends();
                 OfferBigThulla(client);
             }

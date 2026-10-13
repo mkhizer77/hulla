@@ -23,6 +23,7 @@ namespace Hulla.Composition
         private readonly NakamaMatchmaker _matchmaker;
         private readonly NakamaTableChat _tableChat;
         private SessionScope? _session;
+        private PushPrompt? _pushPrompt;
 
         public AppScope(AppConfig config)
         {
@@ -107,6 +108,10 @@ namespace Hulla.Composition
         public ProfileViewModel Profile { get; }
 
         public IShareSheet ShareSheet { get; } = new Hulla.Infrastructure.Platform.NativeShareSheet();
+
+        public IPushDevice PushDevice { get; } = Hulla.Infrastructure.Platform.PushDevices.Create(Hulla.Presentation.Text.PushText.ChannelName);
+
+        public PushPrompt PushPrompt => _pushPrompt ??= new PushPrompt(Store);
 
         public SettingsModel Settings { get; }
 
