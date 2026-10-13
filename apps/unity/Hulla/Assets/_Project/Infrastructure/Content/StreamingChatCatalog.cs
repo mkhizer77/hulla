@@ -44,7 +44,7 @@ namespace Hulla.Infrastructure.Content
                         continue;
                     }
 
-                    _phrases.Add(new ChatPhrase(id, text, (string?)item["translation"] ?? "", (string?)item["tab"] ?? ""));
+                    _phrases.Add(new ChatPhrase(id, text, (string?)item["translation"] ?? "", (string?)item["tab"] ?? "", (string?)item["context"] ?? "any"));
                     _byId[id] = text;
                 }
             }

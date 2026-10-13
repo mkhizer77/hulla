@@ -25,6 +25,7 @@
         </ui:VisualElement>
         <ui:Label name="my-say" class="bubble bubble--mine" />
         <ui:Label name="hint" class="hint" />
+        <ui:VisualElement name="quick-strip" class="quick-strip" />
         <ui:VisualElement class="table__bar">
             <ui:VisualElement class="table__turn">
                 <ui:VisualElement name="timer" class="timer" />

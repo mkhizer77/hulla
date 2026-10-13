@@ -72,6 +72,9 @@ namespace Hulla.Composition
         private DailyRewardCard? _daily;
         private AnalyticsTracker? _tracker;
 
+        /// <summary>The table's placeholder sounds (GDD 16.2); the SFX setting sets its level.</summary>
+        private readonly Hulla.Presentation.Audio.SoundPlayer _sounds = new Hulla.Presentation.Audio.SoundPlayer();
+
         /// <summary>When the invite link being joined arrived, for invite_seated.</summary>
         private float? _inviteLinkAt;
         private ScriptedTableGateway? _tutorial;
@@ -252,6 +255,7 @@ namespace Hulla.Composition
             _app.TableChat.Received -= OnText;
             _app.Tables.Disconnected -= OnDisconnected;
             CloseView();
+            _sounds.Dispose();
         }
 
         private void ShowHome()
@@ -782,7 +786,7 @@ namespace Hulla.Composition
             }
 
             client.Events.Clear();
-            _tableView = new ThullaTableView(_shell.Show(_shell.Catalog.Table), client, _app.Chat, () => DateTimeOffset.UtcNow.ToUnixTimeMilliseconds(), Leave, openSettings: OpenSettings, openRules: OpenRules, sendText: text => _app.TableChat.SendAsync(text, _app.Lifetime));
+            _tableView = new ThullaTableView(_shell.Show(_shell.Catalog.Table), client, _app.Chat, () => DateTimeOffset.UtcNow.ToUnixTimeMilliseconds(), Leave, openSettings: OpenSettings, openRules: OpenRules, sendText: text => _app.TableChat.SendAsync(text, _app.Lifetime), sounds: _sounds);
             ApplySettings();
             var hints = new ThullaHints(_app.Store);
             if (hints.Active)
@@ -1022,6 +1026,7 @@ namespace Hulla.Composition
             var settings = _app.Settings;
             _app.Analytics.SetConsent(settings.AnalyticsConsent == true);
             ThemeClasses.Apply(_shell.Root, settings);
+            _sounds.Volume = settings.SfxVolume / 100f;
             _tableView?.ApplySettings(settings.OneTapPlay, settings.ReduceMotion, settings.LargeCards, settings.Haptics, settings.ShowRulesRecap ? HideRecap : null);
             _app.Session?.Table?.Client.Model.SetSort(settings.HandSort == HandSort.RankThenSuit ? CardOrder.CompareByRank : CardOrder.Compare);
         }
@@ -1057,7 +1062,7 @@ namespace Hulla.Composition
             var chosen = refresher ? new[] { steps[1], steps[2] } : steps;
             var gateway = new ScriptedTableGateway(chosen, () => DateTimeOffset.UtcNow.ToUnixTimeMilliseconds(), TutorialText.HowToPlay);
             var client = new TableClient(gateway, new TableTicket("tutorial", "", ""), "me", 1);
-            var view = new ThullaTableView(_shell.Show(_shell.Catalog.Table), client, _app.Chat, () => DateTimeOffset.UtcNow.ToUnixTimeMilliseconds(), EndTutorial);
+            var view = new ThullaTableView(_shell.Show(_shell.Catalog.Table), client, _app.Chat, () => DateTimeOffset.UtcNow.ToUnixTimeMilliseconds(), EndTutorial, sounds: _sounds, autoPlaySingle: false);
             var settings = _app.Settings;
             view.ApplySettings(settings.OneTapPlay, settings.ReduceMotion, settings.LargeCards, settings.Haptics, null);
             view.CardRefused += _ => gateway.WrongTap();

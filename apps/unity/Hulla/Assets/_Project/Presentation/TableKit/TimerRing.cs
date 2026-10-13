@@ -3,15 +3,21 @@ using UnityEngine.UIElements;
 
 namespace Hulla.Presentation.TableKit
 {
-    /// <summary>The turn timer (GDD 14.5): a ring that empties as the deadline nears and turns amber in the last 5 s.</summary>
+    /// <summary>
+    /// The turn timer (GDD 14.5): a ring that empties as the deadline nears, amber in the last 5 s and
+    /// red in the last 2 s (<see cref="TimerPhase"/>). The caller pulses it through its scale.
+    /// </summary>
     public sealed class TimerRing : VisualElement
     {
-        public const float WarnSeconds = 5f;
+        public const float WarnSeconds = TimerPhase.WarnSeconds;
         private static readonly Color Track = new Color(1f, 1f, 1f, 0.15f);
-        private static readonly Color Normal = new Color(0.957f, 0.639f, 0f);
-        private static readonly Color Warn = new Color(0.898f, 0.224f, 0.208f);
+
+        // The palette's saffron, mustard and thulla red (GDD 15.2); painter2D cannot read USS variables.
+        private static readonly Color Calm = new Color32(0xF4, 0xA3, 0x00, 0xFF);
+        private static readonly Color Warn = new Color32(0xE0, 0xB0, 0x00, 0xFF);
+        private static readonly Color Critical = new Color32(0xE5, 0x39, 0x35, 0xFF);
         private float _fraction;
-        private bool _warn;
+        private TimerPhase.Phase _phase;
 
         public TimerRing()
         {
@@ -22,15 +28,15 @@ namespace Hulla.Presentation.TableKit
         /// <param name="fraction">Time left as a share of the turn, 1 at the start.</param>
         public void Show(float fraction, float secondsLeft)
         {
-            var warn = secondsLeft <= WarnSeconds;
+            var phase = TimerPhase.For(secondsLeft);
             fraction = Mathf.Clamp01(fraction);
-            if (Mathf.Abs(fraction - _fraction) < 0.005f && warn == _warn)
+            if (Mathf.Abs(fraction - _fraction) < 0.005f && phase == _phase)
             {
                 return;
             }
 
             _fraction = fraction;
-            _warn = warn;
+            _phase = phase;
             MarkDirtyRepaint();
         }
 
@@ -56,7 +62,7 @@ namespace Hulla.Presentation.TableKit
                 return;
             }
 
-            painter.strokeColor = _warn ? Warn : Normal;
+            painter.strokeColor = _phase == TimerPhase.Phase.Critical ? Critical : _phase == TimerPhase.Phase.Warn ? Warn : Calm;
             painter.BeginPath();
             painter.Arc(centre, radius, -90f, -90f + 360f * _fraction);
             painter.Stroke();

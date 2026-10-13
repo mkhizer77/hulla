@@ -134,7 +134,24 @@ namespace Hulla.Presentation.Text
         public const string HandSortLabel = "Sort my hand";
         public const string SortBySuit = "By suit";
         public const string SortByRank = "By rank";
-        public const string HapticsLabel = "Vibrate on my turn";
+        public const string HapticsLabel = "Vibration";
+        public const string SettingsSound = "Sound";
+        public const string SfxLabel = "Sound effects";
+
+        /// <summary>The stamp for a pile of five or more (GDD 14.6).</summary>
+        public const string ThullaBig = "OYE HOYE!";
+
+        /// <summary>The short flag on the seat that gave the thulla (GDD 14.5).</summary>
+        public const string ThullaFlag = "THULLA";
+
+        /// <summary>The leader's crown (GDD 14.5), as a glyph until the icon set lands.</summary>
+        public const string Crown = "♛";
+
+        /// <summary>Opens the full quick-chat panel from the strip.</summary>
+        public const string More = "…";
+
+        /// <summary>The picked-up tray in the player sheet (GDD 14.7).</summary>
+        public const string PickedUpTray = "{0} has picked up: {1}";
         public const string RulesRecapLabel = "Rules recap at the first round";
         public const string FourColourLabel = "Four-colour deck";
         public const string HighContrastLabel = "High contrast";

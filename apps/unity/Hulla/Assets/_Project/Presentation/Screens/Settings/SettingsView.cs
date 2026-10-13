@@ -84,8 +84,10 @@ namespace Hulla.Presentation.Screens.Settings
             Heading(UiText.SettingsPlay);
             Toggle(UiText.OneTapPlay, () => _settings.OneTapPlay, v => _settings.OneTapPlay = v);
             Choice(UiText.HandSortLabel, new[] { UiText.SortBySuit, UiText.SortByRank }, () => (int)_settings.HandSort, i => _settings.HandSort = (HandSort)i);
-            Toggle(UiText.HapticsLabel, () => _settings.Haptics, v => _settings.Haptics = v);
             Toggle(UiText.RulesRecapLabel, () => _settings.ShowRulesRecap, v => _settings.ShowRulesRecap = v);
+            Heading(UiText.SettingsSound);
+            Level(UiText.SfxLabel, () => _settings.SfxVolume, v => _settings.SfxVolume = v);
+            Toggle(UiText.HapticsLabel, () => _settings.Haptics, v => _settings.Haptics = v);
             Heading(UiText.SettingsSeeing);
             Toggle(UiText.FourColourLabel, () => _settings.FourColourDeck, v => _settings.FourColourDeck = v);
             Toggle(UiText.HighContrastLabel, () => _settings.HighContrast, v => _settings.HighContrast = v);
@@ -162,6 +164,16 @@ namespace Hulla.Presentation.Screens.Settings
             toggle.AddToClassList("settings__row");
             toggle.RegisterValueChangedCallback(evt => set(evt.newValue));
             _list.Add(toggle);
+        }
+
+        /// <summary>A 0 to 100 level (GDD 16.5) as a slider; saved when the finger lifts.</summary>
+        private void Level(string text, Func<int> get, Action<int> set)
+        {
+            var slider = new SliderInt(text, 0, 100) { value = get() };
+            slider.AddToClassList("settings__row");
+            slider.AddToClassList("settings__level");
+            slider.RegisterValueChangedCallback(evt => set(evt.newValue));
+            _list.Add(slider);
         }
 
         private void Choice(string text, string[] options, Func<int> get, Action<int> set)
