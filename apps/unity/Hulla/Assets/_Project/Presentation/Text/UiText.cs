@@ -497,6 +497,12 @@ namespace Hulla.Presentation.Text
                     return "Not enough coins or gems for that.";
                 case "economy.item_owned":
                     return "You already own that.";
+                case "economy.item_not_for_sale":
+                    return "That one is earned, not sold.";
+                case "profile.frame_locked":
+                    return "Earn that frame first.";
+                case "table.ranked_solo_only":
+                    return "Ranked is solo only. Leave the party to queue.";
                 case "economy.item_unknown":
                     return "That item isn't in the shop any more.";
                 case "auth.update_required":

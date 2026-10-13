@@ -1,0 +1,28 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements">
+    <Style src="Ranked.uss" />
+    <ui:VisualElement name="ranked" class="screen settings">
+        <ui:VisualElement class="settings__top">
+            <ui:Label name="title" class="title title--small" />
+            <ui:Button name="back" class="button button--quiet button--small" />
+        </ui:VisualElement>
+        <ui:Label name="status" class="status" />
+        <ui:ScrollView class="settings__scroll">
+            <ui:Label name="banner" class="ranked__banner" />
+            <ui:VisualElement name="card" class="panel ranked__card">
+                <ui:Label name="league" class="ranked__league" />
+                <ui:Label name="rating" class="ranked__rating" />
+                <ui:VisualElement name="bar" class="ranked__bar">
+                    <ui:VisualElement name="fill" class="ranked__fill" />
+                </ui:VisualElement>
+                <ui:Label name="progress" class="caption" />
+                <ui:Label name="season" class="caption" />
+                <ui:Label name="rules" class="caption ranked__rules" />
+                <ui:Button name="play" class="button button--primary ranked__play" />
+            </ui:VisualElement>
+            <ui:Label name="ladder-heading" class="settings__heading" />
+            <ui:VisualElement name="ladder" />
+            <ui:Label name="top-heading" class="settings__heading" />
+            <ui:VisualElement name="top" />
+        </ui:ScrollView>
+    </ui:VisualElement>
+</ui:UXML>

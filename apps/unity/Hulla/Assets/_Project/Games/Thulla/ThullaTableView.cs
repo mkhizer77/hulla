@@ -1063,7 +1063,7 @@ namespace Hulla.Games.Thulla
         private void RefreshInfo()
         {
             var model = _client.Model;
-            var text = model.IsPrivate && model.Code.Length > 0 ? model.Code : UiText.QuickPlayTable;
+            var text = model.IsPrivate && model.Code.Length > 0 ? model.Code : model.IsRanked ? RankedText.Title : UiText.QuickPlayTable;
             if (model.Spectating)
             {
                 text = UiText.Watching + " · " + text;

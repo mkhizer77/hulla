@@ -24,7 +24,7 @@ namespace Hulla.Games.Thulla
             var rules = model.ActiveRules ?? ThullaRuleOverrides.Apply(fromPreset?.Rules, selection?.Overrides);
             var defaults = fromPreset?.Settings ?? new TableSettings();
             var chosen = selection?.Settings;
-            var timer = chosen?.TurnTimerSeconds ?? defaults.TurnTimerSeconds ?? (model.IsPrivate ? 20 : 15);
+            var timer = chosen?.TurnTimerSeconds ?? defaults.TurnTimerSeconds ?? (model.IsPrivate ? 20 : model.IsRanked ? 12 : 15);
             var loser = LoserName(chosen?.LoserTitle ?? defaults.LoserTitle ?? LoserTitle.Bhabhi);
 
             var table = new List<string>

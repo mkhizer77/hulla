@@ -64,6 +64,41 @@ namespace Hulla.Infrastructure.Nakama
             }
         }
 
+        public const int RankedSeats = 4;
+
+        public async Awaitable<Result<bool>> SearchRankedAsync(int band, CancellationToken cancellation)
+        {
+            var socket = _connection.Socket;
+            if (socket == null)
+            {
+                return Result<bool>.Fail("session.not_signed_in");
+            }
+
+            Attach(socket);
+            try
+            {
+                await RemoveTicketAsync();
+                cancellation.ThrowIfCancellationRequested();
+                // The server's matchmaker hook rewrites the query with the stored rating and this band.
+                _ticket = await socket.AddMatchmakerAsync(
+                    "+properties.game:thulla +properties.mode:ranked",
+                    RankedSeats,
+                    RankedSeats,
+                    new Dictionary<string, string> { ["game"] = "thulla", ["mode"] = "ranked" },
+                    new Dictionary<string, double> { ["band"] = band });
+                return Result<bool>.Ok(true);
+            }
+            catch (OperationCanceledException)
+            {
+                throw;
+            }
+            catch (Exception error)
+            {
+                Debug.LogWarning($"ranked matchmaker: {error.Message}");
+                return Result<bool>.Fail("matchmaker.unavailable", error.GetType().Name);
+            }
+        }
+
         public async Awaitable CancelAsync()
         {
             try

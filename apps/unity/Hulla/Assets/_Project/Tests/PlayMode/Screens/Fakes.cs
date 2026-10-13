@@ -109,6 +109,8 @@ namespace Hulla.Screens.Tests
 
             public Awaitable<Result<bool>> SearchAsync(int seats, bool anySize, CancellationToken cancellation) => Done(Result<bool>.Ok(true));
 
+            public Awaitable<Result<bool>> SearchRankedAsync(int band, CancellationToken cancellation) => Done(Result<bool>.Ok(true));
+
             public Awaitable CancelAsync()
             {
                 var source = new AwaitableCompletionSource();
@@ -137,6 +139,40 @@ namespace Hulla.Screens.Tests
                     },
                     new Hulla.Application.Progress.LeaderboardRow(57, "me", "khizer", 12, 2),
                     1_000_000_000_000 + 3L * 86_400_000)));
+        }
+
+        public sealed class Ranked : Hulla.Application.Progress.IRankedService
+        {
+            public bool Placed = true;
+
+            public Awaitable<Result<Hulla.Application.Progress.RankedCard>> CardAsync(CancellationToken c) =>
+                Done(Result<Hulla.Application.Progress.RankedCard>.Ok(new Hulla.Application.Progress.RankedCard(
+                    2,
+                    1_000_000_000_000 + 9L * 86_400_000,
+                    Placed ? 1287 : 1210,
+                    Placed ? "gold" : null,
+                    Placed ? 14 : (long?)null,
+                    Placed ? 10 : 3,
+                    10,
+                    Placed ? 2 : 0,
+                    new List<Hulla.Application.Progress.RankedLeague>
+                    {
+                        new Hulla.Application.Progress.RankedLeague("bronze", 0, false, "ranked_bronze", 200, false, false),
+                        new Hulla.Application.Progress.RankedLeague("gold", 1250, false, "ranked_gold", 600, true, false),
+                        new Hulla.Application.Progress.RankedLeague("ustad", 1550, true, "ranked_ustad", 1500, true, true),
+                    },
+                    150,
+                    150,
+                    600,
+                    new Hulla.Application.Progress.RankedSeasonResult("s1", "silver", null),
+                    true)));
+
+            public Awaitable<Result<IReadOnlyList<Hulla.Application.Progress.RankedRow>>> BoardAsync(CancellationToken c) =>
+                Done(Result<IReadOnlyList<Hulla.Application.Progress.RankedRow>>.Ok(new List<Hulla.Application.Progress.RankedRow>
+                {
+                    new Hulla.Application.Progress.RankedRow(1, "u1", "ayesha", 1702, "ustad"),
+                    new Hulla.Application.Progress.RankedRow(14, "me", "khizer", 1287, "gold"),
+                }));
         }
 
         public sealed class Achievements : Hulla.Application.Progress.IAchievementsService

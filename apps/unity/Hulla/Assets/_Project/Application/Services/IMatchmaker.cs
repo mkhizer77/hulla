@@ -17,6 +17,10 @@ namespace Hulla.Application.Services
         /// <param name="anySize">False keeps to that size; true accepts any table size (the widened search).</param>
         Awaitable<Result<bool>> SearchAsync(int seats, bool anySize, CancellationToken cancellation);
 
+        /// <summary>A Ranked ticket (GDD 7.5): four seats, solo; the server puts the stored rating on it and holds the band.</summary>
+        /// <param name="band">How far either side of the player's rating to look.</param>
+        Awaitable<Result<bool>> SearchRankedAsync(int band, CancellationToken cancellation);
+
         Awaitable CancelAsync();
     }
 }

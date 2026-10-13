@@ -87,6 +87,8 @@ namespace Hulla.Application.Table
 
         public bool IsPrivate => Mode == TableMode.Private;
 
+        public bool IsRanked => Mode == TableMode.Ranked;
+
         /// <summary>When a public table deals itself (GDD 9.5); null when no countdown is running.</summary>
         public long? AutoStartAtTs { get; private set; }
 

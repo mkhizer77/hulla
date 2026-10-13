@@ -132,6 +132,70 @@ namespace Hulla.Integration.Tests
             }
         }
 
+        [UnityTest]
+        [Timeout(300000)]
+        public IEnumerator FourRankedSearchesLandAtARankedTableAndPlacementMoves()
+        {
+            var host = Environment.GetEnvironmentVariable("HULLA_NAKAMA_HOST");
+            if (string.IsNullOrEmpty(host))
+            {
+                Assert.Ignore("HULLA_NAKAMA_HOST is not set");
+            }
+
+            var port = int.TryParse(Environment.GetEnvironmentVariable("HULLA_NAKAMA_PORT"), out var p) ? p : 7350;
+            var awaiter = RankedAsync(host!, port).GetAwaiter();
+            while (!awaiter.IsCompleted)
+            {
+                yield return null;
+            }
+
+            awaiter.GetResult();
+        }
+
+        /// <summary>Ranked (GDD 7.5): the card before and after one placement round at a matchmade ranked table.</summary>
+        private async Awaitable RankedAsync(string host, int port)
+        {
+            var stamp = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds() + "r";
+            foreach (var name in new[] { "eman", "faiz", "gul", "hina" })
+            {
+                var s = new Searcher(name, host, port, stamp);
+                _searchers.Add(s);
+                Assert.IsTrue((await s.Session.SignInAsync(name, default)).IsOk, name + " sign-in");
+                var card = await new NakamaRankedService(s.Connection).CardAsync(default);
+                Assert.IsTrue(card.IsOk, name + " ranked_get: " + card.Error);
+                Assert.IsNull(card.Value.League, "a new player is in placement");
+                Assert.AreEqual(0, card.Value.PlacementPlayed);
+                var searched = await s.Matchmaker.SearchRankedAsync(card.Value.Band, default);
+                Assert.IsTrue(searched.IsOk, name + " ranked search: " + searched.Error);
+            }
+
+            await WaitFor(() => _searchers.TrueForAll(s => s.Ticket != null), 40f, "all four matched");
+            var matchId = _searchers[0].Ticket!.MatchId;
+            foreach (var s in _searchers)
+            {
+                Assert.AreEqual(matchId, s.Ticket!.MatchId, s.Name + " landed at the same table");
+                s.Client = new TableClient(s.Gateway, s.Ticket, s.Session.Current!.UserId, DateTimeOffset.UtcNow.ToUnixTimeMilliseconds());
+                var captured = s;
+                s.Client.Model.Changed += () => Act(captured);
+                Assert.IsTrue((await s.Gateway.EnterAsync(s.Ticket, default)).IsOk, s.Name + " enter");
+            }
+
+            await WaitFor(() => _searchers.TrueForAll(s => s.Client!.Model.Code.Length > 0), 15f, "table_state named the table");
+            Assert.IsTrue(_searchers[0].Client!.Model.IsRanked);
+            Assert.IsFalse(_searchers[0].Client!.Model.CardMemoryAssist, "no card memory in Ranked");
+            await WaitFor(() => _searchers.TrueForAll(s => s.Client!.Model.LastResult != null), 180f, "the ranked round ended");
+            var ratings = new List<int>();
+            foreach (var s in _searchers)
+            {
+                var after = await new NakamaRankedService(s.Connection).CardAsync(default);
+                Assert.IsTrue(after.IsOk);
+                Assert.AreEqual(1, after.Value.PlacementPlayed, s.Name + " played one placement round");
+                ratings.Add(after.Value.Rating);
+            }
+
+            Assert.IsTrue(ratings.Exists(r => r > 1200) && ratings.Exists(r => r < 1200), "ratings moved both ways");
+        }
+
         private static void Act(Searcher s)
         {
             var model = s.Client!.Model;
