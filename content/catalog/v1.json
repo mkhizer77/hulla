@@ -1,0 +1,331 @@
+{
+  "schema": "../../tools/content-schemas/catalog.schema.json",
+  "id": "catalog-v1",
+  "version": 1,
+  "items": [
+    {
+      "id": "back_classic_blue",
+      "name": "item.back_classic_blue",
+      "category": "cardBack",
+      "rarity": "common",
+      "price": {},
+      "address": "cards-classic/back-blue",
+      "starter": true
+    },
+    {
+      "id": "back_classic_red",
+      "name": "item.back_classic_red",
+      "category": "cardBack",
+      "rarity": "common",
+      "price": {
+        "coins": 500
+      },
+      "address": "cards-classic/back-red"
+    },
+    {
+      "id": "back_ajrak",
+      "name": "item.back_ajrak",
+      "category": "cardBack",
+      "rarity": "common",
+      "price": {
+        "coins": 600
+      },
+      "address": "cards-desi/back-ajrak"
+    },
+    {
+      "id": "back_chunri",
+      "name": "item.back_chunri",
+      "category": "cardBack",
+      "rarity": "common",
+      "price": {
+        "coins": 600
+      },
+      "address": "cards-desi/back-chunri"
+    },
+    {
+      "id": "back_truck_art",
+      "name": "item.back_truck_art",
+      "category": "cardBack",
+      "rarity": "rare",
+      "price": {
+        "coins": 1000
+      },
+      "address": "cards-desi/back-truck-art"
+    },
+    {
+      "id": "back_phulkari",
+      "name": "item.back_phulkari",
+      "category": "cardBack",
+      "rarity": "rare",
+      "price": {
+        "coins": 900
+      },
+      "address": "cards-desi/back-phulkari"
+    },
+    {
+      "id": "back_kites",
+      "name": "item.back_kites",
+      "category": "cardBack",
+      "rarity": "rare",
+      "price": {
+        "coins": 1000
+      },
+      "address": "cards-desi/back-kites"
+    },
+    {
+      "id": "back_jaali",
+      "name": "item.back_jaali",
+      "category": "cardBack",
+      "rarity": "epic",
+      "price": {
+        "gems": 300
+      },
+      "address": "cards-desi/back-jaali"
+    },
+    {
+      "id": "back_minar",
+      "name": "item.back_minar",
+      "category": "cardBack",
+      "rarity": "epic",
+      "price": {
+        "gems": 350
+      },
+      "address": "cards-desi/back-minar"
+    },
+    {
+      "id": "back_mughal",
+      "name": "item.back_mughal",
+      "category": "cardBack",
+      "rarity": "epic",
+      "price": {
+        "gems": 400
+      },
+      "address": "cards-desi/back-mughal"
+    },
+    {
+      "id": "back_monsoon",
+      "name": "item.back_monsoon",
+      "category": "cardBack",
+      "rarity": "legendary",
+      "price": {
+        "gems": 600
+      },
+      "address": "cards-desi/back-monsoon"
+    },
+    {
+      "id": "back_diwali",
+      "name": "item.back_diwali",
+      "category": "cardBack",
+      "rarity": "legendary",
+      "price": {
+        "gems": 600
+      },
+      "address": "cards-desi/back-diwali"
+    },
+    {
+      "id": "face_classic",
+      "name": "item.face_classic",
+      "category": "cardFace",
+      "rarity": "common",
+      "price": {},
+      "address": "cards-classic/face-classic",
+      "starter": true
+    },
+    {
+      "id": "face_large_index",
+      "name": "item.face_large_index",
+      "category": "cardFace",
+      "rarity": "common",
+      "price": {
+        "coins": 500
+      },
+      "address": "cards-classic/face-large-index"
+    },
+    {
+      "id": "face_desi_court",
+      "name": "item.face_desi_court",
+      "category": "cardFace",
+      "rarity": "epic",
+      "price": {
+        "gems": 450
+      },
+      "address": "cards-desi/face-court"
+    },
+    {
+      "id": "table_charpai",
+      "name": "item.table_charpai",
+      "category": "table",
+      "rarity": "common",
+      "price": {},
+      "address": "tables/charpai",
+      "starter": true
+    },
+    {
+      "id": "table_dastarkhwan",
+      "name": "item.table_dastarkhwan",
+      "category": "table",
+      "rarity": "common",
+      "price": {
+        "coins": 2000
+      },
+      "address": "tables/dastarkhwan"
+    },
+    {
+      "id": "table_truck_art",
+      "name": "item.table_truck_art",
+      "category": "table",
+      "rarity": "rare",
+      "price": {
+        "coins": 3500
+      },
+      "address": "tables/truck-art"
+    },
+    {
+      "id": "table_marble",
+      "name": "item.table_marble",
+      "category": "table",
+      "rarity": "rare",
+      "price": {
+        "coins": 4000
+      },
+      "address": "tables/marble"
+    },
+    {
+      "id": "table_lahore_rooftop",
+      "name": "item.table_lahore_rooftop",
+      "category": "table",
+      "rarity": "epic",
+      "price": {
+        "gems": 800
+      },
+      "address": "tables/lahore-rooftop"
+    },
+    {
+      "id": "table_karachi_beach_hut",
+      "name": "item.table_karachi_beach_hut",
+      "category": "table",
+      "rarity": "epic",
+      "price": {
+        "gems": 900
+      },
+      "address": "tables/karachi-beach-hut"
+    },
+    {
+      "id": "table_dhaka_rickshaw",
+      "name": "item.table_dhaka_rickshaw",
+      "category": "table",
+      "rarity": "epic",
+      "price": {
+        "gems": 900
+      },
+      "address": "tables/dhaka-rickshaw"
+    },
+    {
+      "id": "table_basant_night",
+      "name": "item.table_basant_night",
+      "category": "table",
+      "rarity": "legendary",
+      "price": {
+        "gems": 1200
+      },
+      "address": "tables/basant-night",
+      "season": "basant"
+    },
+    {
+      "id": "emotes_launch",
+      "name": "item.emotes_launch",
+      "category": "emotePack",
+      "rarity": "common",
+      "price": {},
+      "address": "emotes/launch",
+      "starter": true
+    },
+    {
+      "id": "emotes_cricket",
+      "name": "item.emotes_cricket",
+      "category": "emotePack",
+      "rarity": "rare",
+      "price": {
+        "coins": 1500
+      },
+      "address": "emotes/cricket"
+    },
+    {
+      "id": "emotes_shaadi",
+      "name": "item.emotes_shaadi",
+      "category": "emotePack",
+      "rarity": "epic",
+      "price": {
+        "gems": 300
+      },
+      "address": "emotes/shaadi"
+    },
+    {
+      "id": "vo_urdu_classic",
+      "name": "item.vo_urdu_classic",
+      "category": "voPack",
+      "rarity": "common",
+      "price": {},
+      "address": "vo-urdu-classic/pack",
+      "starter": true
+    },
+    {
+      "id": "vo_punjabi_banter",
+      "name": "item.vo_punjabi_banter",
+      "category": "voPack",
+      "rarity": "epic",
+      "price": {
+        "gems": 450
+      },
+      "address": "vo-punjabi-banter/pack"
+    },
+    {
+      "id": "celebration_thappad",
+      "name": "item.celebration_thappad",
+      "category": "celebration",
+      "rarity": "common",
+      "price": {},
+      "address": "ui-core/celebration-thappad",
+      "starter": true
+    },
+    {
+      "id": "celebration_dhol",
+      "name": "item.celebration_dhol",
+      "category": "celebration",
+      "rarity": "rare",
+      "price": {
+        "coins": 1800
+      },
+      "address": "ui-core/celebration-dhol"
+    },
+    {
+      "id": "celebration_patakha",
+      "name": "item.celebration_patakha",
+      "category": "celebration",
+      "rarity": "epic",
+      "price": {
+        "gems": 500
+      },
+      "address": "ui-core/celebration-patakha"
+    },
+    {
+      "id": "sounds_classic",
+      "name": "item.sounds_classic",
+      "category": "soundSet",
+      "rarity": "common",
+      "price": {},
+      "address": "audio-sfx/classic",
+      "starter": true
+    },
+    {
+      "id": "sounds_dhaba",
+      "name": "item.sounds_dhaba",
+      "category": "soundSet",
+      "rarity": "rare",
+      "price": {
+        "coins": 1500
+      },
+      "address": "audio-sfx/dhaba"
+    }
+  ]
+}

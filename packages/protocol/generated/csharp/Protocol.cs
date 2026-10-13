@@ -1175,6 +1175,13 @@ namespace Hulla.Protocol
         [JsonProperty("connected", Required = Required.Always)]
         public bool Connected { get; set; }
 
+        /// <summary>
+        /// What the seat has equipped for this table, by catalog category; null until the inventory
+        /// is read
+        /// </summary>
+        [JsonProperty("cosmetics")]
+        public Cosmetics? Cosmetics { get; set; }
+
         [JsonProperty("displayName", Required = Required.AllowNull)]
         public string? DisplayName { get; set; }
 
@@ -1192,6 +1199,27 @@ namespace Hulla.Protocol
 
         [JsonProperty("seat", Required = Required.Always)]
         public long SeatSeat { get; set; }
+    }
+
+    public partial class Cosmetics
+    {
+        [JsonProperty("cardBack", Required = Required.DisallowNull, NullValueHandling = NullValueHandling.Ignore)]
+        public string? CardBack { get; set; }
+
+        [JsonProperty("cardFace", Required = Required.DisallowNull, NullValueHandling = NullValueHandling.Ignore)]
+        public string? CardFace { get; set; }
+
+        [JsonProperty("celebration", Required = Required.DisallowNull, NullValueHandling = NullValueHandling.Ignore)]
+        public string? Celebration { get; set; }
+
+        [JsonProperty("emotePack", Required = Required.DisallowNull, NullValueHandling = NullValueHandling.Ignore)]
+        public string? EmotePack { get; set; }
+
+        [JsonProperty("soundSet", Required = Required.DisallowNull, NullValueHandling = NullValueHandling.Ignore)]
+        public string? SoundSet { get; set; }
+
+        [JsonProperty("table", Required = Required.DisallowNull, NullValueHandling = NullValueHandling.Ignore)]
+        public string? Table { get; set; }
     }
 
     /// <summary>

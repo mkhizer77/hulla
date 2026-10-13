@@ -1,5 +1,6 @@
 import achievements from "../../../../content/achievements/v1.json";
 import avatars from "../../../../content/avatars/v1.json";
+import catalog from "../../../../content/catalog/v1.json";
 import chatFilters from "../../../../content/chat-filters/v1.json";
 import dailyRewards from "../../../../content/daily-rewards/v1.json";
 import emotes from "../../../../content/emotes/v1.json";
@@ -18,6 +19,7 @@ import quickChat from "../../../../content/quick-chat/v1.en.json";
 export const CONTENT_FILES: Readonly<Record<string, object>> = {
   "achievements/v1.json": achievements,
   "avatars/v1.json": avatars,
+  "catalog/v1.json": catalog,
   "chat-filters/v1.json": chatFilters,
   "daily-rewards/v1.json": dailyRewards,
   "emotes/v1.json": emotes,

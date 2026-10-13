@@ -29,6 +29,7 @@ import { rpcAccountMerge, rpcAccountMergePrepare } from "./rpc/account_merge";
 import { rpcAchievementsGet, rpcAchievementsSet } from "./rpc/achievements";
 import {
   rpcAdminAuditList,
+  rpcAdminGrant,
   rpcAdminRoundReplay,
   rpcAdminSanction,
   rpcAdminTableInspect,
@@ -57,6 +58,12 @@ import {
 import { rpcPresenceSet, rpcTableListFriends } from "./rpc/presence";
 import { rpcPresetsGet } from "./rpc/presets_get";
 import { rpcProfileGet, rpcProfileUpdate } from "./rpc/profile";
+import {
+  rpcCatalogSet,
+  rpcEconomyCatalog,
+  rpcEconomyPurchase,
+  rpcInventoryEquip,
+} from "./rpc/shop";
 import {
   rpcFavouriteSet,
   rpcFriendAddByCode,
@@ -130,6 +137,16 @@ function InitModule(
   initializer.registerRpc("content_get", rpcContentGet);
   initializer.registerRpc("config_get", rpcConfigGet);
   initializer.registerRpc("config_set", rpcConfigSet);
+  initializer.registerRpc("economy_catalog", rpcEconomyCatalog);
+  initializer.registerRpc("economy_purchase", rpcEconomyPurchase);
+  initializer.registerRpc("inventory_equip", rpcInventoryEquip);
+  initializer.registerRpc("catalog_set", rpcCatalogSet);
+  initializer.registerRpc("admin_grant", rpcAdminGrant);
+  initializer.registerRpc("economy_catalog", rpcEconomyCatalog);
+  initializer.registerRpc("economy_purchase", rpcEconomyPurchase);
+  initializer.registerRpc("inventory_equip", rpcInventoryEquip);
+  initializer.registerRpc("catalog_set", rpcCatalogSet);
+  initializer.registerRpc("admin_grant", rpcAdminGrant);
   initializer.registerLeaderboardReset(onLeaderboardReset);
   ensureLeaderboards(nk, logger);
   initializer.registerBeforeAuthenticateDevice(beforeAuthenticateDevice);
