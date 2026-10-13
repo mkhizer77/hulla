@@ -67,6 +67,8 @@ describe("InitModule", () => {
       "achievements_set",
       "content_manifest",
       "content_get",
+      "config_get",
+      "config_set",
     ]);
     expect([...matches.keys()]).toEqual(["thulla"]);
     expect(hooks.get("rtBefore:ChannelMessageSend")?.name).toBe("beforeChannelMessageSend");
@@ -99,7 +101,11 @@ describe("InitModule", () => {
     expect(callbacks.every((fn) => fn.name.startsWith("thullaMatch"))).toBe(true);
     const rpc = rpcs.get("hello");
     const body = rpc?.({} as nkruntime.Context, fakeLogger(), fakeNk(), "");
-    expect(JSON.parse(String(body))).toMatchObject({ ok: true, protocolMajor: 1 });
+    expect(JSON.parse(String(body))).toMatchObject({
+      ok: true,
+      protocolMajor: 1,
+      minClientVersion: "0.1.0",
+    });
     expect(lines[0]).toMatchObject({
       level: "info",
       message: "Hulla runtime loaded",
