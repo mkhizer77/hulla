@@ -30,7 +30,8 @@ namespace Hulla.Composition
 
         public string ServerKey { get; }
 
-        public string HostAndPort => Port == DefaultPort ? Host : Host + ":" + Port;
+        /// <summary>Always with the port, so the server field shows exactly where the client connects.</summary>
+        public string HostAndPort => Host + ":" + Port;
 
         public static AppConfig Local() => new AppConfig("http", "127.0.0.1", DefaultPort, "local-only-server-key");
 
