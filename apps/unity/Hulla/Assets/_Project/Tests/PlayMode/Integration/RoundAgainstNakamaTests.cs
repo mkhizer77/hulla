@@ -201,6 +201,28 @@ namespace Hulla.Integration.Tests
                 CollectionAssert.AreEqual(first.EscapeOrder, result.EscapeOrder);
                 Debug.Log($"{player.Name}: {player.Plays} plays, bhabhi seat {result.BhabhiSeat}");
             }
+
+            if (!dropOne)
+            {
+                // Each player is paid for the round (GDD 12.2, 12.3) through the ledger.
+                foreach (var player in _players)
+                {
+                    var progress = new Hulla.Application.ViewModels.ProgressViewModel(new NakamaProgressService(player.Connection));
+                    for (var attempt = 0; attempt < 5 && progress.RewardFor(first.RoundId) == null; attempt++)
+                    {
+                        await progress.RefreshAsync(0, default);
+                        if (progress.RewardFor(first.RoundId) == null)
+                        {
+                            await Awaitable.WaitForSecondsAsync(0.5f);
+                        }
+                    }
+
+                    var reward = progress.RewardFor(first.RoundId);
+                    Assert.IsNotNull(reward, player.Name + " was paid for the round");
+                    Assert.Greater(reward!.Xp, 0, player.Name + " got XP");
+                    Assert.AreEqual(reward.Coins, progress.Coins, player.Name + "'s wallet holds the round's coins");
+                }
+            }
         }
 
         /// <summary>The scripted policy: play the first legal card, otherwise take the hand when offered.</summary>

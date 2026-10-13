@@ -703,6 +703,8 @@ namespace Hulla.Games.Thulla
 
         private void RefreshResults() => _results.Show(_client.Model, _voted);
 
+        public void ShowReward(string? text) => _results.ShowReward(text);
+
         /// <summary>Lets the results offer "Add friend" for co-players who aren't friends or pending yet.</summary>
         public void SetFriendActions(Func<string, bool> canAdd, Action<string> addFriend)
         {

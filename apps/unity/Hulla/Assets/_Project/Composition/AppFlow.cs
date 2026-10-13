@@ -122,9 +122,13 @@ namespace Hulla.Composition
             _screen = Screen.Home;
             var root = _shell.Show(_shell.Catalog.Home);
             var server = Debug.isDebugBuild ? _app.Config.HostAndPort : null;
-            _view = new HomeView(root, _app.Home, server, OnCreate, OnJoin, OnQuickPlay, OpenSettings, OnFriends, OnProfile, _app.HomeFriends, () => StartTutorial(false), TutorialText.HowToPlay, OnWatch);
+            _view = new HomeView(root, _app.Home, server, OnCreate, OnJoin, OnQuickPlay, OpenSettings, OnFriends, OnProfile, _app.HomeFriends, () => StartTutorial(false), TutorialText.HowToPlay, OnWatch, _app.Progress);
             _app.HomeFriends.Active = _app.Sessions.Current != null;
             _app.HomeFriends.RefreshSoon();
+            if (_app.Sessions.Current != null)
+            {
+                _ = _app.Progress.RefreshAsync(LocalOffsetMinutes(), _app.Lifetime);
+            }
         }
 
         private async void OnCreate(string name, string? server)
@@ -224,6 +228,11 @@ namespace Hulla.Composition
         private async void SignInQuietly()
         {
             var signedIn = await _app.Home.SignInAsync(_app.Home.LastName, _app.Lifetime);
+            if (signedIn.IsOk)
+            {
+                await _app.Progress.RefreshAsync(LocalOffsetMinutes(), _app.Lifetime);
+            }
+
             if (signedIn.IsOk && _screen == Screen.Home)
             {
                 _app.HomeFriends.Active = true;
@@ -404,6 +413,7 @@ namespace Hulla.Composition
             if (model.LastResult != null && model.LastResult.RoundId != _friendsForRound)
             {
                 _friendsForRound = model.LastResult.RoundId;
+                ShowReward(model.LastResult.RoundId);
                 new ThullaHints(_app.Store).RoundEnded();
                 OfferFriends();
             }
@@ -488,6 +498,31 @@ namespace Hulla.Composition
             var shared = _app.ShareSheet.Share(UiText.ShareTitle, string.Format(UiText.ShareText, code));
             _app.Analytics.Track(AnalyticsEvents.InviteSent(shared ? "share" : "copy"));
             return shared;
+        }
+
+        private static int LocalOffsetMinutes() => (int)TimeZoneInfo.Local.GetUtcOffset(DateTime.Now).TotalMinutes;
+
+        /// <summary>The server pays at round end; the reward line appears once progress_get carries this round.</summary>
+        private async void ShowReward(string roundId)
+        {
+            for (var attempt = 0; attempt < 4; attempt++)
+            {
+                await _app.Progress.RefreshAsync(LocalOffsetMinutes(), _app.Lifetime);
+                var reward = _app.Progress.RewardFor(roundId);
+                if (reward != null)
+                {
+                    var text = string.Format(UiText.RewardLine, reward.Xp, reward.Coins) + (reward.Capped ? UiText.RewardCapped : "");
+                    if (reward.LevelTo > reward.LevelFrom)
+                    {
+                        text += "\n" + string.Format(UiText.LevelUp, reward.LevelFrom, reward.LevelTo);
+                    }
+
+                    _tableView?.ShowReward(text);
+                    return;
+                }
+
+                await Awaitable.WaitForSecondsAsync(1f, _app.Lifetime);
+            }
         }
 
         private void OnText(TextLine line)

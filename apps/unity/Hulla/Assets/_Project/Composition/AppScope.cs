@@ -38,6 +38,7 @@ namespace Hulla.Composition
             HomeFriends = new HomeFriendsViewModel(social);
             Mutes = new Hulla.Application.Social.MuteList(social);
             Account = new NakamaAccountService(_connection);
+            Progress = new ProgressViewModel(new NakamaProgressService(_connection));
             Friends = new FriendsViewModel(social);
             Profile = new ProfileViewModel(social);
             QuickPlay = new QuickPlayViewModel(_matchmaker);
@@ -70,6 +71,8 @@ namespace Hulla.Composition
         public Hulla.Application.Social.MuteList Mutes { get; }
 
         public IAccountService Account { get; }
+
+        public ProgressViewModel Progress { get; }
 
         public Hulla.Application.Analytics.AnalyticsClient Analytics { get; } = new Hulla.Application.Analytics.AnalyticsClient(new Hulla.Infrastructure.Analytics.LogAnalyticsSink());
 

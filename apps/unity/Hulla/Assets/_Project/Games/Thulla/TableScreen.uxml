@@ -59,6 +59,7 @@
         <ui:VisualElement name="results" class="results">
             <ui:VisualElement class="panel results__panel">
                 <ui:Label name="result-title" class="title title--small" />
+                <ui:Label name="result-reward" class="turn result-reward" />
                 <ui:VisualElement name="result-order" class="results__order" />
                 <ui:Button name="play-again" class="button button--primary" />
                 <ui:Label name="result-status" class="status" />
