@@ -111,6 +111,9 @@ namespace Hulla.Protocol
         [JsonProperty("profileUpdate", Required = Required.DisallowNull, NullValueHandling = NullValueHandling.Ignore)]
         public ProfileUpdate? ProfileUpdate { get; set; }
 
+        [JsonProperty("pushData", Required = Required.DisallowNull, NullValueHandling = NullValueHandling.Ignore)]
+        public PushData? PushData { get; set; }
+
         [JsonProperty("quickChatPayload", Required = Required.DisallowNull, NullValueHandling = NullValueHandling.Ignore)]
         public QuickChat? QuickChatPayload { get; set; }
 
@@ -158,6 +161,9 @@ namespace Hulla.Protocol
 
         [JsonProperty("tableClosedPayload", Required = Required.DisallowNull, NullValueHandling = NullValueHandling.Ignore)]
         public TableClosed? TableClosedPayload { get; set; }
+
+        [JsonProperty("tableInviteNotice", Required = Required.DisallowNull, NullValueHandling = NullValueHandling.Ignore)]
+        public TableInvite? TableInviteNotice { get; set; }
 
         [JsonProperty("tableStatePayload", Required = Required.DisallowNull, NullValueHandling = NullValueHandling.Ignore)]
         public TableState? TableStatePayload { get; set; }
@@ -704,6 +710,32 @@ namespace Hulla.Protocol
         public ProfilePrivacy? Privacy { get; set; }
     }
 
+    /// <summary>
+    /// The data block of every push; values are strings as FCM requires. The title and body
+    /// travel as localisation keys (push.&lt;type&gt;.title, push.&lt;type&gt;.body) with their arguments,
+    /// so the device renders them in its own language.
+    /// </summary>
+    public partial class PushData
+    {
+        [JsonProperty("code", Required = Required.DisallowNull, NullValueHandling = NullValueHandling.Ignore)]
+        public string? Code { get; set; }
+
+        [JsonProperty("fromUserId", Required = Required.DisallowNull, NullValueHandling = NullValueHandling.Ignore)]
+        public string? FromUserId { get; set; }
+
+        [JsonProperty("matchId", Required = Required.DisallowNull, NullValueHandling = NullValueHandling.Ignore)]
+        public string? MatchId { get; set; }
+
+        [JsonProperty("route", Required = Required.Always)]
+        public PushRoute Route { get; set; }
+
+        [JsonProperty("seasonId", Required = Required.DisallowNull, NullValueHandling = NullValueHandling.Ignore)]
+        public string? SeasonId { get; set; }
+
+        [JsonProperty("type", Required = Required.Always)]
+        public PushType Type { get; set; }
+    }
+
     public partial class QuickChat
     {
         [JsonProperty("pack", Required = Required.DisallowNull, NullValueHandling = NullValueHandling.Ignore)]
@@ -1247,6 +1279,37 @@ namespace Hulla.Protocol
         public TableClosedPayloadReason Reason { get; set; }
     }
 
+    /// <summary>
+    /// Content of in-app notification 1004: the Join action joins by code, and a table that has
+    /// closed answers table.not_found, so the invite expires with the table (GDD 10.5)
+    /// </summary>
+    public partial class TableInvite
+    {
+        [JsonProperty("code", Required = Required.Always)]
+        public string Code { get; set; }
+
+        [JsonProperty("fromName", Required = Required.Always)]
+        public string FromName { get; set; }
+
+        [JsonProperty("fromUserId", Required = Required.Always)]
+        public string FromUserId { get; set; }
+
+        [JsonProperty("gameId", Required = Required.Always)]
+        public string GameId { get; set; }
+
+        [JsonProperty("matchId", Required = Required.Always)]
+        public string MatchId { get; set; }
+
+        [JsonProperty("mode", Required = Required.Always)]
+        public TableMode Mode { get; set; }
+
+        [JsonProperty("openSeats", Required = Required.Always)]
+        public long OpenSeats { get; set; }
+
+        [JsonProperty("sentTs", Required = Required.Always)]
+        public long SentTs { get; set; }
+    }
+
     public partial class TakeHand
     {
         [JsonProperty("clientSeq", Required = Required.Always)]
@@ -1337,6 +1400,13 @@ namespace Hulla.Protocol
 
     public enum Visibility { Everyone, Friends };
 
+    /// <summary>
+    /// The screen a tap opens (GDD 10.10)
+    /// </summary>
+    public enum PushRoute { Friends, Home, Lobby, Pass };
+
+    public enum PushType { DailyReward, FriendOnline, FriendRequest, SeasonEnd, TableInvite };
+
     public enum GameId { Rung, Thulla };
 
     public enum Preset { ClassicPagat, Family, Hardcore, Standard };
@@ -1403,6 +1473,8 @@ namespace Hulla.Protocol
                 StatusConverter.Singleton,
                 SourceConverter.Singleton,
                 VisibilityConverter.Singleton,
+                PushRouteConverter.Singleton,
+                PushTypeConverter.Singleton,
                 GameIdConverter.Singleton,
                 PresetConverter.Singleton,
                 DirectionConverter.Singleton,
@@ -1917,6 +1989,113 @@ namespace Hulla.Protocol
         }
 
         public static readonly VisibilityConverter Singleton = new VisibilityConverter();
+    }
+
+    internal class PushRouteConverter : JsonConverter
+    {
+        public override bool CanConvert(Type t) => t == typeof(PushRoute) || t == typeof(PushRoute?);
+
+        public override object ReadJson(JsonReader reader, Type t, object existingValue, JsonSerializer serializer)
+        {
+            if (reader.TokenType == JsonToken.Null) return null;
+            var value = serializer.Deserialize<string>(reader);
+            switch (value)
+            {
+                case "friends":
+                    return PushRoute.Friends;
+                case "home":
+                    return PushRoute.Home;
+                case "lobby":
+                    return PushRoute.Lobby;
+                case "pass":
+                    return PushRoute.Pass;
+            }
+            throw new Exception("Cannot unmarshal type PushRoute");
+        }
+
+        public override void WriteJson(JsonWriter writer, object untypedValue, JsonSerializer serializer)
+        {
+            if (untypedValue == null)
+            {
+                serializer.Serialize(writer, null);
+                return;
+            }
+            var value = (PushRoute)untypedValue;
+            switch (value)
+            {
+                case PushRoute.Friends:
+                    serializer.Serialize(writer, "friends");
+                    return;
+                case PushRoute.Home:
+                    serializer.Serialize(writer, "home");
+                    return;
+                case PushRoute.Lobby:
+                    serializer.Serialize(writer, "lobby");
+                    return;
+                case PushRoute.Pass:
+                    serializer.Serialize(writer, "pass");
+                    return;
+            }
+            throw new Exception("Cannot marshal type PushRoute");
+        }
+
+        public static readonly PushRouteConverter Singleton = new PushRouteConverter();
+    }
+
+    internal class PushTypeConverter : JsonConverter
+    {
+        public override bool CanConvert(Type t) => t == typeof(PushType) || t == typeof(PushType?);
+
+        public override object ReadJson(JsonReader reader, Type t, object existingValue, JsonSerializer serializer)
+        {
+            if (reader.TokenType == JsonToken.Null) return null;
+            var value = serializer.Deserialize<string>(reader);
+            switch (value)
+            {
+                case "daily_reward":
+                    return PushType.DailyReward;
+                case "friend_online":
+                    return PushType.FriendOnline;
+                case "friend_request":
+                    return PushType.FriendRequest;
+                case "season_end":
+                    return PushType.SeasonEnd;
+                case "table_invite":
+                    return PushType.TableInvite;
+            }
+            throw new Exception("Cannot unmarshal type PushType");
+        }
+
+        public override void WriteJson(JsonWriter writer, object untypedValue, JsonSerializer serializer)
+        {
+            if (untypedValue == null)
+            {
+                serializer.Serialize(writer, null);
+                return;
+            }
+            var value = (PushType)untypedValue;
+            switch (value)
+            {
+                case PushType.DailyReward:
+                    serializer.Serialize(writer, "daily_reward");
+                    return;
+                case PushType.FriendOnline:
+                    serializer.Serialize(writer, "friend_online");
+                    return;
+                case PushType.FriendRequest:
+                    serializer.Serialize(writer, "friend_request");
+                    return;
+                case PushType.SeasonEnd:
+                    serializer.Serialize(writer, "season_end");
+                    return;
+                case PushType.TableInvite:
+                    serializer.Serialize(writer, "table_invite");
+                    return;
+            }
+            throw new Exception("Cannot marshal type PushType");
+        }
+
+        public static readonly PushTypeConverter Singleton = new PushTypeConverter();
     }
 
     internal class GameIdConverter : JsonConverter

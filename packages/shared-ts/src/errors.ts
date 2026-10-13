@@ -36,6 +36,7 @@ export const ErrorCodes = {
     invalidPayload: "table.invalid_payload",
     notAuthorised: "table.not_authorised",
     draining: "table.draining",
+    notSeated: "table.not_seated",
   },
   auth: {
     sessionExpired: "auth.session_expired",

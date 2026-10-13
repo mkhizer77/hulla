@@ -3,6 +3,7 @@ import { ErrorCodes, ruleError } from "@hulla/shared-ts";
 import { emitAnalyticsSafely } from "../services/analytics";
 import { isBlockedEitherWay, nkBlockStore } from "../services/blocks";
 import { nkProfileStore } from "../services/profiles";
+import { notifyFriendRequest } from "../services/push_triggers";
 import {
   addFriendByCode,
   nkFriendPorts,
@@ -37,7 +38,14 @@ export function rpcFriendAddByCode(
     ctx.userId ?? null,
     typeof code === "string" ? code : "",
   );
-  if (added.ok) emitAnalyticsSafely(logger, "friend_add", { source: "code" });
+  if (added.ok) {
+    emitAnalyticsSafely(logger, "friend_add", { source: "code" });
+    try {
+      notifyFriendRequest(nk, logger, ctx.env, ctx.userId ?? "", added.userId, Date.now());
+    } catch {
+      // the push is best effort; Nakama's in-app notice already went
+    }
+  }
   return JSON.stringify(added);
 }
 

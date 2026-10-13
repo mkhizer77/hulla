@@ -236,7 +236,7 @@ describe("missions (GDD 12.5)", () => {
       Date.now(),
     );
     expect(changed).toBe(true);
-    expect(m.notifications).toEqual([{ userId: "u1", subject: "missions_progress" }]);
+    expect(m.notifications).toMatchObject([{ userId: "u1", subject: "missions_progress" }]);
     const after = parse(rpcMissionsGet(ctxFor("u1"), log, m.nk, "{}"));
     const weekly = after["weekly"] as { id: string; progress: number }[];
     expect(weekly.find((w) => w.id === "w_rounds_15")?.progress).toBe(1);

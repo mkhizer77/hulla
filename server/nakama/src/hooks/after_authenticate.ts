@@ -5,15 +5,27 @@ import { noteDailyRewardReady } from "../services/daily_reward";
 import { nkPresenceStore, touch } from "../services/presence";
 import { bootstrapProfile, nkProfileStore } from "../services/profiles";
 import { forDay, nkProgressStore, touchLogin } from "../services/progression";
+import { STILL_ONLINE_MS } from "../services/push";
+import { notifyFavouriteOnline } from "../services/push_triggers";
 
 /** Every sign-in path lands here: a first sign-in gets a profile and its friend code (ARCHITECTURE 8.10). */
 function bootstrap(ctx: nkruntime.Context, logger: nkruntime.Logger, nk: nkruntime.Nakama): void {
   const userId = ctx.userId;
   if (userId === undefined || userId === "") return;
+  const now = Date.now();
+  let recentlySeen = true;
   try {
-    touch(nkPresenceStore(nk), userId, Date.now());
+    const presence = nkPresenceStore(nk);
+    const before = presence.read(userId);
+    recentlySeen = before.lastSeenTs > 0 && now - before.lastSeenTs < STILL_ONLINE_MS;
+    touch(presence, userId, now);
   } catch (error: unknown) {
     log.warn(logger, "presence not touched", { error: String(error) });
+  }
+  try {
+    notifyFavouriteOnline(nk, logger, ctx.env, userId, now, recentlySeen);
+  } catch (error: unknown) {
+    log.warn(logger, "favourite online push not sent", { error: String(error) });
   }
   try {
     const progress = nkProgressStore(nk);

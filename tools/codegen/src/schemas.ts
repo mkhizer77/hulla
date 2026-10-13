@@ -91,6 +91,10 @@ export function buildRoot(opcodes: readonly OpcodeEntry[]): JsonSchema {
     profileStats: { $ref: `${PROTOCOL_BASE}shell/profile.json#/definitions/profileStats` },
     profileUpdate: { $ref: `${PROTOCOL_BASE}shell/profile.json#/definitions/profile_update` },
     profileGet: { $ref: `${PROTOCOL_BASE}shell/profile.json#/definitions/profile_get` },
+    pushData: { $ref: `${PROTOCOL_BASE}shell/notifications.json#/definitions/pushData` },
+    tableInviteNotice: {
+      $ref: `${PROTOCOL_BASE}shell/notifications.json#/definitions/table_invite`,
+    },
   };
   for (const entry of opcodes) {
     properties[`${camel(entry.type)}Payload`] = { $ref: entryRef(entry) };

@@ -7,11 +7,20 @@ export const NAKAMA_PORT = process.env["HULLA_NAKAMA_PORT"] ?? "7350";
 export const SERVER_KEY = process.env["HULLA_NAKAMA_SERVER_KEY"] ?? "local-only-server-key";
 
 /** A scripted client: records every envelope it receives and can wait for the next matching one. */
+/** What the socket delivers from `nk.notificationSend` (the in-app notices). */
+export interface ReceivedNotification {
+  readonly code?: number;
+  readonly subject?: string;
+  readonly content?: unknown;
+  readonly sender_id?: string;
+}
+
 export interface ScriptedClient {
   readonly name: string;
   readonly session: Session;
   readonly socket: Socket;
   readonly received: MessageEnvelope[];
+  readonly notifications: ReceivedNotification[];
   send(matchId: string, type: string, opcode: number, payload: object): Promise<void>;
   next(
     predicate: (envelope: MessageEnvelope) => boolean,
@@ -35,6 +44,10 @@ export async function scriptedClient(name: string, suffix: string): Promise<Scri
   );
   const socket = client.createSocket(false, false);
   const received: MessageEnvelope[] = [];
+  const notifications: ReceivedNotification[] = [];
+  socket.onnotification = (notification) => {
+    notifications.push(notification);
+  };
   const waiters: {
     predicate: (e: MessageEnvelope) => boolean;
     resolve: (e: MessageEnvelope) => void;
@@ -57,6 +70,7 @@ export async function scriptedClient(name: string, suffix: string): Promise<Scri
     session,
     socket,
     received,
+    notifications,
     async send(matchId, type, opcode, payload) {
       clientSeq += 1;
       const envelope: MessageEnvelope = {

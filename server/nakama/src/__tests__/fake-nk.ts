@@ -83,6 +83,9 @@ export function fakeInitializer(): FakeInitializer {
     registerAfterAuthenticateCustom: (fn: (...args: unknown[]) => unknown) => {
       hooks.set("afterAuthenticateCustom", fn);
     },
+    registerAfterAddFriends: (fn: (...args: unknown[]) => unknown) => {
+      hooks.set("afterAddFriends", fn);
+    },
   } as unknown as nkruntime.Initializer;
   return { rpcs, matches, hooks, initializer };
 }
@@ -149,7 +152,26 @@ export interface MemoryNk {
   readonly deleted: string[];
   readonly loggedOut: string[];
   readonly signals: { matchId: string; data: string }[];
-  readonly notifications: { userId: string; subject: string }[];
+  readonly notifications: {
+    userId: string;
+    subject: string;
+    code: number;
+    content: Record<string, unknown>;
+    senderId: string | null;
+  }[];
+  /** Every `httpRequest`, for assertions; `http` answers them (a 200 for Google by default). */
+  readonly requests: {
+    url: string;
+    method: string;
+    headers: Record<string, string>;
+    body: string;
+  }[];
+  http: (
+    url: string,
+    method: string,
+    headers: Record<string, string>,
+    body: string,
+  ) => { code: number; headers: string[]; body: string };
   /** leaderboard id -> owner -> record; `expiry` groups the periods. */
   readonly boards: Map<
     string,
@@ -191,7 +213,18 @@ export function memoryNk(): MemoryNk {
   const deleted: string[] = [];
   const loggedOut: string[] = [];
   const signals: { matchId: string; data: string }[] = [];
-  const notifications: { userId: string; subject: string }[] = [];
+  const notifications: MemoryNk["notifications"][number][] = [];
+  const requests: MemoryNk["requests"][number][] = [];
+  const self: { http: MemoryNk["http"] } = {
+    http: (url) => ({
+      code: 200,
+      headers: [],
+      body:
+        url === "https://oauth2.googleapis.com/token"
+          ? JSON.stringify({ access_token: "at-1", expires_in: 3600 })
+          : JSON.stringify({ name: "projects/test/messages/1" }),
+    }),
+  };
   const boards = new Map<
     string,
     Map<
@@ -425,8 +458,20 @@ export function memoryNk(): MemoryNk {
     },
     streamCount: (stream: { subject?: string }) =>
       stream.subject !== undefined && online.has(stream.subject) ? 1 : 0,
-    notificationSend(userId: string, subject: string) {
-      notifications.push({ userId, subject });
+    notificationSend(
+      userId: string,
+      subject: string,
+      content: Record<string, unknown> = {},
+      code = 0,
+      senderId: string | null = null,
+    ) {
+      notifications.push({ userId, subject, code, content, senderId });
+    },
+    jwtGenerate: (algorithm: string, _key: string, claims: Record<string, unknown>) =>
+      `${algorithm}.${Buffer.from(JSON.stringify(claims)).toString("base64url")}.sig`,
+    httpRequest(url: string, method: string, headers: Record<string, string> = {}, body = "") {
+      requests.push({ url, method, headers, body });
+      return self.http(url, method, headers, body);
     },
     leaderboardCreate(id: string) {
       if (!boards.has(id)) boards.set(id, new Map());
@@ -520,6 +565,13 @@ export function memoryNk(): MemoryNk {
     loggedOut,
     signals,
     notifications,
+    requests,
+    get http() {
+      return self.http;
+    },
+    set http(handler) {
+      self.http = handler;
+    },
     boards,
     user,
     object: (collection, key, userId) => storage.get(storageKey(collection, userId, key))?.value,

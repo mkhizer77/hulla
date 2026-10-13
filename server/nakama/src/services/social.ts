@@ -25,6 +25,9 @@ export interface SocialStore {
   userIdForFriendCode(code: string): string | null;
   favourites(userId: string): readonly string[];
   writeFavourites(userId: string, ids: readonly string[]): void;
+  /** Who pinned this player: the reverse index the "friend came online" push reads. */
+  favouritedBy(userId: string): readonly string[];
+  writeFavouritedBy(userId: string, ids: readonly string[]): void;
   recent(userId: string): readonly RecentPlayer[];
   writeRecent(userId: string, players: readonly RecentPlayer[]): void;
   mutes(userId: string): readonly string[];
@@ -91,7 +94,13 @@ export function setFavourite(
   const current = store.favourites(userId);
   if (!pinned) {
     const next = current.filter((id) => id !== targetId);
-    if (next.length !== current.length) store.writeFavourites(userId, next);
+    if (next.length !== current.length) {
+      store.writeFavourites(userId, next);
+      store.writeFavouritedBy(
+        targetId,
+        store.favouritedBy(targetId).filter((id) => id !== userId),
+      );
+    }
     return { ok: true, favourites: next };
   }
   if (current.includes(targetId)) return { ok: true, favourites: current };
@@ -102,6 +111,8 @@ export function setFavourite(
   }
   const next = [...current, targetId];
   store.writeFavourites(userId, next);
+  const watchers = store.favouritedBy(targetId);
+  if (!watchers.includes(userId)) store.writeFavouritedBy(targetId, [...watchers, userId]);
   return { ok: true, favourites: next };
 }
 
@@ -204,8 +215,13 @@ function isRecentPlayer(value: unknown): value is RecentPlayer {
 
 export function nkSocialStore(nk: nkruntime.Nakama): SocialStore {
   const SYSTEM = "00000000-0000-0000-0000-000000000000";
-  const readList = (collection: string, userId: string, field: string): readonly unknown[] => {
-    const objects = nk.storageRead([{ collection, key: "list", userId }]);
+  const readList = (
+    collection: string,
+    userId: string,
+    field: string,
+    key = "list",
+  ): readonly unknown[] => {
+    const objects = nk.storageRead([{ collection, key, userId }]);
     const value = objects[0]?.value as Record<string, unknown> | undefined;
     const list = value?.[field];
     return Array.isArray(list) ? (list as unknown[]) : [];
@@ -215,11 +231,12 @@ export function nkSocialStore(nk: nkruntime.Nakama): SocialStore {
     userId: string,
     field: string,
     list: readonly unknown[],
+    key = "list",
   ): void => {
     nk.storageWrite([
       {
         collection,
-        key: "list",
+        key,
         userId,
         value: { [field]: [...list] },
         permissionRead: 1,
@@ -239,6 +256,13 @@ export function nkSocialStore(nk: nkruntime.Nakama): SocialStore {
       ),
     writeFavourites: (userId, ids) => {
       writeList(FAVOURITES_COLLECTION, userId, "ids", ids);
+    },
+    favouritedBy: (userId) =>
+      readList(FAVOURITES_COLLECTION, userId, "ids", "by").filter(
+        (id): id is string => typeof id === "string",
+      ),
+    writeFavouritedBy: (userId, ids) => {
+      writeList(FAVOURITES_COLLECTION, userId, "ids", ids, "by");
     },
     recent: (userId) => readList(RECENT_COLLECTION, userId, "players").filter(isRecentPlayer),
     writeRecent: (userId, players) => {
