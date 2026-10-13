@@ -1,5 +1,7 @@
 import { ErrorCodes, ruleError, type RuleError } from "@hulla/shared-ts";
 
+import { log } from "../infra/log";
+
 /**
  * In-app account deletion with a 14-day grace period and cancel (GDD 10.2, 25.4; ARCHITECTURE 12.8).
  * A request waits in `deletion_requests`; a scheduled purge tombstones the player id in its round
@@ -221,14 +223,14 @@ export function nkPurgePorts(nk: nkruntime.Nakama, logger: nkruntime.Logger): Pu
       try {
         nk.storageDelete([{ collection: "friend_codes", key: code, userId: SYSTEM_USER_ID }]);
       } catch (error: unknown) {
-        logger.warn("friend code not freed", { error: String(error) });
+        log.warn(logger, "friend code not freed", { error: String(error) });
       }
     },
     deleteAccount(userId) {
       try {
         nk.sessionLogout(userId);
       } catch (error: unknown) {
-        logger.debug("no sessions to log out", { error: String(error) });
+        log.debug(logger, "no sessions to log out", { error: String(error) });
       }
       nk.accountDeleteId(userId, true);
     },

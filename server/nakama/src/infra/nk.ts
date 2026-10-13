@@ -1,3 +1,5 @@
+import { log } from "./log";
+
 /**
  * The narrow surface of Nakama's runtime the services and the table core depend on, so unit tests
  * can fake it and nothing else in the server touches `nk` directly (CODING_RULES 3.5).
@@ -24,10 +26,18 @@ export function runtimeFrom(nk: nkruntime.Nakama, logger: nkruntime.Logger): Ser
     sha256Hex: (input) => nk.sha256Hash(input),
     nowMs: () => Date.now(),
     logger: {
-      debug: (message, fields) => logger.debug(message, fields),
-      info: (message, fields) => logger.info(message, fields),
-      warn: (message, fields) => logger.warn(message, fields),
-      error: (message, fields) => logger.error(message, fields),
+      debug: (message, fields) => {
+        log.debug(logger, message, fields);
+      },
+      info: (message, fields) => {
+        log.info(logger, message, fields);
+      },
+      warn: (message, fields) => {
+        log.warn(logger, message, fields);
+      },
+      error: (message, fields) => {
+        log.error(logger, message, fields);
+      },
     },
   };
 }

@@ -1,5 +1,7 @@
 import { ErrorCodes, normaliseRoomCode, ruleError } from "@hulla/shared-ts";
 
+import { log } from "../infra/log";
+
 import type { TableMode } from "../match/types";
 import type { GameId } from "@hulla/rules-engine";
 import type { Result, RuleError } from "@hulla/shared-ts";
@@ -51,7 +53,7 @@ export function nkCodeStore(nk: nkruntime.Nakama, logger: nkruntime.Logger): Cod
         ]);
         return true;
       } catch (error: unknown) {
-        logger.warn("room code taken", { code, error: String(error) });
+        log.warn(logger, "room code taken", { code, error: String(error) });
         return false;
       }
     },
@@ -61,7 +63,7 @@ export function nkCodeStore(nk: nkruntime.Nakama, logger: nkruntime.Logger): Cod
           { collection: TABLE_CODES_COLLECTION, key: code, userId: SYSTEM_USER_ID },
         ]);
       } catch (error: unknown) {
-        logger.warn("room code not removed", { code, error: String(error) });
+        log.warn(logger, "room code not removed", { code, error: String(error) });
       }
     },
   };

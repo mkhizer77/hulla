@@ -1,5 +1,6 @@
 import { ErrorCodes, ruleError } from "@hulla/shared-ts";
 
+import { log } from "../infra/log";
 import {
   achievementsView,
   isAchievementList,
@@ -59,6 +60,6 @@ export function rpcAchievementsSet(
     });
   }
   nkAchievementStore(nk).writeList(input);
-  logger.info("achievement list replaced", { id: input.id, version: input.version });
+  log.info(logger, "achievement list replaced", { id: input.id, version: input.version });
   return JSON.stringify({ ok: true, id: input.id, version: input.version });
 }

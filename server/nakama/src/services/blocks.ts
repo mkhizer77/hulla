@@ -1,5 +1,7 @@
 import { ErrorCodes, ruleError, type RuleError } from "@hulla/shared-ts";
 
+import { log } from "../infra/log";
+
 import { setMute, type SocialStore } from "./social";
 
 /**
@@ -138,14 +140,14 @@ export function nkBlockPorts(nk: nkruntime.Nakama, logger: nkruntime.Logger): Bl
       try {
         nk.friendsBlock(userId, username(userId), [targetId], []);
       } catch (error: unknown) {
-        logger.warn("friend graph block failed", { error: String(error) });
+        log.warn(logger, "friend graph block failed", { error: String(error) });
       }
     },
     unblock(userId, targetId) {
       try {
         nk.friendsDelete(userId, username(userId), [targetId], []);
       } catch (error: unknown) {
-        logger.warn("friend graph unblock failed", { error: String(error) });
+        log.warn(logger, "friend graph unblock failed", { error: String(error) });
       }
     },
   };

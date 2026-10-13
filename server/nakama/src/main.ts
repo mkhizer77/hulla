@@ -18,6 +18,7 @@ import { beforeAuthenticateDevice } from "./hooks/before_authenticate";
 import { beforeChannelMessageSend } from "./hooks/before_channel_message";
 import { beforeMatchmakerAdd } from "./hooks/before_matchmaker_add";
 import { matchmakerMatched } from "./hooks/matchmaker_matched";
+import { log } from "./infra/log";
 import {
   rpcAccountDelete,
   rpcAccountDeleteCancel,
@@ -143,7 +144,7 @@ function InitModule(
     matchTerminate: thullaMatchTerminate,
     matchSignal: thullaMatchSignal,
   });
-  logger.info("Hulla runtime loaded", { env: ctx.env["HULLA_ENV"] ?? "local" });
+  log.info(logger, "Hulla runtime loaded", { env: ctx.env["HULLA_ENV"] ?? "local" });
 }
 
 // Nakama looks InitModule up on the global object. The explicit assignment keeps the bundler

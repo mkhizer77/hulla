@@ -1,5 +1,6 @@
 import { sha256, stateFromSeed, utf8Encode, Xoshiro128StarStar } from "@hulla/shared-ts";
 
+import { log } from "../infra/log";
 import {
   nkPurgePorts,
   ROUND_RESULTS_COLLECTION,
@@ -152,6 +153,7 @@ export function rpcAccountMerge(
     }
   })();
   const response = redeemMerge(nkMergePorts(nk, logger), ctx.userId ?? null, code, Date.now());
-  if (response.ok) logger.info("guest merged", { into: ctx.userId ?? "", rounds: response.rounds });
+  if (response.ok)
+    log.info(logger, "guest merged", { into: ctx.userId ?? "", rounds: response.rounds });
   return JSON.stringify(response);
 }

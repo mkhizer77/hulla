@@ -1,6 +1,7 @@
 import { ErrorCodes, ruleError } from "@hulla/shared-ts";
 
 import { CONTENT_FILES, CONTENT_MANIFEST } from "../content";
+import { log } from "../infra/log";
 
 /** The bytes the signature covers: the manifest without the schema pointer, keys in order. */
 export function canonicalManifest(): string {
@@ -44,7 +45,7 @@ export function rpcContentManifest(
     try {
       signature = nk.rsaSha256Hash(canonical, key);
     } catch (error: unknown) {
-      logger.error("content manifest not signed", { error: String(error) });
+      log.error(logger, "content manifest not signed", { error: String(error) });
     }
   }
   return JSON.stringify({

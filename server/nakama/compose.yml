@@ -33,6 +33,7 @@ services:
     ports:
       - "${HULLA_BIND:-127.0.0.1}:7350:7350"
       - "${HULLA_BIND:-127.0.0.1}:7351:7351"
+      - "127.0.0.1:9100:9100"
     healthcheck:
       test: ["CMD", "/nakama/nakama", "healthcheck"]
       interval: 5s

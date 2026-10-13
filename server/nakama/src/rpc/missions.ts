@@ -1,5 +1,6 @@
 import { ErrorCodes, ruleError } from "@hulla/shared-ts";
 
+import { log } from "../infra/log";
 import { emitAnalyticsSafely } from "../services/analytics";
 import { nkLedgerPorts } from "../services/ledger";
 import {
@@ -121,6 +122,6 @@ export function rpcMissionsSet(
     });
   }
   nkMissionsStore(nk).writePool(input);
-  logger.info("mission pool replaced", { id: input.id, version: input.version });
+  log.info(logger, "mission pool replaced", { id: input.id, version: input.version });
   return JSON.stringify({ ok: true, id: input.id, version: input.version });
 }

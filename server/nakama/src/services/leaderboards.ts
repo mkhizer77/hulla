@@ -1,5 +1,7 @@
 import { ErrorCodes, ruleError, type RuleError } from "@hulla/shared-ts";
 
+import { log } from "../infra/log";
+
 import { credit, type LedgerPorts } from "./ledger";
 import { forDay, nkProgressStore, type Progress } from "./progression";
 
@@ -59,7 +61,7 @@ export function ensureLeaderboards(nk: nkruntime.Nakama, logger: nkruntime.Logge
     try {
       create(board.id, true, "descending", "increment", board.reset, {}, true);
     } catch (error: unknown) {
-      logger.warn("leaderboard not created", { id: board.id, error: String(error) });
+      log.warn(logger, "leaderboard not created", { id: board.id, error: String(error) });
     }
   }
 }
@@ -93,7 +95,7 @@ export function postRoundPoints(
         roundId: record.roundId,
       });
     } catch (error: unknown) {
-      logger.warn("points not posted", { board: board.id, error: String(error) });
+      log.warn(logger, "points not posted", { board: board.id, error: String(error) });
     }
   }
   return allowed;

@@ -1,5 +1,6 @@
 import { ErrorCodes } from "@hulla/shared-ts";
 
+import { log } from "../infra/log";
 import { emitAnalyticsSafely } from "../services/analytics";
 import {
   buildMatcher,
@@ -135,7 +136,7 @@ function policyFor(
       if (label?.preset === "family") strictness = "family";
       if (label !== null && label.mode !== "private") publicTable = true;
     } catch (error: unknown) {
-      logger.warn("chat room not resolved", { error: String(error) });
+      log.warn(logger, "chat room not resolved", { error: String(error) });
     }
   }
   let guest = false;
@@ -143,14 +144,14 @@ function policyFor(
     try {
       guest = isGuestAccount(nk.accountGetId(userId));
     } catch (error: unknown) {
-      logger.warn("chat sender not resolved", { error: String(error) });
+      log.warn(logger, "chat sender not resolved", { error: String(error) });
     }
   }
   let muted = false;
   try {
     muted = isMuted(readModeration(nk, userId), now);
   } catch (error: unknown) {
-    logger.warn("moderation state not read", { error: String(error) });
+    log.warn(logger, "moderation state not read", { error: String(error) });
   }
   return {
     room,
@@ -187,7 +188,7 @@ export function beforeChannelMessageSend(
     policy,
   );
   if (!verdict.ok) {
-    logger.debug("chat message refused", { userId, code: verdict.code });
+    log.debug(logger, "chat message refused", { userId, code: verdict.code });
     throw new Error(verdict.code);
   }
   if (verdict.masked > 0) envelope.channelMessageSend.content = verdict.content;
@@ -197,7 +198,7 @@ export function beforeChannelMessageSend(
       const text = (JSON.parse(verdict.content) as { text: string }).text;
       appendChatLog(nk, room, { userId, text, ts: now });
     } catch (error: unknown) {
-      logger.warn("chat line not logged", { error: String(error) });
+      log.warn(logger, "chat line not logged", { error: String(error) });
     }
   }
   return envelope;
