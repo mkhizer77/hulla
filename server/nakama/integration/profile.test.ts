@@ -43,16 +43,19 @@ describe.skipIf(NAKAMA_HOST === undefined)("profiles against Nakama (GDD 10.1)",
       avatar: "a03",
       flag: "PK",
       bio: "chai first",
-      nameChanges: 1,
+      // Leaving the generated guest name is not a rename (GDD 9.4).
+      nameChanges: 0,
     });
     const taken = await rpc<ProfileResponse>(sara, "profile_update", { handle });
     expect(taken).toMatchObject({ ok: false, error: { code: "profile.handle_taken" } });
-    const locked = await rpc<ProfileResponse>(ali, "profile_update", { displayName: "Ali" });
+    const renamed = await rpc<ProfileResponse>(ali, "profile_update", { displayName: "Ali" });
+    expect(renamed).toMatchObject({ ok: true, profile: { displayName: "Ali", nameChanges: 1 } });
+    const locked = await rpc<ProfileResponse>(ali, "profile_update", { displayName: "Ali K" });
     expect(locked).toMatchObject({ ok: false, error: { code: "profile.name_change_locked" } });
 
     const seen = await rpc<ProfileResponse>(sara, "profile_get", { handle });
     expect(seen.ok, JSON.stringify(seen)).toBe(true);
-    expect(seen.profile?.displayName).toBe("علی خان");
+    expect(seen.profile?.displayName).toBe("Ali");
     expect(seen.profile?.friendCode).toBeUndefined();
     await rpc<ProfileResponse>(ali, "profile_update", {
       privacy: { showOnline: false, visibility: "friends" },

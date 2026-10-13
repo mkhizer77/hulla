@@ -29,6 +29,7 @@ import {
   fireDeadlines,
   roundRecord,
   startRound,
+  turnSeconds,
 } from "./round";
 import {
   DEFAULT_TABLE_CONFIG,
@@ -194,6 +195,21 @@ export function tableCore<S, M, V, E, R>(
     slot.autoPlay = false;
     slot.timeouts = 0;
     slot.resumeToken = newToken();
+  };
+
+  /**
+   * A seat back within the window gets a full turn timer if it is its turn (GDD 9.8), so the
+   * policy does not play for it the moment it returns.
+   */
+  const freshTurnTimer = (state: TableState<S, M>, seat: SeatIndex, now: number): void => {
+    const round = state.round;
+    const deadline = round?.deadline ?? null;
+    if (round === null || deadline === null) return;
+    if (deadline.kind !== "perSeatTimer" || deadline.humanTs === null) return;
+    if (!deadline.seats.includes(seat)) return;
+    const seconds = turnSeconds(state, config);
+    if (seconds === null) return;
+    round.deadline = { ...deadline, humanTs: Math.max(deadline.humanTs, now + seconds * 1000) };
   };
 
   /** Moves a spectator into a free seat; the caller broadcasts the table afterwards. */
@@ -799,6 +815,7 @@ export function tableCore<S, M, V, E, R>(
           }
           attachSession(slot, info.sessionId);
           record.seat = admission.seat;
+          if (status === "reconnected") freshTurnTimer(state, admission.seat, now);
         }
         state.presences[info.sessionId] = record;
         state.emptySinceTs = null;

@@ -6,7 +6,7 @@ import {
   type RuleError,
 } from "@hulla/shared-ts";
 
-import { EMPTY_STATS, type Profile } from "./profiles";
+import { GUEST_NAME, EMPTY_STATS, type Profile } from "./profiles";
 
 import type { ProfileStats } from "@hulla/protocol/generated";
 
@@ -79,8 +79,6 @@ export function addStats(a: ProfileStats, b: ProfileStats): ProfileStats {
     },
   };
 }
-
-const GUEST_NAME = /^Guest [A-Z2-9]{4}$/;
 
 /** The linked account after absorbing the guest's profile; the linked account's identity wins. */
 export function mergeProfiles(into: Profile, guest: Profile, now: number): Profile {

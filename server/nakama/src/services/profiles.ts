@@ -16,6 +16,8 @@ export const FRIEND_CODES_COLLECTION = "friend_codes";
 export const FRIEND_CODE_LENGTH = 8;
 /** The first display-name change is free; later ones cost gems once the wallet exists (OQ-013). */
 export const FREE_NAME_CHANGES = 1;
+/** The name a fresh account gets from its friend code (`bootstrapProfile`). */
+export const GUEST_NAME = /^Guest [A-Z2-9]{4}$/;
 
 /** The stored profile: everything the owner sees. */
 export interface Profile {
@@ -144,12 +146,18 @@ export function applyProfileUpdate(
     const name = normaliseDisplayName(update.displayName);
     if (name === null) return err(ruleError(ErrorCodes.profile.invalidName));
     if (name !== profile.displayName) {
-      if (profile.nameChanges >= FREE_NAME_CHANGES) {
+      // Leaving the generated guest name is not a rename: the free change stays (GDD 9.4).
+      const fromGuestName = GUEST_NAME.test(profile.displayName);
+      if (!fromGuestName && profile.nameChanges >= FREE_NAME_CHANGES) {
         return err(
           ruleError(ErrorCodes.profile.nameChangeLocked, { changes: profile.nameChanges }),
         );
       }
-      next = { ...next, displayName: name, nameChanges: profile.nameChanges + 1 };
+      next = {
+        ...next,
+        displayName: name,
+        nameChanges: fromGuestName ? profile.nameChanges : profile.nameChanges + 1,
+      };
     }
   }
   if (update.handle !== undefined) {

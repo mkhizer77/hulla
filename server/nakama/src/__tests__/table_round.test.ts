@@ -321,6 +321,36 @@ describe("reconnection and snapshots", () => {
     expect(h.core.inbound(h.state, "s0", "{}", h.now).outbound).toEqual([]);
   });
 
+  it("gives a seat that returns during its own turn a full turn timer again (GDD 9.8)", () => {
+    const h = harness();
+    opened(h);
+    const turn = h.state.round?.state.turnSeat ?? 0;
+    const before = h.state.round?.deadline?.humanTs ?? 0;
+    expect(before).toBeGreaterThan(h.now);
+    const session = `s${String(turn)}`;
+    const token = h.state.seats[turn]?.resumeToken;
+    h.core.leave(h.state, [presence(turn)], h.now);
+    // Almost the whole turn passes while the seat is away; it returns a second before the deadline.
+    h.now = before - 1_000;
+    const again = {
+      sessionId: `${session}b`,
+      userId: `u${String(turn)}`,
+      username: `Player${String(turn)}`,
+    };
+    expect(h.core.joinAttempt(h.state, again, { resumeToken: token }, h.now)).toEqual({
+      accept: true,
+    });
+    const batch = h.core.join(h.state, [again], h.now);
+    const extended = h.state.round?.deadline?.humanTs ?? 0;
+    expect(extended).toBeGreaterThanOrEqual(h.now + 20_000);
+    const turnStart = sentTo(batch, `${session}b`).find((e) => e.type === "turn_start");
+    expect(turnStart?.payload).toMatchObject({ seat: turn, deadlineTs: extended });
+    // The old deadline passes without the policy playing for the returned seat.
+    const ticked = h.tick(1_500);
+    expect(ticked.outbound.filter((o) => o.envelope.type === "move_applied")).toEqual([]);
+    expect(h.state.seats[turn]).toMatchObject({ autoPlay: false, timeouts: 0 });
+  });
+
   it("a second device is refused while the seat's session is live, and the resume token takes it over", () => {
     const h = harness();
     seated(h, 3);
