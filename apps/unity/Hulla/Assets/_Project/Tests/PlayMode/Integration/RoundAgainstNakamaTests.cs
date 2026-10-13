@@ -268,6 +268,12 @@ namespace Hulla.Integration.Tests
                 Assert.IsFalse(await shop.BuyAsync("table_marble", default), "a second purchase is refused");
                 Assert.AreEqual("economy.item_owned", shop.ErrorCode);
 
+                // The season pass answers; between seasons there is none (GDD 12.9).
+                var pass = new Hulla.Application.ViewModels.PassViewModel(new NakamaPassService(_players[0].Connection));
+                await pass.RefreshAsync(default);
+                Assert.IsNull(pass.ErrorCode, "pass_get answers");
+                Assert.IsTrue(pass.NoSeason || pass.Info!.Tiers.Count == 40, "no season, or forty tiers");
+
                 // The round counts toward achievements (GDD 12.7).
                 var achievements = new Hulla.Application.ViewModels.AchievementsViewModel(new NakamaAchievementsService(_players[0].Connection));
                 await achievements.RefreshAsync(default);

@@ -166,6 +166,24 @@ namespace Hulla.Presentation.Text
         public const string Leaderboard = "Leaderboard";
         public const string Achievements = "Achievements";
         public const string Shop = "Shop";
+        public const string SeasonPass = "Season pass";
+        public const string NoSeason = "No season is running right now. The pass opens with the next one.";
+
+        /// <summary>{0} tier, {1} tier count, {2} XP into the tier, {3} XP per tier.</summary>
+        public const string PassProgress = "Tier {0} of {1} · {2:N0}/{3:N0} XP";
+
+        /// <summary>{0} tier count.</summary>
+        public const string PassComplete = "All {0} tiers done";
+
+        /// <summary>{0} time left, such as "3d 4h".</summary>
+        public const string SeasonEndsIn = "ends in {0}";
+
+        public const string DoubleXp = "double XP";
+        public const string PremiumLocked = "The premium track opens with the premium pass.";
+        public const string Locked = "Locked";
+
+        /// <summary>{0} the title's name.</summary>
+        public const string TitleReward = "title \"{0}\"";
         public const string Spotlight = "This week";
         public const string Equip = "Equip";
         public const string Equipped = "Equipped";

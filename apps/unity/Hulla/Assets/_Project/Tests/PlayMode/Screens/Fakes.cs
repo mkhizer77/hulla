@@ -166,6 +166,24 @@ namespace Hulla.Screens.Tests
             public Awaitable<Result<bool>> EquipAsync(string itemId, CancellationToken c) => Done(Result<bool>.Ok(true));
         }
 
+        public sealed class Pass : Hulla.Application.Progress.IPassService
+        {
+            public Awaitable<Result<Hulla.Application.Progress.PassInfo?>> PassAsync(CancellationToken c)
+            {
+                var tiers = new List<Hulla.Application.Progress.PassTier>();
+                for (var t = 1; t <= 4; t++)
+                {
+                    tiers.Add(new Hulla.Application.Progress.PassTier(t, t <= 2,
+                        new Hulla.Application.Progress.PassReward(40 + (10 * t), 0, new List<string>(), null, t == 1),
+                        new Hulla.Application.Progress.PassReward(0, t == 3 ? 0 : 5, t == 3 ? new List<string> { "back_kites" } : new List<string>(), null, false)));
+                }
+
+                return Done(Result<Hulla.Application.Progress.PassInfo?>.Ok(new Hulla.Application.Progress.PassInfo("season.basant_2026", 1_000_000_000_000 + (20L * 86_400_000), 1000, 2300, 2, 300, false, false, tiers)));
+            }
+
+            public Awaitable<Result<bool>> ClaimAsync(long tier, bool premium, CancellationToken c) => Done(Result<bool>.Ok(true));
+        }
+
         public sealed class Missions : Hulla.Application.Progress.IMissionsService
         {
             public Awaitable<Result<(IReadOnlyList<Hulla.Application.Progress.MissionInfo> Missions, bool RerollAvailable)>> MissionsAsync(int tz, CancellationToken c) =>

@@ -4,7 +4,8 @@
     "references": [
         "Hulla.Presentation",
         "UnityEngine.TestRunner",
-        "UnityEditor.TestRunner"
+        "UnityEditor.TestRunner",
+        "Hulla.Application"
     ],
     "includePlatforms": [
         "Editor"
