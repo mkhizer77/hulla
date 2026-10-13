@@ -50,6 +50,7 @@ M0 complete: the Thulla rulebook runs in TypeScript with full traceability. M1, 
 - 12 Oct decisions: C# mirror deferred past v1.0 (ADR-0019), no clock in engines (ADR-0020), JSON Schema draft-07 (ADR-0021), one deck and 3–6 seats until v1.2, web client before Rung (M5 → web → Rung → M6, dates in the execution plan), Facebook login stays, Unity stays on 6000.4.9f1.
 
 ## Doing
+- UX/UI pass, Unity, part 3 (branch `feat/ux-look`): the placeholder look so the app reads as a game before the art lands: two OFL typefaces, generated textures (felt, rail, ground lattice, card back, gradients, panel shadow, glows, stamp frame), vector card faces with pips and court bands, shaded avatars, depth on controls, and a snapshot test that renders the four main screens to PNG. Also the opening-window fix (R13) and the two-character name guard.
 - UX/UI pass, Unity, part 2 (branch `feat/ux-shell-screens`): the bottom navigation with badges, 240 ms screen transitions, Home per the design (header with name and coins, the party bar, the hero, Play now, Create a room, Join by code), the lobby seat ring with empty seats that invite and a Copy button, the results podium with the stamp, the fair-deal explanation, Change rules for the host and the accepted avatars on Play again, loading, empty and error states with Retry on every list, surface tokens and the secondary button. After it: a phone pass for the sounds, haptics and the strip, then the playtests (#36).
 - Unity CI: the licence secrets are set (13 Oct); the first CI run of the edit-mode tests.
 

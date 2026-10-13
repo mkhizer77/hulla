@@ -11,6 +11,7 @@ namespace Hulla.Presentation.Text
         public const string AppTitle = "Hulla";
         public const string Tagline = "Thulla with friends";
         public const string NameLabel = "Your name";
+        public const string NameTooShort = "A name needs at least 2 characters.";
         public const string CreateTable = "Create a table";
         public const string CodeLabel = "Room code";
         public const string JoinTable = "Join";
