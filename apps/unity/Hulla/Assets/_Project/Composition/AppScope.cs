@@ -55,6 +55,9 @@ namespace Hulla.Composition
 
         public AppConfig Config { get; private set; }
 
+        /// <summary>Invite links from a cold or warm start (GDD 10.5).</summary>
+        public DeepLinkRouter Links { get; } = new DeepLinkRouter();
+
         public CancellationToken Lifetime => _lifetime.Token;
 
         public ISessionService Sessions => _sessionService;

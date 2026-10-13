@@ -174,6 +174,7 @@ namespace Hulla.Presentation.Text
 
         /// <summary>{0} inviter's name, {1} room code.</summary>
         public const string InviteReceived = "{0} invites you to their table ({1}).";
+        public const string InviteLinkWhileSeated = "Finish this table first to join {0}.";
 
         public const string Notifications = "Notifications";
         public const string NotifyInvites = "Table invites";
@@ -324,8 +325,8 @@ namespace Hulla.Presentation.Text
         public const string ShareCode = "Share code";
         public const string ShareTitle = "Invite to Hulla";
 
-        /// <summary>The bilingual invite (GDD 10.5); the hulla.gg/j/ link joins once deep links exist (#43).</summary>
-        public const string ShareText = "Thulla khelo! Join my table on Hulla with code {0}";
+        /// <summary>The bilingual invite (GDD 10.5) with the code and the link that opens the app at the table.</summary>
+        public const string ShareText = "Thulla khelo! Join my table on Hulla with code {0}: {1}";
         public const string Friends = "Friends";
         public const string Back = "Back";
         public const string Save = "Save";

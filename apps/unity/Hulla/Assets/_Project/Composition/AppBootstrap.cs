@@ -18,6 +18,8 @@ namespace Hulla.Composition
             // The socket adapter delivers events from Update; a paused player would never see them.
             UnityEngine.Application.runInBackground = true;
             _app = new AppScope(AppConfig.FromEnvironment());
+            _app.Links.Receive(UnityEngine.Application.absoluteURL, Time.realtimeSinceStartup);
+            UnityEngine.Application.deepLinkActivated += OnDeepLink;
             SceneManager.sceneLoaded += OnSceneLoaded;
             SceneManager.LoadScene("Main");
         }
@@ -41,11 +43,14 @@ namespace Hulla.Composition
             _flow.Start();
         }
 
+        private void OnDeepLink(string url) => _app?.Links.Receive(url, Time.realtimeSinceStartup);
+
         private void OnApplicationPause(bool paused) => _flow?.SetAway(paused);
 
         private void OnDestroy()
         {
             SceneManager.sceneLoaded -= OnSceneLoaded;
+            UnityEngine.Application.deepLinkActivated -= OnDeepLink;
             _flow?.Dispose();
             _app?.Dispose();
         }
