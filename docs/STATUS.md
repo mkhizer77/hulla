@@ -6,6 +6,7 @@ Updated: 13 October 2026 (morning)
 M0 complete: the Thulla rulebook runs in TypeScript with full traceability. M1, the vertical slice, starts with the protocol schemas.
 
 ## Done
+- M2 #57 and #59 server parts merged (13 Oct, PR 211): the cosmetic catalog with idempotent purchases, the weekly spotlight, equipping per game and seat cosmetics at the table; the season pass with forty tiers, pass XP from rounds and missions, idempotent claims and premium grants. OQ-029 and OQ-030 logged.
 - M2 #77 scenarios merged (13 Oct, PR 210): the k6 table scenario, thresholds, the chaos recipe and the results note; the runs wait for the phase 0 box.
 - Fixes merged (13 Oct, PR 199): leaving the guest name keeps the free rename; a returning seat gets a full turn timer.
 - M2 #52 server part merged (13 Oct, PR 195): mission pools in content, seeded daily and weekly draws, progress from round events, idempotent claims and the free re-roll. OQ-022 logged.
@@ -41,12 +42,10 @@ M0 complete: the Thulla rulebook runs in TypeScript with full traceability. M1, 
 - 12 Oct decisions: C# mirror deferred past v1.0 (ADR-0019), no clock in engines (ADR-0020), JSON Schema draft-07 (ADR-0021), one deck and 3–6 seats until v1.2, web client before Rung (M5 → web → Rung → M6, dates in the execution plan), Facebook login stays, Unity stays on 6000.4.9f1.
 
 ## Doing
-- M3 #90 server part and the runbooks (branch `feat/ops-drain`, stacked on #57): the drain switch (`admin_drain`, refusals in `table_create` and the matchmaker, `draining` in `hello`), and the deploy-and-rollback, database restore, incident triage, moderation escalation, store rejection, player support and first-week runbooks with drill records to fill on the phase 0 box (#90, #91, #97). The drills and the support address are the owner's (OQ-031).
-- M2 #57 server part (branch `feat/catalog`): the catalog in content with a schema, thirty-three placeholder items across every category, idempotent purchases through the ledger, the weekly spotlight, equip globally or per game, seat cosmetics in `table_state`, `catalog_set` and `admin_grant`. The Shop, the Collection and the live preview are the Unity track; the art is #66 to #68 (OQ-029).
-- M2 #59 server part (branch `feat/catalog`, with #57): the first season in content with a schema (forty tiers, free and premium tracks, catch-up XP), pass XP from rounds and mission claims, idempotent claims through the ledger and the inventory, premium and Premium+ grants with an audit row. The Pass screen is the Unity track; the premium purchase itself is #58 (owner). OQ-030 logged.
+- M3 #90 server part and the runbooks (branch `feat/ops-drain`, PR 214): the drain switch (`admin_drain`, refusals in `table_create` and the matchmaker, `draining` in `hello`), and the deploy-and-rollback, database restore, incident triage, moderation escalation, store rejection, player support and first-week runbooks with drill records to fill on the phase 0 box (#90, #91, #97). The drills and the support address are the owner's (OQ-031).
 
 ## Next
-Server: #57 and #59 in review (PR 211), then the ops branch (#90, #91, #97 documents) in review; the server backlog after that is owner-gated (#46 push, #58 receipts, #76 the box) until M5.
+Server: the ops branch (#90, #91, #97 documents) in review; after it the server backlog is owner-gated (#46 push, #58 receipts, #76 the box) until M5.
 
 ## Blockers
 - None.
