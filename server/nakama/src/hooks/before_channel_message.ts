@@ -1,5 +1,6 @@
 import { ErrorCodes } from "@hulla/shared-ts";
 
+import { emitAnalyticsSafely } from "../services/analytics";
 import {
   buildMatcher,
   filterText,
@@ -190,6 +191,7 @@ export function beforeChannelMessageSend(
     throw new Error(verdict.code);
   }
   if (verdict.masked > 0) envelope.channelMessageSend.content = verdict.content;
+  emitAnalyticsSafely(logger, "chat_text", { context: room === null ? "channel" : "table" });
   if (room !== null) {
     try {
       const text = (JSON.parse(verdict.content) as { text: string }).text;

@@ -1,5 +1,6 @@
 import { ErrorCodes, ruleError } from "@hulla/shared-ts";
 
+import { emitAnalyticsSafely } from "../services/analytics";
 import { nkLedgerPorts } from "../services/ledger";
 import {
   claim,
@@ -49,7 +50,7 @@ export function rpcMissionsGet(
 /** `{ missionId }`: pays a finished mission through the ledger, once. */
 export function rpcMissionsClaim(
   ctx: nkruntime.Context,
-  _logger: nkruntime.Logger,
+  logger: nkruntime.Logger,
   nk: nkruntime.Nakama,
   payload: string,
 ): string {
@@ -69,6 +70,11 @@ export function rpcMissionsClaim(
     now,
   );
   if (result.record !== current) store.write(userId, result.record);
+  if (result.response.ok && result.response.applied) {
+    emitAnalyticsSafely(logger, "mission_complete", {
+      id: typeof missionId === "string" ? missionId : "",
+    });
+  }
   return JSON.stringify(result.response);
 }
 

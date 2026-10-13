@@ -1,5 +1,6 @@
 import { ErrorCodes, ruleError } from "@hulla/shared-ts";
 
+import { emitAnalyticsSafely } from "../services/analytics";
 import { isBlockedEitherWay, nkBlockStore } from "../services/blocks";
 import { nkProfileStore } from "../services/profiles";
 import {
@@ -25,19 +26,19 @@ function parse(payload: string): Record<string, unknown> {
 /** Sends a friend request to the holder of a friend code (GDD 10.3). */
 export function rpcFriendAddByCode(
   ctx: nkruntime.Context,
-  _logger: nkruntime.Logger,
+  logger: nkruntime.Logger,
   nk: nkruntime.Nakama,
   payload: string,
 ): string {
   const code = parse(payload)["friendCode"];
-  return JSON.stringify(
-    addFriendByCode(
-      nkSocialStore(nk),
-      nkFriendPorts(nk, (userId, otherId) => isBlockedEitherWay(nkBlockStore(nk), userId, otherId)),
-      ctx.userId ?? null,
-      typeof code === "string" ? code : "",
-    ),
+  const added = addFriendByCode(
+    nkSocialStore(nk),
+    nkFriendPorts(nk, (userId, otherId) => isBlockedEitherWay(nkBlockStore(nk), userId, otherId)),
+    ctx.userId ?? null,
+    typeof code === "string" ? code : "",
   );
+  if (added.ok) emitAnalyticsSafely(logger, "friend_add", { source: "code" });
+  return JSON.stringify(added);
 }
 
 /** Pins or unpins a mutual friend, ten at most. */
