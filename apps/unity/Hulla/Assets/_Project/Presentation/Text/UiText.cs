@@ -141,6 +141,31 @@ namespace Hulla.Presentation.Text
         public const string Server = "Server (development builds)";
 
         public const string Profile = "Profile";
+        public const string Missions = "Missions";
+        public const string MissionsToday = "Today";
+        public const string MissionsWeek = "This week";
+        public const string MissionProgress = "{0}/{1} · {2}";
+        public const string RewardCoins = "{0} coins";
+        public const string RewardGems = "{0} coins, {1} gems";
+        public const string Claim = "Claim";
+        public const string Claimed = "Done";
+        public const string Reroll = "Swap";
+
+        /// <summary>A mission described from what it counts (server services/missions), until the string tables (#65).</summary>
+        public static string MissionText(string metric, long target) => metric switch
+        {
+            "thullas_given" => $"Give {target} thullas",
+            "escaped_first" => target == 1 ? "Escape first in a round" : $"Escape first in {target} rounds",
+            "escapes" => $"Escape {target} times",
+            "rounds_played" => $"Play {target} rounds",
+            "rounds_with_friend" => $"Play {target} rounds with a friend",
+            "clean_rounds" => $"Escape without picking up, {target} times",
+            "low_pickup_rounds" => $"Pick up fewer than 5 cards in {target} rounds",
+            "hands_taken" => $"Take a hand {target} times",
+            "series_won" => target == 1 ? "Win a series" : $"Win {target} series",
+            "voice_private" => $"Use voice in {target} private rounds",
+            _ => $"{metric} × {target}",
+        };
         public const string ProgressLine = "Level {0} · {1}/{2} XP · {3} coins";
         public const string StreakSuffix = " · day {0} streak";
         public const string RewardLine = "+{0} XP · +{1} coins";

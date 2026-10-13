@@ -20,3 +20,4 @@ MonoBehaviour:
   Rulebook: {fileID: 9197481963319205126, guid: 633550f175af7487d8842bd341152219, type: 3}
   Profile: {fileID: 9197481963319205126, guid: 5aa70c22bdb154220a8943dfa0b4530a, type: 3}
   Friends: {fileID: 9197481963319205126, guid: df80c43986047432bbfc47c02607c693, type: 3}
+  Missions: {fileID: 9197481963319205126, guid: ad711fd5b15dc4b3abfb397a6d0038d0, type: 3}

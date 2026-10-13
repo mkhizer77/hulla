@@ -227,6 +227,25 @@ namespace Hulla.Screens.Tests
             CollectionAssert.IsSubsetOf(new[] { "Requests", "Friends", "Played with recently" }, headings);
         }
 
+        [UnityTest]
+        public IEnumerator MissionsShowProgressClaimAndSwap()
+        {
+            VisualElement root = null!;
+            var model = new MissionsViewModel(new Fakes.Missions());
+            yield return Open(Catalog.Missions, r =>
+            {
+                root = r;
+                new Hulla.Presentation.Screens.Missions.MissionsView(r, model, () => { }, _ => { }, _ => { });
+                _ = model.RefreshAsync(0, default);
+            });
+            var texts = root.Query<Label>().ToList().Select(l => l.text).ToList();
+            CollectionAssert.Contains(texts, "Give 3 thullas");
+            CollectionAssert.Contains(texts, "4/20 · 300 coins, 5 gems");
+            var buttons = root.Query<Button>().ToList().Select(b => b.text).ToList();
+            CollectionAssert.Contains(buttons, "Claim");
+            CollectionAssert.Contains(buttons, "Swap");
+        }
+
         private sealed class MemoryStore : ISettingsStore
         {
             private readonly Dictionary<string, int> _values = new Dictionary<string, int>();
