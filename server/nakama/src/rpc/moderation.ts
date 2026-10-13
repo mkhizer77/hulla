@@ -1,5 +1,6 @@
 import { ErrorCodes, ruleError } from "@hulla/shared-ts";
 
+import { log } from "../infra/log";
 import { emitAnalyticsSafely } from "../services/analytics";
 import { nkBlockPorts, nkBlockStore, setBlock } from "../services/blocks";
 import { nkProfileStore } from "../services/profiles";
@@ -85,7 +86,10 @@ export function rpcReportCreate(
     now: Date.now(),
   });
   if (response.ok) {
-    logger.info("report filed", { reportId: response.reportId, autoMuted: response.autoMuted });
+    log.info(logger, "report filed", {
+      reportId: response.reportId,
+      autoMuted: response.autoMuted,
+    });
     if (isReportReason(input["reason"])) {
       emitAnalyticsSafely(logger, "report", {
         source: socialSource(input["source"]),
@@ -150,6 +154,6 @@ export function rpcAdminChatLogsPurge(
       stale.map((key) => ({ collection: CHAT_LOG_COLLECTION, key, userId: SYSTEM_USER_ID })),
     );
   }
-  logger.info("chat logs purged", { count: stale.length });
+  log.info(logger, "chat logs purged", { count: stale.length });
   return JSON.stringify({ ok: true, purged: stale.length });
 }

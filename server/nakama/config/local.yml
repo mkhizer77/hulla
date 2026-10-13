@@ -35,6 +35,9 @@ runtime:
     # RSA private key (PEM) that signs the content manifest; empty on a development box means unsigned.
     - "HULLA_CONTENT_SIGNING_KEY="
     - "HULLA_CONTENT_SIGNING_KEY_ID="
+# Prometheus metrics for infra/observability (docs/runbooks/observability.md).
+metrics:
+  prometheus_port: 9100
 match:
   input_queue_size: 128
   call_queue_size: 128

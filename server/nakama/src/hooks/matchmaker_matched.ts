@@ -6,6 +6,7 @@ import {
   Xoshiro128StarStar,
 } from "@hulla/shared-ts";
 
+import { log } from "../infra/log";
 import { runtimeFrom, type ServerRuntime } from "../infra/nk";
 import { gameEntry } from "../match/registry";
 
@@ -74,6 +75,6 @@ export function matchmakerMatched(
     },
     entries,
   );
-  logger.info("matchmade table", { matchId, players: entries.length });
+  log.info(logger, "matchmade table", { matchId, players: entries.length });
   return matchId;
 }

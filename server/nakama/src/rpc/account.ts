@@ -1,5 +1,6 @@
 import { ErrorCodes, ruleError } from "@hulla/shared-ts";
 
+import { log } from "../infra/log";
 import {
   cancelDeletion,
   nkDeletionStore,
@@ -80,6 +81,9 @@ export function rpcAdminPurgeDeleted(
     });
   }
   const report = purgeDue(store, nkPurgePorts(nk, logger), now);
-  logger.info("deletion purge", { purged: report.purged.length, failed: report.failed.length });
+  log.info(logger, "deletion purge", {
+    purged: report.purged.length,
+    failed: report.failed.length,
+  });
   return JSON.stringify({ ok: true, ...report });
 }

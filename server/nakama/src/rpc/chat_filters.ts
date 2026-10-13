@@ -1,5 +1,6 @@
 import { ErrorCodes, ruleError } from "@hulla/shared-ts";
 
+import { log } from "../infra/log";
 import { isFilterLists, nkFilterStore } from "../services/chat_filter";
 
 /** The lists in force: storage when the owner uploaded a set, the bundled content otherwise. */
@@ -40,6 +41,6 @@ export function rpcChatFiltersSet(
     });
   }
   nkFilterStore(nk).write(input);
-  logger.info("chat filters replaced", { id: input.id, version: input.version });
+  log.info(logger, "chat filters replaced", { id: input.id, version: input.version });
   return JSON.stringify({ ok: true, id: input.id, version: input.version });
 }

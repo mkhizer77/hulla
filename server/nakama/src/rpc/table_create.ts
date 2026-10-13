@@ -11,6 +11,8 @@ import {
   type RuleError,
 } from "@hulla/shared-ts";
 
+import { log } from "../infra/log";
+import { METRICS, metrics } from "../infra/metrics";
 import { runtimeFrom, type ServerRuntime } from "../infra/nk";
 import { gameEntry } from "../match/registry";
 import { emitAnalyticsSafely } from "../services/analytics";
@@ -129,7 +131,8 @@ export function rpcTableCreate(
     payload,
   );
   if (response.ok) {
-    logger.info("table created", { tableId: response.tableId, userId: ctx.userId ?? "" });
+    log.info(logger, "table created", { tableId: response.tableId, userId: ctx.userId ?? "" });
+    metrics.count(nk, METRICS.tablesCreated, { game: "thulla" });
     emitAnalyticsSafely(logger, "table_create", tableCreateParams(payload), {
       tableId: response.tableId,
     });

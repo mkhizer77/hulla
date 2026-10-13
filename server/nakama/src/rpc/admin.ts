@@ -1,5 +1,6 @@
 import { ErrorCodes, ruleError } from "@hulla/shared-ts";
 
+import { log } from "../infra/log";
 import { ROUND_LOG_COLLECTION } from "../match/nakama_match";
 import { gameEntry } from "../match/registry";
 import { replayRound } from "../match/replay";
@@ -165,7 +166,7 @@ export function rpcAdminSanction(
     try {
       devices = nk.accountGetId(userId).devices.map((d) => d.id);
     } catch (error: unknown) {
-      logger.warn("devices not listed", { error: String(error) });
+      log.warn(logger, "devices not listed", { error: String(error) });
     }
     if (action === "ban" && input["device"] === true) {
       banDevices(nk, devices, untilFor(sanction) ?? now, sanction.reason);
@@ -176,7 +177,7 @@ export function rpcAdminSanction(
     try {
       nk.sessionLogout(userId);
     } catch (error: unknown) {
-      logger.warn("sessions not ended", { error: String(error) });
+      log.warn(logger, "sessions not ended", { error: String(error) });
     }
   }
   const entry = audit(nk, {

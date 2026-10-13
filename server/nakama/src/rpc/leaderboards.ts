@@ -1,5 +1,6 @@
 import { ErrorCodes, ruleError } from "@hulla/shared-ts";
 
+import { log } from "../infra/log";
 import { boardView, BOARDS, isBoardKey, payTopBrackets } from "../services/leaderboards";
 import { nkLedgerPorts } from "../services/ledger";
 import { nkFriendIds } from "../services/presence";
@@ -53,8 +54,11 @@ export function onLeaderboardReset(
   if (!Object.values(BOARDS).some((b) => b.id === leaderboard.id)) return;
   try {
     const result = payTopBrackets(nk, nkLedgerPorts(nk), leaderboard.id, reset);
-    logger.info("leaderboard brackets paid", { id: leaderboard.id, reset, paid: result.paid });
+    log.info(logger, "leaderboard brackets paid", { id: leaderboard.id, reset, paid: result.paid });
   } catch (error: unknown) {
-    logger.error("leaderboard brackets not paid", { id: leaderboard.id, error: String(error) });
+    log.error(logger, "leaderboard brackets not paid", {
+      id: leaderboard.id,
+      error: String(error),
+    });
   }
 }

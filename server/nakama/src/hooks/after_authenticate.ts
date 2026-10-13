@@ -1,5 +1,6 @@
 import { sha256, stateFromSeed, utf8Encode, Xoshiro128StarStar } from "@hulla/shared-ts";
 
+import { log } from "../infra/log";
 import { noteDailyRewardReady } from "../services/daily_reward";
 import { nkPresenceStore, touch } from "../services/presence";
 import { bootstrapProfile, nkProfileStore } from "../services/profiles";
@@ -12,7 +13,7 @@ function bootstrap(ctx: nkruntime.Context, logger: nkruntime.Logger, nk: nkrunti
   try {
     touch(nkPresenceStore(nk), userId, Date.now());
   } catch (error: unknown) {
-    logger.warn("presence not touched", { error: String(error) });
+    log.warn(logger, "presence not touched", { error: String(error) });
   }
   try {
     const progress = nkProgressStore(nk);
@@ -21,12 +22,12 @@ function bootstrap(ctx: nkruntime.Context, logger: nkruntime.Logger, nk: nkrunti
     const after = touchLogin(forDay(before, now), now);
     if (after !== before) progress.write(userId, after);
   } catch (error: unknown) {
-    logger.warn("login streak not updated", { error: String(error) });
+    log.warn(logger, "login streak not updated", { error: String(error) });
   }
   try {
     noteDailyRewardReady(nk, userId, Date.now());
   } catch (error: unknown) {
-    logger.warn("daily reward notice not sent", { error: String(error) });
+    log.warn(logger, "daily reward notice not sent", { error: String(error) });
   }
   const store = nkProfileStore(nk, logger);
   if (store.read(userId) !== null) return;
@@ -36,9 +37,9 @@ function bootstrap(ctx: nkruntime.Context, logger: nkruntime.Logger, nk: nkrunti
   try {
     nk.accountUpdateId(userId, null, profile.displayName, null, null, null, profile.avatar, null);
   } catch (error: unknown) {
-    logger.warn("display name not mirrored", { error: String(error) });
+    log.warn(logger, "display name not mirrored", { error: String(error) });
   }
-  logger.info("profile created", { userId });
+  log.info(logger, "profile created", { userId });
 }
 
 export function afterAuthenticateDevice(
