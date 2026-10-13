@@ -321,6 +321,7 @@ namespace Hulla.Presentation.Text
                     return "This account can't play right now. Contact support if you think that's wrong.";
                 case "auth.device_limit":
                     return "You're at this table on another device. Close it there first.";
+                case "auth.update_required":
                 case "table.unsupported_version":
                     return "Please update Hulla to keep playing.";
                 case "social.self":
