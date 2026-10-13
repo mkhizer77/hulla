@@ -50,6 +50,8 @@ export const ErrorCodes = {
     insufficientFunds: "economy.insufficient_funds",
     receiptInvalid: "economy.receipt_invalid",
     storeUnavailable: "economy.store_unavailable",
+    adRewardInvalid: "economy.ad_reward_invalid",
+    adsUnavailable: "economy.ads_unavailable",
     alreadyGranted: "economy.already_granted",
     dailyCapReached: "economy.daily_cap_reached",
     itemUnknown: "economy.item_unknown",

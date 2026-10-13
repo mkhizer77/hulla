@@ -1,6 +1,7 @@
 import { ErrorCodes, ruleError } from "@hulla/shared-ts";
 
 import { log } from "../infra/log";
+import { forDay, nkAdStore, spendRerollCredit } from "../services/ads";
 import { emitAnalyticsSafely } from "../services/analytics";
 import { nkLedgerPorts } from "../services/ledger";
 import {
@@ -96,8 +97,20 @@ export function rpcMissionsReroll(
   const now = Date.now();
   const missionId = parse(payload)["missionId"];
   const current = forPeriod(store.read(userId), pool, userId, now);
-  const result = reroll(current, pool, userId, typeof missionId === "string" ? missionId : "", now);
+  const ads = nkAdStore(nk);
+  const adRecord = forDay(ads.read(userId), now);
+  const result = reroll(
+    current,
+    pool,
+    userId,
+    typeof missionId === "string" ? missionId : "",
+    now,
+    adRecord.rerollCredits,
+  );
   if (result.record !== current) store.write(userId, result.record);
+  if (result.response.ok && result.response.usedCredit) {
+    ads.write(userId, spendRerollCredit(adRecord, now));
+  }
   return JSON.stringify(result.response);
 }
 

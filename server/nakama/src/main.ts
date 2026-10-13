@@ -40,6 +40,7 @@ import {
   rpcAdminTableInspect,
   rpcSanctionsGet,
 } from "./rpc/admin";
+import { rpcAdReward, rpcAdsGet } from "./rpc/ads";
 import { rpcChatFiltersGet, rpcChatFiltersSet } from "./rpc/chat_filters";
 import { rpcConfigGet, rpcConfigSet } from "./rpc/config";
 import { rpcContentGet, rpcContentManifest } from "./rpc/content";
@@ -174,6 +175,8 @@ function InitModule(
   initializer.registerRpc("economy_products", rpcEconomyProducts);
   initializer.registerRpc("iap_verify", rpcIapVerify);
   initializer.registerRpc("iap_restore", rpcIapRestore);
+  initializer.registerRpc("ad_reward", rpcAdReward);
+  initializer.registerRpc("ads_get", rpcAdsGet);
   initializer.registerAfterValidatePurchaseApple(afterValidatePurchaseApple);
   initializer.registerAfterValidatePurchaseGoogle(afterValidatePurchaseGoogle);
   initializer.registerLeaderboardReset(onLeaderboardReset);

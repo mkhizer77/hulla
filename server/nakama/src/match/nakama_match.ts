@@ -429,7 +429,12 @@ export function tableMatchHandler<S, M, V, E, R>(
       if (userIds !== null && !userIds.includes(slot.playerId)) continue;
       try {
         catalog ??= store.catalog();
-        slot.cosmetics = equippedFor(store.inventory(slot.playerId), catalog, state.gameId);
+        slot.cosmetics = equippedFor(
+          store.inventory(slot.playerId),
+          catalog,
+          state.gameId,
+          Date.now(),
+        );
       } catch (error: unknown) {
         log.warn(logger, "cosmetics not read", { error: String(error) });
       }
@@ -488,6 +493,7 @@ export function tableMatchHandler<S, M, V, E, R>(
             store.inventory(presence.userId),
             store.catalog(),
             state.gameId,
+            Date.now(),
           );
         } catch (error: unknown) {
           log.warn(logger, "cosmetics not read", { error: String(error) });

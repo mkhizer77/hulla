@@ -16,6 +16,7 @@ export type { Rng } from "./prng";
 export { Xoshiro128StarStar, nonZeroState, shuffle, stateFromSeed } from "./prng";
 export type { Xoshiro128State } from "./prng";
 export { sha256, sha256Hex } from "./sha256";
+export { sha1, sha1Hex } from "./sha1";
 export { utf8Encode } from "./utf8";
 export { bytesToHex, hexToBytes } from "./hex";
 export type { JsonCompatible, JsonObject, JsonPrimitive, JsonValue } from "./canonical-json";
