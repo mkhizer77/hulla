@@ -6,6 +6,7 @@ Updated: 13 October 2026 (afternoon)
 M0 complete: the Thulla rulebook runs in TypeScript with full traceability. M1, the vertical slice, starts with the protocol schemas.
 
 ## Done
+- M2 #60 server part merged (13 Oct, PR 221): AppLovin's signed callback pays rewarded ads once per event within remote-configurable daily caps (2× round coins, an extra mission re-roll, a 24-hour table trial), `ads_get` for the client's caps and interstitial rules with Remove Ads honoured, SHA-1 in the shared package. The ad network accounts, the consent and ATT flows and the Unity side are the owner's and the Unity track's. OQ-034 logged.
 - M2 #58 server part merged (13 Oct, PR 220): the products in content, `economy_products`, `iap_verify` through Nakama's Apple and Google validators with the transaction id as the ledger key, `iap_restore`, entitlements (Remove Ads, frames, a pending premium pass) in `wallet_get`, the after-hooks of Nakama's own endpoints. Store credentials are the owner's (runbook). OQ-033 logged.
 - M2 #46 server part merged (13 Oct, PR 218): push through FCM HTTP v1 from the runtime, device tokens, per-type settings and quiet hours, table invites with the 20-an-hour cap (the server side of #43), friend-request and favourite-online pushes, the hourly sweep for the daily reward and the season end, `admin_push_test`; the notifications schema in the protocol. OQ-032 logged.
 - M3 #90, #91 and #97 documents merged (13 Oct, PR 214): the drain switch (`admin_drain`, refusals in `table_create` and the matchmaker, `draining` in `hello`) and the deploy-and-rollback, database restore, incident triage, moderation escalation, store rejection, player support and first-week runbooks with drill records to fill on the phase 0 box. The drills and the support address are the owner's (OQ-031).
@@ -46,7 +47,7 @@ M0 complete: the Thulla rulebook runs in TypeScript with full traceability. M1, 
 - 12 Oct decisions: C# mirror deferred past v1.0 (ADR-0019), no clock in engines (ADR-0020), JSON Schema draft-07 (ADR-0021), one deck and 3–6 seats until v1.2, web client before Rung (M5 → web → Rung → M6, dates in the execution plan), Facebook login stays, Unity stays on 6000.4.9f1.
 
 ## Doing
-- M2 #60 server part (branch `feat/ad-rewards`): AppLovin's signed callback pays rewarded ads once per event within remote-configurable daily caps (2× round coins, an extra mission re-roll, a 24-hour table trial), `ads_get` for the client's caps and interstitial rules with Remove Ads honoured, SHA-1 in the shared package. The ad network accounts, the consent and ATT flows and the Unity side are the owner's and the Unity track's. OQ-034 logged.
+- Unity CI: the licence secrets are set (13 Oct); the first CI run of the edit-mode tests.
 
 ## Next
 Server: after #60 the backlog needs the owner's credentials (Firebase, the stores, AppLovin) and the phase 0 box (#76) until M5 #98 ranked; the Unity track takes the client side of #43, #46, #58 and #60.
@@ -55,7 +56,7 @@ Server: after #60 the backlog needs the owner's credentials (Firebase, the store
 - None.
 
 ## Decisions pending (owner)
-- Repository secrets are not set (Unity licence, Android keystore, phase 0 SSH). See `docs/runbooks/github-and-ci-setup.md`.
+- Repository secrets not yet set: Android keystore, phase 0 SSH (the Unity licence is set). See `docs/runbooks/github-and-ci-setup.md`.
 - Phase 0 host: Oracle Always Free in London or Frankfurt if capacity is available; otherwise Azure free account or the owner's Mac behind Cloudflare Tunnel (TECH_STACK §6). Phase 1 region: one region only on open-source Nakama (ARCHITECTURE §8.13), chosen by #131.
 - Trademark search and domain registration (#130): urgent, the repository is public and the GDD's name research was pushed in the first commit.
 - History rewritten on 12 Oct: `main` is now 4835100 with no GDD. Still to do: untick "Allow force pushes" on the `main` rule, and ask GitHub support to purge the unreachable commit 116116e, which the site still serves by SHA. The ignore rule lands with the next commit.
