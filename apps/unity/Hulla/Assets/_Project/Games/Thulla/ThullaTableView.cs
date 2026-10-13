@@ -631,8 +631,10 @@ namespace Hulla.Games.Thulla
                 var info = seat < model.Seats.Count ? model.Seats[(int)seat] : default;
                 var state = model.IsEscaped((int)seat)
                     ? UiText.Escaped
-                    : info.AutoPlay || (info.Occupied && !info.Connected)
-                        ? UiText.Away
+                    : info.Occupied && !info.Connected
+                        ? UiText.SeatAwayAutoPlay
+                    : info.AutoPlay
+                        ? UiText.SeatAutoPlay
                         : !model.InRound ? ""
                         : model.TurnSeat == seat ? UiText.Playing
                         : model.LeaderSeat == seat ? UiText.Lead : "";

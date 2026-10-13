@@ -20,6 +20,8 @@ namespace Hulla.Presentation.Screens.Home
         private readonly ProgressViewModel? _progress;
         private readonly Label _progressLine;
         private readonly Button _hero;
+        private readonly Button _rejoin;
+        private Action? _onRejoin;
         private readonly Label _online;
 
         /// <param name="server">The server to show in a development build, or null to hide the field.</param>
@@ -42,6 +44,9 @@ namespace Hulla.Presentation.Screens.Home
             how.style.display = howToPlay == null ? DisplayStyle.None : DisplayStyle.Flex;
             _friendsOnline = friendsOnline;
             _hero = root.Q<Button>("hero");
+            _rejoin = root.Q<Button>("rejoin");
+            _rejoin.style.display = DisplayStyle.None;
+            _rejoin.clicked += () => _onRejoin?.Invoke();
             _online = root.Q<Label>("online");
             var settings = root.Q<Button>("settings");
             settings.text = UiText.Settings;
@@ -136,6 +141,14 @@ namespace Hulla.Presentation.Screens.Home
             profile.clicked += () => openProfile?.Invoke(_name.value, Server());
             _model.Changed += Refresh;
             Refresh();
+        }
+
+        /// <summary>Offers the table the player left mid-round (GDD 9.8); a null code hides the offer.</summary>
+        public void ShowRejoin(string? code, Action? rejoin)
+        {
+            _onRejoin = rejoin;
+            _rejoin.text = code == null ? "" : string.Format(UiText.RejoinTable, code);
+            _rejoin.style.display = code == null || rejoin == null ? DisplayStyle.None : DisplayStyle.Flex;
         }
 
         public void Dispose()

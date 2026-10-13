@@ -190,6 +190,8 @@ export function tableCore<S, M, V, E, R>(
 
   const attachSession = (slot: SeatSlot, sessionId: string): void => {
     slot.sessionId = sessionId;
+    // A player who left mid-round and comes back before it ends takes the seat over from auto-play.
+    slot.left = false;
     slot.connected = true;
     slot.disconnectedTs = null;
     slot.autoPlay = false;
