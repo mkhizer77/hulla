@@ -22,10 +22,13 @@ namespace Hulla.Presentation.Share
 
         public static int HeightOf(CardRatio ratio) => ratio == CardRatio.Story ? 1920 : 1350;
 
-        public static async Awaitable<byte[]> RenderAsync(PanelSettings template, CardRatio ratio, Action<VisualElement> build)
+        public static Awaitable<byte[]> RenderAsync(PanelSettings template, CardRatio ratio, Action<VisualElement> build) =>
+            RenderAsync(template, Width, HeightOf(ratio), build);
+
+        /// <summary>Any size, in panel units at scale 1: layout checks at other screen shapes.</summary>
+        public static async Awaitable<byte[]> RenderAsync(PanelSettings template, int width, int height, Action<VisualElement> build)
         {
-            var height = HeightOf(ratio);
-            var texture = new RenderTexture(Width, height, 24, RenderTextureFormat.ARGB32);
+            var texture = new RenderTexture(width, height, 24, RenderTextureFormat.ARGB32);
             var settings = Object.Instantiate(template);
             settings.targetTexture = texture;
             settings.scaleMode = PanelScaleMode.ConstantPixelSize;
@@ -38,7 +41,7 @@ namespace Hulla.Presentation.Share
                 var document = host.AddComponent<UIDocument>();
                 document.panelSettings = settings;
                 var root = document.rootVisualElement;
-                root.style.width = Width;
+                root.style.width = width;
                 root.style.height = height;
                 build(root);
 
@@ -50,8 +53,8 @@ namespace Hulla.Presentation.Share
 
                 var previous = RenderTexture.active;
                 RenderTexture.active = texture;
-                var pixels = new Texture2D(Width, height, TextureFormat.RGBA32, false);
-                pixels.ReadPixels(new Rect(0, 0, Width, height), 0, 0);
+                var pixels = new Texture2D(width, height, TextureFormat.RGBA32, false);
+                pixels.ReadPixels(new Rect(0, 0, width, height), 0, 0);
                 pixels.Apply();
                 RenderTexture.active = previous;
                 var png = pixels.EncodeToPNG();
