@@ -33,6 +33,9 @@ namespace Hulla.Presentation.Text
 
         /// <summary>A present player whose turns time out, so the server plays for them (R45).</summary>
         public const string SeatAutoPlay = "Auto-play";
+
+        /// <summary>Whose turn it is when it is not the player's own.</summary>
+        public const string TurnOf = "{0}'s turn";
         public const string RejoinTable = "Rejoin your table ({0})";
         public const string Thulla = "THULLA!";
         public const string PickedUp = "{0} picks up";

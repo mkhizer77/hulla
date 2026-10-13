@@ -701,15 +701,19 @@ namespace Hulla.Games.Thulla
                 }
 
                 _turn.text = UiText.YourTurn;
+                _turn.AddToClassList("turn--mine");
                 _timer.style.display = DisplayStyle.Flex;
             }
             else
             {
                 _turn.text = !model.InRound || model.TurnSeat == null
                     ? ""
-                    : model.TurnSeat == model.MySeat ? UiText.YourTurn : NameOf(model.TurnSeat.Value) + "…";
+                    : model.TurnSeat == model.MySeat ? UiText.YourTurn : string.Format(UiText.TurnOf, NameOf(model.TurnSeat.Value));
+                _turn.RemoveFromClassList("turn--mine");
                 _timer.style.display = DisplayStyle.None;
             }
+
+            _turn.style.display = _turn.text.Length == 0 ? DisplayStyle.None : DisplayStyle.Flex;
 
             _takeHand.style.display = model.MyTurn && model.CanTakeHand ? DisplayStyle.Flex : DisplayStyle.None;
         }

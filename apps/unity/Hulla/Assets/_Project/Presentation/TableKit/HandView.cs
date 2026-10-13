@@ -12,8 +12,11 @@ namespace Hulla.Presentation.TableKit
     /// </summary>
     public sealed class HandView
     {
-        public const float NormalCardWidth = 120f;
-        public const float LargeCardWidth = 150f;
+        public const float NormalCardWidth = 150f;
+        public const float LargeCardWidth = 180f;
+
+        /// <summary>Space kept at each side of the hand for the tilted end cards.</summary>
+        private const float ArcMargin = 36f;
         private const float FlickPixels = 40f;
 
         private readonly VisualElement _hand;
@@ -98,7 +101,8 @@ namespace Hulla.Presentation.TableKit
         {
             _hand.Clear();
             _cards.Clear();
-            var width = _width > 0f ? _width : 1000f;
+            // Leave room for the arc: the end cards tilt outwards past their slot.
+            var width = (_width > 0f ? _width : 1000f) - 2f * ArcMargin;
             var fan = HandFan.For(_shown.Count, width, CardWidth);
             VisualElement? row = null;
             for (var i = 0; i < _shown.Count; i++)
@@ -121,6 +125,13 @@ namespace Hulla.Presentation.TableKit
                 {
                     element.style.marginLeft = fan.Strip - CardWidth;
                 }
+
+                // A gentle arc, as a hand is held: cards tilt away from the middle and sit lower.
+                var inRow = Math.Min(fan.PerRow, _shown.Count - (i / fan.PerRow) * fan.PerRow);
+                var offset = (i % fan.PerRow) - (inRow - 1) / 2f;
+                var spread = Math.Min(3f, 30f / Math.Max(inRow, 1));
+                element.style.rotate = new Rotate(offset * spread);
+                element.style.marginTop = Math.Min(offset * offset * spread * 0.9f, 40f);
 
                 element.RegisterCallback<PointerDownEvent>(evt =>
                 {
