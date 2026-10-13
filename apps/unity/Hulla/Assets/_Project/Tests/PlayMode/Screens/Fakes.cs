@@ -150,6 +150,22 @@ namespace Hulla.Screens.Tests
                 }, new List<string>())));
         }
 
+        public sealed class Shop : Hulla.Application.Economy.IShopService
+        {
+            public Awaitable<Result<Hulla.Application.Economy.ShopCatalog>> CatalogAsync(CancellationToken c) =>
+                Done(Result<Hulla.Application.Economy.ShopCatalog>.Ok(new Hulla.Application.Economy.ShopCatalog(new List<Hulla.Application.Economy.ShopItem>
+                {
+                    new Hulla.Application.Economy.ShopItem("back_classic_blue", "cardBack", "common", 0, 0, true, true, null),
+                    new Hulla.Application.Economy.ShopItem("back_truck_art", "cardBack", "rare", 1000, 0, false, false, null),
+                    new Hulla.Application.Economy.ShopItem("back_mughal", "cardBack", "epic", 0, 400, true, false, null),
+                    new Hulla.Application.Economy.ShopItem("table_marble", "table", "rare", 4000, 0, false, false, null),
+                }, new List<string> { "table_marble" })));
+
+            public Awaitable<Result<(long Coins, long Gems)>> PurchaseAsync(string itemId, CancellationToken c) => Done(Result<(long Coins, long Gems)>.Ok((0L, 0L)));
+
+            public Awaitable<Result<bool>> EquipAsync(string itemId, CancellationToken c) => Done(Result<bool>.Ok(true));
+        }
+
         public sealed class Missions : Hulla.Application.Progress.IMissionsService
         {
             public Awaitable<Result<(IReadOnlyList<Hulla.Application.Progress.MissionInfo> Missions, bool RerollAvailable)>> MissionsAsync(int tz, CancellationToken c) =>

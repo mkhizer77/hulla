@@ -255,6 +255,19 @@ namespace Hulla.Integration.Tests
                 Assert.IsNull(board.ErrorCode, "the friends view answers");
                 Debug.Log($"friends' monthly board: {board.Page!.Rows.Count} rows, me {board.Page.Me?.Points}");
 
+                // The shop: credit the account with the server key, buy a table and equip it (GDD 12.11).
+                var buyer = _players[2];
+                await GrantAsync(buyer.Session.Current!.UserId, 5000);
+                var shop = new Hulla.Application.ViewModels.ShopViewModel(new NakamaShopService(buyer.Connection));
+                await shop.RefreshAsync(default);
+                Assert.IsNull(shop.ErrorCode, "the catalog loads");
+                Assert.IsTrue(await shop.BuyAsync("table_marble", default), "bought with granted coins");
+                Assert.IsTrue(await shop.EquipAsync("table_marble", default), "equipped");
+                shop.Show("table");
+                Assert.IsTrue(shop.Shown.Any(i => i.Id == "table_marble" && i.Equipped));
+                Assert.IsFalse(await shop.BuyAsync("table_marble", default), "a second purchase is refused");
+                Assert.AreEqual("economy.item_owned", shop.ErrorCode);
+
                 // The round counts toward achievements (GDD 12.7).
                 var achievements = new Hulla.Application.ViewModels.AchievementsViewModel(new NakamaAchievementsService(_players[0].Connection));
                 await achievements.RefreshAsync(default);
@@ -262,6 +275,21 @@ namespace Hulla.Integration.Tests
                 Assert.Greater(achievements.Total, 0, "the list came from content");
                 Assert.IsTrue(achievements.Groups.SelectMany(g => g.Items).Any(a => a.Metric == "rounds" && a.Progress >= 1), "the round counted");
             }
+        }
+
+        /// <summary>Credits an account through admin_grant with the server's HTTP key (local compose only).</summary>
+        private static async Awaitable GrantAsync(string userId, long coins)
+        {
+            var host = System.Environment.GetEnvironmentVariable("HULLA_NAKAMA_HOST") ?? "127.0.0.1";
+            var port = System.Environment.GetEnvironmentVariable("HULLA_NAKAMA_PORT") ?? "7350";
+            var body = $"{{\"userId\":\"{userId}\",\"coins\":{coins},\"gems\":0,\"reason\":\"test\",\"sourceId\":\"it-{userId}\"}}";
+            using var request = new UnityEngine.Networking.UnityWebRequest($"http://{host}:{port}/v2/rpc/admin_grant?http_key=local-only-http-key&unwrap", "POST");
+            request.uploadHandler = new UnityEngine.Networking.UploadHandlerRaw(System.Text.Encoding.UTF8.GetBytes(body));
+            request.downloadHandler = new UnityEngine.Networking.DownloadHandlerBuffer();
+            request.SetRequestHeader("Content-Type", "application/json");
+            await request.SendWebRequest();
+            Assert.AreEqual(UnityEngine.Networking.UnityWebRequest.Result.Success, request.result, request.downloadHandler.text);
+            StringAssert.Contains("\"ok\":true", request.downloadHandler.text);
         }
 
         /// <summary>The scripted policy: play the first legal card, otherwise take the hand when offered.</summary>
