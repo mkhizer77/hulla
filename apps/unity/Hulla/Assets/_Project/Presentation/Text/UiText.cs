@@ -198,7 +198,7 @@ namespace Hulla.Presentation.Text
         public const string LeftHandedLabel = "Left-handed layout";
         public const string Playing = "Playing…";
         public const string Lead = "Leads";
-        public const string Discard = "Discard {0}";
+        public const string DiscardPile = "Discard";
         public const string FairDeal = "Fair deal ✓";
         public const string MustFollow = "Must follow {0}";
         public const string LeadAceOfSpades = "Lead the A♠ to open";
