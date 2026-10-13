@@ -25,6 +25,7 @@ import {
   rpcAdminPurgeDeleted,
 } from "./rpc/account";
 import { rpcAccountMerge, rpcAccountMergePrepare } from "./rpc/account_merge";
+import { rpcAchievementsGet, rpcAchievementsSet } from "./rpc/achievements";
 import {
   rpcAdminAuditList,
   rpcAdminRoundReplay,
@@ -120,6 +121,8 @@ function InitModule(
   initializer.registerRpc("daily_reward_get", rpcDailyRewardGet);
   initializer.registerRpc("daily_reward_claim", rpcDailyRewardClaim);
   initializer.registerRpc("leaderboard_get", rpcLeaderboardGet);
+  initializer.registerRpc("achievements_get", rpcAchievementsGet);
+  initializer.registerRpc("achievements_set", rpcAchievementsSet);
   initializer.registerLeaderboardReset(onLeaderboardReset);
   ensureLeaderboards(nk, logger);
   initializer.registerBeforeAuthenticateDevice(beforeAuthenticateDevice);

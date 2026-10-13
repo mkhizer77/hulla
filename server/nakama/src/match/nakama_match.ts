@@ -2,6 +2,7 @@ import { OPCODES } from "@hulla/protocol/generated";
 import { ErrorCodes } from "@hulla/shared-ts";
 
 import { ROUND_RESULTS_COLLECTION } from "../services/account_deletion";
+import { countRound, nkAchievementStore, settleUnlocks } from "../services/achievements";
 import { postRoundPoints } from "../services/leaderboards";
 import { credit, nkLedgerPorts } from "../services/ledger";
 import { metricsFromRound, recordMissionMetrics } from "../services/missions";
@@ -144,6 +145,23 @@ function rewardPlayer(
     progressStore.write(playerId, applied.progress);
     recordMissionMetrics(nk, playerId, metricsFromRound(record, seat, withFriend), record.endedTs);
     postRoundPoints(nk, logger, record, playerId, seat);
+    const friendsAtTable = humans.filter(
+      (other) => other !== playerId && nkAreFriends(nk, playerId, other),
+    ).length;
+    const achievements = nkAchievementStore(nk);
+    const counted = countRound(achievements.read(playerId), record, seat, {
+      friendsAtTable,
+      playerIds: humans,
+    });
+    settleUnlocks(
+      nk,
+      nkLedgerPorts(nk),
+      achievements,
+      playerId,
+      counted,
+      achievements.list(),
+      record.endedTs,
+    );
     const ledger = nkLedgerPorts(nk);
     const prefix = `${record.tableId}:${record.roundId}`;
     credit(ledger, {
