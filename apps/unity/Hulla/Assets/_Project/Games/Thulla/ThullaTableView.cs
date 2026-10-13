@@ -61,6 +61,7 @@ namespace Hulla.Games.Thulla
         private readonly IChatCatalog _chat;
         private readonly VisualElement _chatPanel;
         private readonly VisualElement _strip;
+        private readonly VisualElement _handArea;
         private readonly Label _mySay;
         private readonly StampTimeline _stamp = new StampTimeline();
         private readonly VisualElement _felt;
@@ -157,7 +158,8 @@ namespace Hulla.Games.Thulla
             _pile.CardArrived += OnPileCardArrived;
             _discard = new DiscardView(root.Q<VisualElement>("discard"), UiText.DiscardPile);
             _pileNote = root.Q<Label>("pile-note");
-            _hand = new HandView(root.Q<VisualElement>("hand")) { OneTap = oneTap };
+            _handArea = root.Q<VisualElement>("hand");
+            _hand = new HandView(_handArea) { OneTap = oneTap };
             _hand.Played += card =>
             {
                 _singleLegal = null;
@@ -961,8 +963,8 @@ namespace Hulla.Games.Thulla
         /// <summary>Where picked-up cards fly when they are mine: the top of the hand.</summary>
         private Rect HandTarget()
         {
-            var bounds = _mySay.parent.worldBound;
-            return new Rect(bounds.center.x - 1f, bounds.yMax - 1f, 2f, 2f);
+            var bounds = _handArea.worldBound;
+            return new Rect(bounds.center.x - 1f, bounds.center.y - 1f, 2f, 2f);
         }
 
         /// <summary>Your equipped table surface colours the felt (GDD 12.11) until its art lands.</summary>

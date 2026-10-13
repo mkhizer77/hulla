@@ -1,20 +1,27 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements">
     <ui:VisualElement name="table" class="screen table">
         <ui:VisualElement class="table__top">
-            <ui:VisualElement class="table__top-actions">
-                <ui:Button name="rules" class="button button--quiet button--small" />
-                <ui:Button name="settings" class="button button--quiet button--small" />
-                <ui:Button name="leave" class="button button--quiet button--small" />
-            </ui:VisualElement>
+            <ui:Button name="leave" class="button button--quiet button--small table__pill" />
             <ui:Label name="info" class="table__info" />
+            <ui:VisualElement class="table__top-actions">
+                <ui:Button name="rules" class="button button--quiet button--small table__pill" />
+                <ui:Button name="settings" class="button button--quiet button--small table__pill" />
+            </ui:VisualElement>
         </ui:VisualElement>
-        <ui:VisualElement name="opponents" class="opponents" />
-        <ui:VisualElement name="rail" class="rail">
-            <ui:VisualElement name="felt" class="felt">
-                <ui:VisualElement name="discard" class="discard" />
-                <ui:VisualElement name="pile" class="pile" />
-                <ui:Label name="pile-note" class="pile__note" />
-                <ui:Label name="toast" class="toast" />
+        <ui:VisualElement name="zone" class="table__zone">
+            <ui:VisualElement name="rail" class="rail">
+                <ui:VisualElement name="felt" class="felt">
+                    <ui:VisualElement name="discard" class="discard" />
+                    <ui:VisualElement name="pile" class="pile" />
+                    <ui:Label name="pile-note" class="pile__note" />
+                    <ui:Label name="toast" class="toast" />
+                </ui:VisualElement>
+            </ui:VisualElement>
+            <ui:VisualElement name="opponents" class="opponents" picking-mode="Ignore" />
+            <ui:VisualElement name="me" class="table__me" />
+            <ui:VisualElement class="table__notes" picking-mode="Ignore">
+                <ui:Label name="my-say" class="bubble bubble--mine" />
+                <ui:Label name="hint" class="hint" />
             </ui:VisualElement>
         </ui:VisualElement>
         <ui:VisualElement name="player-sheet" class="coach player-sheet">
@@ -26,16 +33,11 @@
             <ui:Label name="coach-text" class="coach__text" />
             <ui:Button name="coach-next" class="button button--primary button--small" />
         </ui:VisualElement>
-        <ui:Label name="my-say" class="bubble bubble--mine" />
-        <ui:Label name="hint" class="hint" />
-        <ui:VisualElement name="quick-strip" class="quick-strip" />
         <ui:VisualElement class="table__bar">
-            <ui:VisualElement class="table__turn">
-                <ui:VisualElement name="me" class="table__me" />
-            </ui:VisualElement>
+            <ui:VisualElement name="quick-strip" class="quick-strip" />
             <ui:VisualElement class="table__bar-actions">
                 <ui:Button name="take-hand" class="button button--primary button--small" />
-                <ui:Button name="chat" class="button button--small" />
+                <ui:Button name="chat" class="button button--small table__chat" />
             </ui:VisualElement>
         </ui:VisualElement>
         <ui:VisualElement name="hand" class="hand" />

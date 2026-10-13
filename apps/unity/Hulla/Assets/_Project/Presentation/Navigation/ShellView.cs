@@ -1,4 +1,6 @@
 using System;
+using Hulla.Application.Settings;
+using Hulla.Presentation.Theme;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -25,6 +27,33 @@ namespace Hulla.Presentation.Navigation
         /// <summary>Swaps the 240 ms rise for a 120 ms fade (GDD 27).</summary>
         public bool ReduceMotion { get; set; }
 
+        /// <summary>The table theme whose scene sits behind every screen (docs/design/table-themes.md).</summary>
+        public TableSkin Skin { get; private set; }
+
+        /// <summary>Switches the theme's scene on the screen and overlay showing now; later screens follow.</summary>
+        public void ApplySkin(TableSkin skin, bool reduceMotion)
+        {
+            if (skin == Skin && reduceMotion == ReduceMotion && _current?.Q(AmbientLayer.ScreenName) != null)
+            {
+                return;
+            }
+
+            Skin = skin;
+            ReduceMotion = reduceMotion;
+            Decorate(_current);
+            Decorate(Root.Q("shell-overlay"));
+        }
+
+        /// <summary>The theme's ambient layer goes behind the screen's own content.</summary>
+        private void Decorate(VisualElement? instance)
+        {
+            var screen = instance?.Q(className: "screen");
+            if (screen != null)
+            {
+                AmbientLayer.Decorate(screen, Skin, ReduceMotion);
+            }
+        }
+
         /// <summary>Raised when a bottom-navigation tab is tapped.</summary>
         public event Action<NavTab>? NavChosen;
 
@@ -47,6 +76,7 @@ namespace Hulla.Presentation.Navigation
             instance.AddToClassList(ReduceMotion ? "screen--enter-fade" : "screen--enter");
             root.Add(instance);
             _current = instance;
+            Decorate(instance);
             instance.schedule.Execute(() =>
             {
                 instance.RemoveFromClassList("screen--enter");
@@ -126,6 +156,7 @@ namespace Hulla.Presentation.Navigation
             instance.AddToClassList("screen-anim");
             instance.AddToClassList(ReduceMotion ? "screen--enter-fade" : "screen--enter");
             Root.Add(instance);
+            Decorate(instance);
             instance.schedule.Execute(() =>
             {
                 instance.RemoveFromClassList("screen--enter");

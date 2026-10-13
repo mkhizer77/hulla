@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using Hulla.Application.Services;
+using Hulla.Application.Settings;
 using Hulla.Application.Table;
 using Hulla.Application.ViewModels;
 using Hulla.Games.Thulla;
@@ -10,6 +11,7 @@ using Hulla.Presentation.Navigation;
 using Hulla.Presentation.Screens.Home;
 using Hulla.Presentation.Screens.Lobby;
 using Hulla.Presentation.Share;
+using Hulla.Presentation.Theme;
 using Hulla.Protocol;
 using NUnit.Framework;
 using UnityEditor;
@@ -21,7 +23,7 @@ namespace Hulla.Screens.Tests
 {
     /// <summary>
     /// Draws Home, the lobby, the table at the thulla moment and the results to PNGs for eyeballing
-    /// the look; explicit, so it only runs on request:
+    /// the look, once per table theme; explicit, so it only runs on request:
     /// <c>-testFilter Hulla.Screens.Tests.ScreenSnapshots</c>, files in HULLA_SNAPSHOT_DIR.
     /// </summary>
     public sealed class ScreenSnapshots
@@ -32,14 +34,23 @@ namespace Hulla.Screens.Tests
 
         private static string Dir => System.Environment.GetEnvironmentVariable("HULLA_SNAPSHOT_DIR") ?? "Temp";
 
-        private static IEnumerator Snap(string name, VisualTreeAsset? screen, System.Action<VisualElement> bind, bool nav = false)
+        public static IEnumerable<TableSkin> Skins => (TableSkin[])System.Enum.GetValues(typeof(TableSkin));
+
+        private static IEnumerator Snap(string name, TableSkin skin, VisualTreeAsset? screen, System.Action<VisualElement> bind, bool nav = false)
         {
+            name += "-" + skin.ToString().ToLowerInvariant();
             var task = CardRenderer.RenderAsync(Settings, CardRatio.Story, root =>
             {
+                root.AddToClassList(ThemeClasses.Skinned);
+                root.AddToClassList(ThemeClasses.ClassOf(skin));
                 var instance = screen!.Instantiate();
                 instance.style.flexGrow = 1;
                 root.Add(instance);
                 bind(instance);
+                var layer = instance.Q(className: "screen");
+                AmbientLayer.Decorate(layer, skin, reduceMotion: true);
+                (layer?.Q(AmbientLayer.ScreenName) as AmbientLayer)?.Advance(1.3f);
+                (layer?.Q(AmbientLayer.TableName) as AmbientLayer)?.Advance(1.3f);
                 if (nav)
                 {
                     var bar = new NavBar(Presentation.Text.UiText.NavLabel, Presentation.Text.UiText.NavGlyph);
@@ -59,10 +70,10 @@ namespace Hulla.Screens.Tests
         }
 
         [UnityTest, Explicit]
-        public IEnumerator Home()
+        public IEnumerator Home([ValueSource(nameof(Skins))] TableSkin skin)
         {
             var friends = new HomeFriendsViewModel(new Fakes.Social());
-            yield return Snap("home", Catalog.Home, r =>
+            yield return Snap("home", skin, Catalog.Home, r =>
             {
                 new HomeView(r, new HomeViewModel(new Fakes.Session(), new Fakes.Gateway()) { LastName = "Khizer" }, null, (_, _) => { }, (_, _, _) => { }, (_, _, _) => { }, () => { }, (_, _) => { }, (_, _) => { }, friends, () => { }, "How to play");
                 _ = friends.RefreshAsync(default);
@@ -73,11 +84,11 @@ namespace Hulla.Screens.Tests
         }
 
         [UnityTest, Explicit]
-        public IEnumerator Lobby()
+        public IEnumerator Lobby([ValueSource(nameof(Skins))] TableSkin skin)
         {
             var gateway = new Fakes.Gateway();
             var client = new TableClient(gateway, new TableTicket("m", "K7Q2MX", "t_K7Q2MX"), "me", 1);
-            yield return Snap("lobby", Catalog.Lobby, r =>
+            yield return Snap("lobby", skin, Catalog.Lobby, r =>
             {
                 new LobbyView(r, client, () => 0, () => { }, _ => true, null, () => "Standard · 20 s turns · loser: Bhabhi", () => { });
                 var state = Fakes.InRound(3);
@@ -90,11 +101,11 @@ namespace Hulla.Screens.Tests
         }
 
         [UnityTest, Explicit]
-        public IEnumerator TableAtTheThulla()
+        public IEnumerator TableAtTheThulla([ValueSource(nameof(Skins))] TableSkin skin)
         {
             var gateway = new Fakes.Gateway();
             var client = new TableClient(gateway, new TableTicket("m", "K7Q2MX", "t_K7Q2MX"), "me", 1);
-            yield return Snap("table", Catalog.Table, r =>
+            yield return Snap("table", skin, Catalog.Table, r =>
             {
                 var view = new ThullaTableView(r, client, new Fakes.Chat(), () => 5000, () => { });
                 var state = Fakes.InRound(5);
@@ -112,11 +123,68 @@ namespace Hulla.Screens.Tests
         }
 
         [UnityTest, Explicit]
-        public IEnumerator Results()
+        public IEnumerator TableOnMyTurn([ValueSource(nameof(Skins))] TableSkin skin)
         {
             var gateway = new Fakes.Gateway();
             var client = new TableClient(gateway, new TableTicket("m", "K7Q2MX", "t_K7Q2MX"), "me", 1);
-            yield return Snap("results", Catalog.Table, r =>
+            yield return Snap("table-turn", skin, Catalog.Table, r =>
+            {
+                new ThullaTableView(r, client, new Fakes.Chat(), () => 5000, () => { });
+                var state = Fakes.InRound(5);
+                state.Round!.Seats[0].Hand = new List<string> { "AS", "KS", "9S", "QH", "8H", "2H", "JD", "9D", "5C", "3C", "TC" };
+                state.Round.Seats[0].HandCount = 11;
+                state.Round.Trick.Plays = new List<Play> { new Play { Seat = 2, Card = "KH" }, new Play { Seat = 3, Card = "6H" } };
+                gateway.Deliver(MessageTypes.TableState, 5, state);
+                gateway.Deliver(MessageTypes.TurnStart, 5, new TurnStart { RoundId = "r", Seat = 0, Legal = new List<string> { "QH", "8H", "2H" }, DeadlineTs = 15000 });
+            });
+        }
+
+        [UnityTest, Explicit]
+        public IEnumerator TableOfSix([ValueSource(nameof(Skins))] TableSkin skin)
+        {
+            var gateway = new Fakes.Gateway();
+            var client = new TableClient(gateway, new TableTicket("m", "K7Q2MX", "t_K7Q2MX"), "me", 1);
+            yield return Snap("table-six", skin, Catalog.Table, r =>
+            {
+                new ThullaTableView(r, client, new Fakes.Chat(), () => 5000, () => { });
+                var state = Fakes.InRound(5, 6);
+                state.Round!.Seats[0].Hand = new List<string> { "AS", "9S", "QH", "8H", "JD", "5C", "TC" };
+                state.Round.Seats[0].HandCount = 7;
+                state.Round.Trick.Plays = new List<Play> { new Play { Seat = 3, Card = "KH" }, new Play { Seat = 4, Card = "6H" }, new Play { Seat = 5, Card = "AH" } };
+                state.Round.TurnSeat = 0;
+                gateway.Deliver(MessageTypes.TableState, 5, state);
+            });
+        }
+
+        [UnityTest, Explicit]
+        public IEnumerator SettingsWithThemes([ValueSource(nameof(Skins))] TableSkin skin)
+        {
+            yield return Snap("settings", skin, Catalog.Settings, r =>
+            {
+                var settings = new SettingsModel(new Store()) { Skin = skin };
+                new Presentation.Screens.Settings.SettingsView(r, settings, () => { });
+            });
+        }
+
+        private sealed class Store : ISettingsStore
+        {
+            private readonly Dictionary<string, int> _values = new Dictionary<string, int>();
+
+            public int GetInt(string key, int fallback) => _values.TryGetValue(key, out var v) ? v : fallback;
+
+            public void SetInt(string key, int value) => _values[key] = value;
+
+            public void Save()
+            {
+            }
+        }
+
+        [UnityTest, Explicit]
+        public IEnumerator Results([ValueSource(nameof(Skins))] TableSkin skin)
+        {
+            var gateway = new Fakes.Gateway();
+            var client = new TableClient(gateway, new TableTicket("m", "K7Q2MX", "t_K7Q2MX"), "me", 1);
+            yield return Snap("results", skin, Catalog.Table, r =>
             {
                 var view = new ThullaTableView(r, client, new Fakes.Chat(), () => 1000, () => { });
                 view.UseShare(() => { });

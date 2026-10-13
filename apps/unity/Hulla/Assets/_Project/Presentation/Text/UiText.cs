@@ -145,6 +145,17 @@ namespace Hulla.Presentation.Text
         public const string Done = "Done";
         public const string SettingsPlay = "Playing";
         public const string SettingsSeeing = "Seeing and moving";
+        public const string SettingsTheme = "Table theme";
+
+        /// <summary>The table themes in settings order (docs/design/table-themes.md).</summary>
+        public static string SkinName(Hulla.Application.Settings.TableSkin skin) => skin switch
+        {
+            Hulla.Application.Settings.TableSkin.Haveli => "Haveli",
+            Hulla.Application.Settings.TableSkin.Dhaba => "Rooftop",
+            Hulla.Application.Settings.TableSkin.Mehndi => "Mehndi",
+            Hulla.Application.Settings.TableSkin.Adda => "Chai Adda",
+            _ => "Club",
+        };
         public const string OneTapPlay = "One-tap play";
         public const string HandSortLabel = "Sort my hand";
         public const string SortBySuit = "By suit";
