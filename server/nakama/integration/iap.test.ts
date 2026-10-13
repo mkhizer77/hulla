@@ -28,10 +28,8 @@ describe.skipIf(NAKAMA_HOST === undefined)(
         store: "google",
         receipt: JSON.stringify({ json: "{}", signature: "not-a-signature" }),
       });
-      expect(refused.ok).toBe(false);
-      expect(["economy.store_unavailable", "economy.receipt_invalid"]).toContain(
-        refused.error?.code,
-      );
+      // The local and CI boxes hold no store credentials (runbook step 3).
+      expect(refused).toMatchObject({ ok: false, error: { code: "economy.store_unavailable" } });
       expect(await rpc<object>(buyer, "iap_restore", {})).toMatchObject({
         ok: true,
         purchases: [],
