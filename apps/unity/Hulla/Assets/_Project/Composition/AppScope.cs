@@ -43,6 +43,7 @@ namespace Hulla.Composition
             Leaderboard = new LeaderboardViewModel(new NakamaLeaderboardService(_connection));
             Achievements = new AchievementsViewModel(new NakamaAchievementsService(_connection));
             Shop = new ShopViewModel(new NakamaShopService(_connection));
+            Pass = new PassViewModel(new NakamaPassService(_connection));
             Missions = new MissionsViewModel(new NakamaMissionsService(_connection));
             Friends = new FriendsViewModel(social);
             Profile = new ProfileViewModel(social);
@@ -86,6 +87,8 @@ namespace Hulla.Composition
         public AchievementsViewModel Achievements { get; }
 
         public ShopViewModel Shop { get; }
+
+        public PassViewModel Pass { get; }
 
         public MissionsViewModel Missions { get; }
 

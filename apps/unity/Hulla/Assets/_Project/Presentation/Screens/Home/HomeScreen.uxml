@@ -27,6 +27,7 @@
             <ui:Button name="missions" class="button button--quiet" />
             <ui:Button name="leaderboard" class="button button--quiet" />
             <ui:Button name="shop" class="button button--quiet" />
+            <ui:Button name="pass" class="button button--quiet" />
             <ui:Button name="friends" class="button button--quiet" />
             <ui:Button name="profile" class="button button--quiet" />
             <ui:Button name="settings" class="button button--quiet" />

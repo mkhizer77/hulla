@@ -1012,3 +1012,41 @@
 .rarity--rare { color: #4FC3F7; }
 .rarity--epic { color: #BA68C8; }
 .rarity--legendary { color: var(--accent-saffron); }
+
+.pass__row {
+    flex-direction: row;
+    align-items: stretch;
+    min-height: 112px;
+    border-bottom-width: 1px;
+    border-color: #2A2D33;
+}
+
+.pass__row--ahead {
+    opacity: 0.55;
+}
+
+.pass__tier {
+    width: 80px;
+    -unity-text-align: middle-center;
+    -unity-font-style: bold;
+    color: var(--accent-saffron);
+}
+
+.pass__side {
+    flex-grow: 1;
+    flex-basis: 0;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 var(--space-1);
+}
+
+.pass__side--premium {
+    background-color: #2B2412;
+}
+
+.pass__reward {
+    flex-shrink: 1;
+    white-space: normal;
+    font-size: var(--font-small);
+}

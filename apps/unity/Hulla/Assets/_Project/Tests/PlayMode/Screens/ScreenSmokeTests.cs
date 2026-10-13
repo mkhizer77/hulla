@@ -17,6 +17,7 @@ using Hulla.Presentation.Screens.Profile;
 using Hulla.Presentation.Screens.QuickPlay;
 using Hulla.Presentation.Screens.Rulebook;
 using Hulla.Presentation.Screens.Settings;
+using Hulla.Presentation.Screens.Pass;
 using Hulla.Presentation.Screens.Shop;
 using Hulla.Presentation.Share;
 using Hulla.Protocol;
@@ -333,6 +334,26 @@ namespace Hulla.Screens.Tests
             CollectionAssert.Contains(texts, "Equipped");
             CollectionAssert.Contains(texts, "1,000 coins");
             CollectionAssert.Contains(texts, "Equip");
+        }
+
+        [UnityTest]
+        public IEnumerator SeasonPassShowsTiersClaimsAndTheLockedTrack()
+        {
+            VisualElement root = null!;
+            var model = new PassViewModel(new Fakes.Pass());
+            yield return Open(Catalog.Pass, r =>
+            {
+                root = r;
+                new PassView(r, model, () => 1_000_000_000_000, () => { }, (_, _) => { });
+                _ = model.RefreshAsync(default);
+            });
+            var texts = root.Q<VisualElement>("list").Query<TextElement>().ToList().Select(l => l.text).ToList();
+            CollectionAssert.Contains(texts, "Basant 2026");
+            CollectionAssert.Contains(texts, "Tier 2 of 4 · 300/1,000 XP · ends in 20d 0h");
+            CollectionAssert.Contains(texts, "Done", "tier 1 free is claimed");
+            CollectionAssert.Contains(texts, "Claim", "tier 2 free is claimable");
+            CollectionAssert.Contains(texts, "Locked", "premium without the pass");
+            CollectionAssert.Contains(texts, "Kites");
         }
 
         [UnityTest]

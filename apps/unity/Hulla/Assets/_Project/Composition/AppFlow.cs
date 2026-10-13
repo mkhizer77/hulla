@@ -12,6 +12,7 @@ using Hulla.Presentation.Screens.Friends;
 using Hulla.Presentation.Screens.Lobby;
 using Hulla.Presentation.Screens.Achievements;
 using Hulla.Presentation.Screens.Leaderboard;
+using Hulla.Presentation.Screens.Pass;
 using Hulla.Presentation.Screens.Shop;
 using Hulla.Presentation.Screens.Missions;
 using Hulla.Presentation.Screens.Profile;
@@ -150,7 +151,7 @@ namespace Hulla.Composition
             _screen = Screen.Home;
             var root = _shell.Show(_shell.Catalog.Home);
             var server = Debug.isDebugBuild ? _app.Config.HostAndPort : null;
-            _view = new HomeView(root, _app.Home, server, OnCreate, OnJoin, OnQuickPlay, OpenSettings, OnFriends, OnProfile, _app.HomeFriends, () => StartTutorial(false), TutorialText.HowToPlay, OnWatch, _app.Progress, OnMissions, OnLeaderboard, OnShop);
+            _view = new HomeView(root, _app.Home, server, OnCreate, OnJoin, OnQuickPlay, OpenSettings, OnFriends, OnProfile, _app.HomeFriends, () => StartTutorial(false), TutorialText.HowToPlay, OnWatch, _app.Progress, OnMissions, OnLeaderboard, OnShop, OnPass);
             _daily = new DailyRewardCard(UnityEngine.UIElements.UQueryExtensions.Q<UnityEngine.UIElements.VisualElement>(root, "daily"), _app.DailyReward, ClaimDailyReward);
             _app.HomeFriends.Active = _app.Sessions.Current != null;
             _app.HomeFriends.RefreshSoon();
@@ -234,6 +235,21 @@ namespace Hulla.Composition
                 entry => _ = friends.ToggleFavouriteAsync(entry, lifetime),
                 id => _ = friends.UnblockAsync(id, lifetime)));
             await friends.RefreshAsync(lifetime);
+        }
+
+        private async void OnPass(string name, string? server)
+        {
+            if (!await SignedInAsync(name, server))
+            {
+                return;
+            }
+
+            CloseView();
+            _screen = Screen.Home;
+            var pass = _app.Pass;
+            _view = new PassView(_shell.Show(_shell.Catalog.Pass), pass, () => DateTimeOffset.UtcNow.ToUnixTimeMilliseconds(), ShowHome,
+                (tier, premium) => _ = pass.ClaimAsync(tier, premium, _app.Lifetime));
+            await pass.RefreshAsync(_app.Lifetime);
         }
 
         private async void OnShop(string name, string? server)

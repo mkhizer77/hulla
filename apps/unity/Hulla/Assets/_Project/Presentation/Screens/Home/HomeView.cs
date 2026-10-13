@@ -26,7 +26,7 @@ namespace Hulla.Presentation.Screens.Home
         private readonly Button _quick;
         private int _seats = 4;
 
-        public HomeView(VisualElement root, HomeViewModel model, string? server, Action<string, string?> create, Action<string, string, string?> join, Action<string, int, string?> quickPlay, Action? openSettings = null, Action<string, string?>? openFriends = null, Action<string, string?>? openProfile = null, HomeFriendsViewModel? friendsOnline = null, Action? howToPlay = null, string? howToPlayText = null, Action<string, string, string?>? watch = null, ProgressViewModel? progress = null, Action<string, string?>? openMissions = null, Action<string, string?>? openLeaderboard = null, Action<string, string?>? openShop = null)
+        public HomeView(VisualElement root, HomeViewModel model, string? server, Action<string, string?> create, Action<string, string, string?> join, Action<string, int, string?> quickPlay, Action? openSettings = null, Action<string, string?>? openFriends = null, Action<string, string?>? openProfile = null, HomeFriendsViewModel? friendsOnline = null, Action? howToPlay = null, string? howToPlayText = null, Action<string, string, string?>? watch = null, ProgressViewModel? progress = null, Action<string, string?>? openMissions = null, Action<string, string?>? openLeaderboard = null, Action<string, string?>? openShop = null, Action<string, string?>? openPass = null)
         {
             _progress = progress;
             _progressLine = root.Q<Label>("progress");
@@ -124,6 +124,10 @@ namespace Hulla.Presentation.Screens.Home
             shop.text = UiText.Shop;
             shop.clicked += () => openShop?.Invoke(_name.value, Server());
             shop.style.display = openShop == null ? DisplayStyle.None : DisplayStyle.Flex;
+            var pass = root.Q<Button>("pass");
+            pass.text = UiText.SeasonPass;
+            pass.clicked += () => openPass?.Invoke(_name.value, Server());
+            pass.style.display = openPass == null ? DisplayStyle.None : DisplayStyle.Flex;
             var friends = root.Q<Button>("friends");
             friends.text = UiText.Friends;
             friends.clicked += () => openFriends?.Invoke(_name.value, Server());
