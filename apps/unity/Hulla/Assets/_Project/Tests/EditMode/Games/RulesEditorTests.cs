@@ -118,5 +118,33 @@ namespace Hulla.Games.Thulla.Tests
             var editor = new ThullaRulesEditor(Root(), model, new Presets(), _ => { }, () => { });
             Assert.AreEqual("instantExit", editor.Build().Overrides!["emptyHandLeader"]);
         }
+
+        [Test]
+        public void TheHostCanTurnAskingForAHandOffR31()
+        {
+            var editor = new ThullaRulesEditor(Root(), Lobby(null), new Presets(), _ => { }, () => { });
+            Assert.IsNull(editor.Build().Overrides, "private rooms default to leader only");
+            editor.ChooseHandTaking(HandTaking.Off);
+            editor.ChooseEmptyHand(EmptyHandLeader.InstantExit);
+            var overrides = editor.Build().Overrides!;
+            Assert.AreEqual("off", overrides["handTaking"]);
+            Assert.AreEqual("instantExit", overrides["emptyHandLeader"]);
+            editor.ChoosePreset(Preset.Family);
+            Assert.IsNull(editor.Build().Overrides, "a preset resets the hand rule to its own");
+        }
+
+        [Test]
+        public void TheLobbyLineSaysWhenAskingForAHandIsOffR31()
+        {
+            var model = Lobby(new RulesSelection
+            {
+                GameId = GameId.Thulla,
+                Preset = Preset.Standard,
+                Overrides = new Dictionary<string, object> { ["handTaking"] = "off" },
+            });
+            Assert.AreEqual("Standard · 20 s turns · loser: Bhabhi · ask for hand: Off", ThullaRulesEditor.Summary(model, new Presets()));
+            var editor = new ThullaRulesEditor(Root(), model, new Presets(), _ => { }, () => { });
+            Assert.AreEqual("off", editor.Build().Overrides!["handTaking"]);
+        }
     }
 }

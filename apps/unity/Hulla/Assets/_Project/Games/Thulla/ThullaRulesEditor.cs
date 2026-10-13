@@ -11,9 +11,11 @@ namespace Hulla.Games.Thulla
 {
     /// <summary>
     /// The host's rules editor in a private lobby (GDD 6.13, 14.9): a preset, the turn timer, the
-    /// loser's title and what happens when you win a trick with your last card (R26, R28). Choosing a
-    /// preset resets the others to its values; Save sends set_rules with the preset's table settings
-    /// made explicit and the empty-hand rule as an override only when it differs from the preset's.
+    /// loser's title, what happens when you win a trick with your last card (R26, R28) and whether the
+    /// leader may ask for the next player's hand (R31, R32). Choosing a preset resets the others to its
+    /// values; Save sends set_rules with the preset's table settings made explicit and each rule toggle
+    /// as an override only when it differs from the preset's. "Anyone" (R35) waits for a pre-lead turn
+    /// for every seat on the server, so the editor offers off and leader only.
     /// </summary>
     public sealed class ThullaRulesEditor
     {
@@ -21,6 +23,7 @@ namespace Hulla.Games.Thulla
         private static readonly long?[] Timers = { 10, 15, 20, 30, 60, null };
         private static readonly LoserTitle[] Titles = { LoserTitle.Bhabhi, LoserTitle.Donkey, LoserTitle.Thullad };
         private static readonly EmptyHandLeader[] EmptyHands = { EmptyHandLeader.DrawDiscard, EmptyHandLeader.DrawNextPlayer, EmptyHandLeader.InstantExit };
+        private static readonly HandTaking[] HandTakings = { HandTaking.LeaderOnly, HandTaking.Off };
 
         private readonly IPresetCatalog _presets;
         private readonly VisualElement _list;
@@ -28,6 +31,7 @@ namespace Hulla.Games.Thulla
         private long? _timer;
         private LoserTitle _title;
         private EmptyHandLeader _emptyHand;
+        private HandTaking _handTaking;
 
         public ThullaRulesEditor(VisualElement root, TableModel model, IPresetCatalog presets, Action<RulesSelection> save, Action close)
         {
@@ -39,6 +43,7 @@ namespace Hulla.Games.Thulla
             _timer = selection?.Settings != null && selection.Settings.TurnTimerSeconds != null ? selection.Settings.TurnTimerSeconds : preset?.TurnTimerSeconds ?? 20;
             _title = selection?.Settings?.LoserTitle ?? preset?.LoserTitle ?? LoserTitle.Bhabhi;
             _emptyHand = ThullaRuleOverrides.EmptyHandLeaderOf(selection?.Overrides) ?? PresetEmptyHand(found?.Rules);
+            _handTaking = ThullaRuleOverrides.HandTakingOf(selection?.Overrides) ?? PresetHandTaking(found?.Rules);
             root.Q<Label>("title").text = UiText.EditRules;
             var saveButton = root.Q<Button>("close");
             saveButton.text = UiText.Save;
@@ -51,7 +56,7 @@ namespace Hulla.Games.Thulla
             Draw();
         }
 
-        /// <summary>One line for the lobby: "Family · 30 s turns · loser: Donkey", plus the last-card rule when it is not the preset's.</summary>
+        /// <summary>One line for the lobby: "Family · 30 s turns · loser: Donkey", plus the last-card and hand rules when they are not the preset's.</summary>
         public static string Summary(TableModel model, IPresetCatalog presets)
         {
             var selection = model.Selection;
@@ -62,9 +67,15 @@ namespace Hulla.Games.Thulla
             var title = selection?.Settings?.LoserTitle ?? fromPreset?.LoserTitle ?? LoserTitle.Bhabhi;
             var line = string.Format(UiText.RulesSummary, PresetName(preset), timer > 0 ? string.Format(UiText.TurnSeconds, timer) : UiText.NoTimer, TitleName(title));
             var emptyHand = ThullaRuleOverrides.EmptyHandLeaderOf(selection?.Overrides);
-            return emptyHand == null || emptyHand == PresetEmptyHand(found?.Rules)
+            if (emptyHand != null && emptyHand != PresetEmptyHand(found?.Rules))
+            {
+                line = string.Format(UiText.RulesSummaryLastCard, line, EmptyHandName(emptyHand.Value));
+            }
+
+            var handTaking = ThullaRuleOverrides.HandTakingOf(selection?.Overrides);
+            return handTaking == null || handTaking == PresetHandTaking(found?.Rules)
                 ? line
-                : string.Format(UiText.RulesSummaryLastCard, line, EmptyHandName(emptyHand.Value));
+                : string.Format(UiText.RulesSummaryHand, line, HandTakingName(handTaking.Value));
         }
 
         internal RulesSelection Build()
@@ -75,7 +86,7 @@ namespace Hulla.Games.Thulla
             {
                 GameId = GameId.Thulla,
                 Preset = _preset,
-                Overrides = ThullaRuleOverrides.ForEmptyHandLeader(_emptyHand, PresetEmptyHand(found?.Rules)),
+                Overrides = ThullaRuleOverrides.For(_emptyHand, PresetEmptyHand(found?.Rules), _handTaking, PresetHandTaking(found?.Rules)),
                 Settings = new TableSettings
                 {
                     TurnTimerSeconds = _timer,
@@ -86,7 +97,7 @@ namespace Hulla.Games.Thulla
             };
         }
 
-        /// <summary>A preset resets the timer, the title and the last-card rule to its own values.</summary>
+        /// <summary>A preset resets the timer, the title, the last-card and the hand rules to its own values.</summary>
         internal void ChoosePreset(Preset preset)
         {
             _preset = preset;
@@ -95,6 +106,7 @@ namespace Hulla.Games.Thulla
             _timer = settings?.TurnTimerSeconds ?? 20;
             _title = settings?.LoserTitle ?? LoserTitle.Bhabhi;
             _emptyHand = PresetEmptyHand(found?.Rules);
+            _handTaking = PresetHandTaking(found?.Rules);
             Draw();
         }
 
@@ -116,6 +128,12 @@ namespace Hulla.Games.Thulla
             Draw();
         }
 
+        internal void ChooseHandTaking(HandTaking rule)
+        {
+            _handTaking = rule;
+            Draw();
+        }
+
         private void Draw()
         {
             _list.Clear();
@@ -123,6 +141,7 @@ namespace Hulla.Games.Thulla
             Choice(UiText.TurnTimerLabel, Array.ConvertAll(Timers, t => t == null ? UiText.NoTimer : t + " s"), Array.IndexOf(Timers, _timer), i => ChooseTimer(Timers[i]));
             Choice(UiText.LoserTitleLabel, Array.ConvertAll(Titles, TitleName), Array.IndexOf(Titles, _title), i => ChooseTitle(Titles[i]));
             Choice(UiText.EmptyHandLabel, Array.ConvertAll(EmptyHands, EmptyHandName), Array.IndexOf(EmptyHands, _emptyHand), i => ChooseEmptyHand(EmptyHands[i]));
+            Choice(UiText.HandTakingLabel, Array.ConvertAll(HandTakings, HandTakingName), Array.IndexOf(HandTakings, _handTaking), i => ChooseHandTaking(HandTakings[i]));
         }
 
         private void Choice(string label, IReadOnlyList<string> options, int selected, Action<int> pick)
@@ -147,6 +166,16 @@ namespace Hulla.Games.Thulla
         }
 
         private static EmptyHandLeader PresetEmptyHand(ThullaRules? rules) => rules?.EmptyHandLeader ?? EmptyHandLeader.DrawDiscard;
+
+        /// <summary>A preset that leaves hand-taking alone gets the private-room default, leader only (R31).</summary>
+        private static HandTaking PresetHandTaking(ThullaRules? rules) => rules?.HandTaking ?? HandTaking.LeaderOnly;
+
+        private static string HandTakingName(HandTaking rule) => rule switch
+        {
+            HandTaking.Off => UiText.HandTakingOff,
+            HandTaking.Anyone => UiText.HandTakingAnyone,
+            _ => UiText.HandTakingLeader,
+        };
 
         private static string PresetName(Preset preset) => preset switch
         {

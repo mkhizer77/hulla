@@ -31,8 +31,8 @@ namespace Hulla.Games.Thulla
         public const string EmptyHandDrawNext = "Win a trick with your last card and you draw a random card from the next player's hand, then lead.";
         public const string EmptyHandInstantExit = "Win a trick with your last card and you escape at once; the next player leads.";
         public const string HandTakingOff = "Taking another player's hand is off.";
-        public const string HandTakingLeader = "From the second trick, the leader may take the whole hand of the next active player before leading (press and hold). That player escapes.";
-        public const string HandTakingAnyone = "Before the lead, anyone may take the hand of the next active player; the first request wins. That player escapes.";
+        public const string HandTakingLeader = "From the second trick, the leader may take the whole hand of the next active player before leading by tapping Ask for hand. If they accept, they escape.";
+        public const string HandTakingAnyone = "Before the lead, anyone may ask for the hand of the next active player; the first accepted request wins. That player escapes.";
         public const string EndgameDrawOpponent = "With two players left, a leader who wins with their last card draws a random card from the opponent.";
         public const string EndgameDrawDiscard = "With two players left, a leader who wins with their last card draws a random card from the discard.";
         public const string EndgameThullaEndsRound = "With two players left, the first thulla ends the round: whoever picks up is the {0}.";
