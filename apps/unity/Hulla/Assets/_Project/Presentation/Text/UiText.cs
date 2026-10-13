@@ -68,14 +68,20 @@ namespace Hulla.Presentation.Text
         public const string ShareStory = "Story";
         public const string ShareResultTitle = "Thulla on Hulla";
 
-        /// <summary>{0} loser's name, {1} the table's loser title, {2} room code.</summary>
-        public const string ShareResultWithCode = "{0} is the {1}! Join our table on Hulla with code {2}";
+        /// <summary>{0} loser's name, {1} the table's loser title, {2} room code, {3} the invite link.</summary>
+        public const string ShareResultWithCode = "{0} is the {1}! Join our table on Hulla with code {2}: {3}";
+
+        /// <summary>{0} loser's name, {1} the table's loser title, {2} the referral link.</summary>
+        public const string ShareResultReferral = "{0} is the {1}! Play Thulla with me on Hulla: {2}";
 
         /// <summary>{0} loser's name, {1} the table's loser title.</summary>
         public const string ShareResultText = "{0} is the {1}! Play Thulla with us on Hulla.";
 
         public const string ShareFooterCode = "Join with code {0} on Hulla";
         public const string ShareFooter = "Play Thulla on Hulla";
+
+        /// <summary>{0} the sharer's friend code.</summary>
+        public const string ShareFooterFriend = "Add me on Hulla: {0}";
 
         /// <summary>{0} name, {1} cards picked up.</summary>
         public const string BigThulla = "{0} picked up {1} cards, the biggest thulla of the night. Share it?";
@@ -248,6 +254,10 @@ namespace Hulla.Presentation.Text
         /// <summary>{0} inviter's name, {1} room code.</summary>
         public const string InviteReceived = "{0} invites you to their table ({1}).";
         public const string InviteLinkWhileSeated = "Finish this table first to join {0}.";
+        public const string ReferralWhileSeated = "Open the link again after this table to add your friend.";
+
+        /// <summary>{0} the sharer's friend code.</summary>
+        public const string ReferralAsk = "Add the player who shared this link ({0}) as a friend?";
 
         public const string Notifications = "Notifications";
         public const string NotifyInvites = "Table invites";

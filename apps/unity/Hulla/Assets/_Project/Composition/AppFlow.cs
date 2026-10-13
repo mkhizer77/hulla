@@ -95,6 +95,7 @@ namespace Hulla.Composition
             _app.Tables.Disconnected += OnDisconnected;
             _app.Sessions.Notified += OnNotice;
             _app.Links.InviteOpened += OnInviteLink;
+            _app.Links.ReferralOpened += OnReferralLink;
             _app.Friends.Changed += RefreshBadges;
             _app.Pass.Changed += RefreshBadges;
         }
@@ -229,6 +230,48 @@ namespace Hulla.Composition
             OnJoin(_app.Home.LastName, code, null);
         }
 
+        /// <summary>
+        /// A referral link from a share card (GDD 10.9): it offers to add the sharer as a friend. At a
+        /// table it only says so, so a round isn't interrupted.
+        /// </summary>
+        private void OnReferralLink(string friendCode)
+        {
+            if (friendCode == _app.Profile.Profile?.FriendCode)
+            {
+                return;
+            }
+
+            if (_screen == Screen.Table || _screen == Screen.Lobby)
+            {
+                ShowBriefly(UiText.ReferralWhileSeated);
+                return;
+            }
+
+            _shell.ShowDialog(string.Format(UiText.ReferralAsk, friendCode), UiText.AddFriend, UiText.NotNow, () => AddReferrer(friendCode), () => { });
+        }
+
+        private async void AddReferrer(string friendCode)
+        {
+            if (!await SignedInAsync(_app.Home.LastName, null))
+            {
+                return;
+            }
+
+            _app.Analytics.Track(AnalyticsEvents.FriendAdd("referral"));
+            await _app.Friends.AddByCodeAsync(friendCode, _app.Lifetime);
+            ShowBriefly(_app.Friends.RequestSent ? UiText.RequestSent : UiText.Error(_app.Friends.ErrorCode ?? ""));
+        }
+
+        private async void ShowBriefly(string text)
+        {
+            _shell.SetBanner(text);
+            await Awaitable.WaitForSecondsAsync(5f);
+            if (UnityEngine.UIElements.UQueryExtensions.Q<UnityEngine.UIElements.Label>(_shell.Root, "shell-banner")?.text == text)
+            {
+                _shell.SetBanner(null);
+            }
+        }
+
         /// <summary>An unlock shows briefly at the top of whatever screen is open (GDD 12.7).</summary>
         private async void OnNotice(string subject, string content)
         {
@@ -258,8 +301,9 @@ namespace Hulla.Composition
         public async void Start()
         {
             ApplySettings();
+            // A held invite or referral link opens its own dialog once the flow is ready.
             var invited = _app.Links.HasPending;
-            _app.Analytics.Track(AnalyticsEvents.AppOpen(true, invited ? "invite" : "none"));
+            _app.Analytics.Track(AnalyticsEvents.AppOpen(true, _app.Links.PendingType));
             _app.Home.LastName = NameFromCommandLine() ?? PlayerPrefs.GetString(NamePrefKey, "");
             var returning = _app.Home.LastName.Length > 0;
             if (!returning)
@@ -268,8 +312,8 @@ namespace Hulla.Composition
             }
 
             ShowHome();
-            // A player who came in on an invite goes to the table first; the tutorial and the consent
-            // question wait for the next launch.
+            // A player who came in on a link goes to the table or the friend request first; the tutorial
+            // and the consent question wait for the next launch.
             if (!invited && PlayerPrefs.GetInt(TutorialSeenPrefKey, 0) == 0 && !returning)
             {
                 _shell.ShowDialog(TutorialText.Gate, TutorialText.GateYes, TutorialText.GateNo, OfferRefresher, () => StartTutorial(false));
@@ -307,6 +351,7 @@ namespace Hulla.Composition
             _app.Settings.Changed -= ApplySettings;
             _app.QuickPlay.Found -= OnQuickPlayFound;
             _app.Links.InviteOpened -= OnInviteLink;
+            _app.Links.ReferralOpened -= OnReferralLink;
             _app.TableChat.Received -= OnText;
             _app.Tables.Disconnected -= OnDisconnected;
             CloseView();
@@ -963,12 +1008,29 @@ namespace Hulla.Composition
             }
 
             var code = model.IsPrivate && model.Code.Length > 0 ? model.Code : null;
-            var footer = code != null ? string.Format(UiText.ShareFooterCode, code) : UiText.ShareFooter;
+            var friendCode = code == null ? await MyFriendCodeAsync() : null;
+            var footer = code != null ? string.Format(UiText.ShareFooterCode, code)
+                : friendCode != null ? string.Format(UiText.ShareFooterFriend, friendCode)
+                : UiText.ShareFooter;
             var png = await CardRenderer.RenderAsync(_shell.PanelSettings, ratio, root => ThullaShareCard.Build(root, model, seat => SeatName(model, seat), footer, ratio == CardRatio.Story));
             var loser = SeatName(model, result.BhabhiSeat);
             var title = ThullaShareCard.LoserTitle(model);
-            var text = code != null ? string.Format(UiText.ShareResultWithCode, loser, title, code) : string.Format(UiText.ShareResultText, loser, title);
+            var text = code != null ? string.Format(UiText.ShareResultWithCode, loser, title, code, InviteLink.For(code))
+                : friendCode != null ? string.Format(UiText.ShareResultReferral, loser, title, InviteLink.ReferralFor(friendCode))
+                : string.Format(UiText.ShareResultText, loser, title);
             _app.ShareSheet.ShareImage(UiText.ShareResultTitle, text, png, "hulla-" + result.RoundId + ".png");
+        }
+
+        /// <summary>The player's friend code for a referral link, loading the profile once; null when it can't.</summary>
+        private async Awaitable<string?> MyFriendCodeAsync()
+        {
+            if (_app.Profile.Profile == null)
+            {
+                await _app.Profile.RefreshAsync(_app.Lifetime);
+            }
+
+            var friendCode = _app.Profile.Profile?.FriendCode;
+            return string.IsNullOrEmpty(friendCode) ? null : friendCode;
         }
 
         private static string SeatName(TableModel model, long seat) =>

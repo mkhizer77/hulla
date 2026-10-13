@@ -12,6 +12,7 @@ namespace Hulla.Application.Social
         private const float RepeatWindowSeconds = 3f;
 
         private string? _pending;
+        private bool _pendingReferral;
         private float _pendingAt;
         private bool _ready;
         private string? _lastUrl;
@@ -20,10 +21,14 @@ namespace Hulla.Application.Social
         /// <summary>The room code and when its link arrived, on the caller's clock.</summary>
         public event Action<string, float>? InviteOpened;
 
+        /// <summary>The sharer's friend code from a referral link (GDD 10.9).</summary>
+        public event Action<string>? ReferralOpened;
+
         public void Receive(string? url, float now)
         {
             var code = InviteLink.CodeFrom(url);
-            if (code == null || (url == _lastUrl && now - _lastAt < RepeatWindowSeconds))
+            var friendCode = code == null ? InviteLink.FriendCodeFrom(url) : null;
+            if ((code == null && friendCode == null) || (url == _lastUrl && now - _lastAt < RepeatWindowSeconds))
             {
                 return;
             }
@@ -32,11 +37,12 @@ namespace Hulla.Application.Social
             _lastAt = now;
             if (_ready)
             {
-                InviteOpened?.Invoke(code, now);
+                Hand(code ?? friendCode!, friendCode != null, now);
                 return;
             }
 
-            _pending = code;
+            _pending = code ?? friendCode;
+            _pendingReferral = friendCode != null;
             _pendingAt = now;
         }
 
@@ -51,10 +57,25 @@ namespace Hulla.Application.Social
 
             var code = _pending;
             _pending = null;
-            InviteOpened?.Invoke(code, _pendingAt);
+            Hand(code, _pendingReferral, _pendingAt);
             return true;
         }
 
         public bool HasPending => _pending != null;
+
+        /// <summary>The app_open deep_link_type for what is held: none, invite or referral.</summary>
+        public string PendingType => _pending == null ? "none" : _pendingReferral ? "referral" : "invite";
+
+        private void Hand(string code, bool referral, float at)
+        {
+            if (referral)
+            {
+                ReferralOpened?.Invoke(code);
+            }
+            else
+            {
+                InviteOpened?.Invoke(code, at);
+            }
+        }
     }
 }
