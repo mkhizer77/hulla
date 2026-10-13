@@ -35,6 +35,8 @@ export default defineConfig([
       "**/build/**",
       "apps/unity/**",
       "**/*.cjs",
+      // k6 scenarios run in k6's own runtime, outside the TypeScript project (infra/load/README.md).
+      "infra/load/**/*.js",
     ],
   },
   eslint.configs.recommended,
