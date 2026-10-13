@@ -19,3 +19,4 @@ crashlytics-build.properties
 /.utmp/
 /Assets/StreamingAssets/content/
 /Assets/StreamingAssets/content.meta
+/Assets/Resources/hulla-dev-server.txt*
