@@ -1,5 +1,6 @@
 using System;
 using Hulla.Application.Table;
+using Hulla.Presentation.TableKit;
 using Hulla.Presentation.Text;
 using Hulla.Protocol;
 using UnityEngine.UIElements;
@@ -38,10 +39,10 @@ namespace Hulla.Games.Thulla
             list.AddToClassList("share-card__order");
             for (var i = 0; i < result.EscapeOrder.Count; i++)
             {
-                list.Add(Row(i + 1, result.EscapeOrder[i], nameOf, result.EscapeOrder[i] == model.MySeat));
+                list.Add(Row(i + 1, result.EscapeOrder[i], nameOf, AvatarOf(model, result.EscapeOrder[i]), result.EscapeOrder[i] == model.MySeat));
             }
 
-            var last = Row(result.EscapeOrder.Count + 1, result.BhabhiSeat, nameOf, result.BhabhiSeat == model.MySeat);
+            var last = Row(result.EscapeOrder.Count + 1, result.BhabhiSeat, nameOf, AvatarOf(model, result.BhabhiSeat), result.BhabhiSeat == model.MySeat);
             last.AddToClassList("share-card__row--loser");
             list.Add(last);
 
@@ -76,7 +77,10 @@ namespace Hulla.Games.Thulla
             return (seat, cards);
         }
 
-        private static VisualElement Row(int place, long seat, Func<long, string> nameOf, bool me)
+        private static string? AvatarOf(TableModel model, long seat) =>
+            seat >= 0 && seat < model.Seats.Count ? model.Seats[(int)seat].Avatar : null;
+
+        private static VisualElement Row(int place, long seat, Func<long, string> nameOf, string? avatarId, bool me)
         {
             var row = new VisualElement();
             row.AddToClassList("share-card__row");
@@ -87,8 +91,22 @@ namespace Hulla.Games.Thulla
 
             row.Add(Text(place.ToString(), "share-card__place"));
             var name = nameOf(seat);
-            var avatar = Text(name.Length > 0 ? name.Substring(0, 1).ToUpperInvariant() : "?", "share-card__avatar");
-            avatar.AddToClassList("share-card__avatar--" + (seat % Avatars));
+            var avatar = new VisualElement();
+            avatar.AddToClassList("share-card__avatar");
+            var initial = Text(name.Length > 0 ? name.Substring(0, 1).ToUpperInvariant() : "?", "share-card__initial");
+            avatar.Add(initial);
+            var face = AvatarArt.Find(avatarId);
+            if (face != null)
+            {
+                avatar.AddToClassList(AvatarArt.ImageClass);
+                avatar.style.backgroundImage = new StyleBackground(face);
+                initial.style.display = DisplayStyle.None;
+            }
+            else
+            {
+                avatar.AddToClassList("share-card__avatar--" + (seat % Avatars));
+            }
+
             row.Add(avatar);
             row.Add(Text(name, "share-card__name"));
             return row;

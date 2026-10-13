@@ -307,6 +307,8 @@
     -unity-font-style: bold;
     -unity-text-align: middle-center;
     overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
     max-width: 200px;
 }
 
@@ -1727,4 +1729,82 @@
 .results__quiet {
     flex-direction: row;
     justify-content: center;
+}
+
+/* Avatars (GDD 15.6): a face from the set on the circle, the "You" tag on the player's own seat. */
+.seat__avatar--image {
+    background-color: rgba(0, 0, 0, 0);
+    -unity-background-scale-mode: scale-and-crop;
+}
+
+.seat__you {
+    position: absolute;
+    bottom: -14px;
+    align-self: center;
+    padding: 0 12px;
+    border-radius: 999px;
+    font-size: 20px;
+    -unity-font-style: bold;
+    background-color: var(--accent-saffron);
+    color: #141518;
+}
+
+.seat--empty .seat__you {
+    display: none;
+}
+
+.table__me {
+    flex-shrink: 0;
+}
+
+.me-badge {
+    width: auto;
+    flex-direction: row;
+    align-items: center;
+    margin: 0 var(--space-2) 0 0;
+}
+
+.me-badge .seat__avatar {
+    width: 64px;
+    height: 64px;
+    border-radius: 32px;
+    border-width: 3px;
+}
+
+.me-badge .seat__initial {
+    font-size: 30px;
+}
+
+.me-badge .seat__name {
+    margin-top: 0;
+    margin-left: 12px;
+    max-width: 230px;
+    -unity-text-align: middle-left;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.me-badge .seat__you {
+    bottom: -12px;
+    font-size: 16px;
+    padding: 0 8px;
+}
+
+.seat--me .seat__name {
+    margin-top: 20px;
+}
+
+.seat--turn.me-badge .seat__avatar {
+    border-width: 4px;
+    scale: 1 1;
+}
+
+.me-badge .seat__crown {
+    top: -30px;
+    font-size: 26px;
+}
+
+.share-card__avatar {
+    justify-content: center;
+    align-items: center;
 }

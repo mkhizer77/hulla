@@ -6,7 +6,8 @@ using UnityEngine.UIElements;
 namespace Hulla.Presentation.TableKit
 {
     /// <summary>
-    /// A seat at the table (GDD 14.3, 14.5, 14.7): a round avatar with their initial, a draining timer
+    /// A seat at the table (GDD 14.3, 14.5, 14.7): a round avatar (GDD 15.6, or their initial until it is
+    /// known), a "You" tag on the player's own seat, a draining timer
     /// ring and a glowing border on their turn, a card-count chip that bumps as cards arrive, the crown
     /// when they lead, a short flag when they give a thulla, their name and state (out, away), and grey
     /// suit chips for the suits they are known to be void in. In the lobby (GDD 14.9) the same badge
@@ -16,6 +17,7 @@ namespace Hulla.Presentation.TableKit
     {
         private readonly VisualElement _avatar = new VisualElement();
         private readonly Label _initial = new Label();
+        private readonly Label _you = new Label(Text.UiText.You);
         private readonly VisualElement _chip = new VisualElement();
         private readonly Label _name = new Label();
         private readonly Label _count = new Label();
@@ -39,6 +41,9 @@ namespace Hulla.Presentation.TableKit
             _avatar.Add(_timer);
             _initial.AddToClassList("seat__initial");
             _avatar.Add(_initial);
+            _you.AddToClassList("seat__you");
+            _you.style.display = DisplayStyle.None;
+            _avatar.Add(_you);
             _crown.AddToClassList("seat__crown");
             _crown.style.display = DisplayStyle.None;
             _avatar.Add(_crown);
@@ -127,11 +132,22 @@ namespace Hulla.Presentation.TableKit
             }
         }
 
+        /// <summary>The name on the badge.</summary>
+        public string Name => _name.text;
+
+        /// <summary>Whether the badge carries the "You" tag.</summary>
+        public bool ShowsYou => _you.style.display == DisplayStyle.Flex;
+
+        /// <summary>Whether the circle shows a face from the avatar set rather than the tinted initial.</summary>
+        public bool HasImage => _avatar.ClassListContains(AvatarArt.ImageClass);
+
         /// <param name="leader">Wears the crown (GDD 14.5).</param>
         /// <param name="voids">Suits the seat is known to be void in, or empty when the assist is off (GDD 14.7).</param>
-        public void Show(string name, long cards, bool turn, string state, bool leader = false, IReadOnlyCollection<char>? voids = null)
+        /// <param name="avatar">The seat's avatar id (GDD 15.6); null keeps the tinted initial.</param>
+        /// <param name="me">The player's own seat: tagged "You".</param>
+        public void Show(string name, long cards, bool turn, string state, bool leader = false, IReadOnlyCollection<char>? voids = null, string? avatar = null, bool me = false)
         {
-            Identity(name);
+            Identity(name, avatar, me);
             RemoveFromClassList("seat--empty");
             _chip.style.display = DisplayStyle.Flex;
             _count.text = cards.ToString();
@@ -156,7 +172,7 @@ namespace Hulla.Presentation.TableKit
         /// The lobby face of the seat (GDD 14.9): no cards, the host's crown, a Ready tick; an empty
         /// seat is a dotted circle that says Invite.
         /// </summary>
-        public void ShowLobby(string? name, bool host, bool ready)
+        public void ShowLobby(string? name, bool host, bool ready, string? avatar = null, bool me = false)
         {
             var empty = name == null;
             EnableInClassList("seat--empty", empty);
@@ -168,11 +184,9 @@ namespace Hulla.Presentation.TableKit
             ShowVoids(null);
             if (empty)
             {
-                foreach (var cls in AvatarTint.Classes)
-                {
-                    _avatar.RemoveFromClassList(cls);
-                }
-
+                AvatarArt.Clear(_avatar, _initial);
+                _you.style.display = DisplayStyle.None;
+                EnableInClassList("seat--me", false);
                 _initial.text = "+";
                 _name.text = Text.UiText.Invite;
                 _crown.style.display = DisplayStyle.None;
@@ -180,7 +194,7 @@ namespace Hulla.Presentation.TableKit
                 return;
             }
 
-            Identity(name!);
+            Identity(name!, avatar, me);
             _crown.style.display = host ? DisplayStyle.Flex : DisplayStyle.None;
             _state.text = ready ? Text.UiText.Ready : "";
             _state.style.display = ready ? DisplayStyle.Flex : DisplayStyle.None;
@@ -189,11 +203,12 @@ namespace Hulla.Presentation.TableKit
             _state.EnableInClassList("seat__state--out", false);
         }
 
-        private void Identity(string name)
+        private void Identity(string name, string? avatar, bool me)
         {
             _name.text = name;
-            _initial.text = name.Length == 0 ? "?" : name.Substring(0, 1).ToUpperInvariant();
-            AvatarTint.Apply(_avatar, name);
+            AvatarArt.Apply(_avatar, _initial, avatar, name);
+            _you.style.display = me ? DisplayStyle.Flex : DisplayStyle.None;
+            EnableInClassList("seat--me", me);
         }
 
         private void ShowVoids(IReadOnlyCollection<char>? voids)

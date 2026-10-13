@@ -25,6 +25,7 @@ import { earnPassXp } from "../services/season_pass";
 import { nkSocialStore, recordRecentPlayers } from "../services/social";
 
 import { analyticsFromBatch, type TableEvent } from "./analytics";
+import { fillSeatAvatars, needsSeatAvatars, pickSeatAvatar } from "./avatars";
 import { tableCore, type PresenceInfo, type TableCore } from "./table_core";
 import { DEFAULT_TABLE_CONFIG } from "./types";
 import { freeSeat, occupiedSeats, spectatorCount, tableStatus } from "./view";
@@ -473,6 +474,20 @@ export function tableMatchHandler<S, M, V, E, R>(
     }
   };
 
+  /** The avatar a player chose on their profile, or null when it cannot be read. */
+  const ownAvatar = (
+    nk: nkruntime.Nakama,
+    logger: nkruntime.Logger,
+    userId: string,
+  ): string | null => {
+    try {
+      return nkProfileStore(nk, logger).read(userId)?.avatar ?? null;
+    } catch (error: unknown) {
+      log.warn(logger, "avatar not read", { error: String(error) });
+      return null;
+    }
+  };
+
   const seatedUserIds = (state: TableState<S, M>): string[] =>
     state.seats.map((s) => s.playerId).filter((id): id is string => id !== null);
 
@@ -517,7 +532,8 @@ export function tableMatchHandler<S, M, V, E, R>(
       // Seats reserved for these presences carry their cosmetics before the first table_state.
       for (const presence of presences) {
         const admission = state.admissions[presence.sessionId];
-        const slot = admission?.kind === "seat" ? state.seats[admission.seat] : undefined;
+        if (admission?.kind !== "seat") continue;
+        const slot = state.seats[admission.seat];
         if (slot === undefined) continue;
         try {
           const store = nkCatalogStore(nk);
@@ -529,6 +545,13 @@ export function tableMatchHandler<S, M, V, E, R>(
           );
         } catch (error: unknown) {
           log.warn(logger, "cosmetics not read", { error: String(error) });
+        }
+        if (slot.avatar === null || !admission.reattach) {
+          slot.avatar = pickSeatAvatar(
+            state.seats,
+            admission.seat,
+            ownAvatar(nk, logger, presence.userId),
+          );
         }
       }
       const batch = coreFor(ctx, nk, logger).join(state, presences.map(info), now);
@@ -570,6 +593,9 @@ export function tableMatchHandler<S, M, V, E, R>(
       const before = labelFor(state);
       const now = Date.now();
       const senders = messages.map((m) => m.sender);
+      // A spectator seated by the host or at a round end gets an avatar before the next broadcast.
+      if (needsSeatAvatars(state))
+        fillSeatAvatars(state, (userId) => ownAvatar(nk, logger, userId));
       let end = false;
       for (const message of messages) {
         if (typeByOpcode[message.opCode] === "start_round")

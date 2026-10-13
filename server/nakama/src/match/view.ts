@@ -69,6 +69,7 @@ function seatPayload(slot: SeatSlot, index: number): SeatPayload {
     connected: slot.connected,
     autoPlay: slot.autoPlay,
     party: slot.party,
+    avatar: slot.avatar,
     cosmetics: slot.cosmetics,
   };
 }

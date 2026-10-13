@@ -235,7 +235,7 @@ namespace Hulla.Screens.Tests
             var views = new List<SeatView>();
             for (var i = 0; i < 4; i++)
             {
-                seats.Add(new Seat { SeatSeat = i, PlayerId = i == 0 ? "me" : "u" + i, DisplayName = names[i], Connected = true, Ready = true });
+                seats.Add(new Seat { SeatSeat = i, PlayerId = i == 0 ? "me" : "u" + i, DisplayName = names[i], Connected = true, Ready = true, Avatar = "a0" + (i + 1) });
                 views.Add(new SeatView { HandCount = 4, Hand = i == 0 ? new List<string> { "AS", "KS", "2H", "9D" } : null });
             }
 
