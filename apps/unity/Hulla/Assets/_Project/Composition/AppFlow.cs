@@ -99,6 +99,24 @@ namespace Hulla.Composition
             _app.Pass.Changed += RefreshBadges;
         }
 
+        /// <summary>
+        /// <c>-hulla-name &lt;name&gt;</c> on the command line, so several local instances (each with its own
+        /// <c>-hulla-device</c>) sit down under different names; null without it.
+        /// </summary>
+        private static string? NameFromCommandLine()
+        {
+            var args = Environment.GetCommandLineArgs();
+            for (var i = 0; i < args.Length - 1; i++)
+            {
+                if (args[i] == "-hulla-name" && args[i + 1].Trim().Length > 0)
+                {
+                    return args[i + 1].Trim();
+                }
+            }
+
+            return null;
+        }
+
         /// <summary>The bottom navigation (GDD 14.1); every tab opens from wherever the player is.</summary>
         private void OnNav(Hulla.Presentation.Navigation.NavTab tab)
         {
@@ -242,7 +260,7 @@ namespace Hulla.Composition
             ApplySettings();
             var invited = _app.Links.HasPending;
             _app.Analytics.Track(AnalyticsEvents.AppOpen(true, invited ? "invite" : "none"));
-            _app.Home.LastName = PlayerPrefs.GetString(NamePrefKey, "");
+            _app.Home.LastName = NameFromCommandLine() ?? PlayerPrefs.GetString(NamePrefKey, "");
             var returning = _app.Home.LastName.Length > 0;
             if (!returning)
             {

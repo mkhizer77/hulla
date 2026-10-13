@@ -20,6 +20,7 @@ using Hulla.Presentation.Screens.Settings;
 using Hulla.Presentation.Screens.Pass;
 using Hulla.Presentation.Screens.Shop;
 using Hulla.Presentation.Share;
+using Hulla.Presentation.TableKit;
 using Hulla.Protocol;
 using NUnit.Framework;
 using UnityEditor;
@@ -149,6 +150,80 @@ namespace Hulla.Screens.Tests
             yield return null;
             Assert.AreEqual("2H", refused, "an illegal tap is refused");
             StringAssert.Contains("Must follow", root.Q<Label>("hint").text);
+        }
+
+        [UnityTest]
+        public IEnumerator MyPickUpHoldsTheCardsUntilTheyFlyIntoTheirSlots()
+        {
+            VisualElement root = null!;
+            var gateway = new Fakes.Gateway();
+            var client = new TableClient(gateway, new TableTicket("m", "K7Q2MX", "t_K7Q2MX"), "me", 1);
+            ThullaTableView view = null!;
+            var state = Fakes.InRound(5);
+            state.Round!.Trick!.Plays.Add(new Play { Seat = 1, Card = "3S" });
+            yield return Open(Catalog.Table, r =>
+            {
+                root = r;
+                view = new ThullaTableView(r, client, new Fakes.Chat(), () => 0, () => { });
+                gateway.Deliver(MessageTypes.TableState, 5, state);
+            });
+            var resolved = new TrickResolved { RoundId = "r", Cards = new List<string> { "7S", "3S" }, Escapes = new List<Escape>(), HandCounts = new List<long> { 6, 3, 4, 3 }, Picker = 0, NextLeader = 0, LedSuit = Suit.S };
+            gateway.Deliver(MessageTypes.TrickResolved, 6, resolved);
+            gateway.Deliver(MessageTypes.Pickup, 7, new Pickup { RoundId = "r", Seat = 0, Cards = new List<string> { "7S", "3S" } });
+            yield return null;
+            var cards = root.Q<VisualElement>("hand").Query<VisualElement>(className: "card").ToList();
+            Assert.AreEqual(6, cards.Count, "the picked-up cards already have slots in the fan");
+            Assert.AreEqual(2, cards.Count(c => c.ClassListContains("card--arriving")), "but stay out of sight until they fly in");
+
+            view.Present(new ServerMessage(MessageTypes.TrickResolved, 6, resolved));
+            view.Tick(0.5f);
+            var started = Time.realtimeSinceStartup;
+            while (root.Q<VisualElement>("hand").Query<VisualElement>(className: "card--arriving").ToList().Count > 0 && Time.realtimeSinceStartup - started < 2f)
+            {
+                view.Tick(Time.deltaTime);
+                yield return null;
+            }
+
+            Assert.Less(Time.realtimeSinceStartup - started, 2f, "each card is revealed as it lands, well before the hold gives up");
+            var landed = root.Q<VisualElement>("hand").Query<VisualElement>(className: "card").ToList().Where(c => ((CardElement)c).Card == "7S" || ((CardElement)c).Card == "3S").ToList();
+            Assert.AreEqual(2, landed.Count(c => c.ClassListContains("card--new")), "the landed cards are lit");
+        }
+
+        [UnityTest]
+        public IEnumerator ADiscardedTrickCountsOnTheStackAsItLands()
+        {
+            VisualElement root = null!;
+            var gateway = new Fakes.Gateway();
+            var client = new TableClient(gateway, new TableTicket("m", "K7Q2MX", "t_K7Q2MX"), "me", 1);
+            ThullaTableView view = null!;
+            var state = Fakes.InRound(5);
+            state.Round!.Trick!.Plays.Add(new Play { Seat = 1, Card = "3S" });
+            yield return Open(Catalog.Table, r =>
+            {
+                root = r;
+                view = new ThullaTableView(r, client, new Fakes.Chat(), () => 0, () => { });
+                gateway.Deliver(MessageTypes.TableState, 5, state);
+            });
+            var discard = root.Q<VisualElement>("discard");
+            Assert.AreEqual(DisplayStyle.None, discard.resolvedStyle.display, "nothing has been discarded yet");
+
+            var resolved = new TrickResolved { RoundId = "r", Cards = new List<string> { "7S", "3S" }, Escapes = new List<Escape>(), HandCounts = new List<long> { 4, 3, 4, 3 }, Picker = null, NextLeader = 3, LedSuit = Suit.S };
+            gateway.Deliver(MessageTypes.TrickResolved, 6, resolved);
+            yield return null;
+            var count = discard.Q<Label>(className: "discard__count");
+            Assert.AreNotEqual(DisplayStyle.None, discard.resolvedStyle.display, "the stack appears");
+            Assert.AreEqual("0", count.text, "the two cards are still on the table");
+
+            view.Present(new ServerMessage(MessageTypes.TrickResolved, 6, resolved));
+            view.Tick(0.4f);
+            var started = Time.realtimeSinceStartup;
+            while (count.text != "2" && Time.realtimeSinceStartup - started < 2f)
+            {
+                view.Tick(Time.deltaTime);
+                yield return null;
+            }
+
+            Assert.AreEqual("2", count.text, "both cards landed on the stack");
         }
 
         [UnityTest]

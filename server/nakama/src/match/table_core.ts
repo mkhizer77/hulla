@@ -117,7 +117,7 @@ export interface TableCore<S, M> {
   close(state: TableState<S, M>, reason: TableCloseReason, now: number): Batch;
 }
 
-/** With the turn timer off, a hand request waits this long for its answer (OQ-035). */
+/** With the turn timer off, a hand request waits this long for its answer (OQ-039). */
 const HAND_ASK_NO_TIMER_MS = 30_000;
 
 const opcodeTable = OPCODES as Record<

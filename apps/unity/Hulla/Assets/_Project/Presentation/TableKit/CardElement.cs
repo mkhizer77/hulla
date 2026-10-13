@@ -1,18 +1,29 @@
+using UnityEngine;
 using UnityEngine.UIElements;
 
 namespace Hulla.Presentation.TableKit
 {
     /// <summary>
-    /// A card face drawn with text until the slice deck arrives (#34): the index (rank over suit) in
-    /// the top-left and, upside down, the bottom-right corner, and a large pip in the middle.
+    /// A card face until the slice decks arrive (#34): the index (rank over suit) in the top-left and,
+    /// upside down, the bottom-right corner, with the pips drawn as vectors in between
+    /// (<see cref="CardFace"/>). Court cards carry their letter over a framed band.
     /// </summary>
     public sealed class CardElement : VisualElement
     {
+        // The palette's suit colours (GDD 15.2); painter2D cannot read USS variables.
+        private static readonly Color Red = new Color32(0xD3, 0x2F, 0x2F, 0xFF);
+        private static readonly Color Black = new Color32(0x1B, 0x1B, 0x1F, 0xFF);
+        private static readonly Color Blue = new Color32(0x1E, 0x6F, 0xD9, 0xFF);
+        private static readonly Color Green = new Color32(0x2E, 0x7D, 0x32, 0xFF);
+        private static readonly Color Frame = new Color32(0xC9, 0x8F, 0x10, 0xFF);
+
         private readonly Label _rank = new Label();
         private readonly Label _suit = new Label();
-        private readonly Label _pip = new Label();
+        private readonly Label _court = new Label();
         private readonly Label _rankBottom = new Label();
         private readonly Label _suitBottom = new Label();
+        private readonly VisualElement _field = new VisualElement();
+        private bool _fourColour;
 
         public CardElement()
         {
@@ -24,8 +35,11 @@ namespace Hulla.Presentation.TableKit
             top.Add(_rank);
             top.Add(_suit);
             Add(top);
-            _pip.AddToClassList("card__pip");
-            Add(_pip);
+            _field.AddToClassList("card__field");
+            _field.generateVisualContent += DrawPips;
+            Add(_field);
+            _court.AddToClassList("card__court");
+            Add(_court);
             var bottom = new VisualElement();
             bottom.AddToClassList("card__corner");
             bottom.AddToClassList("card__corner--bottom");
@@ -35,10 +49,12 @@ namespace Hulla.Presentation.TableKit
             bottom.Add(_suitBottom);
             Add(bottom);
             pickingMode = PickingMode.Position;
-            foreach (var child in new VisualElement[] { top, bottom, _rank, _suit, _pip, _rankBottom, _suitBottom })
+            foreach (var child in new VisualElement[] { top, bottom, _rank, _suit, _court, _field, _rankBottom, _suitBottom })
             {
                 child.pickingMode = PickingMode.Ignore;
             }
+
+            RegisterCallback<AttachToPanelEvent>(_ => RefreshFourColour());
         }
 
         public string Card { get; private set; } = "";
@@ -52,12 +68,53 @@ namespace Hulla.Presentation.TableKit
             _suit.text = suit;
             _rankBottom.text = rank;
             _suitBottom.text = suit;
-            _pip.text = suit;
+            var court = card[0] == 'J' || card[0] == 'Q' || card[0] == 'K';
+            _court.text = court ? rank : "";
+            _court.style.display = court ? DisplayStyle.Flex : DisplayStyle.None;
             var red = card[1] == 'H' || card[1] == 'D';
             EnableInClassList("card--red", red);
             EnableInClassList("card--suit-d", card[1] == 'D');
             EnableInClassList("card--suit-c", card[1] == 'C');
+            EnableInClassList("card--court", court);
+            _field.MarkDirtyRepaint();
             return this;
+        }
+
+        /// <summary>The four-colour deck (GDD 27) comes as a class on the shell root; the pips follow it.</summary>
+        private void RefreshFourColour()
+        {
+            var four = false;
+            for (var e = parent; e != null; e = e.parent)
+            {
+                four |= e.ClassListContains("deck--four");
+            }
+
+            if (four != _fourColour)
+            {
+                _fourColour = four;
+                _field.MarkDirtyRepaint();
+            }
+        }
+
+        private void DrawPips(MeshGenerationContext context)
+        {
+            if (Card.Length < 2)
+            {
+                return;
+            }
+
+            var suit = Card[1];
+            var colour = suit == 'H' ? Red
+                : suit == 'D' ? (_fourColour ? Blue : Red)
+                : suit == 'C' ? (_fourColour ? Green : Black)
+                : Black;
+            var rect = _field.contentRect;
+            if (rect.width <= 0f || rect.height <= 0f)
+            {
+                return;
+            }
+
+            CardFace.Draw(context.painter2D, rect, Card[0], suit, colour, Frame);
         }
 
         public static string SuitGlyph(char suit)

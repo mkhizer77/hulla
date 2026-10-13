@@ -209,6 +209,24 @@ namespace Hulla.Application.Tests
         }
 
         [Test]
+        public void R13_InTheOpeningWindowAnotherSeatsPlayDoesNotTakeMyTurn()
+        {
+            // I hold no spades, so every card is legal and I must pick one by hand (R13).
+            _gateway.Deliver(Messages.TableState(5, new[] { "9H", "7D", "3C" }, mySeat: 1));
+            _gateway.Deliver(Messages.MoveApplied(6, 0, "AS"));
+            // A seat message carries the public seq it follows (6), as the server numbers them.
+            _gateway.Deliver(new Services.ServerMessage(MessageTypes.TurnStart, 6, new TurnStart { RoundId = "r1", Seat = 1, Legal = new List<string> { "9H", "7D", "3C" }, DeadlineTs = 10000, CanTakeHand = false, Simultaneous = true }));
+            Assert.IsTrue(_client.Model.MyTurn);
+            _gateway.Deliver(Messages.MoveApplied(7, 2, "KS"));
+            Assert.IsTrue(_client.Model.MyTurn, "seat 2 answering the window does not rotate the turn away");
+            Assert.IsTrue(_client.Model.IsLegal("7D"), "off-suit is legal with no spades");
+            _gateway.Deliver(Messages.MoveApplied(8, 1, "7D"));
+            Assert.IsFalse(_client.Model.MyTurn, "my own play ends my part of the window");
+            _gateway.Deliver(Messages.TrickResolved(9, null, 0, 12, 12, 12, 12));
+            Assert.AreEqual(0, _client.Model.TurnSeat, "the opener leads trick two (R14)");
+        }
+
+        [Test]
         public void R20_AfterAThullaNobodyHasTheTurnUntilTheTrickResolves()
         {
             _gateway.Deliver(Messages.TableState(5, new[] { "AS" }));

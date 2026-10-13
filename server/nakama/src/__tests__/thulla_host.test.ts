@@ -493,3 +493,32 @@ describe("preset table settings (GDD 6.13)", () => {
     });
   });
 });
+
+describe("rule overrides from the host (GDD 6.13, R26, R28)", () => {
+  it("lets a private table pick what the empty-hand leader does and keeps the rest of the preset", () => {
+    const resolved = thullaHost.resolveRules(
+      { gameId: "thulla", preset: "family", overrides: { emptyHandLeader: "instantExit" } },
+      "private",
+    );
+    expect(resolved.ok).toBe(true);
+    if (!resolved.ok) return;
+    expect(resolved.value.emptyHandLeader).toBe("instantExit");
+    expect(resolved.value.handTaking).toBe("leaderOnly");
+    expect(resolved.value.twoPlayerEndgame).toBe("drawOpponent");
+  });
+
+  it("refuses a value outside the enum and an unknown key", () => {
+    const bad = thullaHost.resolveRules(
+      { gameId: "thulla", overrides: { emptyHandLeader: "vanish" } },
+      "private",
+    );
+    expect(bad.ok).toBe(false);
+    if (bad.ok) return;
+    expect(bad.error.code).toBe("rules.invalid_rules");
+    const unknown = thullaHost.resolveRules(
+      { gameId: "thulla", overrides: { nope: 1 } },
+      "private",
+    );
+    expect(unknown.ok).toBe(false);
+  });
+});
