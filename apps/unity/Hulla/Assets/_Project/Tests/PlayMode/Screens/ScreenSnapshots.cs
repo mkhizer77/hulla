@@ -205,9 +205,9 @@ namespace Hulla.Screens.Tests
         }
 
         [UnityTest, Explicit]
-        public IEnumerator Dialog()
+        public IEnumerator Dialog([ValueSource(nameof(Skins))] TableSkin skin)
         {
-            yield return Snap("dialog", Catalog.Home, r => r.Add(ShellView.Dialog(
+            yield return Snap("dialog", skin, Catalog.Home, r => r.Add(ShellView.Dialog(
                 "Ayesha wants to add you as a friend after your game together on Hulla. Add them?",
                 Presentation.Text.UiText.AddFriend,
                 Presentation.Text.UiText.NotNow,
