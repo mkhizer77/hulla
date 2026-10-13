@@ -42,6 +42,7 @@ export const ErrorCodes = {
     deviceLimit: "auth.device_limit",
     mergeCodeInvalid: "auth.merge_code_invalid",
     banned: "auth.banned",
+    updateRequired: "auth.update_required",
   },
   economy: {
     insufficientFunds: "economy.insufficient_funds",

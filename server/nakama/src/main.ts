@@ -35,6 +35,7 @@ import {
   rpcSanctionsGet,
 } from "./rpc/admin";
 import { rpcChatFiltersGet, rpcChatFiltersSet } from "./rpc/chat_filters";
+import { rpcConfigGet, rpcConfigSet } from "./rpc/config";
 import { rpcContentGet, rpcContentManifest } from "./rpc/content";
 import { rpcDailyRewardClaim, rpcDailyRewardGet } from "./rpc/daily_reward";
 import { rpcProgressGet, rpcWalletGet } from "./rpc/economy";
@@ -127,6 +128,8 @@ function InitModule(
   initializer.registerRpc("achievements_set", rpcAchievementsSet);
   initializer.registerRpc("content_manifest", rpcContentManifest);
   initializer.registerRpc("content_get", rpcContentGet);
+  initializer.registerRpc("config_get", rpcConfigGet);
+  initializer.registerRpc("config_set", rpcConfigSet);
   initializer.registerLeaderboardReset(onLeaderboardReset);
   ensureLeaderboards(nk, logger);
   initializer.registerBeforeAuthenticateDevice(beforeAuthenticateDevice);

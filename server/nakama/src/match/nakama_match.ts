@@ -6,6 +6,7 @@ import { METRICS, metrics } from "../infra/metrics";
 import { ROUND_RESULTS_COLLECTION } from "../services/account_deletion";
 import { countRound, nkAchievementStore, settleUnlocks } from "../services/achievements";
 import { emitAnalyticsSafely } from "../services/analytics";
+import { clientTooOld, nkConfigStore } from "../services/config";
 import { postRoundPoints } from "../services/leaderboards";
 import { credit, nkLedgerPorts } from "../services/ledger";
 import { metricsFromRound, recordMissionMetrics } from "../services/missions";
@@ -433,6 +434,14 @@ export function tableMatchHandler<S, M, V, E, R>(
         }
       } catch (error: unknown) {
         log.warn(logger, "ban state not read", { error: String(error) });
+      }
+      // An old client is told to update and cannot join a table (GDD 20.15).
+      try {
+        if (clientTooOld(metadata["clientVersion"], nkConfigStore(nk).read())) {
+          return { state, accept: false, rejectMessage: ErrorCodes.auth.updateRequired };
+        }
+      } catch (error: unknown) {
+        log.warn(logger, "remote config not read", { error: String(error) });
       }
       const decision = coreFor(nk, logger).joinAttempt(state, info(presence), metadata, now);
       return decision.accept
