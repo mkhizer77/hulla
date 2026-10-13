@@ -3,6 +3,7 @@ import { ErrorCodes } from "@hulla/shared-ts";
 
 import { ROUND_RESULTS_COLLECTION } from "../services/account_deletion";
 import { countRound, nkAchievementStore, settleUnlocks } from "../services/achievements";
+import { emitAnalyticsSafely } from "../services/analytics";
 import { postRoundPoints } from "../services/leaderboards";
 import { credit, nkLedgerPorts } from "../services/ledger";
 import { metricsFromRound, recordMissionMetrics } from "../services/missions";
@@ -18,6 +19,7 @@ import { applyReward, forDay, nkProgressStore, roundReward } from "../services/p
 import { isBanned, readModeration } from "../services/sanctions";
 import { nkSocialStore, recordRecentPlayers } from "../services/social";
 
+import { analyticsFromBatch } from "./analytics";
 import { tableCore, type PresenceInfo, type TableCore } from "./table_core";
 import { DEFAULT_TABLE_CONFIG } from "./types";
 import { freeSeat, occupiedSeats, spectatorCount, tableStatus } from "./view";
@@ -233,6 +235,24 @@ function presenceFor<S, M>(
   };
 }
 
+/** Every public game message that the taxonomy names becomes one analytics log line. */
+function logAnalytics<S, M>(
+  logger: nkruntime.Logger,
+  state: TableState<S, M>,
+  batch: Batch,
+  now: number,
+): void {
+  for (const event of analyticsFromBatch(state, batch, now)) {
+    emitAnalyticsSafely(logger, event.name, event.params, {
+      gameId: state.gameId,
+      tableId: state.tableId,
+      mode: state.mode,
+      ...(state.round === null ? {} : { roundId: state.round.roundId }),
+      ...(event.seat === null ? {} : { seat: event.seat }),
+    });
+  }
+}
+
 function send<S, M>(
   dispatcher: nkruntime.MatchDispatcher,
   state: TableState<S, M>,
@@ -397,6 +417,7 @@ export function tableMatchHandler<S, M, V, E, R>(
       );
       relabel(dispatcher, before, state);
       send(dispatcher, state, batch, presences);
+      logAnalytics(logger, state, batch, now);
       return { state };
     },
 
@@ -414,6 +435,7 @@ export function tableMatchHandler<S, M, V, E, R>(
       );
       relabel(dispatcher, before, state);
       send(dispatcher, state, batch, presences);
+      logAnalytics(logger, state, batch, now);
       return { state };
     },
 
@@ -434,6 +456,7 @@ export function tableMatchHandler<S, M, V, E, R>(
             typeByOpcode[message.opCode],
           );
           send(dispatcher, state, batch, senders);
+          logAnalytics(logger, state, batch, now);
           end = end || batch.end;
         } catch (error: unknown) {
           logger.error("message dropped", { tableId: state.tableId, error: String(error) });
@@ -441,6 +464,7 @@ export function tableMatchHandler<S, M, V, E, R>(
       }
       const batch = core.tick(state, now);
       send(dispatcher, state, batch, senders);
+      logAnalytics(logger, state, batch, now);
       relabel(dispatcher, before, state);
       const closing = end || batch.end || state.phase === "closing";
       if (closing) presenceSync(ctx, logger, nk, { ...state, phase: "closing" }, seatedBefore, now);
