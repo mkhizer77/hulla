@@ -11,6 +11,7 @@ namespace Hulla.Games.Thulla
     public static class ThullaRuleOverrides
     {
         public const string EmptyHandLeaderKey = "emptyHandLeader";
+        public const string HandTakingKey = "handTaking";
 
         /// <summary>The preset's toggles with the overrides on top; unreadable overrides are ignored.</summary>
         public static ThullaRules Apply(ThullaRules? preset, Dictionary<string, object>? overrides)
@@ -39,9 +40,33 @@ namespace Hulla.Games.Thulla
         public static EmptyHandLeader? EmptyHandLeaderOf(Dictionary<string, object>? overrides) =>
             Parse(overrides)?.EmptyHandLeader;
 
-        /// <summary>Overrides carrying only the empty-hand rule, or null when it matches the preset's.</summary>
-        public static Dictionary<string, object>? ForEmptyHandLeader(EmptyHandLeader chosen, EmptyHandLeader presetValue) =>
-            chosen == presetValue ? null : new Dictionary<string, object> { [EmptyHandLeaderKey] = Wire(chosen) };
+        /// <summary>The hand-taking toggle in the overrides, or null when they leave the preset's.</summary>
+        public static HandTaking? HandTakingOf(Dictionary<string, object>? overrides) =>
+            Parse(overrides)?.HandTaking;
+
+        /// <summary>Overrides carrying the toggles the host changed from the preset, or null when none differ.</summary>
+        public static Dictionary<string, object>? For(EmptyHandLeader emptyHand, EmptyHandLeader presetEmptyHand, HandTaking handTaking, HandTaking presetHandTaking)
+        {
+            var overrides = new Dictionary<string, object>();
+            if (emptyHand != presetEmptyHand)
+            {
+                overrides[EmptyHandLeaderKey] = Wire(emptyHand);
+            }
+
+            if (handTaking != presetHandTaking)
+            {
+                overrides[HandTakingKey] = Wire(handTaking);
+            }
+
+            return overrides.Count == 0 ? null : overrides;
+        }
+
+        public static string Wire(HandTaking value) => value switch
+        {
+            HandTaking.Off => "off",
+            HandTaking.Anyone => "anyone",
+            _ => "leaderOnly",
+        };
 
         public static string Wire(EmptyHandLeader value) => value switch
         {

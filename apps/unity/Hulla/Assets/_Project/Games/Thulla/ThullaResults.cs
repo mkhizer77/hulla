@@ -35,6 +35,7 @@ namespace Hulla.Games.Thulla
         private Action? _onShare;
         private Action? _onChangeRules;
         private Fairness? _fairness;
+        private string? _bigThullaRound;
 
         public ThullaResults(VisualElement root, Func<long, string> nameOf, Func<long, string?> avatarOf, Action playAgain)
         {
@@ -81,6 +82,18 @@ namespace Hulla.Games.Thulla
             }
         }
 
+        /// <summary>
+        /// The night's biggest thulla (GDD 10.9) turns Share into a highlighted "Share the biggest
+        /// thulla" for that round, in the panel rather than a dialog over it (GDD 14.5).
+        /// </summary>
+        public void OfferBigThulla(string roundId)
+        {
+            _bigThullaRound = roundId;
+            _share.text = UiText.ShareBigThulla;
+            _share.RemoveFromClassList("button--quiet");
+            _share.AddToClassList("button--secondary");
+        }
+
         /// <summary>Opens the fair-deal explanation (ADR-0009); null hides the chip.</summary>
         public Action<Fairness>? ShowFairness { get; set; }
 
@@ -107,6 +120,14 @@ namespace Hulla.Games.Thulla
             if (result == null || !show)
             {
                 return;
+            }
+
+            if (_bigThullaRound != null && _bigThullaRound != result.RoundId)
+            {
+                _bigThullaRound = null;
+                _share.text = UiText.ShareResult;
+                _share.RemoveFromClassList("button--secondary");
+                _share.AddToClassList("button--quiet");
             }
 
             _fairness = result.Fairness;
@@ -236,7 +257,7 @@ namespace Hulla.Games.Thulla
                 players += seat.Occupied ? 1 : 0;
             }
 
-            var text = voted ? UiText.Waiting4Rematch : "";
+            var text = voted ? UiText.Waiting4Rematch : votes == 0 ? UiText.RematchHow : "";
             if (votes > 0)
             {
                 text = (text.Length > 0 ? text + " " : "") + string.Format(UiText.RematchVotes, votes, players);

@@ -2117,6 +2117,23 @@
     max-height: 92%;
 }
 
+/* A two-answer question over any screen: the text wraps inside the panel at every text scale. */
+.dialog {
+    flex-shrink: 1;
+    max-height: 92%;
+}
+
+.dialog__text {
+    font-size: 48px;
+    white-space: normal;
+    flex-shrink: 1;
+    margin-bottom: var(--space-2);
+}
+
+.dialog__button {
+    margin-top: var(--space-1);
+}
+
 .settings__heading {
     color: var(--accent-saffron);
     -unity-font-style: bold;

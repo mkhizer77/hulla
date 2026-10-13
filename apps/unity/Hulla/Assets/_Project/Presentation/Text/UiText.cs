@@ -60,6 +60,7 @@ namespace Hulla.Presentation.Text
         public const string RematchVotes = "{0} of {1} want another";
         public const string EscapeOrder = "Escaped in order";
         public const string PlayAgain = "Play again";
+        public const string RematchHow = "Everyone taps Play again and the next round deals at once.";
         public const string AppName = "Hulla";
         public const string ShareCardGame = "Thulla";
         public const string ShareResult = "Share";
@@ -84,7 +85,7 @@ namespace Hulla.Presentation.Text
         public const string ShareFooterFriend = "Add me on Hulla: {0}";
 
         /// <summary>{0} name, {1} cards picked up.</summary>
-        public const string BigThulla = "{0} picked up {1} cards, the biggest thulla of the night. Share it?";
+        public const string ShareBigThulla = "Share the biggest thulla";
 
         public const string NotNow = "Not now";
         public const string Waiting4Rematch = "Waiting for the others…";
@@ -403,6 +404,11 @@ namespace Hulla.Presentation.Text
         public const string EmptyHandDrawDiscard = "Draw from the discard";
         public const string EmptyHandDrawNext = "Draw from the next player";
         public const string EmptyHandInstantExit = "You're out";
+        public const string RulesSummaryHand = "{0} · ask for hand: {1}";
+        public const string HandTakingLabel = "Ask for the next player's hand";
+        public const string HandTakingLeader = "Leader, from trick two";
+        public const string HandTakingOff = "Off";
+        public const string HandTakingAnyone = "Anyone";
         public const string TurnSeconds = "{0} s turns";
         public const string NoTimer = "No timer";
         public const string RulesChangedBy = "{0} changed the rules";

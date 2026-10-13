@@ -200,7 +200,19 @@ namespace Hulla.Screens.Tests
 
                 gateway.Deliver(MessageTypes.RoundEnd, 6, new RoundEnd { RoundId = "r", BhabhiSeat = 2, EscapeOrder = new List<long> { 3, 0, 1 }, Points = new List<long>(), Stats = stats, Fairness = new Fairness { Seed = "s", Commitment = "c", DeckOrder = new List<string>() } });
                 view.ShowReward("+120 XP · +40 coins");
+                view.OfferBigThulla("r");
             });
+        }
+
+        [UnityTest, Explicit]
+        public IEnumerator Dialog()
+        {
+            yield return Snap("dialog", Catalog.Home, r => r.Add(ShellView.Dialog(
+                "Ayesha wants to add you as a friend after your game together on Hulla. Add them?",
+                Presentation.Text.UiText.AddFriend,
+                Presentation.Text.UiText.NotNow,
+                () => { },
+                () => { })));
         }
     }
 }
