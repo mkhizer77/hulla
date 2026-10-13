@@ -21,6 +21,7 @@ import {
 import { applyRoundToStats, nkAreFriends, nkProfileStore } from "../services/profiles";
 import { applyReward, forDay, nkProgressStore, roundReward } from "../services/progression";
 import { isBanned, readModeration } from "../services/sanctions";
+import { earnPassXp } from "../services/season_pass";
 import { nkSocialStore, recordRecentPlayers } from "../services/social";
 
 import { analyticsFromBatch, type TableEvent } from "./analytics";
@@ -155,6 +156,7 @@ function rewardPlayer(
     progressStore.write(playerId, applied.progress);
     recordMissionMetrics(nk, playerId, metricsFromRound(record, seat, withFriend), record.endedTs);
     postRoundPoints(nk, logger, record, playerId, seat);
+    earnPassXp(nk, playerId, "round", record.endedTs);
     const friendsAtTable = humans.filter(
       (other) => other !== playerId && nkAreFriends(nk, playerId, other),
     ).length;

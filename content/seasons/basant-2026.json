@@ -1,0 +1,380 @@
+{
+  "schema": "../../tools/content-schemas/season.schema.json",
+  "id": "basant-2026",
+  "version": 1,
+  "name": "season.basant_2026",
+  "startTs": 1796083200000,
+  "endTs": 1800921600000,
+  "xpPerTier": 1000,
+  "xp": {
+    "round": 25,
+    "dailyMission": 150,
+    "weeklyMission": 500,
+    "catchUpDays": 14,
+    "catchUpMultiplier": 2
+  },
+  "tiers": [
+    {
+      "tier": 1,
+      "free": {
+        "coins": 50
+      },
+      "premium": {
+        "gems": 5
+      }
+    },
+    {
+      "tier": 2,
+      "free": {
+        "coins": 60
+      },
+      "premium": {
+        "gems": 5
+      }
+    },
+    {
+      "tier": 3,
+      "free": {
+        "coins": 70
+      },
+      "premium": {
+        "items": ["back_kites"]
+      }
+    },
+    {
+      "tier": 4,
+      "free": {
+        "coins": 80
+      },
+      "premium": {
+        "gems": 5
+      }
+    },
+    {
+      "tier": 5,
+      "free": {
+        "items": ["emotes_cricket"]
+      },
+      "premium": {
+        "gems": 5
+      }
+    },
+    {
+      "tier": 6,
+      "free": {
+        "coins": 50
+      },
+      "premium": {
+        "gems": 5
+      }
+    },
+    {
+      "tier": 7,
+      "free": {
+        "coins": 60
+      },
+      "premium": {
+        "gems": 5
+      }
+    },
+    {
+      "tier": 8,
+      "free": {
+        "coins": 70
+      },
+      "premium": {
+        "gems": 5
+      }
+    },
+    {
+      "tier": 9,
+      "free": {
+        "coins": 80
+      },
+      "premium": {
+        "gems": 5
+      }
+    },
+    {
+      "tier": 10,
+      "free": {
+        "coins": 40
+      },
+      "premium": {
+        "items": ["emotes_shaadi"]
+      }
+    },
+    {
+      "tier": 11,
+      "free": {
+        "coins": 50
+      },
+      "premium": {
+        "gems": 5
+      }
+    },
+    {
+      "tier": 12,
+      "free": {
+        "gems": 10
+      },
+      "premium": {
+        "gems": 5
+      }
+    },
+    {
+      "tier": 13,
+      "free": {
+        "coins": 70
+      },
+      "premium": {
+        "gems": 5
+      }
+    },
+    {
+      "tier": 14,
+      "free": {
+        "coins": 80
+      },
+      "premium": {
+        "gems": 5
+      }
+    },
+    {
+      "tier": 15,
+      "free": {
+        "coins": 40
+      },
+      "premium": {
+        "gems": 5
+      }
+    },
+    {
+      "tier": 16,
+      "free": {
+        "coins": 50
+      },
+      "premium": {
+        "gems": 5
+      }
+    },
+    {
+      "tier": 17,
+      "free": {
+        "coins": 60
+      },
+      "premium": {
+        "gems": 5
+      }
+    },
+    {
+      "tier": 18,
+      "free": {
+        "coins": 70
+      },
+      "premium": {
+        "items": ["table_basant_night"]
+      }
+    },
+    {
+      "tier": 19,
+      "free": {
+        "coins": 80
+      },
+      "premium": {
+        "gems": 5
+      }
+    },
+    {
+      "tier": 20,
+      "free": {
+        "items": ["back_phulkari"]
+      },
+      "premium": {
+        "gems": 5
+      }
+    },
+    {
+      "tier": 21,
+      "free": {
+        "coins": 50
+      },
+      "premium": {
+        "gems": 5
+      }
+    },
+    {
+      "tier": 22,
+      "free": {
+        "coins": 60
+      },
+      "premium": {
+        "gems": 5
+      }
+    },
+    {
+      "tier": 23,
+      "free": {
+        "coins": 70
+      },
+      "premium": {
+        "gems": 5
+      }
+    },
+    {
+      "tier": 24,
+      "free": {
+        "coins": 80
+      },
+      "premium": {
+        "gems": 5
+      }
+    },
+    {
+      "tier": 25,
+      "free": {
+        "coins": 40
+      },
+      "premium": {
+        "items": ["vo_punjabi_banter"]
+      }
+    },
+    {
+      "tier": 26,
+      "free": {
+        "coins": 50
+      },
+      "premium": {
+        "gems": 5
+      }
+    },
+    {
+      "tier": 27,
+      "free": {
+        "coins": 60
+      },
+      "premium": {
+        "gems": 5
+      }
+    },
+    {
+      "tier": 28,
+      "free": {
+        "coins": 70
+      },
+      "premium": {
+        "gems": 5
+      }
+    },
+    {
+      "tier": 29,
+      "free": {
+        "coins": 80
+      },
+      "premium": {
+        "gems": 5
+      }
+    },
+    {
+      "tier": 30,
+      "free": {
+        "coins": 40
+      },
+      "premium": {
+        "gems": 50
+      }
+    },
+    {
+      "tier": 31,
+      "free": {
+        "coins": 50
+      },
+      "premium": {
+        "gems": 5
+      }
+    },
+    {
+      "tier": 32,
+      "free": {
+        "coins": 60
+      },
+      "premium": {
+        "gems": 5
+      }
+    },
+    {
+      "tier": 33,
+      "free": {
+        "coins": 70
+      },
+      "premium": {
+        "gems": 5
+      }
+    },
+    {
+      "tier": 34,
+      "free": {
+        "coins": 80
+      },
+      "premium": {
+        "gems": 5
+      }
+    },
+    {
+      "tier": 35,
+      "free": {
+        "items": ["celebration_dhol"]
+      },
+      "premium": {
+        "gems": 5
+      }
+    },
+    {
+      "tier": 36,
+      "free": {
+        "coins": 50
+      },
+      "premium": {
+        "gems": 5
+      }
+    },
+    {
+      "tier": 37,
+      "free": {
+        "coins": 60
+      },
+      "premium": {
+        "gems": 5
+      }
+    },
+    {
+      "tier": 38,
+      "free": {
+        "coins": 70
+      },
+      "premium": {
+        "gems": 5
+      }
+    },
+    {
+      "tier": 39,
+      "free": {
+        "coins": 80
+      },
+      "premium": {
+        "gems": 5
+      }
+    },
+    {
+      "tier": 40,
+      "free": {
+        "coins": 300,
+        "gems": 20
+      },
+      "premium": {
+        "title": "basant_ka_badshah",
+        "gems": 60
+      }
+    }
+  ]
+}

@@ -74,6 +74,9 @@ describe("InitModule", () => {
       "inventory_equip",
       "catalog_set",
       "admin_grant",
+      "pass_get",
+      "pass_claim",
+      "pass_premium_grant",
     ]);
     expect([...matches.keys()]).toEqual(["thulla"]);
     expect(hooks.get("rtBefore:ChannelMessageSend")?.name).toBe("beforeChannelMessageSend");

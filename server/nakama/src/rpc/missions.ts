@@ -11,6 +11,7 @@ import {
   nkMissionsStore,
   reroll,
 } from "../services/missions";
+import { earnPassXp } from "../services/season_pass";
 
 function parse(payload: string): Record<string, unknown> {
   try {
@@ -72,6 +73,8 @@ export function rpcMissionsClaim(
   );
   if (result.record !== current) store.write(userId, result.record);
   if (result.response.ok && result.response.applied) {
+    const weekly = current.weekly.some((m) => m.id === missionId);
+    earnPassXp(nk, userId, weekly ? "weeklyMission" : "dailyMission", now);
     emitAnalyticsSafely(logger, "mission_complete", {
       id: typeof missionId === "string" ? missionId : "",
     });
