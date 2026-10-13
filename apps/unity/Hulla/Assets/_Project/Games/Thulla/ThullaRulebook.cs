@@ -10,7 +10,7 @@ namespace Hulla.Games.Thulla
     /// <summary>
     /// The Thulla rulebook (GDD 14.11): the table's preset as sentences, one per toggle with its current
     /// value, why a card couldn't be played, the auto-play policy (R44), the glossary and three tips.
-    /// During a round the toggles are the ones the engine resolved; before it, the preset's.
+    /// During a round the toggles are the ones the engine resolved; before it, the preset's with the host's overrides.
     /// </summary>
     public static class ThullaRulebook
     {
@@ -21,7 +21,7 @@ namespace Hulla.Games.Thulla
             var selection = model.Selection;
             var preset = selection?.Preset ?? Preset.Standard;
             var fromPreset = presets.Find(PresetId(preset));
-            var rules = model.ActiveRules ?? fromPreset?.Rules ?? new ThullaRules();
+            var rules = model.ActiveRules ?? ThullaRuleOverrides.Apply(fromPreset?.Rules, selection?.Overrides);
             var defaults = fromPreset?.Settings ?? new TableSettings();
             var chosen = selection?.Settings;
             var timer = chosen?.TurnTimerSeconds ?? defaults.TurnTimerSeconds ?? (model.IsPrivate ? 20 : 15);
