@@ -205,9 +205,39 @@
     color: var(--gold);
 }
 
+.skinned .game {
+    border-radius: 0;
+    -unity-slice-left: 72;
+    -unity-slice-right: 72;
+    -unity-slice-top: 72;
+    -unity-slice-bottom: 72;
+    -unity-slice-scale: 1px;
+}
+
+.skinned .home__title, .skinned #tagline {
+    display: none;
+}
+
 /* Quiet text sits on busy scenes; a soft shadow keeps it readable. */
 .skinned .caption, .skinned .subtitle, .skinned .lobby-rules__text, .skinned .button--quiet, .skinned .home__links > .button, .skinned .status, .skinned .podium__name, .skinned .podium__rank {
     text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
+}
+
+/* The results panel fits what it holds instead of filling the screen. */
+.skinned .results__panel {
+    flex-grow: 0;
+}
+
+.skinned .results__scroll {
+    flex-grow: 0;
+    flex-shrink: 1;
+    max-height: 1180px;
+}
+
+.skinned .results .chips > .chip {
+    min-height: 104px;
+    font-size: 28px;
+    -unity-font-style: bold;
 }
 
 .skinned .result-reward {
@@ -283,7 +313,7 @@
     background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/club/table.png");
 }
 
-.skin--club .title, .skin--club .code, .skin--club .home__title, .skin--club .seat__initial, .skin--club .card__rank, .skin--club .card__court, .skin--club .podium__rank, .skin--club .turn, .skin--club .hero, .skin--club .button--primary, .skin--club .countdown, .skin--club .results__title, .skin--club .results__stamp, .skin--club .coach__text, .skin--club .daily__text, .skin--club .toast {
+.skin--club .title, .skin--club .code, .skin--club .home__title, .skin--club .seat__initial, .skin--club .card__rank, .skin--club .card__court, .skin--club .podium__rank, .skin--club .turn, .skin--club .hero, .skin--club .button--primary, .skin--club .countdown, .skin--club .results__title, .skin--club .results__stamp, .skin--club .coach__text, .skin--club .daily__text, .skin--club .toast, .skin--club .game__name {
     -unity-font-definition: url("/Assets/_Project/Presentation/Theme/Fonts/TitanOne.ttf");
 }
 
@@ -330,7 +360,21 @@
     border-radius: 999px;
 }
 
-.skin--club .seat__back, .skin--club .discard__card {
+.skin--club .game {
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/club/panel.png");
+    background-color: rgba(0, 0, 0, 0);
+}
+
+.skin--club .game__art {
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/club/table.png");
+}
+
+.skin--club .game__name {
+    color: #FFE79A;
+    text-shadow: 0 4px 0 #12347A;
+}
+
+.skin--club .seat__back, .skin--club .discard__card, .skin--club .game__back {
     background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/club/back.png");
 }
 
@@ -388,7 +432,7 @@
     background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/haveli/table.png");
 }
 
-.skin--haveli .title, .skin--haveli .code, .skin--haveli .home__title, .skin--haveli .seat__initial, .skin--haveli .card__rank, .skin--haveli .card__court, .skin--haveli .podium__rank, .skin--haveli .turn, .skin--haveli .hero, .skin--haveli .button--primary, .skin--haveli .countdown, .skin--haveli .results__title, .skin--haveli .results__stamp, .skin--haveli .coach__text, .skin--haveli .daily__text, .skin--haveli .toast {
+.skin--haveli .title, .skin--haveli .code, .skin--haveli .home__title, .skin--haveli .seat__initial, .skin--haveli .card__rank, .skin--haveli .card__court, .skin--haveli .podium__rank, .skin--haveli .turn, .skin--haveli .hero, .skin--haveli .button--primary, .skin--haveli .countdown, .skin--haveli .results__title, .skin--haveli .results__stamp, .skin--haveli .coach__text, .skin--haveli .daily__text, .skin--haveli .toast, .skin--haveli .game__name {
     -unity-font-definition: url("/Assets/_Project/Presentation/Theme/Fonts/RozhaOne.ttf");
 }
 
@@ -435,7 +479,21 @@
     border-radius: 999px;
 }
 
-.skin--haveli .seat__back, .skin--haveli .discard__card {
+.skin--haveli .game {
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/haveli/panel.png");
+    background-color: rgba(0, 0, 0, 0);
+}
+
+.skin--haveli .game__art {
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/haveli/table.png");
+}
+
+.skin--haveli .game__name {
+    color: #F6DC96;
+    text-shadow: 0 4px 0 #2E170A;
+}
+
+.skin--haveli .seat__back, .skin--haveli .discard__card, .skin--haveli .game__back {
     background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/haveli/back.png");
 }
 
@@ -489,7 +547,7 @@
     background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/dhaba/table.png");
 }
 
-.skin--dhaba .title, .skin--dhaba .code, .skin--dhaba .home__title, .skin--dhaba .seat__initial, .skin--dhaba .card__rank, .skin--dhaba .card__court, .skin--dhaba .podium__rank, .skin--dhaba .turn, .skin--dhaba .hero, .skin--dhaba .button--primary, .skin--dhaba .countdown, .skin--dhaba .results__title, .skin--dhaba .results__stamp, .skin--dhaba .coach__text, .skin--dhaba .daily__text, .skin--dhaba .toast {
+.skin--dhaba .title, .skin--dhaba .code, .skin--dhaba .home__title, .skin--dhaba .seat__initial, .skin--dhaba .card__rank, .skin--dhaba .card__court, .skin--dhaba .podium__rank, .skin--dhaba .turn, .skin--dhaba .hero, .skin--dhaba .button--primary, .skin--dhaba .countdown, .skin--dhaba .results__title, .skin--dhaba .results__stamp, .skin--dhaba .coach__text, .skin--dhaba .daily__text, .skin--dhaba .toast, .skin--dhaba .game__name {
     -unity-font-definition: url("/Assets/_Project/Presentation/Theme/Fonts/LilitaOne.ttf");
 }
 
@@ -536,7 +594,21 @@
     border-radius: 34px;
 }
 
-.skin--dhaba .seat__back, .skin--dhaba .discard__card {
+.skin--dhaba .game {
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/dhaba/panel.png");
+    background-color: rgba(0, 0, 0, 0);
+}
+
+.skin--dhaba .game__art {
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/dhaba/table.png");
+}
+
+.skin--dhaba .game__name {
+    color: #FFD23F;
+    text-shadow: 4px 4px 0 #111111;
+}
+
+.skin--dhaba .seat__back, .skin--dhaba .discard__card, .skin--dhaba .game__back {
     background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/dhaba/back.png");
 }
 
@@ -595,7 +667,7 @@
     background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/mehndi/table.png");
 }
 
-.skin--mehndi .title, .skin--mehndi .code, .skin--mehndi .home__title, .skin--mehndi .seat__initial, .skin--mehndi .card__rank, .skin--mehndi .card__court, .skin--mehndi .podium__rank, .skin--mehndi .turn, .skin--mehndi .hero, .skin--mehndi .button--primary, .skin--mehndi .countdown, .skin--mehndi .results__title, .skin--mehndi .results__stamp, .skin--mehndi .coach__text, .skin--mehndi .daily__text, .skin--mehndi .toast {
+.skin--mehndi .title, .skin--mehndi .code, .skin--mehndi .home__title, .skin--mehndi .seat__initial, .skin--mehndi .card__rank, .skin--mehndi .card__court, .skin--mehndi .podium__rank, .skin--mehndi .turn, .skin--mehndi .hero, .skin--mehndi .button--primary, .skin--mehndi .countdown, .skin--mehndi .results__title, .skin--mehndi .results__stamp, .skin--mehndi .coach__text, .skin--mehndi .daily__text, .skin--mehndi .toast, .skin--mehndi .game__name {
     -unity-font-definition: url("/Assets/_Project/Presentation/Theme/Fonts/BalooBhaijaan2.ttf");
 }
 
@@ -642,7 +714,21 @@
     border-radius: 999px;
 }
 
-.skin--mehndi .seat__back, .skin--mehndi .discard__card {
+.skin--mehndi .game {
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/mehndi/panel.png");
+    background-color: rgba(0, 0, 0, 0);
+}
+
+.skin--mehndi .game__art {
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/mehndi/table.png");
+}
+
+.skin--mehndi .game__name {
+    color: #FFC233;
+    text-shadow: 0 4px 0 #4A0A30;
+}
+
+.skin--mehndi .seat__back, .skin--mehndi .discard__card, .skin--mehndi .game__back {
     background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/mehndi/back.png");
 }
 
@@ -700,7 +786,7 @@
     background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/adda/table.png");
 }
 
-.skin--adda .title, .skin--adda .code, .skin--adda .home__title, .skin--adda .seat__initial, .skin--adda .card__rank, .skin--adda .card__court, .skin--adda .podium__rank, .skin--adda .turn, .skin--adda .hero, .skin--adda .button--primary, .skin--adda .countdown, .skin--adda .results__title, .skin--adda .results__stamp, .skin--adda .coach__text, .skin--adda .daily__text, .skin--adda .toast {
+.skin--adda .title, .skin--adda .code, .skin--adda .home__title, .skin--adda .seat__initial, .skin--adda .card__rank, .skin--adda .card__court, .skin--adda .podium__rank, .skin--adda .turn, .skin--adda .hero, .skin--adda .button--primary, .skin--adda .countdown, .skin--adda .results__title, .skin--adda .results__stamp, .skin--adda .coach__text, .skin--adda .daily__text, .skin--adda .toast, .skin--adda .game__name {
     -unity-font-definition: url("/Assets/_Project/Presentation/Theme/Fonts/Baloo2.ttf");
 }
 
@@ -747,7 +833,21 @@
     border-radius: 999px;
 }
 
-.skin--adda .seat__back, .skin--adda .discard__card {
+.skin--adda .game {
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/adda/panel.png");
+    background-color: rgba(0, 0, 0, 0);
+}
+
+.skin--adda .game__art {
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/adda/table.png");
+}
+
+.skin--adda .game__name {
+    color: #FFE0A0;
+    text-shadow: 0 4px 0 #3A1E0A;
+}
+
+.skin--adda .seat__back, .skin--adda .discard__card, .skin--adda .game__back {
     background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/adda/back.png");
 }
 
@@ -780,6 +880,6 @@
 
 /* Rozha One is a display serif: titles only; buttons stay in a bold sans so they read at a glance. */
 .skin--haveli .button--primary {
-    -unity-font-definition: url("/Assets/_Project/Presentation/Theme/Fonts/Nunito.ttf");
-    -unity-font-style: bold;
+    -unity-font-definition: url("/Assets/_Project/Presentation/Theme/Fonts/Baloo2.ttf");
+    -unity-font-style: normal;
 }

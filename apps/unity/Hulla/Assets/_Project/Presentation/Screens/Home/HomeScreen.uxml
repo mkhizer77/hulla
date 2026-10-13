@@ -1,6 +1,6 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements">
     <ui:VisualElement name="home" class="screen">
-        <ui:ScrollView class="settings__scroll">
+        <ui:ScrollView class="settings__scroll" horizontal-scroller-visibility="Hidden" vertical-scroller-visibility="Hidden">
             <ui:VisualElement class="home__header">
                 <ui:VisualElement name="me" class="home__me">
                     <ui:VisualElement name="avatar" class="seat__avatar home__avatar">
@@ -23,12 +23,27 @@
             <ui:Label name="online" class="caption home__online" />
             <ui:Button name="hero" class="button button--primary hero" />
             <ui:Button name="rejoin" class="button button--primary hero" />
-            <ui:Button name="quick" class="button button--primary" />
-            <ui:Label name="seats-label" class="caption" />
-            <ui:VisualElement name="seats" class="chips chips--seats" />
-            <ui:Button name="create" class="button button--secondary" />
+            <ui:ScrollView name="games" mode="Horizontal" class="games" horizontal-scroller-visibility="Hidden" vertical-scroller-visibility="Hidden">
+                <ui:VisualElement name="game-thulla" class="game">
+                    <ui:VisualElement name="game-thulla-art" class="game__art" />
+                    <ui:Label name="game-thulla-name" class="game__name" />
+                    <ui:Label name="game-thulla-line" class="game__line" />
+                    <ui:Label name="seats-label" class="caption game__seats-label" />
+                    <ui:VisualElement name="seats" class="chips chips--seats game__seats" />
+                    <ui:Button name="quick" class="button button--primary game__play" />
+                </ui:VisualElement>
+                <ui:VisualElement name="game-rung" class="game game--soon">
+                    <ui:VisualElement name="game-rung-art" class="game__art" />
+                    <ui:Label name="game-rung-name" class="game__name" />
+                    <ui:Label name="game-rung-line" class="game__line" />
+                    <ui:Label name="game-rung-soon" class="game__soon" />
+                </ui:VisualElement>
+            </ui:ScrollView>
+            <ui:VisualElement class="home__row">
+                <ui:Button name="create" class="button button--secondary" />
+                <ui:Button name="join-toggle" class="button" />
+            </ui:VisualElement>
             <ui:VisualElement class="home__quiet">
-                <ui:Button name="join-toggle" class="button button--quiet" />
                 <ui:Button name="how-to-play" class="button button--quiet" />
             </ui:VisualElement>
             <ui:VisualElement name="join-panel" class="panel">

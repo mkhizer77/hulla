@@ -148,6 +148,11 @@ namespace Hulla.Presentation.Text
         public static string SettingsPlay => Strings.Text("ui.settings_play");
         public static string SettingsSeeing => Strings.Text("ui.settings_seeing");
         public static string SettingsTheme => Strings.Text("ui.settings_theme");
+        public static string GameThulla => Strings.Text("ui.game_thulla");
+        public static string GameThullaLine => Strings.Text("ui.game_thulla_line");
+        public static string GameRung => Strings.Text("ui.game_rung");
+        public static string GameRungLine => Strings.Text("ui.game_rung_line");
+        public static string ComingSoon => Strings.Text("ui.coming_soon");
 
         /// <summary>The table themes in settings order (docs/design/table-themes.md).</summary>
         public static string SkinName(Hulla.Application.Settings.TableSkin skin) => skin switch
@@ -191,15 +196,6 @@ namespace Hulla.Presentation.Text
             _ => Profile,
         };
 
-        /// <summary>Glyphs stand in for the icon set (#23).</summary>
-        public static string NavGlyph(Navigation.NavTab tab) => tab switch
-        {
-            Navigation.NavTab.Home => "⌂",
-            Navigation.NavTab.Friends => "☺",
-            Navigation.NavTab.Shop => "◈",
-            Navigation.NavTab.Pass => "★",
-            _ => "●",
-        };
         public static string SettingsSound => Strings.Text("ui.settings_sound");
         public static string SfxLabel => Strings.Text("ui.sfx_label");
 

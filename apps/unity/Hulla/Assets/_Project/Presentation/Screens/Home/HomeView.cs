@@ -131,6 +131,7 @@ namespace Hulla.Presentation.Screens.Home
                 seatChips.Add(chip);
             }
 
+            BuildShelf(root);
             _quick = root.Q<Button>("quick");
             _quick.text = UiText.PlayNow;
             _quick.clicked += () => WithName(name => quickPlay(name, _seats, Server()));
@@ -165,6 +166,39 @@ namespace Hulla.Presentation.Screens.Home
             RefreshProgress();
             RefreshFriends();
             Refresh();
+        }
+
+        /// <summary>
+        /// The game shelf (docs/design/table-themes.md §3): Thulla with its seat count and Play now,
+        /// then the games to come; each tile shows the theme's table with a fan of cards on it.
+        /// </summary>
+        private static void BuildShelf(VisualElement root)
+        {
+            root.Q<Label>("game-thulla-name").text = UiText.GameThulla;
+            root.Q<Label>("game-thulla-line").text = UiText.GameThullaLine;
+            root.Q<Label>("game-rung-name").text = UiText.GameRung;
+            root.Q<Label>("game-rung-line").text = UiText.GameRungLine;
+            root.Q<Label>("game-rung-soon").text = UiText.ComingSoon;
+            var art = root.Q<VisualElement>("game-thulla-art");
+            var fan = new[] { "QH", "AS", "7D" };
+            for (var i = 0; i < fan.Length; i++)
+            {
+                var card = new TableKit.CardElement().Show(fan[i]);
+                card.AddToClassList("game__card");
+                card.style.rotate = new Rotate((i - 1) * 14f);
+                card.style.marginTop = i == 1 ? 0f : 24f;
+                art.Add(card);
+            }
+
+            var backs = root.Q<VisualElement>("game-rung-art");
+            for (var i = 0; i < 3; i++)
+            {
+                var back = new VisualElement { pickingMode = PickingMode.Ignore };
+                back.AddToClassList("game__back");
+                back.style.rotate = new Rotate((i - 1) * 14f);
+                back.style.marginTop = i == 1 ? 0f : 24f;
+                backs.Add(back);
+            }
         }
 
         /// <summary>The server keeps names of 2 to 20 characters (GDD 9.4); a shorter one is refused here with the reason.</summary>

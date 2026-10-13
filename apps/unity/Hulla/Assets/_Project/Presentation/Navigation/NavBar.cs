@@ -15,8 +15,8 @@ namespace Hulla.Presentation.Navigation
     }
 
     /// <summary>
-    /// The bottom navigation (GDD 14.1, design §2): Home, Friends, Shop, Pass, Profile, with a glyph
-    /// over a label until the icon set lands, the active tab in saffron and a badge for what waits.
+    /// The bottom navigation (GDD 14.1, design §2): Home, Friends, Shop, Pass, Profile, a drawn icon
+    /// over a label, the active tab in the theme's accent and a badge for what waits.
     /// </summary>
     public sealed class NavBar : VisualElement
     {
@@ -25,7 +25,7 @@ namespace Hulla.Presentation.Navigation
         private readonly Dictionary<NavTab, Button> _buttons = new Dictionary<NavTab, Button>();
         private readonly Dictionary<NavTab, Label> _badges = new Dictionary<NavTab, Label>();
 
-        public NavBar(Func<NavTab, string> label, Func<NavTab, string> glyph)
+        public NavBar(Func<NavTab, string> label)
         {
             name = "shell-nav";
             AddToClassList("nav");
@@ -34,9 +34,7 @@ namespace Hulla.Presentation.Navigation
                 var chosen = tab;
                 var button = new Button(() => Tap(chosen)) { name = "nav-" + tab.ToString().ToLowerInvariant() };
                 button.AddToClassList("nav__tab");
-                var icon = new Label(glyph(tab));
-                icon.AddToClassList("nav__glyph");
-                button.Add(icon);
+                button.Add(new NavIcon(tab));
                 var text = new Label(label(tab));
                 text.AddToClassList("nav__label");
                 button.Add(text);
