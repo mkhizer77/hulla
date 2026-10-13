@@ -6,11 +6,12 @@ namespace Hulla.Composition
     /// <summary>
     /// Where the client connects. The local defaults match server/nakama/compose.yml. A development
     /// build can point at another machine with <c>-hulla-server host[:port]</c> or the server field on
-    /// the home screen, remembered in player prefs.
+    /// the home screen, remembered in player prefs; a development APK starts at the machine that built it.
     /// </summary>
     public sealed class AppConfig
     {
         public const string ServerPrefKey = "hulla.server";
+        private const string DevServerResource = "hulla-dev-server";
         private const int DefaultPort = 7350;
 
         public AppConfig(string scheme, string host, int port, string serverKey)
@@ -45,7 +46,14 @@ namespace Hulla.Composition
             }
 
             var stored = PlayerPrefs.GetString(ServerPrefKey, "");
-            return stored.Length > 0 ? WithServer(stored) : Local();
+            if (stored.Length > 0)
+            {
+                return WithServer(stored);
+            }
+
+            // A development APK carries the address of the machine that built it.
+            var built = Debug.isDebugBuild ? Resources.Load<TextAsset>(DevServerResource)?.text.Trim() : null;
+            return string.IsNullOrEmpty(built) ? Local() : WithServer(built!);
         }
 
         public static AppConfig WithServer(string hostAndPort)

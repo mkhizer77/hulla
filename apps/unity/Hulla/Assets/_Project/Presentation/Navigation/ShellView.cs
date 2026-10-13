@@ -14,6 +14,8 @@ namespace Hulla.Presentation.Navigation
         [SerializeField]
         private ScreenCatalog? _catalog;
 
+        private VisualElement? _current;
+
         public event Action<float>? Ticked;
 
         public ScreenCatalog Catalog => _catalog != null ? _catalog : throw new InvalidOperationException("ShellView has no screen catalog");
@@ -33,6 +35,7 @@ namespace Hulla.Presentation.Navigation
             var instance = screen.Instantiate();
             instance.style.flexGrow = 1;
             root.Add(instance);
+            _current = instance;
             if (overlay != null)
             {
                 root.Add(overlay);
@@ -125,5 +128,11 @@ namespace Hulla.Presentation.Navigation
         }
 
         private void Update() => Ticked?.Invoke(Time.deltaTime);
+
+        private void LateUpdate()
+        {
+            KeyboardAvoidance.Apply(Root, _current);
+            KeyboardAvoidance.Apply(Root, Root.Q("shell-overlay"));
+        }
     }
 }
