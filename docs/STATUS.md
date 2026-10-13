@@ -6,6 +6,7 @@ Updated: 13 October 2026 (morning)
 M0 complete: the Thulla rulebook runs in TypeScript with full traceability. M1, the vertical slice, starts with the protocol schemas.
 
 ## Done
+- Fixes merged (13 Oct, PR 199): leaving the guest name keeps the free rename; a returning seat gets a full turn timer.
 - M2 #52 server part merged (13 Oct, PR 195): mission pools in content, seeded daily and weekly draws, progress from round events, idempotent claims and the free re-roll. OQ-022 logged.
 - M2 #50 and #51 server parts merged (13 Oct, PR 193): XP, levels, titles and coins per round from the GDD tables, the login streak and the daily soft cap at local midnight, level grants, and the append-only ledger with idempotent source ids and no transfers. OQ-021 logged.
 - M2 #49 server part merged (13 Oct, PR 190): strikes and bans with expiry, device bans, the ban check at join, audited admin RPCs and round replay from the log. OQ-020 logged.
@@ -39,7 +40,6 @@ M0 complete: the Thulla rulebook runs in TypeScript with full traceability. M1, 
 
 ## Doing
 - M2 #53 server part (branch `feat/daily-reward`, stacked on the fixes): the 7-day calendar in content, a claim per local day through the ledger that is idempotent across devices, the cycle that continues after a missed day, and the sign-in notice. The Home card is the Unity track; the push hook waits for #46. OQ-023 logged.
-- Fixes (branch `fix/guest-name-return-timer`, stacked on #52): leaving the generated guest name no longer spends the free rename; a seat that returns during its own turn gets a full turn timer again, which also removes a flaky reconnection assertion.
 
 ## Next
 Server: after #47 and #48 merge, #49 to #56, #71, #72, #75, #77. Unity: #33 polish, #23 theme from the design system (#22), #32 voice, the Profile screen for #40, the friends screen for #41, parties for Quick Play once friends exist.
