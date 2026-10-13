@@ -120,6 +120,19 @@ namespace Hulla.Screens.Tests
                 Done(Result<Hulla.Application.Progress.DailyRewardStatus>.Ok(new Hulla.Application.Progress.DailyRewardStatus(false, new Hulla.Application.Progress.DailyRewardDay(4, 80, 2), new Hulla.Application.Progress.DailyRewardDay(5, 90, 0))));
         }
 
+        public sealed class Boards : Hulla.Application.Progress.ILeaderboardService
+        {
+            public Awaitable<Result<Hulla.Application.Progress.LeaderboardPage>> BoardAsync(Hulla.Application.Progress.LeaderboardPeriod period, bool friends, CancellationToken c) =>
+                Done(Result<Hulla.Application.Progress.LeaderboardPage>.Ok(new Hulla.Application.Progress.LeaderboardPage(
+                    new List<Hulla.Application.Progress.LeaderboardRow>
+                    {
+                        new Hulla.Application.Progress.LeaderboardRow(1, "u1", "ayesha", 120, 9),
+                        new Hulla.Application.Progress.LeaderboardRow(2, "u2", "bilal", 90, 7),
+                    },
+                    new Hulla.Application.Progress.LeaderboardRow(57, "me", "khizer", 12, 2),
+                    1_000_000_000_000 + 3L * 86_400_000)));
+        }
+
         public sealed class Missions : Hulla.Application.Progress.IMissionsService
         {
             public Awaitable<Result<(IReadOnlyList<Hulla.Application.Progress.MissionInfo> Missions, bool RerollAvailable)>> MissionsAsync(int tz, CancellationToken c) =>

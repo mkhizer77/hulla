@@ -245,6 +245,15 @@ namespace Hulla.Integration.Tests
                 Assert.AreEqual(coinsBefore + dayOne, progressAfter.Coins, "the wallet holds the daily coins");
                 await daily.RefreshAsync(0, default);
                 Assert.IsFalse(daily.Status!.Claimable, "still claimed after a refresh");
+
+                // Round points post to the weekly board, friends scope included (GDD 12.8).
+                var board = new Hulla.Application.ViewModels.LeaderboardViewModel(new NakamaLeaderboardService(_players[0].Connection));
+                await board.ShowAsync(Hulla.Application.Progress.LeaderboardPeriod.Weekly, false, default);
+                Assert.IsNull(board.ErrorCode, "the weekly board answers");
+                Assert.Greater(board.Page!.Rows.Count, 0, "the round's points are on the weekly board");
+                await board.ShowAsync(Hulla.Application.Progress.LeaderboardPeriod.Monthly, true, default);
+                Assert.IsNull(board.ErrorCode, "the friends view answers");
+                Debug.Log($"friends' monthly board: {board.Page!.Rows.Count} rows, me {board.Page.Me?.Points}");
             }
         }
 

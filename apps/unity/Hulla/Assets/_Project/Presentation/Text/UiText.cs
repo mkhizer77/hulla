@@ -163,6 +163,20 @@ namespace Hulla.Presentation.Text
 
         public const string Profile = "Profile";
         public const string Missions = "Missions";
+        public const string Leaderboard = "Leaderboard";
+        public const string ThisWeek = "This week";
+        public const string ThisMonth = "This month";
+        public const string Everyone = "Everyone";
+        public const string FriendsTab = "Friends";
+        public const string BoardEmpty = "No points yet. Win rounds to get on the board.";
+
+        /// <summary>{0} time left, such as "3d 4h".</summary>
+        public const string ResetsIn = "Resets in {0}. Top 10 win gems.";
+
+        public const string PointsShort = "{0:N0} pts";
+
+        /// <summary>{0} the player's own name on a board.</summary>
+        public const string YouAre = "{0} (you)";
         public const string MissionsToday = "Today";
         public const string MissionsWeek = "This week";
         public const string MissionProgress = "{0}/{1} · {2}";

@@ -1,0 +1,120 @@
+using System;
+using Hulla.Application.Progress;
+using Hulla.Application.ViewModels;
+using Hulla.Presentation.Text;
+using UnityEngine.UIElements;
+
+namespace Hulla.Presentation.Screens.Leaderboard
+{
+    /// <summary>Baithak points this week or month, for everyone or friends, with your own rank pinned (GDD 12.8).</summary>
+    public sealed class LeaderboardView : IDisposable
+    {
+        private readonly LeaderboardViewModel _model;
+        private readonly Func<long> _nowMs;
+        private readonly string? _myId;
+        private readonly VisualElement _list;
+        private readonly VisualElement _me;
+        private readonly Label _status;
+        private readonly Label _reset;
+        private readonly Button _weekly;
+        private readonly Button _monthly;
+        private readonly Button _everyone;
+        private readonly Button _friends;
+
+        public LeaderboardView(VisualElement root, LeaderboardViewModel model, Func<long> nowMs, string? myId, Action back, Action<LeaderboardPeriod, bool> show)
+        {
+            _model = model;
+            _nowMs = nowMs;
+            _myId = myId;
+            root.Q<Label>("title").text = UiText.Leaderboard;
+            var backButton = root.Q<Button>("back");
+            backButton.text = UiText.Back;
+            backButton.clicked += back;
+            _weekly = Chip(root, "weekly", UiText.ThisWeek, () => show(LeaderboardPeriod.Weekly, _model.Friends));
+            _monthly = Chip(root, "monthly", UiText.ThisMonth, () => show(LeaderboardPeriod.Monthly, _model.Friends));
+            _everyone = Chip(root, "everyone", UiText.Everyone, () => show(_model.Period, false));
+            _friends = Chip(root, "friends", UiText.FriendsTab, () => show(_model.Period, true));
+            _list = root.Q<VisualElement>("list");
+            _me = root.Q<VisualElement>("me");
+            _status = root.Q<Label>("status");
+            _reset = root.Q<Label>("reset");
+            _model.Changed += Refresh;
+            Refresh();
+        }
+
+        public void Dispose() => _model.Changed -= Refresh;
+
+        private static Button Chip(VisualElement root, string name, string text, Action clicked)
+        {
+            var chip = root.Q<Button>(name);
+            chip.text = text;
+            chip.clicked += clicked;
+            return chip;
+        }
+
+        private void Refresh()
+        {
+            _weekly.EnableInClassList("chip--on", _model.Period == LeaderboardPeriod.Weekly);
+            _monthly.EnableInClassList("chip--on", _model.Period == LeaderboardPeriod.Monthly);
+            _everyone.EnableInClassList("chip--on", !_model.Friends);
+            _friends.EnableInClassList("chip--on", _model.Friends);
+            var page = _model.Page;
+            _status.text = _model.ErrorCode != null ? UiText.Error(_model.ErrorCode) : page != null && page.Rows.Count == 0 && !_model.Loading ? UiText.BoardEmpty : "";
+            _reset.text = page?.NextResetTs is long reset ? string.Format(UiText.ResetsIn, Duration(reset - _nowMs())) : "";
+            _list.Clear();
+            _me.Clear();
+            if (page == null)
+            {
+                _me.style.display = DisplayStyle.None;
+                return;
+            }
+
+            var meOnPage = false;
+            foreach (var row in page.Rows)
+            {
+                var mine = row.UserId == _myId;
+                meOnPage |= mine;
+                _list.Add(Row(row, mine));
+            }
+
+            _me.style.display = page.Me != null && !meOnPage ? DisplayStyle.Flex : DisplayStyle.None;
+            if (page.Me != null && !meOnPage)
+            {
+                _me.Add(Row(page.Me, true));
+            }
+        }
+
+        private static VisualElement Row(LeaderboardRow row, bool mine)
+        {
+            var line = new VisualElement();
+            line.AddToClassList("leaderboard__row");
+            if (mine)
+            {
+                line.AddToClassList("leaderboard__row--me");
+            }
+
+            var rank = new Label(row.Rank.ToString());
+            rank.AddToClassList("leaderboard__rank");
+            line.Add(rank);
+            var name = new Label(mine ? string.Format(UiText.YouAre, row.Name) : row.Name);
+            name.AddToClassList("leaderboard__name");
+            line.Add(name);
+            var points = new Label(string.Format(UiText.PointsShort, row.Points));
+            points.AddToClassList("leaderboard__points");
+            line.Add(points);
+            return line;
+        }
+
+        /// <summary>"3d 4h", "5h 12m" or "12m".</summary>
+        public static string Duration(long ms)
+        {
+            var span = TimeSpan.FromMilliseconds(Math.Max(0, ms));
+            if (span.TotalDays >= 1)
+            {
+                return $"{(int)span.TotalDays}d {span.Hours}h";
+            }
+
+            return span.TotalHours >= 1 ? $"{(int)span.TotalHours}h {span.Minutes}m" : $"{Math.Max(1, span.Minutes)}m";
+        }
+    }
+}

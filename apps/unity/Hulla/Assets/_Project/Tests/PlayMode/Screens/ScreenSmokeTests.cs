@@ -10,6 +10,7 @@ using Hulla.Games.Thulla;
 using Hulla.Presentation.Navigation;
 using Hulla.Presentation.Screens.Friends;
 using Hulla.Presentation.Screens.Home;
+using Hulla.Presentation.Screens.Leaderboard;
 using Hulla.Presentation.Screens.Lobby;
 using Hulla.Presentation.Screens.Profile;
 using Hulla.Presentation.Screens.QuickPlay;
@@ -273,6 +274,23 @@ namespace Hulla.Screens.Tests
             });
             var headings = root.Q<VisualElement>("list").Query<Label>(className: "settings__heading").ToList().Select(l => l.text).ToList();
             CollectionAssert.IsSubsetOf(new[] { "Requests", "Friends", "Played with recently" }, headings);
+        }
+
+        [UnityTest]
+        public IEnumerator LeaderboardShowsRowsTheResetAndMyRank()
+        {
+            VisualElement root = null!;
+            var model = new LeaderboardViewModel(new Fakes.Boards());
+            yield return Open(Catalog.Leaderboard, r =>
+            {
+                root = r;
+                new LeaderboardView(r, model, () => 1_000_000_000_000, "me", () => { }, (_, _) => { });
+                _ = model.RefreshAsync(default);
+            });
+            Assert.AreEqual(2, root.Q<VisualElement>("list").childCount);
+            Assert.AreEqual("Resets in 3d 0h. Top 10 win gems.", root.Q<Label>("reset").text);
+            Shown(root.Q<VisualElement>("me"), "my rank off the page");
+            StringAssert.Contains("khizer (you)", root.Q<VisualElement>("me").Q<Label>(className: "leaderboard__name").text);
         }
 
         [UnityTest]

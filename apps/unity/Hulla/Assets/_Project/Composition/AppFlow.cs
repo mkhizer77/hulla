@@ -10,6 +10,7 @@ using Hulla.Presentation.Navigation;
 using Hulla.Presentation.Screens.Home;
 using Hulla.Presentation.Screens.Friends;
 using Hulla.Presentation.Screens.Lobby;
+using Hulla.Presentation.Screens.Leaderboard;
 using Hulla.Presentation.Screens.Missions;
 using Hulla.Presentation.Screens.Profile;
 using Hulla.Presentation.Screens.QuickPlay;
@@ -126,7 +127,7 @@ namespace Hulla.Composition
             _screen = Screen.Home;
             var root = _shell.Show(_shell.Catalog.Home);
             var server = Debug.isDebugBuild ? _app.Config.HostAndPort : null;
-            _view = new HomeView(root, _app.Home, server, OnCreate, OnJoin, OnQuickPlay, OpenSettings, OnFriends, OnProfile, _app.HomeFriends, () => StartTutorial(false), TutorialText.HowToPlay, OnWatch, _app.Progress, OnMissions);
+            _view = new HomeView(root, _app.Home, server, OnCreate, OnJoin, OnQuickPlay, OpenSettings, OnFriends, OnProfile, _app.HomeFriends, () => StartTutorial(false), TutorialText.HowToPlay, OnWatch, _app.Progress, OnMissions, OnLeaderboard);
             _daily = new DailyRewardCard(UnityEngine.UIElements.UQueryExtensions.Q<UnityEngine.UIElements.VisualElement>(root, "daily"), _app.DailyReward, ClaimDailyReward);
             _app.HomeFriends.Active = _app.Sessions.Current != null;
             _app.HomeFriends.RefreshSoon();
@@ -210,6 +211,21 @@ namespace Hulla.Composition
                 entry => _ = friends.ToggleFavouriteAsync(entry, lifetime),
                 id => _ = friends.UnblockAsync(id, lifetime)));
             await friends.RefreshAsync(lifetime);
+        }
+
+        private async void OnLeaderboard(string name, string? server)
+        {
+            if (!await SignedInAsync(name, server))
+            {
+                return;
+            }
+
+            CloseView();
+            _screen = Screen.Home;
+            var board = _app.Leaderboard;
+            _view = new LeaderboardView(_shell.Show(_shell.Catalog.Leaderboard), board, () => DateTimeOffset.UtcNow.ToUnixTimeMilliseconds(), _app.Sessions.Current?.UserId, ShowHome,
+                (period, friends) => _ = board.ShowAsync(period, friends, _app.Lifetime));
+            await board.RefreshAsync(_app.Lifetime);
         }
 
         private async void OnMissions(string name, string? server)
