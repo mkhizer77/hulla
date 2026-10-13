@@ -81,6 +81,7 @@ Keep the group together while it fills (Kahoot, Jackbox).
 - **Voice toggle** on your own seat once Agora lands (#33); until then the slot is hidden.
 - **Ready** (teal) for guests, **Start** (saffron) for the host, enabled at three seats; public tables show the auto-start countdown on the Start button itself.
 - Lobby chat stays as a strip of the last three lines above the bar; tap to open.
+- Joining is confirmed by your own seat lighting up with a bounce; the invite link lands the friend in the lobby, never on Home. A refused join says why in one line (full, in progress, private).
 
 ## 7. The table
 
@@ -121,7 +122,7 @@ Under each opponent, grey suit glyphs for suits they are certainly void in: a se
 ### 7.6 Quick chat, emotes, throwables (GDD §11)
 - The strip shows three phrases for the current context (`gave_thulla`, `received_thulla`, `opponent_slow`, `leader_self`, `any`) from the quick-chat pack, refreshed on each event; "…" opens the panel with the tabs.
 - Messages appear as a bubble on the sender's badge for 3 s; mine above my hand.
-- Throwable emotes: long-press a badge opens a ring of the throwables; the chosen one arcs to the badge in 400 ms and sits for 1.5 s. Rate-limited to one per 5 s per sender; mutes hide them.
+- Throwable emotes: long-press a badge opens a ring of the throwables; the chosen one arcs to the badge in 400 ms and sits for 1.5 s. Rate-limited to one per 5 s per sender; mutes hide them; a "hide thrown emotes" setting turns the animations off for the viewer.
 
 ### 7.7 Reconnection and absence
 Mine: a top pill with the seat-hold countdown; the hand dims; no modal. Theirs: the avatar greys with a wifi glyph and "Away · auto" once auto-play takes over. Rejoin lands in the current trick with a 1 s catch-up.
@@ -157,9 +158,11 @@ Keep the flow. Changes: the name step is its own screen with a generated name an
 
 **With art (#34, #80):** decks, avatars and frames, table surfaces, the icon set, the display and UI faces, emote art, the stamp set.
 
-**With their features:** voice controls (#33), throwable rate limits on the server, the 2× ad button (#60 client), the Fair deal reveal view (needs the reveal RPC), the scoreboard's series view.
+**With their features:** voice controls and the friends' voice room that outlives the table, shown as a pill during a round (#33), throwable rate limits on the server, the 2× ad button (#60 client), the Fair deal reveal view (needs the reveal RPC), the scoreboard's series view.
 
 Playtests (#36) run on the result of this pass: two groups of 8 to 12 on real devices, an argument log, and fixes before soft launch.
+
+**Later, logged for the roadmap:** scheduled and recurring tables with a reminder push; nameplates and entry effects in the cosmetic catalog; QR codes on the lobby; screen-reader labels on seats and cards.
 
 ## 14. Open questions
 Logged in `docs/OPEN_QUESTIONS.md`: the single-legal-card auto-play delay (700 ms interim), the throwable rate limit (one per 5 s interim), whether the quick-chat strip's three slots are the player's picks or the context's (context's, interim).

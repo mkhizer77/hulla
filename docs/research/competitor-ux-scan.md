@@ -67,7 +67,42 @@ Cross-cutting complaints, in order: ads that interrupt play; suspected rigged RN
 
 ## 3. Poker, Teen Patti and party games
 
-See §3 below once the scan lands.
+Studied for table and social mechanics only; none of the vocabulary or economy crosses over.
+
+| Product | Worth copying | Worth avoiding |
+|---|---|---|
+| EasyPoker (friends only, no chips) | Four-digit PIN, no account to play; voice that keeps running with the phone locked; host kick; turn and new-hand pushes | Time-outs with no network error shown |
+| Pokerrrr 2, PPPoker | Create a game, get a code, done; clubs only for several tables at once; scheduled and auto-renewing games; disconnection protection gives extra action time; a settings toggle that hides throwable animations | Freezes on app switch; distrust of outcomes |
+| Zynga Poker, WSOP, Poker Heat | Opponent plate is avatar, name, last action and count; timer, hand and actions in one zone at the bottom; player photos for a real-table feel | "A dozen pop-ups each time the app opens"; dismiss buttons that line up with buy buttons; ads that cost a turn; invites that do not seat the friend at your table |
+| Teen Patti Gold, Octro, Teen Patti Live | Large cards, minimal but effective animation, adjustable text and contrast; invite-only tables; small joke gifts that tease a seat; "zero wait" to a table; private chat with block | Everything else |
+| Yalla Ludo (Gulf and South Asia) | The voice room is the product and the game sits inside it: up to 15 mic seats, the room shrinks to a widget while a round runs; a speaking ring on the seat; stickers mid-game; nameplates and entry effects as cosmetics; friends list with Spectate; fun stats on the results | Paid advantage ("the game favors those who buy"), an unpredictable auto mode, no screen-reader support |
+| Plato (chat first, 50 games, no ads) | Game moves arrive as chat messages; invite is a room link that lands the friend in the room; "never pay-to-win"; no ads is the top praise | Leavers with no resign; "blocking does absolutely nothing" inside rooms; a word filter that blocks "Japan" |
+| Hago, Bunch | Play, get paired, add as friend; friends' faces float over the game; launching together drops everyone into one session | |
+| Jackbox, Kahoot | You know you joined when your name appears on the screen; the first joiner owns Start; overflow becomes the audience; link or QR skips typing; the PIN expires with the game | |
+| Among Us | A quick-chat wheel of seven categories as the safe default; under-13s get quick chat only; shape and text coding after colour-only was called out | |
+| Psych!, Heads Up! | The reveal screen is the celebration; players are the content | |
+
+**Recommendations, ranked**
+1. Four-character codes plus a link and a QR code; guests never type more than four characters.
+2. The lobby is the gathering: your seat lights up the moment you connect; the host alone owns Start; late joiners watch.
+3. The voice room survives the table: the friends' room is the home of the group, the table a widget inside it, the room a pill while a round runs (with Agora, #33).
+4. A speaking ring on the seat, free, readable at six seats.
+5. One zone for the turn: timer, hand and actions in the bottom third; opponent plates show avatar, name, last action and count.
+6. Throwable teasers between seats with a per-player mute and a "hide animations" toggle; cosmetic only.
+7. Quick chat as the first-class input; free text opt-in.
+8. A social results screen: add-friend chips, fun stats, rematch countdown, "same room, next game".
+9. Scheduled and recurring tables: the host saves the Friday game, a push ten minutes before (later).
+10. A join-a-friend hero that seats you, with the refusal reason when it cannot (full, private, in progress).
+11. Reconnect grace with extra action time and "reconnecting" on the seat for everyone.
+12. One hero, one row of rooms, nothing modal on launch; live-ops cards below the fold.
+13. A player sheet on tap with avatar, handle, level, mutual friends, add, mute, block, report; a block hides the player in rooms too.
+14. Room identity cosmetics: nameplates and entry effects alongside the felt (catalog, later).
+15. Screen-reader labels on seats and cards; shape and text on suits.
+
+**Never:** pop-ups stacked over the table; league and album chrome during a round; invites that fail silently; paid advantage of any kind, including auto modes; a filter that blocks place names or a block that stops at the door.
+
+## 4. What this means for Hulla, in one list
+Fairness you can see; stay together between rounds; one thing at a time on screen; the thulla as the hero moment with tiered juice; quick chat and throwables as the social layer, voice free; codes of four characters with link and QR; reconnect as a pill with a seat hold; labelled auto-play; a results screen built for the group; information aids (voids, picked-up tray, trick history) that mirror what an attentive player remembers.
 
 ## Where this goes
 The design in `docs/design/ux-ui-pass.md` turns this into screen specs. GDD §3 (private) keeps the market table; this file holds the UX reading.
