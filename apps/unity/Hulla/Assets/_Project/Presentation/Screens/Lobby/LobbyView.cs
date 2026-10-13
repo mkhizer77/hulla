@@ -1,5 +1,7 @@
 using System;
+using System.Collections.Generic;
 using Hulla.Application.Services;
+using Hulla.Application.Social;
 using Hulla.Application.Table;
 using UnityEngine;
 using Hulla.Presentation.Text;
@@ -30,6 +32,10 @@ namespace Hulla.Presentation.Screens.Lobby
         private readonly Button _editRules;
         private readonly Func<string>? _rulesSummary;
         private readonly Action? _openEditor;
+        private readonly VisualElement _root;
+        private readonly Button _inviteButton;
+        private Func<Awaitable<IReadOnlyList<FriendEntry>>>? _friends;
+        private Func<string, Awaitable<string?>>? _invite;
 
         /// <param name="share">Shares the room code; returns false when it was copied instead of shared.</param>
         public LobbyView(VisualElement root, TableClient client, Func<long> nowMs, Action leave, Func<string, bool>? share = null, Func<string, Awaitable<Domain.Result<bool>>>? sendText = null, Func<string>? rulesSummary = null, Action? editRules = null)
@@ -51,6 +57,11 @@ namespace Hulla.Presentation.Screens.Lobby
             send.text = UiText.Send;
             send.clicked += SendTyped;
             root.Q<VisualElement>("chat").style.display = sendText == null ? DisplayStyle.None : DisplayStyle.Flex;
+            _root = root;
+            _inviteButton = root.Q<Button>("invite");
+            _inviteButton.text = UiText.InviteFriends;
+            _inviteButton.clicked += OpenInvites;
+            _inviteButton.style.display = DisplayStyle.None;
             _shareButton = root.Q<Button>("share");
             _shareButton.text = UiText.ShareCode;
             _shareButton.clicked += () =>
@@ -228,8 +239,91 @@ namespace Hulla.Presentation.Screens.Lobby
             _ready.text = MeReady() ? UiText.NotReady : UiText.Ready;
             _ready.style.display = matchmade || model.Spectating ? DisplayStyle.None : DisplayStyle.Flex;
             _shareButton.style.display = matchmade || !_canShare ? DisplayStyle.None : DisplayStyle.Flex;
+            _inviteButton.style.display = matchmade || _invite == null || model.Spectating ? DisplayStyle.None : DisplayStyle.Flex;
             _start.style.display = model.IsHost && !matchmade ? DisplayStyle.Flex : DisplayStyle.None;
             _status.text = model.LastErrorCode != null ? UiText.Error(model.LastErrorCode) : model.Spectating ? UiText.WatchingLobby : seated < 3 ? UiText.Waiting : "";
         }
-    }
+    
+        /// <summary>
+        /// Shows "Invite friends" (GDD 10.5): the friend list, online first, each with Invite.
+        /// <paramref name="invite"/> answers null when sent, or why not (a skip reason or an error code).
+        /// </summary>
+        public void UseInvites(Func<Awaitable<IReadOnlyList<FriendEntry>>> friends, Func<string, Awaitable<string?>> invite)
+        {
+            _friends = friends;
+            _invite = invite;
+            Refresh();
+        }
+
+        private async void OpenInvites()
+        {
+            if (_friends == null || _invite == null)
+            {
+                return;
+            }
+
+            _root.Q("invite-sheet")?.RemoveFromHierarchy();
+            var sheet = new VisualElement { name = "invite-sheet" };
+            sheet.AddToClassList("overlay");
+            sheet.AddToClassList("results");
+            sheet.style.display = DisplayStyle.Flex;
+            var panel = new VisualElement();
+            panel.AddToClassList("panel");
+            panel.AddToClassList("invite-sheet");
+            var title = new Label(UiText.InviteFriends);
+            title.AddToClassList("title");
+            title.AddToClassList("title--small");
+            panel.Add(title);
+            var list = new ScrollView();
+            list.AddToClassList("invite-sheet__list");
+            panel.Add(list);
+            var close = new Button(() => sheet.RemoveFromHierarchy()) { text = UiText.Done };
+            close.AddToClassList("button");
+            panel.Add(close);
+            sheet.Add(panel);
+            _root.Add(sheet);
+
+            var friends = new List<FriendEntry>(await _friends());
+            friends.Sort((a, b) => a.Online == b.Online ? string.Compare(a.Name, b.Name, StringComparison.CurrentCultureIgnoreCase) : a.Online ? -1 : 1);
+            if (friends.Count == 0)
+            {
+                var none = new Label(UiText.NoFriendsToInvite);
+                none.AddToClassList("status");
+                none.style.whiteSpace = WhiteSpace.Normal;
+                list.Add(none);
+                return;
+            }
+
+            var seated = new HashSet<string>();
+            foreach (var seat in _client.Model.Seats)
+            {
+                if (seat.PlayerId != null)
+                {
+                    seated.Add(seat.PlayerId);
+                }
+            }
+
+            foreach (var friend in friends)
+            {
+                var row = new VisualElement();
+                row.AddToClassList("lobby-seat");
+                row.AddToClassList("friend-row");
+                var name = new Label(friend.Name + (friend.Online ? "" : " · " + UiText.Offline));
+                name.AddToClassList("lobby-seat__name");
+                row.Add(name);
+                var id = friend.UserId;
+                var button = new Button { text = seated.Contains(id) ? UiText.AtTable : UiText.Invite };
+                button.AddToClassList("chip");
+                button.SetEnabled(!seated.Contains(id));
+                button.clicked += async () =>
+                {
+                    button.SetEnabled(false);
+                    var problem = await _invite(id);
+                    button.text = problem == null ? UiText.Invited : UiText.InviteProblem(problem);
+                };
+                row.Add(button);
+                list.Add(row);
+            }
+        }
+}
 }

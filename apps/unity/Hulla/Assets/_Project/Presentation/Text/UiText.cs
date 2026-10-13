@@ -166,6 +166,33 @@ namespace Hulla.Presentation.Text
         public const string Leaderboard = "Leaderboard";
         public const string Achievements = "Achievements";
         public const string Shop = "Shop";
+        public const string InviteFriends = "Invite friends";
+        public const string Invite = "Invite";
+        public const string Invited = "Invited";
+        public const string AtTable = "At the table";
+        public const string NoFriendsToInvite = "No friends yet. Share the code, or add friends from Home.";
+
+        /// <summary>{0} inviter's name, {1} room code.</summary>
+        public const string InviteReceived = "{0} invites you to their table ({1}).";
+
+        public const string Notifications = "Notifications";
+        public const string NotifyInvites = "Table invites";
+        public const string NotifyFriendRequests = "Friend requests";
+        public const string NotifyFriendOnline = "A friend comes online";
+        public const string NotifyDailyReward = "Daily reward ready";
+        public const string NotifySeasonEnd = "Season ending soon";
+        public const string NotifyQuietHours = "Quiet hours at night (friends' invites still come)";
+        public const string NotifyNonFriendInvites = "Invites from players who aren't friends";
+
+        /// <summary>Why an invite didn't go: a table_invite skip reason or an error code.</summary>
+        public static string InviteProblem(string reason) => reason switch
+        {
+            "blocked" => "Can't invite",
+            "muted" => "Not taking invites",
+            "rate_limited" or "network.rate_limited" => "Too many invites; try later",
+            "self" => "That's you",
+            _ => "Didn't send",
+        };
         public const string SeasonPass = "Season pass";
         public const string NoSeason = "No season is running right now. The pass opens with the next one.";
 

@@ -184,6 +184,18 @@ namespace Hulla.Screens.Tests
             public Awaitable<Result<bool>> ClaimAsync(long tier, bool premium, CancellationToken c) => Done(Result<bool>.Ok(true));
         }
 
+        public sealed class Notifications : Hulla.Application.Social.INotificationsService
+        {
+            public Awaitable<Result<Hulla.Application.Social.InviteResult>> InviteAsync(IReadOnlyList<string> userIds, CancellationToken c) =>
+                Done(Result<Hulla.Application.Social.InviteResult>.Ok(new Hulla.Application.Social.InviteResult(userIds, new Dictionary<string, string>(), 19)));
+
+            public Awaitable<Result<Hulla.Application.Social.NotificationSettings>> SettingsAsync(CancellationToken c) =>
+                Done(Result<Hulla.Application.Social.NotificationSettings>.Ok(new Hulla.Application.Social.NotificationSettings { FriendOnline = false }));
+
+            public Awaitable<Result<Hulla.Application.Social.NotificationSettings>> SaveAsync(Hulla.Application.Social.NotificationSettings settings, CancellationToken c) =>
+                Done(Result<Hulla.Application.Social.NotificationSettings>.Ok(settings));
+        }
+
         public sealed class Missions : Hulla.Application.Progress.IMissionsService
         {
             public Awaitable<Result<(IReadOnlyList<Hulla.Application.Progress.MissionInfo> Missions, bool RerollAvailable)>> MissionsAsync(int tz, CancellationToken c) =>

@@ -274,6 +274,33 @@ namespace Hulla.Integration.Tests
                 Assert.IsNull(pass.ErrorCode, "pass_get answers");
                 Assert.IsTrue(pass.NoSeason || pass.Info!.Tiers.Count == 40, "no season, or forty tiers");
 
+                // Invites and the notification switches (GDD 10.5, 10.10): seats are still held after the round.
+                string? inviteNotice = null;
+                _players[1].Session.Notified += (subject, content) =>
+                {
+                    if (subject == ServerNotices.TableInvite)
+                    {
+                        inviteNotice = content;
+                    }
+                };
+                var notifications = new NakamaNotificationsService(_players[0].Connection);
+                var invited = await notifications.InviteAsync(new[] { _players[1].Session.Current!.UserId, _players[0].Session.Current!.UserId }, default);
+                Assert.IsTrue(invited.IsOk, invited.IsOk ? "" : invited.Error.Code);
+                CollectionAssert.Contains(invited.Value.Sent, _players[1].Session.Current!.UserId);
+                Assert.AreEqual("self", invited.Value.Skipped[_players[0].Session.Current!.UserId]);
+                for (var i = 0; i < 20 && inviteNotice == null; i++)
+                {
+                    await Awaitable.WaitForSecondsAsync(0.1f);
+                }
+
+                Assert.IsNotNull(inviteNotice, "the invited player got the in-app notice");
+                Assert.AreEqual(_players[0].Client!.Model.Code, ServerNotices.Invite(inviteNotice!)!.Value.Code);
+                var switches = new Hulla.Application.ViewModels.NotificationSettingsViewModel(notifications);
+                await switches.RefreshAsync(default);
+                await switches.ChangeAsync(n => n.FriendOnline = false, default);
+                await switches.RefreshAsync(default);
+                Assert.IsFalse(switches.Settings!.FriendOnline, "the switch is kept on the server");
+
                 // The round counts toward achievements (GDD 12.7).
                 var achievements = new Hulla.Application.ViewModels.AchievementsViewModel(new NakamaAchievementsService(_players[0].Connection));
                 await achievements.RefreshAsync(default);
