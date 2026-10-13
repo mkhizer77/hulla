@@ -44,6 +44,8 @@ function socialStore(): SocialStore & { readonly mut: Map<string, readonly strin
     mut,
     userIdForFriendCode: (code) => (code === "AB72CD34" ? "u2" : null),
     favourites: () => [],
+    favouritedBy: () => [],
+    writeFavouritedBy: () => undefined,
     writeFavourites: () => undefined,
     recent: () => [],
     writeRecent: () => undefined,

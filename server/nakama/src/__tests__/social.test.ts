@@ -25,9 +25,12 @@ function store(): SocialStore & {
   const fav = new Map<string, readonly string[]>();
   const rec = new Map<string, readonly RecentPlayer[]>();
   const mut = new Map<string, readonly string[]>();
+  const by = new Map<string, readonly string[]>();
   return {
     fav,
     rec,
+    favouritedBy: (u) => by.get(u) ?? [],
+    writeFavouritedBy: (u, ids) => void by.set(u, ids),
     userIdForFriendCode: (code) => (code === "AB72CD34" ? "u2" : code === "ZZ99ZZ99" ? "u1" : null),
     favourites: (u) => fav.get(u) ?? [],
     writeFavourites: (u, ids) => void fav.set(u, ids),

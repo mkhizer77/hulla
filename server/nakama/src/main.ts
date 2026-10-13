@@ -7,6 +7,7 @@ import {
   thullaMatchSignal,
   thullaMatchTerminate,
 } from "./games/thulla/match";
+import { afterAddFriends } from "./hooks/after_add_friends";
 import {
   afterAuthenticateApple,
   afterAuthenticateCustom,
@@ -60,6 +61,15 @@ import { rpcPassClaim, rpcPassGet, rpcPassPremiumGrant } from "./rpc/pass";
 import { rpcPresenceSet, rpcTableListFriends } from "./rpc/presence";
 import { rpcPresetsGet } from "./rpc/presets_get";
 import { rpcProfileGet, rpcProfileUpdate } from "./rpc/profile";
+import {
+  rpcAdminPushSweep,
+  rpcAdminPushTest,
+  rpcPushRegister,
+  rpcPushSettingsGet,
+  rpcPushSettingsSet,
+  rpcPushUnregister,
+  rpcTableInvite,
+} from "./rpc/push";
 import {
   rpcCatalogSet,
   rpcEconomyCatalog,
@@ -148,15 +158,14 @@ function InitModule(
   initializer.registerRpc("pass_claim", rpcPassClaim);
   initializer.registerRpc("pass_premium_grant", rpcPassPremiumGrant);
   initializer.registerRpc("admin_drain", rpcAdminDrain);
-  initializer.registerRpc("economy_catalog", rpcEconomyCatalog);
-  initializer.registerRpc("economy_purchase", rpcEconomyPurchase);
-  initializer.registerRpc("inventory_equip", rpcInventoryEquip);
-  initializer.registerRpc("catalog_set", rpcCatalogSet);
-  initializer.registerRpc("admin_grant", rpcAdminGrant);
-  initializer.registerRpc("pass_get", rpcPassGet);
-  initializer.registerRpc("pass_claim", rpcPassClaim);
-  initializer.registerRpc("pass_premium_grant", rpcPassPremiumGrant);
-  initializer.registerRpc("admin_drain", rpcAdminDrain);
+  initializer.registerRpc("push_register", rpcPushRegister);
+  initializer.registerRpc("push_unregister", rpcPushUnregister);
+  initializer.registerRpc("push_settings_get", rpcPushSettingsGet);
+  initializer.registerRpc("push_settings_set", rpcPushSettingsSet);
+  initializer.registerRpc("table_invite", rpcTableInvite);
+  initializer.registerRpc("admin_push_sweep", rpcAdminPushSweep);
+  initializer.registerRpc("admin_push_test", rpcAdminPushTest);
+  initializer.registerAfterAddFriends(afterAddFriends);
   initializer.registerLeaderboardReset(onLeaderboardReset);
   ensureLeaderboards(nk, logger);
   initializer.registerBeforeAuthenticateDevice(beforeAuthenticateDevice);

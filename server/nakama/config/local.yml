@@ -35,6 +35,11 @@ runtime:
     # RSA private key (PEM) that signs the content manifest; empty on a development box means unsigned.
     - "HULLA_CONTENT_SIGNING_KEY="
     - "HULLA_CONTENT_SIGNING_KEY_ID="
+    # Firebase Cloud Messaging HTTP v1 (GDD 10.10): the service account's project id, client email and
+    # private key (PEM, newlines as \n). All three empty means no push; in-app notifications still flow.
+    - "HULLA_FCM_PROJECT_ID="
+    - "HULLA_FCM_CLIENT_EMAIL="
+    - "HULLA_FCM_PRIVATE_KEY="
 # Prometheus metrics for infra/observability (docs/runbooks/observability.md).
 metrics:
   prometheus_port: 9100

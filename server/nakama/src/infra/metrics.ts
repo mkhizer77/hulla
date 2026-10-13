@@ -17,6 +17,9 @@ export const METRICS = {
   messagesDropped: "hulla_messages_dropped",
   tablesCreated: "hulla_tables_created",
   rpcErrors: "hulla_rpc_errors",
+  pushSent: "hulla_push_sent",
+  pushFailed: "hulla_push_failed",
+  invites: "hulla_invites",
 } as const;
 
 export interface MetricsSink {

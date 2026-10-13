@@ -36,6 +36,8 @@ export interface Protocol {
   profileStats?: ProfileStats;
   profileUpdate?: ProfileUpdate;
   profileGet?: ProfileGet;
+  pushData?: PushData;
+  tableInviteNotice?: TableInvite;
   joinTablePayload?: JoinTable;
   leaveTablePayload?: LeaveTable;
   readyPayload?: Ready;
@@ -263,6 +265,33 @@ export interface ProfileGet {
    */
   userId?: string;
   handle?: string;
+}
+/**
+ * The data block of every push; values are strings as FCM requires. The title and body travel as localisation keys (push.<type>.title, push.<type>.body) with their arguments, so the device renders them in its own language.
+ */
+export interface PushData {
+  type: "table_invite" | "friend_request" | "friend_online" | "daily_reward" | "season_end";
+  /**
+   * The screen a tap opens (GDD 10.10)
+   */
+  route: "lobby" | "friends" | "home" | "pass";
+  matchId?: string;
+  code?: string;
+  fromUserId?: string;
+  seasonId?: string;
+}
+/**
+ * Content of in-app notification 1004: the Join action joins by code, and a table that has closed answers table.not_found, so the invite expires with the table (GDD 10.5)
+ */
+export interface TableInvite {
+  matchId: string;
+  code: string;
+  gameId: string;
+  mode: "private" | "public" | "ranked";
+  fromUserId: string;
+  fromName: string;
+  openSeats: number;
+  sentTs: number;
 }
 export interface JoinTable {
   code?: string;

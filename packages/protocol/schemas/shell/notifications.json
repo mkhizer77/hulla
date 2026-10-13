@@ -1,0 +1,60 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://hulla.gg/schemas/protocol/shell/notifications.json",
+  "title": "In-app notifications and push payloads (GDD 10.10)",
+  "definitions": {
+    "notificationCode": {
+      "type": "integer",
+      "enum": [1001, 1002, 1003, 1004],
+      "description": "In-app notification codes the server sends: 1001 missions_progress, 1002 daily_reward_ready, 1003 achievement_unlocked, 1004 table_invite. Nakama's own negative codes carry friend requests and accepts."
+    },
+    "pushType": {
+      "type": "string",
+      "enum": ["table_invite", "friend_request", "friend_online", "daily_reward", "season_end"]
+    },
+    "pushRoute": {
+      "type": "string",
+      "enum": ["lobby", "friends", "home", "pass"],
+      "description": "The screen a tap opens (GDD 10.10)"
+    },
+    "pushData": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "route"],
+      "description": "The data block of every push; values are strings as FCM requires. The title and body travel as localisation keys (push.<type>.title, push.<type>.body) with their arguments, so the device renders them in its own language.",
+      "properties": {
+        "type": { "$ref": "#/definitions/pushType" },
+        "route": { "$ref": "#/definitions/pushRoute" },
+        "matchId": { "type": "string" },
+        "code": { "type": "string" },
+        "fromUserId": { "type": "string" },
+        "seasonId": { "type": "string" }
+      }
+    },
+    "table_invite": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "matchId",
+        "code",
+        "gameId",
+        "mode",
+        "fromUserId",
+        "fromName",
+        "openSeats",
+        "sentTs"
+      ],
+      "description": "Content of in-app notification 1004: the Join action joins by code, and a table that has closed answers table.not_found, so the invite expires with the table (GDD 10.5)",
+      "properties": {
+        "matchId": { "type": "string" },
+        "code": { "type": "string" },
+        "gameId": { "type": "string" },
+        "mode": { "type": "string", "enum": ["private", "public", "ranked"] },
+        "fromUserId": { "type": "string" },
+        "fromName": { "type": "string" },
+        "openSeats": { "type": "integer", "minimum": 0 },
+        "sentTs": { "type": "integer", "minimum": 0 }
+      }
+    }
+  }
+}
