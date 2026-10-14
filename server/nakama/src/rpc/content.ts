@@ -1,7 +1,6 @@
 import { ErrorCodes, ruleError } from "@hulla/shared-ts";
 
-import { CONTENT_FILES, CONTENT_MANIFEST } from "../content";
-import { log } from "../infra/log";
+import { CONTENT_FILES, CONTENT_MANIFEST, CONTENT_TEXT } from "../content";
 
 /** The bytes the signature covers: the manifest without the schema pointer, keys in order. */
 export function canonicalManifest(): string {
@@ -13,7 +12,7 @@ export function canonicalManifest(): string {
   });
 }
 
-export const SIGNING_KEY_ENV = "HULLA_CONTENT_SIGNING_KEY";
+export const SIGNATURE_ENV = "HULLA_CONTENT_SIGNATURE";
 export const SIGNING_KEY_ID_ENV = "HULLA_CONTENT_SIGNING_KEY_ID";
 
 function parse(payload: string): Record<string, unknown> {
@@ -28,26 +27,14 @@ function parse(payload: string): Record<string, unknown> {
 }
 
 /**
- * The manifest the client pins for its session (ADR-0011, GDD 18.9): signed with RSA-SHA256
- * when the box holds a private key, unsigned on a development box, which clients accept only in
- * development builds.
+ * The content manifest (ADR-0011) with the RSA-SHA256 signature over `signedBytes`. The signature
+ * is made at deploy time (`pnpm content:sign`) and set on the box as HULLA_CONTENT_SIGNATURE, so
+ * the private key never sits on the server; Nakama's own `rsaSha256Hash` returns raw bytes that do
+ * not survive JSON. Unsigned on a development box, which clients accept only in development builds.
  */
-export function rpcContentManifest(
-  ctx: nkruntime.Context,
-  logger: nkruntime.Logger,
-  nk: nkruntime.Nakama,
-): string {
-  const key = ctx.env[SIGNING_KEY_ENV] ?? "";
-  const keyId = ctx.env[SIGNING_KEY_ID_ENV] ?? "";
-  const canonical = canonicalManifest();
-  let signature: string | null = null;
-  if (key !== "") {
-    try {
-      signature = nk.rsaSha256Hash(canonical, key);
-    } catch (error: unknown) {
-      log.error(logger, "content manifest not signed", { error: String(error) });
-    }
-  }
+export function rpcContentManifest(ctx: nkruntime.Context): string {
+  const signature = (ctx.env[SIGNATURE_ENV] ?? "").trim();
+  const signed = signature !== "";
   return JSON.stringify({
     ok: true,
     manifest: {
@@ -56,14 +43,17 @@ export function rpcContentManifest(
       digest: CONTENT_MANIFEST.digest,
       files: CONTENT_MANIFEST.files,
     },
-    signature,
-    algorithm: signature === null ? null : "RSA-SHA256",
-    keyId: signature === null ? null : keyId,
-    signedBytes: canonical,
+    signature: signed ? signature : null,
+    algorithm: signed ? "RSA-SHA256" : null,
+    keyId: signed ? (ctx.env[SIGNING_KEY_ID_ENV] ?? "") : null,
+    signedBytes: canonicalManifest(),
   });
 }
 
-/** `{ path }`: one bundled content file; the client checks its hash against the manifest. */
+/**
+ * `{ path }`: one bundled content file. `text` is the exact bytes the manifest hashes, which the
+ * client checks before it caches the file; `document` is the same file parsed.
+ */
 export function rpcContentGet(
   _ctx: nkruntime.Context,
   _logger: nkruntime.Logger,
@@ -85,5 +75,6 @@ export function rpcContentGet(
     sha256: entry.sha256,
     version: entry.version,
     document: file,
+    text: CONTENT_TEXT[entry.path],
   });
 }

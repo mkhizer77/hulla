@@ -34,8 +34,9 @@ runtime:
     - "AGORA_APP_CERTIFICATE="
     # Owner accounts allowed to call the admin RPCs with a session (comma-separated user ids); the server key always may.
     - "HULLA_ADMIN_USER_IDS="
-    # RSA private key (PEM) that signs the content manifest; empty on a development box means unsigned.
-    - "HULLA_CONTENT_SIGNING_KEY="
+    # Signature of content/manifest.json from `pnpm content:sign <key.pem>` at deploy time (the private
+    # key stays off the box); empty on a development box means unsigned.
+    - "HULLA_CONTENT_SIGNATURE="
     - "HULLA_CONTENT_SIGNING_KEY_ID="
     # Firebase Cloud Messaging HTTP v1 (GDD 10.10): the service account's project id, client email and
     # private key (PEM, newlines as \n). All three empty means no push; in-app notifications still flow.

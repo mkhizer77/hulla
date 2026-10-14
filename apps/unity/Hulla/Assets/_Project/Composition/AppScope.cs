@@ -46,6 +46,14 @@ namespace Hulla.Composition
             Leaderboard = new LeaderboardViewModel(new NakamaLeaderboardService(_connection));
             Ranked = new RankedViewModel(new NakamaRankedService(_connection));
             RemoteConfig = new RemoteConfigModel(new NakamaRemoteConfigService(_connection));
+            Content = new ContentStore(
+                new StreamingBundledContent(),
+                new NakamaContentApi(_connection),
+                System.IO.Path.Combine(UnityEngine.Application.persistentDataPath, "content"),
+                ManifestSignature.ParsePublicKey(ContentKey.Pem),
+                UnityEngine.Debug.isDebugBuild);
+            Chat = new ContentChatCatalog(Content);
+            Presets = new ContentPresetCatalog(Content);
             Welcome = new NakamaWelcomeService(_connection);
             Phone = new PhoneViewModel(new NakamaPhoneService(_connection, _sessionService));
             Achievements = new AchievementsViewModel(new NakamaAchievementsService(_connection));
@@ -72,9 +80,12 @@ namespace Hulla.Composition
 
         public HomeViewModel Home { get; }
 
-        public IChatCatalog Chat { get; } = new StreamingChatCatalog();
+        /// <summary>Signed content pinned for this launch (ADR-0011).</summary>
+        public IContentStore Content { get; }
 
-        public IPresetCatalog Presets { get; } = new StreamingPresetCatalog();
+        public IChatCatalog Chat { get; }
+
+        public IPresetCatalog Presets { get; }
 
         public QuickPlayViewModel QuickPlay { get; }
 
