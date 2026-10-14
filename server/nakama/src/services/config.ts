@@ -46,6 +46,8 @@ export const DEFAULT_CONFIG: RemoteConfig = {
     turn_seconds_public: [{ value: 15 }],
     backfill_delay_seconds: [{ value: 20 }],
     daily_soft_cap_coins: [{ value: 1500 }],
+    // Phone sign-in sends at most this many codes a day across all players (cost cap, OQ-041).
+    otp_daily_budget: [{ value: 2000 }],
   },
   updatedTs: 0,
 };

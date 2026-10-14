@@ -121,6 +121,9 @@ export interface MergePorts {
   /** Moves the guest's round history to the linked account; the stats were summed already. */
   moveRounds(fromUserId: string, toUserId: string): number;
   deleteAccount(userId: string): void;
+  /** The guest's device ids, which move to the linked account so the phone keeps signing in to it. */
+  devicesOf?(userId: string): readonly string[];
+  linkDevices?(userId: string, deviceIds: readonly string[]): void;
 }
 
 export type MergeResponse =
@@ -159,7 +162,11 @@ export function redeemMerge(
   const changeset = walletChangeset(ports.readWallet(from));
   if (Object.keys(changeset).length > 0) ports.creditWallet(userId, changeset, from);
   const rounds = ports.moveRounds(from, userId);
+  // The guest's device signs in by device id at every start; once the guest is gone that id must
+  // lead to the account it merged into (a phone or provider sign-in on a new device, #99).
+  const devices = ports.devicesOf?.(from) ?? [];
   ports.deleteAccount(from);
+  if (devices.length > 0) ports.linkDevices?.(userId, devices);
   return { ok: true, mergedFrom: from, rounds, profile: merged };
 }
 

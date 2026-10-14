@@ -98,6 +98,8 @@ function ports(
     creditWallet: (u, c, from) => void log.push(`credit ${u} ${JSON.stringify(c)} from ${from}`),
     moveRounds: (from, to) => (log.push(`move ${from}->${to}`), 4),
     deleteAccount: (u) => void log.push(`delete ${u}`),
+    devicesOf: (u) => (u === "A" ? ["phone-a"] : []),
+    linkDevices: (u, ids) => void log.push(`link ${u} ${ids.join(",")}`),
   };
 }
 
@@ -183,7 +185,12 @@ describe("guest merge into a linked account (GDD 10.2)", () => {
       rounds: 4,
       profile: { displayName: "Ali Khan", stats: { rounds: 5 } },
     });
-    expect(p.log).toEqual(['credit B {"coins":120,"gems":3} from A', "move A->B", "delete A"]);
+    expect(p.log).toEqual([
+      'credit B {"coins":120,"gems":3} from A',
+      "move A->B",
+      "delete A",
+      "link B phone-a",
+    ]);
     expect(redeemMerge(p, "B", again.code, T0 + 3)).toMatchObject({
       error: { code: "auth.merge_code_invalid" },
     });
