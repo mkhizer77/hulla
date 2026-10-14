@@ -186,7 +186,7 @@ namespace Hulla.Composition
             }
 
             var (from, code, _) = invite.Value;
-            var text = string.Format(UiText.InviteReceived, from, code);
+            var text = Strings.Format(UiText.InviteReceived, from, code);
             if (_screen == Screen.Table || _screen == Screen.Lobby)
             {
                 _shell.SetBanner(text);
@@ -211,7 +211,7 @@ namespace Hulla.Composition
             _app.Analytics.Track(AnalyticsEvents.InviteOpened(Time.realtimeSinceStartup - receivedAt));
             if (_screen == Screen.Table || _screen == Screen.Lobby)
             {
-                var text = string.Format(UiText.InviteLinkWhileSeated, code);
+                var text = Strings.Format(UiText.InviteLinkWhileSeated, code);
                 _shell.SetBanner(text);
                 await Awaitable.WaitForSecondsAsync(5f);
                 if (UnityEngine.UIElements.UQueryExtensions.Q<UnityEngine.UIElements.Label>(_shell.Root, "shell-banner")?.text == text)
@@ -248,7 +248,7 @@ namespace Hulla.Composition
                 return;
             }
 
-            _shell.ShowDialog(string.Format(UiText.ReferralAsk, friendCode), UiText.AddFriend, UiText.NotNow, () => AddReferrer(friendCode), () => { });
+            _shell.ShowDialog(Strings.Format(UiText.ReferralAsk, friendCode), UiText.AddFriend, UiText.NotNow, () => AddReferrer(friendCode), () => { });
         }
 
         private async void AddReferrer(string friendCode)
@@ -289,7 +289,7 @@ namespace Hulla.Composition
 
             foreach (var id in Hulla.Infrastructure.Nakama.ServerNotices.UnlockedIds(content))
             {
-                var text = string.Format(UiText.AchievementUnlocked, AchievementText.Name(id, "", 0));
+                var text = Strings.Format(UiText.AchievementUnlocked, AchievementText.Name(id, "", 0));
                 _shell.SetBanner(text);
                 await Awaitable.WaitForSecondsAsync(4f);
                 if (UnityEngine.UIElements.UQueryExtensions.Q<UnityEngine.UIElements.Label>(_shell.Root, "shell-banner")?.text == text)
@@ -486,7 +486,7 @@ namespace Hulla.Composition
             _screen = Screen.Home;
             var shop = _app.Shop;
             var shopView = new ShopView(_shell.Show(_shell.Catalog.Shop), shop, ShowHome, item =>
-                _shell.ShowDialog(string.Format(UiText.BuyQuestion, ItemText.Name(item.Id), ShopView.Price(item)), UiText.Buy, UiText.Cancel, () => _ = shop.BuyAsync(item.Id, _app.Lifetime), () => { }),
+                _shell.ShowDialog(Strings.Format(UiText.BuyQuestion, ItemText.Name(item.Id), ShopView.Price(item)), UiText.Buy, UiText.Cancel, () => _ = shop.BuyAsync(item.Id, _app.Lifetime), () => { }),
                 item => _ = shop.EquipAsync(item.Id, _app.Lifetime));
             shopView.Retry = () => _ = shop.RefreshAsync(_app.Lifetime);
             _view = shopView;
@@ -965,7 +965,7 @@ namespace Hulla.Composition
         /// <summary>The fair deal in plain words (ADR-0009): the commitment, the seed, and a copy of the seed to check elsewhere.</summary>
         private void ExplainFairDeal(Fairness fairness)
         {
-            var text = string.Format(UiText.FairDealExplained, Short(fairness.Commitment), Short(fairness.Seed));
+            var text = Strings.Format(UiText.FairDealExplained, Short(fairness.Commitment), Short(fairness.Seed));
             _shell.ShowDialog(text, UiText.Close, UiText.CopySeed, () => { }, () => GUIUtility.systemCopyBuffer = fairness.Seed);
 
             static string Short(string value) => value.Length > 16 ? value.Substring(0, 8) + "…" + value.Substring(value.Length - 8) : value;
@@ -1044,15 +1044,15 @@ namespace Hulla.Composition
 
             var code = model.IsPrivate && model.Code.Length > 0 ? model.Code : null;
             var friendCode = code == null ? await MyFriendCodeAsync() : null;
-            var footer = code != null ? string.Format(UiText.ShareFooterCode, code)
-                : friendCode != null ? string.Format(UiText.ShareFooterFriend, friendCode)
+            var footer = code != null ? Strings.Format(UiText.ShareFooterCode, code)
+                : friendCode != null ? Strings.Format(UiText.ShareFooterFriend, friendCode)
                 : UiText.ShareFooter;
             var png = await CardRenderer.RenderAsync(_shell.PanelSettings, ratio, root => ThullaShareCard.Build(root, model, seat => SeatName(model, seat), footer, ratio == CardRatio.Story));
             var loser = SeatName(model, result.BhabhiSeat);
             var title = ThullaShareCard.LoserTitle(model);
-            var text = code != null ? string.Format(UiText.ShareResultWithCode, loser, title, code, InviteLink.For(code))
-                : friendCode != null ? string.Format(UiText.ShareResultReferral, loser, title, InviteLink.ReferralFor(friendCode))
-                : string.Format(UiText.ShareResultText, loser, title);
+            var text = code != null ? Strings.Format(UiText.ShareResultWithCode, loser, title, code, InviteLink.For(code))
+                : friendCode != null ? Strings.Format(UiText.ShareResultReferral, loser, title, InviteLink.ReferralFor(friendCode))
+                : Strings.Format(UiText.ShareResultText, loser, title);
             _app.ShareSheet.ShareImage(UiText.ShareResultTitle, text, png, "hulla-" + result.RoundId + ".png");
         }
 
@@ -1073,7 +1073,7 @@ namespace Hulla.Composition
 
         private bool ShareCode(string code)
         {
-            var shared = _app.ShareSheet.Share(UiText.ShareTitle, string.Format(UiText.ShareText, code, InviteLink.For(code)));
+            var shared = _app.ShareSheet.Share(UiText.ShareTitle, Strings.Format(UiText.ShareText, code, InviteLink.For(code)));
             _app.Analytics.Track(AnalyticsEvents.InviteSent(shared ? "share" : "copy"));
             return shared;
         }
@@ -1089,10 +1089,10 @@ namespace Hulla.Composition
                 var reward = _app.Progress.RewardFor(roundId);
                 if (reward != null)
                 {
-                    var text = string.Format(UiText.RewardLine, reward.Xp, reward.Coins) + (reward.Capped ? UiText.RewardCapped : "");
+                    var text = Strings.Format(UiText.RewardLine, reward.Xp, reward.Coins) + (reward.Capped ? UiText.RewardCapped : "");
                     if (reward.LevelTo > reward.LevelFrom)
                     {
-                        text += "\n" + string.Format(UiText.LevelUp, reward.LevelFrom, reward.LevelTo);
+                        text += "\n" + Strings.Format(UiText.LevelUp, reward.LevelFrom, reward.LevelTo);
                     }
 
                     _tableView?.ShowReward(text);
@@ -1198,7 +1198,7 @@ namespace Hulla.Composition
                 return null;
             }
 
-            return string.Format(UiText.DeletePending, DateTimeOffset.FromUnixTimeMilliseconds(at).ToLocalTime().ToString("d MMMM yyyy"));
+            return Strings.Format(UiText.DeletePending, DateTimeOffset.FromUnixTimeMilliseconds(at).ToLocalTime().ToString("d MMMM yyyy"));
         }
 
         private void CloseSettings()

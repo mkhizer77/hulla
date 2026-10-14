@@ -11,23 +11,37 @@ namespace Hulla.Presentation.Text
     /// </summary>
     public static class PushText
     {
-        public const string ChannelName = "Invites and friends";
-        public const string AskTitle = "Know when friends invite you to a table?";
-        public const string AskYes = "Turn on";
-        public const string AskNo = "Not now";
-
-        public static readonly IReadOnlyDictionary<string, string> Strings = new Dictionary<string, string>
+        public static string ChannelName => Strings.Text("push.channel_name");
+        public static string AskTitle => Strings.Text("push.ask_title");
+        public static string AskYes => Strings.Text("push.ask_yes");
+        public static string AskNo => Strings.Text("push.ask_no");
+        /// <summary>The server's push keys (push_&lt;type&gt;_title, _body) with their text from the tables.</summary>
+        public static IReadOnlyDictionary<string, string> Keyed
         {
-            ["push_table_invite_title"] = "Table invite",
-            ["push_table_invite_body"] = "{0} invites you to their table ({1}).",
-            ["push_friend_request_title"] = "Friend request",
-            ["push_friend_request_body"] = "{0} wants to be your friend.",
-            ["push_friend_online_title"] = "Friend online",
-            ["push_friend_online_body"] = "{0} is online. Fancy a round?",
-            ["push_daily_reward_title"] = "Daily reward",
-            ["push_daily_reward_body"] = "Your daily reward is ready.",
-            ["push_season_end_title"] = "Season ending",
-            ["push_season_end_body"] = "The season ends in {0} hours. Claim your rewards.",
+            get
+            {
+                var keyed = new Dictionary<string, string>();
+                foreach (var key in Keys)
+                {
+                    keyed[key] = Strings.Text("push." + key.Substring("push_".Length));
+                }
+
+                return keyed;
+            }
+        }
+
+        private static readonly string[] Keys =
+        {
+            "push_table_invite_title",
+            "push_table_invite_body",
+            "push_friend_request_title",
+            "push_friend_request_body",
+            "push_friend_online_title",
+            "push_friend_online_body",
+            "push_daily_reward_title",
+            "push_daily_reward_body",
+            "push_season_end_title",
+            "push_season_end_body",
         };
 
         /// <summary>

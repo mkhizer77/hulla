@@ -3,9 +3,10 @@ using System.Linq;
 using System.Threading;
 using Hulla.Application.Services;
 using Hulla.Application.Table;
+using Hulla.Presentation.Text;
 using Hulla.Protocol;
-using TableSettings = Hulla.Protocol.Settings;
 using NUnit.Framework;
+using TableSettings = Hulla.Protocol.Settings;
 using UnityEngine;
 
 namespace Hulla.Games.Thulla.Tests
@@ -53,8 +54,8 @@ namespace Hulla.Games.Thulla.Tests
         {
             var lines = TableLines(Table(new RulesSelection { GameId = GameId.Thulla, Preset = Preset.Family }, null));
             CollectionAssert.Contains(lines, "Preset: Family.");
-            CollectionAssert.Contains(lines, string.Format(RulebookText.TurnTimer, 30));
-            CollectionAssert.Contains(lines, string.Format(RulebookText.LoserTitle, RulebookText.Donkey));
+            CollectionAssert.Contains(lines, Strings.Format(RulebookText.TurnTimer, 30));
+            CollectionAssert.Contains(lines, Strings.Format(RulebookText.LoserTitle, RulebookText.Donkey));
             CollectionAssert.Contains(lines, RulebookText.HandTakingLeader);
         }
 
@@ -92,7 +93,7 @@ namespace Hulla.Games.Thulla.Tests
                 RulebookText.ThullaEndsTrickOff,
                 RulebookText.EmptyHandDrawNext,
                 RulebookText.HandTakingAnyone,
-                string.Format(RulebookText.EndgameThullaEndsRound, RulebookText.Bhabhi),
+                Strings.Format(RulebookText.EndgameThullaEndsRound, RulebookText.Bhabhi),
                 RulebookText.FastForwardOff,
                 RulebookText.OpeningSimultaneousOff,
             }, lines);

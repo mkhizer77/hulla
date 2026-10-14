@@ -1,41 +1,33 @@
 namespace Hulla.Presentation.Text
 {
-    /// <summary>English for the Ranked screen and queue until the string tables land (#65).</summary>
+    /// <summary>The Ranked screen and queue's text from the string tables (GDD 26.1, ADR-0023).</summary>
     public static class RankedText
     {
-        public const string Title = "Ranked";
-        public const string Play = "Play ranked";
-        public const string Searching = "Finding a ranked table";
-        public const string Widened = "Looking a little wider";
-        public const string Placement = "Placement {0} of {1}";
-        public const string PlacementNote = "Play {0} more to get your league.";
-        public const string Unranked = "Unranked";
-        public const string Rating = "Rating {0}";
-        public const string Rank = "#{0} this season";
-        public const string Protected = "Promotion protected for {0} more";
-        public const string SeasonEnds = "Season {0} ends in {1}";
-        public const string Leagues = "Leagues";
-        public const string Top = "Top this season";
-        public const string TopEmpty = "Nobody has finished placement yet.";
-        public const string Rules = "4 players · 12 s turns · no hand-taking · no card memory";
-        public const string UstadNote = "Top {0}";
-        public const string SeasonEnded = "Season {0} ended: {1}. Your rewards are in.";
-        public const string SeasonEndedUnplaced = "Season {0} ended before you finished placement.";
-        public const string CardBack = "card back";
-        public const string Frame = "frame";
-        public const string Coins = "{0} coins";
+        public static string Title => Strings.Text("ranked.title");
+        public static string Play => Strings.Text("ranked.play");
+        public static string Searching => Strings.Text("ranked.searching");
+        public static string Widened => Strings.Text("ranked.widened");
+        public static string Placement => Strings.Text("ranked.placement");
+        public static string PlacementNote => Strings.Text("ranked.placement_note");
+        public static string Unranked => Strings.Text("ranked.unranked");
+        public static string Rating => Strings.Text("ranked.rating");
+        public static string Rank => Strings.Text("ranked.rank");
+        public static string Protected => Strings.Text("ranked.protected");
+        public static string SeasonEnds => Strings.Text("ranked.season_ends");
+        public static string Leagues => Strings.Text("ranked.leagues");
+        public static string Top => Strings.Text("ranked.top");
+        public static string TopEmpty => Strings.Text("ranked.top_empty");
+        public static string Rules => Strings.Text("ranked.rules");
+        public static string UstadNote => Strings.Text("ranked.ustad_note");
+        public static string SeasonEnded => Strings.Text("ranked.season_ended");
+        public static string SeasonEndedUnplaced => Strings.Text("ranked.season_ended_unplaced");
+        public static string CardBack => Strings.Text("ranked.card_back");
+        public static string Frame => Strings.Text("ranked.frame");
+        public static string Coins => Strings.Text("ranked.coins");
 
-        public static string League(string? id) => id switch
-        {
-            "bronze" => "Bronze",
-            "silver" => "Silver",
-            "gold" => "Gold",
-            "platinum" => "Platinum",
-            "diamond" => "Diamond",
-            "ustad" => "Ustad",
-            null => Unranked,
-            _ => id,
-        };
+        /// <summary>league.&lt;id&gt;, the same keys the ranked content names; null is Unranked.</summary>
+        public static string League(string? id) =>
+            id == null ? Unranked : Strings.Has("league." + id) ? Strings.Text("league." + id) : id;
 
         /// <summary>"title, 600 coins, card back" from what a league pays at season end.</summary>
         public static string Reward(Hulla.Application.Progress.RankedLeague league)
@@ -43,7 +35,7 @@ namespace Hulla.Presentation.Text
             var parts = new System.Collections.Generic.List<string> { "\"" + ItemText.Name(league.RewardTitle.Replace("ranked_", "")) + "\" title" };
             if (league.RewardCoins > 0)
             {
-                parts.Add(string.Format(Coins, league.RewardCoins.ToString("N0")));
+                parts.Add(Strings.Format(Coins, league.RewardCoins.ToString("N0")));
             }
 
             if (league.RewardCardBack)

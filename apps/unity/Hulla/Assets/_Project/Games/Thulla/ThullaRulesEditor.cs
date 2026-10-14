@@ -65,17 +65,17 @@ namespace Hulla.Games.Thulla
             var fromPreset = found?.Settings;
             var timer = selection?.Settings?.TurnTimerSeconds ?? fromPreset?.TurnTimerSeconds ?? 20;
             var title = selection?.Settings?.LoserTitle ?? fromPreset?.LoserTitle ?? LoserTitle.Bhabhi;
-            var line = string.Format(UiText.RulesSummary, PresetName(preset), timer > 0 ? string.Format(UiText.TurnSeconds, timer) : UiText.NoTimer, TitleName(title));
+            var line = Strings.Format(UiText.RulesSummary, PresetName(preset), timer > 0 ? Strings.Format(UiText.TurnSeconds, timer) : UiText.NoTimer, TitleName(title));
             var emptyHand = ThullaRuleOverrides.EmptyHandLeaderOf(selection?.Overrides);
             if (emptyHand != null && emptyHand != PresetEmptyHand(found?.Rules))
             {
-                line = string.Format(UiText.RulesSummaryLastCard, line, EmptyHandName(emptyHand.Value));
+                line = Strings.Format(UiText.RulesSummaryLastCard, line, EmptyHandName(emptyHand.Value));
             }
 
             var handTaking = ThullaRuleOverrides.HandTakingOf(selection?.Overrides);
             return handTaking == null || handTaking == PresetHandTaking(found?.Rules)
                 ? line
-                : string.Format(UiText.RulesSummaryHand, line, HandTakingName(handTaking.Value));
+                : Strings.Format(UiText.RulesSummaryHand, line, HandTakingName(handTaking.Value));
         }
 
         internal RulesSelection Build()

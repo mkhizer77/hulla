@@ -51,7 +51,7 @@ namespace Hulla.Games.Thulla
             var (picker, picked) = BiggestPickUp(result);
             if (picker >= 0)
             {
-                card.Add(Text(string.Format(UiText.MostPickedUp, nameOf(picker), picked), "share-card__highlight"));
+                card.Add(Text(Strings.Format(UiText.MostPickedUp, nameOf(picker), picked), "share-card__highlight"));
             }
 
             var spacer = new VisualElement();

@@ -1,0 +1,25 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://hulla.gg/schemas/content/strings.json",
+  "title": "Strings",
+  "description": "One locale's user-facing text by stable key, in ICU MessageFormat limited to plural, select and simple arguments (GDD 26.1, CODING_RULES 9); notes explain arguments to translators",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema", "id", "version", "locale", "strings"],
+  "properties": {
+    "schema": { "type": "string" },
+    "id": { "type": "string", "pattern": "^strings-[a-z]{2}(-[A-Z]{2})?$" },
+    "version": { "type": "integer", "minimum": 1 },
+    "locale": { "type": "string", "pattern": "^[a-z]{2}(-[A-Z]{2})?$" },
+    "strings": {
+      "type": "object",
+      "minProperties": 1,
+      "propertyNames": { "pattern": "^[a-z][a-z0-9_]*(\\.[A-Za-z0-9_]+)+$" },
+      "additionalProperties": { "type": "string", "minLength": 1 }
+    },
+    "notes": {
+      "type": "object",
+      "additionalProperties": { "type": "string" }
+    }
+  }
+}

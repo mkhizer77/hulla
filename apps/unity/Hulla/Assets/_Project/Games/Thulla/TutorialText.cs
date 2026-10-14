@@ -1,46 +1,48 @@
+using Hulla.Presentation.Text;
+
 namespace Hulla.Games.Thulla
 {
     /// <summary>The coach's lines (GDD 17.3), in one place for the string tables (#65).</summary>
     public static class TutorialText
     {
-        public const string Gate = "Do you know Bhabhi?";
-        public const string GateYes = "Yes, let's play";
-        public const string GateNo = "No, show me";
-        public const string Refresher = "20-second refresher";
-        public const string HowToPlay = "How to play";
-        public const string Next = "Next";
-        public const string Finish = "Let's play";
-        public const string Skip = "Skip";
+        public static string Gate => Strings.Text("tutorial.gate");
+        public static string GateYes => Strings.Text("tutorial.gate_yes");
+        public static string GateNo => Strings.Text("tutorial.gate_no");
+        public static string Refresher => Strings.Text("tutorial.refresher");
+        public static string HowToPlay => Strings.Text("tutorial.how_to_play");
+        public static string Next => Strings.Text("tutorial.next");
+        public static string Finish => Strings.Text("tutorial.finish");
+        public static string Skip => Strings.Text("tutorial.skip");
 
-        public const string GotIt = "Got it";
-        public const string HintLegal = "Lit cards are the ones you can play now. Hold the led suit? Then you must follow it.";
-        public const string HintLeader = "\"Leads\" marks who led this trick. The highest card of that suit takes the hand.";
-        public const string HintTakeHand = "Before you lead, you can ask the next player for their whole hand. If they accept, they're out and safe, and you lead with all of it.";
+        public static string GotIt => Strings.Text("tutorial.got_it");
+        public static string HintLegal => Strings.Text("tutorial.hint_legal");
+        public static string HintLeader => Strings.Text("tutorial.hint_leader");
+        public static string HintTakeHand => Strings.Text("tutorial.hint_take_hand");
 
         /// <summary>Shown once, the first time a player taps Ask for hand: {0} the player, {1} their card count.</summary>
-        public const string ExplainAsk = "You're asking {0} to hand over their {1} cards. If they accept, the cards join your hand and {0} sits out safe for the rest of the round. They can refuse.";
-        public const string HintQuickChat = "A thulla! Tap Chat to say something, from \"Le lo bhai!\" to a chai emote.";
+        public static string ExplainAsk => Strings.Text("tutorial.explain_ask");
+        public static string HintQuickChat => Strings.Text("tutorial.hint_quick_chat");
 
-        public const string Step1 = "You have the Ace of Spades. Everyone throws a spade. No punishment on the first trick.";
-        public const string Step1Hint = "The round opens with the Ace of Spades. Tap it, then tap again to play.";
-        public const string Step1Done = "The opening trick goes to the discard. Your Ace was highest, so you lead next.";
+        public static string Step1 => Strings.Text("tutorial.step1");
+        public static string Step1Hint => Strings.Text("tutorial.step1_hint");
+        public static string Step1Done => Strings.Text("tutorial.step1_done");
 
-        public const string Step2Lead = "Noor leads a heart. You have hearts, so you play one.";
-        public const string Step2Hint = "You hold hearts, so you must play a heart. Only those are lit.";
-        public const string Step2 = "Bilal has no hearts. His off-suit card is a thulla. The highest heart picks everything up. That's Sara, not you.";
-        public const string Step2Done = "Sara took the whole pile into her hand. Thullas make other people pick up.";
+        public static string Step2Lead => Strings.Text("tutorial.step2_lead");
+        public static string Step2Hint => Strings.Text("tutorial.step2_hint");
+        public static string Step2 => Strings.Text("tutorial.step2");
+        public static string Step2Done => Strings.Text("tutorial.step2_done");
 
-        public const string Step3 = "No diamonds? Throw your worst card. Sara's K♦ is the highest, so she picks up.";
-        public const string Step3Hint = "You have no diamonds, so any card goes. Throw one you want rid of.";
-        public const string Step3Done = "That was your thulla. Running out of a suit early gives you more of them.";
+        public static string Step3 => Strings.Text("tutorial.step3");
+        public static string Step3Hint => Strings.Text("tutorial.step3_hint");
+        public static string Step3Done => Strings.Text("tutorial.step3_done");
 
-        public const string Step4 = "Two low clubs left. Play low and let someone else take the hand.";
-        public const string Step4Hint = "Follow clubs with a low one.";
-        public const string Step4Done = "Play your last card low and let someone else take the hand. You're out, you're safe.";
+        public static string Step4 => Strings.Text("tutorial.step4");
+        public static string Step4Hint => Strings.Text("tutorial.step4_hint");
+        public static string Step4Done => Strings.Text("tutorial.step4_done");
 
-        public const string Step5Lead = "Two players left. Sara leads her last card.";
-        public const string Step5Hint = "Follow hearts with your heart.";
-        public const string Step5 = "Two left and the leader has no cards? They draw from the other player. Play until it's confirmed.";
-        public const string Step5Done = "You're out, and Sara is left holding a card: she's the Bhabhi. Now play a real round.";
+        public static string Step5Lead => Strings.Text("tutorial.step5_lead");
+        public static string Step5Hint => Strings.Text("tutorial.step5_hint");
+        public static string Step5 => Strings.Text("tutorial.step5");
+        public static string Step5Done => Strings.Text("tutorial.step5_done");
     }
 }

@@ -39,19 +39,19 @@ namespace Hulla.Presentation.Screens.Home
 
             if (status.Claimable)
             {
-                _text.text = string.Format(UiText.DailyReady, status.Today.Day, Amount(status.Today));
+                _text.text = Strings.Format(UiText.DailyReady, status.Today.Day, Amount(status.Today));
                 _claim.style.display = DisplayStyle.Flex;
                 _claim.SetEnabled(!_model.Claiming);
                 return;
             }
 
             _claim.style.display = DisplayStyle.None;
-            var tomorrow = string.Format(UiText.DailyTomorrow, Amount(status.Next));
-            _text.text = _model.Claimed != null ? string.Format(UiText.DailyClaimed, Amount(_model.Claimed)) + " " + tomorrow : tomorrow;
+            var tomorrow = Strings.Format(UiText.DailyTomorrow, Amount(status.Next));
+            _text.text = _model.Claimed != null ? Strings.Format(UiText.DailyClaimed, Amount(_model.Claimed)) + " " + tomorrow : tomorrow;
         }
 
         /// <summary>"70 coins" or "80 coins + 2 gems".</summary>
         public static string Amount(DailyRewardDay day) =>
-            day.Gems > 0 ? string.Format(UiText.CoinsAndGems, day.Coins, day.Gems) : string.Format(UiText.CoinsOnly, day.Coins);
+            day.Gems > 0 ? Strings.Format(UiText.CoinsAndGems, day.Coins, day.Gems) : Strings.Format(UiText.CoinsOnly, day.Coins);
     }
 }

@@ -150,7 +150,7 @@ Checklist; every item is an acceptance criterion.
 ## 8. Content rules
 - Every content type has a JSON Schema in `tools/content-schemas/`; `pnpm content:validate` runs in CI.
 - Content is versioned and signed; the client refuses unsigned or downgraded manifests.
-- Strings: stable ids, ICU message format limited to plural, select and simple arguments (exported to Unity Smart Strings by `tools/strings-export`), no concatenation, no text in images, pseudo-localisation must pass.
+- Strings: stable ids, ICU message format limited to plural, select, `{n, number}` and simple arguments (exported to Unity Smart Strings by `tools/strings-export`), no concatenation, no text in images, pseudo-localisation must pass. A new string goes into `content/strings/en.json` (with a note for its arguments), then `pnpm codegen`; the client reads it through a text class property (`UiText.Back`) or `Strings.Get(key, args)` (ADR-0023).
 - Quick-chat packs follow the tone rules in GDD §11.2; a native speaker reviews every new pack.
 - Presets never contain values outside the module's rules schema.
 

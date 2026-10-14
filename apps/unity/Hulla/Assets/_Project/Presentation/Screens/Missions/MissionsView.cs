@@ -70,7 +70,7 @@ namespace Hulla.Presentation.Screens.Missions
                 var text = new VisualElement();
                 text.AddToClassList("lobby-seat__name");
                 text.Add(new Label(UiText.MissionText(mission.Metric, mission.Target)));
-                var detail = new Label(string.Format(UiText.MissionProgress, Math.Min(mission.Progress, mission.Target), mission.Target, Reward(mission)));
+                var detail = new Label(Strings.Format(UiText.MissionProgress, Math.Min(mission.Progress, mission.Target), mission.Target, Reward(mission)));
                 detail.AddToClassList("caption");
                 text.Add(detail);
                 row.Add(text);
@@ -101,6 +101,6 @@ namespace Hulla.Presentation.Screens.Missions
         }
 
         private static string Reward(MissionInfo mission) =>
-            mission.Gems > 0 ? string.Format(UiText.RewardGems, mission.Coins, mission.Gems) : string.Format(UiText.RewardCoins, mission.Coins);
+            mission.Gems > 0 ? Strings.Format(UiText.RewardGems, mission.Coins, mission.Gems) : Strings.Format(UiText.RewardCoins, mission.Coins);
     }
 }

@@ -14,17 +14,17 @@ namespace Hulla.Presentation.Tests
         {
             foreach (var type in Types)
             {
-                Assert.IsTrue(PushText.Strings.ContainsKey("push_" + type + "_title"), type);
-                Assert.IsTrue(PushText.Strings.ContainsKey("push_" + type + "_body"), type);
+                Assert.IsTrue(PushText.Keyed.ContainsKey("push_" + type + "_title"), type);
+                Assert.IsTrue(PushText.Keyed.ContainsKey("push_" + type + "_body"), type);
             }
 
-            Assert.AreEqual(Types.Length * 2, PushText.Strings.Count);
+            Assert.AreEqual(Types.Length * 2, PushText.Keyed.Count);
         }
 
         [Test]
         public void KeysAreValidAndroidResourceNames()
         {
-            foreach (var key in PushText.Strings.Keys)
+            foreach (var key in PushText.Keyed.Keys)
             {
                 StringAssert.IsMatch("^[a-z][a-z0-9_]*$", key);
             }
@@ -41,7 +41,7 @@ namespace Hulla.Presentation.Tests
         [Test]
         public void NoAndroidStringKeepsABracePlaceholder()
         {
-            foreach (var text in PushText.Strings.Values)
+            foreach (var text in PushText.Keyed.Values)
             {
                 Assert.IsFalse(Regex.IsMatch(PushText.ToAndroid(text), @"\{\d\}"), text);
             }

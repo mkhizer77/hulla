@@ -1,0 +1,3695 @@
+{
+ "locale": "en",
+ "entries": [
+  {
+   "key": "achievement.bhabhis_50.description",
+   "text": "{0:plural:Be the Bhabhi once|Be the Bhabhi {} times}",
+   "smart": true
+  },
+  {
+   "key": "achievement.bhabhis_50.name",
+   "text": "Bhabhi jaan",
+   "smart": false
+  },
+  {
+   "key": "achievement.category.collection",
+   "text": "Collection",
+   "smart": false
+  },
+  {
+   "key": "achievement.category.play",
+   "text": "Play",
+   "smart": false
+  },
+  {
+   "key": "achievement.category.seasonal",
+   "text": "Season",
+   "smart": false
+  },
+  {
+   "key": "achievement.category.skill",
+   "text": "Skill",
+   "smart": false
+  },
+  {
+   "key": "achievement.category.social",
+   "text": "Friends",
+   "smart": false
+  },
+  {
+   "key": "achievement.clean_round_first.description",
+   "text": "{0:plural:Escape without picking up|Escape without picking up, {} times}",
+   "smart": true
+  },
+  {
+   "key": "achievement.clean_round_first.name",
+   "text": "Clean hands",
+   "smart": false
+  },
+  {
+   "key": "achievement.clean_rounds_25.description",
+   "text": "{0:plural:Escape without picking up|Escape without picking up, {} times}",
+   "smart": true
+  },
+  {
+   "key": "achievement.clean_rounds_25.name",
+   "text": "Spotless",
+   "smart": false
+  },
+  {
+   "key": "achievement.cosmetics_10.description",
+   "text": "{0:plural:Own a cosmetic|Own {} cosmetics}",
+   "smart": true
+  },
+  {
+   "key": "achievement.cosmetics_10.name",
+   "text": "Collector",
+   "smart": false
+  },
+  {
+   "key": "achievement.cosmetics_30.description",
+   "text": "{0:plural:Own a cosmetic|Own {} cosmetics}",
+   "smart": true
+  },
+  {
+   "key": "achievement.cosmetics_30.name",
+   "text": "Shaukeen",
+   "smart": false
+  },
+  {
+   "key": "achievement.escaped_first_10.description",
+   "text": "{0:plural:Escape first in a round|Escape first in {} rounds}",
+   "smart": true
+  },
+  {
+   "key": "achievement.escaped_first_10.name",
+   "text": "Quick exit",
+   "smart": false
+  },
+  {
+   "key": "achievement.escaped_first_100.description",
+   "text": "{0:plural:Escape first in a round|Escape first in {} rounds}",
+   "smart": true
+  },
+  {
+   "key": "achievement.escaped_first_100.name",
+   "text": "Sabse pehle",
+   "smart": false
+  },
+  {
+   "key": "achievement.escapes_100.description",
+   "text": "{0:plural:Escape a round|Escape {} times}",
+   "smart": true
+  },
+  {
+   "key": "achievement.escapes_100.name",
+   "text": "Escape artist",
+   "smart": false
+  },
+  {
+   "key": "achievement.escapes_1000.description",
+   "text": "{0:plural:Escape a round|Escape {} times}",
+   "smart": true
+  },
+  {
+   "key": "achievement.escapes_1000.name",
+   "text": "Nikal gaya",
+   "smart": false
+  },
+  {
+   "key": "achievement.first_bhabhi.description",
+   "text": "{0:plural:Be the Bhabhi once|Be the Bhabhi {} times}",
+   "smart": true
+  },
+  {
+   "key": "achievement.first_bhabhi.name",
+   "text": "Welcome, Bhabhi",
+   "smart": false
+  },
+  {
+   "key": "achievement.first_cosmetic.description",
+   "text": "{0:plural:Own a cosmetic|Own {} cosmetics}",
+   "smart": true
+  },
+  {
+   "key": "achievement.first_cosmetic.name",
+   "text": "First look",
+   "smart": false
+  },
+  {
+   "key": "achievement.first_escape.description",
+   "text": "{0:plural:Escape a round|Escape {} times}",
+   "smart": true
+  },
+  {
+   "key": "achievement.first_escape.name",
+   "text": "Out!",
+   "smart": false
+  },
+  {
+   "key": "achievement.first_escape_streak_5.description",
+   "text": "{0:plural:Escape first {} round in a row|Escape first {} rounds in a row}",
+   "smart": true
+  },
+  {
+   "key": "achievement.first_escape_streak_5.name",
+   "text": "Ustad-e-farar",
+   "smart": false
+  },
+  {
+   "key": "achievement.first_friend.description",
+   "text": "{0:plural:Add a friend|Have {} friends}",
+   "smart": true
+  },
+  {
+   "key": "achievement.first_friend.name",
+   "text": "First friend",
+   "smart": false
+  },
+  {
+   "key": "achievement.first_thulla.description",
+   "text": "{0:plural:Give a thulla|Give {} thullas}",
+   "smart": true
+  },
+  {
+   "key": "achievement.first_thulla.name",
+   "text": "First thulla",
+   "smart": false
+  },
+  {
+   "key": "achievement.friends_10.description",
+   "text": "{0:plural:Add a friend|Have {} friends}",
+   "smart": true
+  },
+  {
+   "key": "achievement.friends_10.name",
+   "text": "Full table",
+   "smart": false
+  },
+  {
+   "key": "achievement.friends_50.description",
+   "text": "{0:plural:Add a friend|Have {} friends}",
+   "smart": true
+  },
+  {
+   "key": "achievement.friends_50.name",
+   "text": "Mehfil wala",
+   "smart": false
+  },
+  {
+   "key": "achievement.full_house_friends.description",
+   "text": "Play a round with four friends",
+   "smart": false
+  },
+  {
+   "key": "achievement.full_house_friends.name",
+   "text": "Full house",
+   "smart": false
+  },
+  {
+   "key": "achievement.goal.bhabhis",
+   "text": "{0:plural:Be the Bhabhi once|Be the Bhabhi {} times}",
+   "smart": true
+  },
+  {
+   "key": "achievement.goal.biggest_pickup",
+   "text": "{0:plural:Pick up {} card at once|Pick up {} cards at once}",
+   "smart": true
+  },
+  {
+   "key": "achievement.goal.cards_picked_up",
+   "text": "{0:plural:Pick up {} card in all|Pick up {} cards in all}",
+   "smart": true
+  },
+  {
+   "key": "achievement.goal.clean_rounds",
+   "text": "{0:plural:Escape without picking up|Escape without picking up, {} times}",
+   "smart": true
+  },
+  {
+   "key": "achievement.goal.cosmetics_owned",
+   "text": "{0:plural:Own a cosmetic|Own {} cosmetics}",
+   "smart": true
+  },
+  {
+   "key": "achievement.goal.escapes",
+   "text": "{0:plural:Escape a round|Escape {} times}",
+   "smart": true
+  },
+  {
+   "key": "achievement.goal.first_escape_streak",
+   "text": "{0:plural:Escape first {} round in a row|Escape first {} rounds in a row}",
+   "smart": true
+  },
+  {
+   "key": "achievement.goal.friends",
+   "text": "{0:plural:Add a friend|Have {} friends}",
+   "smart": true
+  },
+  {
+   "key": "achievement.goal.houdini",
+   "text": "{0:plural:Escape on a card drawn from the discard|Escape on a drawn card {} times}",
+   "smart": true
+  },
+  {
+   "key": "achievement.goal.no_bhabhi_streak",
+   "text": "{0:plural:Play {} round in a row without being the Bhabhi|Play {} rounds in a row without being the Bhabhi}",
+   "smart": true
+  },
+  {
+   "key": "achievement.goal.rounds",
+   "text": "{0:plural:Play a round|Play {} rounds}",
+   "smart": true
+  },
+  {
+   "key": "achievement.goal.rounds_with_four_friends",
+   "text": "Play a round with four friends",
+   "smart": false
+  },
+  {
+   "key": "achievement.goal.same_group_rounds",
+   "text": "{0:plural:Play {} round with the same group|Play {} rounds with the same group}",
+   "smart": true
+  },
+  {
+   "key": "achievement.goal.seasonal_rounds",
+   "text": "{0:plural:Play {} round this season|Play {} rounds this season}",
+   "smart": true
+  },
+  {
+   "key": "achievement.goal.thullas_given",
+   "text": "{0:plural:Give a thulla|Give {} thullas}",
+   "smart": true
+  },
+  {
+   "key": "achievement.goal.thullas_received",
+   "text": "{0:plural:Take {} thulla|Take {} thullas}",
+   "smart": true
+  },
+  {
+   "key": "achievement.hand_taken_first.description",
+   "text": "{0:plural:Take a hand {} time|Take a hand {} times}",
+   "smart": true
+  },
+  {
+   "key": "achievement.hand_taken_first.name",
+   "text": "Haath saaf",
+   "smart": false
+  },
+  {
+   "key": "achievement.hands_taken_25.description",
+   "text": "{0:plural:Take a hand {} time|Take a hand {} times}",
+   "smart": true
+  },
+  {
+   "key": "achievement.hands_taken_25.name",
+   "text": "Hand collector",
+   "smart": false
+  },
+  {
+   "key": "achievement.houdini.description",
+   "text": "{0:plural:Escape on a card drawn from the discard|Escape on a drawn card {} times}",
+   "smart": true
+  },
+  {
+   "key": "achievement.houdini.name",
+   "text": "Houdini",
+   "smart": false
+  },
+  {
+   "key": "achievement.houdini_10.description",
+   "text": "{0:plural:Escape on a card drawn from the discard|Escape on a drawn card {} times}",
+   "smart": true
+  },
+  {
+   "key": "achievement.houdini_10.name",
+   "text": "Great escape",
+   "smart": false
+  },
+  {
+   "key": "achievement.no_bhabhi_20.description",
+   "text": "{0:plural:Play {} round in a row without being the Bhabhi|Play {} rounds in a row without being the Bhabhi}",
+   "smart": true
+  },
+  {
+   "key": "achievement.no_bhabhi_20.name",
+   "text": "Kabhi Bhabhi nahi",
+   "smart": false
+  },
+  {
+   "key": "achievement.picked_up_500.description",
+   "text": "{0:plural:Pick up {} card in all|Pick up {} cards in all}",
+   "smart": true
+  },
+  {
+   "key": "achievement.picked_up_500.name",
+   "text": "Card magnet",
+   "smart": false
+  },
+  {
+   "key": "achievement.pickup_10.description",
+   "text": "{0:plural:Pick up {} card at once|Pick up {} cards at once}",
+   "smart": true
+  },
+  {
+   "key": "achievement.pickup_10.name",
+   "text": "Big pick-up",
+   "smart": false
+  },
+  {
+   "key": "achievement.pickup_20.description",
+   "text": "{0:plural:Pick up {} card at once|Pick up {} cards at once}",
+   "smart": true
+  },
+  {
+   "key": "achievement.pickup_20.name",
+   "text": "Haath bhar",
+   "smart": false
+  },
+  {
+   "key": "achievement.rounds_10.description",
+   "text": "{0:plural:Play a round|Play {} rounds}",
+   "smart": true
+  },
+  {
+   "key": "achievement.rounds_10.name",
+   "text": "Getting started",
+   "smart": false
+  },
+  {
+   "key": "achievement.rounds_100.description",
+   "text": "{0:plural:Play a round|Play {} rounds}",
+   "smart": true
+  },
+  {
+   "key": "achievement.rounds_100.name",
+   "text": "Regular",
+   "smart": false
+  },
+  {
+   "key": "achievement.rounds_1000.description",
+   "text": "{0:plural:Play a round|Play {} rounds}",
+   "smart": true
+  },
+  {
+   "key": "achievement.rounds_1000.name",
+   "text": "Purana khiladi",
+   "smart": false
+  },
+  {
+   "key": "achievement.rounds_with_friend_10.description",
+   "text": "{0:plural:Play {} round with a friend|Play {} rounds with a friend}",
+   "smart": true
+  },
+  {
+   "key": "achievement.rounds_with_friend_10.name",
+   "text": "Yaar ke saath",
+   "smart": false
+  },
+  {
+   "key": "achievement.rounds_with_friend_100.description",
+   "text": "{0:plural:Play {} round with a friend|Play {} rounds with a friend}",
+   "smart": true
+  },
+  {
+   "key": "achievement.rounds_with_friend_100.name",
+   "text": "Yaari",
+   "smart": false
+  },
+  {
+   "key": "achievement.same_group_10.description",
+   "text": "{0:plural:Play {} round with the same group|Play {} rounds with the same group}",
+   "smart": true
+  },
+  {
+   "key": "achievement.same_group_10.name",
+   "text": "Baithak regular",
+   "smart": false
+  },
+  {
+   "key": "achievement.same_group_50.description",
+   "text": "{0:plural:Play {} round with the same group|Play {} rounds with the same group}",
+   "smart": true
+  },
+  {
+   "key": "achievement.same_group_50.name",
+   "text": "Same old gang",
+   "smart": false
+  },
+  {
+   "key": "achievement.seasonal_rounds_10.description",
+   "text": "{0:plural:Play {} round this season|Play {} rounds this season}",
+   "smart": true
+  },
+  {
+   "key": "achievement.seasonal_rounds_10.name",
+   "text": "In season",
+   "smart": false
+  },
+  {
+   "key": "achievement.seasonal_rounds_50.description",
+   "text": "{0:plural:Play {} round this season|Play {} rounds this season}",
+   "smart": true
+  },
+  {
+   "key": "achievement.seasonal_rounds_50.name",
+   "text": "Season regular",
+   "smart": false
+  },
+  {
+   "key": "achievement.series_10.description",
+   "text": "{0:plural:Win a series|Win {} series}",
+   "smart": true
+  },
+  {
+   "key": "achievement.series_10.name",
+   "text": "Series champion",
+   "smart": false
+  },
+  {
+   "key": "achievement.series_first.description",
+   "text": "{0:plural:Win a series|Win {} series}",
+   "smart": true
+  },
+  {
+   "key": "achievement.series_first.name",
+   "text": "Series winner",
+   "smart": false
+  },
+  {
+   "key": "achievement.thullas_100.description",
+   "text": "{0:plural:Give a thulla|Give {} thullas}",
+   "smart": true
+  },
+  {
+   "key": "achievement.thullas_100.name",
+   "text": "Thulla machine",
+   "smart": false
+  },
+  {
+   "key": "achievement.thullas_1000.description",
+   "text": "{0:plural:Give a thulla|Give {} thullas}",
+   "smart": true
+  },
+  {
+   "key": "achievement.thullas_1000.name",
+   "text": "Thulla baaz",
+   "smart": false
+  },
+  {
+   "key": "achievement.thullas_received_100.description",
+   "text": "{0:plural:Take {} thulla|Take {} thullas}",
+   "smart": true
+  },
+  {
+   "key": "achievement.thullas_received_100.name",
+   "text": "Thick skin",
+   "smart": false
+  },
+  {
+   "key": "avatar.a01",
+   "text": "Avatar 1",
+   "smart": false
+  },
+  {
+   "key": "avatar.a02",
+   "text": "Avatar 2",
+   "smart": false
+  },
+  {
+   "key": "avatar.a03",
+   "text": "Avatar 3",
+   "smart": false
+  },
+  {
+   "key": "avatar.a04",
+   "text": "Avatar 4",
+   "smart": false
+  },
+  {
+   "key": "avatar.a05",
+   "text": "Avatar 5",
+   "smart": false
+  },
+  {
+   "key": "avatar.a06",
+   "text": "Avatar 6",
+   "smart": false
+  },
+  {
+   "key": "avatar.a07",
+   "text": "Avatar 7",
+   "smart": false
+  },
+  {
+   "key": "avatar.a08",
+   "text": "Avatar 8",
+   "smart": false
+  },
+  {
+   "key": "chat.problem.social_muted",
+   "text": "You're muted for a while after reports from other players.",
+   "smart": false
+  },
+  {
+   "key": "emote.chai",
+   "text": "Chai",
+   "smart": false
+  },
+  {
+   "key": "emote.clap",
+   "text": "Clap",
+   "smart": false
+  },
+  {
+   "key": "emote.dhol",
+   "text": "Dhol",
+   "smart": false
+  },
+  {
+   "key": "emote.donkey",
+   "text": "Donkey",
+   "smart": false
+  },
+  {
+   "key": "emote.facepalm",
+   "text": "Facepalm",
+   "smart": false
+  },
+  {
+   "key": "emote.fire",
+   "text": "Fire",
+   "smart": false
+  },
+  {
+   "key": "emote.ghost",
+   "text": "Ghost",
+   "smart": false
+  },
+  {
+   "key": "emote.heart",
+   "text": "Heart",
+   "smart": false
+  },
+  {
+   "key": "emote.laugh_cry",
+   "text": "Laugh cry",
+   "smart": false
+  },
+  {
+   "key": "emote.mic_drop",
+   "text": "Mic drop",
+   "smart": false
+  },
+  {
+   "key": "emote.six",
+   "text": "Six",
+   "smart": false
+  },
+  {
+   "key": "emote.sleeping",
+   "text": "Sleeping",
+   "smart": false
+  },
+  {
+   "key": "emote.sunglasses",
+   "text": "Sunglasses",
+   "smart": false
+  },
+  {
+   "key": "emote.sweating",
+   "text": "Sweating",
+   "smart": false
+  },
+  {
+   "key": "emote.thulla_whistle",
+   "text": "Thulla whistle",
+   "smart": false
+  },
+  {
+   "key": "emote.turtle",
+   "text": "Turtle",
+   "smart": false
+  },
+  {
+   "key": "error.auth.banned",
+   "text": "This account can't play right now. Contact support if you think that's wrong.",
+   "smart": false
+  },
+  {
+   "key": "error.auth.device_limit",
+   "text": "You're at this table on another device. Close it there first.",
+   "smart": false
+  },
+  {
+   "key": "error.auth.update_required",
+   "text": "Please update Hulla to keep playing.",
+   "smart": false
+  },
+  {
+   "key": "error.economy.insufficient_funds",
+   "text": "Not enough coins or gems for that.",
+   "smart": false
+  },
+  {
+   "key": "error.economy.item_not_for_sale",
+   "text": "That one is earned, not sold.",
+   "smart": false
+  },
+  {
+   "key": "error.economy.item_owned",
+   "text": "You already own that.",
+   "smart": false
+  },
+  {
+   "key": "error.economy.item_unknown",
+   "text": "That item isn't in the shop any more.",
+   "smart": false
+  },
+  {
+   "key": "error.profile.frame_locked",
+   "text": "Earn that frame first.",
+   "smart": false
+  },
+  {
+   "key": "error.profile.handle_taken",
+   "text": "That handle is taken.",
+   "smart": false
+  },
+  {
+   "key": "error.profile.invalid_handle",
+   "text": "Handles are 3 to 16 letters, numbers or _.",
+   "smart": false
+  },
+  {
+   "key": "error.profile.invalid_name",
+   "text": "That name can't be used.",
+   "smart": false
+  },
+  {
+   "key": "error.profile.name_change_locked",
+   "text": "You changed your name recently; try again later.",
+   "smart": false
+  },
+  {
+   "key": "error.profile.not_found",
+   "text": "No player has that code.",
+   "smart": false
+  },
+  {
+   "key": "error.rules.hand_ask_none",
+   "text": "Nothing to answer.",
+   "smart": false
+  },
+  {
+   "key": "error.rules.hand_ask_pending",
+   "text": "Waiting for their answer.",
+   "smart": false
+  },
+  {
+   "key": "error.rules.hand_take_declined",
+   "text": "They kept their cards.",
+   "smart": false
+  },
+  {
+   "key": "error.session.unavailable",
+   "text": "Can't reach the server. Check the connection and try again.",
+   "smart": false
+  },
+  {
+   "key": "error.social.blocked",
+   "text": "You can't add this player.",
+   "smart": false
+  },
+  {
+   "key": "error.social.favourite_cap",
+   "text": "Ten favourites at most.",
+   "smart": false
+  },
+  {
+   "key": "error.social.friend_cap",
+   "text": "You have the most friends allowed (500).",
+   "smart": false
+  },
+  {
+   "key": "error.social.not_friends",
+   "text": "Only friends can be favourites.",
+   "smart": false
+  },
+  {
+   "key": "error.social.self",
+   "text": "That's your own code.",
+   "smart": false
+  },
+  {
+   "key": "error.social.unavailable",
+   "text": "Can't reach the server. Check the connection and try again.",
+   "smart": false
+  },
+  {
+   "key": "error.table.banned",
+   "text": "The host removed you from that table.",
+   "smart": false
+  },
+  {
+   "key": "error.table.blocked",
+   "text": "You can't join that table.",
+   "smart": false
+  },
+  {
+   "key": "error.table.full",
+   "text": "That table is full.",
+   "smart": false
+  },
+  {
+   "key": "error.table.invalid_code",
+   "text": "No table has that code. Check it with the host.",
+   "smart": false
+  },
+  {
+   "key": "error.table.locked",
+   "text": "That table isn't taking players right now.",
+   "smart": false
+  },
+  {
+   "key": "error.table.not_found",
+   "text": "No table has that code. Check it with the host.",
+   "smart": false
+  },
+  {
+   "key": "error.table.ranked_solo_only",
+   "text": "Ranked is solo only. Leave the party to queue.",
+   "smart": false
+  },
+  {
+   "key": "error.table.unavailable",
+   "text": "Can't reach the server. Check the connection and try again.",
+   "smart": false
+  },
+  {
+   "key": "error.table.unsupported_version",
+   "text": "Please update Hulla to keep playing.",
+   "smart": false
+  },
+  {
+   "key": "error.unknown",
+   "text": "Something went wrong ({0})",
+   "smart": true
+  },
+  {
+   "key": "frame.f00",
+   "text": "No frame",
+   "smart": false
+  },
+  {
+   "key": "frame.f01",
+   "text": "Gold frame",
+   "smart": false
+  },
+  {
+   "key": "frame.ranked_diamond",
+   "text": "Diamond frame",
+   "smart": false
+  },
+  {
+   "key": "frame.ranked_ustad",
+   "text": "Ustad frame",
+   "smart": false
+  },
+  {
+   "key": "invite.problem.blocked",
+   "text": "Can't invite",
+   "smart": false
+  },
+  {
+   "key": "invite.problem.muted",
+   "text": "Not taking invites",
+   "smart": false
+  },
+  {
+   "key": "invite.problem.other",
+   "text": "Didn't send",
+   "smart": false
+  },
+  {
+   "key": "invite.problem.rate_limited",
+   "text": "Too many invites; try later",
+   "smart": false
+  },
+  {
+   "key": "invite.problem.self",
+   "text": "That's you",
+   "smart": false
+  },
+  {
+   "key": "item.back_ajrak",
+   "text": "Ajrak",
+   "smart": false
+  },
+  {
+   "key": "item.back_chunri",
+   "text": "Chunri",
+   "smart": false
+  },
+  {
+   "key": "item.back_classic_blue",
+   "text": "Classic blue",
+   "smart": false
+  },
+  {
+   "key": "item.back_classic_red",
+   "text": "Classic red",
+   "smart": false
+  },
+  {
+   "key": "item.back_diwali",
+   "text": "Diwali",
+   "smart": false
+  },
+  {
+   "key": "item.back_jaali",
+   "text": "Jaali",
+   "smart": false
+  },
+  {
+   "key": "item.back_kites",
+   "text": "Kites",
+   "smart": false
+  },
+  {
+   "key": "item.back_minar",
+   "text": "Minar",
+   "smart": false
+  },
+  {
+   "key": "item.back_monsoon",
+   "text": "Monsoon",
+   "smart": false
+  },
+  {
+   "key": "item.back_mughal",
+   "text": "Mughal",
+   "smart": false
+  },
+  {
+   "key": "item.back_phulkari",
+   "text": "Phulkari",
+   "smart": false
+  },
+  {
+   "key": "item.back_ranked_diamond",
+   "text": "Ranked diamond",
+   "smart": false
+  },
+  {
+   "key": "item.back_ranked_gold",
+   "text": "Ranked gold",
+   "smart": false
+  },
+  {
+   "key": "item.back_ranked_platinum",
+   "text": "Ranked platinum",
+   "smart": false
+  },
+  {
+   "key": "item.back_ranked_ustad",
+   "text": "Ranked ustad",
+   "smart": false
+  },
+  {
+   "key": "item.back_truck_art",
+   "text": "Truck art",
+   "smart": false
+  },
+  {
+   "key": "item.category.cardBack",
+   "text": "Card backs",
+   "smart": false
+  },
+  {
+   "key": "item.category.cardFace",
+   "text": "Card faces",
+   "smart": false
+  },
+  {
+   "key": "item.category.celebration",
+   "text": "Celebrations",
+   "smart": false
+  },
+  {
+   "key": "item.category.emotePack",
+   "text": "Emotes",
+   "smart": false
+  },
+  {
+   "key": "item.category.soundSet",
+   "text": "Sounds",
+   "smart": false
+  },
+  {
+   "key": "item.category.table",
+   "text": "Tables",
+   "smart": false
+  },
+  {
+   "key": "item.category.voPack",
+   "text": "Voices",
+   "smart": false
+  },
+  {
+   "key": "item.celebration_dhol",
+   "text": "Dhol",
+   "smart": false
+  },
+  {
+   "key": "item.celebration_patakha",
+   "text": "Patakha",
+   "smart": false
+  },
+  {
+   "key": "item.celebration_thappad",
+   "text": "Thappad",
+   "smart": false
+  },
+  {
+   "key": "item.emotes_cricket",
+   "text": "Cricket",
+   "smart": false
+  },
+  {
+   "key": "item.emotes_launch",
+   "text": "Launch",
+   "smart": false
+  },
+  {
+   "key": "item.emotes_shaadi",
+   "text": "Shaadi",
+   "smart": false
+  },
+  {
+   "key": "item.face_classic",
+   "text": "Classic",
+   "smart": false
+  },
+  {
+   "key": "item.face_desi_court",
+   "text": "Desi court",
+   "smart": false
+  },
+  {
+   "key": "item.face_large_index",
+   "text": "Large index",
+   "smart": false
+  },
+  {
+   "key": "item.rarity.common",
+   "text": "Common",
+   "smart": false
+  },
+  {
+   "key": "item.rarity.epic",
+   "text": "Epic",
+   "smart": false
+  },
+  {
+   "key": "item.rarity.legendary",
+   "text": "Legendary",
+   "smart": false
+  },
+  {
+   "key": "item.rarity.rare",
+   "text": "Rare",
+   "smart": false
+  },
+  {
+   "key": "item.sounds_classic",
+   "text": "Classic",
+   "smart": false
+  },
+  {
+   "key": "item.sounds_dhaba",
+   "text": "Dhaba",
+   "smart": false
+  },
+  {
+   "key": "item.table_basant_night",
+   "text": "Basant night",
+   "smart": false
+  },
+  {
+   "key": "item.table_charpai",
+   "text": "Charpai",
+   "smart": false
+  },
+  {
+   "key": "item.table_dastarkhwan",
+   "text": "Dastarkhwan",
+   "smart": false
+  },
+  {
+   "key": "item.table_dhaka_rickshaw",
+   "text": "Dhaka rickshaw",
+   "smart": false
+  },
+  {
+   "key": "item.table_karachi_beach_hut",
+   "text": "Karachi beach hut",
+   "smart": false
+  },
+  {
+   "key": "item.table_lahore_rooftop",
+   "text": "Lahore rooftop",
+   "smart": false
+  },
+  {
+   "key": "item.table_marble",
+   "text": "Marble",
+   "smart": false
+  },
+  {
+   "key": "item.table_truck_art",
+   "text": "Truck art",
+   "smart": false
+  },
+  {
+   "key": "item.vo_punjabi_banter",
+   "text": "Punjabi banter",
+   "smart": false
+  },
+  {
+   "key": "item.vo_urdu_classic",
+   "text": "Urdu classic",
+   "smart": false
+  },
+  {
+   "key": "league.bronze",
+   "text": "Bronze",
+   "smart": false
+  },
+  {
+   "key": "league.diamond",
+   "text": "Diamond",
+   "smart": false
+  },
+  {
+   "key": "league.gold",
+   "text": "Gold",
+   "smart": false
+  },
+  {
+   "key": "league.platinum",
+   "text": "Platinum",
+   "smart": false
+  },
+  {
+   "key": "league.silver",
+   "text": "Silver",
+   "smart": false
+  },
+  {
+   "key": "league.ustad",
+   "text": "Ustad",
+   "smart": false
+  },
+  {
+   "key": "mission.d_escape_first.description",
+   "text": "{0:plural:Escape first in a round|Escape first in {} rounds}",
+   "smart": true
+  },
+  {
+   "key": "mission.d_escape_first.name",
+   "text": "Escape first",
+   "smart": false
+  },
+  {
+   "key": "mission.d_escapes_2.description",
+   "text": "{0:plural:Escape {} time|Escape {} times}",
+   "smart": true
+  },
+  {
+   "key": "mission.d_escapes_2.name",
+   "text": "Escapes 2",
+   "smart": false
+  },
+  {
+   "key": "mission.d_friend_rounds_2.description",
+   "text": "{0:plural:Play {} round with a friend|Play {} rounds with a friend}",
+   "smart": true
+  },
+  {
+   "key": "mission.d_friend_rounds_2.name",
+   "text": "Friend rounds 2",
+   "smart": false
+  },
+  {
+   "key": "mission.d_low_pickup.description",
+   "text": "{0:plural:Pick up fewer than 5 cards in {} round|Pick up fewer than 5 cards in {} rounds}",
+   "smart": true
+  },
+  {
+   "key": "mission.d_low_pickup.name",
+   "text": "Low pickup",
+   "smart": false
+  },
+  {
+   "key": "mission.d_rounds_3.description",
+   "text": "{0:plural:Play {} round|Play {} rounds}",
+   "smart": true
+  },
+  {
+   "key": "mission.d_rounds_3.name",
+   "text": "Rounds 3",
+   "smart": false
+  },
+  {
+   "key": "mission.d_thullas_3.description",
+   "text": "{0:plural:Give {} thulla|Give {} thullas}",
+   "smart": true
+  },
+  {
+   "key": "mission.d_thullas_3.name",
+   "text": "Thullas 3",
+   "smart": false
+  },
+  {
+   "key": "mission.d_voice_private.description",
+   "text": "{0:plural:Use voice in {} private round|Use voice in {} private rounds}",
+   "smart": true
+  },
+  {
+   "key": "mission.d_voice_private.name",
+   "text": "Voice private",
+   "smart": false
+  },
+  {
+   "key": "mission.goal.clean_rounds",
+   "text": "{0:plural:Escape without picking up, {} time|Escape without picking up, {} times}",
+   "smart": true
+  },
+  {
+   "key": "mission.goal.escaped_first",
+   "text": "{0:plural:Escape first in a round|Escape first in {} rounds}",
+   "smart": true
+  },
+  {
+   "key": "mission.goal.escapes",
+   "text": "{0:plural:Escape {} time|Escape {} times}",
+   "smart": true
+  },
+  {
+   "key": "mission.goal.hands_taken",
+   "text": "{0:plural:Take a hand {} time|Take a hand {} times}",
+   "smart": true
+  },
+  {
+   "key": "mission.goal.low_pickup_rounds",
+   "text": "{0:plural:Pick up fewer than 5 cards in {} round|Pick up fewer than 5 cards in {} rounds}",
+   "smart": true
+  },
+  {
+   "key": "mission.goal.other",
+   "text": "{0} × {1}",
+   "smart": true
+  },
+  {
+   "key": "mission.goal.rounds_played",
+   "text": "{0:plural:Play {} round|Play {} rounds}",
+   "smart": true
+  },
+  {
+   "key": "mission.goal.rounds_with_friend",
+   "text": "{0:plural:Play {} round with a friend|Play {} rounds with a friend}",
+   "smart": true
+  },
+  {
+   "key": "mission.goal.series_won",
+   "text": "{0:plural:Win a series|Win {} series}",
+   "smart": true
+  },
+  {
+   "key": "mission.goal.thullas_given",
+   "text": "{0:plural:Give {} thulla|Give {} thullas}",
+   "smart": true
+  },
+  {
+   "key": "mission.goal.voice_private",
+   "text": "{0:plural:Use voice in {} private round|Use voice in {} private rounds}",
+   "smart": true
+  },
+  {
+   "key": "mission.w_clean_rounds_3.description",
+   "text": "{0:plural:Escape without picking up, {} time|Escape without picking up, {} times}",
+   "smart": true
+  },
+  {
+   "key": "mission.w_clean_rounds_3.name",
+   "text": "Clean rounds 3",
+   "smart": false
+  },
+  {
+   "key": "mission.w_friend_rounds_8.description",
+   "text": "{0:plural:Play {} round with a friend|Play {} rounds with a friend}",
+   "smart": true
+  },
+  {
+   "key": "mission.w_friend_rounds_8.name",
+   "text": "Friend rounds 8",
+   "smart": false
+  },
+  {
+   "key": "mission.w_rounds_15.description",
+   "text": "{0:plural:Play {} round|Play {} rounds}",
+   "smart": true
+  },
+  {
+   "key": "mission.w_rounds_15.name",
+   "text": "Rounds 15",
+   "smart": false
+  },
+  {
+   "key": "mission.w_series_won.description",
+   "text": "{0:plural:Win a series|Win {} series}",
+   "smart": true
+  },
+  {
+   "key": "mission.w_series_won.name",
+   "text": "Series won",
+   "smart": false
+  },
+  {
+   "key": "mission.w_thullas_15.description",
+   "text": "{0:plural:Give {} thulla|Give {} thullas}",
+   "smart": true
+  },
+  {
+   "key": "mission.w_thullas_15.name",
+   "text": "Thullas 15",
+   "smart": false
+  },
+  {
+   "key": "name.animal.0",
+   "text": "Lion",
+   "smart": false
+  },
+  {
+   "key": "name.animal.1",
+   "text": "Tiger",
+   "smart": false
+  },
+  {
+   "key": "name.animal.2",
+   "text": "Falcon",
+   "smart": false
+  },
+  {
+   "key": "name.animal.3",
+   "text": "Panther",
+   "smart": false
+  },
+  {
+   "key": "name.animal.4",
+   "text": "Cheetah",
+   "smart": false
+  },
+  {
+   "key": "name.animal.5",
+   "text": "Eagle",
+   "smart": false
+  },
+  {
+   "key": "name.animal.6",
+   "text": "Leopard",
+   "smart": false
+  },
+  {
+   "key": "name.animal.7",
+   "text": "Peacock",
+   "smart": false
+  },
+  {
+   "key": "name.place.0",
+   "text": "Lahori",
+   "smart": false
+  },
+  {
+   "key": "name.place.1",
+   "text": "Dilli",
+   "smart": false
+  },
+  {
+   "key": "name.place.2",
+   "text": "Karachi",
+   "smart": false
+  },
+  {
+   "key": "name.place.3",
+   "text": "Dhaka",
+   "smart": false
+  },
+  {
+   "key": "name.place.4",
+   "text": "Pindi",
+   "smart": false
+  },
+  {
+   "key": "name.place.5",
+   "text": "Mumbai",
+   "smart": false
+  },
+  {
+   "key": "name.place.6",
+   "text": "Multani",
+   "smart": false
+  },
+  {
+   "key": "name.place.7",
+   "text": "Jaipuri",
+   "smart": false
+  },
+  {
+   "key": "nav.home",
+   "text": "Home",
+   "smart": false
+  },
+  {
+   "key": "nav.pass",
+   "text": "Pass",
+   "smart": false
+  },
+  {
+   "key": "presence.away",
+   "text": "away",
+   "smart": false
+  },
+  {
+   "key": "presence.lobby",
+   "text": "in a lobby",
+   "smart": false
+  },
+  {
+   "key": "presence.online",
+   "text": "online",
+   "smart": false
+  },
+  {
+   "key": "presence.round",
+   "text": "playing",
+   "smart": false
+  },
+  {
+   "key": "preset.classicPagat.description",
+   "text": "The older endgame: a last-card winner draws from the discard.",
+   "smart": false
+  },
+  {
+   "key": "preset.classicPagat.name",
+   "text": "Classic Pagat",
+   "smart": false
+  },
+  {
+   "key": "preset.family.description",
+   "text": "Gentler: the leader may take a hand.",
+   "smart": false
+  },
+  {
+   "key": "preset.family.name",
+   "text": "Family",
+   "smart": false
+  },
+  {
+   "key": "preset.hardcore.description",
+   "text": "Every thulla counts, from the opening trick.",
+   "smart": false
+  },
+  {
+   "key": "preset.hardcore.name",
+   "text": "Hardcore",
+   "smart": false
+  },
+  {
+   "key": "preset.standard.description",
+   "text": "The Punjab rules most people grew up with.",
+   "smart": false
+  },
+  {
+   "key": "preset.standard.name",
+   "text": "Standard",
+   "smart": false
+  },
+  {
+   "key": "product.gems_120",
+   "text": "120 gems",
+   "smart": false
+  },
+  {
+   "key": "product.gems_1400",
+   "text": "1400 gems",
+   "smart": false
+  },
+  {
+   "key": "product.gems_3000",
+   "text": "3000 gems",
+   "smart": false
+  },
+  {
+   "key": "product.gems_650",
+   "text": "650 gems",
+   "smart": false
+  },
+  {
+   "key": "product.gems_8000",
+   "text": "8000 gems",
+   "smart": false
+  },
+  {
+   "key": "product.pass_premium",
+   "text": "Premium pass",
+   "smart": false
+  },
+  {
+   "key": "product.pass_premium_plus",
+   "text": "Premium+ pass",
+   "smart": false
+  },
+  {
+   "key": "product.remove_ads",
+   "text": "Remove Ads",
+   "smart": false
+  },
+  {
+   "key": "product.starter_bundle",
+   "text": "Starter bundle",
+   "smart": false
+  },
+  {
+   "key": "push.ask_no",
+   "text": "Not now",
+   "smart": false
+  },
+  {
+   "key": "push.ask_title",
+   "text": "Know when friends invite you to a table?",
+   "smart": false
+  },
+  {
+   "key": "push.ask_yes",
+   "text": "Turn on",
+   "smart": false
+  },
+  {
+   "key": "push.channel_name",
+   "text": "Invites and friends",
+   "smart": false
+  },
+  {
+   "key": "push.daily_reward_body",
+   "text": "Your daily reward is ready.",
+   "smart": false
+  },
+  {
+   "key": "push.daily_reward_title",
+   "text": "Daily reward",
+   "smart": false
+  },
+  {
+   "key": "push.friend_online_body",
+   "text": "{0} is online. Fancy a round?",
+   "smart": true
+  },
+  {
+   "key": "push.friend_online_title",
+   "text": "Friend online",
+   "smart": false
+  },
+  {
+   "key": "push.friend_request_body",
+   "text": "{0} wants to be your friend.",
+   "smart": true
+  },
+  {
+   "key": "push.friend_request_title",
+   "text": "Friend request",
+   "smart": false
+  },
+  {
+   "key": "push.season_end_body",
+   "text": "The season ends in {0} hours. Claim your rewards.",
+   "smart": true
+  },
+  {
+   "key": "push.season_end_title",
+   "text": "Season ending",
+   "smart": false
+  },
+  {
+   "key": "push.table_invite_body",
+   "text": "{0} invites you to their table ({1}).",
+   "smart": true
+  },
+  {
+   "key": "push.table_invite_title",
+   "text": "Table invite",
+   "smart": false
+  },
+  {
+   "key": "ranked.card_back",
+   "text": "card back",
+   "smart": false
+  },
+  {
+   "key": "ranked.coins",
+   "text": "{0} coins",
+   "smart": true
+  },
+  {
+   "key": "ranked.frame",
+   "text": "frame",
+   "smart": false
+  },
+  {
+   "key": "ranked.leagues",
+   "text": "Leagues",
+   "smart": false
+  },
+  {
+   "key": "ranked.placement",
+   "text": "Placement {0} of {1}",
+   "smart": true
+  },
+  {
+   "key": "ranked.placement_note",
+   "text": "Play {0} more to get your league.",
+   "smart": true
+  },
+  {
+   "key": "ranked.play",
+   "text": "Play ranked",
+   "smart": false
+  },
+  {
+   "key": "ranked.protected",
+   "text": "Promotion protected for {0} more",
+   "smart": true
+  },
+  {
+   "key": "ranked.rank",
+   "text": "#{0} this season",
+   "smart": true
+  },
+  {
+   "key": "ranked.rating",
+   "text": "Rating {0}",
+   "smart": true
+  },
+  {
+   "key": "ranked.rules",
+   "text": "4 players · 12 s turns · no hand-taking · no card memory",
+   "smart": false
+  },
+  {
+   "key": "ranked.searching",
+   "text": "Finding a ranked table",
+   "smart": false
+  },
+  {
+   "key": "ranked.season_ended",
+   "text": "Season {0} ended: {1}. Your rewards are in.",
+   "smart": true
+  },
+  {
+   "key": "ranked.season_ended_unplaced",
+   "text": "Season {0} ended before you finished placement.",
+   "smart": true
+  },
+  {
+   "key": "ranked.season_ends",
+   "text": "Season {0} ends in {1}",
+   "smart": true
+  },
+  {
+   "key": "ranked.title",
+   "text": "Ranked",
+   "smart": false
+  },
+  {
+   "key": "ranked.top",
+   "text": "Top this season",
+   "smart": false
+  },
+  {
+   "key": "ranked.top_empty",
+   "text": "Nobody has finished placement yet.",
+   "smart": false
+  },
+  {
+   "key": "ranked.unranked",
+   "text": "Unranked",
+   "smart": false
+  },
+  {
+   "key": "ranked.ustad_note",
+   "text": "Top {0}",
+   "smart": true
+  },
+  {
+   "key": "ranked.widened",
+   "text": "Looking a little wider",
+   "smart": false
+  },
+  {
+   "key": "report.reason.abusive_text",
+   "text": "Abusive messages",
+   "smart": false
+  },
+  {
+   "key": "report.reason.abusive_voice",
+   "text": "Abusive voice",
+   "smart": false
+  },
+  {
+   "key": "report.reason.cheating",
+   "text": "Cheating or teaming up",
+   "smart": false
+  },
+  {
+   "key": "report.reason.inappropriate_profile",
+   "text": "Inappropriate name or picture",
+   "smart": false
+  },
+  {
+   "key": "report.reason.spam",
+   "text": "Spam",
+   "smart": false
+  },
+  {
+   "key": "report.reason.underage",
+   "text": "Seems under age",
+   "smart": false
+  },
+  {
+   "key": "rulebook.auto_follow",
+   "text": "Following suit: your lowest card of the led suit.",
+   "smart": false
+  },
+  {
+   "key": "rulebook.auto_lead",
+   "text": "Leading: the lowest card of the suit you hold most of.",
+   "smart": false
+  },
+  {
+   "key": "rulebook.auto_never",
+   "text": "Taking a hand and rematch votes are never played for you.",
+   "smart": false
+  },
+  {
+   "key": "rulebook.auto_opening",
+   "text": "In the opening trick: your lowest spade, otherwise your highest card.",
+   "smart": false
+  },
+  {
+   "key": "rulebook.auto_play",
+   "text": "When the timer runs out",
+   "smart": false
+  },
+  {
+   "key": "rulebook.auto_thulla",
+   "text": "No card of the led suit: your highest card.",
+   "smart": false
+  },
+  {
+   "key": "rulebook.basic1",
+   "text": "All 52 cards are dealt. Whoever holds the Ace of Spades leads it to open.",
+   "smart": false
+  },
+  {
+   "key": "rulebook.basic2",
+   "text": "Follow the led suit if you can. If you can't, any card you play is a thulla.",
+   "smart": false
+  },
+  {
+   "key": "rulebook.basic3",
+   "text": "Get rid of all your cards to escape. The last player still holding cards loses the round.",
+   "smart": false
+  },
+  {
+   "key": "rulebook.basics",
+   "text": "How a round goes",
+   "smart": false
+  },
+  {
+   "key": "rulebook.bhabhi",
+   "text": "Bhabhi",
+   "smart": false
+  },
+  {
+   "key": "rulebook.donkey",
+   "text": "Donkey",
+   "smart": false
+  },
+  {
+   "key": "rulebook.empty_hand_draw_discard",
+   "text": "Win a trick with your last card and you draw a random card from the discard, then lead.",
+   "smart": false
+  },
+  {
+   "key": "rulebook.empty_hand_draw_next",
+   "text": "Win a trick with your last card and you draw a random card from the next player's hand, then lead.",
+   "smart": false
+  },
+  {
+   "key": "rulebook.empty_hand_instant_exit",
+   "text": "Win a trick with your last card and you escape at once; the next player leads.",
+   "smart": false
+  },
+  {
+   "key": "rulebook.endgame_draw_discard",
+   "text": "With two players left, a leader who wins with their last card draws a random card from the discard.",
+   "smart": false
+  },
+  {
+   "key": "rulebook.endgame_draw_opponent",
+   "text": "With two players left, a leader who wins with their last card draws a random card from the opponent.",
+   "smart": false
+  },
+  {
+   "key": "rulebook.endgame_thulla_ends_round",
+   "text": "With two players left, the first thulla ends the round: whoever picks up is the {0}.",
+   "smart": true
+  },
+  {
+   "key": "rulebook.fast_forward_off",
+   "text": "Rounds play to the last card even when the loser is certain.",
+   "smart": false
+  },
+  {
+   "key": "rulebook.fast_forward_on",
+   "text": "When the loser is certain, the round ends straight away.",
+   "smart": false
+  },
+  {
+   "key": "rulebook.glossary",
+   "text": "Words at the table",
+   "smart": false
+  },
+  {
+   "key": "rulebook.hand_taking_anyone",
+   "text": "Before the lead, anyone may ask for the hand of the next active player; the first accepted request wins. That player escapes.",
+   "smart": false
+  },
+  {
+   "key": "rulebook.hand_taking_leader",
+   "text": "From the second trick, the leader may take the whole hand of the next active player before leading by tapping Ask for hand. If they accept, they escape.",
+   "smart": false
+  },
+  {
+   "key": "rulebook.hand_taking_off",
+   "text": "Taking another player's hand is off.",
+   "smart": false
+  },
+  {
+   "key": "rulebook.loser_title",
+   "text": "The last player holding cards is the {0}.",
+   "smart": true
+  },
+  {
+   "key": "rulebook.no_turn_timer",
+   "text": "There is no turn timer.",
+   "smart": false
+  },
+  {
+   "key": "rulebook.opening_simultaneous_off",
+   "text": "The opening trick is played in turn from the Ace of Spades.",
+   "smart": false
+  },
+  {
+   "key": "rulebook.opening_simultaneous_on",
+   "text": "Everyone answers the opening Ace of Spades at the same time, within 10 seconds.",
+   "smart": false
+  },
+  {
+   "key": "rulebook.opening_thulla_off",
+   "text": "The opening trick never causes a pick-up; its cards go to the discard.",
+   "smart": false
+  },
+  {
+   "key": "rulebook.opening_thulla_on",
+   "text": "Careful: a thulla counts in the opening trick, so someone can pick up the opening pile.",
+   "smart": false
+  },
+  {
+   "key": "rulebook.preset",
+   "text": "Preset: {0}.",
+   "smart": true
+  },
+  {
+   "key": "rulebook.preset_classic_pagat",
+   "text": "Classic Pagat",
+   "smart": false
+  },
+  {
+   "key": "rulebook.preset_custom",
+   "text": "Custom",
+   "smart": false
+  },
+  {
+   "key": "rulebook.preset_family",
+   "text": "Family",
+   "smart": false
+  },
+  {
+   "key": "rulebook.preset_hardcore",
+   "text": "Hardcore",
+   "smart": false
+  },
+  {
+   "key": "rulebook.preset_standard",
+   "text": "Standard",
+   "smart": false
+  },
+  {
+   "key": "rulebook.this_table",
+   "text": "This table",
+   "smart": false
+  },
+  {
+   "key": "rulebook.thulla_ends_trick_off",
+   "text": "After a thulla, play carries on around the table; at the end the highest card of the led suit picks up everything.",
+   "smart": false
+  },
+  {
+   "key": "rulebook.thulla_ends_trick_on",
+   "text": "A thulla stops the trick at once; whoever played the highest card of the led suit picks up the pile.",
+   "smart": false
+  },
+  {
+   "key": "rulebook.thullad",
+   "text": "Thulla'd",
+   "smart": false
+  },
+  {
+   "key": "rulebook.tip1",
+   "text": "Run out of a suit early: once you can't follow, every card of that suit someone leads lets you give a thulla.",
+   "smart": false
+  },
+  {
+   "key": "rulebook.tip2",
+   "text": "Watch what others pick up. A pile someone takes tells you which suits they now hold.",
+   "smart": false
+  },
+  {
+   "key": "rulebook.tip3",
+   "text": "Leading your highest card can leave you with the hand and no cards; keep a low card for later.",
+   "smart": false
+  },
+  {
+   "key": "rulebook.tips",
+   "text": "Three tips",
+   "smart": false
+  },
+  {
+   "key": "rulebook.title",
+   "text": "Rules",
+   "smart": false
+  },
+  {
+   "key": "rulebook.turn_timer",
+   "text": "Each turn has {0} seconds.",
+   "smart": true
+  },
+  {
+   "key": "rulebook.why_ace",
+   "text": "The round opens with the Ace of Spades, and its holder has to lead it (R12).",
+   "smart": false
+  },
+  {
+   "key": "rulebook.why_follow",
+   "text": "You hold a card of the led suit, so you have to play one of them (R18). Only those cards are lit.",
+   "smart": false
+  },
+  {
+   "key": "rulebook.why_not",
+   "text": "Why couldn't I play that?",
+   "smart": false
+  },
+  {
+   "key": "rulebook.why_server",
+   "text": "The server checks every card. A card it refuses goes back to your hand with no penalty (R47).",
+   "smart": false
+  },
+  {
+   "key": "rulebook.why_turn",
+   "text": "It isn't your turn yet; your cards light up when it is.",
+   "smart": false
+  },
+  {
+   "key": "rulebook.word_bhabhi",
+   "text": "Bhabhi: brother's wife; the loser's title.",
+   "smart": false
+  },
+  {
+   "key": "rulebook.word_court",
+   "text": "Yakka, badshah, begum, ghulam: ace, king, queen, jack.",
+   "smart": false
+  },
+  {
+   "key": "rulebook.word_escape",
+   "text": "Nikal gaya, bach gaya: got away, escaped.",
+   "smart": false
+  },
+  {
+   "key": "rulebook.word_haath",
+   "text": "Haath: hand; also the right to lead (\"haath mera hai\").",
+   "smart": false
+  },
+  {
+   "key": "rulebook.word_haath_lena",
+   "text": "Haath lena: to take another player's hand.",
+   "smart": false
+  },
+  {
+   "key": "rulebook.word_suits",
+   "text": "Hukum, paan, eent, chidi: spades, hearts, diamonds, clubs.",
+   "smart": false
+  },
+  {
+   "key": "rulebook.word_thulla",
+   "text": "Thulla: the off-suit card that stops a trick (literally slang for a police officer).",
+   "smart": false
+  },
+  {
+   "key": "season.basant_2026",
+   "text": "Basant 2026",
+   "smart": false
+  },
+  {
+   "key": "skin.adda",
+   "text": "Chai Adda",
+   "smart": false
+  },
+  {
+   "key": "skin.club",
+   "text": "Club",
+   "smart": false
+  },
+  {
+   "key": "skin.dhaba",
+   "text": "Rooftop",
+   "smart": false
+  },
+  {
+   "key": "skin.haveli",
+   "text": "Haveli",
+   "smart": false
+  },
+  {
+   "key": "skin.mehndi",
+   "text": "Mehndi",
+   "smart": false
+  },
+  {
+   "key": "title.baithak_regular",
+   "text": "Baithak regular",
+   "smart": false
+  },
+  {
+   "key": "title.basant_ka_badshah",
+   "text": "Basant ka badshah",
+   "smart": false
+  },
+  {
+   "key": "title.bhabhi_jaan",
+   "text": "Bhabhi jaan",
+   "smart": false
+  },
+  {
+   "key": "title.haath_bhar",
+   "text": "Haath bhar",
+   "smart": false
+  },
+  {
+   "key": "title.houdini",
+   "text": "Houdini",
+   "smart": false
+  },
+  {
+   "key": "title.kabhi_bhabhi_nahi",
+   "text": "Kabhi bhabhi nahi",
+   "smart": false
+  },
+  {
+   "key": "title.mehfil_wala",
+   "text": "Mehfil wala",
+   "smart": false
+  },
+  {
+   "key": "title.nikal_gaya",
+   "text": "Nikal gaya",
+   "smart": false
+  },
+  {
+   "key": "title.purana_khiladi_ustad",
+   "text": "Purana khiladi ustad",
+   "smart": false
+  },
+  {
+   "key": "title.ranked_bronze",
+   "text": "Bronze",
+   "smart": false
+  },
+  {
+   "key": "title.ranked_diamond",
+   "text": "Diamond",
+   "smart": false
+  },
+  {
+   "key": "title.ranked_gold",
+   "text": "Gold",
+   "smart": false
+  },
+  {
+   "key": "title.ranked_platinum",
+   "text": "Platinum",
+   "smart": false
+  },
+  {
+   "key": "title.ranked_silver",
+   "text": "Silver",
+   "smart": false
+  },
+  {
+   "key": "title.ranked_ustad",
+   "text": "Ustad",
+   "smart": false
+  },
+  {
+   "key": "title.sabse_pehle",
+   "text": "Sabse pehle",
+   "smart": false
+  },
+  {
+   "key": "title.shaukeen",
+   "text": "Shaukeen",
+   "smart": false
+  },
+  {
+   "key": "title.thulla_baaz",
+   "text": "Thulla baaz",
+   "smart": false
+  },
+  {
+   "key": "title.ustad_e_farar",
+   "text": "Ustad e farar",
+   "smart": false
+  },
+  {
+   "key": "tutorial.explain_ask",
+   "text": "You're asking {0} to hand over their {1} cards. If they accept, the cards join your hand and {0} sits out safe for the rest of the round. They can refuse.",
+   "smart": true
+  },
+  {
+   "key": "tutorial.finish",
+   "text": "Let's play",
+   "smart": false
+  },
+  {
+   "key": "tutorial.gate",
+   "text": "Do you know Bhabhi?",
+   "smart": false
+  },
+  {
+   "key": "tutorial.gate_no",
+   "text": "No, show me",
+   "smart": false
+  },
+  {
+   "key": "tutorial.gate_yes",
+   "text": "Yes, let's play",
+   "smart": false
+  },
+  {
+   "key": "tutorial.got_it",
+   "text": "Got it",
+   "smart": false
+  },
+  {
+   "key": "tutorial.hint_leader",
+   "text": "\"Leads\" marks who led this trick. The highest card of that suit takes the hand.",
+   "smart": false
+  },
+  {
+   "key": "tutorial.hint_legal",
+   "text": "Lit cards are the ones you can play now. Hold the led suit? Then you must follow it.",
+   "smart": false
+  },
+  {
+   "key": "tutorial.hint_quick_chat",
+   "text": "A thulla! Tap Chat to say something, from \"Le lo bhai!\" to a chai emote.",
+   "smart": false
+  },
+  {
+   "key": "tutorial.hint_take_hand",
+   "text": "Before you lead, you can ask the next player for their whole hand. If they accept, they're out and safe, and you lead with all of it.",
+   "smart": false
+  },
+  {
+   "key": "tutorial.how_to_play",
+   "text": "How to play",
+   "smart": false
+  },
+  {
+   "key": "tutorial.next",
+   "text": "Next",
+   "smart": false
+  },
+  {
+   "key": "tutorial.refresher",
+   "text": "20-second refresher",
+   "smart": false
+  },
+  {
+   "key": "tutorial.skip",
+   "text": "Skip",
+   "smart": false
+  },
+  {
+   "key": "tutorial.step1",
+   "text": "You have the Ace of Spades. Everyone throws a spade. No punishment on the first trick.",
+   "smart": false
+  },
+  {
+   "key": "tutorial.step1_done",
+   "text": "The opening trick goes to the discard. Your Ace was highest, so you lead next.",
+   "smart": false
+  },
+  {
+   "key": "tutorial.step1_hint",
+   "text": "The round opens with the Ace of Spades. Tap it, then tap again to play.",
+   "smart": false
+  },
+  {
+   "key": "tutorial.step2",
+   "text": "Bilal has no hearts. His off-suit card is a thulla. The highest heart picks everything up. That's Sara, not you.",
+   "smart": false
+  },
+  {
+   "key": "tutorial.step2_done",
+   "text": "Sara took the whole pile into her hand. Thullas make other people pick up.",
+   "smart": false
+  },
+  {
+   "key": "tutorial.step2_hint",
+   "text": "You hold hearts, so you must play a heart. Only those are lit.",
+   "smart": false
+  },
+  {
+   "key": "tutorial.step2_lead",
+   "text": "Noor leads a heart. You have hearts, so you play one.",
+   "smart": false
+  },
+  {
+   "key": "tutorial.step3",
+   "text": "No diamonds? Throw your worst card. Sara's K♦ is the highest, so she picks up.",
+   "smart": false
+  },
+  {
+   "key": "tutorial.step3_done",
+   "text": "That was your thulla. Running out of a suit early gives you more of them.",
+   "smart": false
+  },
+  {
+   "key": "tutorial.step3_hint",
+   "text": "You have no diamonds, so any card goes. Throw one you want rid of.",
+   "smart": false
+  },
+  {
+   "key": "tutorial.step4",
+   "text": "Two low clubs left. Play low and let someone else take the hand.",
+   "smart": false
+  },
+  {
+   "key": "tutorial.step4_done",
+   "text": "Play your last card low and let someone else take the hand. You're out, you're safe.",
+   "smart": false
+  },
+  {
+   "key": "tutorial.step4_hint",
+   "text": "Follow clubs with a low one.",
+   "smart": false
+  },
+  {
+   "key": "tutorial.step5",
+   "text": "Two left and the leader has no cards? They draw from the other player. Play until it's confirmed.",
+   "smart": false
+  },
+  {
+   "key": "tutorial.step5_done",
+   "text": "You're out, and Sara is left holding a card: she's the Bhabhi. Now play a real round.",
+   "smart": false
+  },
+  {
+   "key": "tutorial.step5_hint",
+   "text": "Follow hearts with your heart.",
+   "smart": false
+  },
+  {
+   "key": "tutorial.step5_lead",
+   "text": "Two players left. Sara leads her last card.",
+   "smart": false
+  },
+  {
+   "key": "ui.accept",
+   "text": "Accept",
+   "smart": false
+  },
+  {
+   "key": "ui.achievement_unlocked",
+   "text": "Achievement unlocked: {0}",
+   "smart": true
+  },
+  {
+   "key": "ui.achievements",
+   "text": "Achievements",
+   "smart": false
+  },
+  {
+   "key": "ui.achievements_count",
+   "text": "{0} of {1} unlocked",
+   "smart": true
+  },
+  {
+   "key": "ui.add",
+   "text": "Add",
+   "smart": false
+  },
+  {
+   "key": "ui.add_by_code",
+   "text": "Add a friend by code",
+   "smart": false
+  },
+  {
+   "key": "ui.add_friend",
+   "text": "Add friend",
+   "smart": false
+  },
+  {
+   "key": "ui.add_name",
+   "text": "Add {0}",
+   "smart": true
+  },
+  {
+   "key": "ui.after_rounds",
+   "text": "After {0} rounds",
+   "smart": true
+  },
+  {
+   "key": "ui.analytics_ask",
+   "text": "Help us improve Hulla? We'd count anonymous things like round length and taps, never your chat, cards or name.",
+   "smart": false
+  },
+  {
+   "key": "ui.analytics_label",
+   "text": "Share anonymous usage data",
+   "smart": false
+  },
+  {
+   "key": "ui.analytics_no",
+   "text": "No thanks",
+   "smart": false
+  },
+  {
+   "key": "ui.analytics_yes",
+   "text": "Yes, share",
+   "smart": false
+  },
+  {
+   "key": "ui.app_name",
+   "text": "Hulla",
+   "smart": false
+  },
+  {
+   "key": "ui.app_title",
+   "text": "Hulla",
+   "smart": false
+  },
+  {
+   "key": "ui.ask_named",
+   "text": "Ask {0}",
+   "smart": true
+  },
+  {
+   "key": "ui.ask_sheet_body",
+   "text": "Hand over all {0} cards and sit out safe for the round? You can still watch, chat and talk.",
+   "smart": true
+  },
+  {
+   "key": "ui.ask_sheet_title",
+   "text": "{0} asks for your hand",
+   "smart": true
+  },
+  {
+   "key": "ui.asked_waiting",
+   "text": "Asked {0} for their hand…",
+   "smart": true
+  },
+  {
+   "key": "ui.asks_for_hand",
+   "text": "asks {0} for their hand",
+   "smart": true
+  },
+  {
+   "key": "ui.at_table",
+   "text": "At the table",
+   "smart": false
+  },
+  {
+   "key": "ui.away",
+   "text": "Away",
+   "smart": false
+  },
+  {
+   "key": "ui.back",
+   "text": "Back",
+   "smart": false
+  },
+  {
+   "key": "ui.balances",
+   "text": "{0:N0} coins · {1:N0} gems",
+   "smart": true
+  },
+  {
+   "key": "ui.bhabhi",
+   "text": "{0} is the Bhabhi",
+   "smart": true
+  },
+  {
+   "key": "ui.bio_label",
+   "text": "About you (60 characters)",
+   "smart": false
+  },
+  {
+   "key": "ui.block",
+   "text": "Block",
+   "smart": false
+  },
+  {
+   "key": "ui.blocked",
+   "text": "Blocked. You won't hear from or be matched with {0}.",
+   "smart": true
+  },
+  {
+   "key": "ui.blocked_list",
+   "text": "Blocked",
+   "smart": false
+  },
+  {
+   "key": "ui.board_empty",
+   "text": "No points yet. Win rounds to get on the board.",
+   "smart": false
+  },
+  {
+   "key": "ui.buy",
+   "text": "Buy",
+   "smart": false
+  },
+  {
+   "key": "ui.buy_question",
+   "text": "Buy {0} for {1}?",
+   "smart": true
+  },
+  {
+   "key": "ui.cancel",
+   "text": "Cancel",
+   "smart": false
+  },
+  {
+   "key": "ui.cancel_deletion",
+   "text": "Cancel deletion",
+   "smart": false
+  },
+  {
+   "key": "ui.cancel_request",
+   "text": "Cancel",
+   "smart": false
+  },
+  {
+   "key": "ui.change_rules",
+   "text": "Change rules",
+   "smart": false
+  },
+  {
+   "key": "ui.chat",
+   "text": "Chat",
+   "smart": false
+  },
+  {
+   "key": "ui.chat_filtered",
+   "text": "That message has words this table doesn't allow.",
+   "smart": false
+  },
+  {
+   "key": "ui.chat_guest",
+   "text": "Guests can chat at friends' tables. Link an account to chat at public ones.",
+   "smart": false
+  },
+  {
+   "key": "ui.chat_refused",
+   "text": "Not sent. Messages can't have links or phone numbers, up to 140 characters.",
+   "smart": false
+  },
+  {
+   "key": "ui.chat_too_fast",
+   "text": "Slow down a little: one message every 2 seconds.",
+   "smart": false
+  },
+  {
+   "key": "ui.claim",
+   "text": "Claim",
+   "smart": false
+  },
+  {
+   "key": "ui.claimed",
+   "text": "Done",
+   "smart": false
+  },
+  {
+   "key": "ui.close",
+   "text": "Close",
+   "smart": false
+  },
+  {
+   "key": "ui.code_label",
+   "text": "Room code",
+   "smart": false
+  },
+  {
+   "key": "ui.coins_and_gems",
+   "text": "{0:N0} coins + {1} gems",
+   "smart": true
+  },
+  {
+   "key": "ui.coins_only",
+   "text": "{0:N0} coins",
+   "smart": true
+  },
+  {
+   "key": "ui.connecting",
+   "text": "Connecting…",
+   "smart": false
+  },
+  {
+   "key": "ui.copied",
+   "text": "Copied",
+   "smart": false
+  },
+  {
+   "key": "ui.copy",
+   "text": "Copy",
+   "smart": false
+  },
+  {
+   "key": "ui.copy_seed",
+   "text": "Copy the seed",
+   "smart": false
+  },
+  {
+   "key": "ui.create_room",
+   "text": "Create a room",
+   "smart": false
+  },
+  {
+   "key": "ui.create_table",
+   "text": "Create a table",
+   "smart": false
+  },
+  {
+   "key": "ui.crown",
+   "text": "♛",
+   "smart": false
+  },
+  {
+   "key": "ui.daily_claimed",
+   "text": "Claimed {0}.",
+   "smart": true
+  },
+  {
+   "key": "ui.daily_ready",
+   "text": "Daily reward, day {0}: {1}",
+   "smart": true
+  },
+  {
+   "key": "ui.daily_tomorrow",
+   "text": "Tomorrow: {0}.",
+   "smart": true
+  },
+  {
+   "key": "ui.decline",
+   "text": "Decline",
+   "smart": false
+  },
+  {
+   "key": "ui.delete_account",
+   "text": "Delete my account",
+   "smart": false
+  },
+  {
+   "key": "ui.delete_confirm",
+   "text": "Delete your account? You have 14 days to change your mind.",
+   "smart": false
+  },
+  {
+   "key": "ui.delete_no",
+   "text": "Keep it",
+   "smart": false
+  },
+  {
+   "key": "ui.delete_pending",
+   "text": "Your account will be deleted on {0}. Cancel any time before then.",
+   "smart": true
+  },
+  {
+   "key": "ui.delete_yes",
+   "text": "Delete",
+   "smart": false
+  },
+  {
+   "key": "ui.deletion_cancelled",
+   "text": "Deletion cancelled. Your account stays.",
+   "smart": false
+  },
+  {
+   "key": "ui.discard_pile",
+   "text": "Discard",
+   "smart": false
+  },
+  {
+   "key": "ui.display_name_label",
+   "text": "Name",
+   "smart": false
+  },
+  {
+   "key": "ui.done",
+   "text": "Done",
+   "smart": false
+  },
+  {
+   "key": "ui.double_xp",
+   "text": "double XP",
+   "smart": false
+  },
+  {
+   "key": "ui.edit_rules",
+   "text": "Edit rules",
+   "smart": false
+  },
+  {
+   "key": "ui.empty",
+   "text": "Open seat",
+   "smart": false
+  },
+  {
+   "key": "ui.empty_hand_draw_discard",
+   "text": "Draw from the discard",
+   "smart": false
+  },
+  {
+   "key": "ui.empty_hand_draw_next",
+   "text": "Draw from the next player",
+   "smart": false
+  },
+  {
+   "key": "ui.empty_hand_instant_exit",
+   "text": "You're out",
+   "smart": false
+  },
+  {
+   "key": "ui.empty_hand_label",
+   "text": "If you win with your last card",
+   "smart": false
+  },
+  {
+   "key": "ui.equip",
+   "text": "Equip",
+   "smart": false
+  },
+  {
+   "key": "ui.equipped",
+   "text": "Equipped",
+   "smart": false
+  },
+  {
+   "key": "ui.escape_order",
+   "text": "Escaped in order",
+   "smart": false
+  },
+  {
+   "key": "ui.escaped",
+   "text": "Out",
+   "smart": false
+  },
+  {
+   "key": "ui.everyone",
+   "text": "Everyone",
+   "smart": false
+  },
+  {
+   "key": "ui.export_copied",
+   "text": "Your data was copied.",
+   "smart": false
+  },
+  {
+   "key": "ui.export_data",
+   "text": "Export my data",
+   "smart": false
+  },
+  {
+   "key": "ui.export_shared",
+   "text": "Your data is ready to share.",
+   "smart": false
+  },
+  {
+   "key": "ui.fair_deal",
+   "text": "Fair deal ✓",
+   "smart": false
+  },
+  {
+   "key": "ui.fair_deal_check",
+   "text": "Fair deal · see the shuffle",
+   "smart": false
+  },
+  {
+   "key": "ui.fair_deal_explained",
+   "text": "Before the deal, the server committed to {0}. The seed was {1}. Anyone can rebuild the shuffle from these two, so the deal could not have been changed after the fact.",
+   "smart": true
+  },
+  {
+   "key": "ui.favourite",
+   "text": "★",
+   "smart": false
+  },
+  {
+   "key": "ui.found_table",
+   "text": "Table found",
+   "smart": false
+  },
+  {
+   "key": "ui.four_colour_label",
+   "text": "Four-colour deck",
+   "smart": false
+  },
+  {
+   "key": "ui.free",
+   "text": "Free",
+   "smart": false
+  },
+  {
+   "key": "ui.friend_code_label",
+   "text": "Your friend code",
+   "smart": false
+  },
+  {
+   "key": "ui.friends",
+   "text": "Friends",
+   "smart": false
+  },
+  {
+   "key": "ui.friends_list",
+   "text": "Friends",
+   "smart": false
+  },
+  {
+   "key": "ui.friends_tab",
+   "text": "Friends",
+   "smart": false
+  },
+  {
+   "key": "ui.gems_and_title",
+   "text": "{0} gems + the title \"{1}\"",
+   "smart": true
+  },
+  {
+   "key": "ui.gems_only",
+   "text": "{0} gems",
+   "smart": true
+  },
+  {
+   "key": "ui.hand_over",
+   "text": "Hand over",
+   "smart": false
+  },
+  {
+   "key": "ui.hand_sort_label",
+   "text": "Sort my hand",
+   "smart": false
+  },
+  {
+   "key": "ui.hand_taking_anyone",
+   "text": "Anyone",
+   "smart": false
+  },
+  {
+   "key": "ui.hand_taking_label",
+   "text": "Ask for the next player's hand",
+   "smart": false
+  },
+  {
+   "key": "ui.hand_taking_leader",
+   "text": "Leader, from trick two",
+   "smart": false
+  },
+  {
+   "key": "ui.hand_taking_off",
+   "text": "Off",
+   "smart": false
+  },
+  {
+   "key": "ui.handle_label",
+   "text": "Handle (letters, numbers, _)",
+   "smart": false
+  },
+  {
+   "key": "ui.haptics_label",
+   "text": "Vibration",
+   "smart": false
+  },
+  {
+   "key": "ui.high_contrast_label",
+   "text": "High contrast",
+   "smart": false
+  },
+  {
+   "key": "ui.highlights",
+   "text": "Highlights",
+   "smart": false
+  },
+  {
+   "key": "ui.host",
+   "text": "host",
+   "smart": false
+  },
+  {
+   "key": "ui.invite",
+   "text": "Invite",
+   "smart": false
+  },
+  {
+   "key": "ui.invite_friends",
+   "text": "Invite friends",
+   "smart": false
+  },
+  {
+   "key": "ui.invite_link_while_seated",
+   "text": "Finish this table first to join {0}.",
+   "smart": true
+  },
+  {
+   "key": "ui.invite_received",
+   "text": "{0} invites you to their table ({1}).",
+   "smart": true
+  },
+  {
+   "key": "ui.invite_your_group",
+   "text": "Invite your group",
+   "smart": false
+  },
+  {
+   "key": "ui.invited",
+   "text": "Invited",
+   "smart": false
+  },
+  {
+   "key": "ui.join_by_code",
+   "text": "Join by code",
+   "smart": false
+  },
+  {
+   "key": "ui.join_friend_table",
+   "text": "Join {0}'s table ({1} open)",
+   "smart": true
+  },
+  {
+   "key": "ui.join_table",
+   "text": "Join",
+   "smart": false
+  },
+  {
+   "key": "ui.keep_playing",
+   "text": "Keep playing",
+   "smart": false
+  },
+  {
+   "key": "ui.keeps_cards",
+   "text": "{0} keeps their cards",
+   "smart": true
+  },
+  {
+   "key": "ui.large_cards_label",
+   "text": "Large cards",
+   "smart": false
+  },
+  {
+   "key": "ui.lead",
+   "text": "Leads",
+   "smart": false
+  },
+  {
+   "key": "ui.lead_ace_of_spades",
+   "text": "Lead the A♠ to open",
+   "smart": false
+  },
+  {
+   "key": "ui.leaderboard",
+   "text": "Leaderboard",
+   "smart": false
+  },
+  {
+   "key": "ui.leave",
+   "text": "Leave",
+   "smart": false
+  },
+  {
+   "key": "ui.left_handed_label",
+   "text": "Left-handed layout",
+   "smart": false
+  },
+  {
+   "key": "ui.level_up",
+   "text": "Level up! {0} → {1}",
+   "smart": true
+  },
+  {
+   "key": "ui.loading",
+   "text": "Loading…",
+   "smart": false
+  },
+  {
+   "key": "ui.locked",
+   "text": "Locked",
+   "smart": false
+  },
+  {
+   "key": "ui.loser_is",
+   "text": "{0} is the {1}",
+   "smart": true
+  },
+  {
+   "key": "ui.loser_title_label",
+   "text": "The loser is called",
+   "smart": false
+  },
+  {
+   "key": "ui.make_friends",
+   "text": "Played well together?",
+   "smart": false
+  },
+  {
+   "key": "ui.mission_progress",
+   "text": "{0}/{1} · {2}",
+   "smart": true
+  },
+  {
+   "key": "ui.missions",
+   "text": "Missions",
+   "smart": false
+  },
+  {
+   "key": "ui.missions_today",
+   "text": "Today",
+   "smart": false
+  },
+  {
+   "key": "ui.missions_week",
+   "text": "This week",
+   "smart": false
+  },
+  {
+   "key": "ui.more",
+   "text": "…",
+   "smart": false
+  },
+  {
+   "key": "ui.most_picked_up",
+   "text": "Most cards picked up: {0}, {1}",
+   "smart": true
+  },
+  {
+   "key": "ui.most_thullas",
+   "text": "Most thullas: {0}, {1}",
+   "smart": true
+  },
+  {
+   "key": "ui.must_follow",
+   "text": "Must follow {0}",
+   "smart": true
+  },
+  {
+   "key": "ui.mute",
+   "text": "Mute",
+   "smart": false
+  },
+  {
+   "key": "ui.muted_note",
+   "text": "You won't see {0}'s messages or emotes.",
+   "smart": true
+  },
+  {
+   "key": "ui.name_label",
+   "text": "Your name",
+   "smart": false
+  },
+  {
+   "key": "ui.name_too_short",
+   "text": "A name needs at least 2 characters.",
+   "smart": false
+  },
+  {
+   "key": "ui.no_achievements_yet",
+   "text": "Play a round to start.",
+   "smart": false
+  },
+  {
+   "key": "ui.no_friends_to_invite",
+   "text": "No friends yet. Share the code, or add friends from Home.",
+   "smart": false
+  },
+  {
+   "key": "ui.no_friends_yet",
+   "text": "No friends yet. Share your code or add theirs.",
+   "smart": false
+  },
+  {
+   "key": "ui.no_missions_yet",
+   "text": "New missions arrive at midnight.",
+   "smart": false
+  },
+  {
+   "key": "ui.no_season",
+   "text": "No season is running right now. The pass opens with the next one.",
+   "smart": false
+  },
+  {
+   "key": "ui.no_timer",
+   "text": "No timer",
+   "smart": false
+  },
+  {
+   "key": "ui.not_favourite",
+   "text": "☆",
+   "smart": false
+  },
+  {
+   "key": "ui.not_now",
+   "text": "Not now",
+   "smart": false
+  },
+  {
+   "key": "ui.not_playable_now",
+   "text": "Not playable now",
+   "smart": false
+  },
+  {
+   "key": "ui.not_ready",
+   "text": "Not ready",
+   "smart": false
+  },
+  {
+   "key": "ui.not_your_turn",
+   "text": "Wait for your turn",
+   "smart": false
+  },
+  {
+   "key": "ui.nothing_this_week",
+   "text": "Nothing here this week.",
+   "smart": false
+  },
+  {
+   "key": "ui.notifications",
+   "text": "Notifications",
+   "smart": false
+  },
+  {
+   "key": "ui.notify_daily_reward",
+   "text": "Daily reward ready",
+   "smart": false
+  },
+  {
+   "key": "ui.notify_friend_online",
+   "text": "A friend comes online",
+   "smart": false
+  },
+  {
+   "key": "ui.notify_friend_requests",
+   "text": "Friend requests",
+   "smart": false
+  },
+  {
+   "key": "ui.notify_invites",
+   "text": "Table invites",
+   "smart": false
+  },
+  {
+   "key": "ui.notify_non_friend_invites",
+   "text": "Invites from players who aren't friends",
+   "smart": false
+  },
+  {
+   "key": "ui.notify_quiet_hours",
+   "text": "Quiet hours at night (friends' invites still come)",
+   "smart": false
+  },
+  {
+   "key": "ui.notify_season_end",
+   "text": "Season ending soon",
+   "smart": false
+  },
+  {
+   "key": "ui.offline",
+   "text": "Offline",
+   "smart": false
+  },
+  {
+   "key": "ui.one_tap_play",
+   "text": "One-tap play",
+   "smart": false
+  },
+  {
+   "key": "ui.online",
+   "text": "Online",
+   "smart": false
+  },
+  {
+   "key": "ui.out_watching",
+   "text": "Out · watching",
+   "smart": false
+  },
+  {
+   "key": "ui.party_empty",
+   "text": "No friends online. Share your code.",
+   "smart": false
+  },
+  {
+   "key": "ui.pass_complete",
+   "text": "All {0} tiers done",
+   "smart": true
+  },
+  {
+   "key": "ui.pass_progress",
+   "text": "Tier {0} of {1} · {2:N0}/{3:N0} XP",
+   "smart": true
+  },
+  {
+   "key": "ui.picked_up",
+   "text": "{0} picks up",
+   "smart": true
+  },
+  {
+   "key": "ui.picked_up_tray",
+   "text": "{0} has picked up: {1}",
+   "smart": true
+  },
+  {
+   "key": "ui.play_again",
+   "text": "Play again",
+   "smart": false
+  },
+  {
+   "key": "ui.play_now",
+   "text": "Play now",
+   "smart": false
+  },
+  {
+   "key": "ui.playing",
+   "text": "Playing…",
+   "smart": false
+  },
+  {
+   "key": "ui.points_line",
+   "text": "{0}: {1} pts · {2}× {3}",
+   "smart": true
+  },
+  {
+   "key": "ui.points_short",
+   "text": "{0:N0} pts",
+   "smart": true
+  },
+  {
+   "key": "ui.premium_locked",
+   "text": "The premium track opens with the premium pass.",
+   "smart": false
+  },
+  {
+   "key": "ui.preset_label",
+   "text": "Preset",
+   "smart": false
+  },
+  {
+   "key": "ui.price_coins",
+   "text": "{0:N0} coins",
+   "smart": true
+  },
+  {
+   "key": "ui.price_gems",
+   "text": "{0:N0} gems",
+   "smart": true
+  },
+  {
+   "key": "ui.profile",
+   "text": "Profile",
+   "smart": false
+  },
+  {
+   "key": "ui.progress_line",
+   "text": "Level {0} · {1}/{2} XP · {3} coins",
+   "smart": true
+  },
+  {
+   "key": "ui.quick_play",
+   "text": "Quick Play",
+   "smart": false
+  },
+  {
+   "key": "ui.quick_play_table",
+   "text": "Quick Play table",
+   "smart": false
+  },
+  {
+   "key": "ui.ready",
+   "text": "Ready",
+   "smart": false
+  },
+  {
+   "key": "ui.recap",
+   "text": "Follow the led suit if you can. If you can't, any card is a thulla: the trick stops and whoever played the highest card of the led suit picks up the pile. Empty your hand to escape. The last player holding cards is the Bhabhi.",
+   "smart": false
+  },
+  {
+   "key": "ui.recap_hide",
+   "text": "Don't show again",
+   "smart": false
+  },
+  {
+   "key": "ui.recap_title",
+   "text": "Standard rules",
+   "smart": false
+  },
+  {
+   "key": "ui.recent",
+   "text": "Played with recently",
+   "smart": false
+  },
+  {
+   "key": "ui.reconnecting",
+   "text": "Reconnecting…",
+   "smart": false
+  },
+  {
+   "key": "ui.reduce_motion_label",
+   "text": "Reduce motion",
+   "smart": false
+  },
+  {
+   "key": "ui.referral_ask",
+   "text": "Add the player who shared this link ({0}) as a friend?",
+   "smart": true
+  },
+  {
+   "key": "ui.referral_while_seated",
+   "text": "Open the link again after this table to add your friend.",
+   "smart": false
+  },
+  {
+   "key": "ui.rejoin_table",
+   "text": "Rejoin your table ({0})",
+   "smart": true
+  },
+  {
+   "key": "ui.rematch_how",
+   "text": "Everyone taps Play again and the next round deals at once.",
+   "smart": false
+  },
+  {
+   "key": "ui.rematch_votes",
+   "text": "{0} of {1} want another",
+   "smart": true
+  },
+  {
+   "key": "ui.remove",
+   "text": "Remove",
+   "smart": false
+  },
+  {
+   "key": "ui.report",
+   "text": "Report",
+   "smart": false
+  },
+  {
+   "key": "ui.report_thanks",
+   "text": "Thanks. We'll look into it; the table's recent chat is attached.",
+   "smart": false
+  },
+  {
+   "key": "ui.report_why",
+   "text": "What happened with {0}?",
+   "smart": true
+  },
+  {
+   "key": "ui.request_sent",
+   "text": "Request sent",
+   "smart": false
+  },
+  {
+   "key": "ui.requests",
+   "text": "Requests",
+   "smart": false
+  },
+  {
+   "key": "ui.reroll",
+   "text": "Swap",
+   "smart": false
+  },
+  {
+   "key": "ui.resets_in",
+   "text": "Resets in {0}. Top 10 win gems.",
+   "smart": true
+  },
+  {
+   "key": "ui.retry",
+   "text": "Retry",
+   "smart": false
+  },
+  {
+   "key": "ui.reward_capped",
+   "text": " (daily cap reached)",
+   "smart": false
+  },
+  {
+   "key": "ui.reward_coins",
+   "text": "{0} coins",
+   "smart": true
+  },
+  {
+   "key": "ui.reward_gems",
+   "text": "{0} coins, {1} gems",
+   "smart": true
+  },
+  {
+   "key": "ui.reward_line",
+   "text": "+{0} XP · +{1} coins",
+   "smart": true
+  },
+  {
+   "key": "ui.room_code",
+   "text": "Room code",
+   "smart": false
+  },
+  {
+   "key": "ui.rounds_together",
+   "text": "{0} rounds together",
+   "smart": true
+  },
+  {
+   "key": "ui.rules_changed_by",
+   "text": "{0} changed the rules",
+   "smart": true
+  },
+  {
+   "key": "ui.rules_recap_label",
+   "text": "Rules recap at the first round",
+   "smart": false
+  },
+  {
+   "key": "ui.rules_summary",
+   "text": "{0} · {1} · loser: {2}",
+   "smart": true
+  },
+  {
+   "key": "ui.rules_summary_hand",
+   "text": "{0} · ask for hand: {1}",
+   "smart": true
+  },
+  {
+   "key": "ui.rules_summary_last_card",
+   "text": "{0} · last card: {1}",
+   "smart": true
+  },
+  {
+   "key": "ui.save",
+   "text": "Save",
+   "smart": false
+  },
+  {
+   "key": "ui.saved",
+   "text": "Saved",
+   "smart": false
+  },
+  {
+   "key": "ui.searching",
+   "text": "Finding a table for {0}…",
+   "smart": true
+  },
+  {
+   "key": "ui.searching_start",
+   "text": "Starting with three or more as soon as they're in…",
+   "smart": false
+  },
+  {
+   "key": "ui.searching_wider",
+   "text": "Looking at every table size…",
+   "smart": false
+  },
+  {
+   "key": "ui.season_ends_in",
+   "text": "ends in {0}",
+   "smart": true
+  },
+  {
+   "key": "ui.season_pass",
+   "text": "Season pass",
+   "smart": false
+  },
+  {
+   "key": "ui.seat_auto_play",
+   "text": "Auto-play",
+   "smart": false
+  },
+  {
+   "key": "ui.seat_away_auto_play",
+   "text": "Away · auto-play",
+   "smart": false
+  },
+  {
+   "key": "ui.seat_them",
+   "text": "Seat",
+   "smart": false
+  },
+  {
+   "key": "ui.seats_label",
+   "text": "Table size",
+   "smart": false
+  },
+  {
+   "key": "ui.seats_next",
+   "text": "next round",
+   "smart": false
+  },
+  {
+   "key": "ui.send",
+   "text": "Send",
+   "smart": false
+  },
+  {
+   "key": "ui.sent_requests",
+   "text": "Waiting for them",
+   "smart": false
+  },
+  {
+   "key": "ui.server",
+   "text": "Server (development builds)",
+   "smart": false
+  },
+  {
+   "key": "ui.settings",
+   "text": "Settings",
+   "smart": false
+  },
+  {
+   "key": "ui.settings_account",
+   "text": "Account and data",
+   "smart": false
+  },
+  {
+   "key": "ui.settings_play",
+   "text": "Playing",
+   "smart": false
+  },
+  {
+   "key": "ui.settings_privacy",
+   "text": "Privacy",
+   "smart": false
+  },
+  {
+   "key": "ui.settings_seeing",
+   "text": "Seeing and moving",
+   "smart": false
+  },
+  {
+   "key": "ui.settings_sound",
+   "text": "Sound",
+   "smart": false
+  },
+  {
+   "key": "ui.settings_theme",
+   "text": "Table theme",
+   "smart": false
+  },
+  {
+   "key": "ui.sfx_label",
+   "text": "Sound effects",
+   "smart": false
+  },
+  {
+   "key": "ui.share_as",
+   "text": "Share the result as",
+   "smart": false
+  },
+  {
+   "key": "ui.share_big_thulla",
+   "text": "Share the biggest thulla",
+   "smart": false
+  },
+  {
+   "key": "ui.share_card_game",
+   "text": "Thulla",
+   "smart": false
+  },
+  {
+   "key": "ui.share_code",
+   "text": "Share code",
+   "smart": false
+  },
+  {
+   "key": "ui.share_footer",
+   "text": "Play Thulla on Hulla",
+   "smart": false
+  },
+  {
+   "key": "ui.share_footer_code",
+   "text": "Join with code {0} on Hulla",
+   "smart": true
+  },
+  {
+   "key": "ui.share_footer_friend",
+   "text": "Add me on Hulla: {0}",
+   "smart": true
+  },
+  {
+   "key": "ui.share_post",
+   "text": "Post",
+   "smart": false
+  },
+  {
+   "key": "ui.share_result",
+   "text": "Share",
+   "smart": false
+  },
+  {
+   "key": "ui.share_result_referral",
+   "text": "{0} is the {1}! Play Thulla with me on Hulla: {2}",
+   "smart": true
+  },
+  {
+   "key": "ui.share_result_text",
+   "text": "{0} is the {1}! Play Thulla with us on Hulla.",
+   "smart": true
+  },
+  {
+   "key": "ui.share_result_title",
+   "text": "Thulla on Hulla",
+   "smart": false
+  },
+  {
+   "key": "ui.share_result_with_code",
+   "text": "{0} is the {1}! Join our table on Hulla with code {2}: {3}",
+   "smart": true
+  },
+  {
+   "key": "ui.share_story",
+   "text": "Story",
+   "smart": false
+  },
+  {
+   "key": "ui.share_text",
+   "text": "Thulla khelo! Join my table on Hulla with code {0}: {1}",
+   "smart": true
+  },
+  {
+   "key": "ui.share_title",
+   "text": "Invite to Hulla",
+   "smart": false
+  },
+  {
+   "key": "ui.shop",
+   "text": "Shop",
+   "smart": false
+  },
+  {
+   "key": "ui.show_my_code",
+   "text": "Show my code",
+   "smart": false
+  },
+  {
+   "key": "ui.sort_by_rank",
+   "text": "By rank",
+   "smart": false
+  },
+  {
+   "key": "ui.sort_by_suit",
+   "text": "By suit",
+   "smart": false
+  },
+  {
+   "key": "ui.spotlight",
+   "text": "This week",
+   "smart": false
+  },
+  {
+   "key": "ui.start",
+   "text": "Start round",
+   "smart": false
+  },
+  {
+   "key": "ui.start_with",
+   "text": "Start · {0} of {1} seated",
+   "smart": true
+  },
+  {
+   "key": "ui.starts_in",
+   "text": "Dealing in {0}s",
+   "smart": true
+  },
+  {
+   "key": "ui.stats_line",
+   "text": "{0} rounds · {1} escapes · {2} times Bhabhi · {3} thullas given",
+   "smart": true
+  },
+  {
+   "key": "ui.streak_suffix",
+   "text": " · day {0} streak",
+   "smart": true
+  },
+  {
+   "key": "ui.tagline",
+   "text": "Thulla with friends",
+   "smart": false
+  },
+  {
+   "key": "ui.take_hand",
+   "text": "Ask for hand",
+   "smart": false
+  },
+  {
+   "key": "ui.text_size_label",
+   "text": "Text size",
+   "smart": false
+  },
+  {
+   "key": "ui.this_month",
+   "text": "This month",
+   "smart": false
+  },
+  {
+   "key": "ui.this_week",
+   "text": "This week",
+   "smart": false
+  },
+  {
+   "key": "ui.thulla",
+   "text": "THULLA!",
+   "smart": false
+  },
+  {
+   "key": "ui.thulla_big",
+   "text": "OYE HOYE!",
+   "smart": false
+  },
+  {
+   "key": "ui.thulla_flag",
+   "text": "THULLA",
+   "smart": false
+  },
+  {
+   "key": "ui.title_reward",
+   "text": "title \"{0}\"",
+   "smart": true
+  },
+  {
+   "key": "ui.turn_seconds",
+   "text": "{0} s turns",
+   "smart": true
+  },
+  {
+   "key": "ui.turn_timer_label",
+   "text": "Turn timer",
+   "smart": false
+  },
+  {
+   "key": "ui.unblock",
+   "text": "Unblock",
+   "smart": false
+  },
+  {
+   "key": "ui.unmute",
+   "text": "Unmute",
+   "smart": false
+  },
+  {
+   "key": "ui.waiting",
+   "text": "Waiting for players",
+   "smart": false
+  },
+  {
+   "key": "ui.waiting4_rematch",
+   "text": "Waiting for the others…",
+   "smart": false
+  },
+  {
+   "key": "ui.watch_friend_table",
+   "text": "Watch {0}'s game",
+   "smart": true
+  },
+  {
+   "key": "ui.watchers",
+   "text": "Watching",
+   "smart": false
+  },
+  {
+   "key": "ui.watching",
+   "text": "Watching",
+   "smart": false
+  },
+  {
+   "key": "ui.watching1",
+   "text": "Watching: {0}",
+   "smart": true
+  },
+  {
+   "key": "ui.watching_lobby",
+   "text": "You're watching. The host can give you a seat.",
+   "smart": false
+  },
+  {
+   "key": "ui.you",
+   "text": "You",
+   "smart": false
+  },
+  {
+   "key": "ui.you_are",
+   "text": "{0} (you)",
+   "smart": true
+  },
+  {
+   "key": "ui.you_are_out",
+   "text": "You're out, safe for this round! Watch the rest; chat and voice stay on.",
+   "smart": false
+  }
+ ]
+}

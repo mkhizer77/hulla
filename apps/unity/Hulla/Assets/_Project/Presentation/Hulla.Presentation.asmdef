@@ -3,7 +3,8 @@
     "rootNamespace": "Hulla.Presentation",
     "references": [
         "Hulla.Application",
-        "Hulla.Domain"
+        "Hulla.Domain",
+        "Unity.Localization"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

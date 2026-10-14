@@ -69,7 +69,7 @@ jobs:
       - name: Generated code is up to date
         run: |
           pnpm codegen
-          git diff --exit-code -- packages/protocol/generated
+          git diff --exit-code -- packages/protocol/generated packages/strings/generated apps/unity/Hulla/Assets/_Project/Localization/Resources
       - run: pnpm content:validate
       - name: The content manifest is up to date
         run: |

@@ -1,0 +1,17 @@
+{
+  "name": "@hulla/strings-export",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Checks content/strings (ICU: plural, select and simple arguments) and exports them to the Unity Localization tables as Smart Strings and to the web as JSON (GDD 26.1)",
+  "license": "PolyForm-Noncommercial-1.0.0",
+  "type": "module",
+  "scripts": {
+    "typecheck": "tsc -p tsconfig.json",
+    "codegen": "tsx src/export.ts",
+    "test": "vitest run",
+    "content:validate": "tsx src/check.ts"
+  },
+  "exports": {
+    ".": "./src/export.ts"
+  }
+}

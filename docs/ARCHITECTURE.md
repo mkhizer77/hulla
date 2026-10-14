@@ -505,7 +505,7 @@ Server configuration comes from environment variables and a mounted config file 
 Flags live in a storage object mirrored to the content manifest and in Firebase Remote Config for client-side experiments. Every module, mode and placement is behind a flag with a region and cohort filter.
 
 ### 12.3 Localisation
-All strings in Unity Localization tables keyed by stable ids; the server sends ids and parameters, never prose; VO and quick-chat packs are content keyed by locale; pseudo-localisation runs in CI (GDD §26.1).
+All strings in tables keyed by stable ids, authored in `content/strings` and exported for Unity and the web (ADR-0023); the server sends ids and parameters, never prose; VO and quick-chat packs are content keyed by locale; pseudo-localisation runs in CI (GDD §26.1).
 
 ### 12.4 Analytics
 A typed event schema in `packages/protocol/schemas/analytics/` generates both the client event builders and the server emitters, so names and parameters cannot drift (GDD §23.3). Events carry `gameId`, `tableId`, `roundId`, `seat` where relevant and never chat or voice content.

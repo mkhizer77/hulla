@@ -49,7 +49,7 @@ namespace Hulla.Presentation.Screens.Shop
 
         private void Refresh()
         {
-            _balances.text = _model.Coins is long coins && _model.Gems is long gems ? string.Format(UiText.Balances, coins, gems) : "";
+            _balances.text = _model.Coins is long coins && _model.Gems is long gems ? Strings.Format(UiText.Balances, coins, gems) : "";
             _status.text = "";
             foreach (var chip in _categories.Children())
             {
@@ -152,6 +152,6 @@ namespace Hulla.Presentation.Screens.Shop
         }
 
         public static string Price(ShopItem item) =>
-            item.Gems > 0 ? string.Format(UiText.PriceGems, item.Gems) : item.Coins > 0 ? string.Format(UiText.PriceCoins, item.Coins) : UiText.Free;
+            item.Gems > 0 ? Strings.Format(UiText.PriceGems, item.Gems) : item.Coins > 0 ? Strings.Format(UiText.PriceCoins, item.Coins) : UiText.Free;
     }
 }

@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using Hulla.Application.Services;
 using Hulla.Application.Table;
 using Hulla.Presentation.Screens.Rulebook;
+using Hulla.Presentation.Text;
 using Hulla.Protocol;
 using TableSettings = Hulla.Protocol.Settings;
 
@@ -29,7 +30,7 @@ namespace Hulla.Games.Thulla
 
             var table = new List<string>
             {
-                string.Format(RulebookText.Preset, PresetName(selection?.Preset)),
+                Strings.Format(RulebookText.Preset, PresetName(selection?.Preset)),
                 rules.OpeningSimultaneous ?? true ? RulebookText.OpeningSimultaneousOn : RulebookText.OpeningSimultaneousOff,
                 rules.OpeningThullaApplies ?? false ? RulebookText.OpeningThullaOn : RulebookText.OpeningThullaOff,
                 rules.ThullaEndsTrick ?? true ? RulebookText.ThullaEndsTrickOn : RulebookText.ThullaEndsTrickOff,
@@ -48,12 +49,12 @@ namespace Hulla.Games.Thulla
                 (rules.TwoPlayerEndgame ?? TwoPlayerEndgame.DrawOpponent) switch
                 {
                     TwoPlayerEndgame.DrawDiscard => RulebookText.EndgameDrawDiscard,
-                    TwoPlayerEndgame.ThullaEndsRound => string.Format(RulebookText.EndgameThullaEndsRound, loser),
+                    TwoPlayerEndgame.ThullaEndsRound => Strings.Format(RulebookText.EndgameThullaEndsRound, loser),
                     _ => RulebookText.EndgameDrawOpponent,
                 },
                 rules.ConfirmedFastForward ?? true ? RulebookText.FastForwardOn : RulebookText.FastForwardOff,
-                timer > 0 ? string.Format(RulebookText.TurnTimer, timer) : RulebookText.NoTurnTimer,
-                string.Format(RulebookText.LoserTitle, loser),
+                timer > 0 ? Strings.Format(RulebookText.TurnTimer, timer) : RulebookText.NoTurnTimer,
+                Strings.Format(RulebookText.LoserTitle, loser),
             };
 
             return new[]
