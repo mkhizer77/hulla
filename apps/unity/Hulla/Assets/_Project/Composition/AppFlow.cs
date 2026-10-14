@@ -14,6 +14,7 @@ using Hulla.Presentation.Screens.Achievements;
 using Hulla.Presentation.Screens.Leaderboard;
 using Hulla.Presentation.Screens.Ranked;
 using Hulla.Presentation.Screens.Pass;
+using Hulla.Presentation.Screens.Phone;
 using Hulla.Presentation.Screens.Shop;
 using Hulla.Presentation.Screens.Missions;
 using Hulla.Presentation.Screens.Profile;
@@ -68,6 +69,7 @@ namespace Hulla.Composition
         private bool _reconnecting;
         private SettingsView? _settingsView;
         private bool _updateAsked;
+        private PhoneView? _phoneView;
         private LobbyView? _lobbyView;
         private string _friendsForRound = "";
         private readonly BigThullaOffer _bigThulla = new BigThullaOffer();
@@ -93,6 +95,7 @@ namespace Hulla.Composition
             _shell.NavChosen += OnNav;
             _app.Settings.Changed += ApplySettings;
             _app.QuickPlay.Found += OnQuickPlayFound;
+            _app.Phone.Switched += OnPhoneSwitched;
             _app.TableChat.Received += OnText;
             _app.Tables.Disconnected += OnDisconnected;
             _app.Sessions.Notified += OnNotice;
@@ -352,6 +355,8 @@ namespace Hulla.Composition
             _app.Pass.Changed -= RefreshBadges;
             _app.Settings.Changed -= ApplySettings;
             _app.QuickPlay.Found -= OnQuickPlayFound;
+            _app.Phone.Switched -= OnPhoneSwitched;
+            _phoneView?.Dispose();
             _app.Links.InviteOpened -= OnInviteLink;
             _app.Links.ReferralOpened -= OnReferralLink;
             _app.TableChat.Received -= OnText;
@@ -1148,7 +1153,7 @@ namespace Hulla.Composition
         private void OpenSettings()
         {
             _settingsView?.Dispose();
-            var account = _app.Sessions.Current == null ? null : new SettingsView.AccountActions(ExportData, DeleteAccount, CancelDeletion, PendingDeletion);
+            var account = _app.Sessions.Current == null ? null : new SettingsView.AccountActions(ExportData, DeleteAccount, CancelDeletion, PendingDeletion, OpenPhone);
             var signedIn = _app.Sessions.Current != null;
             _settingsView = new SettingsView(_shell.ShowOverlay(_shell.Catalog.Settings), _app.Settings, CloseSettings, account,
                 signedIn ? _app.NotificationSettings : null,
@@ -1157,6 +1162,40 @@ namespace Hulla.Composition
             {
                 _ = _app.NotificationSettings.RefreshAsync(_app.Lifetime);
             }
+        }
+
+        /// <summary>The phone number screen over Home (GDD 10.2, #99); a switch to the number's account starts over at Home.</summary>
+        private void OpenPhone()
+        {
+            CloseSettings();
+            var phone = _app.Phone;
+            var lifetime = _app.Lifetime;
+            _phoneView?.Dispose();
+            _phoneView = new PhoneView(_shell.ShowOverlay(_shell.Catalog.Phone), phone, ClosePhone, new PhoneView.PhoneActions(
+                number => _ = phone.SendAsync(number, lifetime),
+                code => _ = phone.VerifyAsync(code, lifetime),
+                () => _ = phone.RemoveAsync(lifetime),
+                () => _ = phone.SwitchAsync(lifetime),
+                phone.StartOver));
+            _ = phone.RefreshAsync(lifetime);
+        }
+
+        private void ClosePhone()
+        {
+            _phoneView?.Dispose();
+            _phoneView = null;
+            _shell.CloseOverlay();
+        }
+
+        /// <summary>Signed in to the number's account: its name, a fresh session scope, Home again.</summary>
+        private void OnPhoneSwitched(PlayerSession player)
+        {
+            _app.Home.LastName = player.DisplayName;
+            RememberName(player.DisplayName);
+            _app.EndSession();
+            _app.BeginSession(player);
+            ClosePhone();
+            ShowHome();
         }
 
         /// <summary>The rulebook opens over the table, so play goes on underneath (GDD 14.11).</summary>

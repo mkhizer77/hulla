@@ -124,6 +124,16 @@ function nkMergePorts(nk: nkruntime.Nakama, logger: nkruntime.Logger): MergePort
       purge.freeFriendCode(userId);
       purge.deleteAccount(userId);
     },
+    devicesOf: (userId) => nk.accountGetId(userId).devices.map((d) => d.id),
+    linkDevices(userId, deviceIds) {
+      for (const deviceId of deviceIds) {
+        try {
+          nk.linkDevice(userId, deviceId);
+        } catch (error: unknown) {
+          log.warn(logger, "device not moved to the merged account", { error: String(error) });
+        }
+      }
+    },
   };
 }
 

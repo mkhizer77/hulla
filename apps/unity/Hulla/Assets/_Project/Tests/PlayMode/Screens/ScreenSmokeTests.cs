@@ -574,6 +574,30 @@ namespace Hulla.Screens.Tests
         }
 
         [UnityTest]
+        public IEnumerator PhoneTakesANumberThenACodeThenOffersTheSwitch()
+        {
+            VisualElement root = null!;
+            var model = new PhoneViewModel(new Fakes.Phone());
+            yield return Open(Catalog.Phone, r =>
+            {
+                root = r;
+                new Hulla.Presentation.Screens.Phone.PhoneView(r, model, () => { }, new Hulla.Presentation.Screens.Phone.PhoneView.PhoneActions(
+                    n => _ = model.SendAsync(n, default), c => _ = model.VerifyAsync(c, default), () => { }, () => _ = model.SwitchAsync(default), model.StartOver));
+                _ = model.RefreshAsync(default);
+            });
+            Shown(root.Q<VisualElement>("number-step"), "the number field");
+            Assert.AreEqual("Send code", root.Q<Button>("send").text);
+            _ = model.SendAsync("+923001234567", default);
+            yield return null;
+            Shown(root.Q<VisualElement>("code-step"), "the code field");
+            Assert.AreEqual("We sent a code to +92 ••• 67.", root.Q<Label>("sent").text);
+            _ = model.VerifyAsync("234567", default);
+            yield return null;
+            Shown(root.Q<VisualElement>("offer-step"), "the switch offer");
+            Assert.AreEqual(DisplayStyle.None, root.Q<VisualElement>("code-step").resolvedStyle.display);
+        }
+
+        [UnityTest]
         public IEnumerator AchievementsShowCategoriesProgressAndRewards()
         {
             VisualElement root = null!;

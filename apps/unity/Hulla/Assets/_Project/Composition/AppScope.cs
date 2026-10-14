@@ -45,6 +45,7 @@ namespace Hulla.Composition
             Leaderboard = new LeaderboardViewModel(new NakamaLeaderboardService(_connection));
             Ranked = new RankedViewModel(new NakamaRankedService(_connection));
             RemoteConfig = new RemoteConfigModel(new NakamaRemoteConfigService(_connection));
+            Phone = new PhoneViewModel(new NakamaPhoneService(_connection, _sessionService));
             Achievements = new AchievementsViewModel(new NakamaAchievementsService(_connection));
             Shop = new ShopViewModel(new NakamaShopService(_connection));
             NotificationsService = new NakamaNotificationsService(_connection);
@@ -97,6 +98,8 @@ namespace Hulla.Composition
 
         /// <summary>The server's live switches and the minimum version (GDD 22.5, 20.15).</summary>
         public RemoteConfigModel RemoteConfig { get; }
+
+        public PhoneViewModel Phone { get; }
 
         public AchievementsViewModel Achievements { get; }
 

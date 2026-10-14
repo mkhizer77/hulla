@@ -66,7 +66,9 @@ describe.skipIf(NAKAMA_HOST === undefined)(
       expect(
         await rpc<{ ok: boolean }>(linked, "account_merge", { code: prepared.code }),
       ).toMatchObject({ ok: false, error: { code: "auth.merge_code_invalid" } });
-      await expect(api.authenticateDevice(`hulla-it-guest-${suffix}`, false)).rejects.toBeDefined();
+      // The guest is gone; its device now opens the account it merged into (#99).
+      const guestDevice = await api.authenticateDevice(`hulla-it-guest-${suffix}`, false);
+      expect(guestDevice.user_id).toBe(linked.session.user_id);
 
       // One active table session: a second device joining the same seat is refused until the first drops.
       const created = await rpc<Created>(linked, "table_create", {

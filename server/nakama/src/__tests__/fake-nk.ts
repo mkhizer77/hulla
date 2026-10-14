@@ -80,6 +80,9 @@ export function fakeInitializer(): FakeInitializer {
     registerAfterAuthenticateFacebook: (fn: (...args: unknown[]) => unknown) => {
       hooks.set("afterAuthenticateFacebook", fn);
     },
+    registerBeforeAuthenticateCustom: (fn: (...args: unknown[]) => unknown) => {
+      hooks.set("beforeAuthenticateCustom", fn);
+    },
     registerAfterAuthenticateCustom: (fn: (...args: unknown[]) => unknown) => {
       hooks.set("afterAuthenticateCustom", fn);
     },
@@ -406,9 +409,34 @@ export function memoryNk(): MemoryNk {
         ...(displayName === null || displayName === undefined ? {} : { displayName }),
       });
     },
+    linkCustom(id: string, customId: string) {
+      const taken = [...users.values()].find((u) => u.customId === customId && u.userId !== id);
+      if (taken !== undefined) throw new Error("custom id in use");
+      if (user(id).customId !== "") throw new Error("account already has a custom id");
+      user(id, { customId });
+    },
+    unlinkCustom(id: string, customId: string) {
+      if (user(id).customId !== customId) throw new Error("not linked");
+      user(id, { customId: "" });
+    },
+    authenticateCustom(customId: string, _username?: string, create = true) {
+      const found = [...users.values()].find((u) => u.customId === customId);
+      if (found === undefined) {
+        if (!create) throw new Error("account not found");
+        throw new Error("create is not supported in the fake");
+      }
+      return { userId: found.userId, username: found.username, created: false };
+    },
+    base64Encode: (text: string) => Buffer.from(text).toString("base64"),
     accountExportId: (id: string) => JSON.stringify({ account: { user: toUser(user(id)) } }),
     accountDeleteId(id: string) {
       deleted.push(id);
+      devices.delete(id);
+    },
+    linkDevice(id: string, deviceId: string) {
+      const owner = [...devices.entries()].find(([, ids]) => ids.includes(deviceId));
+      if (owner !== undefined && owner[0] !== id) throw new Error("device id in use");
+      devices.set(id, [...(devices.get(id) ?? []).filter((d) => d !== deviceId), deviceId]);
     },
     sessionLogout(id: string) {
       loggedOut.push(id);
