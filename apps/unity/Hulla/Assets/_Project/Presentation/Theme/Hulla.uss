@@ -2471,3 +2471,10 @@
 .hand--left .table__bar {
     flex-direction: row-reverse;
 }
+
+/* The phone number screen (GDD 10.2). */
+.phone__text {
+    white-space: normal;
+    margin-top: var(--space-1);
+    margin-bottom: var(--space-2);
+}

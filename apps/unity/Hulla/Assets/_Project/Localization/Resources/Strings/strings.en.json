@@ -642,6 +642,36 @@
    "smart": false
   },
   {
+   "key": "error.auth.otp_country",
+   "text": "Phone sign-in isn't available for that country yet.",
+   "smart": false
+  },
+  {
+   "key": "error.auth.otp_expired",
+   "text": "That code has expired. Ask for a new one.",
+   "smart": false
+  },
+  {
+   "key": "error.auth.otp_invalid_phone",
+   "text": "That number doesn't look right. Start with + and the country code.",
+   "smart": false
+  },
+  {
+   "key": "error.auth.otp_rate_limited",
+   "text": "Too many codes for now. Try again in a little while.",
+   "smart": false
+  },
+  {
+   "key": "error.auth.otp_unavailable",
+   "text": "Phone sign-in isn't working right now. Try again later.",
+   "smart": false
+  },
+  {
+   "key": "error.auth.otp_wrong_code",
+   "text": "That code isn't right. Check the text and try again.",
+   "smart": false
+  },
+  {
    "key": "error.auth.update_required",
    "text": "Please update Hulla to keep playing.",
    "smart": false
@@ -1374,6 +1404,81 @@
   {
    "key": "nav.pass",
    "text": "Pass",
+   "smart": false
+  },
+  {
+   "key": "phone.code_label",
+   "text": "The code from the text",
+   "smart": false
+  },
+  {
+   "key": "phone.intro",
+   "text": "Add your number to sign in with it on any phone. Nobody else sees it.",
+   "smart": false
+  },
+  {
+   "key": "phone.linked",
+   "text": "Your number is linked. Sign in with it on any phone.",
+   "smart": false
+  },
+  {
+   "key": "phone.number_label",
+   "text": "Your number, with the country code",
+   "smart": false
+  },
+  {
+   "key": "phone.offer",
+   "text": "This number already has a Hulla account. Switch to it? What you have on this phone moves into it.",
+   "smart": false
+  },
+  {
+   "key": "phone.other_number",
+   "text": "Use a different number",
+   "smart": false
+  },
+  {
+   "key": "phone.remove",
+   "text": "Remove number",
+   "smart": false
+  },
+  {
+   "key": "phone.removed",
+   "text": "Number removed.",
+   "smart": false
+  },
+  {
+   "key": "phone.send",
+   "text": "Send code",
+   "smart": false
+  },
+  {
+   "key": "phone.sent",
+   "text": "We sent a code to {0}.",
+   "smart": true
+  },
+  {
+   "key": "phone.settings_action",
+   "text": "Phone number",
+   "smart": false
+  },
+  {
+   "key": "phone.switch",
+   "text": "Switch account",
+   "smart": false
+  },
+  {
+   "key": "phone.switched",
+   "text": "Signed in. Welcome back!",
+   "smart": false
+  },
+  {
+   "key": "phone.title",
+   "text": "Phone number",
+   "smart": false
+  },
+  {
+   "key": "phone.verify",
+   "text": "Confirm",
    "smart": false
   },
   {

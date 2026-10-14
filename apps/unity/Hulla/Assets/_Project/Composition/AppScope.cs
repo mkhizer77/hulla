@@ -44,6 +44,7 @@ namespace Hulla.Composition
             DailyReward = new DailyRewardViewModel(new NakamaDailyRewardService(_connection));
             Leaderboard = new LeaderboardViewModel(new NakamaLeaderboardService(_connection));
             Ranked = new RankedViewModel(new NakamaRankedService(_connection));
+            Phone = new PhoneViewModel(new NakamaPhoneService(_connection, _sessionService));
             Achievements = new AchievementsViewModel(new NakamaAchievementsService(_connection));
             Shop = new ShopViewModel(new NakamaShopService(_connection));
             NotificationsService = new NakamaNotificationsService(_connection);
@@ -93,6 +94,8 @@ namespace Hulla.Composition
         public LeaderboardViewModel Leaderboard { get; }
 
         public RankedViewModel Ranked { get; }
+
+        public PhoneViewModel Phone { get; }
 
         public AchievementsViewModel Achievements { get; }
 
