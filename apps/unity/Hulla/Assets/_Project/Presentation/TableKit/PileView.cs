@@ -26,8 +26,8 @@ namespace Hulla.Presentation.TableKit
             Discard,
         }
 
-        public const int StaggerMs = 40;
-        public const int PickupMs = 400;
+        public const int StaggerMs = 70;
+        public const int PickupMs = 460;
 
         private readonly VisualElement _pile;
         private readonly List<string> _shown = new List<string>();
@@ -132,19 +132,20 @@ namespace Hulla.Presentation.TableKit
                     var target = targetOf(id) ?? fallback;
                     var from = face?.worldBound ?? card.worldBound;
                     var delta = target.center - from.center;
+                    card.Q<Label>(className: "pile__owner")?.RemoveFromHierarchy();
                     if (flight == Flight.SlotIn)
                     {
-                        // The card keeps its size and straightens as it settles into the fan; the
-                        // owner's tag stays behind.
-                        card.Q<Label>(className: "pile__owner")?.RemoveFromHierarchy();
+                        // The card keeps its size and straightens as it settles into the fan.
                         card.AddToClassList("pile__slot--slot-in");
                         card.style.rotate = new Rotate(0f);
                     }
                     else
                     {
+                        // Down to the size of the discard stack's cards, or into the picker's badge.
                         card.AddToClassList("pile__slot--pickup");
-                        var shrink = flight == Flight.Discard ? 0.45f : 0.5f;
+                        var shrink = flight == Flight.Discard && from.width > 0f ? Mathf.Clamp(target.width / from.width, 0.3f, 1f) : 0.45f;
                         card.style.scale = new Scale(new Vector2(shrink, shrink));
+                        card.style.rotate = new Rotate(flight == Flight.Discard ? 0f : -12f);
                     }
 
                     card.style.translate = new Translate(delta.x, delta.y);
@@ -186,16 +187,27 @@ namespace Hulla.Presentation.TableKit
                 return;
             }
 
+            // The card starts where it was (the slot it held in the hand, or the seat's badge) at that size,
+            // upright, and travels to its place in the trick, turning to its angle on the way.
+            var angle = slot.style.rotate.value.angle.value;
+            slot.AddToClassList("pile__slot--flying");
             void Fly(GeometryChangedEvent evt)
             {
                 slot.UnregisterCallback<GeometryChangedEvent>(Fly);
-                var delta = from.Value.center - slot.worldBound.center;
+                var to = card.worldBound;
+                var delta = from.Value.center - to.center;
+                var scale = to.width > 0f ? Mathf.Clamp(from.Value.width / to.width, 0.35f, 1.4f) : 1f;
                 slot.style.translate = new Translate(delta.x, delta.y);
+                slot.style.scale = new Scale(new Vector2(scale, scale));
+                slot.style.rotate = new Rotate(0f);
                 slot.schedule.Execute(() =>
                 {
                     slot.AddToClassList("pile__slot--fly");
                     slot.style.translate = new Translate(0f, 0f);
+                    slot.style.scale = new Scale(Vector2.one);
+                    slot.style.rotate = new Rotate(angle);
                 }).StartingIn(16);
+                slot.schedule.Execute(() => slot.RemoveFromClassList("pile__slot--flying")).StartingIn(360);
             }
 
             slot.RegisterCallback<GeometryChangedEvent>(Fly);

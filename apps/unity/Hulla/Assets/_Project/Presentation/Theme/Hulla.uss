@@ -391,10 +391,14 @@
 .discard {
     display: none;
     position: absolute;
-    left: 36px;
-    top: 50%;
-    translate: 0 -50%;
+    left: 12%;
+    bottom: 10%;
+    flex-direction: row;
     align-items: center;
+}
+
+.discard__text {
+    margin-left: 14px;
 }
 
 .discard__stack {
@@ -566,12 +570,26 @@
     translate: 0 -24px;
 }
 
-.card--dim {
-    opacity: 0.4;
+/* A card that cannot be played, or the last trick at rest: a shade over the face, never transparency,
+   so overlapping cards do not show through each other. */
+.card__shade {
+    display: none;
+    position: absolute;
+    left: -2px;
+    top: -2px;
+    right: -2px;
+    bottom: -8px;
+    border-radius: 16px;
+    background-color: rgba(18, 16, 26, 0.42);
 }
 
-.card--faded {
-    opacity: 0.6;
+.card--dim > .card__shade {
+    display: flex;
+}
+
+.card--faded > .card__shade {
+    display: flex;
+    background-color: rgba(18, 16, 26, 0.3);
 }
 
 .results {
@@ -729,10 +747,15 @@
     font-size: var(--font-small);
 }
 
+/* A played card travels from the hand or the seat to the trick, growing or shrinking to its size there. */
 .pile__slot--fly {
-    transition-property: translate;
-    transition-duration: 220ms;
+    transition-property: translate, scale, rotate;
+    transition-duration: 340ms;
     transition-timing-function: ease-out-cubic;
+}
+
+.pile__slot--flying > .pile__owner {
+    opacity: 0;
 }
 
 .pile__slot--fade-start {
@@ -1371,9 +1394,11 @@
     scale: 1.25 1.25;
 }
 
+/* A resolved trick travels to the discard or the picker and stays solid until it is there. */
 .pile__slot--pickup {
-    transition-property: translate, scale, opacity;
-    transition-duration: 400ms;
+    transition-property: translate, scale, rotate, opacity;
+    transition-duration: 460ms, 460ms, 460ms, 100ms;
+    transition-delay: 0ms, 0ms, 0ms, 380ms;
     transition-timing-function: ease-in-out-cubic;
 }
 
@@ -1387,8 +1412,8 @@
    card in the fan takes over. */
 .pile__slot--slot-in {
     transition-property: translate, rotate, opacity;
-    transition-duration: 400ms, 400ms, 120ms;
-    transition-delay: 0ms, 0ms, 300ms;
+    transition-duration: 460ms, 460ms, 100ms;
+    transition-delay: 0ms, 0ms, 380ms;
     transition-timing-function: ease-in-out-cubic;
 }
 
@@ -2281,9 +2306,11 @@
 }
 
 .me-badge .seat__avatar {
-    width: 76px;
-    height: 76px;
-    border-radius: 38px;
+    width: 84px;
+    height: 84px;
+    min-width: 84px;
+    flex-shrink: 0;
+    border-radius: 42px;
     border-width: 3px;
 }
 
@@ -2440,7 +2467,7 @@
 
 .me-badge {
     margin: 0;
-    padding: 8px 26px 8px 8px;
+    padding: 10px 34px 10px 14px;
     border-radius: 999px;
     background-color: rgba(10, 12, 14, 0.82);
     border-width: 2px;
@@ -2452,10 +2479,11 @@
 }
 
 .me-badge .seat__name {
-    margin-left: 14px;
+    margin-left: 20px;
     padding: 0;
     background-color: rgba(0, 0, 0, 0);
-    font-size: 30px;
+    font-size: 34px;
+    -unity-font-style: bold;
 }
 
 .seat--turn.me-badge .seat__name {

@@ -38,6 +38,10 @@
     flex-direction: row-reverse;
 }
 
+.rtl .discard {
+    flex-direction: row-reverse;
+}
+
 .rtl .table__bar {
     flex-direction: row-reverse;
 }

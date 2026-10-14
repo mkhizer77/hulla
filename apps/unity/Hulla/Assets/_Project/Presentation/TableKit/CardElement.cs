@@ -48,6 +48,12 @@ namespace Hulla.Presentation.TableKit
             bottom.Add(_rankBottom);
             bottom.Add(_suitBottom);
             Add(bottom);
+
+            // A card that cannot be played now is shaded, not see-through: the cards behind it in the fan
+            // never show through it.
+            var shade = new VisualElement { pickingMode = PickingMode.Ignore };
+            shade.AddToClassList("card__shade");
+            Add(shade);
             pickingMode = PickingMode.Position;
             foreach (var child in new VisualElement[] { top, bottom, _rank, _suit, _court, _field, _rankBottom, _suitBottom })
             {
