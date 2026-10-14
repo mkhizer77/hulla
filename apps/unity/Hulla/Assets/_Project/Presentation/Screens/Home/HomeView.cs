@@ -36,6 +36,8 @@ namespace Hulla.Presentation.Screens.Home
         private readonly Label _online;
         private readonly VisualElement _party;
         private readonly Button _quick;
+        private bool _quickAvailable = true;
+        private string? _note;
         private int _seats = 4;
 
         /// <param name="server">The server to show in a development build, or null to hide the field.</param>
@@ -293,12 +295,20 @@ namespace Hulla.Presentation.Screens.Home
             _online.text = names.ToString();
         }
 
+        /// <summary>The server can rest Quick Play (remote config, maintenance); the note says why.</summary>
+        public void SetQuickPlay(bool available, string? note)
+        {
+            _quickAvailable = available;
+            _note = note;
+            Refresh();
+        }
+
         private void Refresh()
         {
             _create.SetEnabled(!_model.Busy);
             _join.SetEnabled(!_model.Busy);
-            _quick.SetEnabled(!_model.Busy);
-            _status.text = _model.Busy ? UiText.Connecting : _model.ErrorCode == null ? "" : UiText.Error(_model.ErrorCode);
+            _quick.SetEnabled(!_model.Busy && _quickAvailable);
+            _status.text = _model.Busy ? UiText.Connecting : _model.ErrorCode != null ? UiText.Error(_model.ErrorCode) : _note ?? "";
         }
     }
 }
