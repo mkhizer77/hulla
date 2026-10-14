@@ -2,7 +2,19 @@
   Keeps the generated protocol types whole in IL2CPP builds. Newtonsoft reads and writes them through
   reflection, so the linker cannot see that a getter like Ready.ReadyReady is used and strips it; the
   message then goes out as {} (a phone's Ready did nothing).
+  The string tables (ADR-0023) are read by JsonUtility into Strings' nested types and formatted by
+  the Localization package's Smart Strings engine, whose formatters are found by name.
 -->
 <linker>
   <assembly fullname="Hulla.Protocol" preserve="all" />
+  <assembly fullname="Hulla.Presentation">
+    <type fullname="Hulla.Presentation.Text.Strings/File" preserve="all" />
+    <type fullname="Hulla.Presentation.Text.Strings/FileEntry" preserve="all" />
+  </assembly>
+  <assembly fullname="Unity.Localization">
+    <namespace fullname="UnityEngine.Localization.SmartFormat" preserve="all" />
+    <namespace fullname="UnityEngine.Localization.SmartFormat.Core.Extensions" preserve="all" />
+    <namespace fullname="UnityEngine.Localization.SmartFormat.Extensions" preserve="all" />
+    <namespace fullname="UnityEngine.Localization.SmartFormat.Utilities" preserve="all" />
+  </assembly>
 </linker>

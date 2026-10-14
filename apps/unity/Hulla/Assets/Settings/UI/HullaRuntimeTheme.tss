@@ -1,3 +1,4 @@
 @import url("unity-theme://default");
 @import url("/Assets/_Project/Presentation/Theme/Hulla.uss");
 @import url("/Assets/_Project/Presentation/Theme/Skins.uss");
+@import url("/Assets/_Project/Presentation/Theme/Rtl.uss");

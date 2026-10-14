@@ -70,6 +70,8 @@ namespace Hulla.Presentation.Navigation
             var banner = root.Q("shell-banner");
             var nav = root.Q("shell-nav");
             root.Clear();
+            // A right-to-left locale mirrors rows and side-aligned text (Theme/Rtl.uss, GDD 26.1).
+            root.EnableInClassList("rtl", Text.Strings.RightToLeft);
             var instance = screen.Instantiate();
             instance.style.flexGrow = 1;
             instance.AddToClassList("screen-anim");

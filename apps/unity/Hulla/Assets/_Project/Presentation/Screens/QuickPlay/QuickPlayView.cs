@@ -36,7 +36,7 @@ namespace Hulla.Presentation.Screens.QuickPlay
             if (seconds != _shownSeconds)
             {
                 _shownSeconds = seconds;
-                _elapsed.text = seconds + "s";
+                _elapsed.text = Strings.Get("ui.seconds_short", seconds);
             }
 
             switch (_model.Current)

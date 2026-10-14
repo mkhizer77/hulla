@@ -2,6 +2,7 @@ import { readdirSync, readFileSync, statSync } from "node:fs";
 import { join, relative } from "node:path";
 
 import { problemsOf, type StringsFile } from "./export";
+import { hardcodedText, unknownKeys } from "./lint";
 
 /**
  * `pnpm content:validate`: the strings parse, translations keep the English arguments, and every
@@ -54,16 +55,26 @@ function main(): void {
     .map((n) => JSON.parse(readFileSync(join(dir, n), "utf8")) as StringsFile);
   const english = files.find((f) => f.locale === "en");
   if (english === undefined) throw new Error("content/strings/en.json is missing");
+  const unity = join(content, "..", "apps", "unity", "Hulla");
+  const lint = [
+    ...hardcodedText(unity).map(
+      (p) => `${p.file}:${String(p.line)}: text "${p.text}" belongs in content/strings`,
+    ),
+    ...unknownKeys(unity, new Set(Object.keys(english.strings))).map(
+      (p) => `${p.file}:${String(p.line)}: "${p.text}" is not in content/strings/en.json`,
+    ),
+  ];
   const problems = [
     ...files.flatMap((f) => problemsOf(f, f === english ? null : english)),
     ...contentKeyProblems(content, english),
+    ...lint,
   ];
   for (const problem of problems) console.error(problem);
   if (problems.length > 0) {
     console.error(`strings: ${String(problems.length)} problem(s)`);
     process.exit(1);
   }
-  console.log("strings: every key parses and every content key has English");
+  console.log("strings: every key parses, every content key has English, no hard-coded text");
 }
 
 if (process.argv[1]?.endsWith("check.ts") === true) main();

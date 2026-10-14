@@ -218,7 +218,7 @@ namespace Hulla.Games.Thulla
             return avatar;
         }
 
-        public static string Ordinal(int place) => place switch { 1 => "1st", 2 => "2nd", 3 => "3rd", _ => place + "th" };
+        public static string Ordinal(int place) => Strings.Get("ui.ordinal", place);
 
         /// <summary>Per frame while the overlay shows: the rematch countdown and the accepted avatars.</summary>
         public void Tick(TableModel model, bool voted, long nowMs)
@@ -263,7 +263,7 @@ namespace Hulla.Games.Thulla
                 text = (text.Length > 0 ? text + " " : "") + Strings.Format(UiText.RematchVotes, votes, players);
             }
 
-            _playAgain.text = seconds >= 0 ? UiText.PlayAgain + " · " + seconds + "s" : UiText.PlayAgain;
+            _playAgain.text = seconds >= 0 ? Strings.Get("ui.play_again_countdown", seconds) : UiText.PlayAgain;
             _status.text = text;
         }
 

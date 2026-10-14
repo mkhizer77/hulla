@@ -1,7 +1,9 @@
 import { mkdirSync, readdirSync, readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 
-import { argumentsOf, parse } from "./icu";
+import { argumentsOf, parse, type Part } from "./icu";
+import { accented, PSEUDO_LOCALES } from "./pseudo";
+import { rtlStyles } from "./rtl";
 import { toSmart } from "./smart";
 
 /**
@@ -47,8 +49,16 @@ export function problemsOf(file: StringsFile, english: StringsFile | null): stri
   return problems;
 }
 
+/** Locales whose tables the shell mirrors. */
+export const RTL_LOCALES: readonly string[] = ["ar", "ur", "fa", "he", PSEUDO_LOCALES.mirrored];
+
+export function isRtl(locale: string): boolean {
+  return RTL_LOCALES.includes(locale) || RTL_LOCALES.includes(locale.split("-")[0] ?? "");
+}
+
 export interface UnityTable {
   readonly locale: string;
+  readonly rtl: boolean;
   readonly entries: readonly {
     readonly key: string;
     readonly text: string;
@@ -56,13 +66,25 @@ export interface UnityTable {
   }[];
 }
 
-export function unityTable(file: StringsFile): UnityTable {
+export function unityTable(
+  file: StringsFile,
+  transform: (parts: readonly Part[]) => readonly Part[] = (parts) => parts,
+): UnityTable {
   return {
     locale: file.locale,
+    rtl: isRtl(file.locale),
     entries: Object.keys(file.strings)
       .sort()
-      .map((key) => ({ key, ...toSmart(parse(file.strings[key] ?? ""), file.locale) })),
+      .map((key) => ({ key, ...toSmart(transform(parse(file.strings[key] ?? "")), file.locale) })),
   };
+}
+
+/** The pseudo-locales' tables, made from English (GDD 26.1). */
+export function pseudoTables(english: StringsFile): UnityTable[] {
+  return [
+    unityTable({ ...english, locale: PSEUDO_LOCALES.accented }, accented),
+    unityTable({ ...english, locale: PSEUDO_LOCALES.mirrored }),
+  ];
 }
 
 function main(): void {
@@ -106,6 +128,18 @@ function main(): void {
       `${JSON.stringify({ locale: file.locale, strings: sorted }, null, 1)}\n`,
     );
   }
+  for (const table of pseudoTables(english)) {
+    writeFileSync(
+      join(unityDir, `strings.${table.locale}.json`),
+      `${JSON.stringify(table, null, 1)}\n`,
+    );
+  }
+  const theme = join(root, "apps", "unity", "Hulla", "Assets", "_Project", "Presentation");
+  const sheets: Record<string, string> = {};
+  for (const sheet of ["Theme/Hulla.uss", "Theme/Skins.uss", "Screens/Ranked/Ranked.uss"]) {
+    sheets[sheet] = readFileSync(join(theme, sheet), "utf8");
+  }
+  writeFileSync(join(theme, "Theme", "Rtl.uss"), rtlStyles(sheets));
   console.log(
     `strings: ${String(files.length)} locale(s), ${String(Object.keys(english.strings).length)} keys`,
   );

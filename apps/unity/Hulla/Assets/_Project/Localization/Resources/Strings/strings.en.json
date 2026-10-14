@@ -1,5 +1,6 @@
 {
  "locale": "en",
+ "rtl": false,
  "entries": [
   {
    "key": "achievement.bhabhis_50.description",
@@ -825,6 +826,11 @@
    "key": "error.unknown",
    "text": "Something went wrong ({0})",
    "smart": true
+  },
+  {
+   "key": "format.date_long",
+   "text": "d MMMM yyyy",
+   "smart": false
   },
   {
    "key": "frame.f00",
@@ -2267,6 +2273,26 @@
    "smart": false
   },
   {
+   "key": "tutorial.player_bilal",
+   "text": "Bilal",
+   "smart": false
+  },
+  {
+   "key": "tutorial.player_noor",
+   "text": "Noor",
+   "smart": false
+  },
+  {
+   "key": "tutorial.player_sara",
+   "text": "Sara",
+   "smart": false
+  },
+  {
+   "key": "tutorial.player_you",
+   "text": "You",
+   "smart": false
+  },
+  {
    "key": "tutorial.refresher",
    "text": "20-second refresher",
    "smart": false
@@ -2700,6 +2726,21 @@
    "key": "ui.double_xp",
    "text": "double XP",
    "smart": false
+  },
+  {
+   "key": "ui.duration_days_hours",
+   "text": "{0}d {1}h",
+   "smart": true
+  },
+  {
+   "key": "ui.duration_hours_minutes",
+   "text": "{0}h {1}m",
+   "smart": true
+  },
+  {
+   "key": "ui.duration_minutes",
+   "text": "{0}m",
+   "smart": true
   },
   {
    "key": "ui.edit_rules",
@@ -3182,6 +3223,11 @@
    "smart": false
   },
   {
+   "key": "ui.ordinal",
+   "text": "{0:choose(1|2|3):1st|2nd|3rd|{0}th}",
+   "smart": true
+  },
+  {
    "key": "ui.out_watching",
    "text": "Out · watching",
    "smart": false
@@ -3215,6 +3261,11 @@
    "key": "ui.play_again",
    "text": "Play again",
    "smart": false
+  },
+  {
+   "key": "ui.play_again_countdown",
+   "text": "Play again · {0}s",
+   "smart": true
   },
   {
    "key": "ui.play_now",
@@ -3495,6 +3546,11 @@
    "key": "ui.seats_next",
    "text": "next round",
    "smart": false
+  },
+  {
+   "key": "ui.seconds_short",
+   "text": "{0}s",
+   "smart": true
   },
   {
    "key": "ui.send",

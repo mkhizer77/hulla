@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using Hulla.Application.Tutorial;
+using Hulla.Presentation.Text;
 
 namespace Hulla.Games.Thulla
 {
@@ -9,7 +10,13 @@ namespace Hulla.Games.Thulla
     /// </summary>
     public static class ThullaTutorial
     {
-        private static readonly string[] Table = { "You", "Sara", "Bilal", "Noor" };
+        private static string[] Table => new[]
+        {
+            Strings.Text("tutorial.player_you"),
+            Strings.Text("tutorial.player_sara"),
+            Strings.Text("tutorial.player_bilal"),
+            Strings.Text("tutorial.player_noor"),
+        };
 
         public static IReadOnlyList<TutorialStep> Steps() => new[]
         {
