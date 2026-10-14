@@ -4,7 +4,7 @@
             <ui:Label name="title" class="title title--small" />
             <ui:Button name="close" class="button button--primary button--small" />
         </ui:VisualElement>
-        <ui:ScrollView class="settings__scroll">
+        <ui:ScrollView class="settings__scroll" horizontal-scroller-visibility="Hidden" vertical-scroller-visibility="Hidden">
             <ui:VisualElement name="list" />
         </ui:ScrollView>
     </ui:VisualElement>

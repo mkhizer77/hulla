@@ -59,10 +59,14 @@ namespace Hulla.Presentation.Screens.Pass
                 return;
             }
 
+            var header = new VisualElement();
+            header.AddToClassList("panel");
+            header.AddToClassList("pass__header");
+            _list.Add(header);
             var heading = new Label(SeasonName(info.SeasonName));
             heading.AddToClassList("title");
             heading.AddToClassList("title--small");
-            _list.Add(heading);
+            header.Add(heading);
             var line = info.Tier >= info.Tiers.Count
                 ? Strings.Format(UiText.PassComplete, info.Tiers.Count)
                 : Strings.Format(UiText.PassProgress, info.Tier, info.Tiers.Count, info.IntoTier, info.XpPerTier);
@@ -74,13 +78,14 @@ namespace Hulla.Presentation.Screens.Pass
 
             var progress = new Label(line);
             progress.AddToClassList("status");
-            _list.Add(progress);
+            header.Add(progress);
+            header.Add(new Meter(info.Tier >= info.Tiers.Count ? 1 : info.IntoTier, info.Tier >= info.Tiers.Count ? 1 : info.XpPerTier));
             if (!info.Premium)
             {
                 var locked = new Label(UiText.PremiumLocked);
                 locked.AddToClassList("caption");
                 locked.style.whiteSpace = WhiteSpace.Normal;
-                _list.Add(locked);
+                header.Add(locked);
             }
 
             foreach (var tier in info.Tiers)

@@ -78,13 +78,13 @@ namespace Hulla.Presentation.Screens.Friends
             Section(UiText.Requests, _model.Received, entry => new[]
             {
                 Action(UiText.Accept, () => _actions.Add(entry.UserId), true),
-                Action(UiText.Decline, () => _actions.Remove(entry.UserId)),
+                Action(UiText.Decline, () => _actions.Remove(entry.UserId), danger: true),
             });
             Section(UiText.FriendsList, _model.Friends, entry => new[]
             {
                 Action(entry.Favourite ? UiText.Favourite : UiText.NotFavourite, () => _actions.Favourite(entry)),
-                Action(UiText.Remove, () => _actions.Remove(entry.UserId)),
-                Action(UiText.Block, () => _actions.Block(entry.UserId)),
+                Action(UiText.Remove, () => _actions.Remove(entry.UserId), danger: true),
+                Action(UiText.Block, () => _actions.Block(entry.UserId), danger: true),
             }, UiText.NoFriendsYet);
             Section(UiText.SentRequests, _model.Sent, entry => new[] { Action(UiText.CancelRequest, () => _actions.Remove(entry.UserId)) });
             Section(UiText.Recent, _model.Recent, entry => new[] { Action(UiText.AddFriend, () => _actions.Add(entry.UserId), true) });
@@ -132,7 +132,7 @@ namespace Hulla.Presentation.Screens.Friends
             }
         }
 
-        private static Button Action(string text, Action click, bool primary = false)
+        private static Button Action(string text, Action click, bool primary = false, bool danger = false)
         {
             var button = new Button(click) { text = text };
             button.AddToClassList("chip");
@@ -140,6 +140,8 @@ namespace Hulla.Presentation.Screens.Friends
             {
                 button.AddToClassList("chip--on");
             }
+
+            button.EnableInClassList("button--danger", danger);
 
             return button;
         }

@@ -175,6 +175,15 @@ namespace Hulla.Screens.Tests
                 }));
         }
 
+        public sealed class Progress : Hulla.Application.Progress.IProgressService
+        {
+            public Awaitable<Result<Hulla.Application.Progress.ProgressInfo>> ProgressAsync(int tzOffsetMinutes, CancellationToken c) =>
+                Done(Result<Hulla.Application.Progress.ProgressInfo>.Ok(new Hulla.Application.Progress.ProgressInfo(7, 1240, 140, 275, 120, 3, new List<string>(), null)));
+
+            public Awaitable<Result<(long Coins, long Gems)>> BalancesAsync(CancellationToken c) =>
+                Done(Result<(long Coins, long Gems)>.Ok((12480L, 35L)));
+        }
+
         public sealed class Phone : IPhoneService
         {
             public bool Linked;

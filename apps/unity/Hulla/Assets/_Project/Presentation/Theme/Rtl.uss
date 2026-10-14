@@ -38,6 +38,10 @@
     flex-direction: row-reverse;
 }
 
+.rtl .discard {
+    flex-direction: row-reverse;
+}
+
 .rtl .table__bar {
     flex-direction: row-reverse;
 }
@@ -294,7 +298,7 @@
     flex-direction: row;
 }
 
-.rtl .games .unity-scroll-view__content-container {
+.rtl .game--soon {
     flex-direction: row-reverse;
 }
 
@@ -316,6 +320,14 @@
 
 .rtl .home__row {
     flex-direction: row-reverse;
+}
+
+.rtl .game--soon .game__name {
+    -unity-text-align: middle-right;
+}
+
+.rtl .game--soon .game__line {
+    -unity-text-align: middle-right;
 }
 
 /* Theme/Skins.uss */

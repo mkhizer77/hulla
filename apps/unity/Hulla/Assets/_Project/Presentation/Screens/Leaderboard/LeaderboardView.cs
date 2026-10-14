@@ -118,6 +118,10 @@ namespace Hulla.Presentation.Screens.Leaderboard
 
             var rank = new Label(row.Rank.ToString());
             rank.AddToClassList("leaderboard__rank");
+            if (row.Rank is >= 1 and <= 3)
+            {
+                rank.AddToClassList("leaderboard__rank--" + row.Rank);
+            }
             line.Add(rank);
             var name = new Label(mine ? Strings.Format(UiText.YouAre, row.Name) : row.Name);
             name.AddToClassList("leaderboard__name");

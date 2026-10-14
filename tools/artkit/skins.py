@@ -181,7 +181,7 @@ def suit(draw: ImageDraw.ImageDraw, cx: float, cy: float, size: float, kind: str
 # ---------------------------------------------------------------- backdrops
 
 
-def backdrop_haveli() -> Image.Image:
+def backdrop_haveli(floor_on: bool = True) -> Image.Image:
     img = vertical((W, H), [(0, hexc("3A1A10")), (0.55, hexc("2A120A")), (1, hexc("160803"))])
     img.alpha_composite(glow_layer((W, H), (W / 2, 260), 760, hexc("FFAA50"), 90))
     big_img, d = big((W, H))
@@ -202,6 +202,8 @@ def backdrop_haveli() -> Image.Image:
     for i in range(0, W, 36):
         d.ellipse([s(i + 10), s(arch_h + 5), s(i + 22), s(arch_h + 17)], fill=rgba(hexc("C9973F"), 110))
     img.alpha_composite(down(big_img))
+    if not floor_on:
+        return vignette(img, 190, 0.5).convert("RGB")
     # A floor of tiles in perspective.
     floor_top = 1240
     floor = Image.new("RGBA", (W, H - floor_top), (0, 0, 0, 0))
@@ -223,7 +225,7 @@ def backdrop_haveli() -> Image.Image:
     return vignette(img, 190, 0.5).convert("RGB")
 
 
-def backdrop_dhaba() -> Image.Image:
+def backdrop_dhaba(floor_on: bool = True) -> Image.Image:
     img = vertical((W, H), [(0, hexc("10163F")), (0.32, hexc("2C2160")), (0.5, hexc("4A2A5A")), (0.62, hexc("5A2E4E")), (1, hexc("3A2228"))])
     rng = random.Random(4)
     d = ImageDraw.Draw(img, "RGBA")
@@ -245,6 +247,9 @@ def backdrop_dhaba() -> Image.Image:
                     if rng.random() < 0.18:
                         d.rectangle([wx, wy, wx + 8, wy + 11], fill=(255, 207, 90, rng.randint(90, 180)))
             x += bw + rng.randint(0, 12)
+    if not floor_on:
+        img = grain(img, 8, 3)
+        return vignette(img, 150, 0.55).convert("RGB")
     # A water tank on a stand, the rooftop parapet and the floor of the roof.
     d.rectangle([840, 760, 1000, 900], fill=rgba(hexc("1E1846")))
     d.rectangle([860, 900, 870, 1000], fill=rgba(hexc("1E1846")))
@@ -263,7 +268,7 @@ def backdrop_dhaba() -> Image.Image:
     return vignette(img, 150, 0.55).convert("RGB")
 
 
-def backdrop_club() -> Image.Image:
+def backdrop_club(floor_on: bool = True) -> Image.Image:
     img = radial((W, H), (W / 2, H * 0.42), (W * 0.95, H * 0.62), hexc("2A3A78"), hexc("0A0F26"))
     big_img, d = big((W, H))
     # A damask wall: medallions on a diamond lattice, barely there.
@@ -277,6 +282,8 @@ def backdrop_club() -> Image.Image:
             d.line([s(cx), s(cy + 30), s(cx + step / 2), s(cy + step / 2)], fill=(255, 255, 255, 8), width=s(2))
             d.line([s(cx), s(cy + 30), s(cx - step / 2), s(cy + step / 2)], fill=(255, 255, 255, 8), width=s(2))
     img.alpha_composite(down(big_img))
+    if not floor_on:
+        return vignette(img, 200, 0.45).convert("RGB")
     # A wainscot rail low on the wall.
     d2 = ImageDraw.Draw(img, "RGBA")
     d2.rectangle([0, 1500, W, H], fill=(6, 8, 22, 150))
@@ -700,6 +707,34 @@ def nine(fill_top: RGB, fill_bottom: RGB, *, outline: RGB | None = None, outline
     return img
 
 
+# Secondary actions: a see-through body in the theme's dark with an accent outline, so the one
+# glossy primary button on a screen stands out and the rest stay calm and readable.
+GHOST: dict[str, tuple[RGB, RGB]] = {
+    "haveli": (hexc("2E170A"), hexc("C9973F")),
+    "dhaba": (hexc("111111"), hexc("FFD23F")),
+    "club": (hexc("0E1430"), hexc("8FB0FF")),
+    "mehndi": (hexc("300520"), hexc("FFC233")),
+    "adda": (hexc("1E0E04"), hexc("E8B25A")),
+}
+
+
+def ghost(kind: str) -> Image.Image:
+    fill, accent = GHOST[kind]
+    w, h, radius, line = 160, 112, 40, 3
+    big_img, d = big((w, h))
+    d.rounded_rectangle([s(3), s(3), s(w - 4), s(h - 4)], radius=s(radius), fill=rgba(fill, 150), outline=rgba(accent), width=s(line))
+    return down(big_img)
+
+
+def chip_on(kind: str) -> Image.Image:
+    """A selected chip: filled with the skin's accent, so a choice reads apart from the green call to action."""
+    _, accent = GHOST[kind]
+    w, h, radius = 160, 112, 40
+    big_img, d = big((w, h))
+    d.rounded_rectangle([s(3), s(3), s(w - 4), s(h - 4)], radius=s(radius), fill=rgba(accent, 235), outline=rgba(accent), width=s(3))
+    return down(big_img)
+
+
 def skin_nines(kind: str) -> dict[str, Image.Image]:
     if kind == "haveli":
         return {
@@ -927,6 +962,9 @@ def main() -> None:
         folder.mkdir(parents=True, exist_ok=True)
         backdrop = make_backdrop()
         backdrop.save(folder / "backdrop.png", optimize=True)
+        # Menus have no table, so no floor or rail across the bottom (the seam on Home and the lists).
+        menu = make_backdrop(False) if make_backdrop in (backdrop_haveli, backdrop_dhaba, backdrop_club) else backdrop
+        menu.save(folder / "menu.png", optimize=True)
         table = make_table()
         shadowed_table = Image.new("RGBA", (TABLE[0] + 60, TABLE[1] + 80), (0, 0, 0, 0))
         shadowed_table.alpha_composite(table, (30, 20))
@@ -935,6 +973,8 @@ def main() -> None:
         card_back(kind).save(folder / "back.png", optimize=True)
         for name, img in skin_nines(kind).items():
             img.save(folder / f"{name}.png", optimize=True)
+        ghost(kind).save(folder / "btn-ghost.png", optimize=True)
+        chip_on(kind).save(folder / "chip-on.png", optimize=True)
         preview(backdrop, table).save(folder / "preview.png", optimize=True)
     for p in sorted(OUT.rglob("*.png")):
         print(p.relative_to(OUT), p.stat().st_size)

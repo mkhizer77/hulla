@@ -54,10 +54,10 @@
 }
 
 .skinned .me-badge .seat__frame {
-    left: -11px;
-    top: -11px;
-    width: 98px;
-    height: 98px;
+    left: -14px;
+    top: -14px;
+    width: 112px;
+    height: 112px;
 }
 
 .skinned .seat__chip {
@@ -304,7 +304,13 @@
     color: #FFFFFF;
 }
 
-.skin--club .screen, .skin--club .table {
+.skin--club .screen {
+    background-color: #0A0F26;
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/club/menu.png");
+}
+
+/* The table keeps the backdrop with its floor; menus take the one without. */
+.skin--club .table {
     background-color: #0A0F26;
     background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/club/backdrop.png");
 }
@@ -365,7 +371,7 @@
     background-color: rgba(0, 0, 0, 0);
 }
 
-.skin--club .game__art {
+.skin--club .game__art, .skin--club .lobby-table {
     background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/club/table.png");
 }
 
@@ -423,7 +429,13 @@
     color: #F7E6C4;
 }
 
-.skin--haveli .screen, .skin--haveli .table {
+.skin--haveli .screen {
+    background-color: #1A0A05;
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/haveli/menu.png");
+}
+
+/* The table keeps the backdrop with its floor; menus take the one without. */
+.skin--haveli .table {
     background-color: #1A0A05;
     background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/haveli/backdrop.png");
 }
@@ -484,7 +496,7 @@
     background-color: rgba(0, 0, 0, 0);
 }
 
-.skin--haveli .game__art {
+.skin--haveli .game__art, .skin--haveli .lobby-table {
     background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/haveli/table.png");
 }
 
@@ -538,7 +550,13 @@
     color: #FFFFFF;
 }
 
-.skin--dhaba .screen, .skin--dhaba .table {
+.skin--dhaba .screen {
+    background-color: #141A4A;
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/dhaba/menu.png");
+}
+
+/* The table keeps the backdrop with its floor; menus take the one without. */
+.skin--dhaba .table {
     background-color: #141A4A;
     background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/dhaba/backdrop.png");
 }
@@ -599,7 +617,7 @@
     background-color: rgba(0, 0, 0, 0);
 }
 
-.skin--dhaba .game__art {
+.skin--dhaba .game__art, .skin--dhaba .lobby-table {
     background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/dhaba/table.png");
 }
 
@@ -658,7 +676,13 @@
     color: #FFF3E0;
 }
 
-.skin--mehndi .screen, .skin--mehndi .table {
+.skin--mehndi .screen {
+    background-color: #300520;
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/mehndi/menu.png");
+}
+
+/* The table keeps the backdrop with its floor; menus take the one without. */
+.skin--mehndi .table {
     background-color: #300520;
     background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/mehndi/backdrop.png");
 }
@@ -719,7 +743,7 @@
     background-color: rgba(0, 0, 0, 0);
 }
 
-.skin--mehndi .game__art {
+.skin--mehndi .game__art, .skin--mehndi .lobby-table {
     background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/mehndi/table.png");
 }
 
@@ -777,7 +801,13 @@
     color: #FFF4E2;
 }
 
-.skin--adda .screen, .skin--adda .table {
+.skin--adda .screen {
+    background-color: #2A1608;
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/adda/menu.png");
+}
+
+/* The table keeps the backdrop with its floor; menus take the one without. */
+.skin--adda .table {
     background-color: #2A1608;
     background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/adda/backdrop.png");
 }
@@ -838,7 +868,7 @@
     background-color: rgba(0, 0, 0, 0);
 }
 
-.skin--adda .game__art {
+.skin--adda .game__art, .skin--adda .lobby-table {
     background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/adda/table.png");
 }
 
@@ -915,4 +945,310 @@
 .skinned .theme-tile--on:hover:enabled {
     background-color: rgba(255, 255, 255, 0.1);
     border-color: var(--accent-saffron);
+}
+
+
+/* ======================================================================================
+ * The control kit (UI polish pass). One look across the five themes:
+ * - one glossy primary action per screen (.button--primary);
+ * - every other button is a see-through "ghost" with the theme's accent outline;
+ * - filter and choice chips are dark pills, the chosen one takes the primary art;
+ * - small row actions read at full contrast; destructive ones are red text;
+ * - fields, checkboxes, sliders and scroll bars are themed instead of Unity's defaults.
+ * ====================================================================================== */
+
+.skinned .button, .skinned .button--secondary, .skinned .chip--share {
+    -unity-slice-left: 44;
+    -unity-slice-right: 44;
+    -unity-slice-top: 40;
+    -unity-slice-bottom: 40;
+    padding-bottom: 0;
+    color: #FFFFFF;
+    font-size: var(--font-body);
+    -unity-font-style: bold;
+}
+
+.skinned .button--small {
+    font-size: var(--font-small);
+    padding: 0 28px;
+}
+
+.skinned .chip {
+    -unity-slice-left: 30;
+    -unity-slice-right: 30;
+    -unity-slice-top: 30;
+    -unity-slice-bottom: 30;
+    padding: 0 28px;
+    font-size: var(--font-small);
+    -unity-font-style: bold;
+    color: rgba(255, 255, 255, 0.82);
+}
+
+.skinned .button--primary {
+    -unity-slice-left: 48;
+    -unity-slice-right: 48;
+    -unity-slice-top: 44;
+    -unity-slice-bottom: 54;
+    padding-bottom: 8px;
+    color: #FFFFFF;
+}
+
+.skinned .chip--on {
+    -unity-slice-left: 30;
+    -unity-slice-right: 30;
+    -unity-slice-top: 30;
+    -unity-slice-bottom: 30;
+    padding-bottom: 0;
+}
+
+.skinned .button--danger {
+    color: #FF8A80;
+}
+
+.skin--club .button, .skin--club .button--secondary, .skin--club .chip--share {
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/club/btn-ghost.png");
+    color: #FFFFFF;
+}
+
+.skin--club .chip {
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/club/btn-ghost.png");
+}
+
+.skin--club .button--primary, .skin--club .chip--on, .skin--club .turn--mine {
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/club/btn-primary.png");
+}
+
+.skin--club .chip--on {
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/club/chip-on.png");
+    color: #0E1430;
+}
+
+.skin--club .button--quiet {
+    background-image: none;
+}
+
+.skin--club .table__pill, .skin--club .quick-strip__chip, .skin--club .quick-strip__more, .skin--club .table__chat {
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/club/pill.png");
+}
+
+.skin--club .unity-toggle__checkmark {
+    border-color: #8FB0FF;
+}
+
+.skin--club .unity-base-slider__dragger {
+    background-color: #8FB0FF;
+}
+
+.skin--club .field .unity-base-text-field__input {
+    border-color: #8FB0FF;
+}
+
+.skin--haveli .button, .skin--haveli .button--secondary, .skin--haveli .chip--share {
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/haveli/btn-ghost.png");
+    color: #F7E6C4;
+}
+
+.skin--haveli .chip {
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/haveli/btn-ghost.png");
+}
+
+.skin--haveli .button--primary, .skin--haveli .chip--on, .skin--haveli .turn--mine {
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/haveli/btn-primary.png");
+}
+
+.skin--haveli .chip--on {
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/haveli/chip-on.png");
+    color: #2E170A;
+}
+
+.skin--haveli .button--quiet {
+    background-image: none;
+}
+
+.skin--haveli .table__pill, .skin--haveli .quick-strip__chip, .skin--haveli .quick-strip__more, .skin--haveli .table__chat {
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/haveli/pill.png");
+}
+
+.skin--haveli .unity-toggle__checkmark {
+    border-color: #C9973F;
+}
+
+.skin--haveli .unity-base-slider__dragger {
+    background-color: #C9973F;
+}
+
+.skin--haveli .field .unity-base-text-field__input {
+    border-color: #C9973F;
+}
+
+.skin--dhaba .button, .skin--dhaba .button--secondary, .skin--dhaba .chip--share {
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/dhaba/btn-ghost.png");
+    color: #FFFFFF;
+}
+
+.skin--dhaba .chip {
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/dhaba/btn-ghost.png");
+}
+
+.skin--dhaba .button--primary, .skin--dhaba .chip--on, .skin--dhaba .turn--mine {
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/dhaba/btn-primary.png");
+}
+
+.skin--dhaba .chip--on {
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/dhaba/chip-on.png");
+    color: #111111;
+}
+
+.skin--dhaba .button--quiet {
+    background-image: none;
+}
+
+.skin--dhaba .table__pill, .skin--dhaba .quick-strip__chip, .skin--dhaba .quick-strip__more, .skin--dhaba .table__chat {
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/dhaba/pill.png");
+}
+
+.skin--dhaba .unity-toggle__checkmark {
+    border-color: #FFD23F;
+}
+
+.skin--dhaba .unity-base-slider__dragger {
+    background-color: #FFD23F;
+}
+
+.skin--dhaba .field .unity-base-text-field__input {
+    border-color: #FFD23F;
+}
+
+.skin--mehndi .button, .skin--mehndi .button--secondary, .skin--mehndi .chip--share {
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/mehndi/btn-ghost.png");
+    color: #FFF3E0;
+}
+
+.skin--mehndi .chip {
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/mehndi/btn-ghost.png");
+}
+
+.skin--mehndi .button--primary, .skin--mehndi .chip--on, .skin--mehndi .turn--mine {
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/mehndi/btn-primary.png");
+}
+
+.skin--mehndi .chip--on {
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/mehndi/chip-on.png");
+    color: #300520;
+}
+
+.skin--mehndi .button--quiet {
+    background-image: none;
+}
+
+.skin--mehndi .table__pill, .skin--mehndi .quick-strip__chip, .skin--mehndi .quick-strip__more, .skin--mehndi .table__chat {
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/mehndi/pill.png");
+}
+
+.skin--mehndi .unity-toggle__checkmark {
+    border-color: #FFC233;
+}
+
+.skin--mehndi .unity-base-slider__dragger {
+    background-color: #FFC233;
+}
+
+.skin--mehndi .field .unity-base-text-field__input {
+    border-color: #FFC233;
+}
+
+.skin--adda .button, .skin--adda .button--secondary, .skin--adda .chip--share {
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/adda/btn-ghost.png");
+    color: #FFF4E2;
+}
+
+.skin--adda .chip {
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/adda/btn-ghost.png");
+}
+
+.skin--adda .button--primary, .skin--adda .chip--on, .skin--adda .turn--mine {
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/adda/btn-primary.png");
+}
+
+.skin--adda .chip--on {
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/adda/chip-on.png");
+    color: #1E0E04;
+}
+
+.skin--adda .button--quiet {
+    background-image: none;
+}
+
+.skin--adda .table__pill, .skin--adda .quick-strip__chip, .skin--adda .quick-strip__more, .skin--adda .table__chat {
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/adda/pill.png");
+}
+
+.skin--adda .unity-toggle__checkmark {
+    border-color: #E8B25A;
+}
+
+.skin--adda .unity-base-slider__dragger {
+    background-color: #E8B25A;
+}
+
+.skin--adda .field .unity-base-text-field__input {
+    border-color: #E8B25A;
+}
+
+/* The dark text slabs on Profile and Friends become themed fields. */
+.skinned .field .unity-base-text-field__input, .skinned .field TextInput {
+    background-color: rgba(0, 0, 0, 0.32);
+    border-width: 2px;
+    border-radius: 20px;
+    padding: 0 24px;
+    color: #FFFFFF;
+}
+
+.skinned .field > Label {
+    color: rgba(255, 255, 255, 0.72);
+}
+
+/* Checkboxes: a rounded box in the accent, filled when on. */
+.skinned .unity-toggle__checkmark {
+    width: 64px;
+    height: 64px;
+    border-width: 3px;
+    border-radius: 16px;
+    background-color: rgba(0, 0, 0, 0.3);
+    -unity-background-image-tint-color: #141518;
+}
+
+.skinned .unity-toggle:checked .unity-toggle__checkmark {
+    background-color: #FFE79A;
+}
+
+.skinned .unity-toggle > .unity-label, .skinned .unity-base-slider > .unity-label {
+    color: #FFFFFF;
+    font-size: var(--font-body);
+}
+
+/* Sliders: a soft track and a round handle in the accent. */
+.skinned .unity-base-slider__tracker {
+    height: 14px;
+    margin-top: -7px;
+    border-radius: 7px;
+    border-width: 0;
+    background-color: rgba(255, 255, 255, 0.18);
+}
+
+.skinned .unity-base-slider__dragger {
+    width: 52px;
+    height: 52px;
+    margin-top: -26px;
+    border-radius: 26px;
+    border-width: 0;
+}
+
+.skinned .unity-base-slider__dragger-border {
+    display: none;
+}
+
+/* Lists scroll by touch; the desktop scroll bar looked like a stray white rail. */
+.skinned .unity-scroller--vertical, .skinned .unity-scroller--horizontal {
+    display: none;
 }

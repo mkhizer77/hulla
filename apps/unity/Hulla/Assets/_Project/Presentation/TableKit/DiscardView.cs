@@ -36,12 +36,15 @@ namespace Hulla.Presentation.TableKit
             }
 
             _root.Add(_stack);
+            var text = new VisualElement();
+            text.AddToClassList("discard__text");
+            _root.Add(text);
             _count = new Label();
             _count.AddToClassList("discard__count");
-            _root.Add(_count);
+            text.Add(_count);
             var caption = new Label(label);
             caption.AddToClassList("discard__label");
-            _root.Add(caption);
+            text.Add(caption);
             Apply();
         }
 

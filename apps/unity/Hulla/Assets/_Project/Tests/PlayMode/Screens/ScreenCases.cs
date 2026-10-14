@@ -64,7 +64,9 @@ namespace Hulla.Screens.Tests
             yield return new Case("home", catalog.Home, r =>
             {
                 var friends = new HomeFriendsViewModel(new Fakes.Social());
-                new HomeView(r, new HomeViewModel(new Fakes.Session(), new Fakes.Gateway()) { LastName = "Khizer" }, null, (_, _) => { }, (_, _, _) => { }, (_, _, _) => { }, () => { }, (_, _) => { }, (_, _) => { }, friends, () => { }, TutorialText.HowToPlay);
+                var progress = new ProgressViewModel(new Fakes.Progress());
+                new HomeView(r, new HomeViewModel(new Fakes.Session(), new Fakes.Gateway()) { LastName = "Khizer" }, null, (_, _) => { }, (_, _, _) => { }, (_, _, _) => { }, () => { }, (_, _) => { }, (_, _) => { }, friends, () => { }, TutorialText.HowToPlay, progress: progress);
+                _ = progress.RefreshAsync(0, default);
                 _ = friends.RefreshAsync(default);
                 var daily = new DailyRewardViewModel(new Fakes.Daily());
                 new DailyRewardCard(r.Q<VisualElement>("daily"), daily, () => { });

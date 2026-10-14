@@ -1,6 +1,7 @@
 using System;
 using Hulla.Application.Social;
 using Hulla.Application.ViewModels;
+using Hulla.Presentation.Navigation;
 using Hulla.Presentation.TableKit;
 using Hulla.Presentation.Text;
 using UnityEngine.UIElements;
@@ -29,6 +30,7 @@ namespace Hulla.Presentation.Screens.Home
         private readonly HomeFriendsViewModel? _friendsOnline;
         private readonly ProgressViewModel? _progress;
         private readonly Label _progressLine;
+        private readonly Meter _xp;
         private readonly Label _coins;
         private readonly Button _hero;
         private readonly Button _rejoin;
@@ -46,6 +48,8 @@ namespace Hulla.Presentation.Screens.Home
             _model = model;
             _progress = progress;
             _progressLine = root.Q<Label>("progress");
+            _xp = new Meter();
+            _progressLine.parent.Add(_xp);
             _coins = root.Q<Label>("coins");
             _avatar = root.Q<VisualElement>("avatar");
             _avatarInitial = root.Q<Label>("avatar-initial");
@@ -68,7 +72,10 @@ namespace Hulla.Presentation.Screens.Home
             _online = root.Q<Label>("online");
             _party = root.Q<VisualElement>("party");
             var settings = root.Q<Button>("settings");
-            settings.text = UiText.Settings;
+            settings.text = "";
+            settings.tooltip = UiText.Settings;
+            settings.AddToClassList("button--icon");
+            settings.Add(new LineIcon(LineIconKind.Gear));
             settings.clicked += () => openSettings?.Invoke();
             settings.style.display = openSettings == null ? DisplayStyle.None : DisplayStyle.Flex;
             root.Q<Label>("title").text = UiText.AppTitle;
@@ -265,6 +272,7 @@ namespace Hulla.Presentation.Screens.Home
             {
                 _progressLine.text = "";
                 _coins.text = "";
+                _xp.style.display = DisplayStyle.None;
                 return;
             }
 
@@ -275,6 +283,8 @@ namespace Hulla.Presentation.Screens.Home
             }
 
             _progressLine.text = text;
+            _xp.style.display = DisplayStyle.Flex;
+            _xp.Set(info.IntoLevel, info.ToNext);
             _coins.text = "◉ " + _progress.Coins.ToString("N0");
         }
 

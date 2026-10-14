@@ -31,7 +31,7 @@ namespace Hulla.Games.Thulla
         private const float StingSeconds = 0.9f;
 
         /// <summary>A trick nobody picked up rests this long before it slides to the discard.</summary>
-        private const float DiscardStartSeconds = 0.3f;
+        private const float DiscardStartSeconds = 0.55f;
 
         /// <summary>A pile this big gets the louder stamp and the big-pick-up phrases (GDD 14.6).</summary>
         private const int BigPickup = 5;
@@ -115,6 +115,7 @@ namespace Hulla.Games.Thulla
         private VisualElement _sheetActions = null!;
         private Label _sheetStatus = null!;
         private bool _thullaJustPlayed;
+        private Rect? _playedFrom;
         private readonly Func<string, Awaitable<Domain.Result<bool>>>? _sendText;
         private VisualElement _chatLog = null!;
         private TextField _chatInput = null!;
@@ -163,6 +164,7 @@ namespace Hulla.Games.Thulla
             _hand.Played += card =>
             {
                 _singleLegal = null;
+                _playedFrom = _hand.SlotOf(card);
                 _client.PlayCard(card);
             };
             _hand.Refused += ShowHint;
@@ -448,7 +450,7 @@ namespace Hulla.Games.Thulla
                     _flightTarget = _ => null;
                     _flightFallback = _discard.Target;
                     _flightLeft = DiscardStartSeconds;
-                    return 0.9f;
+                    return 1.3f;
                 case RoundStart _:
                     _voted = false;
                     _escapes = 0;
@@ -645,6 +647,7 @@ namespace Hulla.Games.Thulla
                     _singleLegal = null;
                     if (_client.Model.MyTurn && _client.Model.IsLegal(card))
                     {
+                        _playedFrom = _hand.SlotOf(card);
                         _client.PlayCard(card);
                     }
                 }
@@ -967,13 +970,35 @@ namespace Hulla.Games.Thulla
             return new Rect(bounds.center.x - 1f, bounds.center.y - 1f, 2f, 2f);
         }
 
-        /// <summary>Your equipped table surface colours the felt (GDD 12.11) until its art lands.</summary>
+        /// <summary>
+        /// Your equipped table surface colours the felt (GDD 12.11) until its art lands; under a table theme the
+        /// theme's own table picture is the surface, so a flat colour would only cover it.
+        /// </summary>
         private void RefreshSurface()
         {
+            if (Skinned(_felt))
+            {
+                _felt.style.backgroundColor = new StyleColor(StyleKeyword.Null);
+                return;
+            }
+
             var model = _client.Model;
             var mine = model.MySeat is long seat && seat < model.Seats.Count ? model.Seats[(int)seat].TableSurface : null;
             var colour = CosmeticLook.TableColour(mine);
             _felt.style.backgroundColor = colour is UnityEngine.Color c ? new StyleColor(c) : new StyleColor(StyleKeyword.Null);
+        }
+
+        private static bool Skinned(VisualElement element)
+        {
+            for (var e = element; e != null; e = e.parent)
+            {
+                if (e.ClassListContains(Hulla.Presentation.Theme.ThemeClasses.Skinned))
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
 
         /// <summary>The seat's display name; the player's own seat is named too, tagged "You" where it is drawn.</summary>
@@ -1135,7 +1160,10 @@ namespace Hulla.Games.Thulla
         {
             if (seat == _client.Model.MySeat)
             {
-                return HandTarget();
+                // From the slot the card held in the fan; auto-play and other devices start from the hand.
+                var from = _playedFrom ?? HandTarget();
+                _playedFrom = null;
+                return from;
             }
 
             return _ring.BadgeFor(seat)?.worldBound;

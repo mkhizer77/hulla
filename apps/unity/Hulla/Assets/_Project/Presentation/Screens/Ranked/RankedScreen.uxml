@@ -6,7 +6,7 @@
             <ui:Button name="back" class="button button--quiet button--small" />
         </ui:VisualElement>
         <ui:Label name="status" class="status" />
-        <ui:ScrollView class="settings__scroll">
+        <ui:ScrollView class="settings__scroll" horizontal-scroller-visibility="Hidden" vertical-scroller-visibility="Hidden">
             <ui:Label name="banner" class="ranked__banner" />
             <ui:VisualElement name="card" class="panel ranked__card">
                 <ui:Label name="league" class="ranked__league" />
