@@ -14,6 +14,7 @@ import products from "../../../../content/products/v1.json";
 import quickChat from "../../../../content/quick-chat/v1.en.json";
 import ranked from "../../../../content/ranked/v1.json";
 import basant from "../../../../content/seasons/basant-2026.json";
+import stringsEn from "../../../../content/strings/en.json";
 
 /**
  * Every content file the server bundles, by its manifest path, so `content_get` can serve the
@@ -35,6 +36,7 @@ export const CONTENT_FILES: Readonly<Record<string, object>> = {
   "quick-chat/v1.en.json": quickChat,
   "ranked/v1.json": ranked,
   "seasons/basant-2026.json": basant,
+  "strings/en.json": stringsEn,
 };
 
 export interface ContentManifest {

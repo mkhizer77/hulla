@@ -33,7 +33,7 @@ namespace Hulla.Presentation.Screens.Achievements
 
         private void Refresh()
         {
-            _status.text = _model.Total > 0 ? string.Format(UiText.AchievementsCount, _model.UnlockedCount, _model.Total) : "";
+            _status.text = _model.Total > 0 ? Strings.Format(UiText.AchievementsCount, _model.UnlockedCount, _model.Total) : "";
             _list.Clear();
             if (_model.ErrorCode != null)
             {
@@ -85,6 +85,6 @@ namespace Hulla.Presentation.Screens.Achievements
         }
 
         private static string Reward(AchievementInfo a) =>
-            a.Title != null ? string.Format(UiText.GemsAndTitle, a.Gems, UiText.TitleName(a.Title)) : string.Format(UiText.GemsOnly, a.Gems);
+            a.Title != null ? Strings.Format(UiText.GemsAndTitle, a.Gems, UiText.TitleName(a.Title)) : Strings.Format(UiText.GemsOnly, a.Gems);
     }
 }

@@ -196,7 +196,7 @@ namespace Hulla.Presentation.Screens.Home
         public void ShowRejoin(string? code, Action? rejoin)
         {
             _onRejoin = rejoin;
-            _rejoin.text = code == null ? "" : string.Format(UiText.RejoinTable, code);
+            _rejoin.text = code == null ? "" : Strings.Format(UiText.RejoinTable, code);
             _rejoin.style.display = code == null || rejoin == null ? DisplayStyle.None : DisplayStyle.Flex;
         }
 
@@ -232,10 +232,10 @@ namespace Hulla.Presentation.Screens.Home
                 return;
             }
 
-            var text = string.Format(UiText.ProgressLine, info.Level, info.IntoLevel, info.ToNext, _progress!.Coins.ToString("N0"));
+            var text = Strings.Format(UiText.ProgressLine, info.Level, info.IntoLevel, info.ToNext, _progress!.Coins.ToString("N0"));
             if (info.LoginStreak > 1)
             {
-                text += string.Format(UiText.StreakSuffix, info.LoginStreak);
+                text += Strings.Format(UiText.StreakSuffix, info.LoginStreak);
             }
 
             _progressLine.text = text;
@@ -250,11 +250,11 @@ namespace Hulla.Presentation.Screens.Home
             _hero.style.display = hero == null && watchHero == null ? DisplayStyle.None : DisplayStyle.Flex;
             if (hero != null)
             {
-                _hero.text = string.Format(UiText.JoinFriendTable, hero.Name, hero.OpenSeats);
+                _hero.text = Strings.Format(UiText.JoinFriendTable, hero.Name, hero.OpenSeats);
             }
             else if (watchHero != null)
             {
-                _hero.text = string.Format(UiText.WatchFriendTable, watchHero.Name);
+                _hero.text = Strings.Format(UiText.WatchFriendTable, watchHero.Name);
             }
 
             _party.Clear();

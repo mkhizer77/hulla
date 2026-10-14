@@ -299,13 +299,13 @@ namespace Hulla.Games.Thulla
             var tray = model.CardMemoryAssist ? model.PickedUp((int)seat) : Array.Empty<string>();
             if (tray.Count > 0)
             {
-                _sheetStatus.text = string.Format(UiText.PickedUpTray, name, string.Join(" ", TrayGlyphs(tray)));
+                _sheetStatus.text = Strings.Format(UiText.PickedUpTray, name, string.Join(" ", TrayGlyphs(tray)));
             }
 
             SheetButton(muted ? UiText.Unmute : UiText.Mute, () =>
             {
                 _setMuted(id, !muted);
-                _sheetStatus.text = muted ? "" : string.Format(UiText.MutedNote, name);
+                _sheetStatus.text = muted ? "" : Strings.Format(UiText.MutedNote, name);
                 CloseSheetSoon();
             });
             if (_block != null)
@@ -313,7 +313,7 @@ namespace Hulla.Games.Thulla
                 SheetButton(UiText.Block, () =>
                 {
                     _block(id);
-                    _sheetStatus.text = string.Format(UiText.Blocked, name);
+                    _sheetStatus.text = Strings.Format(UiText.Blocked, name);
                     CloseSheetSoon();
                 });
             }
@@ -337,7 +337,7 @@ namespace Hulla.Games.Thulla
 
         private void ShowReasons(string id, string name)
         {
-            _sheetTitle.text = string.Format(UiText.ReportWhy, name);
+            _sheetTitle.text = Strings.Format(UiText.ReportWhy, name);
             _sheetActions.Clear();
             foreach (var (reason, label) in UiText.ReportReasons)
             {
@@ -522,7 +522,7 @@ namespace Hulla.Games.Thulla
             if (_hints?.ExplainAsk() == true)
             {
                 var (name, cards) = target.Value;
-                ShowCoach(string.Format(TutorialText.ExplainAsk, name, cards), string.Format(UiText.AskNamed, name), () =>
+                ShowCoach(Strings.Format(TutorialText.ExplainAsk, name, cards), Strings.Format(UiText.AskNamed, name), () =>
                 {
                     HideCoach();
                     _client.TakeHand();
@@ -544,13 +544,13 @@ namespace Hulla.Games.Thulla
 
             if (asked.Asker == model.MySeat)
             {
-                _hint.text = string.Format(UiText.AskedWaiting, NameOf(asked.Target));
+                _hint.text = Strings.Format(UiText.AskedWaiting, NameOf(asked.Target));
                 _hint.style.display = DisplayStyle.Flex;
                 _hintLeft = SaySeconds;
                 return;
             }
 
-            _ring.BadgeFor(asked.Asker)?.Say(string.Format(UiText.AsksForHand, NameOf(asked.Target)), SaySeconds);
+            _ring.BadgeFor(asked.Asker)?.Say(Strings.Format(UiText.AsksForHand, NameOf(asked.Target)), SaySeconds);
         }
 
         private void PresentAnswer(HandAnswered answered)
@@ -569,7 +569,7 @@ namespace Hulla.Games.Thulla
 
             if (answered.Asker == model.MySeat)
             {
-                _hint.text = string.Format(UiText.KeepsCards, NameOf(answered.Target));
+                _hint.text = Strings.Format(UiText.KeepsCards, NameOf(answered.Target));
                 _hint.style.display = DisplayStyle.Flex;
                 _hintLeft = SaySeconds;
                 return;
@@ -581,8 +581,8 @@ namespace Hulla.Games.Thulla
         /// <summary>The asked player decides (R33, R34): hand everything over and sit out safe, or keep playing.</summary>
         private void ShowAskSheet(HandAsked asked)
         {
-            _sheetTitle.text = string.Format(UiText.AskSheetTitle, NameOf(asked.Asker));
-            _sheetStatus.text = string.Format(UiText.AskSheetBody, asked.CardCount);
+            _sheetTitle.text = Strings.Format(UiText.AskSheetTitle, NameOf(asked.Asker));
+            _sheetStatus.text = Strings.Format(UiText.AskSheetBody, asked.CardCount);
             _sheetActions.Clear();
             SheetButton(UiText.HandOver, () => AnswerAsk(true));
             SheetButton(UiText.KeepPlaying, () => AnswerAsk(false));
@@ -745,7 +745,7 @@ namespace Hulla.Games.Thulla
             switch (PlayHint.For(model, card))
             {
                 case PlayHint.Reason.MustFollow:
-                    text = string.Format(UiText.MustFollow, CardElement.SuitGlyph(model.LedSuit ?? 'S'));
+                    text = Strings.Format(UiText.MustFollow, CardElement.SuitGlyph(model.LedSuit ?? 'S'));
                     break;
                 case PlayHint.Reason.LeadAceOfSpades:
                     text = UiText.LeadAceOfSpades;
@@ -1127,7 +1127,7 @@ namespace Hulla.Games.Thulla
 
             _discardShown = model.DiscardCount;
             _discard.Show(model.DiscardCount);
-            _pileNote.text = showingLast && model.LastPicker != null ? string.Format(UiText.PickedUp, NameOf(model.LastPicker.Value)) : "";
+            _pileNote.text = showingLast && model.LastPicker != null ? Strings.Format(UiText.PickedUp, NameOf(model.LastPicker.Value)) : "";
         }
 
         /// <summary>Where a card played by <paramref name="seat"/> starts its flight: the badge, or the hand for the player.</summary>

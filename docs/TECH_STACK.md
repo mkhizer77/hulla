@@ -22,7 +22,7 @@
 | Rendering | URP 2D Renderer | com.unity.render-pipelines.universal 17.4.x | Table is world-space sprites; UI is UI Toolkit |
 | UI | UI Toolkit, Advanced Text Generator enabled at the root, runtime data binding | built in | MVVM without a library; USS tokens mirrored to web CSS |
 | Text and fonts | Noto Nastaliq Urdu, Noto Sans Devanagari, Noto Sans Bengali, Noto Sans Gurmukhi, Noto Sans Arabic, Latin display and UI faces | dynamic font assets | Required by ATG |
-| Localisation | com.unity.localization | 1.5.x | String tables, Smart Strings, UI Toolkit bindings, pseudo-localisation in CI |
+| Localisation | com.unity.localization | 1.5.x | Smart Strings formatting and plural rules; the tables come from `content/strings` as text assets (ADR-0023) |
 | Content | com.unity.addressables | 2.x | Base content in the binary; cosmetics and later game modules streamed |
 | Input | com.unity.inputsystem | 1.x | Touch first |
 | Async | Unity `Awaitable` with cancellation tokens owned by scopes | built in | No UniTask |

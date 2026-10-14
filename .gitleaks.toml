@@ -8,4 +8,7 @@ paths = [
   '''packages/protocol/examples/.*''',
   '''packages/test-vectors/thulla/V-.*\.json''',
   '''packages/shared-ts/src/__tests__/fixtures/.*''',
+  # Generated string tables: "key" fields hold string ids like ui.waiting4_rematch, not secrets.
+  '''apps/unity/Hulla/Assets/_Project/Localization/Resources/Strings/.*\.json''',
+  '''packages/strings/generated/.*\.json''',
 ]

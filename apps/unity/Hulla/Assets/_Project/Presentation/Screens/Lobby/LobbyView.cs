@@ -188,7 +188,7 @@ namespace Hulla.Presentation.Screens.Lobby
             if (seconds != _shownSeconds)
             {
                 _shownSeconds = seconds;
-                _countdown.text = string.Format(UiText.StartsIn, seconds);
+                _countdown.text = Strings.Format(UiText.StartsIn, seconds);
             }
         }
 
@@ -269,7 +269,7 @@ namespace Hulla.Presentation.Screens.Lobby
             var model = _client.Model;
             _code.text = model.Code.Length > 0 ? model.Code : _client.Ticket.Code;
             RefreshSeats(model, out var seated);
-            _start.text = model.Seats.Count > 0 ? string.Format(UiText.StartWith, seated, model.Seats.Count) : UiText.Start;
+            _start.text = model.Seats.Count > 0 ? Strings.Format(UiText.StartWith, seated, model.Seats.Count) : UiText.Start;
             _start.SetEnabled(seated >= 3);
 
             var matchmade = !model.IsPrivate;
@@ -301,7 +301,7 @@ namespace Hulla.Presentation.Screens.Lobby
             var changedBy = model.RulesChangedBy;
             _rulesChanged.text = changedBy == null || changedBy == model.MySeat
                 ? ""
-                : string.Format(UiText.RulesChangedBy, changedBy < model.Seats.Count ? model.Seats[(int)changedBy.Value].DisplayName ?? "?" : "?");
+                : Strings.Format(UiText.RulesChangedBy, changedBy < model.Seats.Count ? model.Seats[(int)changedBy.Value].DisplayName ?? "?" : "?");
             _ready.text = MeReady() ? UiText.NotReady : UiText.Ready;
             _ready.style.display = matchmade || model.Spectating ? DisplayStyle.None : DisplayStyle.Flex;
             _shareButton.style.display = matchmade || !_canShare ? DisplayStyle.None : DisplayStyle.Flex;

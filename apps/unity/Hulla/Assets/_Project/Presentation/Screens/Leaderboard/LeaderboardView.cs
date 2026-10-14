@@ -66,7 +66,7 @@ namespace Hulla.Presentation.Screens.Leaderboard
             _friends.EnableInClassList("chip--on", _model.Friends);
             var page = _model.Page;
             _status.text = "";
-            _reset.text = page?.NextResetTs is long reset ? string.Format(UiText.ResetsIn, Duration(reset - _nowMs())) : "";
+            _reset.text = page?.NextResetTs is long reset ? Strings.Format(UiText.ResetsIn, Duration(reset - _nowMs())) : "";
             _list.Clear();
             _me.Clear();
             if (_model.ErrorCode != null)
@@ -119,10 +119,10 @@ namespace Hulla.Presentation.Screens.Leaderboard
             var rank = new Label(row.Rank.ToString());
             rank.AddToClassList("leaderboard__rank");
             line.Add(rank);
-            var name = new Label(mine ? string.Format(UiText.YouAre, row.Name) : row.Name);
+            var name = new Label(mine ? Strings.Format(UiText.YouAre, row.Name) : row.Name);
             name.AddToClassList("leaderboard__name");
             line.Add(name);
-            var points = new Label(string.Format(UiText.PointsShort, row.Points));
+            var points = new Label(Strings.Format(UiText.PointsShort, row.Points));
             points.AddToClassList("leaderboard__points");
             line.Add(points);
             return line;

@@ -1,0 +1,11 @@
+{
+  "name": "@hulla/strings",
+  "version": "0.1.0",
+  "private": true,
+  "description": "The string tables for the web client, generated from content/strings by tools/strings-export; do not edit",
+  "license": "PolyForm-Noncommercial-1.0.0",
+  "type": "module",
+  "exports": {
+    "./*.json": "./generated/*.json"
+  }
+}

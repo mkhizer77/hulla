@@ -44,7 +44,7 @@ namespace Hulla.BuildTools
         private static void WriteStrings(string path)
         {
             var text = new StringBuilder("<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<resources>\n");
-            foreach (var pair in PushText.Strings)
+            foreach (var pair in PushText.Keyed)
             {
                 text.Append("    <string name=\"").Append(pair.Key).Append("\">")
                     .Append(PushText.ToAndroid(pair.Value)).Append("</string>\n");

@@ -1,8 +1,8 @@
 {
   "schema": "../tools/content-schemas/manifest.schema.json",
   "id": "content-manifest",
-  "version": 5,
-  "digest": "58e733bfecfb4ca0d999140105e144542c257ccf7120b02f759553904e2c3093",
+  "version": 7,
+  "digest": "ddf7bc2881d4b5263dc5c6356bd80f5468fc216445e80810ca5d451d0538f061",
   "files": [
     {
       "path": "achievements/v1.json",
@@ -123,6 +123,14 @@
       "version": 1,
       "sha256": "5b4e67b972730c19dfcc7efe4c4862412f2c1060db34525af9cb56367b29c6fa",
       "bytes": 5375
+    },
+    {
+      "path": "strings/en.json",
+      "type": "strings",
+      "id": "strings-en",
+      "version": 1,
+      "sha256": "49404c8606f0ab507c7025985eccf338da2a528125ee62f77ed7e94626e8a0fd",
+      "bytes": 46757
     }
   ]
 }

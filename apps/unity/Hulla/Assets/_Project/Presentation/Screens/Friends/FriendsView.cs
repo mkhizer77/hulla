@@ -117,7 +117,7 @@ namespace Hulla.Presentation.Screens.Friends
                 text.AddToClassList("lobby-seat__name");
                 text.Add(new Label(entry.Name));
                 var detail = entry.Rounds > 0 && entry.State == null
-                    ? string.Format(UiText.RoundsTogether, entry.Rounds)
+                    ? Strings.Format(UiText.RoundsTogether, entry.Rounds)
                     : entry.State == FriendState.Friend ? (entry.Online ? UiText.Online : UiText.Offline) : entry.Handle != null ? "@" + entry.Handle : "";
                 var sub = new Label(detail);
                 sub.AddToClassList("caption");

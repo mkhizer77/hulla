@@ -31,7 +31,7 @@ namespace Hulla.Presentation.Screens.QuickPlay
 
         private void Refresh()
         {
-            _title.text = _model.Ranked ? RankedText.Searching : string.Format(UiText.Searching, _model.Seats);
+            _title.text = _model.Ranked ? RankedText.Searching : Strings.Format(UiText.Searching, _model.Seats);
             var seconds = (int)_model.Elapsed;
             if (seconds != _shownSeconds)
             {

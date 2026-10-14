@@ -105,21 +105,21 @@ namespace Hulla.Presentation.Screens.Ranked
 
             ShowBanner(card);
             _league.text = RankedText.League(card.League);
-            _rating.text = string.Format(RankedText.Rating, card.Rating) + (card.Rank is long rank ? " · " + string.Format(RankedText.Rank, rank) : "");
+            _rating.text = Strings.Format(RankedText.Rating, card.Rating) + (card.Rank is long rank ? " · " + Strings.Format(RankedText.Rank, rank) : "");
             if (card.Placed)
             {
                 _bar.style.display = DisplayStyle.None;
-                _progress.text = card.ProtectedRounds > 0 ? string.Format(RankedText.Protected, card.ProtectedRounds) : "";
+                _progress.text = card.ProtectedRounds > 0 ? Strings.Format(RankedText.Protected, card.ProtectedRounds) : "";
             }
             else
             {
                 _bar.style.display = DisplayStyle.Flex;
                 _fill.style.width = Length.Percent(card.PlacementOf == 0 ? 100f : 100f * card.PlacementPlayed / card.PlacementOf);
-                _progress.text = string.Format(RankedText.Placement, card.PlacementPlayed, card.PlacementOf) + ". " +
-                    string.Format(RankedText.PlacementNote, card.PlacementOf - card.PlacementPlayed);
+                _progress.text = Strings.Format(RankedText.Placement, card.PlacementPlayed, card.PlacementOf) + ". " +
+                    Strings.Format(RankedText.PlacementNote, card.PlacementOf - card.PlacementPlayed);
             }
 
-            _season.text = string.Format(RankedText.SeasonEnds, card.SeasonNumber, LeaderboardView.Duration(card.SeasonEndTs - _nowMs()));
+            _season.text = Strings.Format(RankedText.SeasonEnds, card.SeasonNumber, LeaderboardView.Duration(card.SeasonEndTs - _nowMs()));
             for (var i = card.Leagues.Count - 1; i >= 0; i--)
             {
                 _ladder.Add(Step(card.Leagues[i], card.League));
@@ -147,8 +147,8 @@ namespace Hulla.Presentation.Screens.Ranked
             }
 
             _banner.text = last.League == null
-                ? string.Format(RankedText.SeasonEndedUnplaced, RankedText.Season(last.SeasonId))
-                : string.Format(RankedText.SeasonEnded, RankedText.Season(last.SeasonId), RankedText.League(last.League));
+                ? Strings.Format(RankedText.SeasonEndedUnplaced, RankedText.Season(last.SeasonId))
+                : Strings.Format(RankedText.SeasonEnded, RankedText.Season(last.SeasonId), RankedText.League(last.League));
         }
 
         private static VisualElement Step(RankedLeague league, string? mine)
@@ -163,7 +163,7 @@ namespace Hulla.Presentation.Screens.Ranked
             var name = new Label(RankedText.League(league.Id));
             name.AddToClassList("ranked__step-name");
             line.Add(name);
-            var floor = league.TopOnly ? string.Format(RankedText.UstadNote, 500) : league.MinRating + "+";
+            var floor = league.TopOnly ? Strings.Format(RankedText.UstadNote, 500) : league.MinRating + "+";
             var detail = new Label(floor + " · " + RankedText.Reward(league));
             detail.AddToClassList("ranked__step-detail");
             line.Add(detail);
@@ -182,7 +182,7 @@ namespace Hulla.Presentation.Screens.Ranked
             var rank = new Label(row.Rank.ToString());
             rank.AddToClassList("leaderboard__rank");
             line.Add(rank);
-            var name = new Label(mine ? string.Format(UiText.YouAre, row.Name) : row.Name);
+            var name = new Label(mine ? Strings.Format(UiText.YouAre, row.Name) : row.Name);
             name.AddToClassList("leaderboard__name");
             line.Add(name);
             var rating = new Label(RankedText.League(row.League) + " · " + row.Rating);

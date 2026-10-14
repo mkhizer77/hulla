@@ -133,7 +133,7 @@ namespace Hulla.Games.Thulla
             _fairness = result.Fairness;
             _fair.style.display = ShowFairness != null && _fairness != null ? DisplayStyle.Flex : DisplayStyle.None;
             _changeRules.style.display = _onChangeRules != null && model.IsHost && model.IsPrivate ? DisplayStyle.Flex : DisplayStyle.None;
-            _title.text = string.Format(UiText.LoserIs, _nameOf(result.BhabhiSeat), LoserTitle(model));
+            _title.text = Strings.Format(UiText.LoserIs, _nameOf(result.BhabhiSeat), LoserTitle(model));
             _stamp.text = LoserTitle(model).ToUpperInvariant();
             Podium(model, result);
             _body.Clear();
@@ -149,11 +149,11 @@ namespace Hulla.Games.Thulla
             var series = result.Series;
             if (series != null && series.RoundsPlayed > 1)
             {
-                Heading(string.Format(UiText.AfterRounds, series.RoundsPlayed));
+                Heading(Strings.Format(UiText.AfterRounds, series.RoundsPlayed));
                 for (var seat = 0; seat < series.Points.Count; seat++)
                 {
                     var tally = seat < series.LoserTally.Count ? series.LoserTally[seat] : 0;
-                    Line(string.Format(UiText.PointsLine, _nameOf(seat), series.Points[seat], tally, LoserTitle(model)), null);
+                    Line(Strings.Format(UiText.PointsLine, _nameOf(seat), series.Points[seat], tally, LoserTitle(model)), null);
                 }
             }
 
@@ -260,7 +260,7 @@ namespace Hulla.Games.Thulla
             var text = voted ? UiText.Waiting4Rematch : votes == 0 ? UiText.RematchHow : "";
             if (votes > 0)
             {
-                text = (text.Length > 0 ? text + " " : "") + string.Format(UiText.RematchVotes, votes, players);
+                text = (text.Length > 0 ? text + " " : "") + Strings.Format(UiText.RematchVotes, votes, players);
             }
 
             _playAgain.text = seconds >= 0 ? UiText.PlayAgain + " · " + seconds + "s" : UiText.PlayAgain;
@@ -297,12 +297,12 @@ namespace Hulla.Games.Thulla
             Heading(UiText.Highlights);
             if (giver >= 0)
             {
-                Line(string.Format(UiText.MostThullas, _nameOf(giver), thullas), null);
+                Line(Strings.Format(UiText.MostThullas, _nameOf(giver), thullas), null);
             }
 
             if (picker >= 0)
             {
-                Line(string.Format(UiText.MostPickedUp, _nameOf(picker), biggest), null);
+                Line(Strings.Format(UiText.MostPickedUp, _nameOf(picker), biggest), null);
             }
         }
 
@@ -323,7 +323,7 @@ namespace Hulla.Games.Thulla
                 }
 
                 var id = seat.PlayerId;
-                var chip = new Button { text = string.Format(UiText.AddName, seat.DisplayName ?? "?") };
+                var chip = new Button { text = Strings.Format(UiText.AddName, seat.DisplayName ?? "?") };
                 chip.AddToClassList("chip");
                 chip.clicked += () =>
                 {

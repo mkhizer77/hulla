@@ -64,9 +64,9 @@ namespace Hulla.Presentation.Screens.Pass
             heading.AddToClassList("title--small");
             _list.Add(heading);
             var line = info.Tier >= info.Tiers.Count
-                ? string.Format(UiText.PassComplete, info.Tiers.Count)
-                : string.Format(UiText.PassProgress, info.Tier, info.Tiers.Count, info.IntoTier, info.XpPerTier);
-            line += " · " + string.Format(UiText.SeasonEndsIn, LeaderboardView.Duration(info.EndTs - _nowMs()));
+                ? Strings.Format(UiText.PassComplete, info.Tiers.Count)
+                : Strings.Format(UiText.PassProgress, info.Tier, info.Tiers.Count, info.IntoTier, info.XpPerTier);
+            line += " · " + Strings.Format(UiText.SeasonEndsIn, LeaderboardView.Duration(info.EndTs - _nowMs()));
             if (info.CatchUp)
             {
                 line += " · " + UiText.DoubleXp;
@@ -153,12 +153,12 @@ namespace Hulla.Presentation.Screens.Pass
             var parts = new List<string>();
             if (reward.Coins > 0)
             {
-                parts.Add(string.Format(UiText.CoinsOnly, reward.Coins));
+                parts.Add(Strings.Format(UiText.CoinsOnly, reward.Coins));
             }
 
             if (reward.Gems > 0)
             {
-                parts.Add(string.Format(UiText.GemsOnly, reward.Gems));
+                parts.Add(Strings.Format(UiText.GemsOnly, reward.Gems));
             }
 
             foreach (var item in reward.Items)
@@ -168,7 +168,7 @@ namespace Hulla.Presentation.Screens.Pass
 
             if (reward.Title != null)
             {
-                parts.Add(string.Format(UiText.TitleReward, UiText.TitleName(reward.Title)));
+                parts.Add(Strings.Format(UiText.TitleReward, UiText.TitleName(reward.Title)));
             }
 
             return string.Join(" + ", parts);

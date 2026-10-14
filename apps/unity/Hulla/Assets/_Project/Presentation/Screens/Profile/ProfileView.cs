@@ -65,7 +65,7 @@ namespace Hulla.Presentation.Screens.Profile
             if (card != null)
             {
                 _code.text = card.FriendCode;
-                _stats.text = string.Format(UiText.StatsLine, card.Rounds, card.Escapes, card.Bhabhis, card.ThullasGiven);
+                _stats.text = Strings.Format(UiText.StatsLine, card.Rounds, card.Escapes, card.Bhabhis, card.ThullasGiven);
                 if (!_filled)
                 {
                     _filled = true;
