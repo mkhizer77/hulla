@@ -29,6 +29,16 @@ namespace Hulla.Application.Tests
                 return done.Awaitable;
             }
 
+            public readonly List<int> RankedBands = new List<int>();
+
+            public Awaitable<Result<bool>> SearchRankedAsync(int band, CancellationToken cancellation)
+            {
+                RankedBands.Add(band);
+                var done = new AwaitableCompletionSource<Result<bool>>();
+                done.SetResult(Result<bool>.Ok(true));
+                return done.Awaitable;
+            }
+
             public Awaitable CancelAsync()
             {
                 Cancels++;
@@ -103,6 +113,35 @@ namespace Hulla.Application.Tests
             Assert.AreEqual(1, _matchmaker.Cancels);
             Assert.AreEqual(QuickPlayViewModel.Stage.Idle, _model.Current);
             Assert.IsEmpty(found);
+        }
+
+        [Test]
+        public void ARankedSearchWidensItsBandEveryTenSecondsUpToTheCap()
+        {
+            _ = _model.StartRankedAsync(150, 150, 600, default);
+            Assert.IsTrue(_model.Ranked);
+            Assert.AreEqual(4, _model.Seats);
+            _model.Tick(9.9f);
+            CollectionAssert.AreEqual(new[] { 150 }, _matchmaker.RankedBands);
+            _model.Tick(0.2f);
+            Assert.AreEqual(QuickPlayViewModel.Stage.Widened, _model.Current);
+            _model.Tick(10f);
+            _model.Tick(10f);
+            _model.Tick(10f);
+            _model.Tick(30f);
+            CollectionAssert.AreEqual(new[] { 150, 300, 450, 600 }, _matchmaker.RankedBands);
+            Assert.AreEqual(600, _model.Band);
+            Assert.IsEmpty(_matchmaker.Searches, "Ranked never falls back to a Quick Play ticket");
+        }
+
+        [Test]
+        public void ARankedSearchNeverSaysItStartsWithThree()
+        {
+            _ = _model.StartRankedAsync(150, 150, 600, default);
+            _model.Tick(QuickPlayViewModel.StartAtSeconds + 1f);
+            Assert.AreNotEqual(QuickPlayViewModel.Stage.Starting, _model.Current);
+            _ = _model.StartAsync(4, default);
+            Assert.IsFalse(_model.Ranked, "a Quick Play search after a Ranked one is Quick Play again");
         }
 
         [Test]

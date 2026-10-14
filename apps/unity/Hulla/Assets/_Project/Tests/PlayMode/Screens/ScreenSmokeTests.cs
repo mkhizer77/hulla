@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Hulla.Application.Progress;
 using Hulla.Application.Services;
 using Hulla.Application.Settings;
 using Hulla.Application.Table;
@@ -12,6 +13,7 @@ using Hulla.Presentation.Screens.Achievements;
 using Hulla.Presentation.Screens.Friends;
 using Hulla.Presentation.Screens.Home;
 using Hulla.Presentation.Screens.Leaderboard;
+using Hulla.Presentation.Screens.Ranked;
 using Hulla.Presentation.Screens.Lobby;
 using Hulla.Presentation.Screens.Profile;
 using Hulla.Presentation.Screens.QuickPlay;
@@ -504,6 +506,53 @@ namespace Hulla.Screens.Tests
             Assert.AreEqual("Resets in 3d 0h. Top 10 win gems.", root.Q<Label>("reset").text);
             Shown(root.Q<VisualElement>("me"), "my rank off the page");
             StringAssert.Contains("khizer (you)", root.Q<VisualElement>("me").Q<Label>(className: "leaderboard__name").text);
+        }
+
+        [UnityTest]
+        public IEnumerator RankedShowsTheLeagueTheSeasonTheLadderAndTheTop()
+        {
+            VisualElement root = null!;
+            var model = new RankedViewModel(new Fakes.Ranked());
+            RankedCard? played = null;
+            yield return Open(Catalog.Ranked, r =>
+            {
+                root = r;
+                new RankedView(r, model, () => 1_000_000_000_000, "me", () => { }, card => played = card);
+                _ = model.RefreshAsync(default);
+            });
+            Assert.AreEqual("Gold", root.Q<Label>("league").text);
+            Assert.AreEqual("Rating 1287 · #14 this season", root.Q<Label>("rating").text);
+            Assert.AreEqual("Promotion protected for 2 more", root.Q<Label>("progress").text);
+            Assert.AreEqual("Season 2 ends in 9d 0h", root.Q<Label>("season").text);
+            Shown(root.Q<Label>("banner"), "the season-end banner");
+            StringAssert.Contains("Silver", root.Q<Label>("banner").text);
+            var ladder = root.Q<VisualElement>("ladder").Query<Label>(className: "ranked__step-name").ToList().Select(l => l.text).ToList();
+            CollectionAssert.AreEqual(new[] { "Ustad", "Gold", "Bronze" }, ladder);
+            StringAssert.Contains("card back", root.Q<VisualElement>("ladder").Query<Label>(className: "ranked__step-detail").First().text);
+            Assert.AreEqual(2, root.Q<VisualElement>("top").childCount);
+            using (var click = NavigationSubmitEvent.GetPooled())
+            {
+                click.target = root.Q<Button>("play");
+                root.Q<Button>("play").SendEvent(click);
+            }
+
+            Assert.IsNotNull(played);
+        }
+
+        [UnityTest]
+        public IEnumerator RankedPlacementShowsTheProgressInsteadOfALeague()
+        {
+            VisualElement root = null!;
+            var model = new RankedViewModel(new Fakes.Ranked { Placed = false });
+            yield return Open(Catalog.Ranked, r =>
+            {
+                root = r;
+                new RankedView(r, model, () => 1_000_000_000_000, "me", () => { }, _ => { });
+                _ = model.RefreshAsync(default);
+            });
+            Assert.AreEqual("Unranked", root.Q<Label>("league").text);
+            Assert.AreEqual("Placement 3 of 10. Play 7 more to get your league.", root.Q<Label>("progress").text);
+            Shown(root.Q<VisualElement>("bar"), "the placement bar");
         }
 
         [UnityTest]

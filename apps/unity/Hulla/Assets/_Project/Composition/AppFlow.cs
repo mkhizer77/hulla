@@ -12,6 +12,7 @@ using Hulla.Presentation.Screens.Friends;
 using Hulla.Presentation.Screens.Lobby;
 using Hulla.Presentation.Screens.Achievements;
 using Hulla.Presentation.Screens.Leaderboard;
+using Hulla.Presentation.Screens.Ranked;
 using Hulla.Presentation.Screens.Pass;
 using Hulla.Presentation.Screens.Shop;
 using Hulla.Presentation.Screens.Missions;
@@ -510,11 +511,45 @@ namespace Hulla.Composition
             _screen = Screen.Home;
             var board = _app.Leaderboard;
             var boardView = new LeaderboardView(_shell.Show(_shell.Catalog.Leaderboard), board, () => DateTimeOffset.UtcNow.ToUnixTimeMilliseconds(), _app.Sessions.Current?.UserId, ShowHome,
-                (period, friends) => _ = board.ShowAsync(period, friends, _app.Lifetime));
+                (period, friends) => _ = board.ShowAsync(period, friends, _app.Lifetime),
+                () => OnRanked(name, server));
             boardView.Retry = () => _ = board.RefreshAsync(_app.Lifetime);
             _view = boardView;
             _shell.ShowNav(Hulla.Presentation.Navigation.NavTab.Home);
             await board.RefreshAsync(_app.Lifetime);
+        }
+
+        private async void OnRanked(string name, string? server)
+        {
+            if (!await SignedInAsync(name, server))
+            {
+                return;
+            }
+
+            CloseView();
+            _screen = Screen.Home;
+            var ranked = _app.Ranked;
+            var rankedView = new RankedView(_shell.Show(_shell.Catalog.Ranked), ranked, () => DateTimeOffset.UtcNow.ToUnixTimeMilliseconds(), _app.Sessions.Current?.UserId,
+                () => OnLeaderboard(name, server), card => OnRankedPlay(name, server, card));
+            rankedView.Retry = () => _ = ranked.RefreshAsync(_app.Lifetime);
+            _view = rankedView;
+            _shell.ShowNav(Hulla.Presentation.Navigation.NavTab.Home);
+            await ranked.RefreshAsync(_app.Lifetime);
+        }
+
+        /// <summary>The Ranked queue (GDD 7.5): the Quick Play search screen with the ranked band.</summary>
+        private async void OnRankedPlay(string name, string? server, Hulla.Application.Progress.RankedCard card)
+        {
+            if (!await SignedInAsync(name, server))
+            {
+                return;
+            }
+
+            CloseView();
+            _screen = Screen.QuickPlay;
+            _shell.HideNav();
+            _view = new QuickPlayView(_shell.Show(_shell.Catalog.QuickPlay), _app.QuickPlay, CancelQuickPlay);
+            await _app.QuickPlay.StartRankedAsync(card.Band, card.WidenBy, card.MaxBand, _app.Lifetime);
         }
 
         private async void OnMissions(string name, string? server)

@@ -21,7 +21,7 @@ namespace Hulla.Presentation.Screens.Leaderboard
         private readonly Button _everyone;
         private readonly Button _friends;
 
-        public LeaderboardView(VisualElement root, LeaderboardViewModel model, Func<long> nowMs, string? myId, Action back, Action<LeaderboardPeriod, bool> show)
+        public LeaderboardView(VisualElement root, LeaderboardViewModel model, Func<long> nowMs, string? myId, Action back, Action<LeaderboardPeriod, bool> show, Action? ranked = null)
         {
             _model = model;
             _nowMs = nowMs;
@@ -34,6 +34,9 @@ namespace Hulla.Presentation.Screens.Leaderboard
             _monthly = Chip(root, "monthly", UiText.ThisMonth, () => show(LeaderboardPeriod.Monthly, _model.Friends));
             _everyone = Chip(root, "everyone", UiText.Everyone, () => show(_model.Period, false));
             _friends = Chip(root, "friends", UiText.FriendsTab, () => show(_model.Period, true));
+            // Ranked has its own season board (GDD 12.9); the chip opens it.
+            var rankedChip = Chip(root, "ranked", RankedText.Title, () => ranked?.Invoke());
+            rankedChip.style.display = ranked == null ? DisplayStyle.None : DisplayStyle.Flex;
             _list = root.Q<VisualElement>("list");
             _me = root.Q<VisualElement>("me");
             _status = root.Q<Label>("status");

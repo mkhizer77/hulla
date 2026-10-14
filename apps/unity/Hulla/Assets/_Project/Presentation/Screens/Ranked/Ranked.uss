@@ -1,0 +1,84 @@
+/* The Ranked screen (GDD 7.5, 12.9); colours come from the theme tokens in Hulla.uss. */
+.ranked__card {
+    align-items: center;
+    margin-bottom: var(--space-2);
+}
+
+.ranked__league {
+    font-size: 72px;
+    color: var(--gold);
+    -unity-font-definition: url("/Assets/_Project/Presentation/Theme/Fonts/LilitaOne.ttf");
+    -unity-font-style: normal;
+    -unity-text-align: middle-center;
+}
+
+.ranked__rating {
+    font-size: var(--font-body);
+    color: var(--ink-ivory);
+    margin-bottom: var(--space-1);
+}
+
+.ranked__bar {
+    width: 80%;
+    height: 18px;
+    border-radius: 9px;
+    background-color: var(--surface-raised);
+    margin-top: var(--space-1);
+    margin-bottom: var(--space-1);
+    overflow: hidden;
+}
+
+.ranked__fill {
+    height: 100%;
+    background-color: var(--accent-saffron);
+    border-radius: 9px;
+}
+
+.ranked__rules {
+    -unity-text-align: middle-center;
+    white-space: normal;
+    margin-top: var(--space-1);
+}
+
+.ranked__play {
+    margin-top: var(--space-2);
+    min-width: 60%;
+}
+
+.ranked__banner {
+    display: none;
+    background-color: var(--surface-raised);
+    color: var(--gold);
+    border-radius: var(--radius);
+    padding: var(--space-2);
+    margin-bottom: var(--space-2);
+    white-space: normal;
+}
+
+.ranked__banner--on {
+    display: flex;
+}
+
+.ranked__step {
+    flex-direction: row;
+    align-items: center;
+    padding: var(--space-1) var(--space-2);
+    border-radius: var(--radius);
+}
+
+.ranked__step--me {
+    background-color: var(--surface-raised);
+}
+
+.ranked__step-name {
+    width: 32%;
+    color: var(--ink-ivory);
+    -unity-font-style: bold;
+}
+
+.ranked__step-detail {
+    flex-grow: 1;
+    flex-shrink: 1;
+    color: var(--ink-muted);
+    white-space: normal;
+}

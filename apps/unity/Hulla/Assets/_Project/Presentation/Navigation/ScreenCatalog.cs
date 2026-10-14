@@ -20,5 +20,6 @@ namespace Hulla.Presentation.Navigation
         public VisualTreeAsset? Achievements;
         public VisualTreeAsset? Shop;
         public VisualTreeAsset? Pass;
+        public VisualTreeAsset? Ranked;
     }
 }
