@@ -5,7 +5,8 @@
         "Hulla.Presentation",
         "UnityEngine.TestRunner",
         "UnityEditor.TestRunner",
-        "Hulla.Application"
+        "Hulla.Application",
+        "Hulla.Infrastructure"
     ],
     "includePlatforms": [
         "Editor"

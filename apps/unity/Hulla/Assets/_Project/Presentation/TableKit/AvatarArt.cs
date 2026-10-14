@@ -1,16 +1,21 @@
 using System.Collections.Generic;
+using Hulla.Application.Services;
 using UnityEngine;
 using UnityEngine.UIElements;
 
 namespace Hulla.Presentation.TableKit
 {
     /// <summary>
-    /// The avatar set (GDD 15.6): placeholder faces under Resources/Avatars, one file per id, until the
-    /// contractor art lands. A seat whose avatar is unknown keeps the tinted initial of its name.
+    /// The avatar set (GDD 15.6): placeholder faces in the <c>avatars-base</c> Addressables group,
+    /// which ships in the binary, one address per id, until the contractor art lands. A seat whose
+    /// avatar is unknown keeps the tinted initial of its name.
     /// </summary>
     public static class AvatarArt
     {
         public const string ImageClass = "seat__avatar--image";
+
+        /// <summary>Set once by the composition root; without it every seat shows its initial.</summary>
+        public static IAssetPacks? Packs { get; set; }
 
         private static readonly Dictionary<string, Texture2D?> Cache = new Dictionary<string, Texture2D?>();
 
@@ -22,9 +27,14 @@ namespace Hulla.Presentation.TableKit
                 return null;
             }
 
+            if (Packs == null)
+            {
+                return null;
+            }
+
             if (!Cache.TryGetValue(id!, out var texture))
             {
-                texture = Resources.Load<Texture2D>("Avatars/" + id);
+                texture = Packs.LoadLocal("avatars-base/" + id);
                 Cache[id!] = texture;
             }
 

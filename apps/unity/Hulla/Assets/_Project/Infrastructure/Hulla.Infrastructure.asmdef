@@ -5,7 +5,9 @@
         "Hulla.Application",
         "Hulla.Domain",
         "Hulla.Protocol",
-        "NakamaRuntime"
+        "NakamaRuntime",
+        "Unity.Addressables",
+        "Unity.ResourceManager"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

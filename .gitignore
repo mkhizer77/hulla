@@ -31,6 +31,8 @@ apps/unity/Hulla/Logs/
 apps/unity/Hulla/UserSettings/
 apps/unity/Hulla/Build/
 apps/unity/Hulla/Builds/
+# Remote Addressables bundles, uploaded to the content CDN, never committed
+apps/unity/Hulla/ServerData/
 
 # secrets
 .env

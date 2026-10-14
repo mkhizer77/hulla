@@ -52,6 +52,8 @@ namespace Hulla.Composition
                 System.IO.Path.Combine(UnityEngine.Application.persistentDataPath, "content"),
                 ManifestSignature.ParsePublicKey(ContentKey.Pem),
                 UnityEngine.Debug.isDebugBuild);
+            Packs = new AddressablePacks();
+            Hulla.Presentation.TableKit.AvatarArt.Packs = Packs;
             Chat = new ContentChatCatalog(Content);
             Presets = new ContentPresetCatalog(Content);
             Welcome = new NakamaWelcomeService(_connection);
@@ -82,6 +84,9 @@ namespace Hulla.Composition
 
         /// <summary>Signed content pinned for this launch (ADR-0011).</summary>
         public IContentStore Content { get; }
+
+        /// <summary>Art and audio packs: in the binary, or streamed from the content CDN (ADR-0011).</summary>
+        public IAssetPacks Packs { get; }
 
         public IChatCatalog Chat { get; }
 

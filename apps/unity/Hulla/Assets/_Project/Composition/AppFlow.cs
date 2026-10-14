@@ -671,6 +671,7 @@ namespace Hulla.Composition
         private void ApplyRemoteConfig()
         {
             var config = _app.RemoteConfig;
+            _app.Packs.UseRemoteRoot(config.Current.Text("content_cdn_url", ""));
             if (config.UpdateRequired && !_updateAsked)
             {
                 _updateAsked = true;
