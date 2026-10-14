@@ -27,6 +27,8 @@ export interface MissionPool {
   readonly version: number;
   readonly daily: readonly MissionDef[];
   readonly weekly: readonly MissionDef[];
+  /** Drawn first in a new player's first daily set (GDD 17.2: play a round with a friend). */
+  readonly welcome?: MissionDef;
 }
 
 export const BUNDLED_MISSIONS: MissionPool = {
@@ -34,4 +36,5 @@ export const BUNDLED_MISSIONS: MissionPool = {
   version: file.version,
   daily: file.daily as MissionDef[],
   weekly: file.weekly as MissionDef[],
+  welcome: file.welcome as MissionDef,
 };

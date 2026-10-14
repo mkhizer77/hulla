@@ -17,6 +17,7 @@ import {
   forPeriod,
   localWeek,
   metricsFromRound,
+  missionsView,
   recordMissionMetrics,
   reroll,
   seriesWon,
@@ -284,5 +285,22 @@ describe("missions (GDD 12.5)", () => {
       ),
     );
     expect(replaced).toEqual({ ok: true, id: "missions-v2", version: 2 });
+  });
+
+  it("a new player's first dailies lead with a round with a friend (GDD 17.2)", () => {
+    const welcome = BUNDLED_MISSIONS.welcome;
+    if (welcome === undefined) throw new Error("no welcome mission in content");
+    const first = forPeriod(EMPTY_MISSIONS, BUNDLED_MISSIONS, "u1", T0);
+    expect(first.daily[0]?.id).toBe(welcome.id);
+    expect(first.daily).toHaveLength(DAILY_COUNT);
+    expect(
+      first.daily.filter((m) => m.id !== welcome.id).every((m) => m.id !== "d_friend_rounds_2"),
+    ).toBe(true);
+    const tomorrow = forPeriod(first, BUNDLED_MISSIONS, "u1", T0 + DAY);
+    expect(tomorrow.daily.some((m) => m.id === welcome.id)).toBe(false);
+    // The welcome mission counts and claims like any daily.
+    const counted = applyMetrics(first, BUNDLED_MISSIONS, { rounds_with_friend: 1 }, T0).record;
+    const view = missionsView(counted, BUNDLED_MISSIONS);
+    expect(view.daily[0]).toMatchObject({ id: welcome.id, progress: 1, target: 1 });
   });
 });
