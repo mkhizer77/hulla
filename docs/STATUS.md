@@ -1,11 +1,12 @@
 # Status
 
-Updated: 14 October 2026
+Updated: 14 October 2026 (night)
 
 ## Phase
 M0 complete: the Thulla rulebook runs in TypeScript with full traceability. M1, the vertical slice, starts with the protocol schemas.
 
 ## Done
+- Content pipeline on the client (#56, 14 Oct, PRs 261 and 262): the client ships the signed manifest and its files, checks the signature and every hash, downloads changed files after sign-in for the next launch, pins one manifest per launch and keeps the bundle offline. The manifest is now signed at deploy time (`pnpm content:sign`, `HULLA_CONTENT_SIGNATURE`): Nakama's `rsaSha256Hash` mangles the signature on its way to JSON, so the old on-box signing could never verify. Addressables groups exist (base art in the binary, cosmetics remote from `content_cdn_url`), the avatars moved out of `Resources/`, and device builds now switch platform first so the bundles match the player.
 - UI polish (14 Oct, PR 259 and this one): no grey hover box, each device keeps its own theme on one Mac (`-hulla-device`), menus on the scene without the floor band, one control kit per theme (ghost buttons, accent chips for a choice, one green call to action, themed fields, checkboxes and sliders, no scrollbars), a larger type scale, red for destructive actions, the gear for settings, Home with a full-width Thulla card and Rung as a row, the theme's table under the lobby seats, progress bars for XP, missions and the pass, medal ranks and a full-width own row on the leaderboard. `AuditSnapshots` renders every screen for review.
 - Table themes (14 Oct, PR 246 and the shelf follow-up): five switchable looks for the whole app (Club default, Haveli, Rooftop, Mehndi, Chai Adda) in Settings, each a scene with its own table, frames, card backs, buttons and thulla stamp, and subtle ambient motion that stops under reduce motion; a portrait table with seats on the rail and card-back fans; Home as a game shelf (Thulla, Rung coming soon); drawn nav icons. Design in `docs/design/table-themes.md`, research in `docs/research/card-game-visual-scan.md`; art from `tools/artkit/skins.py`.
 - Overnight 14 Oct, merged: ranked seasons (#98, PRs 247 and 248: R53 in the engine, leagues Bronze to Ustad, placement, protection, season rewards, the ranked queue, the Ranked screen; numbers in OQ-040); string tables from `content/strings` for Unity and the web (#65 part 1, PR 249, ADR-0023); phone sign-in (#99, PRs 250 and 252: link a number, sign in on a new phone with this phone's progress merged, fraud limits, cost on the dashboard; provider and numbers in OQ-041, setup in `docs/runbooks/phone-sign-in-setup.md`); remote config on the client (#72 client part, PR 253: update prompt, maintenance and Quick Play switches); the first-session rewards, welcome mission and soft prompts (#62, PRs 254 and 255; amounts in OQ-042). A development APK builds with the new tables.
@@ -60,10 +61,9 @@ M0 complete: the Thulla rulebook runs in TypeScript with full traceability. M1, 
 
 ## Doing
 - A phone pass on the themes: motion speed and strength, quiet text on each scene, touch targets on the shelf.
-- #65 part 2 (PR 251): the hard-coded text lint, the en-XA and ar-XB pseudo-locales with a screen check in CI, RTL mirroring. Auto-merge is on.
 
 ## Next
-Monetisation is on hold. Engineering-only work left before launch is small: a per-screen tap-target and contrast check (#64). Most of the rest waits on the owner: the SMS provider for phone sign-in (OQ-041), Firebase for crash reporting (#72), the phase 0 box (#76), Test Lab (#78), a low-tier phone (#132), the phone pass and playtests (#36), the art for pass B (#80 to #83), translations for Urdu and Hindi (#100), and a decision on tablet landscape (#102: the table was chosen portrait on 13 Oct). The `shop` remote-config flag is not applied on the client yet: it defaults to off on the server, so applying it hides the shop. The web client starts after v1.1 as planned.
+Monetisation is on hold. Engineering-only work before launch is nearly done; most of the rest waits on the owner: the content signing key (`docs/runbooks/deploy-and-rollback.md`, Before step 3; until then release builds keep their bundled content), the SMS provider for phone sign-in (OQ-041), Firebase for crash reporting (#72), the phase 0 box (#76) and a CDN for the first streamed pack (#56), Test Lab (#78), a low-tier phone (#132), the phone pass and playtests (#36), the art for pass B and the cosmetics (#66 to #68, #80 to #83), translations for Urdu and Hindi (#100), and a decision on tablet landscape (#102). The `shop` remote-config flag is not applied on the client yet: it defaults to off on the server, so applying it hides the shop. The web client starts after v1.1 as planned.
 
 ## Blockers
 - None.
