@@ -761,6 +761,11 @@
   "ui.watching1": "Watching: {0}",
   "ui.you": "You",
   "ui.you_are": "{0} (you)",
-  "ui.you_are_out": "You're out, safe for this round! Watch the rest; chat and voice stay on."
+  "ui.you_are_out": "You're out, safe for this round! Watch the rest; chat and voice stay on.",
+  "welcome.add_phone": "Add phone number",
+  "welcome.first_round_bonus": "Welcome bonus: +{0, number, integer} coins",
+  "welcome.invite": "Thulla is better with your group. Make a room and send your friends the code.",
+  "welcome.keep_progress": "Keep your progress. Add your phone number to sign in on any phone.",
+  "welcome.tutorial_bonus": "Tutorial done: +{0, number, integer} coins"
  }
 }

@@ -221,7 +221,8 @@ namespace Hulla.Integration.Tests
                     var reward = progress.RewardFor(first.RoundId);
                     Assert.IsNotNull(reward, player.Name + " was paid for the round");
                     Assert.Greater(reward!.Xp, 0, player.Name + " got XP");
-                    Assert.AreEqual(reward.Coins, progress.Coins, player.Name + "'s wallet holds the round's coins");
+                    Assert.AreEqual(250, reward.WelcomeCoins, player.Name + "'s first round paid the welcome reward (GDD 17.2)");
+                    Assert.AreEqual(reward.Coins + reward.WelcomeCoins, progress.Coins, player.Name + "'s wallet holds the round's coins and the welcome reward");
                 }
 
                 // Missions count the round (GDD 12.5).
