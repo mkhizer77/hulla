@@ -99,6 +99,7 @@ import {
 import { rpcTableCreate } from "./rpc/table_create";
 import { rpcTableJoinByCode } from "./rpc/table_join_by_code";
 import { rpcVoiceToken } from "./rpc/voice_token";
+import { rpcTutorialComplete } from "./rpc/welcome";
 import { ensureLeaderboards } from "./services/leaderboards";
 
 /**
@@ -126,6 +127,7 @@ function InitModule(
   initializer.registerRpc("phone_start", rpcPhoneStart);
   initializer.registerRpc("phone_verify", rpcPhoneVerify);
   initializer.registerRpc("phone_status", rpcPhoneStatus);
+  initializer.registerRpc("tutorial_complete", rpcTutorialComplete);
   initializer.registerRpc("profile_get", rpcProfileGet);
   initializer.registerRpc("profile_update", rpcProfileUpdate);
   initializer.registerRpc("account_delete", rpcAccountDelete);

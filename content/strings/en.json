@@ -241,6 +241,8 @@
     "mission.d_escape_first.name": "Escape first",
     "mission.d_escapes_2.description": "{0, plural, one {Escape # time} other {Escape # times}}",
     "mission.d_escapes_2.name": "Escapes 2",
+    "mission.d_first_friend_round.description": "{0, plural, one {Play a round with a friend} other {Play # rounds with a friend}}",
+    "mission.d_first_friend_round.name": "First round with a friend",
     "mission.d_friend_rounds_2.description": "{0, plural, one {Play # round with a friend} other {Play # rounds with a friend}}",
     "mission.d_friend_rounds_2.name": "Friend rounds 2",
     "mission.d_low_pickup.description": "{0, plural, one {Pick up fewer than 5 cards in # round} other {Pick up fewer than 5 cards in # rounds}}",

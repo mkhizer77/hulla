@@ -1188,6 +1188,16 @@
    "smart": false
   },
   {
+   "key": "mission.d_first_friend_round.description",
+   "text": "[{0:plural:Plåý å röûñd wîth å frîéñd|Plåý {} röûñds wîth å frîéñd} · · · · ·]",
+   "smart": true
+  },
+  {
+   "key": "mission.d_first_friend_round.name",
+   "text": "[Fîrst röûñd wîth å frîéñd · · · ·]",
+   "smart": false
+  },
+  {
    "key": "mission.d_friend_rounds_2.description",
    "text": "[{0:plural:Plåý {} röûñd wîth å frîéñd|Plåý {} röûñds wîth å frîéñd} · · · · ·]",
    "smart": true

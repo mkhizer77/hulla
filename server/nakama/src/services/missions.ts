@@ -88,6 +88,19 @@ export function draw(pool: readonly MissionDef[], count: number, seedText: strin
   return shuffled(pool, seedText).slice(0, count);
 }
 
+/** Every daily a record can hold: the pool and the welcome mission. */
+export function dailyDefs(pool: MissionPool): readonly MissionDef[] {
+  return pool.welcome === undefined ? pool.daily : [...pool.daily, pool.welcome];
+}
+
+/** A new player's first dailies lead with the welcome mission; every later day is a plain draw. */
+function firstDraw(record: MissionsRecord, pool: MissionPool, seed: string): MissionDef[] {
+  const welcome = pool.welcome;
+  if (record.day !== "" || welcome === undefined) return draw(pool.daily, DAILY_COUNT, seed);
+  const rest = pool.daily.filter((d) => d.id !== welcome.id && d.metric !== welcome.metric);
+  return [welcome, ...draw(rest, DAILY_COUNT - 1, seed)];
+}
+
 /** The record for now: a new day draws new dailies, a new week new weeklies. */
 export function forPeriod(
   record: MissionsRecord,
@@ -102,7 +115,7 @@ export function forPeriod(
     next = {
       ...next,
       day,
-      daily: draw(pool.daily, DAILY_COUNT, `${userId}:d:${day}`).map((m) => ({
+      daily: firstDraw(record, pool, `${userId}:d:${day}`).map((m) => ({
         id: m.id,
         progress: 0,
         claimed: false,
@@ -177,7 +190,7 @@ export function applyMetrics(
   metrics: Metrics,
   now: number,
 ): { record: MissionsRecord; changed: boolean } {
-  const daily = bump(record.daily, pool.daily, metrics);
+  const daily = bump(record.daily, dailyDefs(pool), metrics);
   const weekly = bump(record.weekly, pool.weekly, metrics);
   const changed = daily.changed || weekly.changed;
   return {
@@ -233,7 +246,7 @@ export function missionsView(
   return {
     day: record.day,
     week: record.week,
-    daily: views(record.daily, pool.daily),
+    daily: views(record.daily, dailyDefs(pool)),
     weekly: views(record.weekly, pool.weekly),
     rerollAvailable: record.rerollDay !== record.day,
   };
@@ -255,7 +268,9 @@ export function claim(
   const inDaily = record.daily.find((s) => s.id === missionId);
   const inWeekly = record.weekly.find((s) => s.id === missionId);
   const state = inDaily ?? inWeekly;
-  const def = (inDaily === undefined ? pool.weekly : pool.daily).find((d) => d.id === missionId);
+  const def = (inDaily === undefined ? pool.weekly : dailyDefs(pool)).find(
+    (d) => d.id === missionId,
+  );
   if (state === undefined || def === undefined) {
     return {
       record,
@@ -434,7 +449,13 @@ export function nkMissionsStore(nk: nkruntime.Nakama): MissionsStore {
           collection: MISSION_POOL_COLLECTION,
           key: "pool",
           userId: SYSTEM_USER_ID,
-          value: { id: pool.id, version: pool.version, daily: pool.daily, weekly: pool.weekly },
+          value: {
+            id: pool.id,
+            version: pool.version,
+            daily: pool.daily,
+            weekly: pool.weekly,
+            ...(pool.welcome === undefined ? {} : { welcome: pool.welcome }),
+          },
           permissionRead: 0,
           permissionWrite: 0,
         },

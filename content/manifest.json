@@ -1,8 +1,8 @@
 {
   "schema": "../tools/content-schemas/manifest.schema.json",
   "id": "content-manifest",
-  "version": 11,
-  "digest": "89ad9b6847cd7504d8bb6e42c8da4df606cad3be6a098165bff95a3d65ac86d7",
+  "version": 12,
+  "digest": "10073d80a49ae577868c571f948f461e196b5a653af59e24845660acec37f32c",
   "files": [
     {
       "path": "achievements/v1.json",
@@ -57,8 +57,8 @@
       "type": "missions",
       "id": "missions-v1",
       "version": 1,
-      "sha256": "5cd3169d1ae6b2bdb4ff5897394619b40edd36b8163a3b88e622c3572d94287c",
-      "bytes": 2938
+      "sha256": "85982a3c3a58bb6c13cf0693cabd0f25c6f380d8910eeb448945b7bd61d2d2a1",
+      "bytes": 3398
     },
     {
       "path": "presets/thulla/classicPagat.json",
@@ -129,8 +129,8 @@
       "type": "strings",
       "id": "strings-en",
       "version": 1,
-      "sha256": "1de6c55116cf6836bba3192fba5facf2453607b2ec27512afec788005cc9dae0",
-      "bytes": 49936
+      "sha256": "859023954792bca78f6c2c15d7db2fcdfe81433e31dff78f0c84ef8464a7aac8",
+      "bytes": 50139
     }
   ]
 }

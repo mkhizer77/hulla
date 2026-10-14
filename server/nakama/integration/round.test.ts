@@ -223,6 +223,13 @@ describe.skipIf(NAKAMA_HOST === undefined)(
           {},
         );
         expect(own.profile?.stats.rounds).toBe(1);
+        // The first live round pays the one-time welcome reward with it (GDD 17.2, OQ-042).
+        const progress = await rpc<{ lastReward?: { welcomeCoins?: number } }>(
+          c,
+          "progress_get",
+          {},
+        );
+        expect(progress.lastReward?.welcomeCoins).toBe(250);
       }
 
       // Recent Players: everyone remembers the other three (GDD 10.6).
@@ -258,7 +265,7 @@ describe.skipIf(NAKAMA_HOST === undefined)(
         const progress = await rpc<{
           ok: boolean;
           xp: number;
-          lastReward: { roundId: string; coins: number; xp: number } | null;
+          lastReward: { roundId: string; coins: number; xp: number; welcomeCoins?: number } | null;
         }>(c, "progress_get", { tzOffsetMinutes: 300 });
         expect(progress.lastReward).toMatchObject({ roundId });
         expect(progress.xp).toBeGreaterThanOrEqual(10);
@@ -267,7 +274,10 @@ describe.skipIf(NAKAMA_HOST === undefined)(
           balances: { coins: number };
           ledger: { sourceId: string }[];
         }>(c, "wallet_get", {});
-        expect(wallet.balances.coins).toBe(progress.lastReward?.coins);
+        // The round's coins plus the one-time welcome reward of a first round.
+        expect(wallet.balances.coins).toBe(
+          (progress.lastReward?.coins ?? 0) + (progress.lastReward?.welcomeCoins ?? 0),
+        );
         expect(wallet.ledger.map((l) => l.sourceId)).toContain(
           `${created.tableId}:${roundId}:round`,
         );

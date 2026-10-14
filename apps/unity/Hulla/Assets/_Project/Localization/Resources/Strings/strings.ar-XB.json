@@ -1188,6 +1188,16 @@
    "smart": false
   },
   {
+   "key": "mission.d_first_friend_round.description",
+   "text": "{0:plural:Play {} rounds with a friend|Play a round with a friend|Play {} rounds with a friend|Play {} rounds with a friend|Play {} rounds with a friend|Play {} rounds with a friend}",
+   "smart": true
+  },
+  {
+   "key": "mission.d_first_friend_round.name",
+   "text": "First round with a friend",
+   "smart": false
+  },
+  {
    "key": "mission.d_friend_rounds_2.description",
    "text": "{0:plural:Play {} rounds with a friend|Play {} round with a friend|Play {} rounds with a friend|Play {} rounds with a friend|Play {} rounds with a friend|Play {} rounds with a friend}",
    "smart": true
