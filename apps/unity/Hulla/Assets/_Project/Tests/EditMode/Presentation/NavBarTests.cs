@@ -11,7 +11,7 @@ namespace Hulla.Presentation.Tests
         [Test]
         public void FiveTabsInTheGddOrder()
         {
-            var bar = new NavBar(UiText.NavLabel, UiText.NavGlyph);
+            var bar = new NavBar(UiText.NavLabel);
             var names = new System.Collections.Generic.List<string>();
             foreach (var child in bar.Children())
             {
@@ -24,7 +24,7 @@ namespace Hulla.Presentation.Tests
         [Test]
         public void SelectingATabLightsItAlone()
         {
-            var bar = new NavBar(UiText.NavLabel, UiText.NavGlyph);
+            var bar = new NavBar(UiText.NavLabel);
             bar.Select(NavTab.Shop);
             Assert.AreEqual(NavTab.Shop, bar.Active);
             foreach (var child in bar.Children())
@@ -36,7 +36,7 @@ namespace Hulla.Presentation.Tests
         [Test]
         public void TappingRaisesTheTab()
         {
-            var bar = new NavBar(UiText.NavLabel, UiText.NavGlyph);
+            var bar = new NavBar(UiText.NavLabel);
             NavTab? chosen = null;
             bar.Chosen += tab => chosen = tab;
             Assert.IsNotNull(bar.Q<Button>("nav-pass"), "the tab is a button");
@@ -51,7 +51,7 @@ namespace Hulla.Presentation.Tests
             Assert.AreEqual("3", NavBar.BadgeText(3));
             Assert.AreEqual("9", NavBar.BadgeText(9));
             Assert.AreEqual("9+", NavBar.BadgeText(12));
-            var bar = new NavBar(UiText.NavLabel, UiText.NavGlyph);
+            var bar = new NavBar(UiText.NavLabel);
             bar.SetBadge(NavTab.Friends, 2);
             var badge = bar.Q<Button>("nav-friends").Q<Label>(className: "nav__badge");
             Assert.AreEqual("2", badge.text);

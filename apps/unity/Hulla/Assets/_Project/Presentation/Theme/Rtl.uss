@@ -294,6 +294,30 @@
     flex-direction: row;
 }
 
+.rtl .games .unity-scroll-view__content-container {
+    flex-direction: row-reverse;
+}
+
+.rtl .game__art {
+    flex-direction: row-reverse;
+}
+
+.rtl .game__name {
+    -unity-text-align: middle-center;
+}
+
+.rtl .game__line {
+    -unity-text-align: middle-center;
+}
+
+.rtl .game__seats-label {
+    -unity-text-align: middle-center;
+}
+
+.rtl .home__row {
+    flex-direction: row-reverse;
+}
+
 /* Theme/Skins.uss */
 .rtl .skinned .seat__count {
     -unity-text-align: middle-center;

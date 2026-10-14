@@ -2479,3 +2479,130 @@
     margin-top: var(--space-1);
     margin-bottom: var(--space-2);
 }
+
+/* Home, the game shelf (docs/design/table-themes.md §3): a tile per game, the next ones peeking. */
+.games {
+    flex-shrink: 0;
+    margin: 24px -32px 16px 0;
+}
+
+.games .unity-scroll-view__content-container {
+    flex-direction: row;
+    padding-right: 32px;
+}
+
+.game {
+    width: 760px;
+    margin-right: 28px;
+    padding: 40px 44px 48px 44px;
+    align-items: stretch;
+    border-radius: 36px;
+    background-color: var(--surface-panel);
+}
+
+.game--soon {
+    width: 470px;
+    opacity: 0.8;
+}
+
+.game__art {
+    height: 300px;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    border-radius: 28px;
+    overflow: hidden;
+    background-color: var(--felt);
+    -unity-background-scale-mode: scale-and-crop;
+}
+
+.game__card {
+    margin: 0 -26px;
+}
+
+.game__back {
+    width: 130px;
+    height: 182px;
+    margin: 0 -22px;
+    border-radius: 12px;
+    background-color: #2C3E6B;
+    -unity-background-scale-mode: stretch-to-fill;
+}
+
+.game__name {
+    margin-top: 24px;
+    font-size: 104px;
+    -unity-text-align: middle-center;
+    -unity-font-definition: url("/Assets/_Project/Presentation/Theme/Fonts/LilitaOne.ttf");
+    color: var(--accent-saffron);
+}
+
+.game__line {
+    margin-top: -4px;
+    font-size: var(--font-small);
+    -unity-text-align: middle-center;
+    -unity-font-style: bold;
+    letter-spacing: 2px;
+    color: var(--ink-muted);
+}
+
+.game__seats-label {
+    margin-top: 20px;
+    -unity-text-align: middle-center;
+}
+
+.game__seats {
+    justify-content: center;
+    margin-bottom: 0;
+}
+
+.game__play {
+    margin-top: 16px;
+}
+
+.game__soon {
+    align-self: center;
+    margin-top: 28px;
+    padding: 8px 28px;
+    border-radius: 999px;
+    font-size: var(--font-small);
+    -unity-font-style: bold;
+    background-color: rgba(0, 0, 0, 0.45);
+    color: var(--ink-ivory);
+}
+
+.home__row {
+    flex-direction: row;
+    margin: 0 -8px;
+}
+
+.home__row > .button {
+    flex-grow: 1;
+    flex-basis: 0;
+    margin: 0 8px;
+}
+
+.nav__icon {
+    width: 60px;
+    height: 60px;
+    align-self: center;
+}
+
+.game__seats > .chip {
+    min-width: 132px;
+    font-size: 40px;
+    -unity-font-style: bold;
+}
+
+/* A longer name (another language) wraps instead of spilling out of its tile. */
+.game__name {
+    white-space: normal;
+}
+
+.game--soon {
+    width: 520px;
+}
+
+.game--soon .game__name {
+    font-size: 84px;
+}

@@ -1,11 +1,12 @@
 # Status
 
-Updated: 14 October 2026 (overnight)
+Updated: 14 October 2026
 
 ## Phase
 M0 complete: the Thulla rulebook runs in TypeScript with full traceability. M1, the vertical slice, starts with the protocol schemas.
 
 ## Done
+- Table themes (14 Oct, PR 246 and the shelf follow-up): five switchable looks for the whole app (Club default, Haveli, Rooftop, Mehndi, Chai Adda) in Settings, each a scene with its own table, frames, card backs, buttons and thulla stamp, and subtle ambient motion that stops under reduce motion; a portrait table with seats on the rail and card-back fans; Home as a game shelf (Thulla, Rung coming soon); drawn nav icons. Design in `docs/design/table-themes.md`, research in `docs/research/card-game-visual-scan.md`; art from `tools/artkit/skins.py`.
 - Overnight 14 Oct, merged: ranked seasons (#98, PRs 247 and 248: R53 in the engine, leagues Bronze to Ustad, placement, protection, season rewards, the ranked queue, the Ranked screen; numbers in OQ-040); string tables from `content/strings` for Unity and the web (#65 part 1, PR 249, ADR-0023); phone sign-in (#99, PRs 250 and 252: link a number, sign in on a new phone with this phone's progress merged, fraud limits, cost on the dashboard; provider and numbers in OQ-041, setup in `docs/runbooks/phone-sign-in-setup.md`); remote config on the client (#72 client part, PR 253: update prompt, maintenance and Quick Play switches); the first-session rewards, welcome mission and soft prompts (#62, PRs 254 and 255; amounts in OQ-042). A development APK builds with the new tables.
 - Unity #74 referral links (13 Oct, PR 243): a result shared away from a private table carries `hulla://r/<friend code>`; opening it offers to add the sharer. New installs landing after the store wait for the deep-link vendor and the domain (#43, #130).
 - Consent for hand-taking merged (13 Oct, PR 242): Ask for hand sends a request the next player accepts or refuses (`hand_asked`, `answer_hand`, `hand_answered`, the open request in `table_state`); the first ask is explained once; an escaped player is told they are out and their seat shows it. OQ-039 logged; R33, R34, E11 and E15 reworded in the GDD.
@@ -57,6 +58,7 @@ M0 complete: the Thulla rulebook runs in TypeScript with full traceability. M1, 
 - 12 Oct decisions: C# mirror deferred past v1.0 (ADR-0019), no clock in engines (ADR-0020), JSON Schema draft-07 (ADR-0021), one deck and 3–6 seats until v1.2, web client before Rung (M5 → web → Rung → M6, dates in the execution plan), Facebook login stays, Unity stays on 6000.4.9f1.
 
 ## Doing
+- A phone pass on the themes: motion speed and strength, quiet text on each scene, touch targets on the shelf.
 - #65 part 2 (PR 251): the hard-coded text lint, the en-XA and ar-XB pseudo-locales with a screen check in CI, RTL mirroring. Auto-merge is on.
 
 ## Next

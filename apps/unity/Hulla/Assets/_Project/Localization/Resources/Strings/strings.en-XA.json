@@ -2653,6 +2653,11 @@
    "smart": true
   },
   {
+   "key": "ui.coming_soon",
+   "text": "[Çömîñg sööñ · ·]",
+   "smart": false
+  },
+  {
    "key": "ui.connecting",
    "text": "[Çöññéçtîñg… · ·]",
    "smart": false
@@ -2895,6 +2900,26 @@
   {
    "key": "ui.friends_tab",
    "text": "[Frîéñds · ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.game_rung",
+   "text": "[Rûñg ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.game_rung_line",
+   "text": "[Çöûrt pîéçé, îñ påîrs · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.game_thulla",
+   "text": "[Thûllå ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.game_thulla_line",
+   "text": "[Döñ't bé thé Bhåbhî · · ·]",
    "smart": false
   },
   {

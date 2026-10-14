@@ -2653,6 +2653,11 @@
    "smart": true
   },
   {
+   "key": "ui.coming_soon",
+   "text": "Coming soon",
+   "smart": false
+  },
+  {
    "key": "ui.connecting",
    "text": "Connecting…",
    "smart": false
@@ -2895,6 +2900,26 @@
   {
    "key": "ui.friends_tab",
    "text": "Friends",
+   "smart": false
+  },
+  {
+   "key": "ui.game_rung",
+   "text": "Rung",
+   "smart": false
+  },
+  {
+   "key": "ui.game_rung_line",
+   "text": "Court piece, in pairs",
+   "smart": false
+  },
+  {
+   "key": "ui.game_thulla",
+   "text": "Thulla",
+   "smart": false
+  },
+  {
+   "key": "ui.game_thulla_line",
+   "text": "Don't be the Bhabhi",
    "smart": false
   },
   {

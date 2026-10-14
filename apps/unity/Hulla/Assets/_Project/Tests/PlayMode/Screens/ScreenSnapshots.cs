@@ -53,7 +53,7 @@ namespace Hulla.Screens.Tests
                 (layer?.Q(AmbientLayer.TableName) as AmbientLayer)?.Advance(1.3f);
                 if (nav)
                 {
-                    var bar = new NavBar(Presentation.Text.UiText.NavLabel, Presentation.Text.UiText.NavGlyph);
+                    var bar = new NavBar(Presentation.Text.UiText.NavLabel);
                     bar.Select(NavTab.Home);
                     bar.SetBadge(NavTab.Friends, 2);
                     root.Add(bar);

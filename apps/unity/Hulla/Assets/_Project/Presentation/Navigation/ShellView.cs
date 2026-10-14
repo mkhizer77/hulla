@@ -108,7 +108,7 @@ namespace Hulla.Presentation.Navigation
             var root = Root;
             if (_nav == null)
             {
-                _nav = new NavBar(Text.UiText.NavLabel, Text.UiText.NavGlyph);
+                _nav = new NavBar(Text.UiText.NavLabel);
                 _nav.Chosen += tab => NavChosen?.Invoke(tab);
             }
 
@@ -130,7 +130,7 @@ namespace Hulla.Presentation.Navigation
         {
             if (_nav == null)
             {
-                _nav = new NavBar(Text.UiText.NavLabel, Text.UiText.NavGlyph);
+                _nav = new NavBar(Text.UiText.NavLabel);
                 _nav.Chosen += chosen => NavChosen?.Invoke(chosen);
             }
 
