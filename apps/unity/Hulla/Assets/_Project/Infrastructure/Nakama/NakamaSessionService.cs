@@ -68,6 +68,37 @@ namespace Hulla.Infrastructure.Nakama
             }
         }
 
+        /// <summary>
+        /// Makes another account's session the current one (a phone sign-in, #99): a new socket, and the
+        /// account's own name rather than the one typed on this phone.
+        /// </summary>
+        public async Awaitable<Result<PlayerSession>> AdoptAsync(ISession session, CancellationToken cancellation)
+        {
+            try
+            {
+                var client = _connection.Client;
+                var account = await client.GetAccountAsync(session, null, cancellation);
+                _connection.Close();
+                var socket = client.NewSocket(true);
+                Listen(socket);
+                await socket.ConnectAsync(session, true);
+                _connection.Session = session;
+                _connection.Socket = socket;
+                var name = string.IsNullOrWhiteSpace(account.User.DisplayName) ? session.Username : account.User.DisplayName;
+                Current = new PlayerSession(session.UserId, name);
+                return Result<PlayerSession>.Ok(Current);
+            }
+            catch (OperationCanceledException)
+            {
+                throw;
+            }
+            catch (Exception error)
+            {
+                Debug.LogWarning($"switching account failed: {error.Message}");
+                return Result<PlayerSession>.Fail(ServerErrors.CodeOf(error, "session.unavailable"), error.GetType().Name);
+            }
+        }
+
         public async Awaitable<Result<bool>> ReconnectAsync(CancellationToken cancellation)
         {
             var session = _connection.Session;

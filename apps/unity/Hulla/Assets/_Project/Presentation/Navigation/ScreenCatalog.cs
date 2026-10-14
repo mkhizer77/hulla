@@ -21,5 +21,6 @@ namespace Hulla.Presentation.Navigation
         public VisualTreeAsset? Shop;
         public VisualTreeAsset? Pass;
         public VisualTreeAsset? Ranked;
+        public VisualTreeAsset? Phone;
     }
 }
