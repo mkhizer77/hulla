@@ -24,6 +24,7 @@ import { applyRankedRound } from "../services/ranked";
 import { isBanned, readModeration } from "../services/sanctions";
 import { earnPassXp } from "../services/season_pass";
 import { nkSocialStore, recordRecentPlayers } from "../services/social";
+import { payWelcome } from "../services/welcome";
 
 import { analyticsFromBatch, type TableEvent } from "./analytics";
 import { fillSeatAvatars, needsSeatAvatars, pickSeatAvatar } from "./avatars";
@@ -99,13 +100,15 @@ export function storagePersistence(nk: nkruntime.Nakama, logger: nkruntime.Logge
         if (playerId === null) return;
         try {
           const profile = store.read(playerId);
+          // The first live round ever pays the one-time welcome reward (GDD 17.2).
+          const firstRound = profile !== null && profile.stats.rounds === 0;
           if (profile !== null) {
             store.write(playerId, {
               ...profile,
               stats: applyRoundToStats(profile.stats, seat, record),
             });
           }
-          rewardPlayer(nk, logger, record, playerId, seat, humans);
+          rewardPlayer(nk, logger, record, playerId, seat, humans, firstRound);
           nk.storageWrite([
             {
               collection: ROUND_RESULTS_COLLECTION,
@@ -147,6 +150,7 @@ function rewardPlayer(
   playerId: string,
   seat: number,
   humans: readonly string[],
+  firstRound = false,
 ): void {
   try {
     const progressStore = nkProgressStore(nk);
@@ -162,7 +166,16 @@ function rewardPlayer(
     });
     if (reward === null) return;
     const applied = applyReward(current, reward, record, record.endedTs);
-    progressStore.write(playerId, applied.progress);
+    const welcome = firstRound ? payWelcome(nkLedgerPorts(nk), playerId, "firstRound") : 0;
+    progressStore.write(
+      playerId,
+      welcome > 0 && applied.progress.lastReward !== null
+        ? {
+            ...applied.progress,
+            lastReward: { ...applied.progress.lastReward, welcomeCoins: welcome },
+          }
+        : applied.progress,
+    );
     recordMissionMetrics(nk, playerId, metricsFromRound(record, seat, withFriend), record.endedTs);
     postRoundPoints(nk, logger, record, playerId, seat);
     earnPassXp(nk, playerId, "round", record.endedTs);

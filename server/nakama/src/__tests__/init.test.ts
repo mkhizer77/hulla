@@ -32,6 +32,7 @@ describe("InitModule", () => {
       "phone_start",
       "phone_verify",
       "phone_status",
+      "tutorial_complete",
       "profile_get",
       "profile_update",
       "account_delete",

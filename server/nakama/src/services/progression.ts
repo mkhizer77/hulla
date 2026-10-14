@@ -158,6 +158,8 @@ export interface LastReward {
   readonly roundId: string;
   readonly xp: number;
   readonly coins: number;
+  /** The one-time welcome reward paid with this round, the player's first (GDD 17.2). */
+  readonly welcomeCoins?: number;
   readonly levelFrom: number;
   readonly levelTo: number;
   readonly titles: readonly string[];
