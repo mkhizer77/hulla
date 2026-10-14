@@ -53,6 +53,8 @@ namespace Hulla.Presentation.TableKit
                 badge.style.display = DisplayStyle.Flex;
                 badge.style.left = Length.Percent(at.x * 100f);
                 badge.style.top = Length.Percent(at.y * 100f);
+                // A seat on the right fans its cards inward, so the fan never runs off the screen.
+                badge.EnableInClassList("seat--east", at.x > 0.6f);
             }
         }
 

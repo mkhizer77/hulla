@@ -213,7 +213,8 @@ jobs:
           unityVersion: 6000.4.9f1
           testMode: PlayMode
           # The screens and the pseudo-locale layout check (GDD 26.1); the server suites need Nakama.
-          customParameters: -testFilter Hulla.Screens.Tests
+          # Named fixtures, so the explicit snapshot renders are not selected by the namespace.
+          customParameters: -testFilter "Hulla.Screens.Tests.ScreenSmokeTests|Hulla.Screens.Tests.PseudoLocaleTests|Hulla.Screens.Tests.AccessibilityScreenTests"
           cliVersion: v0.1.72
           githubToken: ${{ secrets.GITHUB_TOKEN }}
 

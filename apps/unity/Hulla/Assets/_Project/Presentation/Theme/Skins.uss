@@ -71,6 +71,11 @@
     background-color: rgba(0, 0, 0, 0);
 }
 
+.skinned .seat--east .seat__chip {
+    right: auto;
+    left: -74px;
+}
+
 .skinned .seat__back {
     position: absolute;
     bottom: 8px;

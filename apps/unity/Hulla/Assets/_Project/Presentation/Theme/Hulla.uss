@@ -190,7 +190,8 @@
 
 .tag--ok {
     background-color: #123A2B;
-    color: var(--state-escape);
+    /* Brighter than --state-escape so "Done" and "Equipped" read at 4.5:1 (GDD 27). */
+    color: #5BE37A;
 }
 
 .tag--muted {
