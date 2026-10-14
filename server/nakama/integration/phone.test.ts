@@ -53,9 +53,17 @@ describe.skipIf(NAKAMA_HOST === undefined)("phone sign-in against Nakama (GDD 10
     });
     const signIn = await rpc<Verified>(second, "phone_verify", { phone, code });
     expect(signIn).toMatchObject({ ok: true, result: "signIn" });
+    // The guest on the second device hands over its progress, then signs in with the token.
+    const merge = await rpc<{ ok: boolean; code: string }>(second, "account_merge_prepare", {});
+    expect(merge.ok).toBe(true);
     const client = new Client(SERVER_KEY, NAKAMA_HOST ?? "", NAKAMA_PORT, false);
     const session = await client.authenticateCustom(signIn.token ?? "", false);
     expect(session.user_id).toBe(first.session.user_id);
+    const merged = await client.rpc(session, "account_merge", { code: merge.code });
+    expect(merged.payload).toMatchObject({ ok: true, mergedFrom: second.session.user_id });
+    // The second phone's device id now opens the first account at every start.
+    const again = await client.authenticateDevice(`hulla-it-ph2-${suffix}`, false);
+    expect(again.user_id).toBe(first.session.user_id);
     // The token works once; a bare phone id never does.
     await expect(client.authenticateCustom(signIn.token ?? "", false)).rejects.toBeTruthy();
     await expect(client.authenticateCustom(`ph_${"0".repeat(64)}`, false)).rejects.toBeTruthy();

@@ -431,6 +431,12 @@ export function memoryNk(): MemoryNk {
     accountExportId: (id: string) => JSON.stringify({ account: { user: toUser(user(id)) } }),
     accountDeleteId(id: string) {
       deleted.push(id);
+      devices.delete(id);
+    },
+    linkDevice(id: string, deviceId: string) {
+      const owner = [...devices.entries()].find(([, ids]) => ids.includes(deviceId));
+      if (owner !== undefined && owner[0] !== id) throw new Error("device id in use");
+      devices.set(id, [...(devices.get(id) ?? []).filter((d) => d !== deviceId), deviceId]);
     },
     sessionLogout(id: string) {
       loggedOut.push(id);
