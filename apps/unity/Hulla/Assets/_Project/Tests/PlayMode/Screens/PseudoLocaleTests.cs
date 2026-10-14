@@ -330,6 +330,12 @@ namespace Hulla.Screens.Tests
                 new PassView(r, model, () => 1_000_000_000_000, () => { }, (_, _) => { });
                 _ = model.RefreshAsync(default);
             });
+            yield return new Case("phone", catalog.Phone, r =>
+            {
+                var model = new PhoneViewModel(new Fakes.Phone());
+                new Hulla.Presentation.Screens.Phone.PhoneView(r, model, () => { }, new Hulla.Presentation.Screens.Phone.PhoneView.PhoneActions(_ => { }, _ => { }, () => { }, () => { }, () => { }));
+                _ = model.RefreshAsync(default);
+            });
             yield return new Case("missions", catalog.Missions, r =>
             {
                 var model = new MissionsViewModel(new Fakes.Missions());
