@@ -44,7 +44,8 @@ namespace Hulla.Infrastructure.Nakama
                     (long?)r["coins"] ?? 0,
                     (long?)r["levelFrom"] ?? 0,
                     (long?)r["levelTo"] ?? 0,
-                    (bool?)r["breakdown"]?["capped"] == true);
+                    (bool?)r["breakdown"]?["capped"] == true,
+                    (long?)r["welcomeCoins"] ?? 0);
             }
 
             return Result<ProgressInfo>.Ok(new ProgressInfo(

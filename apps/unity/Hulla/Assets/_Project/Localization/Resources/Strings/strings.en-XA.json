@@ -3851,6 +3851,31 @@
    "key": "ui.you_are_out",
    "text": "[Ýöû'ré öût, såfé för thîs röûñd! Wåtçh thé rést; çhåt åñd vöîçé ståý öñ. · · · · · · · · · · ·]",
    "smart": false
+  },
+  {
+   "key": "welcome.add_phone",
+   "text": "[Ådd phöñé ñûmbér · · ·]",
+   "smart": false
+  },
+  {
+   "key": "welcome.first_round_bonus",
+   "text": "[Wélçömé böñûs: +{0:N0} çöîñs · · · ·]",
+   "smart": true
+  },
+  {
+   "key": "welcome.invite",
+   "text": "[Thûllå îs béttér wîth ýöûr gröûp. Måké å rööm åñd séñd ýöûr frîéñds thé çödé. · · · · · · · · · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "welcome.keep_progress",
+   "text": "[Kéép ýöûr prögréss. Ådd ýöûr phöñé ñûmbér tö sîgñ îñ öñ åñý phöñé. · · · · · · · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "welcome.tutorial_bonus",
+   "text": "[Tûtörîål döñé: +{0:N0} çöîñs · · · ·]",
+   "smart": true
   }
  ]
 }
