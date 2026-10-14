@@ -1,25 +1,29 @@
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Threading;
 using Hulla.Application.Services;
 using Newtonsoft.Json.Linq;
 using UnityEngine;
-using UnityEngine.Networking;
 
 namespace Hulla.Infrastructure.Content
 {
     /// <summary>
-    /// Reads content/quick-chat and content/emotes from StreamingAssets, where the editor copies them
-    /// at import and build time (BuildTools/Editor/ContentSync). Missing files leave the lists empty.
+    /// Reads content/quick-chat and content/emotes through the content store, so a newer signed pack
+    /// replaces the bundled one from the next launch (ADR-0011). Missing files leave the lists empty.
     /// </summary>
-    public sealed class StreamingChatCatalog : IChatCatalog
+    public sealed class ContentChatCatalog : IChatCatalog
     {
-        private const string PhrasesFile = "content/quick-chat/v1.en.json";
-        private const string EmotesFile = "content/emotes/v1.json";
+        private const string PhrasesFile = "quick-chat/v1.en.json";
+        private const string EmotesFile = "emotes/v1.json";
+        private readonly IContentStore _content;
         private readonly List<ChatPhrase> _phrases = new List<ChatPhrase>();
         private readonly Dictionary<string, string> _byId = new Dictionary<string, string>();
         private readonly List<string> _emotes = new List<string>();
+
+        public ContentChatCatalog(IContentStore content)
+        {
+            _content = content;
+        }
 
         public IReadOnlyList<ChatPhrase> Phrases => _phrases;
 
@@ -63,26 +67,23 @@ namespace Hulla.Infrastructure.Content
             }
         }
 
-        private static async Awaitable<JObject?> ReadAsync(string relative, CancellationToken cancellation)
+        private async Awaitable<JObject?> ReadAsync(string path, CancellationToken cancellation)
         {
-            var path = Path.Combine(UnityEngine.Application.streamingAssetsPath, relative);
-            var url = path.Contains("://") ? path : "file://" + path;
-            using var request = UnityWebRequest.Get(url);
-            await request.SendWebRequest();
+            var text = await _content.ReadTextAsync(path, cancellation);
             cancellation.ThrowIfCancellationRequested();
-            if (request.result != UnityWebRequest.Result.Success)
+            if (text == null)
             {
-                Debug.LogWarning($"content missing: {relative} ({request.error})");
+                Debug.LogWarning($"content missing: {path}");
                 return null;
             }
 
             try
             {
-                return JObject.Parse(request.downloadHandler.text);
+                return JObject.Parse(text);
             }
             catch (Exception error)
             {
-                Debug.LogWarning($"content unreadable: {relative} ({error.Message})");
+                Debug.LogWarning($"content unreadable: {path} ({error.Message})");
                 return null;
             }
         }

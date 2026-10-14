@@ -1,8 +1,8 @@
-import { createVerify, generateKeyPairSync } from "node:crypto";
+import { createHash, createSign, createVerify, generateKeyPairSync } from "node:crypto";
 
 import { describe, expect, it } from "vitest";
 
-import { CONTENT_FILES, CONTENT_MANIFEST } from "../content";
+import { CONTENT_FILES, CONTENT_MANIFEST, CONTENT_TEXT } from "../content";
 import { canonicalManifest, rpcContentGet, rpcContentManifest } from "../rpc/content";
 
 import { fakeLogger, memoryNk } from "./fake-nk";
@@ -24,10 +24,16 @@ describe("the content manifest and files (ADR-0011)", () => {
     );
   });
 
-  it("serves the manifest unsigned on a development box and signed when the key is set", () => {
-    const m = memoryNk();
-    const log = fakeLogger();
-    const plain = parse(rpcContentManifest({ env: {} } as unknown as nkruntime.Context, log, m.nk));
+  it("serves each file as the exact bytes its manifest hash covers", () => {
+    for (const entry of CONTENT_MANIFEST.files) {
+      const text = CONTENT_TEXT[entry.path] ?? "";
+      expect(createHash("sha256").update(text).digest("hex"), entry.path).toBe(entry.sha256);
+      expect(Buffer.byteLength(text), entry.path).toBe(entry.bytes);
+    }
+  });
+
+  it("serves the manifest unsigned on a development box and with the deploy-time signature when set", () => {
+    const plain = parse(rpcContentManifest({ env: {} } as unknown as nkruntime.Context));
     expect(plain).toMatchObject({
       ok: true,
       signature: null,
@@ -35,17 +41,15 @@ describe("the content manifest and files (ADR-0011)", () => {
       manifest: { id: "content-manifest" },
     });
     const { privateKey, publicKey } = generateKeyPairSync("rsa", { modulusLength: 2048 });
-    const pem = privateKey.export({ type: "pkcs1", format: "pem" });
+    const signature = createSign("RSA-SHA256")
+      .update(canonicalManifest())
+      .sign(privateKey, "base64");
     const signed = parse(
-      rpcContentManifest(
-        {
-          env: { HULLA_CONTENT_SIGNING_KEY: pem, HULLA_CONTENT_SIGNING_KEY_ID: "k1" },
-        } as unknown as nkruntime.Context,
-        log,
-        m.nk,
-      ),
+      rpcContentManifest({
+        env: { HULLA_CONTENT_SIGNATURE: signature, HULLA_CONTENT_SIGNING_KEY_ID: "k1" },
+      } as unknown as nkruntime.Context),
     );
-    expect(signed).toMatchObject({ ok: true, algorithm: "RSA-SHA256", keyId: "k1" });
+    expect(signed).toMatchObject({ ok: true, algorithm: "RSA-SHA256", keyId: "k1", signature });
     const verify = createVerify("RSA-SHA256").update(signed["signedBytes"] as string);
     expect(verify.verify(publicKey, signed["signature"] as string, "base64")).toBe(true);
     expect(signed["signedBytes"]).toBe(canonicalManifest());
@@ -66,6 +70,11 @@ describe("the content manifest and files (ADR-0011)", () => {
     );
     expect(got).toMatchObject({ ok: true, path: "emotes/v1.json", document: { id: "v1" } });
     expect(got["sha256"]).toMatch(/^[0-9a-f]{64}$/);
+    expect(
+      createHash("sha256")
+        .update(got["text"] as string)
+        .digest("hex"),
+    ).toBe(got["sha256"]);
     expect(
       parse(
         rpcContentGet(

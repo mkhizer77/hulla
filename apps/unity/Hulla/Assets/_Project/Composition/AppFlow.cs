@@ -70,6 +70,7 @@ namespace Hulla.Composition
         private bool _reconnecting;
         private SettingsView? _settingsView;
         private bool _updateAsked;
+        private bool _contentSynced;
         private PhoneView? _phoneView;
         private bool _tutorialRefresher;
         private LobbyView? _lobbyView;
@@ -337,6 +338,7 @@ namespace Hulla.Composition
 
             try
             {
+                await _app.Content.OpenAsync(_app.Lifetime);
                 await _app.Chat.LoadAsync(_app.Lifetime);
                 await _app.Presets.LoadAsync(_app.Lifetime);
             }
@@ -615,9 +617,31 @@ namespace Hulla.Composition
             if (ok)
             {
                 RememberName(name);
+                SyncContent();
             }
 
             return ok;
+        }
+
+        /// <summary>Newer signed content downloads once a launch, in the background, for the next launch (ADR-0011).</summary>
+        private async void SyncContent()
+        {
+            if (_contentSynced)
+            {
+                return;
+            }
+
+            _contentSynced = true;
+            try
+            {
+                if (await _app.Content.SyncAsync(_app.Lifetime) == ContentSyncOutcome.Unavailable)
+                {
+                    _contentSynced = false;
+                }
+            }
+            catch (OperationCanceledException)
+            {
+            }
         }
 
         /// <summary>A returning player is signed in at launch so Home can show friends' tables (GDD 14.10).</summary>
@@ -626,6 +650,7 @@ namespace Hulla.Composition
             var signedIn = await _app.Home.SignInAsync(_app.Home.LastName, _app.Lifetime);
             if (signedIn.IsOk)
             {
+                SyncContent();
                 await _app.RemoteConfig.RefreshAsync(UnityEngine.Application.version, "*", _app.Lifetime);
                 ApplyRemoteConfig();
                 await _app.Progress.RefreshAsync(LocalOffsetMinutes(), _app.Lifetime);

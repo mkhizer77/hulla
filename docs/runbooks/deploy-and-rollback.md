@@ -5,7 +5,8 @@ Blue-green deploys of the Nakama node with running rounds draining first, migrat
 ## Before
 1. The tag: `vX.Y.Z` on `main` with CI green. The release workflow builds the Android artefacts; the server image is the same bundle (`server/nakama/build/index.js`) with the config under `server/nakama/config`.
 2. The database: take the point-in-time marker (`docs/runbooks/database-restore.md`, step 1) so a rollback of a migration is possible.
-3. Tell the players if the window is long: the `maintenance` flag in `config_set` shows the line in the client; the drain alone shows "the table is full for a moment, try again".
+3. Sign the content manifest (ADR-0011) when `content/` changed: `pnpm content:sign /path/to/content-signing.pem` prints the signature; set it as `HULLA_CONTENT_SIGNATURE` in the green node's runtime env, with `HULLA_CONTENT_SIGNING_KEY_ID` naming the key. The private key never goes on the box. Without a signature, release clients keep the content they shipped with. The key is made once, before the first release: `openssl genrsa -traditional -out content-signing.pem 3072`, kept with the other owner secrets, and its public half (`openssl rsa -in content-signing.pem -pubout`) pasted into `apps/unity/Hulla/Assets/_Project/Composition/ContentKey.cs`.
+4. Tell the players if the window is long: the `maintenance` flag in `config_set` shows the line in the client; the drain alone shows "the table is full for a moment, try again".
 
 ## Deploy (blue-green on one box)
 1. Start the new container next to the old one on another port (`green`), same Postgres: `NAKAMA_IMAGE=... docker compose -p green -f server/nakama/compose.yml up -d nakama` with `socket.port 7352` in its config. `migrate up` runs in its entrypoint; it must finish and `hello` must answer on 7352 (`curl ".../v2/rpc/hello?http_key=..."` shows the new `server` version) before anything else. A failed migration stops here: the old node is untouched.
