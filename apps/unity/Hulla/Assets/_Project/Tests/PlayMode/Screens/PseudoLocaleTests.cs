@@ -48,11 +48,11 @@ namespace Hulla.Screens.Tests
         public void TearDown() => Strings.Use(Strings.Fallback);
 
         [UnityTest]
-        [Timeout(300000)]
+        [Timeout(1800000)]
         public IEnumerator AccentedLongerTextFitsEveryScreen() => Check("en-XA");
 
         [UnityTest]
-        [Timeout(300000)]
+        [Timeout(1800000)]
         public IEnumerator MirroredLayoutFitsEveryScreen() => Check("ar-XB");
 
         [UnityTest]

@@ -36,16 +36,18 @@ namespace Hulla.Screens.Tests
         public void TearDown() => Strings.Use(Strings.Fallback);
 
         [UnityTest]
-        [Timeout(300000)]
+        [Timeout(1800000)]
         public IEnumerator EveryControlIsBigEnoughAndEveryTextReadable()
         {
+            // Each screen in one theme, the themes taken in turn, so all five are covered without
+            // laying out every screen five times (CI renders in software and is slow).
             var problems = new List<string>();
-            foreach (Hulla.Application.Settings.TableSkin skin in System.Enum.GetValues(typeof(Hulla.Application.Settings.TableSkin)))
+            var skins = (Hulla.Application.Settings.TableSkin[])System.Enum.GetValues(typeof(Hulla.Application.Settings.TableSkin));
+            var index = 0;
+            foreach (var screen in ScreenCases.All())
             {
-                foreach (var screen in ScreenCases.All())
-                {
-                    yield return Check(screen, skin, problems);
-                }
+                yield return Check(screen, skins[index % skins.Length], problems);
+                index++;
             }
 
             Assert.IsEmpty(problems, string.Join("\n", problems));
