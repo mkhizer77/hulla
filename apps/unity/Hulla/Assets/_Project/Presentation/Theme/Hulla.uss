@@ -27,8 +27,8 @@
     --radius: 14px;
     /* 48 dp at the 1080 px reference width (GDD 27). */
     --tap: 132px;
-    --font-body: 34px;
-    --font-small: 26px;
+    --font-body: 38px;
+    --font-small: 30px;
     --font-title: 96px;
     -unity-font-style: normal;
     color: var(--ink-ivory);
@@ -769,20 +769,20 @@
 }
 
 .text--125 {
-    --font-body: 42px;
-    --font-small: 32px;
+    --font-body: 47px;
+    --font-small: 37px;
     --font-title: 110px;
 }
 
 .text--150 {
-    --font-body: 51px;
-    --font-small: 39px;
+    --font-body: 57px;
+    --font-small: 45px;
     --font-title: 120px;
 }
 
 .text--200 {
-    --font-body: 68px;
-    --font-small: 52px;
+    --font-body: 76px;
+    --font-small: 60px;
     --font-title: 128px;
 }
 
@@ -987,6 +987,7 @@
 .progress-line {
     margin-top: 0;
     margin-bottom: var(--space-1);
+    white-space: normal;
 }
 
 .result-reward {
@@ -1175,6 +1176,12 @@
 
 .leaderboard__me {
     margin-top: var(--space-1);
+    padding: 0;
+}
+
+.leaderboard__me > .leaderboard__row {
+    flex-grow: 1;
+    border-bottom-width: 0;
 }
 
 .achievement--locked {
@@ -1247,7 +1254,53 @@
 }
 
 .pass__side--premium {
-    background-color: #2B2412;
+    background-color: rgba(255, 200, 80, 0.07);
+    border-left-width: 2px;
+    border-color: rgba(255, 200, 80, 0.35);
+}
+
+.pass__header {
+    align-items: center;
+    margin-bottom: var(--space-2);
+}
+
+.pass__header > .meter {
+    align-self: stretch;
+    margin: 12px 0 16px 0;
+}
+
+/* A thin progress bar (Meter): XP on Home, each mission, the pass tier. */
+.meter {
+    height: 14px;
+    margin-top: 10px;
+    border-radius: 7px;
+    overflow: hidden;
+    background-color: rgba(255, 255, 255, 0.14);
+}
+
+.meter__fill {
+    height: 100%;
+    border-radius: 7px;
+    background-color: var(--accent-saffron);
+}
+
+.meter--full > .meter__fill {
+    background-color: #5BE37A;
+}
+
+.leaderboard__rank--1 {
+    color: #FFD34D;
+    -unity-font-style: bold;
+}
+
+.leaderboard__rank--2 {
+    color: #D9E1EA;
+    -unity-font-style: bold;
+}
+
+.leaderboard__rank--3 {
+    color: #E0995E;
+    -unity-font-style: bold;
 }
 
 .pass__reward {
@@ -1651,8 +1704,24 @@
 
 .lobby-ring {
     flex-shrink: 0;
-    height: 520px;
+    height: 660px;
     margin: var(--space-2) 0;
+}
+
+/* The lobby is the table before the deal: the theme's table under the seats. */
+.lobby-table {
+    position: absolute;
+    left: 20%;
+    right: 20%;
+    top: 4%;
+    bottom: 10%;
+    border-radius: 48px;
+    background-color: var(--felt);
+    -unity-background-scale-mode: stretch-to-fill;
+}
+
+.skinned .lobby-table {
+    background-color: rgba(0, 0, 0, 0);
 }
 
 .lobby-watchers {
@@ -2480,33 +2549,29 @@
     margin-bottom: var(--space-2);
 }
 
-/* Home, the game shelf (docs/design/table-themes.md §3): a tile per game, the next ones peeking. */
+/* Home, the game shelf (docs/design/table-themes.md §3): the game to play now, the next one as a row under it. */
 .games {
     flex-shrink: 0;
-    margin: 24px -32px 16px 0;
-}
-
-.games .unity-scroll-view__content-container {
-    flex-direction: row;
-    padding-right: 32px;
+    margin: 20px 0 8px 0;
 }
 
 .game {
-    width: 760px;
-    margin-right: 28px;
-    padding: 40px 44px 48px 44px;
+    margin-bottom: 20px;
+    padding: 32px 40px 40px 40px;
     align-items: stretch;
     border-radius: 36px;
     background-color: var(--surface-panel);
 }
 
 .game--soon {
-    width: 470px;
-    opacity: 0.8;
+    flex-direction: row;
+    align-items: center;
+    padding: 20px 28px 20px 20px;
+    opacity: 0.85;
 }
 
 .game__art {
-    height: 300px;
+    height: 240px;
     flex-direction: row;
     justify-content: center;
     align-items: center;
@@ -2530,8 +2595,8 @@
 }
 
 .game__name {
-    margin-top: 24px;
-    font-size: 104px;
+    margin-top: 16px;
+    font-size: 88px;
     -unity-text-align: middle-center;
     -unity-font-definition: url("/Assets/_Project/Presentation/Theme/Fonts/LilitaOne.ttf");
     color: var(--accent-saffron);
@@ -2599,10 +2664,48 @@
     white-space: normal;
 }
 
-.game--soon {
-    width: 520px;
+.game--soon .game__art {
+    width: 200px;
+    height: 120px;
+    border-radius: 20px;
+}
+
+.game--soon .game__card, .game--soon .game__back {
+    scale: 0.45 0.45;
+    margin: 0 -60px;
+}
+
+.game__text {
+    flex-grow: 1;
+    flex-shrink: 1;
+    margin: 0 24px;
 }
 
 .game--soon .game__name {
-    font-size: 84px;
+    margin-top: 0;
+    font-size: 64px;
+    -unity-text-align: middle-left;
+}
+
+.game--soon .game__line {
+    -unity-text-align: middle-left;
+}
+
+.game--soon .game__soon {
+    margin-top: 0;
+    flex-shrink: 0;
+}
+
+/* An icon in place of a word (the gear for settings); the tooltip and the label carry the name. */
+.button--icon {
+    width: 88px;
+    min-width: 88px;
+    height: 88px;
+    padding: 0;
+}
+
+.line-icon {
+    width: 52px;
+    height: 52px;
+    align-self: center;
 }

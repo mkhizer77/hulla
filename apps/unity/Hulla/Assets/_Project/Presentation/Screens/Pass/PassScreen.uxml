@@ -5,7 +5,7 @@
             <ui:Button name="back" class="button button--quiet button--small" />
         </ui:VisualElement>
         <ui:Label name="status" class="status" />
-        <ui:ScrollView class="settings__scroll">
+        <ui:ScrollView class="settings__scroll" horizontal-scroller-visibility="Hidden" vertical-scroller-visibility="Hidden">
             <ui:VisualElement name="list" />
         </ui:ScrollView>
     </ui:VisualElement>

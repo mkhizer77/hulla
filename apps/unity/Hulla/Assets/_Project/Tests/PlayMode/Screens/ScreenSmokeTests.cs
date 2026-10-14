@@ -132,7 +132,7 @@ namespace Hulla.Screens.Tests
                 gateway.Deliver(MessageTypes.TableState, 3, state);
             });
             Assert.AreEqual("K7Q2MX", root.Q<Label>("code").text);
-            Assert.AreEqual(4, root.Q<VisualElement>("seats").childCount);
+            Assert.AreEqual(4, root.Q<VisualElement>("seats").Query(className: "seat--placed").ToList().Count);
             Shown(root.Q<Button>("share"), "Share code");
             Shown(root.Q<Button>("start"), "Start for the host");
             Shown(root.Q<Button>("edit-rules"), "Edit rules for the host");

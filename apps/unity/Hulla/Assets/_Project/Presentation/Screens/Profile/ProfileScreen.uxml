@@ -4,7 +4,7 @@
             <ui:Label name="title" class="title title--small" />
             <ui:Button name="back" class="button button--quiet button--small" />
         </ui:VisualElement>
-        <ui:ScrollView class="settings__scroll">
+        <ui:ScrollView class="settings__scroll" horizontal-scroller-visibility="Hidden" vertical-scroller-visibility="Hidden">
             <ui:VisualElement class="panel code-box">
                 <ui:Label name="code-label" class="caption" />
                 <ui:Label name="code" class="code" />

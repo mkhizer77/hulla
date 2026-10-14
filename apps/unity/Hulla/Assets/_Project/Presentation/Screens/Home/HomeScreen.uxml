@@ -21,9 +21,9 @@
             <ui:Label name="tagline" class="subtitle" />
             <ui:VisualElement name="party" class="party" />
             <ui:Label name="online" class="caption home__online" />
-            <ui:Button name="hero" class="button button--primary hero" />
+            <ui:Button name="hero" class="button button--secondary hero" />
             <ui:Button name="rejoin" class="button button--primary hero" />
-            <ui:ScrollView name="games" mode="Horizontal" class="games" horizontal-scroller-visibility="Hidden" vertical-scroller-visibility="Hidden">
+            <ui:VisualElement name="games" class="games">
                 <ui:VisualElement name="game-thulla" class="game">
                     <ui:VisualElement name="game-thulla-art" class="game__art" />
                     <ui:Label name="game-thulla-name" class="game__name" />
@@ -34,11 +34,13 @@
                 </ui:VisualElement>
                 <ui:VisualElement name="game-rung" class="game game--soon">
                     <ui:VisualElement name="game-rung-art" class="game__art" />
-                    <ui:Label name="game-rung-name" class="game__name" />
-                    <ui:Label name="game-rung-line" class="game__line" />
+                    <ui:VisualElement class="game__text">
+                        <ui:Label name="game-rung-name" class="game__name" />
+                        <ui:Label name="game-rung-line" class="game__line" />
+                    </ui:VisualElement>
                     <ui:Label name="game-rung-soon" class="game__soon" />
                 </ui:VisualElement>
-            </ui:ScrollView>
+            </ui:VisualElement>
             <ui:VisualElement class="home__row">
                 <ui:Button name="create" class="button button--secondary" />
                 <ui:Button name="join-toggle" class="button" />

@@ -4,7 +4,7 @@
             <ui:Label name="title" class="title title--small" />
             <ui:Button name="back" class="button button--quiet button--small" />
         </ui:VisualElement>
-        <ui:ScrollView class="settings__scroll">
+        <ui:ScrollView class="settings__scroll" horizontal-scroller-visibility="Hidden" vertical-scroller-visibility="Hidden">
             <ui:Label name="intro" class="caption phone__text" />
             <ui:VisualElement name="number-step">
                 <ui:TextField name="number" class="field" />

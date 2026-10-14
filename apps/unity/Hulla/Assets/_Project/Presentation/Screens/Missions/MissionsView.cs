@@ -73,6 +73,7 @@ namespace Hulla.Presentation.Screens.Missions
                 var detail = new Label(Strings.Format(UiText.MissionProgress, Math.Min(mission.Progress, mission.Target), mission.Target, Reward(mission)));
                 detail.AddToClassList("caption");
                 text.Add(detail);
+                text.Add(new Meter(mission.Progress, mission.Target));
                 row.Add(text);
                 if (mission.Claimed)
                 {

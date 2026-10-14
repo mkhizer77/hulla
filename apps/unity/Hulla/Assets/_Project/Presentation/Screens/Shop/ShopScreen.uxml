@@ -9,7 +9,7 @@
             <ui:VisualElement name="categories" class="chips shop__chips" />
         </ui:ScrollView>
         <ui:Label name="status" class="status" />
-        <ui:ScrollView class="settings__scroll">
+        <ui:ScrollView class="settings__scroll" horizontal-scroller-visibility="Hidden" vertical-scroller-visibility="Hidden">
             <ui:VisualElement name="list" />
         </ui:ScrollView>
     </ui:VisualElement>

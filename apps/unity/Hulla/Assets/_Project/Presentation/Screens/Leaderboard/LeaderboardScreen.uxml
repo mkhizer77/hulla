@@ -13,7 +13,7 @@
         </ui:VisualElement>
         <ui:Label name="reset" class="caption" />
         <ui:Label name="status" class="status" />
-        <ui:ScrollView class="settings__scroll">
+        <ui:ScrollView class="settings__scroll" horizontal-scroller-visibility="Hidden" vertical-scroller-visibility="Hidden">
             <ui:VisualElement name="list" />
         </ui:ScrollView>
         <ui:VisualElement name="me" class="lobby-seat leaderboard__me" />

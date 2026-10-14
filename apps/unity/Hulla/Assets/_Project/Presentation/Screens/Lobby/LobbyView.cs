@@ -89,9 +89,13 @@ namespace Hulla.Presentation.Screens.Lobby
             };
             _nowMs = nowMs;
             _countdown = root.Q<Label>("countdown");
+            _countdown.style.display = DisplayStyle.None;
             root.Q<Label>("code-label").text = UiText.RoomCode;
             _code = root.Q<Label>("code");
             _seats = root.Q<VisualElement>("seats");
+            var table = new VisualElement { pickingMode = PickingMode.Ignore };
+            table.AddToClassList("lobby-table");
+            _seats.Add(table);
             _watchers = root.Q<VisualElement>("watchers");
 
             // The seat ring (GDD 14.9): the table's own arc, so the lobby becomes the table without a re-layout.
@@ -101,7 +105,7 @@ namespace Hulla.Presentation.Screens.Lobby
             _me.AddToClassList("seat--placed");
             _me.AddToClassList("seat--me");
             _me.style.left = Length.Percent(50f);
-            _me.style.top = Length.Percent(88f);
+            _me.style.top = Length.Percent(80f);
             _seats.Add(_me);
             _ready = root.Q<Button>("ready");
             _start = root.Q<Button>("start");
@@ -181,9 +185,11 @@ namespace Hulla.Presentation.Screens.Lobby
                     _countdown.text = "";
                 }
 
+                _countdown.style.display = DisplayStyle.None;
                 return;
             }
 
+            _countdown.style.display = DisplayStyle.Flex;
             var seconds = Math.Max(0, (startsAt.Value - _nowMs() + 999) / 1000);
             if (seconds != _shownSeconds)
             {
@@ -341,7 +347,7 @@ namespace Hulla.Presentation.Screens.Lobby
             title.AddToClassList("title");
             title.AddToClassList("title--small");
             panel.Add(title);
-            var list = new ScrollView();
+            var list = new ScrollView { verticalScrollerVisibility = ScrollerVisibility.Hidden, horizontalScrollerVisibility = ScrollerVisibility.Hidden };
             list.AddToClassList("invite-sheet__list");
             panel.Add(list);
             var close = new Button(() => sheet.RemoveFromHierarchy()) { text = UiText.Done };

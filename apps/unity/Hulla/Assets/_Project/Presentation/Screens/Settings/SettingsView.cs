@@ -131,7 +131,7 @@ namespace Hulla.Presentation.Screens.Settings
                 var pending = _account.PendingText();
                 if (pending == null)
                 {
-                    Action(UiText.DeleteAccount, () => _account.Delete(Status));
+                    Action(UiText.DeleteAccount, () => _account.Delete(Status)).AddToClassList("button--danger");
                 }
                 else
                 {
@@ -154,12 +154,13 @@ namespace Hulla.Presentation.Screens.Settings
             }
         }
 
-        private void Action(string text, Action click)
+        private Button Action(string text, Action click)
         {
             var button = new Button(click) { text = text };
             button.AddToClassList("button");
             button.AddToClassList("settings__action");
             _list.Add(button);
+            return button;
         }
 
         private void Heading(string text)

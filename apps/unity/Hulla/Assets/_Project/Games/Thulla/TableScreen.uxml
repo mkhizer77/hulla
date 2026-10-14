@@ -54,7 +54,7 @@
                 <ui:Button name="chat-send" class="button button--primary button--small" />
             </ui:VisualElement>
             <ui:Label name="chat-status" class="caption" />
-            <ui:ScrollView class="chat-panel__scroll">
+            <ui:ScrollView class="chat-panel__scroll" horizontal-scroller-visibility="Hidden" vertical-scroller-visibility="Hidden">
                 <ui:VisualElement name="chat-log" class="chat-log" />
                 <ui:VisualElement name="chat-emotes" class="chips" />
                 <ui:VisualElement name="chat-phrases" class="chips" />
