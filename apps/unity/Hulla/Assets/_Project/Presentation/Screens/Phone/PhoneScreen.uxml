@@ -1,0 +1,31 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements">
+    <ui:VisualElement name="phone" class="screen settings">
+        <ui:VisualElement class="settings__top">
+            <ui:Label name="title" class="title title--small" />
+            <ui:Button name="back" class="button button--quiet button--small" />
+        </ui:VisualElement>
+        <ui:ScrollView class="settings__scroll">
+            <ui:Label name="intro" class="caption phone__text" />
+            <ui:VisualElement name="number-step">
+                <ui:TextField name="number" class="field" />
+                <ui:Button name="send" class="button button--primary" />
+            </ui:VisualElement>
+            <ui:VisualElement name="code-step">
+                <ui:Label name="sent" class="caption phone__text" />
+                <ui:TextField name="code" class="field" />
+                <ui:Button name="verify" class="button button--primary" />
+                <ui:Button name="other-number" class="button button--quiet" />
+            </ui:VisualElement>
+            <ui:VisualElement name="linked-step">
+                <ui:Label name="linked" class="phone__text" />
+                <ui:Button name="remove" class="button button--secondary" />
+            </ui:VisualElement>
+            <ui:VisualElement name="offer-step">
+                <ui:Label name="offer" class="phone__text" />
+                <ui:Button name="switch" class="button button--primary" />
+                <ui:Button name="decline" class="button button--quiet" />
+            </ui:VisualElement>
+            <ui:Label name="status" class="status phone__text" />
+        </ui:ScrollView>
+    </ui:VisualElement>
+</ui:UXML>

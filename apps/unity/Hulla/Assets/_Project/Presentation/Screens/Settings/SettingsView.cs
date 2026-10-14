@@ -17,8 +17,9 @@ namespace Hulla.Presentation.Screens.Settings
         /// <summary>What the account rows do; null hides the section (not signed in).</summary>
         public sealed class AccountActions
         {
-            public AccountActions(Action<Action<string>> export, Action<Action<string>> delete, Action<Action<string>> cancelDelete, Func<string?> pendingText)
+            public AccountActions(Action<Action<string>> export, Action<Action<string>> delete, Action<Action<string>> cancelDelete, Func<string?> pendingText, Action? phone = null)
             {
+                Phone = phone;
                 Export = export;
                 Delete = delete;
                 CancelDelete = cancelDelete;
@@ -26,6 +27,9 @@ namespace Hulla.Presentation.Screens.Settings
             }
 
             /// <summary>Runs the action; the callback gets a one-line status to show.</summary>
+            /// <summary>Opens the phone number screen (GDD 10.2); null hides the row.</summary>
+            public Action? Phone { get; }
+
             public Action<Action<string>> Export { get; }
 
             public Action<Action<string>> Delete { get; }
@@ -118,6 +122,11 @@ namespace Hulla.Presentation.Screens.Settings
             if (_account != null)
             {
                 Heading(UiText.SettingsAccount);
+                if (_account.Phone != null)
+                {
+                    Action(Strings.Text("phone.settings_action"), _account.Phone);
+                }
+
                 Action(UiText.ExportData, () => _account.Export(Status));
                 var pending = _account.PendingText();
                 if (pending == null)
