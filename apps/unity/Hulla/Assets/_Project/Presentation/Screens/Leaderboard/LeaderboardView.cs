@@ -134,10 +134,12 @@ namespace Hulla.Presentation.Screens.Leaderboard
             var span = TimeSpan.FromMilliseconds(Math.Max(0, ms));
             if (span.TotalDays >= 1)
             {
-                return $"{(int)span.TotalDays}d {span.Hours}h";
+                return Strings.Get("ui.duration_days_hours", (int)span.TotalDays, span.Hours);
             }
 
-            return span.TotalHours >= 1 ? $"{(int)span.TotalHours}h {span.Minutes}m" : $"{Math.Max(1, span.Minutes)}m";
+            return span.TotalHours >= 1
+                ? Strings.Get("ui.duration_hours_minutes", (int)span.TotalHours, span.Minutes)
+                : Strings.Get("ui.duration_minutes", Math.Max(1, span.Minutes));
         }
     }
 }

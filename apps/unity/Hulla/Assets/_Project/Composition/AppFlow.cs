@@ -1308,7 +1308,7 @@ namespace Hulla.Composition
                 return null;
             }
 
-            return Strings.Format(UiText.DeletePending, DateTimeOffset.FromUnixTimeMilliseconds(at).ToLocalTime().ToString("d MMMM yyyy"));
+            return Strings.Format(UiText.DeletePending, DateTimeOffset.FromUnixTimeMilliseconds(at).ToLocalTime().ToString(Strings.Text("format.date_long"), Strings.Culture));
         }
 
         private void CloseSettings()

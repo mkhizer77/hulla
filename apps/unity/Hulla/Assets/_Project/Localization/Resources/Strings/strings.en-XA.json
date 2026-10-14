@@ -1,0 +1,3911 @@
+{
+ "locale": "en-XA",
+ "rtl": false,
+ "entries": [
+  {
+   "key": "achievement.bhabhis_50.description",
+   "text": "[{0:plural:Bé thé Bhåbhî öñçé|Bé thé Bhåbhî {} tîmés} · · · ·]",
+   "smart": true
+  },
+  {
+   "key": "achievement.bhabhis_50.name",
+   "text": "[Bhåbhî jååñ · ·]",
+   "smart": false
+  },
+  {
+   "key": "achievement.category.collection",
+   "text": "[Çölléçtîöñ · ·]",
+   "smart": false
+  },
+  {
+   "key": "achievement.category.play",
+   "text": "[Plåý ·]",
+   "smart": false
+  },
+  {
+   "key": "achievement.category.seasonal",
+   "text": "[Séåsöñ ·]",
+   "smart": false
+  },
+  {
+   "key": "achievement.category.skill",
+   "text": "[Skîll ·]",
+   "smart": false
+  },
+  {
+   "key": "achievement.category.social",
+   "text": "[Frîéñds · ·]",
+   "smart": false
+  },
+  {
+   "key": "achievement.clean_round_first.description",
+   "text": "[{0:plural:Ésçåpé wîthöût pîçkîñg ûp|Ésçåpé wîthöût pîçkîñg ûp, {} tîmés} · · · · · ·]",
+   "smart": true
+  },
+  {
+   "key": "achievement.clean_round_first.name",
+   "text": "[Çléåñ håñds · ·]",
+   "smart": false
+  },
+  {
+   "key": "achievement.clean_rounds_25.description",
+   "text": "[{0:plural:Ésçåpé wîthöût pîçkîñg ûp|Ésçåpé wîthöût pîçkîñg ûp, {} tîmés} · · · · · ·]",
+   "smart": true
+  },
+  {
+   "key": "achievement.clean_rounds_25.name",
+   "text": "[Spötléss · ·]",
+   "smart": false
+  },
+  {
+   "key": "achievement.cosmetics_10.description",
+   "text": "[{0:plural:Öwñ å çösmétîç|Öwñ {} çösmétîçs} · · ·]",
+   "smart": true
+  },
+  {
+   "key": "achievement.cosmetics_10.name",
+   "text": "[Çölléçtör · ·]",
+   "smart": false
+  },
+  {
+   "key": "achievement.cosmetics_30.description",
+   "text": "[{0:plural:Öwñ å çösmétîç|Öwñ {} çösmétîçs} · · ·]",
+   "smart": true
+  },
+  {
+   "key": "achievement.cosmetics_30.name",
+   "text": "[Shåûkééñ · ·]",
+   "smart": false
+  },
+  {
+   "key": "achievement.escaped_first_10.description",
+   "text": "[{0:plural:Ésçåpé fîrst îñ å röûñd|Ésçåpé fîrst îñ {} röûñds} · · · ·]",
+   "smart": true
+  },
+  {
+   "key": "achievement.escaped_first_10.name",
+   "text": "[Qûîçk éxît · ·]",
+   "smart": false
+  },
+  {
+   "key": "achievement.escaped_first_100.description",
+   "text": "[{0:plural:Ésçåpé fîrst îñ å röûñd|Ésçåpé fîrst îñ {} röûñds} · · · ·]",
+   "smart": true
+  },
+  {
+   "key": "achievement.escaped_first_100.name",
+   "text": "[Såbsé péhlé · ·]",
+   "smart": false
+  },
+  {
+   "key": "achievement.escapes_100.description",
+   "text": "[{0:plural:Ésçåpé å röûñd|Ésçåpé {} tîmés} · · ·]",
+   "smart": true
+  },
+  {
+   "key": "achievement.escapes_100.name",
+   "text": "[Ésçåpé årtîst · ·]",
+   "smart": false
+  },
+  {
+   "key": "achievement.escapes_1000.description",
+   "text": "[{0:plural:Ésçåpé å röûñd|Ésçåpé {} tîmés} · · ·]",
+   "smart": true
+  },
+  {
+   "key": "achievement.escapes_1000.name",
+   "text": "[Ñîkål gåýå · ·]",
+   "smart": false
+  },
+  {
+   "key": "achievement.first_bhabhi.description",
+   "text": "[{0:plural:Bé thé Bhåbhî öñçé|Bé thé Bhåbhî {} tîmés} · · · ·]",
+   "smart": true
+  },
+  {
+   "key": "achievement.first_bhabhi.name",
+   "text": "[Wélçömé, Bhåbhî · · ·]",
+   "smart": false
+  },
+  {
+   "key": "achievement.first_cosmetic.description",
+   "text": "[{0:plural:Öwñ å çösmétîç|Öwñ {} çösmétîçs} · · ·]",
+   "smart": true
+  },
+  {
+   "key": "achievement.first_cosmetic.name",
+   "text": "[Fîrst löök · ·]",
+   "smart": false
+  },
+  {
+   "key": "achievement.first_escape.description",
+   "text": "[{0:plural:Ésçåpé å röûñd|Ésçåpé {} tîmés} · · ·]",
+   "smart": true
+  },
+  {
+   "key": "achievement.first_escape.name",
+   "text": "[Öût! ·]",
+   "smart": false
+  },
+  {
+   "key": "achievement.first_escape_streak_5.description",
+   "text": "[{0:plural:Ésçåpé fîrst {} röûñd îñ å röw|Ésçåpé fîrst {} röûñds îñ å röw} · · · · ·]",
+   "smart": true
+  },
+  {
+   "key": "achievement.first_escape_streak_5.name",
+   "text": "[Ûståd-é-fårår · ·]",
+   "smart": false
+  },
+  {
+   "key": "achievement.first_friend.description",
+   "text": "[{0:plural:Ådd å frîéñd|Håvé {} frîéñds} · · ·]",
+   "smart": true
+  },
+  {
+   "key": "achievement.first_friend.name",
+   "text": "[Fîrst frîéñd · ·]",
+   "smart": false
+  },
+  {
+   "key": "achievement.first_thulla.description",
+   "text": "[{0:plural:Gîvé å thûllå|Gîvé {} thûllås} · · ·]",
+   "smart": true
+  },
+  {
+   "key": "achievement.first_thulla.name",
+   "text": "[Fîrst thûllå · ·]",
+   "smart": false
+  },
+  {
+   "key": "achievement.friends_10.description",
+   "text": "[{0:plural:Ådd å frîéñd|Håvé {} frîéñds} · · ·]",
+   "smart": true
+  },
+  {
+   "key": "achievement.friends_10.name",
+   "text": "[Fûll tåblé · ·]",
+   "smart": false
+  },
+  {
+   "key": "achievement.friends_50.description",
+   "text": "[{0:plural:Ådd å frîéñd|Håvé {} frîéñds} · · ·]",
+   "smart": true
+  },
+  {
+   "key": "achievement.friends_50.name",
+   "text": "[Méhfîl wålå · ·]",
+   "smart": false
+  },
+  {
+   "key": "achievement.full_house_friends.description",
+   "text": "[Plåý å röûñd wîth föûr frîéñds · · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "achievement.full_house_friends.name",
+   "text": "[Fûll höûsé · ·]",
+   "smart": false
+  },
+  {
+   "key": "achievement.goal.bhabhis",
+   "text": "[{0:plural:Bé thé Bhåbhî öñçé|Bé thé Bhåbhî {} tîmés} · · · ·]",
+   "smart": true
+  },
+  {
+   "key": "achievement.goal.biggest_pickup",
+   "text": "[{0:plural:Pîçk ûp {} çård åt öñçé|Pîçk ûp {} çårds åt öñçé} · · · ·]",
+   "smart": true
+  },
+  {
+   "key": "achievement.goal.cards_picked_up",
+   "text": "[{0:plural:Pîçk ûp {} çård îñ åll|Pîçk ûp {} çårds îñ åll} · · · ·]",
+   "smart": true
+  },
+  {
+   "key": "achievement.goal.clean_rounds",
+   "text": "[{0:plural:Ésçåpé wîthöût pîçkîñg ûp|Ésçåpé wîthöût pîçkîñg ûp, {} tîmés} · · · · · ·]",
+   "smart": true
+  },
+  {
+   "key": "achievement.goal.cosmetics_owned",
+   "text": "[{0:plural:Öwñ å çösmétîç|Öwñ {} çösmétîçs} · · ·]",
+   "smart": true
+  },
+  {
+   "key": "achievement.goal.escapes",
+   "text": "[{0:plural:Ésçåpé å röûñd|Ésçåpé {} tîmés} · · ·]",
+   "smart": true
+  },
+  {
+   "key": "achievement.goal.first_escape_streak",
+   "text": "[{0:plural:Ésçåpé fîrst {} röûñd îñ å röw|Ésçåpé fîrst {} röûñds îñ å röw} · · · · ·]",
+   "smart": true
+  },
+  {
+   "key": "achievement.goal.friends",
+   "text": "[{0:plural:Ådd å frîéñd|Håvé {} frîéñds} · · ·]",
+   "smart": true
+  },
+  {
+   "key": "achievement.goal.houdini",
+   "text": "[{0:plural:Ésçåpé öñ å çård dråwñ fröm thé dîsçård|Ésçåpé öñ å dråwñ çård {} tîmés} · · · · ·]",
+   "smart": true
+  },
+  {
+   "key": "achievement.goal.no_bhabhi_streak",
+   "text": "[{0:plural:Plåý {} röûñd îñ å röw wîthöût béîñg thé Bhåbhî|Plåý {} röûñds îñ å röw wîthöût béîñg thé Bhåbhî} · · · · · · · ·]",
+   "smart": true
+  },
+  {
+   "key": "achievement.goal.rounds",
+   "text": "[{0:plural:Plåý å röûñd|Plåý {} röûñds} · · ·]",
+   "smart": true
+  },
+  {
+   "key": "achievement.goal.rounds_with_four_friends",
+   "text": "[Plåý å röûñd wîth föûr frîéñds · · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "achievement.goal.same_group_rounds",
+   "text": "[{0:plural:Plåý {} röûñd wîth thé såmé gröûp|Plåý {} röûñds wîth thé såmé gröûp} · · · · · ·]",
+   "smart": true
+  },
+  {
+   "key": "achievement.goal.seasonal_rounds",
+   "text": "[{0:plural:Plåý {} röûñd thîs séåsöñ|Plåý {} röûñds thîs séåsöñ} · · · · ·]",
+   "smart": true
+  },
+  {
+   "key": "achievement.goal.thullas_given",
+   "text": "[{0:plural:Gîvé å thûllå|Gîvé {} thûllås} · · ·]",
+   "smart": true
+  },
+  {
+   "key": "achievement.goal.thullas_received",
+   "text": "[{0:plural:Tåké {} thûllå|Tåké {} thûllås} · · ·]",
+   "smart": true
+  },
+  {
+   "key": "achievement.hand_taken_first.description",
+   "text": "[{0:plural:Tåké å håñd {} tîmé|Tåké å håñd {} tîmés} · · · ·]",
+   "smart": true
+  },
+  {
+   "key": "achievement.hand_taken_first.name",
+   "text": "[Hååth sååf · ·]",
+   "smart": false
+  },
+  {
+   "key": "achievement.hands_taken_25.description",
+   "text": "[{0:plural:Tåké å håñd {} tîmé|Tåké å håñd {} tîmés} · · · ·]",
+   "smart": true
+  },
+  {
+   "key": "achievement.hands_taken_25.name",
+   "text": "[Håñd çölléçtör · · ·]",
+   "smart": false
+  },
+  {
+   "key": "achievement.houdini.description",
+   "text": "[{0:plural:Ésçåpé öñ å çård dråwñ fröm thé dîsçård|Ésçåpé öñ å dråwñ çård {} tîmés} · · · · ·]",
+   "smart": true
+  },
+  {
+   "key": "achievement.houdini.name",
+   "text": "[Höûdîñî · ·]",
+   "smart": false
+  },
+  {
+   "key": "achievement.houdini_10.description",
+   "text": "[{0:plural:Ésçåpé öñ å çård dråwñ fröm thé dîsçård|Ésçåpé öñ å dråwñ çård {} tîmés} · · · · ·]",
+   "smart": true
+  },
+  {
+   "key": "achievement.houdini_10.name",
+   "text": "[Gréåt ésçåpé · ·]",
+   "smart": false
+  },
+  {
+   "key": "achievement.no_bhabhi_20.description",
+   "text": "[{0:plural:Plåý {} röûñd îñ å röw wîthöût béîñg thé Bhåbhî|Plåý {} röûñds îñ å röw wîthöût béîñg thé Bhåbhî} · · · · · · · ·]",
+   "smart": true
+  },
+  {
+   "key": "achievement.no_bhabhi_20.name",
+   "text": "[Kåbhî Bhåbhî ñåhî · · ·]",
+   "smart": false
+  },
+  {
+   "key": "achievement.picked_up_500.description",
+   "text": "[{0:plural:Pîçk ûp {} çård îñ åll|Pîçk ûp {} çårds îñ åll} · · · ·]",
+   "smart": true
+  },
+  {
+   "key": "achievement.picked_up_500.name",
+   "text": "[Çård mågñét · ·]",
+   "smart": false
+  },
+  {
+   "key": "achievement.pickup_10.description",
+   "text": "[{0:plural:Pîçk ûp {} çård åt öñçé|Pîçk ûp {} çårds åt öñçé} · · · ·]",
+   "smart": true
+  },
+  {
+   "key": "achievement.pickup_10.name",
+   "text": "[Bîg pîçk-ûp · ·]",
+   "smart": false
+  },
+  {
+   "key": "achievement.pickup_20.description",
+   "text": "[{0:plural:Pîçk ûp {} çård åt öñçé|Pîçk ûp {} çårds åt öñçé} · · · ·]",
+   "smart": true
+  },
+  {
+   "key": "achievement.pickup_20.name",
+   "text": "[Hååth bhår · ·]",
+   "smart": false
+  },
+  {
+   "key": "achievement.rounds_10.description",
+   "text": "[{0:plural:Plåý å röûñd|Plåý {} röûñds} · · ·]",
+   "smart": true
+  },
+  {
+   "key": "achievement.rounds_10.name",
+   "text": "[Géttîñg stårtéd · · ·]",
+   "smart": false
+  },
+  {
+   "key": "achievement.rounds_100.description",
+   "text": "[{0:plural:Plåý å röûñd|Plåý {} röûñds} · · ·]",
+   "smart": true
+  },
+  {
+   "key": "achievement.rounds_100.name",
+   "text": "[Régûlår · ·]",
+   "smart": false
+  },
+  {
+   "key": "achievement.rounds_1000.description",
+   "text": "[{0:plural:Plåý å röûñd|Plåý {} röûñds} · · ·]",
+   "smart": true
+  },
+  {
+   "key": "achievement.rounds_1000.name",
+   "text": "[Pûråñå khîlådî · · ·]",
+   "smart": false
+  },
+  {
+   "key": "achievement.rounds_with_friend_10.description",
+   "text": "[{0:plural:Plåý {} röûñd wîth å frîéñd|Plåý {} röûñds wîth å frîéñd} · · · · ·]",
+   "smart": true
+  },
+  {
+   "key": "achievement.rounds_with_friend_10.name",
+   "text": "[Ýåår ké sååth · ·]",
+   "smart": false
+  },
+  {
+   "key": "achievement.rounds_with_friend_100.description",
+   "text": "[{0:plural:Plåý {} röûñd wîth å frîéñd|Plåý {} röûñds wîth å frîéñd} · · · · ·]",
+   "smart": true
+  },
+  {
+   "key": "achievement.rounds_with_friend_100.name",
+   "text": "[Ýåårî ·]",
+   "smart": false
+  },
+  {
+   "key": "achievement.same_group_10.description",
+   "text": "[{0:plural:Plåý {} röûñd wîth thé såmé gröûp|Plåý {} röûñds wîth thé såmé gröûp} · · · · · ·]",
+   "smart": true
+  },
+  {
+   "key": "achievement.same_group_10.name",
+   "text": "[Båîthåk régûlår · · ·]",
+   "smart": false
+  },
+  {
+   "key": "achievement.same_group_50.description",
+   "text": "[{0:plural:Plåý {} röûñd wîth thé såmé gröûp|Plåý {} röûñds wîth thé såmé gröûp} · · · · · ·]",
+   "smart": true
+  },
+  {
+   "key": "achievement.same_group_50.name",
+   "text": "[Såmé öld gåñg · ·]",
+   "smart": false
+  },
+  {
+   "key": "achievement.seasonal_rounds_10.description",
+   "text": "[{0:plural:Plåý {} röûñd thîs séåsöñ|Plåý {} röûñds thîs séåsöñ} · · · · ·]",
+   "smart": true
+  },
+  {
+   "key": "achievement.seasonal_rounds_10.name",
+   "text": "[Îñ séåsöñ · ·]",
+   "smart": false
+  },
+  {
+   "key": "achievement.seasonal_rounds_50.description",
+   "text": "[{0:plural:Plåý {} röûñd thîs séåsöñ|Plåý {} röûñds thîs séåsöñ} · · · · ·]",
+   "smart": true
+  },
+  {
+   "key": "achievement.seasonal_rounds_50.name",
+   "text": "[Séåsöñ régûlår · · ·]",
+   "smart": false
+  },
+  {
+   "key": "achievement.series_10.description",
+   "text": "[{0:plural:Wîñ å sérîés|Wîñ {} sérîés} · · ·]",
+   "smart": true
+  },
+  {
+   "key": "achievement.series_10.name",
+   "text": "[Sérîés çhåmpîöñ · · ·]",
+   "smart": false
+  },
+  {
+   "key": "achievement.series_first.description",
+   "text": "[{0:plural:Wîñ å sérîés|Wîñ {} sérîés} · · ·]",
+   "smart": true
+  },
+  {
+   "key": "achievement.series_first.name",
+   "text": "[Sérîés wîññér · ·]",
+   "smart": false
+  },
+  {
+   "key": "achievement.thullas_100.description",
+   "text": "[{0:plural:Gîvé å thûllå|Gîvé {} thûllås} · · ·]",
+   "smart": true
+  },
+  {
+   "key": "achievement.thullas_100.name",
+   "text": "[Thûllå måçhîñé · · ·]",
+   "smart": false
+  },
+  {
+   "key": "achievement.thullas_1000.description",
+   "text": "[{0:plural:Gîvé å thûllå|Gîvé {} thûllås} · · ·]",
+   "smart": true
+  },
+  {
+   "key": "achievement.thullas_1000.name",
+   "text": "[Thûllå bååz · ·]",
+   "smart": false
+  },
+  {
+   "key": "achievement.thullas_received_100.description",
+   "text": "[{0:plural:Tåké {} thûllå|Tåké {} thûllås} · · ·]",
+   "smart": true
+  },
+  {
+   "key": "achievement.thullas_received_100.name",
+   "text": "[Thîçk skîñ · ·]",
+   "smart": false
+  },
+  {
+   "key": "avatar.a01",
+   "text": "[Åvåtår 1 · ·]",
+   "smart": false
+  },
+  {
+   "key": "avatar.a02",
+   "text": "[Åvåtår 2 · ·]",
+   "smart": false
+  },
+  {
+   "key": "avatar.a03",
+   "text": "[Åvåtår 3 · ·]",
+   "smart": false
+  },
+  {
+   "key": "avatar.a04",
+   "text": "[Åvåtår 4 · ·]",
+   "smart": false
+  },
+  {
+   "key": "avatar.a05",
+   "text": "[Åvåtår 5 · ·]",
+   "smart": false
+  },
+  {
+   "key": "avatar.a06",
+   "text": "[Åvåtår 6 · ·]",
+   "smart": false
+  },
+  {
+   "key": "avatar.a07",
+   "text": "[Åvåtår 7 · ·]",
+   "smart": false
+  },
+  {
+   "key": "avatar.a08",
+   "text": "[Åvåtår 8 · ·]",
+   "smart": false
+  },
+  {
+   "key": "chat.problem.social_muted",
+   "text": "[Ýöû'ré mûtéd för å whîlé åftér répörts fröm öthér plåýérs. · · · · · · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "config.maintenance",
+   "text": "[Hûllå îs håvîñg å shört bréåk. Tåblés öpéñ ågåîñ sööñ. · · · · · · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "config.quick_play_off",
+   "text": "[Plåý ñöw îs réstîñg för å bît. Çréåté å rööm för frîéñds îñstéåd. · · · · · · · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "config.update",
+   "text": "[Ûpdåté ·]",
+   "smart": false
+  },
+  {
+   "key": "config.update_required",
+   "text": "[Å ñéw vérsîöñ öf Hûllå îs öût. Ûpdåté tö kéép plåýîñg åt tåblés. · · · · · · · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "emote.chai",
+   "text": "[Çhåî ·]",
+   "smart": false
+  },
+  {
+   "key": "emote.clap",
+   "text": "[Çlåp ·]",
+   "smart": false
+  },
+  {
+   "key": "emote.dhol",
+   "text": "[Dhöl ·]",
+   "smart": false
+  },
+  {
+   "key": "emote.donkey",
+   "text": "[Döñkéý ·]",
+   "smart": false
+  },
+  {
+   "key": "emote.facepalm",
+   "text": "[Fåçépålm · ·]",
+   "smart": false
+  },
+  {
+   "key": "emote.fire",
+   "text": "[Fîré ·]",
+   "smart": false
+  },
+  {
+   "key": "emote.ghost",
+   "text": "[Ghöst ·]",
+   "smart": false
+  },
+  {
+   "key": "emote.heart",
+   "text": "[Héårt ·]",
+   "smart": false
+  },
+  {
+   "key": "emote.laugh_cry",
+   "text": "[Låûgh çrý · ·]",
+   "smart": false
+  },
+  {
+   "key": "emote.mic_drop",
+   "text": "[Mîç dröp · ·]",
+   "smart": false
+  },
+  {
+   "key": "emote.six",
+   "text": "[Sîx ·]",
+   "smart": false
+  },
+  {
+   "key": "emote.sleeping",
+   "text": "[Sléépîñg · ·]",
+   "smart": false
+  },
+  {
+   "key": "emote.sunglasses",
+   "text": "[Sûñglåssés · ·]",
+   "smart": false
+  },
+  {
+   "key": "emote.sweating",
+   "text": "[Swéåtîñg · ·]",
+   "smart": false
+  },
+  {
+   "key": "emote.thulla_whistle",
+   "text": "[Thûllå whîstlé · · ·]",
+   "smart": false
+  },
+  {
+   "key": "emote.turtle",
+   "text": "[Tûrtlé ·]",
+   "smart": false
+  },
+  {
+   "key": "error.auth.banned",
+   "text": "[Thîs åççöûñt çåñ't plåý rîght ñöw. Çöñtåçt sûppört îf ýöû thîñk thåt's wröñg. · · · · · · · · · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "error.auth.device_limit",
+   "text": "[Ýöû'ré åt thîs tåblé öñ åñöthér dévîçé. Çlösé ît théré fîrst. · · · · · · · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "error.auth.otp_country",
+   "text": "[Phöñé sîgñ-îñ îsñ't åvåîlåblé för thåt çöûñtrý ýét. · · · · · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "error.auth.otp_expired",
+   "text": "[Thåt çödé hås éxpîréd. Åsk för å ñéw öñé. · · · · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "error.auth.otp_invalid_phone",
+   "text": "[Thåt ñûmbér döésñ't löök rîght. Stårt wîth + åñd thé çöûñtrý çödé. · · · · · · · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "error.auth.otp_rate_limited",
+   "text": "[Töö måñý çödés för ñöw. Trý ågåîñ îñ å lîttlé whîlé. · · · · · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "error.auth.otp_unavailable",
+   "text": "[Phöñé sîgñ-îñ îsñ't wörkîñg rîght ñöw. Trý ågåîñ låtér. · · · · · · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "error.auth.otp_wrong_code",
+   "text": "[Thåt çödé îsñ't rîght. Çhéçk thé téxt åñd trý ågåîñ. · · · · · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "error.auth.update_required",
+   "text": "[Pléåsé ûpdåté Hûllå tö kéép plåýîñg. · · · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "error.economy.insufficient_funds",
+   "text": "[Ñöt éñöûgh çöîñs ör géms för thåt. · · · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "error.economy.item_not_for_sale",
+   "text": "[Thåt öñé îs éårñéd, ñöt söld. · · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "error.economy.item_owned",
+   "text": "[Ýöû ålréådý öwñ thåt. · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "error.economy.item_unknown",
+   "text": "[Thåt îtém îsñ't îñ thé shöp åñý möré. · · · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "error.profile.frame_locked",
+   "text": "[Éårñ thåt fråmé fîrst. · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "error.profile.handle_taken",
+   "text": "[Thåt håñdlé îs tåkéñ. · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "error.profile.invalid_handle",
+   "text": "[Håñdlés åré 3 tö 16 léttérs, ñûmbérs ör _. · · · · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "error.profile.invalid_name",
+   "text": "[Thåt ñåmé çåñ't bé ûséd. · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "error.profile.name_change_locked",
+   "text": "[Ýöû çhåñgéd ýöûr ñåmé réçéñtlý; trý ågåîñ låtér. · · · · · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "error.profile.not_found",
+   "text": "[Ñö plåýér hås thåt çödé. · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "error.rules.hand_ask_none",
+   "text": "[Ñöthîñg tö åñswér. · · ·]",
+   "smart": false
+  },
+  {
+   "key": "error.rules.hand_ask_pending",
+   "text": "[Wåîtîñg för théîr åñswér. · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "error.rules.hand_take_declined",
+   "text": "[Théý képt théîr çårds. · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "error.session.unavailable",
+   "text": "[Çåñ't réåçh thé sérvér. Çhéçk thé çöññéçtîöñ åñd trý ågåîñ. · · · · · · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "error.social.blocked",
+   "text": "[Ýöû çåñ't ådd thîs plåýér. · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "error.social.favourite_cap",
+   "text": "[Téñ fåvöûrîtés åt möst. · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "error.social.friend_cap",
+   "text": "[Ýöû håvé thé möst frîéñds ållöwéd (500). · · · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "error.social.not_friends",
+   "text": "[Öñlý frîéñds çåñ bé fåvöûrîtés. · · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "error.social.self",
+   "text": "[Thåt's ýöûr öwñ çödé. · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "error.social.unavailable",
+   "text": "[Çåñ't réåçh thé sérvér. Çhéçk thé çöññéçtîöñ åñd trý ågåîñ. · · · · · · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "error.table.banned",
+   "text": "[Thé höst rémövéd ýöû fröm thåt tåblé. · · · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "error.table.blocked",
+   "text": "[Ýöû çåñ't jöîñ thåt tåblé. · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "error.table.full",
+   "text": "[Thåt tåblé îs fûll. · · ·]",
+   "smart": false
+  },
+  {
+   "key": "error.table.invalid_code",
+   "text": "[Ñö tåblé hås thåt çödé. Çhéçk ît wîth thé höst. · · · · · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "error.table.locked",
+   "text": "[Thåt tåblé îsñ't tåkîñg plåýérs rîght ñöw. · · · · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "error.table.not_found",
+   "text": "[Ñö tåblé hås thåt çödé. Çhéçk ît wîth thé höst. · · · · · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "error.table.ranked_solo_only",
+   "text": "[Råñkéd îs sölö öñlý. Léåvé thé pårtý tö qûéûé. · · · · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "error.table.unavailable",
+   "text": "[Çåñ't réåçh thé sérvér. Çhéçk thé çöññéçtîöñ åñd trý ågåîñ. · · · · · · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "error.table.unsupported_version",
+   "text": "[Pléåsé ûpdåté Hûllå tö kéép plåýîñg. · · · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "error.unknown",
+   "text": "[Söméthîñg wéñt wröñg ({0}) · · · ·]",
+   "smart": true
+  },
+  {
+   "key": "format.date_long",
+   "text": "[d MMMM ýýýý · ·]",
+   "smart": false
+  },
+  {
+   "key": "frame.f00",
+   "text": "[Ñö fråmé · ·]",
+   "smart": false
+  },
+  {
+   "key": "frame.f01",
+   "text": "[Göld fråmé · ·]",
+   "smart": false
+  },
+  {
+   "key": "frame.ranked_diamond",
+   "text": "[Dîåmöñd fråmé · ·]",
+   "smart": false
+  },
+  {
+   "key": "frame.ranked_ustad",
+   "text": "[Ûståd fråmé · ·]",
+   "smart": false
+  },
+  {
+   "key": "invite.problem.blocked",
+   "text": "[Çåñ't îñvîté · ·]",
+   "smart": false
+  },
+  {
+   "key": "invite.problem.muted",
+   "text": "[Ñöt tåkîñg îñvîtés · · ·]",
+   "smart": false
+  },
+  {
+   "key": "invite.problem.other",
+   "text": "[Dîdñ't séñd · ·]",
+   "smart": false
+  },
+  {
+   "key": "invite.problem.rate_limited",
+   "text": "[Töö måñý îñvîtés; trý låtér · · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "invite.problem.self",
+   "text": "[Thåt's ýöû · ·]",
+   "smart": false
+  },
+  {
+   "key": "item.back_ajrak",
+   "text": "[Åjråk ·]",
+   "smart": false
+  },
+  {
+   "key": "item.back_chunri",
+   "text": "[Çhûñrî ·]",
+   "smart": false
+  },
+  {
+   "key": "item.back_classic_blue",
+   "text": "[Çlåssîç blûé · ·]",
+   "smart": false
+  },
+  {
+   "key": "item.back_classic_red",
+   "text": "[Çlåssîç réd · ·]",
+   "smart": false
+  },
+  {
+   "key": "item.back_diwali",
+   "text": "[Dîwålî ·]",
+   "smart": false
+  },
+  {
+   "key": "item.back_jaali",
+   "text": "[Jåålî ·]",
+   "smart": false
+  },
+  {
+   "key": "item.back_kites",
+   "text": "[Kîtés ·]",
+   "smart": false
+  },
+  {
+   "key": "item.back_minar",
+   "text": "[Mîñår ·]",
+   "smart": false
+  },
+  {
+   "key": "item.back_monsoon",
+   "text": "[Möñsööñ · ·]",
+   "smart": false
+  },
+  {
+   "key": "item.back_mughal",
+   "text": "[Mûghål ·]",
+   "smart": false
+  },
+  {
+   "key": "item.back_phulkari",
+   "text": "[Phûlkårî · ·]",
+   "smart": false
+  },
+  {
+   "key": "item.back_ranked_diamond",
+   "text": "[Råñkéd dîåmöñd · · ·]",
+   "smart": false
+  },
+  {
+   "key": "item.back_ranked_gold",
+   "text": "[Råñkéd göld · ·]",
+   "smart": false
+  },
+  {
+   "key": "item.back_ranked_platinum",
+   "text": "[Råñkéd plåtîñûm · · ·]",
+   "smart": false
+  },
+  {
+   "key": "item.back_ranked_ustad",
+   "text": "[Råñkéd ûståd · ·]",
+   "smart": false
+  },
+  {
+   "key": "item.back_truck_art",
+   "text": "[Trûçk årt · ·]",
+   "smart": false
+  },
+  {
+   "key": "item.category.cardBack",
+   "text": "[Çård båçks · ·]",
+   "smart": false
+  },
+  {
+   "key": "item.category.cardFace",
+   "text": "[Çård fåçés · ·]",
+   "smart": false
+  },
+  {
+   "key": "item.category.celebration",
+   "text": "[Çélébråtîöñs · ·]",
+   "smart": false
+  },
+  {
+   "key": "item.category.emotePack",
+   "text": "[Émötés ·]",
+   "smart": false
+  },
+  {
+   "key": "item.category.soundSet",
+   "text": "[Söûñds ·]",
+   "smart": false
+  },
+  {
+   "key": "item.category.table",
+   "text": "[Tåblés ·]",
+   "smart": false
+  },
+  {
+   "key": "item.category.voPack",
+   "text": "[Vöîçés ·]",
+   "smart": false
+  },
+  {
+   "key": "item.celebration_dhol",
+   "text": "[Dhöl ·]",
+   "smart": false
+  },
+  {
+   "key": "item.celebration_patakha",
+   "text": "[Påtåkhå · ·]",
+   "smart": false
+  },
+  {
+   "key": "item.celebration_thappad",
+   "text": "[Thåppåd · ·]",
+   "smart": false
+  },
+  {
+   "key": "item.emotes_cricket",
+   "text": "[Çrîçkét · ·]",
+   "smart": false
+  },
+  {
+   "key": "item.emotes_launch",
+   "text": "[Låûñçh ·]",
+   "smart": false
+  },
+  {
+   "key": "item.emotes_shaadi",
+   "text": "[Shåådî ·]",
+   "smart": false
+  },
+  {
+   "key": "item.face_classic",
+   "text": "[Çlåssîç · ·]",
+   "smart": false
+  },
+  {
+   "key": "item.face_desi_court",
+   "text": "[Désî çöûrt · ·]",
+   "smart": false
+  },
+  {
+   "key": "item.face_large_index",
+   "text": "[Lårgé îñdéx · ·]",
+   "smart": false
+  },
+  {
+   "key": "item.rarity.common",
+   "text": "[Çömmöñ ·]",
+   "smart": false
+  },
+  {
+   "key": "item.rarity.epic",
+   "text": "[Épîç ·]",
+   "smart": false
+  },
+  {
+   "key": "item.rarity.legendary",
+   "text": "[Légéñdårý · ·]",
+   "smart": false
+  },
+  {
+   "key": "item.rarity.rare",
+   "text": "[Råré ·]",
+   "smart": false
+  },
+  {
+   "key": "item.sounds_classic",
+   "text": "[Çlåssîç · ·]",
+   "smart": false
+  },
+  {
+   "key": "item.sounds_dhaba",
+   "text": "[Dhåbå ·]",
+   "smart": false
+  },
+  {
+   "key": "item.table_basant_night",
+   "text": "[Båsåñt ñîght · ·]",
+   "smart": false
+  },
+  {
+   "key": "item.table_charpai",
+   "text": "[Çhårpåî · ·]",
+   "smart": false
+  },
+  {
+   "key": "item.table_dastarkhwan",
+   "text": "[Dåstårkhwåñ · ·]",
+   "smart": false
+  },
+  {
+   "key": "item.table_dhaka_rickshaw",
+   "text": "[Dhåkå rîçkshåw · · ·]",
+   "smart": false
+  },
+  {
+   "key": "item.table_karachi_beach_hut",
+   "text": "[Kåråçhî béåçh hût · · ·]",
+   "smart": false
+  },
+  {
+   "key": "item.table_lahore_rooftop",
+   "text": "[Låhöré rööftöp · · ·]",
+   "smart": false
+  },
+  {
+   "key": "item.table_marble",
+   "text": "[Mårblé ·]",
+   "smart": false
+  },
+  {
+   "key": "item.table_truck_art",
+   "text": "[Trûçk årt · ·]",
+   "smart": false
+  },
+  {
+   "key": "item.vo_punjabi_banter",
+   "text": "[Pûñjåbî båñtér · · ·]",
+   "smart": false
+  },
+  {
+   "key": "item.vo_urdu_classic",
+   "text": "[Ûrdû çlåssîç · ·]",
+   "smart": false
+  },
+  {
+   "key": "league.bronze",
+   "text": "[Bröñzé ·]",
+   "smart": false
+  },
+  {
+   "key": "league.diamond",
+   "text": "[Dîåmöñd · ·]",
+   "smart": false
+  },
+  {
+   "key": "league.gold",
+   "text": "[Göld ·]",
+   "smart": false
+  },
+  {
+   "key": "league.platinum",
+   "text": "[Plåtîñûm · ·]",
+   "smart": false
+  },
+  {
+   "key": "league.silver",
+   "text": "[Sîlvér ·]",
+   "smart": false
+  },
+  {
+   "key": "league.ustad",
+   "text": "[Ûståd ·]",
+   "smart": false
+  },
+  {
+   "key": "mission.d_escape_first.description",
+   "text": "[{0:plural:Ésçåpé fîrst îñ å röûñd|Ésçåpé fîrst îñ {} röûñds} · · · ·]",
+   "smart": true
+  },
+  {
+   "key": "mission.d_escape_first.name",
+   "text": "[Ésçåpé fîrst · ·]",
+   "smart": false
+  },
+  {
+   "key": "mission.d_escapes_2.description",
+   "text": "[{0:plural:Ésçåpé {} tîmé|Ésçåpé {} tîmés} · · ·]",
+   "smart": true
+  },
+  {
+   "key": "mission.d_escapes_2.name",
+   "text": "[Ésçåpés 2 · ·]",
+   "smart": false
+  },
+  {
+   "key": "mission.d_first_friend_round.description",
+   "text": "[{0:plural:Plåý å röûñd wîth å frîéñd|Plåý {} röûñds wîth å frîéñd} · · · · ·]",
+   "smart": true
+  },
+  {
+   "key": "mission.d_first_friend_round.name",
+   "text": "[Fîrst röûñd wîth å frîéñd · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "mission.d_friend_rounds_2.description",
+   "text": "[{0:plural:Plåý {} röûñd wîth å frîéñd|Plåý {} röûñds wîth å frîéñd} · · · · ·]",
+   "smart": true
+  },
+  {
+   "key": "mission.d_friend_rounds_2.name",
+   "text": "[Frîéñd röûñds 2 · · ·]",
+   "smart": false
+  },
+  {
+   "key": "mission.d_low_pickup.description",
+   "text": "[{0:plural:Pîçk ûp féwér thåñ 5 çårds îñ {} röûñd|Pîçk ûp féwér thåñ 5 çårds îñ {} röûñds} · · · · · ·]",
+   "smart": true
+  },
+  {
+   "key": "mission.d_low_pickup.name",
+   "text": "[Löw pîçkûp · ·]",
+   "smart": false
+  },
+  {
+   "key": "mission.d_rounds_3.description",
+   "text": "[{0:plural:Plåý {} röûñd|Plåý {} röûñds} · · ·]",
+   "smart": true
+  },
+  {
+   "key": "mission.d_rounds_3.name",
+   "text": "[Röûñds 3 · ·]",
+   "smart": false
+  },
+  {
+   "key": "mission.d_thullas_3.description",
+   "text": "[{0:plural:Gîvé {} thûllå|Gîvé {} thûllås} · · ·]",
+   "smart": true
+  },
+  {
+   "key": "mission.d_thullas_3.name",
+   "text": "[Thûllås 3 · ·]",
+   "smart": false
+  },
+  {
+   "key": "mission.d_voice_private.description",
+   "text": "[{0:plural:Ûsé vöîçé îñ {} prîvåté röûñd|Ûsé vöîçé îñ {} prîvåté röûñds} · · · · ·]",
+   "smart": true
+  },
+  {
+   "key": "mission.d_voice_private.name",
+   "text": "[Vöîçé prîvåté · ·]",
+   "smart": false
+  },
+  {
+   "key": "mission.goal.clean_rounds",
+   "text": "[{0:plural:Ésçåpé wîthöût pîçkîñg ûp, {} tîmé|Ésçåpé wîthöût pîçkîñg ûp, {} tîmés} · · · · · ·]",
+   "smart": true
+  },
+  {
+   "key": "mission.goal.escaped_first",
+   "text": "[{0:plural:Ésçåpé fîrst îñ å röûñd|Ésçåpé fîrst îñ {} röûñds} · · · ·]",
+   "smart": true
+  },
+  {
+   "key": "mission.goal.escapes",
+   "text": "[{0:plural:Ésçåpé {} tîmé|Ésçåpé {} tîmés} · · ·]",
+   "smart": true
+  },
+  {
+   "key": "mission.goal.hands_taken",
+   "text": "[{0:plural:Tåké å håñd {} tîmé|Tåké å håñd {} tîmés} · · · ·]",
+   "smart": true
+  },
+  {
+   "key": "mission.goal.low_pickup_rounds",
+   "text": "[{0:plural:Pîçk ûp féwér thåñ 5 çårds îñ {} röûñd|Pîçk ûp féwér thåñ 5 çårds îñ {} röûñds} · · · · · ·]",
+   "smart": true
+  },
+  {
+   "key": "mission.goal.other",
+   "text": "[{0} × {1} · ·]",
+   "smart": true
+  },
+  {
+   "key": "mission.goal.rounds_played",
+   "text": "[{0:plural:Plåý {} röûñd|Plåý {} röûñds} · · ·]",
+   "smart": true
+  },
+  {
+   "key": "mission.goal.rounds_with_friend",
+   "text": "[{0:plural:Plåý {} röûñd wîth å frîéñd|Plåý {} röûñds wîth å frîéñd} · · · · ·]",
+   "smart": true
+  },
+  {
+   "key": "mission.goal.series_won",
+   "text": "[{0:plural:Wîñ å sérîés|Wîñ {} sérîés} · · ·]",
+   "smart": true
+  },
+  {
+   "key": "mission.goal.thullas_given",
+   "text": "[{0:plural:Gîvé {} thûllå|Gîvé {} thûllås} · · ·]",
+   "smart": true
+  },
+  {
+   "key": "mission.goal.voice_private",
+   "text": "[{0:plural:Ûsé vöîçé îñ {} prîvåté röûñd|Ûsé vöîçé îñ {} prîvåté röûñds} · · · · ·]",
+   "smart": true
+  },
+  {
+   "key": "mission.w_clean_rounds_3.description",
+   "text": "[{0:plural:Ésçåpé wîthöût pîçkîñg ûp, {} tîmé|Ésçåpé wîthöût pîçkîñg ûp, {} tîmés} · · · · · ·]",
+   "smart": true
+  },
+  {
+   "key": "mission.w_clean_rounds_3.name",
+   "text": "[Çléåñ röûñds 3 · · ·]",
+   "smart": false
+  },
+  {
+   "key": "mission.w_friend_rounds_8.description",
+   "text": "[{0:plural:Plåý {} röûñd wîth å frîéñd|Plåý {} röûñds wîth å frîéñd} · · · · ·]",
+   "smart": true
+  },
+  {
+   "key": "mission.w_friend_rounds_8.name",
+   "text": "[Frîéñd röûñds 8 · · ·]",
+   "smart": false
+  },
+  {
+   "key": "mission.w_rounds_15.description",
+   "text": "[{0:plural:Plåý {} röûñd|Plåý {} röûñds} · · ·]",
+   "smart": true
+  },
+  {
+   "key": "mission.w_rounds_15.name",
+   "text": "[Röûñds 15 · ·]",
+   "smart": false
+  },
+  {
+   "key": "mission.w_series_won.description",
+   "text": "[{0:plural:Wîñ å sérîés|Wîñ {} sérîés} · · ·]",
+   "smart": true
+  },
+  {
+   "key": "mission.w_series_won.name",
+   "text": "[Sérîés wöñ · ·]",
+   "smart": false
+  },
+  {
+   "key": "mission.w_thullas_15.description",
+   "text": "[{0:plural:Gîvé {} thûllå|Gîvé {} thûllås} · · ·]",
+   "smart": true
+  },
+  {
+   "key": "mission.w_thullas_15.name",
+   "text": "[Thûllås 15 · ·]",
+   "smart": false
+  },
+  {
+   "key": "name.animal.0",
+   "text": "[Lîöñ ·]",
+   "smart": false
+  },
+  {
+   "key": "name.animal.1",
+   "text": "[Tîgér ·]",
+   "smart": false
+  },
+  {
+   "key": "name.animal.2",
+   "text": "[Fålçöñ ·]",
+   "smart": false
+  },
+  {
+   "key": "name.animal.3",
+   "text": "[Påñthér · ·]",
+   "smart": false
+  },
+  {
+   "key": "name.animal.4",
+   "text": "[Çhéétåh · ·]",
+   "smart": false
+  },
+  {
+   "key": "name.animal.5",
+   "text": "[Éåglé ·]",
+   "smart": false
+  },
+  {
+   "key": "name.animal.6",
+   "text": "[Léöpård · ·]",
+   "smart": false
+  },
+  {
+   "key": "name.animal.7",
+   "text": "[Péåçöçk · ·]",
+   "smart": false
+  },
+  {
+   "key": "name.place.0",
+   "text": "[Låhörî ·]",
+   "smart": false
+  },
+  {
+   "key": "name.place.1",
+   "text": "[Dîllî ·]",
+   "smart": false
+  },
+  {
+   "key": "name.place.2",
+   "text": "[Kåråçhî · ·]",
+   "smart": false
+  },
+  {
+   "key": "name.place.3",
+   "text": "[Dhåkå ·]",
+   "smart": false
+  },
+  {
+   "key": "name.place.4",
+   "text": "[Pîñdî ·]",
+   "smart": false
+  },
+  {
+   "key": "name.place.5",
+   "text": "[Mûmbåî ·]",
+   "smart": false
+  },
+  {
+   "key": "name.place.6",
+   "text": "[Mûltåñî · ·]",
+   "smart": false
+  },
+  {
+   "key": "name.place.7",
+   "text": "[Jåîpûrî · ·]",
+   "smart": false
+  },
+  {
+   "key": "nav.home",
+   "text": "[Hömé ·]",
+   "smart": false
+  },
+  {
+   "key": "nav.pass",
+   "text": "[Påss ·]",
+   "smart": false
+  },
+  {
+   "key": "phone.code_label",
+   "text": "[Thé çödé fröm thé téxt · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "phone.intro",
+   "text": "[Ådd ýöûr ñûmbér tö sîgñ îñ wîth ît öñ åñý phöñé. Ñöbödý élsé séés ît. · · · · · · · · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "phone.linked",
+   "text": "[Ýöûr ñûmbér îs lîñkéd. Sîgñ îñ wîth ît öñ åñý phöñé. · · · · · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "phone.number_label",
+   "text": "[Ýöûr ñûmbér, wîth thé çöûñtrý çödé · · · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "phone.offer",
+   "text": "[Thîs ñûmbér ålréådý hås å Hûllå åççöûñt. Swîtçh tö ît? Whåt ýöû håvé öñ thîs phöñé mövés îñtö ît. · · · · · · · · · · · · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "phone.other_number",
+   "text": "[Ûsé å dîfféréñt ñûmbér · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "phone.remove",
+   "text": "[Rémövé ñûmbér · ·]",
+   "smart": false
+  },
+  {
+   "key": "phone.removed",
+   "text": "[Ñûmbér rémövéd. · · ·]",
+   "smart": false
+  },
+  {
+   "key": "phone.send",
+   "text": "[Séñd çödé · ·]",
+   "smart": false
+  },
+  {
+   "key": "phone.sent",
+   "text": "[Wé séñt å çödé tö {0}. · · · ·]",
+   "smart": true
+  },
+  {
+   "key": "phone.settings_action",
+   "text": "[Phöñé ñûmbér · ·]",
+   "smart": false
+  },
+  {
+   "key": "phone.switch",
+   "text": "[Swîtçh åççöûñt · · ·]",
+   "smart": false
+  },
+  {
+   "key": "phone.switched",
+   "text": "[Sîgñéd îñ. Wélçömé båçk! · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "phone.title",
+   "text": "[Phöñé ñûmbér · ·]",
+   "smart": false
+  },
+  {
+   "key": "phone.verify",
+   "text": "[Çöñfîrm · ·]",
+   "smart": false
+  },
+  {
+   "key": "presence.away",
+   "text": "[åwåý ·]",
+   "smart": false
+  },
+  {
+   "key": "presence.lobby",
+   "text": "[îñ å löbbý · ·]",
+   "smart": false
+  },
+  {
+   "key": "presence.online",
+   "text": "[öñlîñé ·]",
+   "smart": false
+  },
+  {
+   "key": "presence.round",
+   "text": "[plåýîñg · ·]",
+   "smart": false
+  },
+  {
+   "key": "preset.classicPagat.description",
+   "text": "[Thé öldér éñdgåmé: å låst-çård wîññér dråws fröm thé dîsçård. · · · · · · · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "preset.classicPagat.name",
+   "text": "[Çlåssîç Pågåt · ·]",
+   "smart": false
+  },
+  {
+   "key": "preset.family.description",
+   "text": "[Géñtlér: thé léådér måý tåké å håñd. · · · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "preset.family.name",
+   "text": "[Fåmîlý ·]",
+   "smart": false
+  },
+  {
+   "key": "preset.hardcore.description",
+   "text": "[Évérý thûllå çöûñts, fröm thé öpéñîñg trîçk. · · · · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "preset.hardcore.name",
+   "text": "[Hårdçöré · ·]",
+   "smart": false
+  },
+  {
+   "key": "preset.standard.description",
+   "text": "[Thé Pûñjåb rûlés möst péöplé gréw ûp wîth. · · · · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "preset.standard.name",
+   "text": "[Ståñdård · ·]",
+   "smart": false
+  },
+  {
+   "key": "product.gems_120",
+   "text": "[120 géms · ·]",
+   "smart": false
+  },
+  {
+   "key": "product.gems_1400",
+   "text": "[1400 géms · ·]",
+   "smart": false
+  },
+  {
+   "key": "product.gems_3000",
+   "text": "[3000 géms · ·]",
+   "smart": false
+  },
+  {
+   "key": "product.gems_650",
+   "text": "[650 géms · ·]",
+   "smart": false
+  },
+  {
+   "key": "product.gems_8000",
+   "text": "[8000 géms · ·]",
+   "smart": false
+  },
+  {
+   "key": "product.pass_premium",
+   "text": "[Prémîûm påss · ·]",
+   "smart": false
+  },
+  {
+   "key": "product.pass_premium_plus",
+   "text": "[Prémîûm+ påss · ·]",
+   "smart": false
+  },
+  {
+   "key": "product.remove_ads",
+   "text": "[Rémövé Åds · ·]",
+   "smart": false
+  },
+  {
+   "key": "product.starter_bundle",
+   "text": "[Stårtér bûñdlé · · ·]",
+   "smart": false
+  },
+  {
+   "key": "push.ask_no",
+   "text": "[Ñöt ñöw · ·]",
+   "smart": false
+  },
+  {
+   "key": "push.ask_title",
+   "text": "[Kñöw whéñ frîéñds îñvîté ýöû tö å tåblé? · · · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "push.ask_yes",
+   "text": "[Tûrñ öñ · ·]",
+   "smart": false
+  },
+  {
+   "key": "push.channel_name",
+   "text": "[Îñvîtés åñd frîéñds · · ·]",
+   "smart": false
+  },
+  {
+   "key": "push.daily_reward_body",
+   "text": "[Ýöûr dåîlý réwård îs réådý. · · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "push.daily_reward_title",
+   "text": "[Dåîlý réwård · ·]",
+   "smart": false
+  },
+  {
+   "key": "push.friend_online_body",
+   "text": "[{0} îs öñlîñé. Fåñçý å röûñd? · · · · ·]",
+   "smart": true
+  },
+  {
+   "key": "push.friend_online_title",
+   "text": "[Frîéñd öñlîñé · ·]",
+   "smart": false
+  },
+  {
+   "key": "push.friend_request_body",
+   "text": "[{0} wåñts tö bé ýöûr frîéñd. · · · · ·]",
+   "smart": true
+  },
+  {
+   "key": "push.friend_request_title",
+   "text": "[Frîéñd réqûést · · ·]",
+   "smart": false
+  },
+  {
+   "key": "push.season_end_body",
+   "text": "[Thé séåsöñ éñds îñ {0} höûrs. Çlåîm ýöûr réwårds. · · · · · · · ·]",
+   "smart": true
+  },
+  {
+   "key": "push.season_end_title",
+   "text": "[Séåsöñ éñdîñg · ·]",
+   "smart": false
+  },
+  {
+   "key": "push.table_invite_body",
+   "text": "[{0} îñvîtés ýöû tö théîr tåblé ({1}). · · · · · ·]",
+   "smart": true
+  },
+  {
+   "key": "push.table_invite_title",
+   "text": "[Tåblé îñvîté · ·]",
+   "smart": false
+  },
+  {
+   "key": "ranked.card_back",
+   "text": "[çård båçk · ·]",
+   "smart": false
+  },
+  {
+   "key": "ranked.coins",
+   "text": "[{0} çöîñs · ·]",
+   "smart": true
+  },
+  {
+   "key": "ranked.frame",
+   "text": "[fråmé ·]",
+   "smart": false
+  },
+  {
+   "key": "ranked.leagues",
+   "text": "[Léågûés · ·]",
+   "smart": false
+  },
+  {
+   "key": "ranked.placement",
+   "text": "[Plåçéméñt {0} öf {1} · · ·]",
+   "smart": true
+  },
+  {
+   "key": "ranked.placement_note",
+   "text": "[Plåý {0} möré tö gét ýöûr léågûé. · · · · ·]",
+   "smart": true
+  },
+  {
+   "key": "ranked.play",
+   "text": "[Plåý råñkéd · ·]",
+   "smart": false
+  },
+  {
+   "key": "ranked.protected",
+   "text": "[Prömötîöñ prötéçtéd för {0} möré · · · · ·]",
+   "smart": true
+  },
+  {
+   "key": "ranked.rank",
+   "text": "[#{0} thîs séåsöñ · · ·]",
+   "smart": true
+  },
+  {
+   "key": "ranked.rating",
+   "text": "[Råtîñg {0} · ·]",
+   "smart": true
+  },
+  {
+   "key": "ranked.rules",
+   "text": "[4 plåýérs · 12 s tûrñs · ñö håñd-tåkîñg · ñö çård mémörý · · · · · · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "ranked.searching",
+   "text": "[Fîñdîñg å råñkéd tåblé · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "ranked.season_ended",
+   "text": "[Séåsöñ {0} éñdéd: {1}. Ýöûr réwårds åré îñ. · · · · · · ·]",
+   "smart": true
+  },
+  {
+   "key": "ranked.season_ended_unplaced",
+   "text": "[Séåsöñ {0} éñdéd béföré ýöû fîñîshéd plåçéméñt. · · · · · · · ·]",
+   "smart": true
+  },
+  {
+   "key": "ranked.season_ends",
+   "text": "[Séåsöñ {0} éñds îñ {1} · · · ·]",
+   "smart": true
+  },
+  {
+   "key": "ranked.title",
+   "text": "[Råñkéd ·]",
+   "smart": false
+  },
+  {
+   "key": "ranked.top",
+   "text": "[Töp thîs séåsöñ · · ·]",
+   "smart": false
+  },
+  {
+   "key": "ranked.top_empty",
+   "text": "[Ñöbödý hås fîñîshéd plåçéméñt ýét. · · · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "ranked.unranked",
+   "text": "[Ûñråñkéd · ·]",
+   "smart": false
+  },
+  {
+   "key": "ranked.ustad_note",
+   "text": "[Töp {0} · ·]",
+   "smart": true
+  },
+  {
+   "key": "ranked.widened",
+   "text": "[Löökîñg å lîttlé wîdér · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "report.reason.abusive_text",
+   "text": "[Åbûsîvé méssågés · · ·]",
+   "smart": false
+  },
+  {
+   "key": "report.reason.abusive_voice",
+   "text": "[Åbûsîvé vöîçé · ·]",
+   "smart": false
+  },
+  {
+   "key": "report.reason.cheating",
+   "text": "[Çhéåtîñg ör téåmîñg ûp · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "report.reason.inappropriate_profile",
+   "text": "[Îñåppröprîåté ñåmé ör pîçtûré · · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "report.reason.spam",
+   "text": "[Spåm ·]",
+   "smart": false
+  },
+  {
+   "key": "report.reason.underage",
+   "text": "[Sééms ûñdér ågé · · ·]",
+   "smart": false
+  },
+  {
+   "key": "rulebook.auto_follow",
+   "text": "[Föllöwîñg sûît: ýöûr löwést çård öf thé léd sûît. · · · · · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "rulebook.auto_lead",
+   "text": "[Léådîñg: thé löwést çård öf thé sûît ýöû höld möst öf. · · · · · · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "rulebook.auto_never",
+   "text": "[Tåkîñg å håñd åñd rémåtçh vötés åré ñévér plåýéd för ýöû. · · · · · · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "rulebook.auto_opening",
+   "text": "[Îñ thé öpéñîñg trîçk: ýöûr löwést spådé, öthérwîsé ýöûr hîghést çård. · · · · · · · · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "rulebook.auto_play",
+   "text": "[Whéñ thé tîmér rûñs öût · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "rulebook.auto_thulla",
+   "text": "[Ñö çård öf thé léd sûît: ýöûr hîghést çård. · · · · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "rulebook.basic1",
+   "text": "[Åll 52 çårds åré déålt. Whöévér hölds thé Åçé öf Spådés léåds ît tö öpéñ. · · · · · · · · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "rulebook.basic2",
+   "text": "[Föllöw thé léd sûît îf ýöû çåñ. Îf ýöû çåñ't, åñý çård ýöû plåý îs å thûllå. · · · · · · · · · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "rulebook.basic3",
+   "text": "[Gét rîd öf åll ýöûr çårds tö ésçåpé. Thé låst plåýér stîll höldîñg çårds lösés thé röûñd. · · · · · · · · · · · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "rulebook.basics",
+   "text": "[Höw å röûñd göés · · ·]",
+   "smart": false
+  },
+  {
+   "key": "rulebook.bhabhi",
+   "text": "[Bhåbhî ·]",
+   "smart": false
+  },
+  {
+   "key": "rulebook.donkey",
+   "text": "[Döñkéý ·]",
+   "smart": false
+  },
+  {
+   "key": "rulebook.empty_hand_draw_discard",
+   "text": "[Wîñ å trîçk wîth ýöûr låst çård åñd ýöû dråw å råñdöm çård fröm thé dîsçård, théñ léåd. · · · · · · · · · · · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "rulebook.empty_hand_draw_next",
+   "text": "[Wîñ å trîçk wîth ýöûr låst çård åñd ýöû dråw å råñdöm çård fröm thé ñéxt plåýér's håñd, théñ léåd. · · · · · · · · · · · · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "rulebook.empty_hand_instant_exit",
+   "text": "[Wîñ å trîçk wîth ýöûr låst çård åñd ýöû ésçåpé åt öñçé; thé ñéxt plåýér léåds. · · · · · · · · · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "rulebook.endgame_draw_discard",
+   "text": "[Wîth twö plåýérs léft, å léådér whö wîñs wîth théîr låst çård dråws å råñdöm çård fröm thé dîsçård. · · · · · · · · · · · · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "rulebook.endgame_draw_opponent",
+   "text": "[Wîth twö plåýérs léft, å léådér whö wîñs wîth théîr låst çård dråws å råñdöm çård fröm thé öppöñéñt. · · · · · · · · · · · · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "rulebook.endgame_thulla_ends_round",
+   "text": "[Wîth twö plåýérs léft, thé fîrst thûllå éñds thé röûñd: whöévér pîçks ûp îs thé {0}. · · · · · · · · · · · · ·]",
+   "smart": true
+  },
+  {
+   "key": "rulebook.fast_forward_off",
+   "text": "[Röûñds plåý tö thé låst çård évéñ whéñ thé lösér îs çértåîñ. · · · · · · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "rulebook.fast_forward_on",
+   "text": "[Whéñ thé lösér îs çértåîñ, thé röûñd éñds stråîght åwåý. · · · · · · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "rulebook.glossary",
+   "text": "[Wörds åt thé tåblé · · ·]",
+   "smart": false
+  },
+  {
+   "key": "rulebook.hand_taking_anyone",
+   "text": "[Béföré thé léåd, åñýöñé måý åsk för thé håñd öf thé ñéxt åçtîvé plåýér; thé fîrst åççéptéd réqûést wîñs. Thåt plåýér ésçåpés. · · · · · · · · · · · · · · · · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "rulebook.hand_taking_leader",
+   "text": "[Fröm thé séçöñd trîçk, thé léådér måý tåké thé whölé håñd öf thé ñéxt åçtîvé plåýér béföré léådîñg bý tåppîñg Åsk för håñd. Îf théý åççépt, théý ésçåpé. · · · · · · · · · · · · · · · · · · · · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "rulebook.hand_taking_off",
+   "text": "[Tåkîñg åñöthér plåýér's håñd îs öff. · · · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "rulebook.loser_title",
+   "text": "[Thé låst plåýér höldîñg çårds îs thé {0}. · · · · · · ·]",
+   "smart": true
+  },
+  {
+   "key": "rulebook.no_turn_timer",
+   "text": "[Théré îs ñö tûrñ tîmér. · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "rulebook.opening_simultaneous_off",
+   "text": "[Thé öpéñîñg trîçk îs plåýéd îñ tûrñ fröm thé Åçé öf Spådés. · · · · · · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "rulebook.opening_simultaneous_on",
+   "text": "[Évérýöñé åñswérs thé öpéñîñg Åçé öf Spådés åt thé såmé tîmé, wîthîñ 10 séçöñds. · · · · · · · · · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "rulebook.opening_thulla_off",
+   "text": "[Thé öpéñîñg trîçk ñévér çåûsés å pîçk-ûp; îts çårds gö tö thé dîsçård. · · · · · · · · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "rulebook.opening_thulla_on",
+   "text": "[Çåréfûl: å thûllå çöûñts îñ thé öpéñîñg trîçk, sö söméöñé çåñ pîçk ûp thé öpéñîñg pîlé. · · · · · · · · · · · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "rulebook.preset",
+   "text": "[Prését: {0}. · ·]",
+   "smart": true
+  },
+  {
+   "key": "rulebook.preset_classic_pagat",
+   "text": "[Çlåssîç Pågåt · ·]",
+   "smart": false
+  },
+  {
+   "key": "rulebook.preset_custom",
+   "text": "[Çûstöm ·]",
+   "smart": false
+  },
+  {
+   "key": "rulebook.preset_family",
+   "text": "[Fåmîlý ·]",
+   "smart": false
+  },
+  {
+   "key": "rulebook.preset_hardcore",
+   "text": "[Hårdçöré · ·]",
+   "smart": false
+  },
+  {
+   "key": "rulebook.preset_standard",
+   "text": "[Ståñdård · ·]",
+   "smart": false
+  },
+  {
+   "key": "rulebook.this_table",
+   "text": "[Thîs tåblé · ·]",
+   "smart": false
+  },
+  {
+   "key": "rulebook.thulla_ends_trick_off",
+   "text": "[Åftér å thûllå, plåý çårrîés öñ åröûñd thé tåblé; åt thé éñd thé hîghést çård öf thé léd sûît pîçks ûp évérýthîñg. · · · · · · · · · · · · · · · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "rulebook.thulla_ends_trick_on",
+   "text": "[Å thûllå stöps thé trîçk åt öñçé; whöévér plåýéd thé hîghést çård öf thé léd sûît pîçks ûp thé pîlé. · · · · · · · · · · · · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "rulebook.thullad",
+   "text": "[Thûllå'd · ·]",
+   "smart": false
+  },
+  {
+   "key": "rulebook.tip1",
+   "text": "[Rûñ öût öf å sûît éårlý: öñçé ýöû çåñ't föllöw, évérý çård öf thåt sûît söméöñé léåds léts ýöû gîvé å thûllå. · · · · · · · · · · · · · · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "rulebook.tip2",
+   "text": "[Wåtçh whåt öthérs pîçk ûp. Å pîlé söméöñé tåkés télls ýöû whîçh sûîts théý ñöw höld. · · · · · · · · · · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "rulebook.tip3",
+   "text": "[Léådîñg ýöûr hîghést çård çåñ léåvé ýöû wîth thé håñd åñd ñö çårds; kéép å löw çård för låtér. · · · · · · · · · · · · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "rulebook.tips",
+   "text": "[Thréé tîps · ·]",
+   "smart": false
+  },
+  {
+   "key": "rulebook.title",
+   "text": "[Rûlés ·]",
+   "smart": false
+  },
+  {
+   "key": "rulebook.turn_timer",
+   "text": "[Éåçh tûrñ hås {0} séçöñds. · · · ·]",
+   "smart": true
+  },
+  {
+   "key": "rulebook.why_ace",
+   "text": "[Thé röûñd öpéñs wîth thé Åçé öf Spådés, åñd îts höldér hås tö léåd ît (R12). · · · · · · · · · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "rulebook.why_follow",
+   "text": "[Ýöû höld å çård öf thé léd sûît, sö ýöû håvé tö plåý öñé öf thém (R18). Öñlý thösé çårds åré lît. · · · · · · · · · · · · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "rulebook.why_not",
+   "text": "[Whý çöûldñ't Î plåý thåt? · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "rulebook.why_server",
+   "text": "[Thé sérvér çhéçks évérý çård. Å çård ît réfûsés göés båçk tö ýöûr håñd wîth ñö péñåltý (R47). · · · · · · · · · · · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "rulebook.why_turn",
+   "text": "[Ît îsñ't ýöûr tûrñ ýét; ýöûr çårds lîght ûp whéñ ît îs. · · · · · · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "rulebook.word_bhabhi",
+   "text": "[Bhåbhî: bröthér's wîfé; thé lösér's tîtlé. · · · · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "rulebook.word_court",
+   "text": "[Ýåkkå, bådshåh, bégûm, ghûlåm: åçé, kîñg, qûééñ, jåçk. · · · · · · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "rulebook.word_escape",
+   "text": "[Ñîkål gåýå, båçh gåýå: göt åwåý, ésçåpéd. · · · · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "rulebook.word_haath",
+   "text": "[Hååth: håñd; ålsö thé rîght tö léåd (\"hååth mérå håî\"). · · · · · · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "rulebook.word_haath_lena",
+   "text": "[Hååth léñå: tö tåké åñöthér plåýér's håñd. · · · · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "rulebook.word_suits",
+   "text": "[Hûkûm, pååñ, ééñt, çhîdî: spådés, héårts, dîåmöñds, çlûbs. · · · · · · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "rulebook.word_thulla",
+   "text": "[Thûllå: thé öff-sûît çård thåt stöps å trîçk (lîtérållý slåñg för å pölîçé öffîçér). · · · · · · · · · · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "season.basant_2026",
+   "text": "[Båsåñt 2026 · ·]",
+   "smart": false
+  },
+  {
+   "key": "skin.adda",
+   "text": "[Çhåî Åddå · ·]",
+   "smart": false
+  },
+  {
+   "key": "skin.club",
+   "text": "[Çlûb ·]",
+   "smart": false
+  },
+  {
+   "key": "skin.dhaba",
+   "text": "[Rööftöp · ·]",
+   "smart": false
+  },
+  {
+   "key": "skin.haveli",
+   "text": "[Håvélî ·]",
+   "smart": false
+  },
+  {
+   "key": "skin.mehndi",
+   "text": "[Méhñdî ·]",
+   "smart": false
+  },
+  {
+   "key": "title.baithak_regular",
+   "text": "[Båîthåk régûlår · · ·]",
+   "smart": false
+  },
+  {
+   "key": "title.basant_ka_badshah",
+   "text": "[Båsåñt kå bådshåh · · ·]",
+   "smart": false
+  },
+  {
+   "key": "title.bhabhi_jaan",
+   "text": "[Bhåbhî jååñ · ·]",
+   "smart": false
+  },
+  {
+   "key": "title.haath_bhar",
+   "text": "[Hååth bhår · ·]",
+   "smart": false
+  },
+  {
+   "key": "title.houdini",
+   "text": "[Höûdîñî · ·]",
+   "smart": false
+  },
+  {
+   "key": "title.kabhi_bhabhi_nahi",
+   "text": "[Kåbhî bhåbhî ñåhî · · ·]",
+   "smart": false
+  },
+  {
+   "key": "title.mehfil_wala",
+   "text": "[Méhfîl wålå · ·]",
+   "smart": false
+  },
+  {
+   "key": "title.nikal_gaya",
+   "text": "[Ñîkål gåýå · ·]",
+   "smart": false
+  },
+  {
+   "key": "title.purana_khiladi_ustad",
+   "text": "[Pûråñå khîlådî ûståd · · ·]",
+   "smart": false
+  },
+  {
+   "key": "title.ranked_bronze",
+   "text": "[Bröñzé ·]",
+   "smart": false
+  },
+  {
+   "key": "title.ranked_diamond",
+   "text": "[Dîåmöñd · ·]",
+   "smart": false
+  },
+  {
+   "key": "title.ranked_gold",
+   "text": "[Göld ·]",
+   "smart": false
+  },
+  {
+   "key": "title.ranked_platinum",
+   "text": "[Plåtîñûm · ·]",
+   "smart": false
+  },
+  {
+   "key": "title.ranked_silver",
+   "text": "[Sîlvér ·]",
+   "smart": false
+  },
+  {
+   "key": "title.ranked_ustad",
+   "text": "[Ûståd ·]",
+   "smart": false
+  },
+  {
+   "key": "title.sabse_pehle",
+   "text": "[Såbsé péhlé · ·]",
+   "smart": false
+  },
+  {
+   "key": "title.shaukeen",
+   "text": "[Shåûkééñ · ·]",
+   "smart": false
+  },
+  {
+   "key": "title.thulla_baaz",
+   "text": "[Thûllå bååz · ·]",
+   "smart": false
+  },
+  {
+   "key": "title.ustad_e_farar",
+   "text": "[Ûståd é fårår · ·]",
+   "smart": false
+  },
+  {
+   "key": "tutorial.explain_ask",
+   "text": "[Ýöû'ré åskîñg {0} tö håñd övér théîr {1} çårds. Îf théý åççépt, thé çårds jöîñ ýöûr håñd åñd {0} sîts öût såfé för thé rést öf thé röûñd. Théý çåñ réfûsé. · · · · · · · · · · · · · · · · · · · · · · · ·]",
+   "smart": true
+  },
+  {
+   "key": "tutorial.finish",
+   "text": "[Lét's plåý · ·]",
+   "smart": false
+  },
+  {
+   "key": "tutorial.gate",
+   "text": "[Dö ýöû kñöw Bhåbhî? · · ·]",
+   "smart": false
+  },
+  {
+   "key": "tutorial.gate_no",
+   "text": "[Ñö, shöw mé · ·]",
+   "smart": false
+  },
+  {
+   "key": "tutorial.gate_yes",
+   "text": "[Ýés, lét's plåý · · ·]",
+   "smart": false
+  },
+  {
+   "key": "tutorial.got_it",
+   "text": "[Göt ît ·]",
+   "smart": false
+  },
+  {
+   "key": "tutorial.hint_leader",
+   "text": "[\"Léåds\" mårks whö léd thîs trîçk. Thé hîghést çård öf thåt sûît tåkés thé håñd. · · · · · · · · · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "tutorial.hint_legal",
+   "text": "[Lît çårds åré thé öñés ýöû çåñ plåý ñöw. Höld thé léd sûît? Théñ ýöû mûst föllöw ît. · · · · · · · · · · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "tutorial.hint_quick_chat",
+   "text": "[Å thûllå! Tåp Çhåt tö såý söméthîñg, fröm \"Lé lö bhåî!\" tö å çhåî émöté. · · · · · · · · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "tutorial.hint_take_hand",
+   "text": "[Béföré ýöû léåd, ýöû çåñ åsk thé ñéxt plåýér för théîr whölé håñd. Îf théý åççépt, théý'ré öût åñd såfé, åñd ýöû léåd wîth åll öf ît. · · · · · · · · · · · · · · · · · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "tutorial.how_to_play",
+   "text": "[Höw tö plåý · ·]",
+   "smart": false
+  },
+  {
+   "key": "tutorial.next",
+   "text": "[Ñéxt ·]",
+   "smart": false
+  },
+  {
+   "key": "tutorial.player_bilal",
+   "text": "[Bîlål ·]",
+   "smart": false
+  },
+  {
+   "key": "tutorial.player_noor",
+   "text": "[Ñöör ·]",
+   "smart": false
+  },
+  {
+   "key": "tutorial.player_sara",
+   "text": "[Sårå ·]",
+   "smart": false
+  },
+  {
+   "key": "tutorial.player_you",
+   "text": "[Ýöû ·]",
+   "smart": false
+  },
+  {
+   "key": "tutorial.refresher",
+   "text": "[20-séçöñd réfréshér · · ·]",
+   "smart": false
+  },
+  {
+   "key": "tutorial.skip",
+   "text": "[Skîp ·]",
+   "smart": false
+  },
+  {
+   "key": "tutorial.step1",
+   "text": "[Ýöû håvé thé Åçé öf Spådés. Évérýöñé thröws å spådé. Ñö pûñîshméñt öñ thé fîrst trîçk. · · · · · · · · · · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "tutorial.step1_done",
+   "text": "[Thé öpéñîñg trîçk göés tö thé dîsçård. Ýöûr Åçé wås hîghést, sö ýöû léåd ñéxt. · · · · · · · · · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "tutorial.step1_hint",
+   "text": "[Thé röûñd öpéñs wîth thé Åçé öf Spådés. Tåp ît, théñ tåp ågåîñ tö plåý. · · · · · · · · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "tutorial.step2",
+   "text": "[Bîlål hås ñö héårts. Hîs öff-sûît çård îs å thûllå. Thé hîghést héårt pîçks évérýthîñg ûp. Thåt's Sårå, ñöt ýöû. · · · · · · · · · · · · · · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "tutorial.step2_done",
+   "text": "[Sårå töök thé whölé pîlé îñtö hér håñd. Thûllås måké öthér péöplé pîçk ûp. · · · · · · · · · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "tutorial.step2_hint",
+   "text": "[Ýöû höld héårts, sö ýöû mûst plåý å héårt. Öñlý thösé åré lît. · · · · · · · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "tutorial.step2_lead",
+   "text": "[Ñöör léåds å héårt. Ýöû håvé héårts, sö ýöû plåý öñé. · · · · · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "tutorial.step3",
+   "text": "[Ñö dîåmöñds? Thröw ýöûr wörst çård. Sårå's K♦ îs thé hîghést, sö shé pîçks ûp. · · · · · · · · · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "tutorial.step3_done",
+   "text": "[Thåt wås ýöûr thûllå. Rûññîñg öût öf å sûît éårlý gîvés ýöû möré öf thém. · · · · · · · · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "tutorial.step3_hint",
+   "text": "[Ýöû håvé ñö dîåmöñds, sö åñý çård göés. Thröw öñé ýöû wåñt rîd öf. · · · · · · · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "tutorial.step4",
+   "text": "[Twö löw çlûbs léft. Plåý löw åñd lét söméöñé élsé tåké thé håñd. · · · · · · · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "tutorial.step4_done",
+   "text": "[Plåý ýöûr låst çård löw åñd lét söméöñé élsé tåké thé håñd. Ýöû'ré öût, ýöû'ré såfé. · · · · · · · · · · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "tutorial.step4_hint",
+   "text": "[Föllöw çlûbs wîth å löw öñé. · · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "tutorial.step5",
+   "text": "[Twö léft åñd thé léådér hås ñö çårds? Théý dråw fröm thé öthér plåýér. Plåý ûñtîl ît's çöñfîrméd. · · · · · · · · · · · · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "tutorial.step5_done",
+   "text": "[Ýöû'ré öût, åñd Sårå îs léft höldîñg å çård: shé's thé Bhåbhî. Ñöw plåý å réål röûñd. · · · · · · · · · · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "tutorial.step5_hint",
+   "text": "[Föllöw héårts wîth ýöûr héårt. · · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "tutorial.step5_lead",
+   "text": "[Twö plåýérs léft. Sårå léåds hér låst çård. · · · · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.accept",
+   "text": "[Åççépt ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.achievement_unlocked",
+   "text": "[Åçhîévéméñt ûñlöçkéd: {0} · · · ·]",
+   "smart": true
+  },
+  {
+   "key": "ui.achievements",
+   "text": "[Åçhîévéméñts · ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.achievements_count",
+   "text": "[{0} öf {1} ûñlöçkéd · · ·]",
+   "smart": true
+  },
+  {
+   "key": "ui.add",
+   "text": "[Ådd ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.add_by_code",
+   "text": "[Ådd å frîéñd bý çödé · · ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.add_friend",
+   "text": "[Ådd frîéñd · ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.add_name",
+   "text": "[Ådd {0} · ·]",
+   "smart": true
+  },
+  {
+   "key": "ui.after_rounds",
+   "text": "[Åftér {0} röûñds · · ·]",
+   "smart": true
+  },
+  {
+   "key": "ui.analytics_ask",
+   "text": "[Hélp ûs împrövé Hûllå? Wé'd çöûñt åñöñýmöûs thîñgs lîké röûñd léñgth åñd tåps, ñévér ýöûr çhåt, çårds ör ñåmé. · · · · · · · · · · · · · · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.analytics_label",
+   "text": "[Shåré åñöñýmöûs ûsågé dåtå · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.analytics_no",
+   "text": "[Ñö thåñks · ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.analytics_yes",
+   "text": "[Ýés, shåré · ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.app_name",
+   "text": "[Hûllå ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.app_title",
+   "text": "[Hûllå ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.ask_named",
+   "text": "[Åsk {0} · ·]",
+   "smart": true
+  },
+  {
+   "key": "ui.ask_sheet_body",
+   "text": "[Håñd övér åll {0} çårds åñd sît öût såfé för thé röûñd? Ýöû çåñ stîll wåtçh, çhåt åñd tålk. · · · · · · · · · · · · · ·]",
+   "smart": true
+  },
+  {
+   "key": "ui.ask_sheet_title",
+   "text": "[{0} åsks för ýöûr håñd · · · ·]",
+   "smart": true
+  },
+  {
+   "key": "ui.asked_waiting",
+   "text": "[Åskéd {0} för théîr håñd… · · · ·]",
+   "smart": true
+  },
+  {
+   "key": "ui.asks_for_hand",
+   "text": "[åsks {0} för théîr håñd · · · ·]",
+   "smart": true
+  },
+  {
+   "key": "ui.at_table",
+   "text": "[Åt thé tåblé · ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.away",
+   "text": "[Åwåý ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.back",
+   "text": "[Båçk ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.balances",
+   "text": "[{0:N0} çöîñs · {1:N0} géms · · ·]",
+   "smart": true
+  },
+  {
+   "key": "ui.bhabhi",
+   "text": "[{0} îs thé Bhåbhî · · ·]",
+   "smart": true
+  },
+  {
+   "key": "ui.bio_label",
+   "text": "[Åböût ýöû (60 çhåråçtérs) · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.block",
+   "text": "[Blöçk ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.blocked",
+   "text": "[Blöçkéd. Ýöû wöñ't héår fröm ör bé måtçhéd wîth {0}. · · · · · · · ·]",
+   "smart": true
+  },
+  {
+   "key": "ui.blocked_list",
+   "text": "[Blöçkéd · ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.board_empty",
+   "text": "[Ñö pöîñts ýét. Wîñ röûñds tö gét öñ thé böård. · · · · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.buy",
+   "text": "[Bûý ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.buy_question",
+   "text": "[Bûý {0} för {1}? · · ·]",
+   "smart": true
+  },
+  {
+   "key": "ui.cancel",
+   "text": "[Çåñçél ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.cancel_deletion",
+   "text": "[Çåñçél délétîöñ · · ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.cancel_request",
+   "text": "[Çåñçél ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.change_rules",
+   "text": "[Çhåñgé rûlés · ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.chat",
+   "text": "[Çhåt ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.chat_filtered",
+   "text": "[Thåt méssågé hås wörds thîs tåblé döésñ't ållöw. · · · · · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.chat_guest",
+   "text": "[Gûésts çåñ çhåt åt frîéñds' tåblés. Lîñk åñ åççöûñt tö çhåt åt pûblîç öñés. · · · · · · · · · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.chat_refused",
+   "text": "[Ñöt séñt. Méssågés çåñ't håvé lîñks ör phöñé ñûmbérs, ûp tö 140 çhåråçtérs. · · · · · · · · · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.chat_too_fast",
+   "text": "[Slöw döwñ å lîttlé: öñé méssågé évérý 2 séçöñds. · · · · · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.claim",
+   "text": "[Çlåîm ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.claimed",
+   "text": "[Döñé ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.close",
+   "text": "[Çlösé ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.code_label",
+   "text": "[Rööm çödé · ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.coins_and_gems",
+   "text": "[{0:N0} çöîñs + {1} géms · · ·]",
+   "smart": true
+  },
+  {
+   "key": "ui.coins_only",
+   "text": "[{0:N0} çöîñs · ·]",
+   "smart": true
+  },
+  {
+   "key": "ui.connecting",
+   "text": "[Çöññéçtîñg… · ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.copied",
+   "text": "[Çöpîéd ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.copy",
+   "text": "[Çöpý ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.copy_seed",
+   "text": "[Çöpý thé sééd · ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.create_room",
+   "text": "[Çréåté å rööm · ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.create_table",
+   "text": "[Çréåté å tåblé · · ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.crown",
+   "text": "[♛ ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.daily_claimed",
+   "text": "[Çlåîméd {0}. · ·]",
+   "smart": true
+  },
+  {
+   "key": "ui.daily_ready",
+   "text": "[Dåîlý réwård, dåý {0}: {1} · · · ·]",
+   "smart": true
+  },
+  {
+   "key": "ui.daily_tomorrow",
+   "text": "[Tömörröw: {0}. · · ·]",
+   "smart": true
+  },
+  {
+   "key": "ui.decline",
+   "text": "[Déçlîñé · ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.delete_account",
+   "text": "[Délété mý åççöûñt · · ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.delete_confirm",
+   "text": "[Délété ýöûr åççöûñt? Ýöû håvé 14 dåýs tö çhåñgé ýöûr mîñd. · · · · · · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.delete_no",
+   "text": "[Kéép ît · ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.delete_pending",
+   "text": "[Ýöûr åççöûñt wîll bé délétéd öñ {0}. Çåñçél åñý tîmé béföré théñ. · · · · · · · · · ·]",
+   "smart": true
+  },
+  {
+   "key": "ui.delete_yes",
+   "text": "[Délété ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.deletion_cancelled",
+   "text": "[Délétîöñ çåñçélléd. Ýöûr åççöûñt ståýs. · · · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.discard_pile",
+   "text": "[Dîsçård · ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.display_name_label",
+   "text": "[Ñåmé ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.done",
+   "text": "[Döñé ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.double_xp",
+   "text": "[döûblé XP · ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.duration_days_hours",
+   "text": "[{0}d {1}h · ·]",
+   "smart": true
+  },
+  {
+   "key": "ui.duration_hours_minutes",
+   "text": "[{0}h {1}m · ·]",
+   "smart": true
+  },
+  {
+   "key": "ui.duration_minutes",
+   "text": "[{0}m ·]",
+   "smart": true
+  },
+  {
+   "key": "ui.edit_rules",
+   "text": "[Édît rûlés · ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.empty",
+   "text": "[Öpéñ séåt · ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.empty_hand_draw_discard",
+   "text": "[Dråw fröm thé dîsçård · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.empty_hand_draw_next",
+   "text": "[Dråw fröm thé ñéxt plåýér · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.empty_hand_instant_exit",
+   "text": "[Ýöû'ré öût · ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.empty_hand_label",
+   "text": "[Îf ýöû wîñ wîth ýöûr låst çård · · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.equip",
+   "text": "[Éqûîp ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.equipped",
+   "text": "[Éqûîppéd · ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.escape_order",
+   "text": "[Ésçåpéd îñ ördér · · ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.escaped",
+   "text": "[Öût ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.everyone",
+   "text": "[Évérýöñé · ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.export_copied",
+   "text": "[Ýöûr dåtå wås çöpîéd. · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.export_data",
+   "text": "[Éxpört mý dåtå · · ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.export_shared",
+   "text": "[Ýöûr dåtå îs réådý tö shåré. · · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.fair_deal",
+   "text": "[Fåîr déål ✓ · ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.fair_deal_check",
+   "text": "[Fåîr déål · séé thé shûfflé · · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.fair_deal_explained",
+   "text": "[Béföré thé déål, thé sérvér çömmîttéd tö {0}. Thé sééd wås {1}. Åñýöñé çåñ rébûîld thé shûfflé fröm thésé twö, sö thé déål çöûld ñöt håvé bééñ çhåñgéd åftér thé fåçt. · · · · · · · · · · · · · · · · · · · · · · · · ·]",
+   "smart": true
+  },
+  {
+   "key": "ui.favourite",
+   "text": "[★ ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.found_table",
+   "text": "[Tåblé föûñd · ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.four_colour_label",
+   "text": "[Föûr-çölöûr déçk · · ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.free",
+   "text": "[Fréé ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.friend_code_label",
+   "text": "[Ýöûr frîéñd çödé · · ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.friends",
+   "text": "[Frîéñds · ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.friends_list",
+   "text": "[Frîéñds · ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.friends_tab",
+   "text": "[Frîéñds · ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.gems_and_title",
+   "text": "[{0} géms + thé tîtlé \"{1}\" · · · ·]",
+   "smart": true
+  },
+  {
+   "key": "ui.gems_only",
+   "text": "[{0} géms · ·]",
+   "smart": true
+  },
+  {
+   "key": "ui.hand_over",
+   "text": "[Håñd övér · ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.hand_sort_label",
+   "text": "[Sört mý håñd · ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.hand_taking_anyone",
+   "text": "[Åñýöñé ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.hand_taking_label",
+   "text": "[Åsk för thé ñéxt plåýér's håñd · · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.hand_taking_leader",
+   "text": "[Léådér, fröm trîçk twö · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.hand_taking_off",
+   "text": "[Öff ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.handle_label",
+   "text": "[Håñdlé (léttérs, ñûmbérs, _) · · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.haptics_label",
+   "text": "[Vîbråtîöñ · ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.high_contrast_label",
+   "text": "[Hîgh çöñtråst · ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.highlights",
+   "text": "[Hîghlîghts · ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.host",
+   "text": "[höst ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.invite",
+   "text": "[Îñvîté ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.invite_friends",
+   "text": "[Îñvîté frîéñds · · ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.invite_link_while_seated",
+   "text": "[Fîñîsh thîs tåblé fîrst tö jöîñ {0}. · · · · · ·]",
+   "smart": true
+  },
+  {
+   "key": "ui.invite_received",
+   "text": "[{0} îñvîtés ýöû tö théîr tåblé ({1}). · · · · · ·]",
+   "smart": true
+  },
+  {
+   "key": "ui.invite_your_group",
+   "text": "[Îñvîté ýöûr gröûp · · ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.invited",
+   "text": "[Îñvîtéd · ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.join_by_code",
+   "text": "[Jöîñ bý çödé · ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.join_friend_table",
+   "text": "[Jöîñ {0}'s tåblé ({1} öpéñ) · · · · ·]",
+   "smart": true
+  },
+  {
+   "key": "ui.join_table",
+   "text": "[Jöîñ ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.keep_playing",
+   "text": "[Kéép plåýîñg · ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.keeps_cards",
+   "text": "[{0} kééps théîr çårds · · · ·]",
+   "smart": true
+  },
+  {
+   "key": "ui.large_cards_label",
+   "text": "[Lårgé çårds · ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.lead",
+   "text": "[Léåds ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.lead_ace_of_spades",
+   "text": "[Léåd thé Å♠ tö öpéñ · · ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.leaderboard",
+   "text": "[Léådérböård · ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.leave",
+   "text": "[Léåvé ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.left_handed_label",
+   "text": "[Léft-håñdéd låýöût · · ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.level_up",
+   "text": "[Lévél ûp! {0} → {1} · · ·]",
+   "smart": true
+  },
+  {
+   "key": "ui.loading",
+   "text": "[Löådîñg… · ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.locked",
+   "text": "[Löçkéd ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.loser_is",
+   "text": "[{0} îs thé {1} · · ·]",
+   "smart": true
+  },
+  {
+   "key": "ui.loser_title_label",
+   "text": "[Thé lösér îs çålléd · · ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.make_friends",
+   "text": "[Plåýéd wéll tögéthér? · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.mission_progress",
+   "text": "[{0}/{1} · {2} · ·]",
+   "smart": true
+  },
+  {
+   "key": "ui.missions",
+   "text": "[Mîssîöñs · ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.missions_today",
+   "text": "[Tödåý ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.missions_week",
+   "text": "[Thîs wéék · ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.more",
+   "text": "[… ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.most_picked_up",
+   "text": "[Möst çårds pîçkéd ûp: {0}, {1} · · · · ·]",
+   "smart": true
+  },
+  {
+   "key": "ui.most_thullas",
+   "text": "[Möst thûllås: {0}, {1} · · · ·]",
+   "smart": true
+  },
+  {
+   "key": "ui.must_follow",
+   "text": "[Mûst föllöw {0} · · ·]",
+   "smart": true
+  },
+  {
+   "key": "ui.mute",
+   "text": "[Mûté ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.muted_note",
+   "text": "[Ýöû wöñ't séé {0}'s méssågés ör émötés. · · · · · ·]",
+   "smart": true
+  },
+  {
+   "key": "ui.name_label",
+   "text": "[Ýöûr ñåmé · ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.name_too_short",
+   "text": "[Å ñåmé ñééds åt léåst 2 çhåråçtérs. · · · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.no_achievements_yet",
+   "text": "[Plåý å röûñd tö stårt. · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.no_friends_to_invite",
+   "text": "[Ñö frîéñds ýét. Shåré thé çödé, ör ådd frîéñds fröm Hömé. · · · · · · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.no_friends_yet",
+   "text": "[Ñö frîéñds ýét. Shåré ýöûr çödé ör ådd théîrs. · · · · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.no_missions_yet",
+   "text": "[Ñéw mîssîöñs årrîvé åt mîdñîght. · · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.no_season",
+   "text": "[Ñö séåsöñ îs rûññîñg rîght ñöw. Thé påss öpéñs wîth thé ñéxt öñé. · · · · · · · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.no_timer",
+   "text": "[Ñö tîmér · ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.not_favourite",
+   "text": "[☆ ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.not_now",
+   "text": "[Ñöt ñöw · ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.not_playable_now",
+   "text": "[Ñöt plåýåblé ñöw · · ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.not_ready",
+   "text": "[Ñöt réådý · ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.not_your_turn",
+   "text": "[Wåît för ýöûr tûrñ · · ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.nothing_this_week",
+   "text": "[Ñöthîñg héré thîs wéék. · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.notifications",
+   "text": "[Ñötîfîçåtîöñs · ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.notify_daily_reward",
+   "text": "[Dåîlý réwård réådý · · ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.notify_friend_online",
+   "text": "[Å frîéñd çömés öñlîñé · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.notify_friend_requests",
+   "text": "[Frîéñd réqûésts · · ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.notify_invites",
+   "text": "[Tåblé îñvîtés · ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.notify_non_friend_invites",
+   "text": "[Îñvîtés fröm plåýérs whö åréñ't frîéñds · · · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.notify_quiet_hours",
+   "text": "[Qûîét höûrs åt ñîght (frîéñds' îñvîtés stîll çömé) · · · · · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.notify_season_end",
+   "text": "[Séåsöñ éñdîñg sööñ · · ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.offline",
+   "text": "[Öfflîñé · ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.one_tap_play",
+   "text": "[Öñé-tåp plåý · ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.online",
+   "text": "[Öñlîñé ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.ordinal",
+   "text": "[{0:choose(1|2|3):1st|2ñd|3rd|{0}th} ·]",
+   "smart": true
+  },
+  {
+   "key": "ui.out_watching",
+   "text": "[Öût · wåtçhîñg · · ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.party_empty",
+   "text": "[Ñö frîéñds öñlîñé. Shåré ýöûr çödé. · · · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.pass_complete",
+   "text": "[Åll {0} tîérs döñé · · ·]",
+   "smart": true
+  },
+  {
+   "key": "ui.pass_progress",
+   "text": "[Tîér {0} öf {1} · {2:N0}/{3:N0} XP · · · · ·]",
+   "smart": true
+  },
+  {
+   "key": "ui.picked_up",
+   "text": "[{0} pîçks ûp · ·]",
+   "smart": true
+  },
+  {
+   "key": "ui.picked_up_tray",
+   "text": "[{0} hås pîçkéd ûp: {1} · · · ·]",
+   "smart": true
+  },
+  {
+   "key": "ui.play_again",
+   "text": "[Plåý ågåîñ · ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.play_again_countdown",
+   "text": "[Plåý ågåîñ · {0}s · · ·]",
+   "smart": true
+  },
+  {
+   "key": "ui.play_now",
+   "text": "[Plåý ñöw · ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.playing",
+   "text": "[Plåýîñg… · ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.points_line",
+   "text": "[{0}: {1} pts · {2}× {3} · · · ·]",
+   "smart": true
+  },
+  {
+   "key": "ui.points_short",
+   "text": "[{0:N0} pts · ·]",
+   "smart": true
+  },
+  {
+   "key": "ui.premium_locked",
+   "text": "[Thé prémîûm tråçk öpéñs wîth thé prémîûm påss. · · · · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.preset_label",
+   "text": "[Prését ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.price_coins",
+   "text": "[{0:N0} çöîñs · ·]",
+   "smart": true
+  },
+  {
+   "key": "ui.price_gems",
+   "text": "[{0:N0} géms · ·]",
+   "smart": true
+  },
+  {
+   "key": "ui.profile",
+   "text": "[Pröfîlé · ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.progress_line",
+   "text": "[Lévél {0} · {1}/{2} XP · {3} çöîñs · · · · · ·]",
+   "smart": true
+  },
+  {
+   "key": "ui.quick_play",
+   "text": "[Qûîçk Plåý · ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.quick_play_table",
+   "text": "[Qûîçk Plåý tåblé · · ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.ready",
+   "text": "[Réådý ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.recap",
+   "text": "[Föllöw thé léd sûît îf ýöû çåñ. Îf ýöû çåñ't, åñý çård îs å thûllå: thé trîçk stöps åñd whöévér plåýéd thé hîghést çård öf thé léd sûît pîçks ûp thé pîlé. Émptý ýöûr håñd tö ésçåpé. Thé låst plåýér höldîñg çårds îs thé Bhåbhî. · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.recap_hide",
+   "text": "[Döñ't shöw ågåîñ · · ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.recap_title",
+   "text": "[Ståñdård rûlés · · ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.recent",
+   "text": "[Plåýéd wîth réçéñtlý · · ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.reconnecting",
+   "text": "[Réçöññéçtîñg… · ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.reduce_motion_label",
+   "text": "[Rédûçé mötîöñ · ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.referral_ask",
+   "text": "[Ådd thé plåýér whö shåréd thîs lîñk ({0}) ås å frîéñd? · · · · · · · · ·]",
+   "smart": true
+  },
+  {
+   "key": "ui.referral_while_seated",
+   "text": "[Öpéñ thé lîñk ågåîñ åftér thîs tåblé tö ådd ýöûr frîéñd. · · · · · · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.rejoin_table",
+   "text": "[Réjöîñ ýöûr tåblé ({0}) · · · ·]",
+   "smart": true
+  },
+  {
+   "key": "ui.rematch_how",
+   "text": "[Évérýöñé tåps Plåý ågåîñ åñd thé ñéxt röûñd déåls åt öñçé. · · · · · · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.rematch_votes",
+   "text": "[{0} öf {1} wåñt åñöthér · · · ·]",
+   "smart": true
+  },
+  {
+   "key": "ui.remove",
+   "text": "[Rémövé ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.report",
+   "text": "[Répört ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.report_thanks",
+   "text": "[Thåñks. Wé'll löök îñtö ît; thé tåblé's réçéñt çhåt îs åttåçhéd. · · · · · · · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.report_why",
+   "text": "[Whåt håppéñéd wîth {0}? · · · ·]",
+   "smart": true
+  },
+  {
+   "key": "ui.request_sent",
+   "text": "[Réqûést séñt · ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.requests",
+   "text": "[Réqûésts · ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.reroll",
+   "text": "[Swåp ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.resets_in",
+   "text": "[Réséts îñ {0}. Töp 10 wîñ géms. · · · · ·]",
+   "smart": true
+  },
+  {
+   "key": "ui.retry",
+   "text": "[Rétrý ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.reward_capped",
+   "text": "[ (dåîlý çåp réåçhéd) · · ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.reward_coins",
+   "text": "[{0} çöîñs · ·]",
+   "smart": true
+  },
+  {
+   "key": "ui.reward_gems",
+   "text": "[{0} çöîñs, {1} géms · · ·]",
+   "smart": true
+  },
+  {
+   "key": "ui.reward_line",
+   "text": "[+{0} XP · +{1} çöîñs · · ·]",
+   "smart": true
+  },
+  {
+   "key": "ui.room_code",
+   "text": "[Rööm çödé · ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.rounds_together",
+   "text": "[{0} röûñds tögéthér · · ·]",
+   "smart": true
+  },
+  {
+   "key": "ui.rules_changed_by",
+   "text": "[{0} çhåñgéd thé rûlés · · · ·]",
+   "smart": true
+  },
+  {
+   "key": "ui.rules_recap_label",
+   "text": "[Rûlés réçåp åt thé fîrst röûñd · · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.rules_summary",
+   "text": "[{0} · {1} · lösér: {2} · · · ·]",
+   "smart": true
+  },
+  {
+   "key": "ui.rules_summary_hand",
+   "text": "[{0} · åsk för håñd: {1} · · · ·]",
+   "smart": true
+  },
+  {
+   "key": "ui.rules_summary_last_card",
+   "text": "[{0} · låst çård: {1} · · ·]",
+   "smart": true
+  },
+  {
+   "key": "ui.save",
+   "text": "[Såvé ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.saved",
+   "text": "[Såvéd ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.searching",
+   "text": "[Fîñdîñg å tåblé för {0}… · · · ·]",
+   "smart": true
+  },
+  {
+   "key": "ui.searching_start",
+   "text": "[Stårtîñg wîth thréé ör möré ås sööñ ås théý'ré îñ… · · · · · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.searching_wider",
+   "text": "[Löökîñg åt évérý tåblé sîzé… · · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.season_ends_in",
+   "text": "[éñds îñ {0} · ·]",
+   "smart": true
+  },
+  {
+   "key": "ui.season_pass",
+   "text": "[Séåsöñ påss · ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.seat_auto_play",
+   "text": "[Åûtö-plåý · ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.seat_away_auto_play",
+   "text": "[Åwåý · åûtö-plåý · · ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.seat_them",
+   "text": "[Séåt ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.seats_label",
+   "text": "[Tåblé sîzé · ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.seats_next",
+   "text": "[ñéxt röûñd · ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.seconds_short",
+   "text": "[{0}s ·]",
+   "smart": true
+  },
+  {
+   "key": "ui.send",
+   "text": "[Séñd ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.sent_requests",
+   "text": "[Wåîtîñg för thém · · ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.server",
+   "text": "[Sérvér (dévélöpméñt bûîlds) · · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.settings",
+   "text": "[Séttîñgs · ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.settings_account",
+   "text": "[Åççöûñt åñd dåtå · · ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.settings_play",
+   "text": "[Plåýîñg · ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.settings_privacy",
+   "text": "[Prîvåçý · ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.settings_seeing",
+   "text": "[Sééîñg åñd mövîñg · · ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.settings_sound",
+   "text": "[Söûñd ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.settings_theme",
+   "text": "[Tåblé thémé · ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.sfx_label",
+   "text": "[Söûñd éfféçts · ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.share_as",
+   "text": "[Shåré thé résûlt ås · · ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.share_big_thulla",
+   "text": "[Shåré thé bîggést thûllå · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.share_card_game",
+   "text": "[Thûllå ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.share_code",
+   "text": "[Shåré çödé · ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.share_footer",
+   "text": "[Plåý Thûllå öñ Hûllå · · ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.share_footer_code",
+   "text": "[Jöîñ wîth çödé {0} öñ Hûllå · · · · ·]",
+   "smart": true
+  },
+  {
+   "key": "ui.share_footer_friend",
+   "text": "[Ådd mé öñ Hûllå: {0} · · ·]",
+   "smart": true
+  },
+  {
+   "key": "ui.share_post",
+   "text": "[Pöst ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.share_result",
+   "text": "[Shåré ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.share_result_referral",
+   "text": "[{0} îs thé {1}! Plåý Thûllå wîth mé öñ Hûllå: {2} · · · · · · · ·]",
+   "smart": true
+  },
+  {
+   "key": "ui.share_result_text",
+   "text": "[{0} îs thé {1}! Plåý Thûllå wîth ûs öñ Hûllå. · · · · · · ·]",
+   "smart": true
+  },
+  {
+   "key": "ui.share_result_title",
+   "text": "[Thûllå öñ Hûllå · · ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.share_result_with_code",
+   "text": "[{0} îs thé {1}! Jöîñ öûr tåblé öñ Hûllå wîth çödé {2}: {3} · · · · · · · · ·]",
+   "smart": true
+  },
+  {
+   "key": "ui.share_story",
+   "text": "[Störý ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.share_text",
+   "text": "[Thûllå khélö! Jöîñ mý tåblé öñ Hûllå wîth çödé {0}: {1} · · · · · · · · ·]",
+   "smart": true
+  },
+  {
+   "key": "ui.share_title",
+   "text": "[Îñvîté tö Hûllå · · ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.shop",
+   "text": "[Shöp ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.show_my_code",
+   "text": "[Shöw mý çödé · ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.sort_by_rank",
+   "text": "[Bý råñk · ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.sort_by_suit",
+   "text": "[Bý sûît · ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.spotlight",
+   "text": "[Thîs wéék · ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.start",
+   "text": "[Stårt röûñd · ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.start_with",
+   "text": "[Stårt · {0} öf {1} séåtéd · · · ·]",
+   "smart": true
+  },
+  {
+   "key": "ui.starts_in",
+   "text": "[Déålîñg îñ {0}s · · ·]",
+   "smart": true
+  },
+  {
+   "key": "ui.stats_line",
+   "text": "[{0} röûñds · {1} ésçåpés · {2} tîmés Bhåbhî · {3} thûllås gîvéñ · · · · · · · · · ·]",
+   "smart": true
+  },
+  {
+   "key": "ui.streak_suffix",
+   "text": "[ · dåý {0} stréåk · · ·]",
+   "smart": true
+  },
+  {
+   "key": "ui.tagline",
+   "text": "[Thûllå wîth frîéñds · · ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.take_hand",
+   "text": "[Åsk för håñd · ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.text_size_label",
+   "text": "[Téxt sîzé · ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.this_month",
+   "text": "[Thîs möñth · ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.this_week",
+   "text": "[Thîs wéék · ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.thulla",
+   "text": "[THÛLLÅ! · ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.thulla_big",
+   "text": "[ÖÝÉ HÖÝÉ! · ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.thulla_flag",
+   "text": "[THÛLLÅ ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.title_reward",
+   "text": "[tîtlé \"{0}\" · ·]",
+   "smart": true
+  },
+  {
+   "key": "ui.turn_seconds",
+   "text": "[{0} s tûrñs · ·]",
+   "smart": true
+  },
+  {
+   "key": "ui.turn_timer_label",
+   "text": "[Tûrñ tîmér · ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.unblock",
+   "text": "[Ûñblöçk · ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.unmute",
+   "text": "[Ûñmûté ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.waiting",
+   "text": "[Wåîtîñg för plåýérs · · ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.waiting4_rematch",
+   "text": "[Wåîtîñg för thé öthérs… · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.watch_friend_table",
+   "text": "[Wåtçh {0}'s gåmé · · ·]",
+   "smart": true
+  },
+  {
+   "key": "ui.watchers",
+   "text": "[Wåtçhîñg · ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.watching",
+   "text": "[Wåtçhîñg · ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.watching1",
+   "text": "[Wåtçhîñg: {0} · ·]",
+   "smart": true
+  },
+  {
+   "key": "ui.watching_lobby",
+   "text": "[Ýöû'ré wåtçhîñg. Thé höst çåñ gîvé ýöû å séåt. · · · · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.you",
+   "text": "[Ýöû ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.you_are",
+   "text": "[{0} (ýöû) · ·]",
+   "smart": true
+  },
+  {
+   "key": "ui.you_are_out",
+   "text": "[Ýöû'ré öût, såfé för thîs röûñd! Wåtçh thé rést; çhåt åñd vöîçé ståý öñ. · · · · · · · · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "welcome.add_phone",
+   "text": "[Ådd phöñé ñûmbér · · ·]",
+   "smart": false
+  },
+  {
+   "key": "welcome.first_round_bonus",
+   "text": "[Wélçömé böñûs: +{0:N0} çöîñs · · · ·]",
+   "smart": true
+  },
+  {
+   "key": "welcome.invite",
+   "text": "[Thûllå îs béttér wîth ýöûr gröûp. Måké å rööm åñd séñd ýöûr frîéñds thé çödé. · · · · · · · · · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "welcome.keep_progress",
+   "text": "[Kéép ýöûr prögréss. Ådd ýöûr phöñé ñûmbér tö sîgñ îñ öñ åñý phöñé. · · · · · · · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "welcome.tutorial_bonus",
+   "text": "[Tûtörîål döñé: +{0:N0} çöîñs · · · ·]",
+   "smart": true
+  }
+ ]
+}

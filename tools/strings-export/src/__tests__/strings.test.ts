@@ -104,3 +104,66 @@ describe("content keys", () => {
     ).toBeGreaterThan(50);
   });
 });
+
+describe("the hard-coded text lint", () => {
+  it("tells text from ids, keys, classes and formats", async () => {
+    const { isUserText, literalsOf } = await import("../lint");
+    for (const ok of [
+      "ui.back",
+      "chip--on",
+      "nav-home",
+      "N0",
+      "7S",
+      "handTaking",
+      "SDK_INT",
+      "android.os.Build$VERSION",
+      "hulla://r/x",
+      " · ",
+      "",
+    ]) {
+      expect(isUserText(ok), ok).toBe(false);
+    }
+    for (const bad of ["Back", "Play again", "d h", "Resets in 3d"])
+      expect(isUserText(bad), bad).toBe(true);
+    expect(literalsOf('label.text = "Hello" + x; // "not this"')).toEqual(["Hello"]);
+    expect(literalsOf('var s = $"{n}d {h}h";')).toEqual(["d h"]);
+    expect(literalsOf('var q = @"a ""b""";')).toEqual(['a "b"']);
+  });
+
+  it("the Unity client has no hard-coded text and spells only known keys", async () => {
+    const { hardcodedText, unknownKeys } = await import("../lint");
+    const unity = join(import.meta.dirname, "..", "..", "..", "..", "apps", "unity", "Hulla");
+    expect(hardcodedText(unity)).toEqual([]);
+    expect(unknownKeys(unity, new Set(Object.keys(english.strings)))).toEqual([]);
+  });
+});
+
+describe("pseudo-locales and mirroring", () => {
+  it("en-XA accents, grows by 30% and brackets; ar-XB is right-to-left", async () => {
+    const { pseudoTables } = await import("../export");
+    const [accented, mirrored] = pseudoTables({
+      locale: "en",
+      strings: { "ui.back": "Back", "ui.n": cards },
+    });
+    expect(accented?.entries.find((e) => e.key === "ui.back")?.text).toBe("[Båçk ·]");
+    expect(accented?.entries.find((e) => e.key === "ui.n")?.text).toContain(
+      "{0:plural:{} çård|{} çårds}",
+    );
+    expect(accented?.rtl).toBe(false);
+    expect(mirrored?.rtl).toBe(true);
+    expect(mirrored?.entries.find((e) => e.key === "ui.back")?.text).toBe("Back");
+  });
+
+  it("every row and side-aligned rule gets an .rtl twin", async () => {
+    const { rtlStyles } = await import("../rtl");
+    const css = rtlStyles({
+      "a.uss":
+        ".row, .b { flex-direction: row; } .col { flex-direction: column; } .t { -unity-text-align: middle-left; } .c { -unity-text-align: middle-center; }",
+    });
+    expect(css).toContain(".rtl .row,\n.rtl .b {\n    flex-direction: row-reverse;\n}");
+    expect(css).not.toContain(".rtl .col");
+    expect(css).toContain(".rtl .t {\n    -unity-text-align: middle-right;\n}");
+    expect(css).toContain(".rtl .c {\n    -unity-text-align: middle-center;\n}");
+    expect(css.indexOf(".rtl .unity-label")).toBeLessThan(css.indexOf(".rtl .c"));
+  });
+});
