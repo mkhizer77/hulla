@@ -14,4 +14,5 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Table.unity
     guid: 785e5ed0f6b3346ab89ee2bbb76c23e9
-  m_configObjects: {}
+  m_configObjects:
+    com.unity.addressableassets: {fileID: 11400000, guid: 6b315717d89a84b75a29eb7d753ee120, type: 2}

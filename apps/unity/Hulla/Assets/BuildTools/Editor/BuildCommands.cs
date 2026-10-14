@@ -94,6 +94,13 @@ namespace Hulla.BuildTools
             var path = Environment.GetEnvironmentVariable("HULLA_BUILD_OUT") ?? defaultPath;
             Directory.CreateDirectory(Path.GetDirectoryName(Path.GetFullPath(path))!);
             EditorUserBuildSettings.buildAppBundle = false;
+            // Addressables builds its bundles for the active platform, so switch first; otherwise
+            // the player ships a catalog that points at another platform's bundles.
+            if (EditorUserBuildSettings.activeBuildTarget != target)
+            {
+                EditorUserBuildSettings.SwitchActiveBuildTarget(BuildPipeline.GetBuildTargetGroup(target), target);
+            }
+
             var report = BuildPipeline.BuildPlayer(new BuildPlayerOptions
             {
                 scenes = Scenes,

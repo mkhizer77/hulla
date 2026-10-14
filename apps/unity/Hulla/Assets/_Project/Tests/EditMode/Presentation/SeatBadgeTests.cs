@@ -1,3 +1,4 @@
+using Hulla.Infrastructure.Content;
 using Hulla.Presentation.TableKit;
 using Hulla.Presentation.Text;
 using NUnit.Framework;
@@ -8,6 +9,9 @@ namespace Hulla.Presentation.Tests
     /// <summary>Seats show the avatar set (GDD 15.6) and the player's own seat is named and tagged "You".</summary>
     public sealed class SeatBadgeTests
     {
+        [OneTimeSetUp]
+        public void LoadThePacks() => AvatarArt.Packs ??= new AddressablePacks();
+
         [Test]
         public void EveryAvatarInTheSetHasAFace()
         {

@@ -48,6 +48,8 @@ export const DEFAULT_CONFIG: RemoteConfig = {
     daily_soft_cap_coins: [{ value: 1500 }],
     // Phone sign-in sends at most this many codes a day across all players (cost cap, OQ-041).
     otp_daily_budget: [{ value: 2000 }],
+    // Root URL of the Addressables packs on the content CDN (ADR-0011); empty keeps remote packs off.
+    content_cdn_url: [{ value: "" }],
   },
   updatedTs: 0,
 };
