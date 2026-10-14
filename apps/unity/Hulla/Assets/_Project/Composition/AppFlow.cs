@@ -311,7 +311,7 @@ namespace Hulla.Composition
             // A held invite or referral link opens its own dialog once the flow is ready.
             var invited = _app.Links.HasPending;
             _app.Analytics.Track(AnalyticsEvents.AppOpen(true, _app.Links.PendingType));
-            _app.Home.LastName = NameFromCommandLine() ?? PlayerPrefs.GetString(NamePrefKey, "");
+            _app.Home.LastName = NameFromCommandLine() ?? PlayerPrefs.GetString(Hulla.Infrastructure.Settings.DeviceProfile.Key(NamePrefKey), "");
             var returning = _app.Home.LastName.Length > 0;
             if (!returning)
             {
@@ -321,7 +321,7 @@ namespace Hulla.Composition
             ShowHome();
             // A player who came in on a link goes to the table or the friend request first; the tutorial
             // and the consent question wait for the next launch.
-            if (!invited && PlayerPrefs.GetInt(TutorialSeenPrefKey, 0) == 0 && !returning)
+            if (!invited && PlayerPrefs.GetInt(Hulla.Infrastructure.Settings.DeviceProfile.Key(TutorialSeenPrefKey), 0) == 0 && !returning)
             {
                 _shell.ShowDialog(TutorialText.Gate, TutorialText.GateYes, TutorialText.GateNo, OfferRefresher, () => StartTutorial(false));
             }
@@ -676,7 +676,7 @@ namespace Hulla.Composition
 
         private static void RememberName(string name)
         {
-            PlayerPrefs.SetString(NamePrefKey, name.Trim());
+            PlayerPrefs.SetString(Hulla.Infrastructure.Settings.DeviceProfile.Key(NamePrefKey), name.Trim());
             PlayerPrefs.Save();
         }
 
@@ -758,8 +758,8 @@ namespace Hulla.Composition
             FollowModel();
             if (!ticket.Value.IsMatchmade && !ticket.Value.AsSpectator)
             {
-                PlayerPrefs.SetString(LastTableCodeKey, ticket.Value.Code);
-                PlayerPrefs.SetString(LastTableAtKey, DateTimeOffset.UtcNow.ToUnixTimeSeconds().ToString());
+                PlayerPrefs.SetString(Hulla.Infrastructure.Settings.DeviceProfile.Key(LastTableCodeKey), ticket.Value.Code);
+                PlayerPrefs.SetString(Hulla.Infrastructure.Settings.DeviceProfile.Key(LastTableAtKey), DateTimeOffset.UtcNow.ToUnixTimeSeconds().ToString());
                 PlayerPrefs.Save();
             }
 
@@ -818,8 +818,8 @@ namespace Hulla.Composition
         /// <returns>The code of the table the player left mid-round in the last 30 minutes, else null.</returns>
         private static string? LastTableCode()
         {
-            var code = PlayerPrefs.GetString(LastTableCodeKey, "");
-            if (code.Length == 0 || !long.TryParse(PlayerPrefs.GetString(LastTableAtKey, ""), out var at))
+            var code = PlayerPrefs.GetString(Hulla.Infrastructure.Settings.DeviceProfile.Key(LastTableCodeKey), "");
+            if (code.Length == 0 || !long.TryParse(PlayerPrefs.GetString(Hulla.Infrastructure.Settings.DeviceProfile.Key(LastTableAtKey), ""), out var at))
             {
                 return null;
             }
@@ -829,8 +829,8 @@ namespace Hulla.Composition
 
         private static void ForgetLastTable()
         {
-            PlayerPrefs.DeleteKey(LastTableCodeKey);
-            PlayerPrefs.DeleteKey(LastTableAtKey);
+            PlayerPrefs.DeleteKey(Hulla.Infrastructure.Settings.DeviceProfile.Key(LastTableCodeKey));
+            PlayerPrefs.DeleteKey(Hulla.Infrastructure.Settings.DeviceProfile.Key(LastTableAtKey));
             PlayerPrefs.Save();
         }
 
@@ -1282,7 +1282,7 @@ namespace Hulla.Composition
                     return;
                 }
 
-                PlayerPrefs.SetString(DeleteAtPrefKey, deleted.Value.ToString());
+                PlayerPrefs.SetString(Hulla.Infrastructure.Settings.DeviceProfile.Key(DeleteAtPrefKey), deleted.Value.ToString());
                 PlayerPrefs.Save();
                 status(PendingDeletion() ?? "");
             }, () => { });
@@ -1296,14 +1296,14 @@ namespace Hulla.Composition
                 return;
             }
 
-            PlayerPrefs.DeleteKey(DeleteAtPrefKey);
+            PlayerPrefs.DeleteKey(Hulla.Infrastructure.Settings.DeviceProfile.Key(DeleteAtPrefKey));
             PlayerPrefs.Save();
             status(UiText.DeletionCancelled);
         }
 
         private static string? PendingDeletion()
         {
-            if (!long.TryParse(PlayerPrefs.GetString(DeleteAtPrefKey, ""), out var at) || at <= DateTimeOffset.UtcNow.ToUnixTimeMilliseconds())
+            if (!long.TryParse(PlayerPrefs.GetString(Hulla.Infrastructure.Settings.DeviceProfile.Key(DeleteAtPrefKey), ""), out var at) || at <= DateTimeOffset.UtcNow.ToUnixTimeMilliseconds())
             {
                 return null;
             }
@@ -1423,7 +1423,7 @@ namespace Hulla.Composition
 
         private static void MarkTutorialSeen()
         {
-            PlayerPrefs.SetInt(TutorialSeenPrefKey, 1);
+            PlayerPrefs.SetInt(Hulla.Infrastructure.Settings.DeviceProfile.Key(TutorialSeenPrefKey), 1);
             PlayerPrefs.Save();
         }
 

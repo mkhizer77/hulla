@@ -883,3 +883,36 @@
     -unity-font-definition: url("/Assets/_Project/Presentation/Theme/Fonts/Baloo2.ttf");
     -unity-font-style: normal;
 }
+
+/*
+ * Pointer hover (desktop and the editor). Unity's default theme fills a hovered or pressed button with
+ * flat grey and outranks the rules above, so a grey box showed behind the rounded button art and
+ * turned the quiet buttons and pills into slabs. Themed controls keep their own background; a hover
+ * lifts the art a touch instead, and a press still sinks it (Hulla.uss).
+ */
+.skinned .unity-button:hover:enabled,
+.skinned .unity-button:active:enabled,
+.skinned .unity-button:focus:enabled,
+.skinned .unity-button:checked:enabled {
+    background-color: rgba(0, 0, 0, 0);
+    border-color: rgba(0, 0, 0, 0);
+}
+
+.skinned .button:hover:enabled, .skinned .chip:hover:enabled {
+    translate: 0 -2px;
+}
+
+.skinned .button--quiet:hover:enabled {
+    color: var(--ink-ivory);
+}
+
+/* The theme tiles keep their frame under the pointer; the chosen one stays gold. */
+.skinned .theme-tile:hover:enabled {
+    background-color: rgba(255, 255, 255, 0.08);
+    border-color: rgba(255, 255, 255, 0.16);
+}
+
+.skinned .theme-tile--on:hover:enabled {
+    background-color: rgba(255, 255, 255, 0.1);
+    border-color: var(--accent-saffron);
+}
