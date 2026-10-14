@@ -24,6 +24,7 @@ namespace Hulla.Composition
         private readonly NakamaTableChat _tableChat;
         private SessionScope? _session;
         private PushPrompt? _pushPrompt;
+        private WelcomePrompts? _welcomePrompts;
 
         public AppScope(AppConfig config)
         {
@@ -44,6 +45,7 @@ namespace Hulla.Composition
             DailyReward = new DailyRewardViewModel(new NakamaDailyRewardService(_connection));
             Leaderboard = new LeaderboardViewModel(new NakamaLeaderboardService(_connection));
             Ranked = new RankedViewModel(new NakamaRankedService(_connection));
+            Welcome = new NakamaWelcomeService(_connection);
             Phone = new PhoneViewModel(new NakamaPhoneService(_connection, _sessionService));
             Achievements = new AchievementsViewModel(new NakamaAchievementsService(_connection));
             Shop = new ShopViewModel(new NakamaShopService(_connection));
@@ -118,6 +120,11 @@ namespace Hulla.Composition
         public IPushDevice PushDevice { get; } = Hulla.Infrastructure.Platform.PushDevices.Create(Hulla.Presentation.Text.PushText.ChannelName);
 
         public PushPrompt PushPrompt => _pushPrompt ??= new PushPrompt(Store);
+
+        /// <summary>The soft prompts after the first live round (GDD 17.2).</summary>
+        public WelcomePrompts WelcomePrompts => _welcomePrompts ??= new WelcomePrompts(Store);
+
+        public IWelcomeService Welcome { get; }
 
         public SettingsModel Settings { get; }
 

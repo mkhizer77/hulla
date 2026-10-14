@@ -3795,6 +3795,31 @@
    "key": "ui.you_are_out",
    "text": "You're out, safe for this round! Watch the rest; chat and voice stay on.",
    "smart": false
+  },
+  {
+   "key": "welcome.add_phone",
+   "text": "Add phone number",
+   "smart": false
+  },
+  {
+   "key": "welcome.first_round_bonus",
+   "text": "Welcome bonus: +{0:N0} coins",
+   "smart": true
+  },
+  {
+   "key": "welcome.invite",
+   "text": "Thulla is better with your group. Make a room and send your friends the code.",
+   "smart": false
+  },
+  {
+   "key": "welcome.keep_progress",
+   "text": "Keep your progress. Add your phone number to sign in on any phone.",
+   "smart": false
+  },
+  {
+   "key": "welcome.tutorial_bonus",
+   "text": "Tutorial done: +{0:N0} coins",
+   "smart": true
   }
  ]
 }
