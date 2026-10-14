@@ -766,7 +766,12 @@
     "ui.watching_lobby": "You're watching. The host can give you a seat.",
     "ui.you": "You",
     "ui.you_are": "{0} (you)",
-    "ui.you_are_out": "You're out, safe for this round! Watch the rest; chat and voice stay on."
+    "ui.you_are_out": "You're out, safe for this round! Watch the rest; chat and voice stay on.",
+    "welcome.add_phone": "Add phone number",
+    "welcome.first_round_bonus": "Welcome bonus: +{0, number, integer} coins",
+    "welcome.invite": "Thulla is better with your group. Make a room and send your friends the code.",
+    "welcome.keep_progress": "Keep your progress. Add your phone number to sign in on any phone.",
+    "welcome.tutorial_bonus": "Tutorial done: +{0, number, integer} coins"
   },
   "notes": {
     "achievement.goal.bhabhis": "{0} the target count.",
@@ -817,6 +822,8 @@
     "ui.share_result_text": "{0} loser's name, {1} the table's loser title.",
     "ui.share_result_with_code": "{0} loser's name, {1} the table's loser title, {2} room code, {3} the invite link.",
     "ui.title_reward": "{0} the title's name.",
-    "ui.you_are": "{0} the player's own name on a board."
+    "ui.you_are": "{0} the player's own name on a board.",
+    "welcome.first_round_bonus": "{0} coins, paid once with the first live round.",
+    "welcome.tutorial_bonus": "{0} coins, paid once for finishing the tutorial."
   }
 }

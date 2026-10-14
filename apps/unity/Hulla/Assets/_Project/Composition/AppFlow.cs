@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Hulla.Application.Services;
 using Hulla.Application.Table;
 using Hulla.Application.Tutorial;
+using Hulla.Application.ViewModels;
 using Hulla.Domain;
 using Hulla.Protocol;
 using Hulla.Games.Thulla;
@@ -70,6 +71,7 @@ namespace Hulla.Composition
         private SettingsView? _settingsView;
         private bool _updateAsked;
         private PhoneView? _phoneView;
+        private bool _tutorialRefresher;
         private LobbyView? _lobbyView;
         private string _friendsForRound = "";
         private readonly BigThullaOffer _bigThulla = new BigThullaOffer();
@@ -782,7 +784,35 @@ namespace Hulla.Composition
             await _app.Tables.LeaveAsync();
             _app.Session?.EndTable();
             ShowHome();
-            AskForPushIfDue();
+            if (!AskForPushIfDue())
+            {
+                OfferWelcomePrompt();
+            }
+        }
+
+        /// <summary>
+        /// After the first live round (GDD 17.2 step 6), one soft prompt per return to Home: keep your
+        /// progress with a phone number, then play with your group.
+        /// </summary>
+        private async void OfferWelcomePrompt()
+        {
+            var name = _app.Home.LastName;
+            await _app.Phone.RefreshAsync(_app.Lifetime);
+            var linked = _app.Phone.Current == PhoneViewModel.Stage.Linked;
+            if (_screen != Screen.Home)
+            {
+                return;
+            }
+
+            switch (_app.WelcomePrompts.Next(linked))
+            {
+                case WelcomePrompts.Prompt.KeepProgress:
+                    _shell.ShowDialog(Strings.Text("welcome.keep_progress"), Strings.Text("welcome.add_phone"), UiText.NotNow, OpenPhone, () => { });
+                    break;
+                case WelcomePrompts.Prompt.Invite:
+                    _shell.ShowDialog(Strings.Text("welcome.invite"), UiText.CreateRoom, UiText.NotNow, () => OnCreate(name, null), () => { });
+                    break;
+            }
         }
 
         /// <returns>The code of the table the player left mid-round in the last 30 minutes, else null.</returns>
@@ -855,17 +885,19 @@ namespace Hulla.Composition
         }
 
         /// <summary>The one-line ask before the system's notification dialog (PushPrompt has the timing).</summary>
-        private void AskForPushIfDue()
+        /// <returns>True when the ask was shown.</returns>
+        private bool AskForPushIfDue()
         {
             var now = DateTimeOffset.Now;
             var day = (int)((now.ToUnixTimeSeconds() + (long)now.Offset.TotalSeconds) / 86400);
             if (!_app.PushPrompt.ShouldAsk(_app.PushDevice.CanAsk, day))
             {
-                return;
+                return false;
             }
 
             _app.PushPrompt.Asked(day);
             _shell.ShowDialog(PushText.AskTitle, PushText.AskYes, PushText.AskNo, () => _app.PushDevice.Ask(_ => { }), () => { });
+            return true;
         }
 
         /// <summary>
@@ -1128,6 +1160,12 @@ namespace Hulla.Composition
                 if (reward != null)
                 {
                     var text = Strings.Format(UiText.RewardLine, reward.Xp, reward.Coins) + (reward.Capped ? UiText.RewardCapped : "");
+                    if (reward.WelcomeCoins > 0)
+                    {
+                        text += "\n" + Strings.Get("welcome.first_round_bonus", reward.WelcomeCoins);
+                    }
+
+                    _app.WelcomePrompts.FirstRoundFinished();
                     if (reward.LevelTo > reward.LevelFrom)
                     {
                         text += "\n" + Strings.Format(UiText.LevelUp, reward.LevelFrom, reward.LevelTo);
@@ -1319,6 +1357,7 @@ namespace Hulla.Composition
             CloseView();
             _screen = Screen.Table;
             _shell.HideNav();
+            _tutorialRefresher = refresher;
             var steps = ThullaTutorial.Steps();
             var chosen = refresher ? new[] { steps[1], steps[2] } : steps;
             var gateway = new ScriptedTableGateway(chosen, () => DateTimeOffset.UtcNow.ToUnixTimeMilliseconds(), TutorialText.HowToPlay);
@@ -1357,6 +1396,29 @@ namespace Hulla.Composition
         {
             MarkTutorialSeen();
             ShowHome();
+            if (!_tutorialRefresher && _app.Sessions.Current != null)
+            {
+                PayTutorial();
+            }
+        }
+
+        /// <summary>The tutorial's one-time reward (GDD 17.2), said in the top pill for a few seconds.</summary>
+        private async void PayTutorial()
+        {
+            var paid = await _app.Welcome.TutorialCompleteAsync(_app.Lifetime);
+            if (!paid.IsOk || paid.Value <= 0)
+            {
+                return;
+            }
+
+            var text = Strings.Get("welcome.tutorial_bonus", paid.Value);
+            _shell.SetBanner(text);
+            _ = _app.Progress.RefreshAsync(LocalOffsetMinutes(), _app.Lifetime);
+            await Awaitable.WaitForSecondsAsync(4f);
+            if (UnityEngine.UIElements.UQueryExtensions.Q<UnityEngine.UIElements.Label>(_shell.Root, "shell-banner")?.text == text)
+            {
+                _shell.SetBanner(null);
+            }
         }
 
         private static void MarkTutorialSeen()
