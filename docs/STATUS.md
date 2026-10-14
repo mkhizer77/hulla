@@ -1,11 +1,12 @@
 # Status
 
-Updated: 13 October 2026 (evening)
+Updated: 14 October 2026 (overnight)
 
 ## Phase
 M0 complete: the Thulla rulebook runs in TypeScript with full traceability. M1, the vertical slice, starts with the protocol schemas.
 
 ## Done
+- Overnight 14 Oct, merged: ranked seasons (#98, PRs 247 and 248: R53 in the engine, leagues Bronze to Ustad, placement, protection, season rewards, the ranked queue, the Ranked screen; numbers in OQ-040); string tables from `content/strings` for Unity and the web (#65 part 1, PR 249, ADR-0023); phone sign-in (#99, PRs 250 and 252: link a number, sign in on a new phone with this phone's progress merged, fraud limits, cost on the dashboard; provider and numbers in OQ-041, setup in `docs/runbooks/phone-sign-in-setup.md`); remote config on the client (#72 client part, PR 253: update prompt, maintenance and Quick Play switches); the first-session rewards, welcome mission and soft prompts (#62, PRs 254 and 255; amounts in OQ-042). A development APK builds with the new tables.
 - Unity #74 referral links (13 Oct, PR 243): a result shared away from a private table carries `hulla://r/<friend code>`; opening it offers to add the sharer. New installs landing after the store wait for the deep-link vendor and the domain (#43, #130).
 - Consent for hand-taking merged (13 Oct, PR 242): Ask for hand sends a request the next player accepts or refuses (`hand_asked`, `answer_hand`, `hand_answered`, the open request in `table_state`); the first ask is explained once; an escaped player is told they are out and their seat shows it. OQ-039 logged; R33, R34, E11 and E15 reworded in the GDD.
 - UX/UI pass, Unity, part 3 merged (13 Oct, PR 239): the placeholder look so the app reads as a game before the art lands: two OFL typefaces, generated textures (felt, rail, ground lattice, card back, gradients, panel shadow, glows, stamp frame), vector card faces with pips and court bands, shaded avatars, depth on controls, and a snapshot test that renders the four main screens to PNG. Also the opening-window fix (R13) and the two-character name guard.
@@ -56,10 +57,10 @@ M0 complete: the Thulla rulebook runs in TypeScript with full traceability. M1, 
 - 12 Oct decisions: C# mirror deferred past v1.0 (ADR-0019), no clock in engines (ADR-0020), JSON Schema draft-07 (ADR-0021), one deck and 3–6 seats until v1.2, web client before Rung (M5 → web → Rung → M6, dates in the execution plan), Facebook login stays, Unity stays on 6000.4.9f1.
 
 ## Doing
-- Unity CI: the licence secrets are set (13 Oct); the first CI run of the edit-mode tests.
+- #65 part 2 (PR 251): the hard-coded text lint, the en-XA and ar-XB pseudo-locales with a screen check in CI, RTL mirroring. Auto-merge is on.
 
 ## Next
-Monetisation is on hold. Most of what is left before launch waits on the owner: the phase 0 box (#76) for the dashboards, alerts and load runs (#75 and #77 are built), Firebase Test Lab for the device matrix (#78; every screen has a smoke test), a low-tier phone for the script spike (#132), the phone pass on the UX work and the playtests (#36), and the art for pass B (#80 to #83). The next engineering-only ticket is M5 #98 ranked.
+Monetisation is on hold. Engineering-only work left before launch is small: a per-screen tap-target and contrast check (#64). Most of the rest waits on the owner: the SMS provider for phone sign-in (OQ-041), Firebase for crash reporting (#72), the phase 0 box (#76), Test Lab (#78), a low-tier phone (#132), the phone pass and playtests (#36), the art for pass B (#80 to #83), translations for Urdu and Hindi (#100), and a decision on tablet landscape (#102: the table was chosen portrait on 13 Oct). The `shop` remote-config flag is not applied on the client yet: it defaults to off on the server, so applying it hides the shop. The web client starts after v1.1 as planned.
 
 ## Blockers
 - None.
