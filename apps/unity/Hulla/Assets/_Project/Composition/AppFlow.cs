@@ -69,6 +69,7 @@ namespace Hulla.Composition
         private ThullaTableView? _tableView;
         private bool _reconnecting;
         private SettingsView? _settingsView;
+        private bool _updateAsked;
         private PhoneView? _phoneView;
         private bool _tutorialRefresher;
         private LobbyView? _lobbyView;
@@ -375,6 +376,7 @@ namespace Hulla.Composition
             var server = Debug.isDebugBuild ? _app.Config.HostAndPort : null;
             var home = new HomeView(root, _app.Home, server, OnCreate, OnJoin, OnQuickPlay, OpenSettings, OnFriends, OnProfile, _app.HomeFriends, () => StartTutorial(false), TutorialText.HowToPlay, OnWatch, _app.Progress, OnMissions, OnLeaderboard, OnShop, OnPass);
             _view = home;
+            home.SetQuickPlay(_app.RemoteConfig.QuickPlay, QuickPlayNote());
             var left = LastTableCode();
             home.ShowRejoin(left, left == null ? null : () => Rejoin(home, left));
             _daily = new DailyRewardCard(UnityEngine.UIElements.UQueryExtensions.Q<UnityEngine.UIElements.VisualElement>(root, "daily"), _app.DailyReward, ClaimDailyReward);
@@ -624,6 +626,8 @@ namespace Hulla.Composition
             var signedIn = await _app.Home.SignInAsync(_app.Home.LastName, _app.Lifetime);
             if (signedIn.IsOk)
             {
+                await _app.RemoteConfig.RefreshAsync(UnityEngine.Application.version, "*", _app.Lifetime);
+                ApplyRemoteConfig();
                 await _app.Progress.RefreshAsync(LocalOffsetMinutes(), _app.Lifetime);
                 await _app.DailyReward.RefreshAsync(LocalOffsetMinutes(), _app.Lifetime);
             }
@@ -634,6 +638,35 @@ namespace Hulla.Composition
                 _app.HomeFriends.RefreshSoon();
             }
         }
+
+        /// <summary>
+        /// The server's switches (GDD 22.5, 20.15): an old client is asked once a launch to update (the
+        /// server already refuses its joins); maintenance or a Quick Play switch-off rests Play now.
+        /// </summary>
+        private void ApplyRemoteConfig()
+        {
+            var config = _app.RemoteConfig;
+            if (config.UpdateRequired && !_updateAsked)
+            {
+                _updateAsked = true;
+                _shell.ShowDialog(Strings.Text("config.update_required"), Strings.Text("config.update"), UiText.NotNow, OpenStore, () => { });
+            }
+
+            if (_view is HomeView home)
+            {
+                home.SetQuickPlay(config.QuickPlay, QuickPlayNote());
+            }
+        }
+
+        private string? QuickPlayNote()
+        {
+            var config = _app.RemoteConfig;
+            return config.Maintenance ? Strings.Text("config.maintenance") : config.QuickPlay ? null : Strings.Text("config.quick_play_off");
+        }
+
+        /// <summary>The store page: the config's update_url, else this app on Google Play.</summary>
+        private void OpenStore() =>
+            UnityEngine.Application.OpenURL(_app.RemoteConfig.Current.Text("update_url", "market://details?id=" + UnityEngine.Application.identifier));
 
         /// <summary>"Lahori Lion 42": a friendly starting name the player can change (GDD 17.2).</summary>
         private static string GeneratedName() =>

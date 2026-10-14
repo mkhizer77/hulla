@@ -553,6 +553,26 @@
    "smart": false
   },
   {
+   "key": "config.maintenance",
+   "text": "[Hûllå îs håvîñg å shört bréåk. Tåblés öpéñ ågåîñ sööñ. · · · · · · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "config.quick_play_off",
+   "text": "[Plåý ñöw îs réstîñg för å bît. Çréåté å rööm för frîéñds îñstéåd. · · · · · · · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "config.update",
+   "text": "[Ûpdåté ·]",
+   "smart": false
+  },
+  {
+   "key": "config.update_required",
+   "text": "[Å ñéw vérsîöñ öf Hûllå îs öût. Ûpdåté tö kéép plåýîñg åt tåblés. · · · · · · · · · ·]",
+   "smart": false
+  },
+  {
    "key": "emote.chai",
    "text": "[Çhåî ·]",
    "smart": false

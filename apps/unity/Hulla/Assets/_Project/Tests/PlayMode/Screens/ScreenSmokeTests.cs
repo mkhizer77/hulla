@@ -99,6 +99,24 @@ namespace Hulla.Screens.Tests
         }
 
         [UnityTest]
+        public IEnumerator HomeRestsPlayNowWhenTheServerSaysSo()
+        {
+            VisualElement root = null!;
+            HomeView home = null!;
+            yield return Open(Catalog.Home, r =>
+            {
+                root = r;
+                home = new HomeView(r, new HomeViewModel(new Fakes.Session(), new Fakes.Gateway()) { LastName = "Khizer" }, null, (_, _) => { }, (_, _, _) => { }, (_, _, _) => { });
+            });
+            Assert.IsTrue(root.Q<Button>("quick").enabledSelf);
+            home.SetQuickPlay(false, "Hulla is having a short break. Tables open again soon.");
+            yield return null;
+            Assert.IsFalse(root.Q<Button>("quick").enabledSelf);
+            Assert.IsTrue(root.Q<Button>("create").enabledSelf, "rooms with friends still open");
+            Assert.AreEqual("Hulla is having a short break. Tables open again soon.", root.Q<Label>("status").text);
+        }
+
+        [UnityTest]
         public IEnumerator LobbyShowsTheCodeSeatsAndHostControls()
         {
             VisualElement root = null!;

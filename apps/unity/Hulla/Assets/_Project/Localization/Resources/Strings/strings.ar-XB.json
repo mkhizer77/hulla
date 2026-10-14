@@ -553,6 +553,26 @@
    "smart": false
   },
   {
+   "key": "config.maintenance",
+   "text": "Hulla is having a short break. Tables open again soon.",
+   "smart": false
+  },
+  {
+   "key": "config.quick_play_off",
+   "text": "Play now is resting for a bit. Create a room for friends instead.",
+   "smart": false
+  },
+  {
+   "key": "config.update",
+   "text": "Update",
+   "smart": false
+  },
+  {
+   "key": "config.update_required",
+   "text": "A new version of Hulla is out. Update to keep playing at tables.",
+   "smart": false
+  },
+  {
    "key": "emote.chai",
    "text": "Chai",
    "smart": false
