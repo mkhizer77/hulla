@@ -49,3 +49,22 @@ groups:
           severity: page
         annotations:
           summary: "Nakama is not answering the metrics scrape"
+      - alert: HullaPhoneCodeSpendHigh
+        expr: sum(increase(nakama_custom_hulla_otp_cost_cents[1h])) / 100 > 20
+        for: 5m
+        labels:
+          severity: warn
+        annotations:
+          summary: "Phone codes cost more than US$20 in the last hour"
+          description: "Check the country split on the dashboard; lower otp_daily_budget in remote config to cap it (OQ-041)."
+      - alert: HullaPhoneCodesUnanswered
+        expr: >
+          sum(increase(nakama_custom_hulla_otp_sent[1h])) > 50
+            and sum(increase(nakama_custom_hulla_otp_verified[1h]))
+              / clamp_min(sum(increase(nakama_custom_hulla_otp_sent[1h])), 1) < 0.3
+        for: 15m
+        labels:
+          severity: page
+        annotations:
+          summary: "Most phone codes go unanswered: likely SMS pumping"
+          description: "Fewer than 30% of codes sent in the last hour were verified. Set otp_daily_budget to 0 to stop sending, then check the countries."

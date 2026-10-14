@@ -24,6 +24,11 @@ export const METRICS = {
   purchasesRejected: "hulla_purchases_rejected",
   adRewards: "hulla_ad_rewards",
   adRewardsRejected: "hulla_ad_rewards_rejected",
+  otpSent: "hulla_otp_sent",
+  /** Estimated SMS spend in US cents, by country (OQ-041). */
+  otpCostCents: "hulla_otp_cost_cents",
+  otpVerified: "hulla_otp_verified",
+  otpRefused: "hulla_otp_refused",
 } as const;
 
 export interface MetricsSink {

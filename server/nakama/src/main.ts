@@ -63,6 +63,12 @@ import {
 } from "./rpc/moderation";
 import { rpcAdminDrain } from "./rpc/ops";
 import { rpcPassClaim, rpcPassGet, rpcPassPremiumGrant } from "./rpc/pass";
+import {
+  beforeAuthenticateCustom,
+  rpcPhoneStart,
+  rpcPhoneStatus,
+  rpcPhoneVerify,
+} from "./rpc/phone";
 import { rpcPresenceSet, rpcTableListFriends } from "./rpc/presence";
 import { rpcPresetsGet } from "./rpc/presets_get";
 import { rpcProfileGet, rpcProfileUpdate } from "./rpc/profile";
@@ -117,6 +123,9 @@ function InitModule(
   initializer.registerMatchmakerMatched(matchmakerMatched);
   initializer.registerRpc("ranked_get", rpcRankedGet);
   initializer.registerRpc("ranked_board", rpcRankedBoard);
+  initializer.registerRpc("phone_start", rpcPhoneStart);
+  initializer.registerRpc("phone_verify", rpcPhoneVerify);
+  initializer.registerRpc("phone_status", rpcPhoneStatus);
   initializer.registerRpc("profile_get", rpcProfileGet);
   initializer.registerRpc("profile_update", rpcProfileUpdate);
   initializer.registerRpc("account_delete", rpcAccountDelete);
@@ -190,6 +199,7 @@ function InitModule(
   initializer.registerAfterAuthenticateApple(afterAuthenticateApple);
   initializer.registerAfterAuthenticateGoogle(afterAuthenticateGoogle);
   initializer.registerAfterAuthenticateFacebook(afterAuthenticateFacebook);
+  initializer.registerBeforeAuthenticateCustom(beforeAuthenticateCustom);
   initializer.registerAfterAuthenticateCustom(afterAuthenticateCustom);
   initializer.registerMatch("thulla", {
     matchInit: thullaMatchInit,

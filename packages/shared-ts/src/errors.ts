@@ -49,6 +49,12 @@ export const ErrorCodes = {
     mergeCodeInvalid: "auth.merge_code_invalid",
     banned: "auth.banned",
     updateRequired: "auth.update_required",
+    otpInvalidPhone: "auth.otp_invalid_phone",
+    otpCountry: "auth.otp_country",
+    otpRateLimited: "auth.otp_rate_limited",
+    otpWrongCode: "auth.otp_wrong_code",
+    otpExpired: "auth.otp_expired",
+    otpUnavailable: "auth.otp_unavailable",
   },
   economy: {
     insufficientFunds: "economy.insufficient_funds",
