@@ -1,14 +1,16 @@
 {
-  "id": "V-050-hand-taking-off-in-public",
+  "id": "V-053-take-leader-only-in-public",
   "version": "1.0.0",
-  "title": "hand-taking is off in public tables",
+  "title": "public tables allow the leader alone to take",
   "rules": [
-    "R31"
+    "R31",
+    "R32"
   ],
   "setup": {
     "hands": [
       [
-        "2H"
+        "2H",
+        "9S"
       ],
       [
         "3H"
@@ -22,17 +24,17 @@
   },
   "moves": [
     {
-      "seat": 0,
+      "seat": 1,
       "move": {
         "type": "take_hand"
       },
       "expect": {
-        "error": "rules.hand_take_disabled"
+        "error": "rules.hand_take_not_leader"
       }
     }
   ],
   "assert": {
     "leaderSeat": 0,
-    "stateHash": "631bc51494787040e0ad6cf1622fff9a87d93198c60eee60ef5c07f437eb651f"
+    "stateHash": "da6b514d10f2afe18eae270112b39ae49354e3a6104108748cbdce564e68fb9f"
   }
 }

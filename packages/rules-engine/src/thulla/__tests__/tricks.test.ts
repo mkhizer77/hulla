@@ -12,7 +12,7 @@ describe("normal tricks", () => {
     const state = stateFrom({
       hands: [["2H", "9S", "KD"], ["3H"], ["4C"]],
       leader: 0,
-      mode: "public",
+      mode: "ranked",
     });
     expect(cards(state, 0)).toEqual(["9S", "2H", "KD"]);
     expect(cards(state, 1)).toEqual([]);

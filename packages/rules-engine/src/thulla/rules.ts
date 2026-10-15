@@ -52,7 +52,7 @@ const OPTIONS = {
 
 const KEYS = Object.keys(OPTIONS) as readonly (keyof ThullaRules)[];
 
-/** Defaults per mode from the GDD 6.13 table. Public and Ranked turn hand-taking off (R31). */
+/** Defaults per mode from the GDD 6.13 table. Hand-taking is leader only except in Ranked (R31). */
 export function defaultRules(mode: RulesMode): ThullaRules {
   return {
     deckCount: 1,
@@ -60,7 +60,7 @@ export function defaultRules(mode: RulesMode): ThullaRules {
     openingThullaApplies: false,
     thullaEndsTrick: true,
     emptyHandLeader: "drawDiscard",
-    handTaking: mode === "private" ? "leaderOnly" : "off",
+    handTaking: mode === "ranked" ? "off" : "leaderOnly",
     twoPlayerEndgame: "drawOpponent",
     confirmedFastForward: true,
     bigBhabhiPenalty: false,

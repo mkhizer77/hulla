@@ -7,13 +7,15 @@ import { fixedRng, handOf, stateFrom, types } from "./helpers";
 const take = { type: "take_hand" } as const;
 
 describe("taking a hand", () => {
-  it("R31_hand_taking_is_off_in_public_and_ranked_and_leader_only_in_private_by_default", () => {
-    const pub = stateFrom({ hands: [["2H"], ["3H"], ["4H"]], leader: 0, mode: "public" });
-    const result = applyMove(pub, 0, take, fixedRng());
+  it("R31_hand_taking_is_leader_only_in_private_and_public_and_off_in_ranked_by_default", () => {
+    const ranked = stateFrom({ hands: [["2H"], ["3H"], ["4H"]], leader: 0, mode: "ranked" });
+    const result = applyMove(ranked, 0, take, fixedRng());
     expect(!result.ok && result.error.code).toBe("rules.hand_take_disabled");
-    const priv = stateFrom({ hands: [["2H"], ["3H"], ["4H"]], leader: 0 });
-    expect(canTakeHand(priv, 0)).toBe(true);
-    expect(canTakeHand(priv, 1)).toBe(false);
+    for (const mode of ["private", "public"] as const) {
+      const state = stateFrom({ hands: [["2H"], ["3H"], ["4H"]], leader: 0, mode });
+      expect(canTakeHand(state, 0), mode).toBe(true);
+      expect(canTakeHand(state, 1), mode).toBe(false);
+    }
   });
 
   it("R32_the_leader_may_take_before_leading_from_trick_two_onward", () => {
