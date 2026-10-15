@@ -656,3 +656,395 @@
     color: #FFE082;
     text-shadow: 0 2px 3px rgba(0, 0, 0, 0.9);
 }
+
+/* ---------------------------------------------------------------- Table (pack: sprites/02_table_gameplay) */
+
+/* The felt and rail are stand-ins (tools/artkit/rooftop_table.py) until the pack ships its own. */
+.skin--dhaba .table__zone > .rail {
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/Rooftop/Frames/table_felt_rail.png");
+    padding: 8% 8% 9% 8%;
+}
+
+.skin--dhaba .table__top {
+    height: 150px;
+    background-color: rgba(0, 0, 0, 0);
+    border-bottom-width: 0;
+}
+
+/* The room line hangs on the signboard. */
+.skin--dhaba .table__info {
+    height: 128px;
+    padding: 46px 70px 0 70px;
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/Rooftop/Frames/signboard_header_blank.png");
+    -unity-background-scale-mode: stretch-to-fill;
+    -unity-slice-left: 215;
+    -unity-slice-right: 215;
+    -unity-slice-top: 100;
+    -unity-slice-bottom: 60;
+    -unity-slice-scale: 0.5px;
+    -unity-font-definition: url("/Assets/_Project/Presentation/Theme/Fonts/NunitoExtraBold.ttf");
+    font-size: 30px;
+    letter-spacing: 1px;
+    color: #FFF8E1;
+    text-shadow: 0 2px 3px rgba(15, 8, 4, 0.85);
+}
+
+/* Avatar pod (pack §5): the brass ring over the face, its opening fitted to the avatar; the turn timer
+   arc runs just outside it. */
+.skin--dhaba .seat__frame {
+    left: -42px;
+    top: -42px;
+    width: 200px;
+    height: 200px;
+}
+
+.skin--dhaba .me-badge .seat__frame {
+    left: -31px;
+    top: -31px;
+    width: 146px;
+    height: 146px;
+}
+
+.skin--dhaba .seat__timer {
+    left: -38px;
+    top: -38px;
+    right: -38px;
+    bottom: -38px;
+}
+
+.skin--dhaba .seat__name {
+    margin-top: 34px;
+    padding: 4px 34px 10px 34px;
+    border-radius: 0;
+    background-color: rgba(0, 0, 0, 0);
+    font-size: 26px;
+}
+
+.skin--dhaba .seat__count {
+    background-color: #D49B35;
+    color: #1F0E05;
+    border-width: 2px;
+    border-color: #1F0E05;
+}
+
+/* The leader's crown is the pack's jewelled crown; the glyph stays for screen readers. */
+.skin--dhaba .seat__crown {
+    top: -86px;
+    left: 18px;
+    right: 18px;
+    height: 60px;
+    color: rgba(0, 0, 0, 0);
+    -unity-text-outline-width: 0;
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/Rooftop/Avatars/badge_leader_crown.png");
+    -unity-background-scale-mode: scale-to-fit;
+}
+
+.skin--dhaba .me-badge .seat__crown {
+    top: -58px;
+    left: 8px;
+    right: 8px;
+    height: 44px;
+}
+
+/* ---------------------------------------------------------------- Lobby (pack: sprites/04_lobby_gathering) */
+
+.skin--dhaba #lobby .code-box {
+    padding: 70px 110px 34px 110px;
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/Rooftop/Frames/signboard_header_blank.png");
+    -unity-background-scale-mode: stretch-to-fill;
+    -unity-slice-left: 215;
+    -unity-slice-right: 215;
+    -unity-slice-top: 100;
+    -unity-slice-bottom: 60;
+    -unity-slice-scale: 0.6px;
+}
+
+.skin--dhaba #lobby .lobby-rules {
+    padding: 8px 48px 14px 48px;
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/Rooftop/Frames/nameplate_wood_blank.png");
+    -unity-background-scale-mode: stretch-to-fill;
+    -unity-slice-left: 60;
+    -unity-slice-right: 60;
+    -unity-slice-top: 40;
+    -unity-slice-bottom: 40;
+    -unity-slice-scale: 0.7px;
+}
+
+.skin--dhaba #lobby .lobby-rules__text {
+    color: #FFF8E1;
+}
+
+.skin--dhaba .lobby-table {
+    left: 12%;
+    right: 12%;
+    top: 0;
+    bottom: 4%;
+    border-radius: 0;
+    background-color: rgba(0, 0, 0, 0);
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/Rooftop/Frames/lobby_table_round.png");
+    -unity-background-scale-mode: scale-to-fit;
+}
+
+/* The chat is a parchment scroll with dark ink. */
+.skin--dhaba #lobby .lobby-chat {
+    padding: 30px 80px 30px 80px;
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/Rooftop/Frames/panel_parchment_dialog_blank.png");
+    -unity-background-scale-mode: stretch-to-fill;
+    -unity-slice-left: 70;
+    -unity-slice-right: 70;
+    -unity-slice-top: 50;
+    -unity-slice-bottom: 50;
+    -unity-slice-scale: 1px;
+}
+
+.skin--dhaba #lobby .chat-log__line, .skin--dhaba #lobby .lobby-chat .caption {
+    color: #3A2412;
+    text-shadow: 0 0 0 rgba(0, 0, 0, 0);
+}
+
+.skin--dhaba #lobby .actions > .button--quiet {
+    align-self: center;
+    min-width: 380px;
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/Rooftop/Buttons/btn_plank_medium_normal.png");
+    -unity-slice-left: 80;
+    -unity-slice-right: 80;
+    -unity-slice-top: 78;
+    -unity-slice-bottom: 78;
+    -unity-slice-scale: 0.55px;
+    color: #FFF8E1;
+}
+
+/* ---------------------------------------------------------------- Results (pack: sprites/03_results_celebration) */
+
+.skin--dhaba .results__panel {
+    padding: 150px 96px 90px 96px;
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/Rooftop/Frames/frame_truckart_arch.png");
+    -unity-background-scale-mode: stretch-to-fill;
+    -unity-slice-left: 110;
+    -unity-slice-right: 110;
+    -unity-slice-top: 140;
+    -unity-slice-bottom: 100;
+    -unity-slice-scale: 1px;
+}
+
+/* The top three stand on the marigold podium: second, first, third over its tiers. */
+.skin--dhaba .podium__stand {
+    width: 640px;
+    height: 430px;
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/Rooftop/Props/podium_3tier_marigold.png");
+    background-size: 640px 432px;
+    background-repeat: no-repeat no-repeat;
+    background-position-y: bottom;
+    align-items: flex-start;
+}
+
+.skin--dhaba .podium__place {
+    width: 200px;
+}
+
+.skin--dhaba .podium__place--1 {
+    margin-top: -20px;
+}
+
+.skin--dhaba .podium__place--2, .skin--dhaba .podium__place--3 {
+    margin-top: 80px;
+}
+
+.skin--dhaba .podium__place--loser {
+    align-self: flex-end;
+}
+
+.skin--dhaba .podium__name {
+    color: #FFF8E1;
+    -unity-font-definition: url("/Assets/_Project/Presentation/Theme/Fonts/NunitoExtraBold.ttf");
+    -unity-text-outline-width: 1px;
+    -unity-text-outline-color: #1F0E05;
+}
+
+/* Places wear the pack's ribbons; the ordinal stays for screen readers. */
+.skin--dhaba .podium__rank {
+    width: 74px;
+    height: 98px;
+    margin-top: -40px;
+    color: rgba(0, 0, 0, 0);
+    text-shadow: 0 0 0 rgba(0, 0, 0, 0);
+    -unity-background-scale-mode: scale-to-fit;
+}
+
+.skin--dhaba .podium__place--1 .podium__rank {
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/Rooftop/Props/ribbon_1st_gold.png");
+}
+
+.skin--dhaba .podium__place--2 .podium__rank {
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/Rooftop/Props/ribbon_2nd_silver.png");
+}
+
+.skin--dhaba .podium__place--3 .podium__rank {
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/Rooftop/Props/ribbon_3rd_bronze.png");
+}
+
+/* BHABHI! is ink in the art, so the label only speaks to screen readers. */
+.skin--dhaba .results__stamp {
+    width: 340px;
+    height: 210px;
+    color: rgba(0, 0, 0, 0);
+    background-color: rgba(0, 0, 0, 0);
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/Rooftop/FX/stamp_bhabhi.png");
+    -unity-slice-left: 0;
+    -unity-slice-right: 0;
+    -unity-slice-top: 0;
+    -unity-slice-bottom: 0;
+    -unity-background-scale-mode: scale-to-fit;
+    border-width: 0;
+    rotate: -8deg;
+    -unity-text-outline-width: 0;
+    text-shadow: 0 0 0 rgba(0, 0, 0, 0);
+}
+
+/* Rewards on the parchment scroll. */
+.skin--dhaba .result-reward {
+    align-self: center;
+    padding: 30px 90px;
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/Rooftop/Frames/panel_parchment_dialog_blank.png");
+    -unity-background-scale-mode: stretch-to-fill;
+    -unity-slice-left: 70;
+    -unity-slice-right: 70;
+    -unity-slice-top: 50;
+    -unity-slice-bottom: 50;
+    -unity-slice-scale: 1px;
+    color: #3A2412;
+    text-shadow: 0 0 0 rgba(0, 0, 0, 0);
+    -unity-text-outline-width: 0;
+}
+
+/* Play again on the floral plinth, like Play now. */
+.skin--dhaba .results__play {
+    align-self: center;
+    width: 600px;
+    height: 372px;
+    margin-top: -40px;
+    margin-bottom: -60px;
+    padding: 0 0 128px 0;
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/Rooftop/Buttons/btn_primary_normal.png");
+    -unity-slice-left: 0;
+    -unity-slice-right: 0;
+    -unity-slice-top: 0;
+    -unity-slice-bottom: 0;
+    -unity-font-definition: url("/Assets/_Project/Presentation/Theme/Fonts/NunitoExtraBold.ttf");
+    font-size: 56px;
+}
+
+.skin--dhaba .results__play:active {
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/Rooftop/Buttons/btn_primary_normal.png");
+    translate: 0 6px;
+}
+
+.skin--dhaba .results__quiet > .button--quiet {
+    flex-grow: 1;
+    flex-basis: 0;
+    margin: 0 8px;
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/Rooftop/Buttons/btn_plank_medium_normal.png");
+    -unity-slice-left: 80;
+    -unity-slice-right: 80;
+    -unity-slice-top: 78;
+    -unity-slice-bottom: 78;
+    -unity-slice-scale: 0.55px;
+    color: #FFF8E1;
+}
+
+/* ---------------------------------------------------------------- list screens (pack: 05 to 09)
+   Friends, Shop, Pass, Profile, Settings, and Missions, Achievements, Leaderboard, Ranked, Inventory:
+   the title hangs on the signboard with Back or Done as a small pill beside it, the content sits on a
+   carved board, and every row is a dark wood plate. */
+
+.skin--dhaba .settings__top {
+    justify-content: center;
+    min-height: 170px;
+    margin-bottom: var(--space-1);
+}
+
+.skin--dhaba .settings__top > .title {
+    min-width: 520px;
+    padding: 64px 110px 18px 110px;
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/Rooftop/Frames/signboard_header_blank.png");
+    -unity-background-scale-mode: stretch-to-fill;
+    -unity-slice-left: 215;
+    -unity-slice-right: 215;
+    -unity-slice-top: 100;
+    -unity-slice-bottom: 60;
+    -unity-slice-scale: 0.6px;
+    font-size: 54px;
+    -unity-text-align: middle-center;
+}
+
+.skin--dhaba .settings__top > .button {
+    position: absolute;
+    right: 0;
+    top: 50px;
+    min-width: 150px;
+}
+
+.skin--dhaba .settings__top > .button--quiet {
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/Rooftop/Buttons/btn_chip_pill_normal.png");
+    -unity-slice-left: 60;
+    -unity-slice-right: 60;
+    -unity-slice-top: 50;
+    -unity-slice-bottom: 50;
+    -unity-slice-scale: 0.5px;
+    padding: 0 30px 8px 30px;
+    color: #FFF8E1;
+    -unity-font-definition: url("/Assets/_Project/Presentation/Theme/Fonts/NunitoExtraBold.ttf");
+}
+
+.skin--dhaba .settings__top > .button--quiet:active {
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/Rooftop/Buttons/btn_chip_pill_pressed.png");
+}
+
+/* The carved board everything sits on. */
+.skin--dhaba .settings__scroll {
+    padding: 40px 34px 30px 34px;
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/Rooftop/Buttons/btn_plank_large_normal.png");
+    -unity-background-scale-mode: stretch-to-fill;
+    -unity-slice-left: 110;
+    -unity-slice-right: 110;
+    -unity-slice-top: 95;
+    -unity-slice-bottom: 95;
+    -unity-slice-scale: 0.7px;
+}
+
+.skin--dhaba .home__scroll, .skin--dhaba .inventory, .skin--dhaba #inventory .settings__scroll {
+    background-image: none;
+    padding: 0;
+}
+
+.skin--dhaba .settings__heading {
+    -unity-font-definition: url("/Assets/_Project/Presentation/Theme/Fonts/NunitoExtraBold.ttf");
+    -unity-font-style: normal;
+    color: #FFE082;
+    -unity-text-outline-width: 1px;
+    -unity-text-outline-color: #1F0E05;
+    -unity-text-align: middle-center;
+}
+
+/* Rows: dark wood plates. */
+.skin--dhaba .lobby-seat, .skin--dhaba .settings__row, .skin--dhaba .leaderboard__row {
+    border-radius: 0;
+    border-width: 0;
+    background-color: rgba(0, 0, 0, 0);
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/Rooftop/Frames/nameplate_wood_blank.png");
+    -unity-background-scale-mode: stretch-to-fill;
+    -unity-slice-left: 60;
+    -unity-slice-right: 60;
+    -unity-slice-top: 40;
+    -unity-slice-bottom: 40;
+    -unity-slice-scale: 0.8px;
+    padding: 16px 52px;
+}
+
+.skin--dhaba .lobby-seat__name, .skin--dhaba .settings__row .unity-label {
+    color: #F5F0E6;
+}
+
+.skin--dhaba .settings__scroll .caption {
+    color: #E6D3B3;
+}

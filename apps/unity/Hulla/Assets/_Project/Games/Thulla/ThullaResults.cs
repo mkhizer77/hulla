@@ -178,6 +178,10 @@ namespace Hulla.Games.Thulla
         private void Podium(TableModel model, RoundEnd result)
         {
             _podium.Clear();
+            // The top three stand together, so a theme can put its podium art under them.
+            var stand = new VisualElement();
+            stand.AddToClassList("podium__stand");
+            _podium.Add(stand);
             var places = Math.Min(3, result.EscapeOrder.Count);
             // Second, first, third: the winner stands in the middle and tallest.
             var order = places == 3 ? new[] { 1, 0, 2 } : places == 2 ? new[] { 1, 0 } : places == 1 ? new[] { 0 } : Array.Empty<int>();
@@ -194,7 +198,7 @@ namespace Hulla.Games.Thulla
                 var rank = new Label(Ordinal(place + 1));
                 rank.AddToClassList("podium__rank");
                 column.Add(rank);
-                _podium.Add(column);
+                stand.Add(column);
             }
 
             var loser = new VisualElement();

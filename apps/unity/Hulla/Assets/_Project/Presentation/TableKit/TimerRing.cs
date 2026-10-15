@@ -10,11 +10,11 @@ namespace Hulla.Presentation.TableKit
     public sealed class TimerRing : VisualElement
     {
         public const float WarnSeconds = TimerPhase.WarnSeconds;
-        private static readonly Color Track = new Color(1f, 1f, 1f, 0.15f);
+        private static readonly Color Track = new Color32(0x1B, 0x12, 0x0B, 0xC0);
 
-        // The palette's saffron, mustard and thulla red (GDD 15.2); painter2D cannot read USS variables.
-        private static readonly Color Calm = new Color32(0xF4, 0xA3, 0x00, 0xFF);
-        private static readonly Color Warn = new Color32(0xE0, 0xB0, 0x00, 0xFF);
+        // A recessed walnut track, then saffron, amber and danger red (art pack, avatar pod); painter2D cannot read USS variables.
+        private static readonly Color Calm = new Color32(0xF9, 0xA8, 0x25, 0xFF);
+        private static readonly Color Warn = new Color32(0xFF, 0x8F, 0x00, 0xFF);
         private static readonly Color Critical = new Color32(0xE5, 0x39, 0x35, 0xFF);
         private float _fraction;
         private TimerPhase.Phase _phase;
@@ -51,7 +51,7 @@ namespace Hulla.Presentation.TableKit
 
             var centre = rect.center;
             var painter = context.painter2D;
-            painter.lineWidth = 6f;
+            painter.lineWidth = 9f;
             painter.lineCap = LineCap.Round;
             painter.strokeColor = Track;
             painter.BeginPath();

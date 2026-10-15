@@ -1745,6 +1745,12 @@
     margin-bottom: var(--space-2);
 }
 
+.podium__stand {
+    flex-direction: row;
+    justify-content: center;
+    align-items: flex-end;
+}
+
 .podium__place {
     align-items: center;
     width: 200px;

@@ -230,6 +230,10 @@
     flex-direction: row-reverse;
 }
 
+.rtl .podium__stand {
+    flex-direction: row-reverse;
+}
+
 .rtl .results__loser {
     flex-direction: row-reverse;
 }
@@ -332,6 +336,15 @@
 }
 
 .rtl .skinned .theme-tile__name {
+    -unity-text-align: middle-center;
+}
+
+/* Theme/Rooftop.uss */
+.rtl .skin--dhaba .settings__top > .title {
+    -unity-text-align: middle-center;
+}
+
+.rtl .skin--dhaba .settings__heading {
     -unity-text-align: middle-center;
 }
 
