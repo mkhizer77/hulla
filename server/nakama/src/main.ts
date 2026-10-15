@@ -70,7 +70,6 @@ import {
   rpcPhoneVerify,
 } from "./rpc/phone";
 import { rpcPresenceSet, rpcTableListFriends } from "./rpc/presence";
-import { rpcTableMine } from "./rpc/table_mine";
 import { rpcPresetsGet } from "./rpc/presets_get";
 import { rpcProfileGet, rpcProfileUpdate } from "./rpc/profile";
 import { rpcEconomyProducts, rpcIapRestore, rpcIapVerify } from "./rpc/purchases";
@@ -99,6 +98,7 @@ import {
 } from "./rpc/social";
 import { rpcTableCreate } from "./rpc/table_create";
 import { rpcTableJoinByCode } from "./rpc/table_join_by_code";
+import { rpcTableMine } from "./rpc/table_mine";
 import { rpcVoiceToken } from "./rpc/voice_token";
 import { rpcTutorialComplete } from "./rpc/welcome";
 import { ensureLeaderboards } from "./services/leaderboards";
