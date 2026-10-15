@@ -1438,8 +1438,18 @@
    "smart": false
   },
   {
+   "key": "nav.inventory",
+   "text": "Inventory",
+   "smart": false
+  },
+  {
    "key": "nav.pass",
    "text": "Pass",
+   "smart": false
+  },
+  {
+   "key": "nav.settings",
+   "text": "Settings",
    "smart": false
   },
   {
@@ -2123,31 +2133,6 @@
    "smart": false
   },
   {
-   "key": "skin.adda",
-   "text": "Chai Adda",
-   "smart": false
-  },
-  {
-   "key": "skin.club",
-   "text": "Club",
-   "smart": false
-  },
-  {
-   "key": "skin.dhaba",
-   "text": "Rooftop",
-   "smart": false
-  },
-  {
-   "key": "skin.haveli",
-   "text": "Haveli",
-   "smart": false
-  },
-  {
-   "key": "skin.mehndi",
-   "text": "Mehndi",
-   "smart": false
-  },
-  {
    "key": "title.baithak_regular",
    "text": "Baithak regular",
    "smart": false
@@ -2603,6 +2588,11 @@
    "smart": false
   },
   {
+   "key": "ui.casual",
+   "text": "Casual",
+   "smart": false
+  },
+  {
    "key": "ui.change_rules",
    "text": "Change rules",
    "smart": false
@@ -2694,7 +2684,7 @@
   },
   {
    "key": "ui.create_room",
-   "text": "Create a room",
+   "text": "Create Room",
    "smart": false
   },
   {
@@ -2716,6 +2706,11 @@
    "key": "ui.daily_ready",
    "text": "Daily reward, day {0}: {1}",
    "smart": true
+  },
+  {
+   "key": "ui.daily_reward",
+   "text": "Daily Reward",
+   "smart": false
   },
   {
    "key": "ui.daily_tomorrow",
@@ -3003,6 +2998,11 @@
    "smart": false
   },
   {
+   "key": "ui.inventory",
+   "text": "Inventory",
+   "smart": false
+  },
+  {
    "key": "ui.invite",
    "text": "Invite",
    "smart": false
@@ -3039,7 +3039,7 @@
   },
   {
    "key": "ui.join_by_code",
-   "text": "Join by code",
+   "text": "Join by Code",
    "smart": false
   },
   {
@@ -3383,6 +3383,11 @@
    "smart": true
   },
   {
+   "key": "ui.premium",
+   "text": "Premium",
+   "smart": false
+  },
+  {
    "key": "ui.premium_locked",
    "text": "The premium track opens with the premium pass.",
    "smart": false
@@ -3420,6 +3425,11 @@
   {
    "key": "ui.quick_play_table",
    "text": "Quick Play table",
+   "smart": false
+  },
+  {
+   "key": "ui.ranked",
+   "text": "Ranked",
    "smart": false
   },
   {
@@ -3678,6 +3688,11 @@
    "smart": false
   },
   {
+   "key": "ui.settings_development",
+   "text": "Development",
+   "smart": false
+  },
+  {
    "key": "ui.settings_play",
    "text": "Playing",
    "smart": false
@@ -3695,11 +3710,6 @@
   {
    "key": "ui.settings_sound",
    "text": "Sound",
-   "smart": false
-  },
-  {
-   "key": "ui.settings_theme",
-   "text": "Table theme",
    "smart": false
   },
   {
@@ -3826,6 +3836,26 @@
    "key": "ui.starts_in",
    "text": "Dealing in {0}s",
    "smart": true
+  },
+  {
+   "key": "ui.stat_bhabhis",
+   "text": "Times Bhabhi",
+   "smart": false
+  },
+  {
+   "key": "ui.stat_escapes",
+   "text": "Clean escapes",
+   "smart": false
+  },
+  {
+   "key": "ui.stat_rounds",
+   "text": "Rounds played",
+   "smart": false
+  },
+  {
+   "key": "ui.stat_thullas",
+   "text": "Thullas given",
+   "smart": false
   },
   {
    "key": "ui.stats_line",

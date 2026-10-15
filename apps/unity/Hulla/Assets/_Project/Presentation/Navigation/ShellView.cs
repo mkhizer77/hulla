@@ -27,30 +27,26 @@ namespace Hulla.Presentation.Navigation
         /// <summary>Swaps the 240 ms rise for a 120 ms fade (GDD 27).</summary>
         public bool ReduceMotion { get; set; }
 
-        /// <summary>The table theme whose scene sits behind every screen (docs/design/table-themes.md).</summary>
-        public TableSkin Skin { get; private set; }
-
-        /// <summary>Switches the theme's scene on the screen and overlay showing now; later screens follow.</summary>
-        public void ApplySkin(TableSkin skin, bool reduceMotion)
+        /// <summary>Refreshes the scene's ambient layer on the screen and overlay showing now; later screens follow.</summary>
+        public void ApplyScene(bool reduceMotion)
         {
-            if (skin == Skin && reduceMotion == ReduceMotion && _current?.Q(AmbientLayer.ScreenName) != null)
+            if (reduceMotion == ReduceMotion && _current?.Q(AmbientLayer.ScreenName) != null)
             {
                 return;
             }
 
-            Skin = skin;
             ReduceMotion = reduceMotion;
             Decorate(_current);
             Decorate(Root.Q("shell-overlay"));
         }
 
-        /// <summary>The theme's ambient layer goes behind the screen's own content.</summary>
+        /// <summary>The scene's ambient layer goes behind the screen's own content.</summary>
         private void Decorate(VisualElement? instance)
         {
             var screen = instance?.Q(className: "screen");
             if (screen != null)
             {
-                AmbientLayer.Decorate(screen, Skin, ReduceMotion);
+                AmbientLayer.Decorate(screen, ReduceMotion);
             }
         }
 
@@ -121,9 +117,17 @@ namespace Hulla.Presentation.Navigation
             }
 
             _nav.Select(active);
+            root.AddToClassList(WithNavClass);
         }
 
-        public void HideNav() => _nav?.RemoveFromHierarchy();
+        public void HideNav()
+        {
+            _nav?.RemoveFromHierarchy();
+            Root.RemoveFromClassList(WithNavClass);
+        }
+
+        /// <summary>On the root while the tabs show, so a wide layout can make room for them as a side rail.</summary>
+        public const string WithNavClass = "shell--with-nav";
 
         /// <summary>A count on a tab, shown whether or not the bar is on screen right now.</summary>
         public void SetNavBadge(NavTab tab, int count)

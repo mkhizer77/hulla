@@ -98,18 +98,6 @@ namespace Hulla.Application.Settings
             set => Set("text_scale", (int)value);
         }
 
-        /// <summary>The table theme; Club until the player picks another in Settings.</summary>
-        public TableSkin Skin
-        {
-            get
-            {
-                var stored = Get("skin", (int)TableSkin.Club);
-                return Enum.IsDefined(typeof(TableSkin), stored) ? (TableSkin)stored : TableSkin.Club;
-            }
-
-            set => Set("skin", (int)value);
-        }
-
         public HandSort HandSort
         {
             get => Get("hand_sort", 0) == 1 ? HandSort.RankThenSuit : HandSort.SuitThenRank;

@@ -39,21 +39,16 @@ namespace Hulla.Screens.Tests
         [Timeout(1800000)]
         public IEnumerator EveryControlIsBigEnoughAndEveryTextReadable()
         {
-            // Each screen in one theme, the themes taken in turn, so all five are covered without
-            // laying out every screen five times (CI renders in software and is slow).
             var problems = new List<string>();
-            var skins = (Hulla.Application.Settings.TableSkin[])System.Enum.GetValues(typeof(Hulla.Application.Settings.TableSkin));
-            var index = 0;
             foreach (var screen in ScreenCases.All())
             {
-                yield return Check(screen, skins[index % skins.Length], problems);
-                index++;
+                yield return Check(screen, problems);
             }
 
             Assert.IsEmpty(problems, string.Join("\n", problems));
         }
 
-        private static IEnumerator Check(ScreenCases.Case screen, Hulla.Application.Settings.TableSkin skin, List<string> problems)
+        private static IEnumerator Check(ScreenCases.Case screen, List<string> problems)
         {
             {
                 var host = new GameObject("a11y-" + screen.Name);
@@ -68,7 +63,7 @@ namespace Hulla.Screens.Tests
                 var root = document.rootVisualElement;
                 root.style.width = Width;
                 root.style.height = Height;
-                ScreenCases.Skin(root, skin);
+                ScreenCases.Skin(root);
                 var instance = screen.Screen!.Instantiate();
                 instance.style.flexGrow = 1;
                 root.Add(instance);
@@ -78,7 +73,7 @@ namespace Hulla.Screens.Tests
                     yield return null;
                 }
 
-                var where = skin + " " + screen.Name;
+                var where = screen.Name;
                 problems.AddRange(Targets(root, where));
                 problems.AddRange(Contrast(root, where));
                 Object.Destroy(host);

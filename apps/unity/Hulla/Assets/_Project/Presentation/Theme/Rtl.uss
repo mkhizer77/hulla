@@ -218,18 +218,6 @@
     -unity-text-align: middle-center;
 }
 
-.rtl .home__header {
-    flex-direction: row-reverse;
-}
-
-.rtl .home__me {
-    flex-direction: row-reverse;
-}
-
-.rtl .home__quiet {
-    flex-direction: row-reverse;
-}
-
 .rtl .home__online {
     -unity-text-align: middle-center;
 }
@@ -239,6 +227,10 @@
 }
 
 .rtl .podium {
+    flex-direction: row-reverse;
+}
+
+.rtl .podium__stand {
     flex-direction: row-reverse;
 }
 
@@ -298,12 +290,12 @@
     flex-direction: row;
 }
 
-.rtl .game--soon {
-    flex-direction: row-reverse;
+.rtl .home__name {
+    -unity-text-align: middle-center;
 }
 
-.rtl .game__art {
-    flex-direction: row-reverse;
+.rtl .home__shield {
+    -unity-text-align: middle-center;
 }
 
 .rtl .game__name {
@@ -314,20 +306,77 @@
     -unity-text-align: middle-center;
 }
 
-.rtl .game__seats-label {
-    -unity-text-align: middle-center;
-}
-
-.rtl .home__row {
+.rtl .game__art {
     flex-direction: row-reverse;
 }
 
-.rtl .game--soon .game__name {
-    -unity-text-align: middle-right;
+.rtl .home .medal {
+    -unity-text-align: middle-center;
 }
 
-.rtl .game--soon .game__line {
-    -unity-text-align: middle-right;
+.rtl .game__mode {
+    flex-direction: row-reverse;
+}
+
+.rtl .home__lower {
+    flex-direction: row-reverse;
+}
+
+.rtl .daily__text {
+    -unity-text-align: middle-center;
+}
+
+.rtl .shop__grid {
+    flex-direction: row-reverse;
+}
+
+.rtl .shop__tile-name {
+    -unity-text-align: middle-center;
+}
+
+.rtl .shop__action,
+.rtl .shop__equipped {
+    -unity-text-align: middle-center;
+}
+
+.rtl .shop__spotlight-top {
+    flex-direction: row-reverse;
+}
+
+.rtl .pass__lanes {
+    flex-direction: row-reverse;
+}
+
+.rtl .pass__lane {
+    -unity-text-align: middle-center;
+}
+
+.rtl .pass__track .unity-scroll-view__content-container {
+    flex-direction: row-reverse;
+}
+
+.rtl .pass__track .pass__reward {
+    -unity-text-align: middle-center;
+}
+
+.rtl .profile__name {
+    -unity-text-align: middle-center;
+}
+
+.rtl .profile__handle {
+    -unity-text-align: middle-center;
+}
+
+.rtl .profile__stats {
+    flex-direction: row-reverse;
+}
+
+.rtl .profile__stat-label {
+    -unity-text-align: middle-center;
+}
+
+.rtl .profile__bio {
+    -unity-text-align: middle-center;
 }
 
 /* Theme/Skins.uss */
@@ -335,11 +384,40 @@
     -unity-text-align: middle-center;
 }
 
-.rtl .skinned .theme-picker {
-    flex-direction: row-reverse;
+/* Theme/Rooftop.uss */
+.rtl .skinned .settings__top > .title {
+    -unity-text-align: middle-center;
 }
 
-.rtl .skinned .theme-tile__name {
+.rtl .skinned .settings__heading {
+    -unity-text-align: middle-center;
+}
+
+.rtl .skinned .me-badge .seat__name {
+    -unity-text-align: middle-center;
+}
+
+.rtl .skinned .settings__value {
+    -unity-text-align: middle-left;
+}
+
+.rtl .skinned .home .home__name {
+    -unity-text-align: middle-center;
+}
+
+.rtl .skinned .home .home__coins {
+    -unity-text-align: middle-center;
+}
+
+.rtl .skinned .home .game__name {
+    -unity-text-align: middle-center;
+}
+
+.rtl .skinned .home .game__line {
+    -unity-text-align: middle-center;
+}
+
+.rtl .skinned .nav__label {
     -unity-text-align: middle-center;
 }
 

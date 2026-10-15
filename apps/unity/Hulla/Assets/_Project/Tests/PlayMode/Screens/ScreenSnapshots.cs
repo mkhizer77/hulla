@@ -34,15 +34,13 @@ namespace Hulla.Screens.Tests
 
         private static string Dir => System.Environment.GetEnvironmentVariable("HULLA_SNAPSHOT_DIR") ?? "Temp";
 
-        public static IEnumerable<TableSkin> Skins => (TableSkin[])System.Enum.GetValues(typeof(TableSkin));
 
-        private static IEnumerator Snap(string name, TableSkin skin, VisualTreeAsset? screen, System.Action<VisualElement> bind, bool nav = false) =>
-            Snap(name, skin, screen, bind, nav, CardRenderer.Width, CardRenderer.HeightOf(CardRatio.Story), null);
+        private static IEnumerator Snap(string name, VisualTreeAsset? screen, System.Action<VisualElement> bind, bool nav = false) =>
+            Snap(name, screen, bind, nav, CardRenderer.Width, CardRenderer.HeightOf(CardRatio.Story), null);
 
         /// <summary>At a canvas size in panel units, with that size's class and, when given, safe-area padding.</summary>
-        private static IEnumerator Snap(string name, TableSkin skin, VisualTreeAsset? screen, System.Action<VisualElement> bind, bool nav, int width, int height, Insets? insets)
+        private static IEnumerator Snap(string name, VisualTreeAsset? screen, System.Action<VisualElement> bind, bool nav, int width, int height, Insets? insets)
         {
-            name += "-" + skin.ToString().ToLowerInvariant();
             var task = CardRenderer.RenderAsync(Settings, width, height, root =>
             {
                 if (insets != null)
@@ -51,13 +49,12 @@ namespace Hulla.Screens.Tests
                 }
 
                 root.AddToClassList(ThemeClasses.Skinned);
-                root.AddToClassList(ThemeClasses.ClassOf(skin));
                 var instance = screen!.Instantiate();
                 instance.style.flexGrow = 1;
                 root.Add(instance);
                 bind(instance);
                 var layer = instance.Q(className: "screen");
-                AmbientLayer.Decorate(layer, skin, reduceMotion: true);
+                AmbientLayer.Decorate(layer, reduceMotion: true);
                 (layer?.Q(AmbientLayer.ScreenName) as AmbientLayer)?.Advance(1.3f);
                 (layer?.Q(AmbientLayer.TableName) as AmbientLayer)?.Advance(1.3f);
                 if (nav)
@@ -66,6 +63,7 @@ namespace Hulla.Screens.Tests
                     bar.Select(NavTab.Home);
                     bar.SetBadge(NavTab.Friends, 2);
                     root.Add(bar);
+                    root.AddToClassList(ShellView.WithNavClass);
                 }
             });
             var awaiter = task.GetAwaiter();
@@ -79,10 +77,10 @@ namespace Hulla.Screens.Tests
         }
 
         [UnityTest, Explicit]
-        public IEnumerator Home([ValueSource(nameof(Skins))] TableSkin skin)
+        public IEnumerator Home()
         {
             var friends = new HomeFriendsViewModel(new Fakes.Social());
-            yield return Snap("home", skin, Catalog.Home, r =>
+            yield return Snap("home", Catalog.Home, r =>
             {
                 new HomeView(r, new HomeViewModel(new Fakes.Session(), new Fakes.Gateway()) { LastName = "Khizer" }, null, (_, _) => { }, (_, _, _) => { }, (_, _, _) => { }, () => { }, (_, _) => { }, (_, _) => { }, friends, () => { }, "How to play");
                 _ = friends.RefreshAsync(default);
@@ -106,14 +104,14 @@ namespace Hulla.Screens.Tests
             foreach (var (width, height, insets) in Sizes)
             {
                 var suffix = "-" + width + "x" + height;
-                yield return Snap("size-home" + suffix, TableSkin.Club, Catalog.Home, r =>
+                yield return Snap("size-home" + suffix, Catalog.Home, r =>
                 {
                     new HomeView(r, new HomeViewModel(new Fakes.Session(), new Fakes.Gateway()) { LastName = "Khizer" }, null, (_, _) => { }, (_, _, _) => { }, (_, _, _) => { }, () => { }, (_, _) => { }, (_, _) => { }, new HomeFriendsViewModel(new Fakes.Social()), () => { }, "How to play");
                 }, true, width, height, insets);
 
                 var gateway = new Fakes.Gateway();
                 var client = new TableClient(gateway, new TableTicket("m", "K7Q2MX", "t_K7Q2MX"), "me", 1);
-                yield return Snap("size-table" + suffix, TableSkin.Club, Catalog.Table, r =>
+                yield return Snap("size-table" + suffix, Catalog.Table, r =>
                 {
                     new ThullaTableView(r, client, new Fakes.Chat(), () => 5000, () => { });
                     var state = Fakes.InRound(5);
@@ -126,11 +124,11 @@ namespace Hulla.Screens.Tests
         }
 
         [UnityTest, Explicit]
-        public IEnumerator Lobby([ValueSource(nameof(Skins))] TableSkin skin)
+        public IEnumerator Lobby()
         {
             var gateway = new Fakes.Gateway();
             var client = new TableClient(gateway, new TableTicket("m", "K7Q2MX", "t_K7Q2MX"), "me", 1);
-            yield return Snap("lobby", skin, Catalog.Lobby, r =>
+            yield return Snap("lobby", Catalog.Lobby, r =>
             {
                 new LobbyView(r, client, () => 0, () => { }, _ => true, null, () => "Standard · 20 s turns · loser: Bhabhi", () => { });
                 var state = Fakes.InRound(3);
@@ -143,11 +141,11 @@ namespace Hulla.Screens.Tests
         }
 
         [UnityTest, Explicit]
-        public IEnumerator TableAtTheThulla([ValueSource(nameof(Skins))] TableSkin skin)
+        public IEnumerator TableAtTheThulla()
         {
             var gateway = new Fakes.Gateway();
             var client = new TableClient(gateway, new TableTicket("m", "K7Q2MX", "t_K7Q2MX"), "me", 1);
-            yield return Snap("table", skin, Catalog.Table, r =>
+            yield return Snap("table", Catalog.Table, r =>
             {
                 var view = new ThullaTableView(r, client, new Fakes.Chat(), () => 5000, () => { });
                 var state = Fakes.InRound(5);
@@ -165,11 +163,11 @@ namespace Hulla.Screens.Tests
         }
 
         [UnityTest, Explicit]
-        public IEnumerator TableOnMyTurn([ValueSource(nameof(Skins))] TableSkin skin)
+        public IEnumerator TableOnMyTurn()
         {
             var gateway = new Fakes.Gateway();
             var client = new TableClient(gateway, new TableTicket("m", "K7Q2MX", "t_K7Q2MX"), "me", 1);
-            yield return Snap("table-turn", skin, Catalog.Table, r =>
+            yield return Snap("table-turn", Catalog.Table, r =>
             {
                 new ThullaTableView(r, client, new Fakes.Chat(), () => 5000, () => { });
                 var state = Fakes.InRound(5);
@@ -182,11 +180,11 @@ namespace Hulla.Screens.Tests
         }
 
         [UnityTest, Explicit]
-        public IEnumerator TableOfSix([ValueSource(nameof(Skins))] TableSkin skin)
+        public IEnumerator TableOfSix()
         {
             var gateway = new Fakes.Gateway();
             var client = new TableClient(gateway, new TableTicket("m", "K7Q2MX", "t_K7Q2MX"), "me", 1);
-            yield return Snap("table-six", skin, Catalog.Table, r =>
+            yield return Snap("table-six", Catalog.Table, r =>
             {
                 new ThullaTableView(r, client, new Fakes.Chat(), () => 5000, () => { });
                 var state = Fakes.InRound(5, 6);
@@ -199,13 +197,9 @@ namespace Hulla.Screens.Tests
         }
 
         [UnityTest, Explicit]
-        public IEnumerator SettingsWithThemes([ValueSource(nameof(Skins))] TableSkin skin)
+        public IEnumerator SettingsScreen()
         {
-            yield return Snap("settings", skin, Catalog.Settings, r =>
-            {
-                var settings = new SettingsModel(new Store()) { Skin = skin };
-                new Presentation.Screens.Settings.SettingsView(r, settings, () => { });
-            });
+            yield return Snap("settings", Catalog.Settings, r => new Presentation.Screens.Settings.SettingsView(r, new SettingsModel(new Store()), () => { }));
         }
 
         private sealed class Store : ISettingsStore
@@ -222,11 +216,11 @@ namespace Hulla.Screens.Tests
         }
 
         [UnityTest, Explicit]
-        public IEnumerator Results([ValueSource(nameof(Skins))] TableSkin skin)
+        public IEnumerator Results()
         {
             var gateway = new Fakes.Gateway();
             var client = new TableClient(gateway, new TableTicket("m", "K7Q2MX", "t_K7Q2MX"), "me", 1);
-            yield return Snap("results", skin, Catalog.Table, r =>
+            yield return Snap("results", Catalog.Table, r =>
             {
                 var view = new ThullaTableView(r, client, new Fakes.Chat(), () => 1000, () => { });
                 view.UseShare(() => { });
@@ -247,9 +241,9 @@ namespace Hulla.Screens.Tests
         }
 
         [UnityTest, Explicit]
-        public IEnumerator Dialog([ValueSource(nameof(Skins))] TableSkin skin)
+        public IEnumerator Dialog()
         {
-            yield return Snap("dialog", skin, Catalog.Home, r => r.Add(ShellView.Dialog(
+            yield return Snap("dialog", Catalog.Home, r => r.Add(ShellView.Dialog(
                 "Ayesha wants to add you as a friend after your game together on Hulla. Add them?",
                 Presentation.Text.UiText.AddFriend,
                 Presentation.Text.UiText.NotNow,

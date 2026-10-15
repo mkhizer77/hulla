@@ -165,22 +165,12 @@ namespace Hulla.Presentation.Text
         public static string Done => Strings.Text("ui.done");
         public static string SettingsPlay => Strings.Text("ui.settings_play");
         public static string SettingsSeeing => Strings.Text("ui.settings_seeing");
-        public static string SettingsTheme => Strings.Text("ui.settings_theme");
         public static string GameThulla => Strings.Text("ui.game_thulla");
         public static string GameThullaLine => Strings.Text("ui.game_thulla_line");
         public static string GameRung => Strings.Text("ui.game_rung");
         public static string GameRungLine => Strings.Text("ui.game_rung_line");
         public static string ComingSoon => Strings.Text("ui.coming_soon");
 
-        /// <summary>The table themes in settings order (docs/design/table-themes.md).</summary>
-        public static string SkinName(Hulla.Application.Settings.TableSkin skin) => skin switch
-        {
-            Hulla.Application.Settings.TableSkin.Haveli => Strings.Text("skin.haveli"),
-            Hulla.Application.Settings.TableSkin.Dhaba => Strings.Text("skin.dhaba"),
-            Hulla.Application.Settings.TableSkin.Mehndi => Strings.Text("skin.mehndi"),
-            Hulla.Application.Settings.TableSkin.Adda => Strings.Text("skin.adda"),
-            _ => Strings.Text("skin.club"),
-        };
         public static string OneTapPlay => Strings.Text("ui.one_tap_play");
         public static string HandSortLabel => Strings.Text("ui.hand_sort_label");
         public static string SortBySuit => Strings.Text("ui.sort_by_suit");
@@ -209,10 +199,14 @@ namespace Hulla.Presentation.Text
         {
             Navigation.NavTab.Home => Strings.Text("nav.home"),
             Navigation.NavTab.Friends => Friends,
-            Navigation.NavTab.Shop => Shop,
-            Navigation.NavTab.Pass => Strings.Text("nav.pass"),
-            _ => Profile,
+            Navigation.NavTab.Inventory => Strings.Text("nav.inventory"),
+            _ => Strings.Text("nav.settings"),
         };
+
+        public static string Inventory => Strings.Text("ui.inventory");
+        public static string Casual => Strings.Text("ui.casual");
+        public static string Ranked => Strings.Text("ui.ranked");
+        public static string DailyReward => Strings.Text("ui.daily_reward");
 
         public static string SettingsSound => Strings.Text("ui.settings_sound");
         public static string SfxLabel => Strings.Text("ui.sfx_label");
@@ -262,6 +256,7 @@ namespace Hulla.Presentation.Text
         /// <summary>Emote ids read as words until the emote art arrives (#34): "laugh_cry" → "Laugh cry".</summary>
         public static string EmoteLabel(string id) => Strings.Has("emote." + id) ? Strings.Text("emote." + id) : Words(id);
         public static string Server => Strings.Text("ui.server");
+        public static string SettingsDevelopment => Strings.Text("ui.settings_development");
 
         public static string Profile => Strings.Text("ui.profile");
         public static string Missions => Strings.Text("ui.missions");
@@ -322,6 +317,7 @@ namespace Hulla.Presentation.Text
         public static string Equip => Strings.Text("ui.equip");
         public static string Equipped => Strings.Text("ui.equipped");
         public static string Free => Strings.Text("ui.free");
+        public static string Premium => Strings.Text("ui.premium");
         public static string PriceCoins => Strings.Text("ui.price_coins");
         public static string PriceGems => Strings.Text("ui.price_gems");
 
@@ -458,6 +454,10 @@ namespace Hulla.Presentation.Text
         public static string BioLabel => Strings.Text("ui.bio_label");
         public static string FriendCodeLabel => Strings.Text("ui.friend_code_label");
         public static string StatsLine => Strings.Text("ui.stats_line");
+        public static string StatRounds => Strings.Text("ui.stat_rounds");
+        public static string StatEscapes => Strings.Text("ui.stat_escapes");
+        public static string StatThullas => Strings.Text("ui.stat_thullas");
+        public static string StatBhabhis => Strings.Text("ui.stat_bhabhis");
         public static string AddByCode => Strings.Text("ui.add_by_code");
         public static string Add => Strings.Text("ui.add");
         public static string RequestSent => Strings.Text("ui.request_sent");

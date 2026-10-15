@@ -1438,8 +1438,18 @@
    "smart": false
   },
   {
+   "key": "nav.inventory",
+   "text": "[Îñvéñtörý · ·]",
+   "smart": false
+  },
+  {
    "key": "nav.pass",
    "text": "[Påss ·]",
+   "smart": false
+  },
+  {
+   "key": "nav.settings",
+   "text": "[Séttîñgs · ·]",
    "smart": false
   },
   {
@@ -2123,31 +2133,6 @@
    "smart": false
   },
   {
-   "key": "skin.adda",
-   "text": "[Çhåî Åddå · ·]",
-   "smart": false
-  },
-  {
-   "key": "skin.club",
-   "text": "[Çlûb ·]",
-   "smart": false
-  },
-  {
-   "key": "skin.dhaba",
-   "text": "[Rööftöp · ·]",
-   "smart": false
-  },
-  {
-   "key": "skin.haveli",
-   "text": "[Håvélî ·]",
-   "smart": false
-  },
-  {
-   "key": "skin.mehndi",
-   "text": "[Méhñdî ·]",
-   "smart": false
-  },
-  {
    "key": "title.baithak_regular",
    "text": "[Båîthåk régûlår · · ·]",
    "smart": false
@@ -2603,6 +2588,11 @@
    "smart": false
   },
   {
+   "key": "ui.casual",
+   "text": "[Çåsûål ·]",
+   "smart": false
+  },
+  {
    "key": "ui.change_rules",
    "text": "[Çhåñgé rûlés · ·]",
    "smart": false
@@ -2694,7 +2684,7 @@
   },
   {
    "key": "ui.create_room",
-   "text": "[Çréåté å rööm · ·]",
+   "text": "[Çréåté Rööm · ·]",
    "smart": false
   },
   {
@@ -2716,6 +2706,11 @@
    "key": "ui.daily_ready",
    "text": "[Dåîlý réwård, dåý {0}: {1} · · · ·]",
    "smart": true
+  },
+  {
+   "key": "ui.daily_reward",
+   "text": "[Dåîlý Réwård · ·]",
+   "smart": false
   },
   {
    "key": "ui.daily_tomorrow",
@@ -3003,6 +2998,11 @@
    "smart": false
   },
   {
+   "key": "ui.inventory",
+   "text": "[Îñvéñtörý · ·]",
+   "smart": false
+  },
+  {
    "key": "ui.invite",
    "text": "[Îñvîté ·]",
    "smart": false
@@ -3039,7 +3039,7 @@
   },
   {
    "key": "ui.join_by_code",
-   "text": "[Jöîñ bý çödé · ·]",
+   "text": "[Jöîñ bý Çödé · ·]",
    "smart": false
   },
   {
@@ -3383,6 +3383,11 @@
    "smart": true
   },
   {
+   "key": "ui.premium",
+   "text": "[Prémîûm · ·]",
+   "smart": false
+  },
+  {
    "key": "ui.premium_locked",
    "text": "[Thé prémîûm tråçk öpéñs wîth thé prémîûm påss. · · · · · · ·]",
    "smart": false
@@ -3420,6 +3425,11 @@
   {
    "key": "ui.quick_play_table",
    "text": "[Qûîçk Plåý tåblé · · ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.ranked",
+   "text": "[Råñkéd ·]",
    "smart": false
   },
   {
@@ -3678,6 +3688,11 @@
    "smart": false
   },
   {
+   "key": "ui.settings_development",
+   "text": "[Dévélöpméñt · ·]",
+   "smart": false
+  },
+  {
    "key": "ui.settings_play",
    "text": "[Plåýîñg · ·]",
    "smart": false
@@ -3695,11 +3710,6 @@
   {
    "key": "ui.settings_sound",
    "text": "[Söûñd ·]",
-   "smart": false
-  },
-  {
-   "key": "ui.settings_theme",
-   "text": "[Tåblé thémé · ·]",
    "smart": false
   },
   {
@@ -3826,6 +3836,26 @@
    "key": "ui.starts_in",
    "text": "[Déålîñg îñ {0}s · · ·]",
    "smart": true
+  },
+  {
+   "key": "ui.stat_bhabhis",
+   "text": "[Tîmés Bhåbhî · ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.stat_escapes",
+   "text": "[Çléåñ ésçåpés · ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.stat_rounds",
+   "text": "[Röûñds plåýéd · ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.stat_thullas",
+   "text": "[Thûllås gîvéñ · ·]",
+   "smart": false
   },
   {
    "key": "ui.stats_line",

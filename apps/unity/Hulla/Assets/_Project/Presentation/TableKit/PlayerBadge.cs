@@ -28,6 +28,11 @@ namespace Hulla.Presentation.TableKit
             _avatar.Add(_timer);
             _initial.AddToClassList("seat__initial");
             _avatar.Add(_initial);
+
+            // The theme's frame round the face, as on the opponents' seats.
+            var frame = new VisualElement { pickingMode = PickingMode.Ignore };
+            frame.AddToClassList("seat__frame");
+            _avatar.Add(frame);
             _crown.AddToClassList("seat__crown");
             _crown.style.display = DisplayStyle.None;
             _avatar.Add(_crown);
@@ -78,11 +83,10 @@ namespace Hulla.Presentation.TableKit
         }
 
         /// <summary>The timer ring around the face while it is this player's turn.</summary>
-        public void ShowTimer(float fraction, float secondsLeft, float pulse)
+        public void ShowTimer(float fraction, float secondsLeft)
         {
             _timer.style.display = DisplayStyle.Flex;
             _timer.Show(fraction, secondsLeft);
-            _timer.style.scale = new Scale(new Vector2(pulse, pulse));
         }
 
         public void HideTimer() => _timer.style.display = DisplayStyle.None;

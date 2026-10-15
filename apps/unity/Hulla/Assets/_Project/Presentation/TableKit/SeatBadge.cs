@@ -42,7 +42,7 @@ namespace Hulla.Presentation.TableKit
             _initial.AddToClassList("seat__initial");
             _avatar.Add(_initial);
 
-            // The theme's frame round the face (docs/design/table-themes.md), over the picture.
+            // The brass frame round the face (docs/design/rooftop-redesign.md), over the picture.
             var frame = new VisualElement { pickingMode = PickingMode.Ignore };
             frame.AddToClassList("seat__frame");
             _avatar.Add(frame);
@@ -104,11 +104,10 @@ namespace Hulla.Presentation.TableKit
         }
 
         /// <summary>The timer ring on this seat's avatar while it is their turn; hidden otherwise.</summary>
-        public void ShowTimer(float fraction, float secondsLeft, float pulse)
+        public void ShowTimer(float fraction, float secondsLeft)
         {
             _timer.style.display = DisplayStyle.Flex;
             _timer.Show(fraction, secondsLeft);
-            _timer.style.scale = new Scale(new Vector2(pulse, pulse));
         }
 
         public void HideTimer() => _timer.style.display = DisplayStyle.None;

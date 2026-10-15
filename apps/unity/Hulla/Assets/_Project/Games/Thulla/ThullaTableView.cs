@@ -85,7 +85,6 @@ namespace Hulla.Games.Thulla
         private long _turnLengthMs;
         private long? _opponentTurnSeat;
         private long _opponentTurnStartMs;
-        private float _pulseElapsed;
         private long _tickedAt = -1;
         private float _flightLeft;
         private PileView.Flight? _flight;
@@ -708,14 +707,13 @@ namespace Hulla.Games.Thulla
         private void TickTimers(float deltaSeconds)
         {
             var model = _client.Model;
-            _pulseElapsed += deltaSeconds;
             if (model.MyTurn)
             {
                 var now = _nowMs();
                 var leftMs = Math.Max(0, _turnDeadlineMs - now);
                 var total = Math.Max(1, _turnDeadlineMs - _turnStartMs);
                 var secondsLeft = leftMs / 1000f;
-                _me.ShowTimer((float)leftMs / total, secondsLeft, TimerPhase.Pulse(secondsLeft, _pulseElapsed, _reduceMotion));
+                _me.ShowTimer((float)leftMs / total, secondsLeft);
                 var seconds = (leftMs + 999) / 1000;
                 if (seconds != _shownSeconds)
                 {
@@ -747,7 +745,7 @@ namespace Hulla.Games.Thulla
             var left = Math.Max(0, _turnLengthMs - elapsed);
             var fraction = (float)left / _turnLengthMs;
             var theirSeconds = left / 1000f;
-            badge.ShowTimer(fraction, theirSeconds, TimerPhase.Pulse(theirSeconds, _pulseElapsed, _reduceMotion));
+            badge.ShowTimer(fraction, theirSeconds);
         }
 
         /// <summary>Applies the play settings live; the visual ones arrive as theme classes on the shell.</summary>
@@ -982,7 +980,7 @@ namespace Hulla.Games.Thulla
             _toast.style.display = _stamp.Visible ? DisplayStyle.Flex : DisplayStyle.None;
             _toast.style.opacity = _stamp.Opacity;
             _toast.style.scale = new Scale(new Vector2(_stamp.Scale, _stamp.Scale));
-            _felt.style.translate = new Translate(_stamp.ShakeX, 0f);
+            _felt.style.translate = new Translate(0f, _stamp.ShakeY);
             if (_stamp.Visible && !_stampSounded)
             {
                 // The stamp's own sound lands with it, 120 ms after the slap (GDD 14.6).
