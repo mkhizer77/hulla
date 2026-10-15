@@ -1438,8 +1438,18 @@
    "smart": false
   },
   {
+   "key": "nav.inventory",
+   "text": "Inventory",
+   "smart": false
+  },
+  {
    "key": "nav.pass",
    "text": "Pass",
+   "smart": false
+  },
+  {
+   "key": "nav.settings",
+   "text": "Settings",
    "smart": false
   },
   {
@@ -2603,6 +2613,11 @@
    "smart": false
   },
   {
+   "key": "ui.casual",
+   "text": "Casual",
+   "smart": false
+  },
+  {
    "key": "ui.change_rules",
    "text": "Change rules",
    "smart": false
@@ -2716,6 +2731,11 @@
    "key": "ui.daily_ready",
    "text": "Daily reward, day {0}: {1}",
    "smart": true
+  },
+  {
+   "key": "ui.daily_reward",
+   "text": "Daily Reward",
+   "smart": false
   },
   {
    "key": "ui.daily_tomorrow",
@@ -3000,6 +3020,11 @@
   {
    "key": "ui.host",
    "text": "host",
+   "smart": false
+  },
+  {
+   "key": "ui.inventory",
+   "text": "Inventory",
    "smart": false
   },
   {
@@ -3420,6 +3445,11 @@
   {
    "key": "ui.quick_play_table",
    "text": "Quick Play table",
+   "smart": false
+  },
+  {
+   "key": "ui.ranked",
+   "text": "Ranked",
    "smart": false
   },
   {

@@ -6,7 +6,10 @@ using UnityEngine.UIElements;
 
 namespace Hulla.Presentation.Screens.Home
 {
-    /// <summary>The daily reward strip on Home: today's reward and Claim, then what tomorrow brings.</summary>
+    /// <summary>
+    /// The reward chest on Home: the chest glows while today's reward waits and a tap on it or on the
+    /// Daily Reward board claims it; the line under them says what today or tomorrow brings.
+    /// </summary>
     public sealed class DailyRewardCard : IDisposable
     {
         private readonly DailyRewardViewModel _model;
@@ -20,8 +23,21 @@ namespace Hulla.Presentation.Screens.Home
             _model = model;
             _text = root.Q<Label>("daily-text");
             _claim = root.Q<Button>("daily-claim");
-            _claim.text = UiText.Claim;
-            _claim.clicked += claim;
+            _claim.text = UiText.DailyReward;
+            _claim.clicked += () =>
+            {
+                if (_model.Status?.Claimable == true && !_model.Claiming)
+                {
+                    claim();
+                }
+            };
+            root.Q<VisualElement>("daily-chest")?.RegisterCallback<ClickEvent>(_ =>
+            {
+                if (_model.Status?.Claimable == true && !_model.Claiming)
+                {
+                    claim();
+                }
+            });
             _model.Changed += Refresh;
             Refresh();
         }
@@ -31,21 +47,20 @@ namespace Hulla.Presentation.Screens.Home
         private void Refresh()
         {
             var status = _model.Status;
-            _root.style.display = status == null ? DisplayStyle.None : DisplayStyle.Flex;
+            _root.EnableInClassList("daily--ready", status?.Claimable == true && !_model.Claiming);
+            _root.EnableInClassList("daily--claimed", _model.Claimed != null);
             if (status == null)
             {
+                _text.text = "";
                 return;
             }
 
             if (status.Claimable)
             {
                 _text.text = Strings.Format(UiText.DailyReady, status.Today.Day, Amount(status.Today));
-                _claim.style.display = DisplayStyle.Flex;
-                _claim.SetEnabled(!_model.Claiming);
                 return;
             }
 
-            _claim.style.display = DisplayStyle.None;
             var tomorrow = Strings.Format(UiText.DailyTomorrow, Amount(status.Next));
             _text.text = _model.Claimed != null ? Strings.Format(UiText.DailyClaimed, Amount(_model.Claimed)) + " " + tomorrow : tomorrow;
         }

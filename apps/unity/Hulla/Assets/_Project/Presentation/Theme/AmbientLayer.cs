@@ -114,8 +114,8 @@ namespace Hulla.Presentation.Theme
                         _movers.Add(new Breathe(star, 0.4f, 0.32f, Range(3f, 7f), Range(0f, 7f)));
                     }
 
-                    StringLights(new Vector2(-2f, 2.5f), new Vector2(102f, 4f), 6.5f, 9, 1f, Bulbs);
-                    StringLights(new Vector2(-2f, 11f), new Vector2(60f, 9.5f), 4f, 5, 0.85f, Bulbs);
+                    StringLights(new Vector2(-2f, 2.5f), new Vector2(102f, 4f), 6.5f, 9, 1f, WarmBulbs);
+                    StringLights(new Vector2(-2f, 11f), new Vector2(60f, 9.5f), 4f, 5, 0.85f, WarmBulbs);
                     break;
                 case TableSkin.Mehndi:
                     StringLights(new Vector2(-2f, 1f), new Vector2(102f, 1.5f), 3.5f, 16, 0.55f, new[] { new Color(1f, 0.95f, 0.7f) });
@@ -161,12 +161,11 @@ namespace Hulla.Presentation.Theme
             }
         }
 
-        private static readonly Color[] Bulbs =
+        /// <summary>The Rooftop festoon: warm tungsten (art pack handover, Tungsten Bulb Glow).</summary>
+        private static readonly Color[] WarmBulbs =
         {
-            new Color(1f, 0.82f, 0.25f),
-            new Color(1f, 0.31f, 0.6f),
-            new Color(0.18f, 0.9f, 0.63f),
-            new Color(1f, 0.95f, 0.75f),
+            new Color(1f, 0.88f, 0.51f),
+            new Color(1f, 0.93f, 0.7f),
         };
 
         /// <summary>A sagging wire between two points (percent of the layer) with lights hung along it.</summary>

@@ -536,132 +536,6 @@
     text-shadow: 0 8px 0 #1A0805;
 }
 
-/* ---- Rooftop ---- */
-
-.skin--dhaba {
-    --surface-ui: #141A4A;
-    --surface-panel: #161E52;
-    --surface-raised: #1E2A6E;
-    --accent-saffron: #FFD23F;
-    --accent-teal: #2EE6A0;
-    --ink-ivory: #FFFFFF;
-    --ink-muted: #B9C0F0;
-    --gold: #FFD23F;
-    color: #FFFFFF;
-}
-
-.skin--dhaba .screen {
-    background-color: #141A4A;
-    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/dhaba/menu.png");
-}
-
-/* The table keeps the backdrop with its floor; menus take the one without. */
-.skin--dhaba .table {
-    background-color: #141A4A;
-    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/dhaba/backdrop.png");
-}
-
-.skin--dhaba .table__zone > .rail {
-    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/dhaba/table.png");
-}
-
-.skin--dhaba .title, .skin--dhaba .code, .skin--dhaba .home__title, .skin--dhaba .seat__initial, .skin--dhaba .card__rank, .skin--dhaba .card__court, .skin--dhaba .podium__rank, .skin--dhaba .turn, .skin--dhaba .hero, .skin--dhaba .button--primary, .skin--dhaba .countdown, .skin--dhaba .results__title, .skin--dhaba .results__stamp, .skin--dhaba .coach__text, .skin--dhaba .daily__text, .skin--dhaba .toast, .skin--dhaba .game__name {
-    -unity-font-definition: url("/Assets/_Project/Presentation/Theme/Fonts/LilitaOne.ttf");
-}
-
-.skin--dhaba .title, .skin--dhaba .home__title, .skin--dhaba .code, .skin--dhaba .results__title {
-    color: #FFD23F;
-    text-shadow: 4px 4px 0 #111111;
-}
-
-.skin--dhaba .button {
-    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/dhaba/btn-secondary.png");
-    color: #111111;
-}
-
-.skin--dhaba .button--secondary, .skin--dhaba .chip, .skin--dhaba .chip--share {
-    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/dhaba/btn-secondary.png");
-    color: #111111;
-}
-
-.skin--dhaba .button--primary, .skin--dhaba .chip--on, .skin--dhaba .turn--mine {
-    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/dhaba/btn-primary.png");
-    color: #111111;
-    text-shadow: 0 0 0 rgba(0, 0, 0, 0);
-}
-
-.skin--dhaba .button--quiet {
-    background-image: none;
-    color: #B9C0F0;
-}
-
-.skin--dhaba .panel {
-    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/dhaba/panel.png");
-}
-
-.skin--dhaba .seat__name {
-    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/dhaba/plate.png");
-    color: #111111;
-}
-
-.skin--dhaba .seat__frame {
-    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/dhaba/frame.png");
-}
-
-.skin--dhaba .seat__avatar {
-    border-radius: 34px;
-}
-
-.skin--dhaba .game {
-    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/dhaba/panel.png");
-    background-color: rgba(0, 0, 0, 0);
-}
-
-.skin--dhaba .game__art, .skin--dhaba .lobby-table {
-    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/dhaba/table.png");
-}
-
-.skin--dhaba .game__name {
-    color: #FFD23F;
-    text-shadow: 4px 4px 0 #111111;
-}
-
-.skin--dhaba .seat__back, .skin--dhaba .discard__card, .skin--dhaba .game__back {
-    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/dhaba/back.png");
-}
-
-.skin--dhaba .table__info, .skin--dhaba .table__pill, .skin--dhaba .quick-strip__chip, .skin--dhaba .quick-strip__more, .skin--dhaba .table__chat, .skin--dhaba .me-badge {
-    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/dhaba/pill.png");
-    color: #FFFFFF;
-}
-
-.skin--dhaba .card--legal {
-    border-color: #FFD23F;
-}
-
-.skin--dhaba .nav {
-    background-color: #111111;
-    border-top-color: #FFD23F;
-}
-
-.skin--dhaba .nav__tab--on .nav__glyph, .skin--dhaba .nav__tab--on .nav__label {
-    color: #FFD23F;
-}
-
-.skin--dhaba .toast {
-    color: #FFD23F;
-    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/shared/stamp-burst.png");
-    -unity-slice-left: 0;
-    -unity-slice-right: 0;
-    -unity-slice-top: 0;
-    -unity-slice-bottom: 0;
-    -unity-background-scale-mode: stretch-to-fill;
-    padding: 110px 150px 120px 150px;
-    -unity-text-outline-width: 4px;
-    -unity-text-outline-color: #111111;
-    text-shadow: 5px 5px 0 #111111;
-}
-
 /* ---- Mehndi Night ---- */
 
 .skin--mehndi {
@@ -1081,44 +955,6 @@
     border-color: #C9973F;
 }
 
-.skin--dhaba .button, .skin--dhaba .button--secondary, .skin--dhaba .chip--share {
-    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/dhaba/btn-ghost.png");
-    color: #FFFFFF;
-}
-
-.skin--dhaba .chip {
-    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/dhaba/btn-ghost.png");
-}
-
-.skin--dhaba .button--primary, .skin--dhaba .chip--on, .skin--dhaba .turn--mine {
-    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/dhaba/btn-primary.png");
-}
-
-.skin--dhaba .chip--on {
-    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/dhaba/chip-on.png");
-    color: #111111;
-}
-
-.skin--dhaba .button--quiet {
-    background-image: none;
-}
-
-.skin--dhaba .table__pill, .skin--dhaba .quick-strip__chip, .skin--dhaba .quick-strip__more, .skin--dhaba .table__chat {
-    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/dhaba/pill.png");
-}
-
-.skin--dhaba .unity-toggle__checkmark {
-    border-color: #FFD23F;
-}
-
-.skin--dhaba .unity-base-slider__dragger {
-    background-color: #FFD23F;
-}
-
-.skin--dhaba .field .unity-base-text-field__input {
-    border-color: #FFD23F;
-}
-
 .skin--mehndi .button, .skin--mehndi .button--secondary, .skin--mehndi .chip--share {
     background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/mehndi/btn-ghost.png");
     color: #FFF3E0;
@@ -1251,4 +1087,29 @@
 /* Lists scroll by touch; the desktop scroll bar looked like a stray white rail. */
 .skinned .unity-scroller--vertical, .skinned .unity-scroller--horizontal {
     display: none;
+}
+
+/* Themes without painted card pieces: the plain felt, round medallions and a big Play now. */
+.skinned .home .game__art {
+    background-image: none;
+    background-color: rgba(0, 0, 0, 0);
+}
+
+.skinned .home .medal {
+    background-image: none;
+    background-color: var(--surface-raised);
+    border-width: 3px;
+    border-color: var(--accent-saffron);
+    color: var(--ink-ivory);
+    font-size: 50px;
+}
+
+.skinned .home .medal.chip--on {
+    background-color: var(--accent-saffron);
+    color: #141518;
+}
+
+.skinned .home .game__play {
+    width: 620px;
+    font-size: 60px;
 }

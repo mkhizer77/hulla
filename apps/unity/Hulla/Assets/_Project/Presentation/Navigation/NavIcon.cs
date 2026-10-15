@@ -5,7 +5,8 @@ namespace Hulla.Presentation.Navigation
 {
     /// <summary>
     /// A tab's icon drawn as strokes in the element's text colour, so the theme and the active state
-    /// colour it like a label: a house, two friends, a bag, a star and a person, on a 24-unit grid.
+    /// colour it like a label: a house, two friends, a bag and a gear, on a 24-unit grid. A theme with
+    /// painted icons hides it and shows its own (the nav__art element next to it).
     /// </summary>
     public sealed class NavIcon : VisualElement
     {
@@ -48,25 +49,21 @@ namespace Hulla.Presentation.Navigation
                     Arc(painter, P(16, 8), 3.4f * unit, -80f, 90f);
                     Arc(painter, P(17, 21.5f), 5.5f * unit, 250f, 330f);
                     break;
-                case NavTab.Shop:
-                    Path(painter, P(5, 8), P(19, 8), P(18, 21), P(6, 21), P(5, 8));
-                    Arc(painter, P(12, 8), 3.2f * unit, 180f, 360f);
-                    break;
-                case NavTab.Pass:
-                    var star = new Vector2[11];
-                    for (var i = 0; i < 10; i++)
-                    {
-                        var a = (i * 36f - 90f) * Mathf.Deg2Rad;
-                        var r = i % 2 == 0 ? 9.5f : 4f;
-                        star[i] = P(12 + Mathf.Cos(a) * r, 12.5f + Mathf.Sin(a) * r);
-                    }
-
-                    star[10] = star[0];
-                    Path(painter, star);
+                case NavTab.Inventory:
+                    Path(painter, P(4, 9), P(20, 9), P(20, 21), P(4, 21), P(4, 9));
+                    Path(painter, P(9, 9), P(9, 6), P(15, 6), P(15, 9));
+                    Path(painter, P(4, 14), P(20, 14));
                     break;
                 default:
-                    Circle(painter, P(12, 8), 4f * unit);
-                    Arc(painter, P(12, 22), 8f * unit, 200f, 340f);
+                    Circle(painter, P(12, 12), 3.2f * unit);
+                    for (var i = 0; i < 8; i++)
+                    {
+                        var a = i * 45f * Mathf.Deg2Rad;
+                        var dir = new Vector2(Mathf.Cos(a), Mathf.Sin(a));
+                        Path(painter, P(12, 12) + dir * 7.2f * unit, P(12, 12) + dir * 9.6f * unit);
+                    }
+
+                    Circle(painter, P(12, 12), 7.2f * unit);
                     break;
             }
         }

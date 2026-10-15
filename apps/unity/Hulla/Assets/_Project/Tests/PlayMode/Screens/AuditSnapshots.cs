@@ -20,10 +20,11 @@ namespace Hulla.Screens.Tests
     /// <summary>
     /// Every main screen in English and the default theme, with the bottom navigation where the app shows
     /// it, as PNGs for a design review; explicit: <c>-testFilter Hulla.Screens.Tests.AuditSnapshots</c>.
+    /// HULLA_SNAPSHOT_SKIN (club, haveli, dhaba, mehndi, adda) picks another theme.
     /// </summary>
     public sealed class AuditSnapshots
     {
-        private static readonly string[] WithNav = { "home", "friends", "profile", "shop", "pass", "leaderboard", "ranked", "missions", "achievements" };
+        private static readonly string[] WithNav = { "home", "friends", "profile", "shop", "pass", "leaderboard", "ranked", "missions", "achievements", "inventory" };
 
         [UnityTest, Explicit]
         public IEnumerator EveryScreen()
@@ -32,11 +33,18 @@ namespace Hulla.Screens.Tests
             var settings = AssetDatabase.LoadAssetAtPath<PanelSettings>("Assets/Settings/UI/PanelSettings.asset");
             var dir = System.Environment.GetEnvironmentVariable("HULLA_SNAPSHOT_DIR") ?? "Temp";
             Directory.CreateDirectory(dir);
+            var skin = SettingsModel.DefaultSkin;
+            var named = System.Environment.GetEnvironmentVariable("HULLA_SNAPSHOT_SKIN");
+            if (named != null && System.Enum.TryParse(named, true, out TableSkin chosen))
+            {
+                skin = chosen;
+            }
+
             foreach (var screen in ScreenCases.All())
             {
                 var task = CardRenderer.RenderAsync(settings, CardRatio.Story, root =>
                 {
-                    ScreenCases.Skin(root, Hulla.Application.Settings.TableSkin.Club);
+                    ScreenCases.Skin(root, skin);
                     var instance = screen.Screen!.Instantiate();
                     instance.style.flexGrow = 1;
                     root.Add(instance);
@@ -44,12 +52,12 @@ namespace Hulla.Screens.Tests
                     var face = instance.Q(className: "screen");
                     if (face != null)
                     {
-                        Hulla.Presentation.Theme.AmbientLayer.Decorate(face, Hulla.Application.Settings.TableSkin.Club, false);
+                        Hulla.Presentation.Theme.AmbientLayer.Decorate(face, skin, false);
                     }
                     if (System.Array.IndexOf(WithNav, screen.Name) >= 0)
                     {
                         var bar = new NavBar(UiText.NavLabel);
-                        bar.Select(NavTab.Home);
+                        bar.Select(screen.Name == "home" ? NavTab.Home : screen.Name == "friends" ? NavTab.Friends : NavTab.Inventory);
                         root.Add(bar);
                     }
                 });

@@ -136,7 +136,7 @@ function main(): void {
   }
   const theme = join(root, "apps", "unity", "Hulla", "Assets", "_Project", "Presentation");
   const sheets: Record<string, string> = {};
-  for (const sheet of ["Theme/Hulla.uss", "Theme/Skins.uss", "Screens/Ranked/Ranked.uss"]) {
+  for (const sheet of ["Theme/Hulla.uss", "Theme/Skins.uss", "Theme/Rooftop.uss", "Screens/Ranked/Ranked.uss"]) {
     sheets[sheet] = readFileSync(join(theme, sheet), "utf8");
   }
   writeFileSync(join(theme, "Theme", "Rtl.uss"), rtlStyles(sheets));

@@ -1,0 +1,658 @@
+/*
+ * Rooftop (docs/design/rooftop-redesign.md): the owner's art pack, imported by
+ * tools/artkit/rooftop_import.py into Art/Skins/Rooftop. Tokens and type follow the pack's
+ * handover. The night scene and the table felt keep the earlier Rooftop art (Art/Skins/dhaba)
+ * until the pack ships its own. Nine-slice borders are set here with -unity-slice-*, measured on
+ * the exported files. Loaded after Skins.uss, so these rules win over the shared skin rules.
+ */
+
+/* ---------------------------------------------------------------- tokens */
+
+.skin--dhaba {
+    --surface-ui: #201844;
+    --surface-panel: #2A170C;
+    --surface-raised: #4A2E1B;
+    --accent-saffron: #F9A825;
+    --accent-mustard: #FFE082;
+    --accent-teal: #00897B;
+    --ink-ivory: #FFF8E1;
+    --ink-muted: #E6D3B3;
+    --gold: #FFE082;
+    --felt: #00897B;
+    --rt-canary: #FFF176;
+    --rt-saffron: #F9A825;
+    --rt-honey: #C17900;
+    --rt-wood: #4A2E1B;
+    --rt-wood-top: #784A29;
+    --rt-wood-shadow: #2A170C;
+    --rt-brass-light: #FFE082;
+    --rt-brass: #D49B35;
+    --rt-brass-shadow: #8C5D14;
+    --rt-crimson: #D32F2F;
+    --rt-peacock: #00897B;
+    --rt-felt-dark: #004D40;
+    --rt-magenta: #C2185B;
+    --rt-cyan: #00BCD4;
+    --rt-olive: #43A047;
+    --rt-cream: #FFF8E1;
+    --rt-ivory: #F5F0E6;
+    --rt-ink: #1F0E05;
+    --rt-sky-deep: #141026;
+    --rt-sky: #201844;
+    color: #FFF8E1;
+    -unity-font-definition: url("/Assets/_Project/Presentation/Theme/Fonts/NunitoBold.ttf");
+}
+
+/* ---------------------------------------------------------------- scene */
+
+.skin--dhaba .screen {
+    background-color: #201844;
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/dhaba/menu.png");
+}
+
+.skin--dhaba .table {
+    background-color: #201844;
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/dhaba/backdrop.png");
+}
+
+.skin--dhaba .table__zone > .rail {
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/dhaba/table.png");
+}
+
+/* ---------------------------------------------------------------- type (handover §2) */
+
+.skin--dhaba .title, .skin--dhaba .code, .skin--dhaba .home__title, .skin--dhaba .seat__initial, .skin--dhaba .podium__rank, .skin--dhaba .turn, .skin--dhaba .countdown, .skin--dhaba .results__title, .skin--dhaba .results__stamp, .skin--dhaba .toast, .skin--dhaba .game__name {
+    -unity-font-definition: url("/Assets/_Project/Presentation/Theme/Fonts/LilitaOne.ttf");
+}
+
+.skin--dhaba .title, .skin--dhaba .home__title, .skin--dhaba .code, .skin--dhaba .results__title, .skin--dhaba .game__name {
+    color: #FFE082;
+    -unity-text-outline-width: 3px;
+    -unity-text-outline-color: #1F0E05;
+    text-shadow: 0 4px 0 #0D0502;
+    letter-spacing: 2px;
+}
+
+/* UI text a player taps or reads on wood: Nunito ExtraBold. */
+.skin--dhaba .button, .skin--dhaba .chip, .skin--dhaba .seat__name, .skin--dhaba .nav__label, .skin--dhaba .hero, .skin--dhaba .table__pill, .skin--dhaba .quick-strip__chip {
+    -unity-font-definition: url("/Assets/_Project/Presentation/Theme/Fonts/NunitoExtraBold.ttf");
+    -unity-font-style: normal;
+}
+
+/* ---------------------------------------------------------------- shared controls */
+
+/* Planks for every ordinary button; the pressed art sits 4px lower. */
+.skin--dhaba .button, .skin--dhaba .button--secondary, .skin--dhaba .chip--share, .skin--dhaba .hero {
+    background-color: rgba(0, 0, 0, 0);
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/Rooftop/Buttons/btn_plank_medium_normal.png");
+    -unity-background-scale-mode: stretch-to-fill;
+    -unity-slice-left: 80;
+    -unity-slice-right: 80;
+    -unity-slice-top: 78;
+    -unity-slice-bottom: 78;
+    -unity-slice-scale: 0.55px;
+    border-width: 0;
+    padding: 0 48px 14px 48px;
+    color: #FFF8E1;
+    -unity-text-outline-width: 1px;
+    -unity-text-outline-color: #1A0D06;
+    text-shadow: 0 2px 2px rgba(0, 0, 0, 0.7);
+}
+
+.skin--dhaba .button:active, .skin--dhaba .button--secondary:active, .skin--dhaba .chip--share:active, .skin--dhaba .hero:active {
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/Rooftop/Buttons/btn_plank_medium_pressed.png");
+    scale: 1 1;
+}
+
+/* The gold bar for primary actions; it presses by moving down. */
+.skin--dhaba .button--primary, .skin--dhaba .turn--mine {
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/Rooftop/Buttons/btn_primary_pressed.png");
+    -unity-slice-left: 70;
+    -unity-slice-right: 70;
+    -unity-slice-top: 50;
+    -unity-slice-bottom: 80;
+    -unity-slice-scale: 0.6px;
+    padding: 0 48px 22px 48px;
+    color: #1F0E05;
+    -unity-text-outline-width: 0;
+    text-shadow: 0 1px 0 rgba(255, 241, 118, 0.6);
+    letter-spacing: 2px;
+}
+
+.skin--dhaba .button--primary:active {
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/Rooftop/Buttons/btn_primary_pressed.png");
+    translate: 0 4px;
+    -unity-background-image-tint-color: rgb(235, 215, 190);
+}
+
+.skin--dhaba .button--quiet {
+    background-image: none;
+    color: #E6D3B3;
+    -unity-text-outline-width: 0;
+}
+
+.skin--dhaba .chip {
+    background-color: rgba(0, 0, 0, 0);
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/Rooftop/Buttons/btn_chip_pill_normal.png");
+    -unity-background-scale-mode: stretch-to-fill;
+    -unity-slice-left: 60;
+    -unity-slice-right: 60;
+    -unity-slice-top: 50;
+    -unity-slice-bottom: 50;
+    -unity-slice-scale: 0.5px;
+    border-width: 0;
+    padding: 0 36px 8px 36px;
+    color: #FFF8E1;
+}
+
+.skin--dhaba .chip:active {
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/Rooftop/Buttons/btn_chip_pill_pressed.png");
+    scale: 1 1;
+}
+
+/* A chosen chip turns to gold with dark ink. */
+.skin--dhaba .chip--on {
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/Rooftop/Buttons/btn_primary_pressed.png");
+    -unity-slice-left: 70;
+    -unity-slice-right: 70;
+    -unity-slice-top: 50;
+    -unity-slice-bottom: 80;
+    -unity-slice-scale: 0.45px;
+    color: #1F0E05;
+    -unity-text-outline-width: 0;
+    text-shadow: 0 1px 0 rgba(255, 241, 118, 0.6);
+}
+
+/* Panels are the large plank with its painted corners. */
+.skin--dhaba .panel {
+    background-color: rgba(0, 0, 0, 0);
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/Rooftop/Buttons/btn_plank_large_normal.png");
+    -unity-background-scale-mode: stretch-to-fill;
+    -unity-slice-left: 110;
+    -unity-slice-right: 110;
+    -unity-slice-top: 95;
+    -unity-slice-bottom: 95;
+    -unity-slice-scale: 0.6px;
+    padding: 56px 64px;
+}
+
+.skin--dhaba .seat__name {
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/Rooftop/Frames/nameplate_wood_blank.png");
+    -unity-background-scale-mode: stretch-to-fill;
+    -unity-slice-left: 60;
+    -unity-slice-right: 60;
+    -unity-slice-top: 40;
+    -unity-slice-bottom: 40;
+    -unity-slice-scale: 0.5px;
+    color: #F5F0E6;
+}
+
+.skin--dhaba .seat__frame {
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/Rooftop/Avatars/avatar_frame_brass.png");
+}
+
+.skin--dhaba .seat__back, .skin--dhaba .discard__card, .skin--dhaba .game__back {
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/Rooftop/Cards/card_back_truckart.png");
+}
+
+.skin--dhaba .table__info, .skin--dhaba .table__pill, .skin--dhaba .quick-strip__chip, .skin--dhaba .quick-strip__more, .skin--dhaba .table__chat, .skin--dhaba .me-badge {
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/Rooftop/Buttons/btn_chip_pill_normal.png");
+    -unity-slice-left: 60;
+    -unity-slice-right: 60;
+    -unity-slice-top: 50;
+    -unity-slice-bottom: 50;
+    -unity-slice-scale: 0.5px;
+    color: #FFF8E1;
+}
+
+.skin--dhaba .card--legal {
+    border-color: #FFE082;
+}
+
+/* The thulla stamp is ink on the felt; the word is in the art, so the label only speaks to screen readers. */
+.skin--dhaba .toast {
+    color: rgba(0, 0, 0, 0);
+    background-color: rgba(0, 0, 0, 0);
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/Rooftop/FX/stamp_thulla.png");
+    -unity-slice-left: 0;
+    -unity-slice-right: 0;
+    -unity-slice-top: 0;
+    -unity-slice-bottom: 0;
+    -unity-background-scale-mode: scale-to-fit;
+    width: 640px;
+    height: 406px;
+    padding: 0;
+    rotate: -8deg;
+    -unity-text-outline-width: 0;
+    text-shadow: 0 0 0 rgba(0, 0, 0, 0);
+}
+
+.skin--dhaba .unity-toggle__checkmark {
+    border-color: #FFE082;
+}
+
+.skin--dhaba .unity-base-slider__dragger {
+    background-color: #D49B35;
+    border-color: #FFE082;
+}
+
+.skin--dhaba .field .unity-base-text-field__input {
+    border-color: #D49B35;
+    background-color: #2A170C;
+    color: #FFF8E1;
+}
+
+/* ---------------------------------------------------------------- navigation dock */
+
+.skin--dhaba .nav {
+    height: 190px;
+    padding: 40px 24px 10px 24px;
+    border-top-width: 0;
+    background-color: rgba(0, 0, 0, 0);
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/Rooftop/Nav/nav_dock_baseboard.png");
+    -unity-background-scale-mode: stretch-to-fill;
+    -unity-slice-left: 110;
+    -unity-slice-right: 110;
+    -unity-slice-top: 60;
+    -unity-slice-bottom: 40;
+    -unity-slice-scale: 1px;
+    overflow: visible;
+}
+
+.skin--dhaba .nav__icon {
+    display: none;
+}
+
+.skin--dhaba .nav__art {
+    display: flex;
+    width: 120px;
+    height: 120px;
+    margin-top: -60px;
+    -unity-background-scale-mode: scale-to-fit;
+    transition-property: scale, translate;
+    transition-duration: 160ms;
+}
+
+.skin--dhaba .nav__tab--on .nav__art {
+    scale: 1.12 1.12;
+    translate: 0 -6px;
+}
+
+.skin--dhaba .nav__tab:active .nav__art {
+    translate: 0 4px;
+}
+
+.skin--dhaba .nav__art--home {
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/Rooftop/Nav/icon_nav_home.png");
+}
+
+.skin--dhaba .nav__art--friends {
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/Rooftop/Nav/icon_nav_friends.png");
+}
+
+.skin--dhaba .nav__art--inventory {
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/Rooftop/Nav/icon_nav_inventory.png");
+}
+
+.skin--dhaba .nav__art--settings {
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/Rooftop/Nav/icon_nav_settings.png");
+}
+
+.skin--dhaba .nav__label {
+    font-size: 34px;
+    color: #FFF8E1;
+    -unity-text-outline-width: 1px;
+    -unity-text-outline-color: #1A0D06;
+}
+
+.skin--dhaba .nav__tab--on .nav__label {
+    color: #FFE082;
+}
+
+/* ---------------------------------------------------------------- Home (pack: sprites/01_home) */
+
+.skin--dhaba .home .home__rope {
+    display: flex;
+    width: 10px;
+    border-radius: 5px;
+    background-color: #8A6234;
+    border-left-width: 2px;
+    border-right-width: 2px;
+    border-color: #5A3A1A;
+}
+
+.skin--dhaba .home .home__rope--sign-left {
+    left: 368px;
+    top: -400px;
+    height: 430px;
+}
+
+.skin--dhaba .home .home__rope--sign-right {
+    left: 702px;
+    top: -400px;
+    height: 430px;
+}
+
+/* The signboard carries its own rope loops at the top; the name sits on the board below them. */
+.skin--dhaba .home .home__sign {
+    width: 660px;
+    height: 331px;
+    margin-top: -90px;
+    padding: 100px 100px 0 100px;
+    border-radius: 0;
+    background-color: rgba(0, 0, 0, 0);
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/Rooftop/Frames/signboard_header_blank.png");
+    -unity-background-scale-mode: stretch-to-fill;
+}
+
+.skin--dhaba .home .home__name {
+    font-size: 50px;
+    max-width: none;
+    overflow: visible;
+    text-overflow: clip;
+    flex-shrink: 0;
+    -unity-font-definition: url("/Assets/_Project/Presentation/Theme/Fonts/NunitoExtraBold.ttf");
+    -unity-font-style: normal;
+    color: #FFF8E1;
+    text-shadow: 0 2px 3px rgba(15, 8, 4, 0.85);
+}
+
+.skin--dhaba .home .home__shield {
+    top: 154px;
+    translate: -63px 0;
+    width: 126px;
+    height: 134px;
+    padding: 0 0 8px 0;
+    border-radius: 0;
+    background-color: rgba(0, 0, 0, 0);
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/Rooftop/Frames/badge_level_shield_blank.png");
+    -unity-background-scale-mode: stretch-to-fill;
+    -unity-font-definition: url("/Assets/_Project/Presentation/Theme/Fonts/NunitoExtraBold.ttf");
+    -unity-font-style: normal;
+    font-size: 48px;
+    color: #FFE082;
+    -unity-text-outline-width: 1px;
+    -unity-text-outline-color: #1F0E05;
+}
+
+.skin--dhaba .home .home__pouch {
+    top: -12px;
+    right: 28px;
+    width: 150px;
+    height: 173px;
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/Rooftop/Props/potli_currency_bag.png");
+}
+
+.skin--dhaba .home .home__coins {
+    margin-bottom: -22px;
+    padding: 0 18px;
+    border-width: 2px;
+    border-color: #2A170C;
+    background-color: #4A2E1B;
+    color: #FFE082;
+    -unity-font-definition: url("/Assets/_Project/Presentation/Theme/Fonts/NunitoExtraBold.ttf");
+    -unity-font-style: normal;
+}
+
+/* The arch keeps its own square proportions; slicing would stretch the crown and the peacocks. */
+.skin--dhaba .home .game {
+    width: 740px;
+    height: 737px;
+    padding: 132px 96px 70px 96px;
+    border-radius: 0;
+    background-color: rgba(0, 0, 0, 0);
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/Rooftop/Frames/frame_truckart_arch.png");
+    -unity-background-scale-mode: stretch-to-fill;
+    -unity-slice-left: 0;
+    -unity-slice-right: 0;
+    -unity-slice-top: 0;
+    -unity-slice-bottom: 0;
+}
+
+.skin--dhaba .home .game__art {
+    background-image: none;
+}
+
+.skin--dhaba .home .game__name {
+    font-size: 112px;
+    color: #FFE082;
+    -unity-text-outline-width: 4px;
+    -unity-text-outline-color: #1F0E05;
+    text-shadow: 0 6px 0 #0D0502;
+}
+
+.skin--dhaba .home .game__line {
+    -unity-font-definition: url("/Assets/_Project/Presentation/Theme/Fonts/Baloo2.ttf");
+    font-size: 40px;
+    color: #FFF8E1;
+    -unity-text-outline-width: 2px;
+    -unity-text-outline-color: #1F0E05;
+}
+
+/* Seat coins: the pack paints 4, 5 and 6 into their coins, so those labels only speak to screen
+   readers; the 3 coin is blank and shows its label. */
+.skin--dhaba .home .medal {
+    border-width: 0;
+    background-color: rgba(0, 0, 0, 0);
+    -unity-slice-left: 0;
+    -unity-slice-right: 0;
+    -unity-slice-top: 0;
+    -unity-slice-bottom: 0;
+    background-size: 112px 112px;
+    background-repeat: no-repeat no-repeat;
+    background-position-x: center;
+    background-position-y: center;
+    color: rgba(0, 0, 0, 0);
+    -unity-font-definition: url("/Assets/_Project/Presentation/Theme/Fonts/LilitaOne.ttf");
+    font-size: 58px;
+    -unity-text-outline-width: 0;
+    text-shadow: 0 0 0 rgba(0, 0, 0, 0);
+}
+
+.skin--dhaba .home .medal--3 {
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/Rooftop/Chips/chip_seat_3_normal.png");
+    color: #FFF8E1;
+    -unity-text-outline-width: 3px;
+    -unity-text-outline-color: #1F0E05;
+}
+
+.skin--dhaba .home .medal--3:active {
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/Rooftop/Chips/chip_seat_3_pressed.png");
+}
+
+.skin--dhaba .home .medal--4 {
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/Rooftop/Chips/chip_seat_4_normal.png");
+}
+
+.skin--dhaba .home .medal--4:active {
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/Rooftop/Chips/chip_seat_4_pressed.png");
+}
+
+.skin--dhaba .home .medal--5 {
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/Rooftop/Chips/chip_seat_5_normal.png");
+}
+
+.skin--dhaba .home .medal--5:active {
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/Rooftop/Chips/chip_seat_5_pressed.png");
+}
+
+.skin--dhaba .home .medal--6 {
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/Rooftop/Chips/chip_seat_6_normal.png");
+}
+
+.skin--dhaba .home .medal--6:active {
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/Rooftop/Chips/chip_seat_6_pressed.png");
+}
+
+.skin--dhaba .home .medal.chip--on {
+    background-color: rgba(0, 0, 0, 0);
+    color: rgba(0, 0, 0, 0);
+    border-width: 5px;
+    border-radius: 66px;
+    border-color: rgba(255, 224, 130, 0.95);
+    background-size: 120px 120px;
+    -unity-slice-left: 0;
+    -unity-slice-right: 0;
+    -unity-slice-top: 0;
+    -unity-slice-bottom: 0;
+}
+
+.skin--dhaba .home .medal--3.chip--on {
+    color: #FFF8E1;
+}
+
+.skin--dhaba .home .game__mode-label {
+    -unity-font-definition: url("/Assets/_Project/Presentation/Theme/Fonts/NunitoExtraBold.ttf");
+    color: #CDB898;
+    -unity-text-outline-width: 2px;
+    -unity-text-outline-color: #1F0E05;
+}
+
+.skin--dhaba .home .game__mode-label--on {
+    color: #FFF8E1;
+}
+
+/* The switch: the pack's track with its words painted out, and its star knob, cut free to slide. */
+.skin--dhaba .home .switch {
+    width: 200px;
+    height: 76px;
+    border-radius: 0;
+    background-color: rgba(0, 0, 0, 0);
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/Rooftop/Buttons/toggle_track_blank.png");
+    -unity-background-scale-mode: stretch-to-fill;
+}
+
+.skin--dhaba .home .switch--on {
+    -unity-background-image-tint-color: rgb(255, 200, 170);
+}
+
+.skin--dhaba .home .switch__knob {
+    width: 70px;
+    height: 70px;
+    margin: -2px 0 0 10px;
+    border-radius: 0;
+    background-color: rgba(0, 0, 0, 0);
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/Rooftop/Buttons/toggle_knob.png");
+    -unity-background-scale-mode: stretch-to-fill;
+}
+
+.skin--dhaba .home .switch--on > .switch__knob {
+    translate: 110px 0;
+}
+
+.skin--dhaba .home .game__help {
+    top: 132px;
+    right: 96px;
+    color: #FFF8E1;
+}
+
+/* Play now on its floral plinth: the gold face is the top part of the art, so the label rides high. */
+.skin--dhaba .home .game__play {
+    width: 540px;
+    height: 335px;
+    margin-top: -72px;
+    padding: 0 0 116px 0;
+    border-width: 0;
+    background-color: rgba(0, 0, 0, 0);
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/Rooftop/Buttons/btn_primary_normal.png");
+    -unity-background-scale-mode: stretch-to-fill;
+    -unity-slice-left: 0;
+    -unity-slice-right: 0;
+    -unity-slice-top: 0;
+    -unity-slice-bottom: 0;
+    -unity-font-definition: url("/Assets/_Project/Presentation/Theme/Fonts/NunitoExtraBold.ttf");
+    -unity-font-style: normal;
+    font-size: 72px;
+    letter-spacing: 3px;
+    color: #1F0E05;
+    -unity-text-outline-width: 0;
+    text-shadow: 0 2px 0 rgba(255, 241, 118, 0.7);
+}
+
+.skin--dhaba .home .game__play:active {
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/Rooftop/Buttons/btn_primary_normal.png");
+    translate: 0 6px;
+    -unity-background-image-tint-color: rgb(235, 215, 190);
+}
+
+.skin--dhaba .home .home__lower {
+    margin-top: -96px;
+}
+
+.skin--dhaba .home .game__art {
+    height: 186px;
+}
+
+.skin--dhaba .home .game__seats {
+    margin-top: -64px;
+}
+
+.skin--dhaba .home .game__mode {
+    margin-top: 10px;
+}
+
+.skin--dhaba .home .home__rope--board-left {
+    left: 80px;
+    top: -120px;
+    height: 200px;
+}
+
+.skin--dhaba .home .home__rope--board-right {
+    left: 330px;
+    top: -120px;
+    height: 200px;
+}
+
+.skin--dhaba .home .plank, .skin--dhaba .inventory .plank, .skin--dhaba .home .hero {
+    border-width: 0;
+    background-color: rgba(0, 0, 0, 0);
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/Rooftop/Buttons/btn_plank_large_normal.png");
+    -unity-background-scale-mode: stretch-to-fill;
+    -unity-slice-left: 110;
+    -unity-slice-right: 110;
+    -unity-slice-top: 95;
+    -unity-slice-bottom: 95;
+    -unity-slice-scale: 0.5px;
+    padding: 0 36px 10px 36px;
+    -unity-font-definition: url("/Assets/_Project/Presentation/Theme/Fonts/NunitoExtraBold.ttf");
+    -unity-font-style: normal;
+    color: #FFF8E1;
+    -unity-text-outline-width: 2px;
+    -unity-text-outline-color: #1A0D06;
+    text-shadow: 0 2px 2px rgba(0, 0, 0, 0.7);
+}
+
+.skin--dhaba .home .plank, .skin--dhaba .inventory .plank {
+    height: 112px;
+    font-size: 50px;
+}
+
+.skin--dhaba .home .hero {
+    min-height: 110px;
+    font-size: 40px;
+}
+
+.skin--dhaba .home .plank:active, .skin--dhaba .inventory .plank:active, .skin--dhaba .home .hero:active {
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/Rooftop/Buttons/btn_plank_large_pressed.png");
+}
+
+.skin--dhaba .home .daily__chest {
+    width: 300px;
+    height: 261px;
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/Rooftop/Props/chest_daily_reward_closed.png");
+}
+
+.skin--dhaba .home .daily--claimed .daily__chest {
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/Rooftop/Props/chest_daily_reward_open.png");
+}
+
+.skin--dhaba .home .daily__board {
+    margin-top: -36px;
+    padding: 0 22px 10px 22px;
+    font-size: 44px;
+}
+
+.skin--dhaba .home .daily__text {
+    color: #FFE082;
+    text-shadow: 0 2px 3px rgba(0, 0, 0, 0.9);
+}

@@ -49,15 +49,15 @@ namespace Hulla.Application.Tests
         }
 
         [Test]
-        public void TheThemeStartsAtClubPersistsAndIgnoresAnUnknownValue()
+        public void TheThemeStartsAtRooftopPersistsAndIgnoresAnUnknownValue()
         {
             var store = new MemoryStore();
             var settings = new SettingsModel(store);
-            Assert.AreEqual(TableSkin.Club, settings.Skin);
+            Assert.AreEqual(TableSkin.Dhaba, settings.Skin);
             settings.Skin = TableSkin.Mehndi;
             Assert.AreEqual(TableSkin.Mehndi, new SettingsModel(store).Skin);
             store.Values["hulla.settings.skin"] = 42;
-            Assert.AreEqual(TableSkin.Club, new SettingsModel(store).Skin, "a theme from a newer build falls back to the default");
+            Assert.AreEqual(TableSkin.Dhaba, new SettingsModel(store).Skin, "a theme from a newer build falls back to the default");
         }
 
         [Test]

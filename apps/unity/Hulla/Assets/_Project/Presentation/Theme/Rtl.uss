@@ -218,18 +218,6 @@
     -unity-text-align: middle-center;
 }
 
-.rtl .home__header {
-    flex-direction: row-reverse;
-}
-
-.rtl .home__me {
-    flex-direction: row-reverse;
-}
-
-.rtl .home__quiet {
-    flex-direction: row-reverse;
-}
-
 .rtl .home__online {
     -unity-text-align: middle-center;
 }
@@ -298,12 +286,12 @@
     flex-direction: row;
 }
 
-.rtl .game--soon {
-    flex-direction: row-reverse;
+.rtl .home__name {
+    -unity-text-align: middle-center;
 }
 
-.rtl .game__art {
-    flex-direction: row-reverse;
+.rtl .home__shield {
+    -unity-text-align: middle-center;
 }
 
 .rtl .game__name {
@@ -314,20 +302,24 @@
     -unity-text-align: middle-center;
 }
 
-.rtl .game__seats-label {
-    -unity-text-align: middle-center;
-}
-
-.rtl .home__row {
+.rtl .game__art {
     flex-direction: row-reverse;
 }
 
-.rtl .game--soon .game__name {
-    -unity-text-align: middle-right;
+.rtl .home .medal {
+    -unity-text-align: middle-center;
 }
 
-.rtl .game--soon .game__line {
-    -unity-text-align: middle-right;
+.rtl .game__mode {
+    flex-direction: row-reverse;
+}
+
+.rtl .home__lower {
+    flex-direction: row-reverse;
+}
+
+.rtl .daily__text {
+    -unity-text-align: middle-center;
 }
 
 /* Theme/Skins.uss */
