@@ -1721,3 +1721,414 @@
 .skinned .pass__lanes .pass__track .pass__reward {
     flex-shrink: 0;
 }
+
+/* ================================================================ Home, matched to the reference
+   Every piece sits at its box in the reference render scaled to 1080 wide (1080 x 1937; the dock
+   starts at 1775), on a stage of that width anchored to the top of the safe area. Boxes are in
+   stage pixels; where a pack sprite's proportions differ from the render (sign, arch, Play), the
+   box wins for the arch and a nine-slice keeps the corners for the rest. */
+.skinned .home {
+    padding: 0;
+}
+
+.skinned .home .home__stage {
+    width: 1080px;
+    height: 1760px;
+    flex-shrink: 0;
+    align-self: center;
+}
+
+.skinned .home .home__header, .skinned .home .games, .skinned .home .home__lower, .skinned .home .home__boards {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 1080px;
+    height: 1760px;
+    margin: 0;
+    padding: 0;
+}
+
+/* The sign, its ropes, the level shield and the potli. */
+.skinned .home .home__rope {
+    position: absolute;
+    display: flex;
+    width: 16px;
+    margin: 0;
+    border-radius: 6px;
+    background-color: #8A6234;
+    border-left-width: 3px;
+    border-right-width: 3px;
+    border-color: #5A3A1A;
+}
+
+.skinned .home .home__rope--sign-left {
+    left: 362px;
+    top: -600px;
+    height: 700px;
+}
+
+.skinned .home .home__rope--sign-right {
+    left: 699px;
+    top: -600px;
+    height: 700px;
+}
+
+.skinned .home .home__sign {
+    position: absolute;
+    left: 193px;
+    top: 62px;
+    width: 694px;
+    height: 348px;
+    margin: 0;
+    padding: 0;
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/Rooftop/Frames/signboard_header_blank.png");
+    -unity-background-scale-mode: stretch-to-fill;
+    -unity-slice-left: 0;
+    -unity-slice-right: 0;
+    -unity-slice-top: 0;
+    -unity-slice-bottom: 0;
+}
+
+.skinned .home .home__name {
+    position: absolute;
+    left: 110px;
+    right: 110px;
+    top: 148px;
+    height: 70px;
+    max-width: none;
+    margin: 0;
+    padding: 0;
+    font-size: 55px;
+    -unity-text-align: middle-center;
+}
+
+.skinned .home .home__shield {
+    position: absolute;
+    left: 473px;
+    top: 269px;
+    width: 136px;
+    height: 145px;
+    margin: 0;
+    padding: 0 0 6px 0;
+    translate: 0 0;
+    font-size: 46px;
+}
+
+.skinned .home .home__pouch {
+    position: absolute;
+    left: 749px;
+    top: 181px;
+    right: auto;
+    width: 145px;
+    height: 167px;
+    margin: 0;
+}
+
+.skinned .home .home__coins {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -34px;
+    margin: 0;
+    font-size: 26px;
+    -unity-text-align: middle-center;
+}
+
+/* The arch and what sits in it; children are placed in the arch's own box (left 149, top 408). */
+.skinned .home .game {
+    position: absolute;
+    left: 149px;
+    top: 408px;
+    width: 784px;
+    height: 883px;
+    margin: 0;
+    padding: 0;
+}
+
+.skinned .home .game__name {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 206px;
+    height: 136px;
+    margin: 0;
+    font-size: 123px;
+    -unity-text-align: middle-center;
+}
+
+.skinned .home .game__line {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 332px;
+    height: 52px;
+    margin: 0;
+    font-size: 39px;
+    -unity-text-align: middle-center;
+}
+
+.skinned .home .game__art {
+    position: absolute;
+    left: 148px;
+    top: 392px;
+    width: 493px;
+    height: 252px;
+    margin: 0;
+}
+
+.skinned .home .game__seats {
+    position: absolute;
+    left: 182px;
+    top: 528px;
+    width: 420px;
+    height: 132px;
+    margin: 0;
+    flex-wrap: nowrap;
+    justify-content: center;
+}
+
+.skinned .home .medal {
+    width: 105px;
+    min-width: 105px;
+    max-width: 105px;
+    margin: 0;
+    background-size: 84px 84px;
+}
+
+.skinned .home .medal.chip--on {
+    background-size: 92px 92px;
+    border-width: 0;
+}
+
+.skinned .home .game__mode {
+    position: absolute;
+    left: 176px;
+    top: 654px;
+    width: 443px;
+    height: 68px;
+    margin: 0;
+    justify-content: space-between;
+}
+
+.skinned .home .game__mode-label {
+    padding: 0;
+    font-size: 43px;
+}
+
+/* The track is a pill: its rounded ends keep their shape and only the middle gives. */
+.skinned .home .switch {
+    width: 130px;
+    height: 68px;
+    -unity-slice-left: 84;
+    -unity-slice-right: 84;
+    -unity-slice-top: 0;
+    -unity-slice-bottom: 0;
+    -unity-slice-scale: 0.405px;
+}
+
+.skinned .home .switch__knob {
+    width: 60px;
+    height: 60px;
+    margin: 0 0 0 6px;
+}
+
+.skinned .home .switch--on > .switch__knob {
+    translate: 58px 0;
+}
+
+.skinned .home .game__help {
+    top: 150px;
+    right: 112px;
+}
+
+/* Play, on its plinth's box. */
+.skinned .home .game__play {
+    position: absolute;
+    left: 285px;
+    top: 1155px;
+    width: 510px;
+    height: 192px;
+    margin: 0;
+    padding: 0 0 18px 0;
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/Rooftop/Buttons/btn_primary_pressed_9.png");
+    -unity-slice-left: 70;
+    -unity-slice-right: 70;
+    -unity-slice-top: 90;
+    -unity-slice-bottom: 114;
+    -unity-slice-scale: 0.82px;
+    -unity-slice-type: tiled;
+    font-size: 70px;
+    letter-spacing: 1px;
+}
+
+.skinned .home .game__play:active {
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/Rooftop/Buttons/btn_primary_pressed_9.png");
+}
+
+/* The two boards hang from the arch on their ropes; the chest stands on its board. */
+.skinned .home .home__rope--board-left {
+    left: 202px;
+    top: 1262px;
+    height: 330px;
+}
+
+.skinned .home .home__rope--board-right {
+    left: 494px;
+    top: 1262px;
+    height: 330px;
+}
+
+.skinned .home .home__boards > .plank {
+    position: absolute;
+    left: 155px;
+    width: 400px;
+    height: 115px;
+    margin: 0;
+    padding: 0 0 8px 0;
+    font-size: 57px;
+    -unity-slice-scale: 0.62px;
+}
+
+.skinned .home #create {
+    top: 1420px;
+}
+
+.skinned .home #join-toggle {
+    top: 1565px;
+}
+
+.skinned .home .daily {
+    position: absolute;
+    left: 620px;
+    top: 1340px;
+    width: 330px;
+    height: 400px;
+    margin: 0;
+    padding: 0;
+}
+
+.skinned .home .daily__board {
+    position: absolute;
+    left: 0;
+    top: 205px;
+    width: 330px;
+    height: 133px;
+    margin: 0;
+    padding: 0 0 8px 0;
+    font-size: 47px;
+    -unity-slice-scale: 0.62px;
+}
+
+.skinned .home .daily__chest {
+    position: absolute;
+    left: 20px;
+    top: 4px;
+    width: 299px;
+    height: 260px;
+}
+
+.skinned .home .daily__text {
+    position: absolute;
+    left: -20px;
+    right: -20px;
+    top: 342px;
+    margin: 0;
+    font-size: 24px;
+}
+
+/* Below the stage: the friend banner, the name prompt, friends online and the join panel. */
+.skinned .home .home__scroll .hero {
+    align-self: center;
+    width: 720px;
+    margin: 0 0 12px 0;
+}
+
+/* The dock, matched to the reference: inset 52 left and 50 right, four 218-wide slots, toy icons
+   about 115 tall that rise 15 above its top edge, labels centred 123 below it. */
+.skinned .nav {
+    margin: 0 50px 0 52px;
+    height: 145px;
+    padding: 0 49px 0 57px;
+    -unity-slice-left: 70;
+    -unity-slice-right: 70;
+    -unity-slice-top: 55;
+    -unity-slice-bottom: 56;
+    -unity-slice-scale: 1px;
+}
+
+.skinned .nav__tab {
+    flex-grow: 0;
+    flex-basis: 218px;
+    width: 218px;
+    height: 145px;
+    min-height: 145px;
+    justify-content: flex-start;
+    align-items: center;
+    overflow: visible;
+}
+
+.skinned .nav__art {
+    width: 134px;
+    height: 134px;
+    margin-top: -30px;
+}
+
+.skinned .nav__tab--on .nav__art {
+    scale: 1.08 1.08;
+    translate: 0 -4px;
+}
+
+.skinned .nav__label {
+    margin-top: -6px;
+    height: 50px;
+    font-size: 41px;
+    -unity-text-align: middle-center;
+    text-shadow: 0 3px 2px rgba(20, 10, 4, 0.85);
+}
+
+.skinned .nav__badge {
+    top: -24px;
+    right: 34px;
+}
+
+.skinned .home .game__card {
+    margin: 0 -38px;
+    scale: 0.86 0.86;
+}
+
+/* The reference's board, sign and dock lettering is heavy cream on a dark edge; Unity's outline eats
+   into the letters, so a close, dark shadow gives the edge instead. */
+.skinned .home .home__boards > .plank, .skinned .home .daily__board, .skinned .home .home__name, .skinned .nav__label, .skinned .home .game__mode-label, .skinned .home .game__line {
+    -unity-text-outline-width: 0;
+    text-shadow: 0 3px 1px rgba(30, 14, 5, 0.95);
+}
+
+/* Room for longer languages: the title lines get the height their font needs, and the boards keep the
+   reference width but grow from their centre when a phrase is longer. */
+.skinned .home .game__name {
+    top: 197px;
+    height: 154px;
+    padding: 0;
+}
+
+.skinned .home .game__line {
+    top: 322px;
+    height: 72px;
+    padding: 0;
+}
+
+.skinned .home .home__boards > .plank {
+    left: 355px;
+    width: auto;
+    min-width: 400px;
+    padding: 0 34px 8px 34px;
+    translate: -50% 0;
+}
+
+.skinned .home .daily__board {
+    left: 165px;
+    width: auto;
+    min-width: 330px;
+    padding: 0 28px 8px 28px;
+    translate: -50% 0;
+}

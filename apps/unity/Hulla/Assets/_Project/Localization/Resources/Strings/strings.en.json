@@ -2684,7 +2684,7 @@
   },
   {
    "key": "ui.create_room",
-   "text": "Create a room",
+   "text": "Create Room",
    "smart": false
   },
   {
@@ -3039,7 +3039,7 @@
   },
   {
    "key": "ui.join_by_code",
-   "text": "Join by code",
+   "text": "Join by Code",
    "smart": false
   },
   {

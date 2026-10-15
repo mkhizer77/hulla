@@ -401,6 +401,26 @@
     -unity-text-align: middle-left;
 }
 
+.rtl .skinned .home .home__name {
+    -unity-text-align: middle-center;
+}
+
+.rtl .skinned .home .home__coins {
+    -unity-text-align: middle-center;
+}
+
+.rtl .skinned .home .game__name {
+    -unity-text-align: middle-center;
+}
+
+.rtl .skinned .home .game__line {
+    -unity-text-align: middle-center;
+}
+
+.rtl .skinned .nav__label {
+    -unity-text-align: middle-center;
+}
+
 /* Screens/Ranked/Ranked.uss */
 .rtl .ranked__league {
     -unity-text-align: middle-center;

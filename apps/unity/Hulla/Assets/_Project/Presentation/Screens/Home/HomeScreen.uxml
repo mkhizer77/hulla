@@ -1,7 +1,8 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements">
     <ui:VisualElement name="home" class="screen home">
         <ui:ScrollView class="settings__scroll home__scroll" horizontal-scroller-visibility="Hidden" vertical-scroller-visibility="Hidden">
-            <ui:VisualElement class="home__header">
+            <ui:VisualElement name="stage" class="home__stage" picking-mode="Ignore">
+            <ui:VisualElement class="home__header" picking-mode="Ignore">
                 <ui:VisualElement class="home__rope home__rope--sign-left" picking-mode="Ignore" />
                 <ui:VisualElement class="home__rope home__rope--sign-right" picking-mode="Ignore" />
                 <ui:VisualElement name="me" class="home__me home__sign">
@@ -12,13 +13,7 @@
                     <ui:Label name="coins" class="home__coins" />
                 </ui:VisualElement>
             </ui:VisualElement>
-            <ui:Label name="progress" class="caption progress-line home__progress" />
-            <ui:VisualElement name="name-panel" class="panel">
-                <ui:TextField name="name" class="field" />
-            </ui:VisualElement>
-            <ui:Button name="hero" class="button button--secondary hero" />
-            <ui:Button name="rejoin" class="button button--primary hero" />
-            <ui:VisualElement name="games" class="games">
+            <ui:VisualElement name="games" class="games" picking-mode="Ignore">
                 <ui:VisualElement name="game-thulla" class="game">
                     <ui:Label name="game-thulla-name" class="game__name" />
                     <ui:Label name="game-thulla-line" class="game__line" />
@@ -36,8 +31,8 @@
                 </ui:VisualElement>
                 <ui:Button name="quick" class="button button--primary game__play" />
             </ui:VisualElement>
-            <ui:VisualElement class="home__lower">
-                <ui:VisualElement class="home__boards">
+            <ui:VisualElement class="home__lower" picking-mode="Ignore">
+                <ui:VisualElement class="home__boards" picking-mode="Ignore">
                     <ui:VisualElement class="home__rope home__rope--board-left" picking-mode="Ignore" />
                     <ui:VisualElement class="home__rope home__rope--board-right" picking-mode="Ignore" />
                     <ui:Button name="create" class="button button--secondary plank plank--red" />
@@ -48,6 +43,13 @@
                     <ui:Label name="daily-text" class="daily__text" />
                     <ui:VisualElement name="daily-chest" class="daily__chest" />
                 </ui:VisualElement>
+            </ui:VisualElement>
+            </ui:VisualElement>
+            <ui:Button name="hero" class="button button--secondary hero" />
+            <ui:Button name="rejoin" class="button button--primary hero" />
+            <ui:Label name="progress" class="caption progress-line home__progress" />
+            <ui:VisualElement name="name-panel" class="panel">
+                <ui:TextField name="name" class="field" />
             </ui:VisualElement>
             <ui:VisualElement name="party" class="party" />
             <ui:Label name="online" class="caption home__online" />

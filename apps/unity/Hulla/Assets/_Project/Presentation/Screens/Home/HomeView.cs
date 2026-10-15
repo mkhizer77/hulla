@@ -194,8 +194,8 @@ namespace Hulla.Presentation.Screens.Home
                 var card = new TableKit.CardElement().Show(fan[i]);
                 card.AddToClassList("game__card");
                 var off = i - (fan.Length - 1) / 2f;
-                card.style.rotate = new Rotate(off * 9f);
-                card.style.marginTop = Math.Abs(off) * Math.Abs(off) * 5f;
+                card.style.rotate = new Rotate(off * 11f);
+                card.style.marginTop = Math.Abs(off) * Math.Abs(off) * 6f;
                 art.Add(card);
             }
         }
