@@ -668,6 +668,11 @@ export function tableMatchHandler<S, M, V, E, R>(
             tableId: state.tableId,
             present: record !== undefined,
             seat: record?.seat ?? null,
+            // Whether the user still owns a seat, connected or not: Home offers Rejoin while it does.
+            seated: state.phase !== "closing" && state.seats.some((s) => s.playerId === userId),
+            code: state.code,
+            mode: state.mode,
+            status: tableStatus(state),
           }),
         };
       }

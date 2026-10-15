@@ -181,8 +181,13 @@ namespace Hulla.Integration.Tests
                 await WaitFor(() => dropped.Client!.Model.InRound, 20f, "the round started");
                 dropped.Connection.Close();
                 await Awaitable.WaitForSecondsAsync(1f);
+                var droppedSeat = (int)dropped.Client!.Model.MySeat!.Value;
+                await WaitFor(() => _players[0].Client!.Model.Seats[droppedSeat].AutoPlay, 10f, "the others saw a bot take the seat");
                 var reconnected = await dropped.Session.ReconnectAsync(default);
                 Assert.IsTrue(reconnected.IsOk, "reconnect: " + reconnected.Error);
+                var mine = await dropped.Gateway.FindMineAsync(default);
+                Assert.IsTrue(mine.IsOk, "table_mine: " + (mine.IsOk ? "" : mine.Error.ToString()));
+                Assert.AreEqual(tickets[dropped].MatchId, mine.Value?.MatchId, "Home offers Rejoin while the seat is held");
                 var rejoined = await dropped.Gateway.EnterAsync(tickets[dropped], default);
                 Assert.IsTrue(rejoined.IsOk, "rejoin: " + rejoined.Error);
                 await WaitFor(() => dropped.Client!.Model.Hand.Count > 0 || dropped.Client.Model.LastResult != null, 20f, "the hand came back with table_state");

@@ -61,7 +61,7 @@ namespace Hulla.Application.ViewModels
         public async Awaitable StartAsync(int seats, CancellationToken cancellation)
         {
             Ranked = false;
-            Seats = Math.Clamp(seats, 4, 6);
+            Seats = Math.Clamp(seats, 3, 6);
             Elapsed = 0f;
             ErrorCode = null;
             _cancellation = cancellation;

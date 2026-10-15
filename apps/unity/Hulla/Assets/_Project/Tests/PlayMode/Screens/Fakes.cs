@@ -37,6 +37,8 @@ namespace Hulla.Screens.Tests
 
             public Awaitable<Result<TableTicket>> JoinByCodeAsync(string code, CancellationToken cancellation) => Done(Result<TableTicket>.Fail("fake"));
 
+            public Awaitable<Result<TableTicket?>> FindMineAsync(CancellationToken cancellation) => Done(Result<TableTicket?>.Ok(null));
+
             public Awaitable<Result<bool>> EnterAsync(TableTicket ticket, CancellationToken cancellation) => Done(Result<bool>.Ok(true));
 
             public void Send(string type, object payload) => Sent.Add((type, payload));

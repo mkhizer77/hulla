@@ -23,6 +23,8 @@ namespace Hulla.Application.Tests
 
         public Awaitable<Result<TableTicket>> JoinByCodeAsync(string code, CancellationToken cancellation) => throw new NotSupportedException();
 
+        public Awaitable<Result<TableTicket?>> FindMineAsync(CancellationToken cancellation) => throw new NotSupportedException();
+
         public Awaitable<Result<bool>> EnterAsync(TableTicket ticket, CancellationToken cancellation) => throw new NotSupportedException();
 
         public void Send(string type, object payload) => Sent.Add((type, payload));

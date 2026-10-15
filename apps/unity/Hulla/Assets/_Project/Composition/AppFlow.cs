@@ -381,6 +381,7 @@ namespace Hulla.Composition
             home.SetQuickPlay(_app.RemoteConfig.QuickPlay, QuickPlayNote());
             var left = LastTableCode();
             home.ShowRejoin(left, left == null ? null : () => Rejoin(home, left));
+            RefreshRejoin(home);
             _daily = new DailyRewardCard(UnityEngine.UIElements.UQueryExtensions.Q<UnityEngine.UIElements.VisualElement>(root, "daily"), _app.DailyReward, ClaimDailyReward);
             _app.HomeFriends.Active = _app.Sessions.Current != null;
             _app.HomeFriends.RefreshSoon();
@@ -657,6 +658,11 @@ namespace Hulla.Composition
                 await _app.DailyReward.RefreshAsync(LocalOffsetMinutes(), _app.Lifetime);
             }
 
+            if (signedIn.IsOk && _view is HomeView shown)
+            {
+                RefreshRejoin(shown);
+            }
+
             if (signedIn.IsOk && _screen == Screen.Home)
             {
                 _app.HomeFriends.Active = true;
@@ -875,6 +881,28 @@ namespace Hulla.Composition
             await EnterAsync(ticket);
         }
 
+        /// <summary>
+        /// Rejoin stays on Home while the server still holds the player's seat, Quick Play included
+        /// (GDD 9.8): until the round they left ends and the seat is given up or the table closes.
+        /// </summary>
+        private async void RefreshRejoin(HomeView home)
+        {
+            TableTicket? mine;
+            try
+            {
+                mine = await _app.Home.FindMineAsync(_app.Lifetime);
+            }
+            catch (OperationCanceledException)
+            {
+                return;
+            }
+
+            if (mine != null && _view == home)
+            {
+                home.ShowRejoin(mine.Code, () => _ = EnterAsync(Result<TableTicket>.Ok(mine)));
+            }
+        }
+
         /// <summary>A tapped notification (GDD 10.10) opens its screen; an invite joins like a link.</summary>
         private void OpenFromPush()
         {
@@ -1038,6 +1066,7 @@ namespace Hulla.Composition
 
             client.Events.Clear();
             _tableView = new ThullaTableView(_shell.Show(_shell.Catalog.Table), client, _app.Chat, () => DateTimeOffset.UtcNow.ToUnixTimeMilliseconds(), Leave, openSettings: OpenSettings, openRules: OpenRules, sendText: text => _app.TableChat.SendAsync(text, _app.Lifetime), sounds: _sounds);
+            _tableView.Invite = () => ShareCode(client.Model.Code);
             ApplySettings();
             var hints = new ThullaHints(_app.Store);
             if (hints.Active)

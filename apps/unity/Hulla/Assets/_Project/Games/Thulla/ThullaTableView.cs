@@ -128,6 +128,9 @@ namespace Hulla.Games.Thulla
         /// <param name="hideRecapForGood">Remembers "don't show again"; null when the player already chose it.</param>
         /// <param name="sounds">The table's sounds; null for silence (tests).</param>
         /// <param name="autoPlaySingle">A lone legal card plays itself after a beat (R44); off in the tutorial.</param>
+        /// <summary>Players who dropped this round, by seat; a bot plays for them until they are back (R44).</summary>
+        private readonly Dictionary<long, string> _leftThisRound = new Dictionary<long, string>();
+
         public ThullaTableView(
             VisualElement root,
             TableClient client,
@@ -177,6 +180,7 @@ namespace Hulla.Games.Thulla
             _takeHand.clicked += AskForHand;
             _toast = root.Q<Label>("toast");
             _results = new ThullaResults(root.Q<VisualElement>("results"), NameOf, AvatarOf, VoteAgain);
+            _results.WhoLeft = () => new List<string>(_leftThisRound.Values);
             var settingsButton = root.Q<Button>("settings");
             settingsButton.text = UiText.Settings;
             settingsButton.clicked += () => openSettings?.Invoke();
@@ -453,6 +457,7 @@ namespace Hulla.Games.Thulla
                     return 1.3f;
                 case RoundStart _:
                     _voted = false;
+                    _leftThisRound.Clear();
                     _escapes = 0;
                     _sounds?.Play(Sound.Deal);
                     SetContext(QuickStrip.Any);
@@ -481,6 +486,9 @@ namespace Hulla.Games.Thulla
                     return 0f;
                 case HandAnswered answered:
                     PresentAnswer(answered);
+                    return 0f;
+                case Presence presence:
+                    PresentPresence(presence);
                     return 0f;
                 default:
                     return 0f;
@@ -553,6 +561,47 @@ namespace Hulla.Games.Thulla
             }
 
             _ring.BadgeFor(asked.Asker)?.Say(Strings.Format(UiText.AsksForHand, NameOf(asked.Target)), SaySeconds);
+        }
+
+        /// <summary>
+        /// A player who drops mid-round is played by the auto-play bot (R44): everyone is told who left
+        /// and that a bot has their seat, and told again when they are back.
+        /// </summary>
+        private void PresentPresence(Presence presence)
+        {
+            var model = _client.Model;
+            if (presence.Seat == null || presence.Seat == model.MySeat || !model.InRound)
+            {
+                return;
+            }
+
+            var seat = presence.Seat.Value;
+            var name = presence.DisplayName ?? NameOf(seat);
+            var back = presence.Status == Hulla.Protocol.Status.Reconnected;
+            if (!back && presence.Status != Hulla.Protocol.Status.Disconnected && presence.Status != Hulla.Protocol.Status.AutoPlay)
+            {
+                return;
+            }
+
+            if (back)
+            {
+                _leftThisRound.Remove(seat);
+            }
+            else
+            {
+                _leftThisRound[seat] = name;
+            }
+
+            _hint.text = back ? Strings.Format(UiText.PlayerBack, name) : Strings.Format(UiText.BotPlaysFor, name);
+            _hint.style.display = DisplayStyle.Flex;
+            _hintLeft = SaySeconds;
+            _ring.BadgeFor(seat)?.Say(back ? UiText.Back : UiText.SeatAutoPlay, SaySeconds);
+        }
+
+        /// <summary>Shares the room code from the results so someone can take a seat a player left (private rooms).</summary>
+        public Action? Invite
+        {
+            set => _results.Invite = value;
         }
 
         private void PresentAnswer(HandAnswered answered)

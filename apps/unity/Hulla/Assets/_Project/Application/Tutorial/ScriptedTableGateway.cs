@@ -175,6 +175,8 @@ namespace Hulla.Application.Tutorial
 
         public Awaitable<Result<TableTicket>> JoinByCodeAsync(string code, CancellationToken cancellation) => Done(Result<TableTicket>.Fail("tutorial"));
 
+        public Awaitable<Result<TableTicket?>> FindMineAsync(CancellationToken cancellation) => Done(Result<TableTicket?>.Ok(null));
+
         public Awaitable<Result<bool>> EnterAsync(TableTicket ticket, CancellationToken cancellation) => Done(Result<bool>.Ok(true));
 
         public Awaitable LeaveAsync()

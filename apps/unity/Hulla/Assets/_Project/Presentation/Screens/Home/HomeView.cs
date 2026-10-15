@@ -120,7 +120,7 @@ namespace Hulla.Presentation.Screens.Home
             _join.clicked += () => WithName(name => join(name, _code.value, Server()));
             root.Q<Label>("seats-label").text = UiText.SeatsLabel;
             var seatChips = root.Q<VisualElement>("seats");
-            for (var n = 4; n <= 6; n++)
+            for (var n = 3; n <= 6; n++)
             {
                 var count = n;
                 var chip = new Button { text = count.ToString() };
@@ -235,11 +235,14 @@ namespace Hulla.Presentation.Screens.Home
             }
         }
 
-        /// <summary>Offers the table the player left mid-round (GDD 9.8); a null code hides the offer.</summary>
+        /// <summary>
+        /// Offers the table the player left while their seat is held (GDD 9.8); a null code hides the
+        /// offer, an empty one is a matchmade table without a room code.
+        /// </summary>
         public void ShowRejoin(string? code, Action? rejoin)
         {
             _onRejoin = rejoin;
-            _rejoin.text = code == null ? "" : Strings.Format(UiText.RejoinTable, code);
+            _rejoin.text = code == null ? "" : code.Length == 0 ? UiText.RejoinGame : Strings.Format(UiText.RejoinTable, code);
             _rejoin.style.display = code == null || rejoin == null ? DisplayStyle.None : DisplayStyle.Flex;
         }
 

@@ -70,6 +70,7 @@ import {
   rpcPhoneVerify,
 } from "./rpc/phone";
 import { rpcPresenceSet, rpcTableListFriends } from "./rpc/presence";
+import { rpcTableMine } from "./rpc/table_mine";
 import { rpcPresetsGet } from "./rpc/presets_get";
 import { rpcProfileGet, rpcProfileUpdate } from "./rpc/profile";
 import { rpcEconomyProducts, rpcIapRestore, rpcIapVerify } from "./rpc/purchases";
@@ -140,6 +141,7 @@ function InitModule(
   initializer.registerRpc("favourite_set", rpcFavouriteSet);
   initializer.registerRpc("social_overview", rpcSocialOverview);
   initializer.registerRpc("table_list_friends", rpcTableListFriends);
+  initializer.registerRpc("table_mine", rpcTableMine);
   initializer.registerRpc("presence_set", rpcPresenceSet);
   initializer.registerRpc("mute_set", rpcMuteSet);
   initializer.registerRpc("mutes_get", rpcMutesGet);

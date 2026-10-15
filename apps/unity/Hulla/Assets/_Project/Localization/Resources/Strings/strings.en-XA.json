@@ -2533,6 +2533,11 @@
    "smart": false
   },
   {
+   "key": "ui.back_at_table",
+   "text": "[Båçk ·]",
+   "smart": false
+  },
+  {
    "key": "ui.balances",
    "text": "[{0:N0} çöîñs · {1:N0} géms · · ·]",
    "smart": true
@@ -2566,6 +2571,11 @@
    "key": "ui.board_empty",
    "text": "[Ñö pöîñts ýét. Wîñ röûñds tö gét öñ thé böård. · · · · · · ·]",
    "smart": false
+  },
+  {
+   "key": "ui.bot_plays_for",
+   "text": "[{0} léft. Å böt îs plåýîñg för thém ûñtîl théý'ré båçk. · · · · · · · · ·]",
+   "smart": true
   },
   {
    "key": "ui.buy",
@@ -2660,6 +2670,11 @@
   {
    "key": "ui.connecting",
    "text": "[Çöññéçtîñg… · ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.continue_without",
+   "text": "[Çöñtîñûé wîthöût thém · · · ·]",
    "smart": false
   },
   {
@@ -3008,6 +3023,11 @@
    "smart": true
   },
   {
+   "key": "ui.invite_someone",
+   "text": "[Îñvîté söméöñé · · ·]",
+   "smart": false
+  },
+  {
    "key": "ui.invite_your_group",
    "text": "[Îñvîté ýöûr gröûp · · ·]",
    "smart": false
@@ -3071,6 +3091,11 @@
    "key": "ui.left_handed_label",
    "text": "[Léft-håñdéd låýöût · · ·]",
    "smart": false
+  },
+  {
+   "key": "ui.left_the_table",
+   "text": "[{0} léft thé tåblé · · ·]",
+   "smart": true
   },
   {
    "key": "ui.level_up",
@@ -3160,6 +3185,16 @@
   {
    "key": "ui.name_too_short",
    "text": "[Å ñåmé ñééds åt léåst 2 çhåråçtérs. · · · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.need_three_find_table",
+   "text": "[Ñöt éñöûgh plåýérs léft tö plåý öñ. Plåý ñöw fîñds ýöû å ñéw tåblé. · · · · · · · · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.need_three_invite",
+   "text": "[Ýöû ñééd thréé plåýérs tö plåý öñ. Îñvîté söméöñé tö tåké thé émptý séåt. · · · · · · · · · · ·]",
    "smart": false
   },
   {
@@ -3328,6 +3363,11 @@
    "smart": false
   },
   {
+   "key": "ui.player_back",
+   "text": "[{0} îs båçk. · ·]",
+   "smart": true
+  },
+  {
    "key": "ui.playing",
    "text": "[Plåýîñg… · ·]",
    "smart": false
@@ -3425,6 +3465,11 @@
   {
    "key": "ui.referral_while_seated",
    "text": "[Öpéñ thé lîñk ågåîñ åftér thîs tåblé tö ådd ýöûr frîéñd. · · · · · · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.rejoin_game",
+   "text": "[Réjöîñ ýöûr gåmé · · ·]",
    "smart": false
   },
   {
@@ -3579,12 +3624,12 @@
   },
   {
    "key": "ui.seat_auto_play",
-   "text": "[Åûtö-plåý · ·]",
+   "text": "[Böt plåýîñg · ·]",
    "smart": false
   },
   {
    "key": "ui.seat_away_auto_play",
-   "text": "[Åwåý · åûtö-plåý · · ·]",
+   "text": "[Léft · böt plåýîñg · · ·]",
    "smart": false
   },
   {

@@ -168,6 +168,33 @@ describe("the Nakama binding", () => {
       phase: "lobby",
       seated: 3,
     });
+    const mine = b.handler.matchSignal(
+      ctx,
+      b.logger,
+      b.nk,
+      b.d.dispatcher,
+      4,
+      b.state,
+      JSON.stringify({ kind: "has_user", userId: "u1" }),
+    );
+    expect(JSON.parse(mine?.data ?? "{}")).toMatchObject({
+      ok: true,
+      present: true,
+      seated: true,
+      code: "ABCDEF",
+      mode: "public",
+      status: "open",
+    });
+    const stranger = b.handler.matchSignal(
+      ctx,
+      b.logger,
+      b.nk,
+      b.d.dispatcher,
+      4,
+      b.state,
+      JSON.stringify({ kind: "has_user", userId: "u9" }),
+    );
+    expect(JSON.parse(stranger?.data ?? "{}")).toMatchObject({ present: false, seated: false });
     const garbage = b.handler.matchSignal(ctx, b.logger, b.nk, b.d.dispatcher, 4, b.state, "{");
     expect(JSON.parse(garbage?.data ?? "{}")).toEqual({ ok: false });
     b.handler.matchSignal(
