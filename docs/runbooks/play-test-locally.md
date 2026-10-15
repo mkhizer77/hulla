@@ -6,8 +6,8 @@ A private Thulla table with friends on the same Wi-Fi, using a laptop as the ser
 From `server/nakama`: `pnpm --filter @hulla/server build`, then `HULLA_BIND=0.0.0.0 docker compose up -d --wait` so phones on the Wi-Fi can reach it (without `HULLA_BIND` it listens on 127.0.0.1 only). Check it with `curl "http://<laptop-ip>:7350/v2/rpc/hello?http_key=local-only-http-key"`.
 
 ## 2. Clients
-- **Android:** `Unity -batchmode -quit -projectPath apps/unity/Hulla -executeMethod Hulla.BuildTools.BuildCommands.AndroidDevelopment` writes `apps/unity/Hulla/Builds/Android/hulla-dev.apk`. Install it with `adb install -r` (adb ships with Unity's Android module under `PlaybackEngines/AndroidPlayer/SDK/platform-tools`) or copy the file to the phone.
-- **macOS:** `...BuildCommands.MacDevelopment` writes `Builds/macOS/Hulla.app`. Several copies can run side by side with `-hulla-device <name>` so each signs in as a different player; `-hulla-server <host[:port]>` sets the server.
+- **Android:** `Unity -batchmode -quit -buildTarget Android -projectPath apps/unity/Hulla -executeMethod Hulla.BuildTools.BuildCommands.AndroidDevelopment` writes `apps/unity/Hulla/Builds/Android/hulla-dev.apk`. The editor must start on the target platform (`-buildTarget`): the Addressables bundles are built for it, and a build for another platform stops with that message. Install it with `adb install -r` (adb ships with Unity's Android module under `PlaybackEngines/AndroidPlayer/SDK/platform-tools`) or copy the file to the phone.
+- **macOS:** the same with `-buildTarget OSXUniversal` and `...BuildCommands.MacDevelopment` writes `Builds/macOS/Hulla.app`. Several copies can run side by side with `-hulla-device <name>` so each signs in as a different player; `-hulla-server <host[:port]>` sets the server.
 - **Editor:** open the project, press Play in the `Boot` scene.
 
 ## 3. Play
