@@ -29,8 +29,6 @@ namespace Hulla.Presentation.Navigation
         public float Bottom { get; }
 
         public float Left { get; }
-
-        public override string ToString() => $"top {Top}, right {Right}, bottom {Bottom}, left {Left}";
     }
 
     /// <summary>
