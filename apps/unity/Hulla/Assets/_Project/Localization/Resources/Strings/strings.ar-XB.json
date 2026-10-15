@@ -3408,6 +3408,11 @@
    "smart": true
   },
   {
+   "key": "ui.premium",
+   "text": "Premium",
+   "smart": false
+  },
+  {
    "key": "ui.premium_locked",
    "text": "The premium track opens with the premium pass.",
    "smart": false
@@ -3856,6 +3861,26 @@
    "key": "ui.starts_in",
    "text": "Dealing in {0}s",
    "smart": true
+  },
+  {
+   "key": "ui.stat_bhabhis",
+   "text": "Times Bhabhi",
+   "smart": false
+  },
+  {
+   "key": "ui.stat_escapes",
+   "text": "Clean escapes",
+   "smart": false
+  },
+  {
+   "key": "ui.stat_rounds",
+   "text": "Rounds played",
+   "smart": false
+  },
+  {
+   "key": "ui.stat_thullas",
+   "text": "Thullas given",
+   "smart": false
   },
   {
    "key": "ui.stats_line",

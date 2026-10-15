@@ -3408,6 +3408,11 @@
    "smart": true
   },
   {
+   "key": "ui.premium",
+   "text": "[Prémîûm · ·]",
+   "smart": false
+  },
+  {
    "key": "ui.premium_locked",
    "text": "[Thé prémîûm tråçk öpéñs wîth thé prémîûm påss. · · · · · · ·]",
    "smart": false
@@ -3856,6 +3861,26 @@
    "key": "ui.starts_in",
    "text": "[Déålîñg îñ {0}s · · ·]",
    "smart": true
+  },
+  {
+   "key": "ui.stat_bhabhis",
+   "text": "[Tîmés Bhåbhî · ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.stat_escapes",
+   "text": "[Çléåñ ésçåpés · ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.stat_rounds",
+   "text": "[Röûñds plåýéd · ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.stat_thullas",
+   "text": "[Thûllås gîvéñ · ·]",
+   "smart": false
   },
   {
    "key": "ui.stats_line",

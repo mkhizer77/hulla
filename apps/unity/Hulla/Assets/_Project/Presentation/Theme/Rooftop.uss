@@ -1010,6 +1010,7 @@
     -unity-slice-top: 95;
     -unity-slice-bottom: 95;
     -unity-slice-scale: 0.7px;
+    -unity-background-image-tint-color: rgb(150, 118, 96);
 }
 
 .skin--dhaba .home__scroll, .skin--dhaba .inventory, .skin--dhaba #inventory .settings__scroll {
@@ -1047,4 +1048,402 @@
 
 .skin--dhaba .settings__scroll .caption {
     color: #E6D3B3;
+}
+
+/* ---------------------------------------------------------------- Shop, the Bazaar (pack: sprites/05_shop_bazaar) */
+
+.skin--dhaba .shop__balances {
+    align-self: center;
+    padding: 6px 30px 10px 76px;
+    margin-bottom: var(--space-1);
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/Rooftop/Frames/nameplate_wood_blank.png");
+    -unity-slice-left: 60;
+    -unity-slice-right: 60;
+    -unity-slice-top: 40;
+    -unity-slice-bottom: 40;
+    -unity-slice-scale: 0.6px;
+    color: #FFE082;
+    -unity-font-definition: url("/Assets/_Project/Presentation/Theme/Fonts/NunitoExtraBold.ttf");
+}
+
+/* The spotlight sits in the truck-art arch. */
+.skin--dhaba .shop__spotlight {
+    padding: 110px 80px 70px 80px;
+    border-radius: 0;
+    background-color: rgba(0, 0, 0, 0);
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/Rooftop/Frames/frame_truckart_arch.png");
+    -unity-background-scale-mode: stretch-to-fill;
+    -unity-slice-left: 110;
+    -unity-slice-right: 110;
+    -unity-slice-top: 140;
+    -unity-slice-bottom: 100;
+    -unity-slice-scale: 0.8px;
+}
+
+.skin--dhaba .shop__spotlight-name {
+    -unity-font-definition: url("/Assets/_Project/Presentation/Theme/Fonts/LilitaOne.ttf");
+    -unity-font-style: normal;
+    color: #FFF8E1;
+    -unity-text-outline-width: 2px;
+    -unity-text-outline-color: #1F0E05;
+}
+
+.skin--dhaba .shop__price {
+    align-self: flex-start;
+    padding: 4px 26px 8px 26px;
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/Rooftop/Buttons/btn_chip_pill_normal.png");
+    -unity-slice-left: 60;
+    -unity-slice-right: 60;
+    -unity-slice-top: 50;
+    -unity-slice-bottom: 50;
+    -unity-slice-scale: 0.45px;
+    color: #FFE082;
+    -unity-font-definition: url("/Assets/_Project/Presentation/Theme/Fonts/NunitoExtraBold.ttf");
+}
+
+/* Card backs and faces preview as cards with a cream border, like the pack's collection. */
+.skin--dhaba .shop__preview {
+    border-width: 5px;
+    border-color: #F5F0E6;
+    border-radius: 14px;
+}
+
+.skin--dhaba .shop__tile {
+    padding: 22px 30px 26px 30px;
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/Rooftop/Buttons/btn_plank_large_normal.png");
+    -unity-slice-left: 110;
+    -unity-slice-right: 110;
+    -unity-slice-top: 95;
+    -unity-slice-bottom: 95;
+    -unity-slice-scale: 0.45px;
+}
+
+/* Rarity as a tag on the tile's top edge. */
+.skin--dhaba .shop__rarity {
+    padding: 2px 22px 6px 22px;
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/Rooftop/Frames/nameplate_wood_blank.png");
+    -unity-slice-left: 60;
+    -unity-slice-right: 60;
+    -unity-slice-top: 40;
+    -unity-slice-bottom: 40;
+    -unity-slice-scale: 0.4px;
+    font-size: 22px;
+    -unity-font-definition: url("/Assets/_Project/Presentation/Theme/Fonts/NunitoExtraBold.ttf");
+    letter-spacing: 1px;
+}
+
+.skin--dhaba .shop__equipped {
+    padding: 8px 0 12px 0;
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/Rooftop/Buttons/btn_chip_pill_pressed.png");
+    -unity-slice-left: 60;
+    -unity-slice-right: 60;
+    -unity-slice-top: 50;
+    -unity-slice-bottom: 50;
+    -unity-slice-scale: 0.45px;
+    background-color: rgba(0, 0, 0, 0);
+    color: #E6D3B3;
+}
+
+/* ---------------------------------------------------------------- Season pass (pack: sprites/06_season_pass) */
+
+.skin--dhaba .pass__header {
+    padding-top: 40px;
+}
+
+.skin--dhaba .pass__header > .title {
+    -unity-font-definition: url("/Assets/_Project/Presentation/Theme/Fonts/LilitaOne.ttf");
+}
+
+/* Lane tags: FREE on wood, PREMIUM on the magenta banner. */
+.skin--dhaba .pass__lane {
+    border-radius: 0;
+    background-color: rgba(0, 0, 0, 0);
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/Rooftop/Frames/nameplate_wood_blank.png");
+    -unity-slice-left: 60;
+    -unity-slice-right: 60;
+    -unity-slice-top: 40;
+    -unity-slice-bottom: 40;
+    -unity-slice-scale: 0.5px;
+    -unity-font-definition: url("/Assets/_Project/Presentation/Theme/Fonts/NunitoExtraBold.ttf");
+    -unity-font-style: normal;
+    color: #FFF8E1;
+}
+
+.skin--dhaba .pass__lane--premium {
+    background-image: none;
+    background-color: #C2185B;
+    border-width: 3px;
+    border-color: #FFE082;
+    border-radius: 12px;
+}
+
+/* Free rewards stand on wood pedestals; the premium lane is a magenta band trimmed in brass. */
+.skin--dhaba .pass__track .pass__side {
+    border-radius: 0;
+    background-color: rgba(0, 0, 0, 0);
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/Rooftop/Buttons/btn_plank_medium_normal.png");
+    -unity-slice-left: 80;
+    -unity-slice-right: 80;
+    -unity-slice-top: 78;
+    -unity-slice-bottom: 78;
+    -unity-slice-scale: 0.5px;
+}
+
+.skin--dhaba .pass__track .pass__side--premium {
+    background-image: none;
+    background-color: rgba(194, 24, 91, 0.55);
+    border-top-width: 3px;
+    border-bottom-width: 3px;
+    border-color: #FFE082;
+}
+
+.skin--dhaba .pass__track .pass__reward {
+    color: #FFF8E1;
+    -unity-font-definition: url("/Assets/_Project/Presentation/Theme/Fonts/NunitoExtraBold.ttf");
+    -unity-text-outline-width: 1px;
+    -unity-text-outline-color: #1F0E05;
+}
+
+/* The tier bar: carved wood, saffron up to the player's tier. */
+.skin--dhaba .pass__track .pass__tier {
+    background-color: #2A170C;
+    border-top-width: 3px;
+    border-bottom-width: 3px;
+    border-color: #8C5D14;
+    color: #E6D3B3;
+    -unity-font-definition: url("/Assets/_Project/Presentation/Theme/Fonts/NunitoExtraBold.ttf");
+}
+
+.skin--dhaba .pass__track .pass__tier--reached {
+    background-color: #F9A825;
+    border-color: #FFE082;
+    color: #1F0E05;
+}
+
+/* ---------------------------------------------------------------- Profile, the dossier (pack: sprites/08_profile_dossier) */
+
+.skin--dhaba .profile__avatar .seat__frame {
+    left: -80px;
+    top: -80px;
+    width: 380px;
+    height: 380px;
+}
+
+.skin--dhaba .profile__dossier {
+    margin-top: 90px;
+}
+
+.skin--dhaba .profile__name {
+    margin-top: 90px;
+    padding: 10px 70px 18px 70px;
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/Rooftop/Frames/nameplate_wood_blank.png");
+    -unity-slice-left: 60;
+    -unity-slice-right: 60;
+    -unity-slice-top: 40;
+    -unity-slice-bottom: 40;
+    -unity-slice-scale: 0.8px;
+    -unity-font-definition: url("/Assets/_Project/Presentation/Theme/Fonts/NunitoExtraBold.ttf");
+    -unity-font-style: normal;
+    color: #FFF8E1;
+}
+
+/* The friend code is a ticket: a small plank with the code in gold. */
+.skin--dhaba .profile__ticket {
+    align-self: center;
+    min-width: 560px;
+    padding: 40px 70px;
+    -unity-slice-scale: 0.45px;
+}
+
+.skin--dhaba .profile__ticket .code {
+    font-size: 72px;
+}
+
+.skin--dhaba .profile__stat {
+    border-radius: 0;
+    background-color: rgba(0, 0, 0, 0);
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/Rooftop/Frames/nameplate_wood_blank.png");
+    -unity-slice-left: 60;
+    -unity-slice-right: 60;
+    -unity-slice-top: 40;
+    -unity-slice-bottom: 40;
+    -unity-slice-scale: 0.7px;
+    padding: 20px 40px 26px 40px;
+}
+
+.skin--dhaba .profile__stat-value {
+    -unity-font-definition: url("/Assets/_Project/Presentation/Theme/Fonts/LilitaOne.ttf");
+    color: #FFF8E1;
+    -unity-text-outline-width: 2px;
+    -unity-text-outline-color: #1F0E05;
+}
+
+.skin--dhaba .profile__stat--loss .profile__stat-value {
+    color: #E53935;
+}
+
+.skin--dhaba .profile__stat-label {
+    color: #E6D3B3;
+}
+
+/* The bio on the parchment scroll, in dark ink. */
+.skin--dhaba .profile__bio {
+    padding: 30px 90px;
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/Rooftop/Frames/panel_parchment_dialog_blank.png");
+    -unity-background-scale-mode: stretch-to-fill;
+    -unity-slice-left: 70;
+    -unity-slice-right: 70;
+    -unity-slice-top: 50;
+    -unity-slice-bottom: 50;
+    -unity-slice-scale: 1px;
+    color: #3A2412;
+    text-shadow: 0 0 0 rgba(0, 0, 0, 0);
+}
+
+/* ---------------------------------------------------------------- Friends (pack: sprites/07_friends_hub) */
+
+.skin--dhaba .friend-row__avatar {
+    margin-left: -10px;
+    margin-right: 40px;
+}
+
+.skin--dhaba .friend-row__avatar .seat__frame {
+    left: -35px;
+    top: -35px;
+    width: 166px;
+    height: 166px;
+}
+
+.skin--dhaba .friend-row__avatar .party__dot {
+    right: -14px;
+    bottom: -14px;
+    border-color: #2A170C;
+    background-color: #43A047;
+}
+
+/* Declines, removals and blocks are red; accepts and adds stay gold. */
+.skin--dhaba .chip.button--danger {
+    -unity-background-image-tint-color: rgb(230, 110, 100);
+    color: #FFF8E1;
+}
+
+/* Add by code: the field and its button on one carved plate. */
+.skin--dhaba #friends .chat-panel__compose {
+    padding: 16px 44px 22px 44px;
+    margin-bottom: var(--space-1);
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/Rooftop/Frames/nameplate_wood_blank.png");
+    -unity-slice-left: 60;
+    -unity-slice-right: 60;
+    -unity-slice-top: 40;
+    -unity-slice-bottom: 40;
+    -unity-slice-scale: 0.8px;
+}
+
+/* ---------------------------------------------------------------- Settings (pack: sprites/09_settings_comforts) */
+
+/* Every toggle is the carved switch: the star knob left when off, right on a warm groove when on. */
+.skin--dhaba .unity-toggle__checkmark {
+    width: 132px;
+    height: 50px;
+    border-width: 0;
+    border-radius: 0;
+    background-color: rgba(0, 0, 0, 0);
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/Rooftop/Buttons/switch_off.png");
+    -unity-background-scale-mode: stretch-to-fill;
+    -unity-background-image-tint-color: rgb(255, 255, 255);
+}
+
+.skin--dhaba .unity-toggle:checked .unity-toggle__checkmark {
+    background-color: rgba(0, 0, 0, 0);
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/Rooftop/Buttons/switch_on.png");
+}
+
+/* Sliders: a carved groove and the brass star knob. */
+.skin--dhaba .unity-base-slider__tracker {
+    height: 20px;
+    margin-top: -10px;
+    border-radius: 10px;
+    border-width: 2px;
+    border-color: #8C5D14;
+    background-color: #2A170C;
+}
+
+.skin--dhaba .unity-base-slider__dragger {
+    width: 68px;
+    height: 68px;
+    margin-top: -34px;
+    border-radius: 0;
+    border-width: 0;
+    background-color: rgba(0, 0, 0, 0);
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/Rooftop/Buttons/toggle_knob.png");
+    -unity-background-scale-mode: stretch-to-fill;
+}
+
+/* Theme tiles in wood frames; the chosen one gets the gold rim. */
+.skin--dhaba .theme-tile {
+    border-radius: 0;
+    border-width: 0;
+    background-color: rgba(0, 0, 0, 0);
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/Rooftop/Buttons/btn_plank_medium_normal.png");
+    -unity-slice-left: 80;
+    -unity-slice-right: 80;
+    -unity-slice-top: 78;
+    -unity-slice-bottom: 78;
+    -unity-slice-scale: 0.35px;
+    padding: 14px 10px 18px 10px;
+}
+
+.skin--dhaba .theme-tile--on {
+    border-width: 5px;
+    border-color: #FFE082;
+    border-radius: 18px;
+}
+
+.skin--dhaba .theme-tile__name {
+    color: #FFF8E1;
+    -unity-font-definition: url("/Assets/_Project/Presentation/Theme/Fonts/NunitoExtraBold.ttf");
+}
+
+/* ---------------------------------------------------------------- Dialogs (pack: sprites/10_popups_dialogs)
+   The pack ships the pieces, not a layout: the question in dark ink on the parchment scroll, the gold
+   button for yes and a plank for no. */
+.skin--dhaba .dialog {
+    padding: 60px 120px 70px 120px;
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/Rooftop/Frames/panel_parchment_dialog_blank.png");
+    -unity-slice-left: 70;
+    -unity-slice-right: 70;
+    -unity-slice-top: 50;
+    -unity-slice-bottom: 50;
+    -unity-slice-scale: 1.2px;
+    -unity-background-image-tint-color: rgb(255, 255, 255);
+}
+
+.skin--dhaba .dialog__text {
+    font-size: 46px;
+    color: #3A2412;
+    -unity-text-outline-width: 0;
+    text-shadow: 0 0 0 rgba(0, 0, 0, 0);
+    letter-spacing: 0;
+    -unity-font-definition: url("/Assets/_Project/Presentation/Theme/Fonts/NunitoExtraBold.ttf");
+}
+
+.skin--dhaba #shell-dialog {
+    background-color: rgba(20, 16, 38, 0.78);
+}
+
+/* ---------------------------------------------------------------- the tablet rail (responsive guide)
+   The dock turns on its side: its trimmed ends become the rail's long edges. */
+.skin--dhaba.size--expanded > .nav, .skin--dhaba .size--expanded > .nav {
+    height: auto;
+    padding: 60px 0;
+    border-right-width: 0;
+    -unity-slice-left: 110;
+    -unity-slice-right: 110;
+    -unity-slice-top: 60;
+    -unity-slice-bottom: 40;
+    -unity-slice-scale: 1px;
+}
+
+.skin--dhaba.size--expanded > .nav .nav__art {
+    margin-top: 0;
 }

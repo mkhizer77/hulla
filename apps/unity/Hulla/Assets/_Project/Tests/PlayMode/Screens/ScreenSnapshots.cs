@@ -66,6 +66,7 @@ namespace Hulla.Screens.Tests
                     bar.Select(NavTab.Home);
                     bar.SetBadge(NavTab.Friends, 2);
                     root.Add(bar);
+                    root.AddToClassList(ShellView.WithNavClass);
                 }
             });
             var awaiter = task.GetAwaiter();
@@ -106,14 +107,14 @@ namespace Hulla.Screens.Tests
             foreach (var (width, height, insets) in Sizes)
             {
                 var suffix = "-" + width + "x" + height;
-                yield return Snap("size-home" + suffix, TableSkin.Club, Catalog.Home, r =>
+                yield return Snap("size-home" + suffix, SettingsModel.DefaultSkin, Catalog.Home, r =>
                 {
                     new HomeView(r, new HomeViewModel(new Fakes.Session(), new Fakes.Gateway()) { LastName = "Khizer" }, null, (_, _) => { }, (_, _, _) => { }, (_, _, _) => { }, () => { }, (_, _) => { }, (_, _) => { }, new HomeFriendsViewModel(new Fakes.Social()), () => { }, "How to play");
                 }, true, width, height, insets);
 
                 var gateway = new Fakes.Gateway();
                 var client = new TableClient(gateway, new TableTicket("m", "K7Q2MX", "t_K7Q2MX"), "me", 1);
-                yield return Snap("size-table" + suffix, TableSkin.Club, Catalog.Table, r =>
+                yield return Snap("size-table" + suffix, SettingsModel.DefaultSkin, Catalog.Table, r =>
                 {
                     new ThullaTableView(r, client, new Fakes.Chat(), () => 5000, () => { });
                     var state = Fakes.InRound(5);

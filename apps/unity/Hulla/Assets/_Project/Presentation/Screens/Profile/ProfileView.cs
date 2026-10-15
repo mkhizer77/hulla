@@ -12,6 +12,12 @@ namespace Hulla.Presentation.Screens.Profile
         private readonly ProfileViewModel _model;
         private readonly Label _code;
         private readonly Label _stats;
+        private readonly VisualElement _grid;
+        private readonly VisualElement _avatar;
+        private readonly Label _initial;
+        private readonly Label _display;
+        private readonly Label _handleLine;
+        private readonly Label _bioScroll;
         private readonly TextField _name;
         private readonly TextField _handle;
         private readonly TextField _bio;
@@ -36,6 +42,12 @@ namespace Hulla.Presentation.Screens.Profile
                 _copy.text = UiText.Copied;
             };
             _stats = root.Q<Label>("stats");
+            _grid = root.Q<VisualElement>("stats-grid");
+            _avatar = root.Q<VisualElement>("avatar");
+            _initial = root.Q<Label>("avatar-initial");
+            _display = root.Q<Label>("display");
+            _handleLine = root.Q<Label>("handle-line");
+            _bioScroll = root.Q<Label>("bio-scroll");
             var achievements = root.Q<Button>("achievements");
             achievements.text = UiText.Achievements;
             achievements.clicked += () => openAchievements?.Invoke();
@@ -66,6 +78,7 @@ namespace Hulla.Presentation.Screens.Profile
             {
                 _code.text = card.FriendCode;
                 _stats.text = Strings.Format(UiText.StatsLine, card.Rounds, card.Escapes, card.Bhabhis, card.ThullasGiven);
+                Dossier(card);
                 if (!_filled)
                 {
                     _filled = true;
@@ -76,6 +89,35 @@ namespace Hulla.Presentation.Screens.Profile
             }
 
             _status.text = _model.ErrorCode != null ? UiText.Error(_model.ErrorCode) : _model.Saved ? UiText.Saved : "";
+        }
+
+        /// <summary>The dossier (art pack, Profile): the face in its frame, name and handle, four stats and the bio.</summary>
+        private void Dossier(Hulla.Application.Social.ProfileCard card)
+        {
+            TableKit.AvatarArt.Apply(_avatar, _initial, null, card.DisplayName);
+            _display.text = card.DisplayName;
+            _handleLine.text = card.Handle.Length == 0 ? "" : "@" + card.Handle;
+            _bioScroll.text = card.Bio;
+            _bioScroll.style.display = card.Bio.Length == 0 ? DisplayStyle.None : DisplayStyle.Flex;
+            _grid.Clear();
+            Stat(card.Rounds, UiText.StatRounds, false);
+            Stat(card.Escapes, UiText.StatEscapes, false);
+            Stat(card.ThullasGiven, UiText.StatThullas, false);
+            Stat(card.Bhabhis, UiText.StatBhabhis, true);
+        }
+
+        private void Stat(long value, string label, bool loss)
+        {
+            var cell = new VisualElement();
+            cell.AddToClassList("profile__stat");
+            cell.EnableInClassList("profile__stat--loss", loss);
+            var number = new Label(value.ToString("N0"));
+            number.AddToClassList("profile__stat-value");
+            cell.Add(number);
+            var text = new Label(label);
+            text.AddToClassList("profile__stat-label");
+            cell.Add(text);
+            _grid.Add(cell);
         }
     }
 }

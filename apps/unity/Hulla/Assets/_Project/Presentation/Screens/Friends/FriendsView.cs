@@ -113,6 +113,7 @@ namespace Hulla.Presentation.Screens.Friends
                 var row = new VisualElement();
                 row.AddToClassList("lobby-seat");
                 row.AddToClassList("friend-row");
+                row.Add(Face(entry));
                 var text = new VisualElement();
                 text.AddToClassList("lobby-seat__name");
                 text.Add(new Label(entry.Name));
@@ -130,6 +131,29 @@ namespace Hulla.Presentation.Screens.Friends
 
                 _list.Add(row);
             }
+        }
+
+        /// <summary>The friend's face in a small frame, with a green dot while they are online.</summary>
+        private static VisualElement Face(FriendEntry entry)
+        {
+            var avatar = new VisualElement { pickingMode = PickingMode.Ignore };
+            avatar.AddToClassList("seat__avatar");
+            avatar.AddToClassList("friend-row__avatar");
+            var initial = new Label();
+            initial.AddToClassList("seat__initial");
+            avatar.Add(initial);
+            TableKit.AvatarArt.Apply(avatar, initial, null, entry.Name);
+            var frame = new VisualElement { pickingMode = PickingMode.Ignore };
+            frame.AddToClassList("seat__frame");
+            avatar.Add(frame);
+            if (entry.Online)
+            {
+                var dot = new VisualElement { pickingMode = PickingMode.Ignore };
+                dot.AddToClassList("party__dot");
+                avatar.Add(dot);
+            }
+
+            return avatar;
         }
 
         private static Button Action(string text, Action click, bool primary = false, bool danger = false)

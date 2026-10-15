@@ -127,6 +127,23 @@ def toggle_parts(track: Image.Image) -> tuple[Image.Image, Image.Image]:
     return blank, knob
 
 
+def switch_states(track: Image.Image, knob: Image.Image) -> None:
+    """Settings toggles in one image each: the knob at the left (off) or the right on a warm groove (on)."""
+    w, h = track.size
+    k = knob.resize((h - 20, h - 20), Image.LANCZOS)
+    off = track.copy()
+    off.alpha_composite(k, (18, 6))
+    off.save(OUT / "Buttons" / "switch_off.png", optimize=True)
+    on = track.copy()
+    warm = Image.new("RGBA", on.size, (249, 168, 37, 0))
+    groove = Image.new("L", on.size, 0)
+    ImageDraw.Draw(groove).rounded_rectangle((44, 40, w - 44, 116), radius=36, fill=110)
+    warm.putalpha(groove)
+    on.alpha_composite(warm)
+    on.alpha_composite(k, (w - k.width - 18, 6))
+    on.save(OUT / "Buttons" / "switch_on.png", optimize=True)
+
+
 def blank_coin(coin: Image.Image, hue_shift: float) -> Image.Image:
     """A seat coin without its numeral, its enamel turned to another hue."""
     img = coin.convert("RGBA")
@@ -218,6 +235,7 @@ def main() -> None:
     blank, knob = toggle_parts(track)
     blank.save(OUT / "Buttons" / "toggle_track_blank.png", optimize=True)
     knob.save(OUT / "Buttons" / "toggle_knob.png", optimize=True)
+    switch_states(blank, knob)
     for state in ("normal", "pressed"):
         blank_coin(defringe(Image.open(found[f"chip_seat_6_{state}"])), 0.80).save(OUT / "Chips" / f"chip_seat_3_{state}.png", optimize=True)
     for p in sorted(OUT.rglob("*.png")):

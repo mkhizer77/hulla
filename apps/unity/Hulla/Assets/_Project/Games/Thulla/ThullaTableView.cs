@@ -982,7 +982,7 @@ namespace Hulla.Games.Thulla
             _toast.style.display = _stamp.Visible ? DisplayStyle.Flex : DisplayStyle.None;
             _toast.style.opacity = _stamp.Opacity;
             _toast.style.scale = new Scale(new Vector2(_stamp.Scale, _stamp.Scale));
-            _felt.style.translate = new Translate(_stamp.ShakeX, 0f);
+            _felt.style.translate = new Translate(0f, _stamp.ShakeY);
             if (_stamp.Visible && !_stampSounded)
             {
                 // The stamp's own sound lands with it, 120 ms after the slap (GDD 14.6).

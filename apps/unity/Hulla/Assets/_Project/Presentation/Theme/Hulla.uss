@@ -2881,3 +2881,277 @@
 .nav__art {
     display: none;
 }
+
+/* The shop as a bazaar (docs/design/rooftop-redesign.md): a spotlight card, then tiles two to a row. */
+.shop__grid {
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-between;
+}
+
+.shop__tile {
+    width: 48.5%;
+    flex-direction: column;
+    align-items: center;
+    padding: var(--space-2);
+}
+
+.shop__tile-name {
+    margin: var(--space-1) 0;
+    -unity-text-align: middle-center;
+    white-space: normal;
+}
+
+.shop__preview {
+    margin: 0;
+}
+
+.shop__preview--small {
+    width: 120px;
+    height: 160px;
+    margin-top: var(--space-1);
+}
+
+.shop__preview--large {
+    width: 200px;
+    height: 270px;
+}
+
+.shop__swatch--table.shop__preview--small {
+    width: 200px;
+    height: 120px;
+    border-radius: 60px;
+}
+
+.shop__swatch--table.shop__preview--large {
+    width: 260px;
+    height: 160px;
+    border-radius: 80px;
+}
+
+.shop__action, .shop__equipped {
+    align-self: stretch;
+    -unity-text-align: middle-center;
+}
+
+.shop__spotlight {
+    padding: var(--space-3);
+    margin-bottom: var(--space-2);
+    border-radius: var(--radius);
+    background-color: var(--surface-panel);
+}
+
+.shop__spotlight-top {
+    flex-direction: row;
+    align-items: center;
+    margin-bottom: var(--space-2);
+}
+
+.shop__spotlight-text {
+    flex-grow: 1;
+    flex-shrink: 1;
+    margin-left: var(--space-3);
+}
+
+.shop__spotlight-name {
+    font-size: 52px;
+    -unity-font-style: bold;
+    white-space: normal;
+}
+
+.shop__price {
+    margin-top: var(--space-1);
+    color: var(--accent-mustard);
+    -unity-font-style: bold;
+}
+
+/* The season pass as a road: tiers run sideways, the free reward over the tier bar and the premium under it. */
+.pass__lanes {
+    flex-direction: row;
+    align-items: flex-start;
+}
+
+.pass__lane-labels {
+    width: 190px;
+    height: 520px;
+    flex-shrink: 0;
+    justify-content: space-between;
+    padding: 70px 0;
+}
+
+.pass__lane {
+    -unity-text-align: middle-center;
+    white-space: normal;
+    font-size: 24px;
+    -unity-font-style: bold;
+    letter-spacing: 2px;
+    color: var(--ink-ivory);
+    padding: 8px 0;
+    border-radius: var(--radius);
+    background-color: var(--surface-raised);
+}
+
+.pass__track {
+    flex-grow: 1;
+    flex-shrink: 1;
+}
+
+.pass__track .unity-scroll-view__content-container {
+    flex-direction: row;
+}
+
+.pass__lanes .pass__track .pass__row {
+    flex-direction: column;
+    align-items: stretch;
+    width: 250px;
+    min-height: 0;
+    border-bottom-width: 0;
+}
+
+.pass__lanes .pass__track .pass__side {
+    flex-grow: 0;
+    flex-basis: auto;
+    height: 220px;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin: 0 6px;
+    padding: var(--space-1);
+    border-left-width: 0;
+    border-radius: var(--radius);
+}
+
+.pass__track .pass__reward {
+    -unity-text-align: middle-center;
+    margin-bottom: var(--space-1);
+}
+
+.pass__track .pass__tier {
+    width: auto;
+    height: 72px;
+    margin: 4px 0;
+    font-size: 34px;
+    background-color: var(--surface-raised);
+    color: var(--ink-muted);
+}
+
+.pass__track .pass__tier--reached {
+    background-color: var(--accent-saffron);
+    color: #1F0E05;
+}
+
+/* Profile as a dossier: the face, name and handle, the friend code, four stats, the bio. */
+.profile__dossier {
+    align-items: center;
+    margin: var(--space-2) 0;
+}
+
+.profile__avatar {
+    width: 220px;
+    height: 220px;
+    border-radius: 110px;
+}
+
+.profile__avatar .seat__initial {
+    font-size: 110px;
+}
+
+.seat__frame {
+    display: none;
+}
+
+.skinned .seat__frame {
+    display: flex;
+}
+
+.profile__name {
+    margin-top: var(--space-2);
+    font-size: 56px;
+    -unity-font-style: bold;
+    -unity-text-align: middle-center;
+}
+
+.profile__handle {
+    -unity-text-align: middle-center;
+}
+
+.profile__stats {
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    margin: var(--space-2) 0;
+}
+
+.profile__stat {
+    width: 48.5%;
+    align-items: center;
+    padding: var(--space-2);
+    margin-bottom: var(--space-1);
+    border-radius: var(--radius);
+    background-color: var(--surface-panel);
+}
+
+.profile__stat-value {
+    font-size: 72px;
+    -unity-font-style: bold;
+    color: var(--accent-mustard);
+}
+
+.profile__stat--loss .profile__stat-value {
+    color: var(--state-thulla);
+}
+
+.profile__stat-label {
+    font-size: var(--font-small);
+    -unity-text-align: middle-center;
+}
+
+.profile__stats-line {
+    display: none;
+}
+
+.profile__bio {
+    margin: var(--space-1) 0 var(--space-2) 0;
+    padding: var(--space-2) var(--space-3);
+    white-space: normal;
+    -unity-font-style: italic;
+    -unity-text-align: middle-center;
+}
+
+.friend-row__avatar {
+    width: 96px;
+    height: 96px;
+    border-radius: 48px;
+    margin-right: var(--space-2);
+    flex-shrink: 0;
+}
+
+.friend-row__avatar .seat__initial {
+    font-size: 44px;
+}
+
+/* Tablet landscape (art pack, responsive guide): the tabs become a rail down the left edge. */
+.size--expanded > .nav {
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 220px;
+    height: auto;
+    flex-direction: column;
+    justify-content: center;
+    padding: 40px 0;
+    border-top-width: 0;
+    border-right-width: 2px;
+    border-right-color: var(--surface-raised);
+}
+
+.size--expanded > .nav > .nav__tab {
+    flex-grow: 0;
+    height: 210px;
+    margin: 8px 0;
+}
+
+.size--expanded.shell--with-nav > TemplateContainer {
+    margin-left: 220px;
+}

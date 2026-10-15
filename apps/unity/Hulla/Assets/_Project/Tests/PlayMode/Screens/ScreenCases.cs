@@ -162,6 +162,11 @@ namespace Hulla.Screens.Tests
                 new MissionsView(r, model, () => { }, _ => { }, _ => { });
                 _ = model.RefreshAsync(0, default);
             });
+            yield return new Case("dialog", catalog.Inventory, r =>
+            {
+                new Hulla.Presentation.Screens.Inventory.InventoryView(r, new[] { new Hulla.Presentation.Screens.Inventory.InventoryView.Entry("shop", UiText.Shop, () => { }) });
+                r.Add(ShellView.Dialog(Strings.Format(UiText.BuyQuestion, "Truck art", "1,000 coins"), UiText.Buy, UiText.Cancel, () => { }, () => { }));
+            });
             yield return new Case("inventory", catalog.Inventory, r =>
                 new Hulla.Presentation.Screens.Inventory.InventoryView(r, new[]
                 {

@@ -121,9 +121,17 @@ namespace Hulla.Presentation.Navigation
             }
 
             _nav.Select(active);
+            root.AddToClassList(WithNavClass);
         }
 
-        public void HideNav() => _nav?.RemoveFromHierarchy();
+        public void HideNav()
+        {
+            _nav?.RemoveFromHierarchy();
+            Root.RemoveFromClassList(WithNavClass);
+        }
+
+        /// <summary>On the root while the tabs show, so a wide layout can make room for them as a side rail.</summary>
+        public const string WithNavClass = "shell--with-nav";
 
         /// <summary>A count on a tab, shown whether or not the bar is on screen right now.</summary>
         public void SetNavBadge(NavTab tab, int count)

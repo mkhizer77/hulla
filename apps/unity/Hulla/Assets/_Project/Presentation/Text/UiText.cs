@@ -326,6 +326,7 @@ namespace Hulla.Presentation.Text
         public static string Equip => Strings.Text("ui.equip");
         public static string Equipped => Strings.Text("ui.equipped");
         public static string Free => Strings.Text("ui.free");
+        public static string Premium => Strings.Text("ui.premium");
         public static string PriceCoins => Strings.Text("ui.price_coins");
         public static string PriceGems => Strings.Text("ui.price_gems");
 
@@ -462,6 +463,10 @@ namespace Hulla.Presentation.Text
         public static string BioLabel => Strings.Text("ui.bio_label");
         public static string FriendCodeLabel => Strings.Text("ui.friend_code_label");
         public static string StatsLine => Strings.Text("ui.stats_line");
+        public static string StatRounds => Strings.Text("ui.stat_rounds");
+        public static string StatEscapes => Strings.Text("ui.stat_escapes");
+        public static string StatThullas => Strings.Text("ui.stat_thullas");
+        public static string StatBhabhis => Strings.Text("ui.stat_bhabhis");
         public static string AddByCode => Strings.Text("ui.add_by_code");
         public static string Add => Strings.Text("ui.add");
         public static string RequestSent => Strings.Text("ui.request_sent");

@@ -326,6 +326,59 @@
     -unity-text-align: middle-center;
 }
 
+.rtl .shop__grid {
+    flex-direction: row-reverse;
+}
+
+.rtl .shop__tile-name {
+    -unity-text-align: middle-center;
+}
+
+.rtl .shop__action,
+.rtl .shop__equipped {
+    -unity-text-align: middle-center;
+}
+
+.rtl .shop__spotlight-top {
+    flex-direction: row-reverse;
+}
+
+.rtl .pass__lanes {
+    flex-direction: row-reverse;
+}
+
+.rtl .pass__lane {
+    -unity-text-align: middle-center;
+}
+
+.rtl .pass__track .unity-scroll-view__content-container {
+    flex-direction: row-reverse;
+}
+
+.rtl .pass__track .pass__reward {
+    -unity-text-align: middle-center;
+}
+
+.rtl .profile__name {
+    -unity-text-align: middle-center;
+}
+
+.rtl .profile__handle {
+    -unity-text-align: middle-center;
+}
+
+.rtl .profile__stats {
+    flex-direction: row-reverse;
+}
+
+.rtl .profile__stat-label {
+    -unity-text-align: middle-center;
+}
+
+.rtl .profile__bio {
+    -unity-text-align: middle-center;
+}
+
 /* Theme/Skins.uss */
 .rtl .skinned .seat__count {
     -unity-text-align: middle-center;

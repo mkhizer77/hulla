@@ -26,7 +26,7 @@ namespace Hulla.Presentation.TableKit
             Discard,
         }
 
-        public const int StaggerMs = 70;
+        public const int StaggerMs = 50;
         public const int PickupMs = 460;
 
         private readonly VisualElement _pile;
