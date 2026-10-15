@@ -94,11 +94,13 @@ namespace Hulla.BuildTools
             var path = Environment.GetEnvironmentVariable("HULLA_BUILD_OUT") ?? defaultPath;
             Directory.CreateDirectory(Path.GetDirectoryName(Path.GetFullPath(path))!);
             EditorUserBuildSettings.buildAppBundle = false;
-            // Addressables builds its bundles for the active platform, so switch first; otherwise
-            // the player ships a catalog that points at another platform's bundles.
+            // Addressables builds its bundles for the active platform. Switching here reloads the
+            // scripts mid-build and the content build fails, so the editor must start on the target
+            // (-buildTarget Android or -buildTarget OSXUniversal).
             if (EditorUserBuildSettings.activeBuildTarget != target)
             {
-                EditorUserBuildSettings.SwitchActiveBuildTarget(BuildPipeline.GetBuildTargetGroup(target), target);
+                Debug.LogError($"build {target}: the editor is on {EditorUserBuildSettings.activeBuildTarget}; start it with -buildTarget for {target}");
+                return false;
             }
 
             var report = BuildPipeline.BuildPlayer(new BuildPlayerOptions
