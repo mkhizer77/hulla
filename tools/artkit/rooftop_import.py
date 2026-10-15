@@ -54,17 +54,18 @@ FOLDERS = {
     "FX": ["stamp_thulla", "stamp_bhabhi", "fx_bulb_glow"],
     "Props": ["potli_currency_bag", "chest_daily_reward_closed", "chest_daily_reward_open", "podium_3tier_marigold",
               "ribbon_1st_gold", "ribbon_2nd_silver", "ribbon_3rd_bronze"],
+    "Backdrops": ["bg_home_rooftop", "bg_table_backdrop"],
     "Nav": ["nav_dock_baseboard", "icon_nav_home", "icon_nav_friends", "icon_nav_inventory", "icon_nav_settings"],
 }
 
 
-# Sprites whose enclosed see-through areas are part of the design.
-OPEN_BY_DESIGN = {"avatar_frame_brass", "avatar_timer_ring", "stamp_thulla", "stamp_bhabhi", "icon_nav_settings",
+# Sprites whose enclosed see-through areas are part of the design, and full-screen backdrops.
+OPEN_BY_DESIGN = {"bg_home_rooftop", "bg_table_backdrop", "avatar_frame_brass", "avatar_timer_ring", "stamp_thulla", "stamp_bhabhi", "icon_nav_settings",
                   "signboard_header_blank", "icon_nav_inventory", "badge_leader_crown"}
 
 
 # Pale edges that are paint, not extraction halo.
-PALE_BY_DESIGN = {"card_back_truckart", "card_fan_deck_badge", "panel_parchment_dialog_blank", "ribbon_2nd_silver",
+PALE_BY_DESIGN = {"bg_home_rooftop", "bg_table_backdrop", "card_back_truckart", "card_fan_deck_badge", "panel_parchment_dialog_blank", "ribbon_2nd_silver",
                   "stamp_thulla", "stamp_bhabhi"}
 
 

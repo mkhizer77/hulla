@@ -99,8 +99,6 @@ namespace Hulla.Presentation.Screens.Settings
             Heading(UiText.SettingsSound);
             Level(UiText.SfxLabel, () => _settings.SfxVolume, v => _settings.SfxVolume = v);
             Toggle(UiText.HapticsLabel, () => _settings.Haptics, v => _settings.Haptics = v);
-            Heading(UiText.SettingsTheme);
-            Themes(() => _settings.Skin, v => _settings.Skin = v);
             Heading(UiText.SettingsSeeing);
             Toggle(UiText.FourColourLabel, () => _settings.FourColourDeck, v => _settings.FourColourDeck = v);
             Toggle(UiText.HighContrastLabel, () => _settings.HighContrast, v => _settings.HighContrast = v);
@@ -212,39 +210,6 @@ namespace Hulla.Presentation.Screens.Settings
                 set(evt.newValue);
             });
             _list.Add(slider);
-        }
-
-        /// <summary>The five table themes as tiles showing each scene and table; the chosen one is ringed.</summary>
-        private void Themes(Func<TableSkin> get, Action<TableSkin> set)
-        {
-            var row = new VisualElement();
-            row.AddToClassList("theme-picker");
-            var tiles = new List<Button>();
-            foreach (TableSkin skin in Enum.GetValues(typeof(TableSkin)))
-            {
-                var tile = new Button { name = "theme-" + skin.ToString().ToLowerInvariant() };
-                tile.AddToClassList("theme-tile");
-                var preview = new VisualElement { pickingMode = PickingMode.Ignore };
-                preview.AddToClassList("theme-tile__preview");
-                preview.AddToClassList("theme-tile__preview--" + skin.ToString().ToLowerInvariant());
-                tile.Add(preview);
-                var label = new Label(UiText.SkinName(skin)) { pickingMode = PickingMode.Ignore };
-                label.AddToClassList("theme-tile__name");
-                tile.Add(label);
-                tile.EnableInClassList("theme-tile--on", skin == get());
-                tile.clicked += () =>
-                {
-                    set(skin);
-                    foreach (var other in tiles)
-                    {
-                        other.EnableInClassList("theme-tile--on", other == tile);
-                    }
-                };
-                tiles.Add(tile);
-                row.Add(tile);
-            }
-
-            _list.Add(row);
         }
 
         private void Choice(string text, string[] options, Func<int> get, Action<int> set)

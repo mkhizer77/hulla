@@ -1403,7 +1403,7 @@ namespace Hulla.Composition
             var settings = _app.Settings;
             _app.Analytics.SetConsent(settings.AnalyticsConsent == true);
             ThemeClasses.Apply(_shell.Root, settings);
-            _shell.ApplySkin(settings.Skin, settings.ReduceMotion);
+            _shell.ApplyScene(settings.ReduceMotion);
             _sounds.Volume = settings.SfxVolume / 100f;
             _tableView?.ApplySettings(settings.OneTapPlay, settings.ReduceMotion, settings.LargeCards, settings.Haptics, settings.ShowRulesRecap ? HideRecap : null);
             _app.Session?.Table?.Client.Model.SetSort(settings.HandSort == HandSort.RankThenSuit ? CardOrder.CompareByRank : CardOrder.Compare);

@@ -42,7 +42,7 @@ namespace Hulla.Presentation.TableKit
             _initial.AddToClassList("seat__initial");
             _avatar.Add(_initial);
 
-            // The theme's frame round the face (docs/design/table-themes.md), over the picture.
+            // The brass frame round the face (docs/design/rooftop-redesign.md), over the picture.
             var frame = new VisualElement { pickingMode = PickingMode.Ignore };
             frame.AddToClassList("seat__frame");
             _avatar.Add(frame);

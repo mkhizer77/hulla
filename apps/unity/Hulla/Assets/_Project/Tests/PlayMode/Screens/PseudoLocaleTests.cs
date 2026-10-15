@@ -109,7 +109,7 @@ namespace Hulla.Screens.Tests
                 root.style.width = Width;
                 root.style.height = Height;
                 root.EnableInClassList("rtl", Strings.RightToLeft);
-                ScreenCases.Skin(root, Hulla.Application.Settings.TableSkin.Club);
+                ScreenCases.Skin(root);
                 Assert.IsNotNull(screen.Screen, screen.Name + " is in the catalog");
                 var instance = screen.Screen!.Instantiate();
                 instance.style.flexGrow = 1;

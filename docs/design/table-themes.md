@@ -1,3 +1,5 @@
+> Superseded on 15 Oct 2026: the app has one look, the rooftop redesign (`docs/design/rooftop-redesign.md`). The five themes, their picker and their art were removed. Kept for the history of the decision.
+
 # Table themes
 
 Five looks for the whole app, picked in Settings → Table theme. Chosen after two rounds of mockups and the visual scan in `docs/research/card-game-visual-scan.md`: game screens built as a scene, not app screens. Portrait only.

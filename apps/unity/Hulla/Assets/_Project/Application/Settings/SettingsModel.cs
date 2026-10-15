@@ -98,21 +98,6 @@ namespace Hulla.Application.Settings
             set => Set("text_scale", (int)value);
         }
 
-        /// <summary>The theme a player gets until they pick another: Rooftop, the look of the concept art.</summary>
-        public const TableSkin DefaultSkin = TableSkin.Dhaba;
-
-        /// <summary>The table theme; <see cref="DefaultSkin"/> until the player picks another in Settings.</summary>
-        public TableSkin Skin
-        {
-            get
-            {
-                var stored = Get("skin", (int)DefaultSkin);
-                return Enum.IsDefined(typeof(TableSkin), stored) ? (TableSkin)stored : DefaultSkin;
-            }
-
-            set => Set("skin", (int)value);
-        }
-
         public HandSort HandSort
         {
             get => Get("hand_sort", 0) == 1 ? HandSort.RankThenSuit : HandSort.SuitThenRank;

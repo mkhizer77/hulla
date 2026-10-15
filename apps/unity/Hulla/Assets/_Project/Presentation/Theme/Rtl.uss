@@ -384,28 +384,20 @@
     -unity-text-align: middle-center;
 }
 
-.rtl .skinned .theme-picker {
-    flex-direction: row-reverse;
-}
-
-.rtl .skinned .theme-tile__name {
-    -unity-text-align: middle-center;
-}
-
 /* Theme/Rooftop.uss */
-.rtl .skin--dhaba .settings__top > .title {
+.rtl .skinned .settings__top > .title {
     -unity-text-align: middle-center;
 }
 
-.rtl .skin--dhaba .settings__heading {
+.rtl .skinned .settings__heading {
     -unity-text-align: middle-center;
 }
 
-.rtl .skin--dhaba .me-badge .seat__name {
+.rtl .skinned .me-badge .seat__name {
     -unity-text-align: middle-center;
 }
 
-.rtl .skin--dhaba .settings__value {
+.rtl .skinned .settings__value {
     -unity-text-align: middle-left;
 }
 

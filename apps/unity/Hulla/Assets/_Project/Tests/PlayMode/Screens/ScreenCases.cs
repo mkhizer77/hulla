@@ -52,11 +52,7 @@ namespace Hulla.Screens.Tests
         }
 
         /// <summary>The classes the shell puts on its root for a table theme (ThemeClasses.Apply).</summary>
-        public static void Skin(VisualElement root, Hulla.Application.Settings.TableSkin skin)
-        {
-            root.AddToClassList(Hulla.Presentation.Theme.ThemeClasses.Skinned);
-            root.AddToClassList(Hulla.Presentation.Theme.ThemeClasses.ClassOf(skin));
-        }
+        public static void Skin(VisualElement root) => root.AddToClassList(Hulla.Presentation.Theme.ThemeClasses.Skinned);
 
         public static IEnumerable<Case> All()
         {

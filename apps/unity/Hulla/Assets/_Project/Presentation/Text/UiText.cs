@@ -165,22 +165,12 @@ namespace Hulla.Presentation.Text
         public static string Done => Strings.Text("ui.done");
         public static string SettingsPlay => Strings.Text("ui.settings_play");
         public static string SettingsSeeing => Strings.Text("ui.settings_seeing");
-        public static string SettingsTheme => Strings.Text("ui.settings_theme");
         public static string GameThulla => Strings.Text("ui.game_thulla");
         public static string GameThullaLine => Strings.Text("ui.game_thulla_line");
         public static string GameRung => Strings.Text("ui.game_rung");
         public static string GameRungLine => Strings.Text("ui.game_rung_line");
         public static string ComingSoon => Strings.Text("ui.coming_soon");
 
-        /// <summary>The table themes in settings order (docs/design/table-themes.md).</summary>
-        public static string SkinName(Hulla.Application.Settings.TableSkin skin) => skin switch
-        {
-            Hulla.Application.Settings.TableSkin.Haveli => Strings.Text("skin.haveli"),
-            Hulla.Application.Settings.TableSkin.Dhaba => Strings.Text("skin.dhaba"),
-            Hulla.Application.Settings.TableSkin.Mehndi => Strings.Text("skin.mehndi"),
-            Hulla.Application.Settings.TableSkin.Adda => Strings.Text("skin.adda"),
-            _ => Strings.Text("skin.club"),
-        };
         public static string OneTapPlay => Strings.Text("ui.one_tap_play");
         public static string HandSortLabel => Strings.Text("ui.hand_sort_label");
         public static string SortBySuit => Strings.Text("ui.sort_by_suit");

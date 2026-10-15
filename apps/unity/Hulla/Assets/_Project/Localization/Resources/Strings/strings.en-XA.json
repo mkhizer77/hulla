@@ -2133,31 +2133,6 @@
    "smart": false
   },
   {
-   "key": "skin.adda",
-   "text": "[Çhåî Åddå · ·]",
-   "smart": false
-  },
-  {
-   "key": "skin.club",
-   "text": "[Çlûb ·]",
-   "smart": false
-  },
-  {
-   "key": "skin.dhaba",
-   "text": "[Rööftöp · ·]",
-   "smart": false
-  },
-  {
-   "key": "skin.haveli",
-   "text": "[Håvélî ·]",
-   "smart": false
-  },
-  {
-   "key": "skin.mehndi",
-   "text": "[Méhñdî ·]",
-   "smart": false
-  },
-  {
    "key": "title.baithak_regular",
    "text": "[Båîthåk régûlår · · ·]",
    "smart": false
@@ -3735,11 +3710,6 @@
   {
    "key": "ui.settings_sound",
    "text": "[Söûñd ·]",
-   "smart": false
-  },
-  {
-   "key": "ui.settings_theme",
-   "text": "[Tåblé thémé · ·]",
    "smart": false
   },
   {
