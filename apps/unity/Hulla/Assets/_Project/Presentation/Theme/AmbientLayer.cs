@@ -114,8 +114,9 @@ namespace Hulla.Presentation.Theme
                         _movers.Add(new Breathe(star, 0.4f, 0.32f, Range(3f, 7f), Range(0f, 7f)));
                     }
 
-                    StringLights(new Vector2(-2f, 2.5f), new Vector2(102f, 4f), 6.5f, 9, 1f, Bulbs);
-                    StringLights(new Vector2(-2f, 11f), new Vector2(60f, 9.5f), 4f, 5, 0.85f, Bulbs);
+                    StringLights(new Vector2(-2f, 9f), new Vector2(33f, 2f), 4.5f, 6, 1.15f, WarmBulbs);
+                    StringLights(new Vector2(33f, 2f), new Vector2(67f, 2f), 3.5f, 6, 1.15f, WarmBulbs);
+                    StringLights(new Vector2(67f, 2f), new Vector2(102f, 9f), 4.5f, 6, 1.15f, WarmBulbs);
                     break;
                 case TableSkin.Mehndi:
                     StringLights(new Vector2(-2f, 1f), new Vector2(102f, 1.5f), 3.5f, 16, 0.55f, new[] { new Color(1f, 0.95f, 0.7f) });
@@ -160,6 +161,13 @@ namespace Hulla.Presentation.Theme
                 glass.style.translate = new Translate(0f, -10f);
             }
         }
+
+        /// <summary>The Rooftop's festoon: warm white and amber, like the concept art.</summary>
+        private static readonly Color[] WarmBulbs =
+        {
+            new Color(1f, 0.93f, 0.7f),
+            new Color(1f, 0.85f, 0.5f),
+        };
 
         private static readonly Color[] Bulbs =
         {

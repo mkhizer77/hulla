@@ -1252,3 +1252,369 @@
 .skinned .unity-scroller--vertical, .skinned .unity-scroller--horizontal {
     display: none;
 }
+
+/* Themes without painted card pieces: the plain felt, round medallions and a big Play now. */
+.skinned .home .game__art {
+    background-image: none;
+    background-color: rgba(0, 0, 0, 0);
+}
+
+.skinned .home .medal {
+    background-image: none;
+    background-color: var(--surface-raised);
+    border-width: 3px;
+    border-color: var(--accent-saffron);
+    color: var(--ink-ivory);
+    font-size: 50px;
+}
+
+.skinned .home .medal.chip--on {
+    background-color: var(--accent-saffron);
+    color: #141518;
+}
+
+.skinned .home .game__play {
+    width: 620px;
+    font-size: 60px;
+}
+
+/*
+ * Rooftop Home, the concept art's painted pieces (tools/artkit/rooftop.py): the hanging sign, the
+ * shield, the pouch, the truck-art card with peacocks, the medallions, the switch, the Play now
+ * plaque, the wooden boards, the chest and the navigation board with its four icons.
+ */
+.skin--dhaba .home .home__rope {
+    display: flex;
+    width: 14px;
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/dhaba/rope.png");
+    -unity-background-scale-mode: stretch-to-fill;
+}
+
+.skin--dhaba .home .home__rope--sign-left {
+    left: 360px;
+    top: -400px;
+    height: 420px;
+}
+
+.skin--dhaba .home .home__rope--sign-right {
+    left: 690px;
+    top: -400px;
+    height: 420px;
+}
+
+.skin--dhaba .home .home__sign {
+    width: 660px;
+    height: 170px;
+    padding: 0 120px 22px 120px;
+    border-radius: 0;
+    background-color: rgba(0, 0, 0, 0);
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/dhaba/sign.png");
+    -unity-background-scale-mode: stretch-to-fill;
+}
+
+.skin--dhaba .home .home__name {
+    font-size: 62px;
+    -unity-font-style: normal;
+    -unity-font-definition: url("/Assets/_Project/Presentation/Theme/Fonts/LilitaOne.ttf");
+    color: #FFF1D6;
+    -unity-text-outline-width: 3px;
+    -unity-text-outline-color: #2A140A;
+    text-shadow: 0 4px 0 #2A140A;
+}
+
+.skin--dhaba .home .home__shield {
+    top: 128px;
+    translate: -65px 0;
+    width: 130px;
+    height: 146px;
+    padding: 0 0 22px 0;
+    border-radius: 0;
+    background-color: rgba(0, 0, 0, 0);
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/dhaba/shield.png");
+    -unity-background-scale-mode: stretch-to-fill;
+    -unity-font-definition: url("/Assets/_Project/Presentation/Theme/Fonts/LilitaOne.ttf");
+    -unity-font-style: normal;
+    font-size: 56px;
+    color: #FFE07A;
+    -unity-text-outline-width: 2px;
+    -unity-text-outline-color: #2A140A;
+}
+
+.skin--dhaba .home .home__coins {
+    margin-bottom: -18px;
+    padding: 0 18px;
+    border-width: 3px;
+    border-color: #2A140A;
+    background-color: #4A2812;
+    color: #FFE07A;
+    -unity-font-definition: url("/Assets/_Project/Presentation/Theme/Fonts/LilitaOne.ttf");
+    -unity-font-style: normal;
+}
+
+.skin--dhaba .home .game {
+    width: 714px;
+    height: 808px;
+    padding: 160px 100px 86px 100px;
+    border-radius: 0;
+    background-color: rgba(0, 0, 0, 0);
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/dhaba/hero-frame.png");
+    -unity-background-scale-mode: stretch-to-fill;
+    -unity-slice-left: 0;
+    -unity-slice-right: 0;
+    -unity-slice-top: 0;
+    -unity-slice-bottom: 0;
+}
+
+.skin--dhaba .home .game__name {
+    font-size: 138px;
+    color: #FFC63C;
+    -unity-text-outline-width: 5px;
+    -unity-text-outline-color: #5A2408;
+    text-shadow: 0 7px 0 #3A1406;
+}
+
+.skin--dhaba .home .game__art {
+    background-image: none;
+}
+
+.skin--dhaba .home .game__line {
+    color: #FFF1D6;
+    -unity-text-outline-width: 3px;
+    -unity-text-outline-color: #2A140A;
+}
+
+.skin--dhaba .home .medal {
+    border-width: 0;
+    background-color: rgba(0, 0, 0, 0);
+    -unity-slice-left: 0;
+    -unity-slice-right: 0;
+    -unity-slice-top: 0;
+    -unity-slice-bottom: 0;
+    background-size: 104px 104px;
+    background-repeat: no-repeat no-repeat;
+    background-position-x: center;
+    background-position-y: center;
+    font-size: 54px;
+    padding: 0 0 6px 0;
+    color: #FFF1D6;
+    -unity-text-outline-width: 3px;
+    -unity-text-outline-color: #1A0C06;
+}
+
+.skin--dhaba .home .medal--3 {
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/dhaba/medal-purple.png");
+}
+
+.skin--dhaba .home .medal--4 {
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/dhaba/medal-blue.png");
+}
+
+.skin--dhaba .home .medal--5 {
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/dhaba/medal-green.png");
+}
+
+.skin--dhaba .home .medal--6 {
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/dhaba/medal-red.png");
+}
+
+.skin--dhaba .home .medal.chip--on {
+    border-width: 5px;
+    border-radius: 66px;
+    border-color: rgba(255, 244, 192, 0.9);
+    background-size: 112px 112px;
+}
+
+.skin--dhaba .home .game__mode-label {
+    color: #CFC2A6;
+    -unity-text-outline-width: 3px;
+    -unity-text-outline-color: #1A0C06;
+}
+
+.skin--dhaba .home .game__mode-label--on {
+    color: #FFF1D6;
+}
+
+.skin--dhaba .home .switch {
+    width: 150px;
+    height: 74px;
+    border-radius: 0;
+    background-color: rgba(0, 0, 0, 0);
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/dhaba/switch.png");
+    -unity-background-scale-mode: stretch-to-fill;
+}
+
+.skin--dhaba .home .switch--on {
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/dhaba/switch-on.png");
+}
+
+.skin--dhaba .home .switch__knob {
+    width: 64px;
+    height: 64px;
+    margin: -4px 0 0 4px;
+    border-radius: 0;
+    background-color: rgba(0, 0, 0, 0);
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/dhaba/knob.png");
+}
+
+.skin--dhaba .home .switch--on > .switch__knob {
+    translate: 78px 0;
+}
+
+.skin--dhaba .home .game__help {
+    top: 160px;
+    right: 102px;
+    color: #FFF1D6;
+}
+
+.skin--dhaba .home .game__play {
+    width: 526px;
+    height: 197px;
+    margin-top: -104px;
+    padding: 0 0 10px 0;
+    border-width: 0;
+    background-color: rgba(0, 0, 0, 0);
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/dhaba/play.png");
+    -unity-background-scale-mode: stretch-to-fill;
+    -unity-slice-left: 0;
+    -unity-slice-right: 0;
+    -unity-slice-top: 0;
+    -unity-slice-bottom: 0;
+    font-size: 86px;
+    color: #5A2A0A;
+    -unity-text-outline-width: 0;
+    text-shadow: 0 2px 0 rgba(255, 244, 176, 0.7);
+}
+
+.skin--dhaba .home .home__lower {
+    margin-top: 6px;
+}
+
+.skin--dhaba .home .hero {
+    min-height: 104px;
+    border-width: 0;
+    background-color: rgba(0, 0, 0, 0);
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/dhaba/plank-blue.png");
+    -unity-slice-left: 60;
+    -unity-slice-right: 60;
+    -unity-slice-top: 50;
+    -unity-slice-bottom: 50;
+    -unity-slice-scale: 1px;
+    -unity-background-scale-mode: stretch-to-fill;
+    padding: 0 30px 10px 30px;
+    font-size: 40px;
+    color: #FFF1D6;
+    -unity-text-outline-width: 3px;
+    -unity-text-outline-color: #2A140A;
+}
+
+.skin--dhaba .home .home__rope--board-left {
+    left: 70px;
+    top: -150px;
+    height: 220px;
+}
+
+.skin--dhaba .home .home__rope--board-right {
+    left: 340px;
+    top: -150px;
+    height: 220px;
+}
+
+.skin--dhaba .home .plank, .skin--dhaba .inventory .plank {
+    height: 118px;
+    border-width: 0;
+    background-color: rgba(0, 0, 0, 0);
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/dhaba/plank-red.png");
+    -unity-slice-left: 60;
+    -unity-slice-right: 60;
+    -unity-slice-top: 50;
+    -unity-slice-bottom: 50;
+    -unity-slice-scale: 1px;
+    -unity-background-scale-mode: stretch-to-fill;
+    padding: 0 30px 12px 30px;
+    font-size: 54px;
+    -unity-font-style: normal;
+    color: #FFF1D6;
+    -unity-font-definition: url("/Assets/_Project/Presentation/Theme/Fonts/LilitaOne.ttf");
+    -unity-text-outline-width: 3px;
+    -unity-text-outline-color: #2A140A;
+    text-shadow: 0 4px 0 #2A140A;
+}
+
+.skin--dhaba .home .plank--blue, .skin--dhaba .inventory .plank--blue {
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/dhaba/plank-blue.png");
+}
+
+.skin--dhaba .home .daily__board {
+    margin-top: -30px;
+    padding: 0 22px 12px 22px;
+    font-size: 48px;
+}
+
+.skin--dhaba .home .daily__text {
+    color: #FFE07A;
+    -unity-font-definition: url("/Assets/_Project/Presentation/Theme/Fonts/LilitaOne.ttf");
+    text-shadow: 0 2px 3px rgba(0, 0, 0, 0.9);
+}
+
+.skin--dhaba .nav {
+    height: 190px;
+    margin-top: -10px;
+    padding: 34px 20px 8px 20px;
+    border-top-width: 0;
+    background-color: rgba(0, 0, 0, 0);
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/dhaba/nav-board.png");
+    -unity-slice-left: 140;
+    -unity-slice-right: 140;
+    -unity-slice-top: 80;
+    -unity-slice-bottom: 40;
+    -unity-slice-scale: 1px;
+    -unity-background-scale-mode: stretch-to-fill;
+    overflow: visible;
+}
+
+.skin--dhaba .nav__icon {
+    display: none;
+}
+
+.skin--dhaba .nav__art {
+    display: flex;
+    width: 128px;
+    height: 128px;
+    margin-top: -64px;
+    -unity-background-scale-mode: scale-to-fit;
+    transition-property: scale, translate;
+    transition-duration: 160ms;
+}
+
+.skin--dhaba .nav__tab--on .nav__art {
+    scale: 1.12 1.12;
+    translate: 0 -6px;
+}
+
+.skin--dhaba .nav__art--home {
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/dhaba/icon-home.png");
+}
+
+.skin--dhaba .nav__art--friends {
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/dhaba/icon-friends.png");
+}
+
+.skin--dhaba .nav__art--inventory {
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/dhaba/icon-bag.png");
+}
+
+.skin--dhaba .nav__art--settings {
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/dhaba/icon-gear.png");
+}
+
+.skin--dhaba .nav__label {
+    font-size: 40px;
+    -unity-font-definition: url("/Assets/_Project/Presentation/Theme/Fonts/LilitaOne.ttf");
+    color: #FFF1D6;
+    -unity-text-outline-width: 3px;
+    -unity-text-outline-color: #2A140A;
+}
+
+.skin--dhaba .nav__tab--on .nav__label {
+    color: #FFE07A;
+}

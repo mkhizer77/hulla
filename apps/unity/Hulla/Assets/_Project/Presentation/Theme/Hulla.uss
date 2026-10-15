@@ -1621,57 +1621,6 @@
     color: var(--ink-ivory);
 }
 
-.home__header {
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: var(--space-2);
-}
-
-.home__me {
-    flex-direction: row;
-    align-items: center;
-    flex-shrink: 1;
-    min-width: 0;
-}
-
-.home__avatar {
-    width: 96px;
-    height: 96px;
-    border-radius: 48px;
-    margin-right: var(--space-2);
-}
-
-.home__avatar .seat__initial {
-    font-size: 44px;
-}
-
-.home__who {
-    flex-shrink: 1;
-    min-width: 0;
-}
-
-.home__name {
-    -unity-font-style: bold;
-    overflow: hidden;
-}
-
-.home__coins {
-    color: var(--accent-mustard);
-    -unity-font-style: bold;
-    margin: 0 var(--space-1);
-}
-
-.home__title {
-    font-size: 72px;
-    margin-top: var(--space-1);
-}
-
-.home__quiet {
-    flex-direction: row;
-    justify-content: center;
-}
-
 .home__hidden {
     display: none;
 }
@@ -2577,40 +2526,9 @@
     margin-bottom: var(--space-2);
 }
 
-/* Home, the game shelf (docs/design/table-themes.md §3): the game to play now, the next one as a row under it. */
 .games {
     flex-shrink: 0;
     margin: 20px 0 8px 0;
-}
-
-.game {
-    margin-bottom: 20px;
-    padding: 32px 40px 40px 40px;
-    align-items: stretch;
-    border-radius: 36px;
-    background-color: var(--surface-panel);
-}
-
-.game--soon {
-    flex-direction: row;
-    align-items: center;
-    padding: 20px 28px 20px 20px;
-    opacity: 0.85;
-}
-
-.game__art {
-    height: 240px;
-    flex-direction: row;
-    justify-content: center;
-    align-items: center;
-    border-radius: 28px;
-    overflow: hidden;
-    background-color: var(--felt);
-    -unity-background-scale-mode: scale-and-crop;
-}
-
-.game__card {
-    margin: 0 -26px;
 }
 
 .game__back {
@@ -2622,106 +2540,10 @@
     -unity-background-scale-mode: stretch-to-fill;
 }
 
-.game__name {
-    margin-top: 16px;
-    font-size: 88px;
-    -unity-text-align: middle-center;
-    -unity-font-definition: url("/Assets/_Project/Presentation/Theme/Fonts/LilitaOne.ttf");
-    color: var(--accent-saffron);
-}
-
-.game__line {
-    margin-top: -4px;
-    font-size: var(--font-small);
-    -unity-text-align: middle-center;
-    -unity-font-style: bold;
-    letter-spacing: 2px;
-    color: var(--ink-muted);
-}
-
-.game__seats-label {
-    margin-top: 20px;
-    -unity-text-align: middle-center;
-}
-
-.game__seats {
-    justify-content: center;
-    margin-bottom: 0;
-}
-
-.game__play {
-    margin-top: 16px;
-}
-
-.game__soon {
-    align-self: center;
-    margin-top: 28px;
-    padding: 8px 28px;
-    border-radius: 999px;
-    font-size: var(--font-small);
-    -unity-font-style: bold;
-    background-color: rgba(0, 0, 0, 0.45);
-    color: var(--ink-ivory);
-}
-
-.home__row {
-    flex-direction: row;
-    margin: 0 -8px;
-}
-
-.home__row > .button {
-    flex-grow: 1;
-    flex-basis: 0;
-    margin: 0 8px;
-}
-
 .nav__icon {
     width: 60px;
     height: 60px;
     align-self: center;
-}
-
-.game__seats > .chip {
-    min-width: 132px;
-    font-size: 40px;
-    -unity-font-style: bold;
-}
-
-/* A longer name (another language) wraps instead of spilling out of its tile. */
-.game__name {
-    white-space: normal;
-}
-
-.game--soon .game__art {
-    width: 200px;
-    height: 120px;
-    border-radius: 20px;
-}
-
-.game--soon .game__card, .game--soon .game__back {
-    scale: 0.45 0.45;
-    margin: 0 -60px;
-}
-
-.game__text {
-    flex-grow: 1;
-    flex-shrink: 1;
-    margin: 0 24px;
-}
-
-.game--soon .game__name {
-    margin-top: 0;
-    font-size: 64px;
-    -unity-text-align: middle-left;
-}
-
-.game--soon .game__line {
-    -unity-text-align: middle-left;
-}
-
-.game--soon .game__soon {
-    margin-top: 0;
-    flex-shrink: 0;
 }
 
 /* An icon in place of a word (the gear for settings); the tooltip and the label carry the name. */
@@ -2736,4 +2558,320 @@
     width: 52px;
     height: 52px;
     align-self: center;
+}
+
+/*
+ * Home after the concept art (docs/design/home-concept.md): a name sign hanging from the top with
+ * the level badge under it and the coin pouch beside it, the game card with its title, a fan of cards,
+ * seat medallions and Casual or Ranked, Play now on a plaque over the card's foot, two boards and the
+ * reward chest. These rules draw it plainly in any theme; a theme with painted pieces (Skins.uss) puts
+ * its art on the same elements.
+ */
+.home {
+    padding: 0 var(--space-2);
+}
+
+.home__scroll > .unity-scroll-view__content-viewport > .unity-scroll-view__content-container {
+    padding-bottom: var(--space-3);
+}
+
+.home__header {
+    height: 244px;
+    margin-top: 80px;
+    align-items: center;
+    flex-shrink: 0;
+}
+
+.home__rope {
+    position: absolute;
+    display: none;
+}
+
+.home__sign {
+    width: 620px;
+    height: 150px;
+    justify-content: center;
+    align-items: center;
+    padding: 0 110px 14px 110px;
+    border-radius: 28px;
+    background-color: var(--surface-panel);
+}
+
+.home__name {
+    font-size: 58px;
+    -unity-font-style: bold;
+    -unity-text-align: middle-center;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 100%;
+}
+
+.home__shield {
+    position: absolute;
+    top: 118px;
+    left: 50%;
+    translate: -66px 0;
+    width: 132px;
+    height: 132px;
+    margin: 0;
+    padding: 0 0 12px 0;
+    border-width: 0;
+    border-radius: 66px;
+    background-color: var(--surface-raised);
+    color: var(--accent-saffron);
+    font-size: 50px;
+    -unity-font-style: bold;
+    -unity-text-align: middle-center;
+}
+
+.home__pouch {
+    position: absolute;
+    top: -6px;
+    right: 36px;
+    width: 170px;
+    height: 170px;
+    justify-content: flex-end;
+    align-items: center;
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/dhaba/pouch.png");
+    -unity-background-scale-mode: scale-to-fit;
+}
+
+.home__coins {
+    margin: 0;
+    padding: 2px 16px;
+    border-radius: 999px;
+    background-color: rgba(0, 0, 0, 0.6);
+    color: var(--accent-mustard);
+    font-size: 30px;
+    -unity-font-style: bold;
+}
+
+.home__progress {
+    display: none;
+}
+
+.games {
+    flex-shrink: 0;
+    align-items: center;
+    margin: 10px 0 0 0;
+}
+
+.game {
+    width: 740px;
+    padding: 70px 70px 120px 70px;
+    align-items: stretch;
+    border-radius: 40px;
+    background-color: var(--surface-panel);
+}
+
+.game__name {
+    font-size: 132px;
+    -unity-text-align: middle-center;
+    -unity-font-definition: url("/Assets/_Project/Presentation/Theme/Fonts/LilitaOne.ttf");
+    color: var(--accent-saffron);
+    white-space: normal;
+}
+
+.game__line {
+    margin-top: -14px;
+    font-size: 42px;
+    -unity-text-align: middle-center;
+    -unity-font-definition: url("/Assets/_Project/Presentation/Theme/Fonts/LilitaOne.ttf");
+    color: var(--ink-ivory);
+    white-space: normal;
+}
+
+.game__art {
+    height: 210px;
+    margin-top: 6px;
+    flex-direction: row;
+    justify-content: center;
+    align-items: flex-start;
+}
+
+.game__card {
+    margin: 0 -42px;
+    scale: 0.74 0.74;
+    transform-origin: 50% 0;
+}
+
+.game__seats-label {
+    display: none;
+}
+
+.game__seats {
+    justify-content: center;
+    margin: -60px 0 0 0;
+}
+
+/* A medallion draws at 100px but takes a full touch target (132px, 48 dp). */
+.home .medal {
+    width: 132px;
+    min-width: 132px;
+    max-width: 132px;
+    height: 132px;
+    min-height: 132px;
+    max-height: 132px;
+    margin: 0 -8px;
+    padding: 0 0 4px 0;
+    border-radius: 66px;
+    font-size: 54px;
+    -unity-font-definition: url("/Assets/_Project/Presentation/Theme/Fonts/LilitaOne.ttf");
+    -unity-text-align: middle-center;
+}
+
+.home .medal.chip--on {
+    scale: 1.14 1.14;
+}
+
+.game__seats:disabled {
+    opacity: 0.45;
+}
+
+.game__mode {
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    margin-top: 22px;
+}
+
+.game__mode-label {
+    font-size: 46px;
+    -unity-font-definition: url("/Assets/_Project/Presentation/Theme/Fonts/LilitaOne.ttf");
+    color: var(--ink-muted);
+    padding: 0 20px;
+}
+
+.game__mode-label--on {
+    color: var(--ink-ivory);
+}
+
+.switch {
+    width: 140px;
+    height: 68px;
+    border-radius: 34px;
+    background-color: var(--surface-raised);
+    justify-content: center;
+}
+
+.switch__knob {
+    width: 54px;
+    height: 54px;
+    margin-left: 8px;
+    border-radius: 27px;
+    background-color: var(--ink-ivory);
+    transition-property: translate;
+    transition-duration: 160ms;
+    transition-timing-function: ease-out-cubic;
+}
+
+.switch--on {
+    background-color: var(--state-thulla);
+}
+
+.switch--on > .switch__knob {
+    translate: 70px 0;
+}
+
+.game__help {
+    position: absolute;
+    top: 24px;
+    right: 24px;
+}
+
+.game__play {
+    width: 520px;
+    height: 150px;
+    margin-top: -90px;
+    font-size: 84px;
+    -unity-font-definition: url("/Assets/_Project/Presentation/Theme/Fonts/LilitaOne.ttf");
+}
+
+.home__lower {
+    flex-direction: row;
+    justify-content: center;
+    align-items: flex-end;
+    margin-top: 8px;
+}
+
+.home .hero {
+    align-self: center;
+    width: 720px;
+    margin: 0 0 8px 0;
+    white-space: normal;
+}
+
+.home .party {
+    margin-top: var(--space-2);
+}
+
+.home__boards {
+    width: 420px;
+    margin-right: 24px;
+}
+
+.plank {
+    height: 112px;
+    margin: 8px 0;
+    font-size: 54px;
+    -unity-font-definition: url("/Assets/_Project/Presentation/Theme/Fonts/LilitaOne.ttf");
+    white-space: nowrap;
+}
+
+.daily {
+    width: 360px;
+    flex-direction: column;
+    align-items: center;
+    margin: 0;
+    padding: 0;
+    border-width: 0;
+    background-color: rgba(0, 0, 0, 0);
+}
+
+.daily__chest {
+    width: 300px;
+    height: 245px;
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/dhaba/chest.png");
+    -unity-background-scale-mode: scale-to-fit;
+    -unity-background-image-tint-color: rgb(190, 175, 170);
+}
+
+.daily--ready .daily__chest {
+    -unity-background-image-tint-color: rgb(255, 255, 255);
+}
+
+.daily__board {
+    width: 100%;
+    margin: -24px 0 12px 0;
+    font-size: 48px;
+}
+
+.daily__text {
+    margin: 0;
+    font-size: 26px;
+    -unity-text-align: middle-center;
+    white-space: normal;
+}
+
+.inventory {
+    align-items: center;
+    padding-top: var(--space-2);
+}
+
+.inventory__entry {
+    align-self: center;
+    width: 640px;
+    margin: 14px 0;
+}
+
+.inventory .inventory__badge {
+    top: -10px;
+    right: -10px;
+    background-color: #C62828;
+    color: #FFFFFF;
+}
+
+.nav__art {
+    display: none;
 }

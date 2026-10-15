@@ -4,14 +4,14 @@ Five looks for the whole app, picked in Settings → Table theme. Chosen after t
 
 | Theme | Scene | Table | Motion |
 |---|---|---|---|
-| Club (default) | Navy room, damask wall, spotlight | Stitched black leather rail, gold inlay, green felt | The spotlight breathes; dust drifts in it |
+| Club | Navy room, damask wall, spotlight | Stitched black leather rail, gold inlay, green felt | The spotlight breathes; dust drifts in it |
 | Haveli | Arches, frieze, tiled floor, lamplight | Carved wood, brass studs, maroon felt with a jaali | Lanterns sway and flicker; motes in the light |
-| Rooftop | Night sky, city, water tank, roof | Truck-art rim, teal tin top with flowers | String bulbs glow unevenly and now and then dip; stars twinkle; steam off the chai |
+| Rooftop (default) | Night sky, city, water tank, roof | Truck-art rim, teal tin top with flowers | String bulbs glow unevenly and now and then dip; stars twinkle; steam off the chai |
 | Mehndi | Magenta floor with marigold dots | Block-print rug with tassels and a medallion | Fairy lights twinkle; garlands sway; a petal falls now and then |
 | Chai Adda | Wooden planks, warm lamp | Takht with brass corners, teal cloth, tea rings | The lamp breathes; steam off the chai |
 
 ## 1. How it is built
-- `TableSkin` in the settings (Club by default) puts `skinned` and `skin--<id>` on the shell root (`ThemeClasses`).
+- `TableSkin` in the settings (Rooftop by default, `SettingsModel.DefaultSkin`) puts `skinned` and `skin--<id>` on the shell root (`ThemeClasses`).
 - `Presentation/Theme/Skins.uss` holds the rules every theme shares (under `.skinned`) and each theme's tokens, display face, backdrop, table, buttons, panels, name plates, seat frame, card back and thulla stamp (under `.skin--<id>`). It loads after `Hulla.uss` in the runtime theme.
 - Art comes from `tools/artkit/skins.py` (deterministic; `python3 tools/artkit/skins.py` with Pillow). Files live in `Presentation/Theme/Art/Skins/<id>/` and `.../shared/`.
 - `AmbientLayer` is added by the shell behind every screen's content, plus the chai glasses on the rail for Rooftop and Adda.

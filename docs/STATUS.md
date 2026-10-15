@@ -60,6 +60,7 @@ M0 complete: the Thulla rulebook runs in TypeScript with full traceability. M1, 
 - 12 Oct decisions: C# mirror deferred past v1.0 (ADR-0019), no clock in engines (ADR-0020), JSON Schema draft-07 (ADR-0021), one deck and 3–6 seats until v1.2, web client before Rung (M5 → web → Rung → M6, dates in the execution plan), Facebook login stays, Unity stays on 6000.4.9f1.
 
 ## Doing
+- Home after the owner's concept art (15 Oct): Rooftop is the default theme; Home has the hanging name sign, level shield and pouch, the truck-art Thulla card with seat medallions and Casual or Ranked, Play now on a plaque, hanging boards and the reward chest; four tabs (Home, Friends, Inventory, Settings) with Inventory holding the shop, pass, missions, achievements and leaderboard. Art from `tools/artkit/rooftop.py`; notes in `docs/design/home-concept.md`. In review, stacked on the layout PR.
 - A phone pass on the themes: motion speed and strength, quiet text on each scene, touch targets on the shelf.
 
 ## Next

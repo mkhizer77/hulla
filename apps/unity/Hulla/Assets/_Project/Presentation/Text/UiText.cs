@@ -209,10 +209,14 @@ namespace Hulla.Presentation.Text
         {
             Navigation.NavTab.Home => Strings.Text("nav.home"),
             Navigation.NavTab.Friends => Friends,
-            Navigation.NavTab.Shop => Shop,
-            Navigation.NavTab.Pass => Strings.Text("nav.pass"),
-            _ => Profile,
+            Navigation.NavTab.Inventory => Strings.Text("nav.inventory"),
+            _ => Strings.Text("nav.settings"),
         };
+
+        public static string Inventory => Strings.Text("ui.inventory");
+        public static string Casual => Strings.Text("ui.casual");
+        public static string Ranked => Strings.Text("ui.ranked");
+        public static string DailyReward => Strings.Text("ui.daily_reward");
 
         public static string SettingsSound => Strings.Text("ui.settings_sound");
         public static string SfxLabel => Strings.Text("ui.sfx_label");
