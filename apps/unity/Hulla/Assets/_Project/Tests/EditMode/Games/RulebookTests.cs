@@ -22,13 +22,13 @@ namespace Hulla.Games.Thulla.Tests
             public Awaitable LoadAsync(CancellationToken cancellation) => throw new System.NotSupportedException();
         }
 
-        private static TableModel Table(RulesSelection selection, ThullaRules? resolved)
+        private static TableModel Table(RulesSelection selection, ThullaRules? resolved, TableMode mode = TableMode.Private)
         {
             var model = new TableModel("me");
             model.Apply(new ServerMessage(MessageTypes.TableState, 1, new TableState
             {
                 Code = "ABC123",
-                Mode = TableMode.Private,
+                Mode = mode,
                 Status = resolved == null ? TableStatus.Open : TableStatus.InRound,
                 LastSeq = 1,
                 Rules = selection,
@@ -48,6 +48,14 @@ namespace Hulla.Games.Thulla.Tests
 
         private static List<string> TableLines(TableModel model) =>
             ThullaRulebook.Build(model, new Presets()).First(s => s.Id == "table").Lines.ToList();
+
+        [Test]
+        public void R31_HandTakingIsLeaderOnlyAtPublicTablesAndOffInRankedByDefault()
+        {
+            var standard = new RulesSelection { GameId = GameId.Thulla, Preset = Preset.Standard };
+            CollectionAssert.Contains(TableLines(Table(standard, null, TableMode.Public)), RulebookText.HandTakingLeader);
+            CollectionAssert.Contains(TableLines(Table(standard, null, TableMode.Ranked)), RulebookText.HandTakingOff);
+        }
 
         [Test]
         public void BeforeTheDealThePresetsSettingsAreDescribed()

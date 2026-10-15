@@ -40,7 +40,7 @@ namespace Hulla.Games.Thulla
                     EmptyHandLeader.InstantExit => RulebookText.EmptyHandInstantExit,
                     _ => RulebookText.EmptyHandDrawDiscard,
                 },
-                (rules.HandTaking ?? (model.IsPrivate ? HandTaking.LeaderOnly : HandTaking.Off)) switch
+                (rules.HandTaking ?? (model.IsRanked ? HandTaking.Off : HandTaking.LeaderOnly)) switch
                 {
                     HandTaking.Anyone => RulebookText.HandTakingAnyone,
                     HandTaking.LeaderOnly => RulebookText.HandTakingLeader,

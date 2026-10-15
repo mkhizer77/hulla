@@ -24,9 +24,9 @@ function expectError(result: ReturnType<typeof validateRules>, reason: string): 
 }
 
 describe("Thulla rules", () => {
-  it("R31_hand_taking_defaults_to_leader_only_in_private_and_off_in_public_and_ranked", () => {
+  it("R31_hand_taking_defaults_to_leader_only_in_private_and_public_and_off_in_ranked", () => {
     expect(defaultRules("private").handTaking).toBe("leaderOnly");
-    expect(defaultRules("public").handTaking).toBe("off");
+    expect(defaultRules("public").handTaking).toBe("leaderOnly");
     expect(defaultRules("ranked").handTaking).toBe("off");
   });
 

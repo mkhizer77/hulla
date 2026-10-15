@@ -665,11 +665,21 @@ export function authored(version: string): Vector[] {
       },
     ),
     // Hand-taking (R31 to R36, E8 to E11)
-    v("V-050-hand-taking-off-in-public", "hand-taking is off in public tables", ["R31"], {
-      setup: { hands: [["2H"], ["3H"], ["4H"]], leader: 0, mode: "public" },
+    v("V-050-hand-taking-off-in-ranked", "hand-taking is off in ranked tables", ["R31"], {
+      setup: { hands: [["2H"], ["3H"], ["4H"]], leader: 0, mode: "ranked" },
       moves: [take(0, rejected("rules.hand_take_disabled"))],
       assert: { leaderSeat: 0 },
     }),
+    v(
+      "V-053-take-leader-only-in-public",
+      "public tables allow the leader alone to take",
+      ["R31", "R32"],
+      {
+        setup: { hands: [["2H", "9S"], ["3H"], ["4H"]], leader: 0, mode: "public" },
+        moves: [take(1, rejected("rules.hand_take_not_leader"))],
+        assert: { leaderSeat: 0 },
+      },
+    ),
     v("V-051-take-window-from-trick-two", "no take before trick two", ["R32"], {
       setup: { hands: [["2H"], ["3H"], ["4H"]], leader: 0, trickIndex: 0 },
       moves: [take(0, rejected("rules.hand_take_window_closed"))],
