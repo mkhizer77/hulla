@@ -72,7 +72,7 @@ namespace Hulla.Presentation.Tests
             Assert.IsTrue(me.HasImage);
             Assert.IsTrue(me.ClassListContains("seat--turn"));
             Assert.IsTrue(me.ShowsCrown);
-            me.ShowTimer(0.5f, 7f, 1f);
+            me.ShowTimer(0.5f, 7f);
             Assert.IsTrue(me.ShowsTimer);
 
             me.Show("Khizer", null, me: true, turn: false);

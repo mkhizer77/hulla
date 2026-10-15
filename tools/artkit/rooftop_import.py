@@ -15,6 +15,10 @@ pieces the pack does not ship ready to use:
   back's cream ground, the bulb, coins, the silver ribbon) are filled. Sprites whose openings are
   meant (the avatar frame's aperture, the timer ring, ink-only stamps, the gear, rope loops, the
   case handle) keep them.
+- Sprites that grow with their content get a nine-slice version (<name>_9.png): cropped to the
+  art, the corners as painted (every rivet, rope and flower inside them), and the edges and centre
+  rebuilt from a clean run of the original that wraps back into itself, so the stylesheet tiles them
+  (-unity-slice-type: tiled) instead of stretching the grain. NINE lists each one's insets.
 - Pale halos and light drop shadows from the extraction's light background turn into a soft dark
   shadow (a warm glow on the timer ring), so nothing glows white on the night scene.
 
@@ -127,6 +131,27 @@ def toggle_parts(track: Image.Image) -> tuple[Image.Image, Image.Image]:
     return blank, knob
 
 
+def coin() -> Image.Image:
+    """A gold coin for the daily reward's flight to the potli, in the potli's own gold."""
+    k = 4
+    size = 72
+    img = Image.new("RGBA", (size * k, size * k), (0, 0, 0, 0))
+    d = ImageDraw.Draw(img)
+    c = size * k / 2
+    d.ellipse((4 * k, 6 * k, (size - 4) * k, (size - 2) * k), fill=(140, 93, 20, 255))
+    d.ellipse((4 * k, 4 * k, (size - 4) * k, (size - 4) * k), fill=(212, 155, 53, 255))
+    d.ellipse((9 * k, 9 * k, (size - 9) * k, (size - 9) * k), fill=(249, 168, 37, 255))
+    d.ellipse((13 * k, 13 * k, (size - 13) * k, (size - 13) * k), outline=(193, 121, 0, 255), width=3 * k)
+    star = []
+    for i in range(10):
+        a = math.radians(-90 + i * 36)
+        r = (14 if i % 2 == 0 else 6) * k
+        star.append((c + math.cos(a) * r, c + math.sin(a) * r))
+    d.polygon(star, fill=(255, 224, 130, 255))
+    d.ellipse((14 * k, 11 * k, 30 * k, 19 * k), fill=(255, 241, 118, 170))
+    return img.resize((size, size), Image.LANCZOS)
+
+
 def switch_states(track: Image.Image, knob: Image.Image) -> None:
     """Settings toggles in one image each: the knob at the left (off) or the right on a warm groove (on)."""
     w, h = track.size
@@ -215,6 +240,86 @@ def import_settings(png: Path) -> None:
     meta.write_text(text)
 
 
+# Nine-slice versions, measured on the art cropped to its content: (L, T, R, B) are the corners and
+# edges kept as painted; hx and vy are the clean column and row runs the tiles are built from.
+NINE = {
+    "btn_plank_large_normal": dict(folder="Buttons", hx=(145, 348), vy=(98, 128), L=140, R=140, rim=16),
+    "btn_plank_large_pressed": dict(folder="Buttons", hx=(145, 348), vy=(98, 128), L=140, R=140, rim=16),
+    "btn_plank_medium_normal": dict(folder="Buttons", hx=(105, 172), vy=(82, 112), L=105, R=105, rim=14),
+    "btn_plank_medium_pressed": dict(folder="Buttons", hx=(105, 172), vy=(82, 112), L=105, R=105, rim=14),
+    "btn_chip_pill_normal": dict(folder="Buttons", hx=(52, 116), vy=(44, 52), L=52, R=52),
+    "btn_chip_pill_pressed": dict(folder="Buttons", hx=(52, 116), vy=(44, 52), L=52, R=52),
+    "nameplate_wood_blank": dict(folder="Frames", hx=(50, 259), vy=(46, 56), L=50, R=50),
+    "panel_parchment_dialog_blank": dict(folder="Frames", hx=(70, 316), vy=(80, 100), L=70, R=70),
+    "nav_dock_baseboard": dict(folder="Nav", hx=(70, 487), vy=(55, 85), L=70, R=70),
+    "btn_primary_pressed": dict(folder="Buttons", hx=(70, 382), vy=(90, 96), L=70, R=70),
+    "signboard_header_blank": dict(folder="Frames", hx=(182, 290), vy=(112, 128), L=182, R=186),
+}
+
+
+def wrap(patch: Image.Image, axis: int) -> Image.Image:
+    """
+    A tile that repeats without a seam, from a clean run of the art only: the run's tail fades into its
+    own head over a quarter of its length, and that head is dropped, so the last pixel of one tile
+    leads into the first of the next.
+    """
+    n = patch.size[axis]
+    k = max(2, n // 4)
+    size = (n - k, patch.height) if axis == 0 else (patch.width, n - k)
+    out = Image.new("RGBA", size)
+
+    def line(src: Image.Image, i: int) -> Image.Image:
+        return src.crop((i, 0, i + 1, src.height)) if axis == 0 else src.crop((0, i, src.width, i + 1))
+
+    for j in range(n - k):
+        piece = line(patch, j + k)
+        if j >= n - 2 * k:
+            i = j - (n - 2 * k)
+            piece = Image.blend(piece, line(patch, i), (i + 1) / k)
+        out.paste(piece, (j, 0) if axis == 0 else (0, j))
+    return out
+
+
+def nine_ready(img: Image.Image, hx: tuple[int, int], vy: tuple[int, int], L: int, R: int, rim: int = 0) -> tuple[Image.Image, tuple[int, int, int, int]]:
+    """
+    Corners as painted, edges and centre as seamless tiles from the clean runs (see wrap); returns the
+    image and (L, T, R, B). With rim, the side edges are the outer rim that wide plus plain wood from the
+    centre, so a corner flourish that runs down the side is never repeated.
+    """
+    art = img.crop(img.getbbox())
+    w, h = art.size
+    x0, x1 = hx
+    y0, y1 = vy
+    T, B = y0, h - y1
+    top = wrap(art.crop((x0, 0, x1, T)), 0)
+    bottom = wrap(art.crop((x0, h - B, x1, h)), 0)
+    centre = wrap(wrap(art.crop((x0, y0, x1, y1)), 0), 1)
+    tw, th = centre.size
+    if rim:
+        left = Image.new("RGBA", (L, th))
+        right = Image.new("RGBA", (R, th))
+        for strip, width, edge, at in ((left, L, art.crop((0, y0, rim, y1)), 0), (right, R, art.crop((w - rim, y0, w, y1)), R - rim)):
+            x = -tw
+            while x < width:
+                strip.paste(centre, (x, 0))
+                x += tw
+            strip.paste(wrap(edge, 1), (at, 0))
+    else:
+        left = wrap(art.crop((0, y0, L, y1)), 1)
+        right = wrap(art.crop((w - R, y0, w, y1)), 1)
+    out = Image.new("RGBA", (L + tw + R, T + th + B), (0, 0, 0, 0))
+    out.paste(art.crop((0, 0, L, T)), (0, 0))
+    out.paste(art.crop((w - R, 0, w, T)), (L + tw, 0))
+    out.paste(art.crop((0, h - B, L, h)), (0, T + th))
+    out.paste(art.crop((w - R, h - B, w, h)), (L + tw, T + th))
+    out.paste(top, (L, 0))
+    out.paste(bottom, (L, T + th))
+    out.paste(left, (0, T))
+    out.paste(right, (L + tw, T))
+    out.paste(centre, (L, T))
+    return out, (L, T, R, B)
+
+
 def main() -> None:
     if len(sys.argv) != 2:
         raise SystemExit(__doc__)
@@ -236,8 +341,14 @@ def main() -> None:
     blank.save(OUT / "Buttons" / "toggle_track_blank.png", optimize=True)
     knob.save(OUT / "Buttons" / "toggle_knob.png", optimize=True)
     switch_states(blank, knob)
+    coin().save(OUT / "Props" / "coin_gold.png", optimize=True)
     for state in ("normal", "pressed"):
         blank_coin(defringe(Image.open(found[f"chip_seat_6_{state}"])), 0.80).save(OUT / "Chips" / f"chip_seat_3_{state}.png", optimize=True)
+    for name, cfg in NINE.items():
+        source = Image.open(OUT / cfg["folder"] / f"{name}.png")
+        tiled, insets = nine_ready(source, cfg["hx"], cfg["vy"], cfg["L"], cfg["R"], cfg.get("rim", 0))
+        tiled.save(OUT / cfg["folder"] / f"{name}_9.png", optimize=True)
+        print(f"{name}_9 insets L,T,R,B = {insets}")
     for p in sorted(OUT.rglob("*.png")):
         import_settings(p)
         print(p.relative_to(OUT), Image.open(p).size)

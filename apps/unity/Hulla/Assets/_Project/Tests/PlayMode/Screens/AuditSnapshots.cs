@@ -40,10 +40,17 @@ namespace Hulla.Screens.Tests
                 skin = chosen;
             }
 
+            // HULLA_SNAPSHOT_HEIGHT=2400 renders a 1080 x 2400 phone (a Pixel 7a) with its system-bar insets.
+            var tall = int.TryParse(System.Environment.GetEnvironmentVariable("HULLA_SNAPSHOT_HEIGHT"), out var h) ? h : 0;
             foreach (var screen in ScreenCases.All())
             {
-                var task = CardRenderer.RenderAsync(settings, CardRatio.Story, root =>
+                var task = CardRenderer.RenderAsync(settings, CardRenderer.Width, tall > 0 ? tall : CardRenderer.HeightOf(CardRatio.Story), root =>
                 {
+                    if (tall > 0)
+                    {
+                        ScreenLayout.Apply(root, SizeClass.Compact, new Insets(118, 0, 63, 0));
+                    }
+
                     ScreenCases.Skin(root, skin);
                     var instance = screen.Screen!.Instantiate();
                     instance.style.flexGrow = 1;

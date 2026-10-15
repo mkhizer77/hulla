@@ -743,6 +743,7 @@
   "ui.server": "Server (development builds)",
   "ui.settings": "Settings",
   "ui.settings_account": "Account and data",
+  "ui.settings_development": "Development",
   "ui.settings_play": "Playing",
   "ui.settings_privacy": "Privacy",
   "ui.settings_seeing": "Seeing and moving",

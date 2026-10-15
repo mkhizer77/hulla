@@ -44,10 +44,16 @@ namespace Hulla.Presentation.Screens.Settings
         private Label? _accountStatus;
         private readonly NotificationSettingsViewModel? _notifications;
         private readonly Action<Action<NotificationSettings>>? _changeNotifications;
+        private readonly string? _server;
+        private readonly Action<string>? _useServer;
 
         /// <param name="notifications">The server-side notification switches; null hides the section.</param>
-        public SettingsView(VisualElement root, SettingsModel settings, Action close, AccountActions? account = null, NotificationSettingsViewModel? notifications = null, Action<Action<NotificationSettings>>? changeNotifications = null)
+        /// <param name="server">The server address, shown in development builds only; null hides it.</param>
+        /// <param name="useServer">Switches to the address typed in, when the field is left or submitted.</param>
+        public SettingsView(VisualElement root, SettingsModel settings, Action close, AccountActions? account = null, NotificationSettingsViewModel? notifications = null, Action<Action<NotificationSettings>>? changeNotifications = null, string? server = null, Action<string>? useServer = null)
         {
+            _server = server;
+            _useServer = useServer;
             _account = account;
             _notifications = notifications;
             _changeNotifications = changeNotifications;
@@ -142,6 +148,18 @@ namespace Hulla.Presentation.Screens.Settings
                 _accountStatus.AddToClassList("status");
                 _list.Add(_accountStatus);
             }
+
+            if (_server != null && _useServer != null)
+            {
+                Heading(UiText.SettingsDevelopment);
+                var field = new TextField(UiText.Server) { name = "server", value = _server };
+                field.AddToClassList("field");
+                field.AddToClassList("field--dev");
+                var use = _useServer;
+                field.RegisterCallback<FocusOutEvent>(_ => use(field.value.Trim()));
+                field.RegisterCallback<NavigationSubmitEvent>(_ => use(field.value.Trim()));
+                _list.Add(field);
+            }
         }
 
         private void Status(string text)
@@ -185,7 +203,14 @@ namespace Hulla.Presentation.Screens.Settings
             var slider = new SliderInt(text, 0, 100) { value = get() };
             slider.AddToClassList("settings__row");
             slider.AddToClassList("settings__level");
-            slider.RegisterValueChangedCallback(evt => set(evt.newValue));
+            var value = new Label(get() + "%") { pickingMode = PickingMode.Ignore };
+            value.AddToClassList("settings__value");
+            slider.Add(value);
+            slider.RegisterValueChangedCallback(evt =>
+            {
+                value.text = evt.newValue + "%";
+                set(evt.newValue);
+            });
             _list.Add(slider);
         }
 

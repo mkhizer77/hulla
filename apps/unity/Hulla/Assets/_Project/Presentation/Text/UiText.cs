@@ -266,6 +266,7 @@ namespace Hulla.Presentation.Text
         /// <summary>Emote ids read as words until the emote art arrives (#34): "laugh_cry" → "Laugh cry".</summary>
         public static string EmoteLabel(string id) => Strings.Has("emote." + id) ? Strings.Text("emote." + id) : Words(id);
         public static string Server => Strings.Text("ui.server");
+        public static string SettingsDevelopment => Strings.Text("ui.settings_development");
 
         public static string Profile => Strings.Text("ui.profile");
         public static string Missions => Strings.Text("ui.missions");

@@ -3713,6 +3713,11 @@
    "smart": false
   },
   {
+   "key": "ui.settings_development",
+   "text": "Development",
+   "smart": false
+  },
+  {
    "key": "ui.settings_play",
    "text": "Playing",
    "smart": false

@@ -104,11 +104,10 @@ namespace Hulla.Presentation.TableKit
         }
 
         /// <summary>The timer ring on this seat's avatar while it is their turn; hidden otherwise.</summary>
-        public void ShowTimer(float fraction, float secondsLeft, float pulse)
+        public void ShowTimer(float fraction, float secondsLeft)
         {
             _timer.style.display = DisplayStyle.Flex;
             _timer.Show(fraction, secondsLeft);
-            _timer.style.scale = new Scale(new Vector2(pulse, pulse));
         }
 
         public void HideTimer() => _timer.style.display = DisplayStyle.None;

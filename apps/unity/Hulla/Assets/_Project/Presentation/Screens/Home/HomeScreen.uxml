@@ -44,9 +44,9 @@
                     <ui:Button name="join-toggle" class="button button--secondary plank plank--blue" />
                 </ui:VisualElement>
                 <ui:VisualElement name="daily" class="daily">
-                    <ui:VisualElement name="daily-chest" class="daily__chest" />
                     <ui:Button name="daily-claim" class="button button--secondary plank plank--red daily__board" />
                     <ui:Label name="daily-text" class="daily__text" />
+                    <ui:VisualElement name="daily-chest" class="daily__chest" />
                 </ui:VisualElement>
             </ui:VisualElement>
             <ui:VisualElement name="party" class="party" />

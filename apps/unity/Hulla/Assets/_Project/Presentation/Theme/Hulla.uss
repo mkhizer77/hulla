@@ -242,7 +242,6 @@
 .seat--turn .seat__avatar {
     border-color: var(--gold);
     border-width: 7px;
-    scale: 1.08 1.08;
 }
 
 .seat--turn .seat__name {
@@ -2825,19 +2824,26 @@
     white-space: nowrap;
 }
 
+/* The chest stands in front of its board, overlapping its top edge. */
 .daily {
     width: 360px;
     flex-direction: column;
     align-items: center;
     margin: 0;
-    padding: 0;
+    padding: 200px 0 0 0;
     border-width: 0;
     background-color: rgba(0, 0, 0, 0);
 }
 
 .daily__chest {
+    position: absolute;
+    top: 0;
+    left: 30px;
     width: 300px;
     height: 245px;
+    transition-property: scale;
+    transition-duration: 180ms;
+    transition-timing-function: ease-out-back;
     background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/Rooftop/Props/chest_daily_reward_closed.png");
     -unity-background-scale-mode: scale-to-fit;
     -unity-background-image-tint-color: rgb(190, 175, 170);
@@ -2847,10 +2853,33 @@
     -unity-background-image-tint-color: rgb(255, 255, 255);
 }
 
+.daily__chest--pop {
+    scale: 1.15 1.15;
+}
+
 .daily__board {
     width: 100%;
-    margin: -24px 0 12px 0;
+    margin: 0 0 12px 0;
     font-size: 48px;
+}
+
+/* A coin from the opened chest on its way to the potli (DailyRewardCard). */
+.coin-fly {
+    position: absolute;
+    width: 64px;
+    height: 64px;
+    margin: -32px 0 0 -32px;
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/Rooftop/Props/coin_gold.png");
+    -unity-background-scale-mode: scale-to-fit;
+}
+
+.home__pouch {
+    transition-property: scale;
+    transition-duration: 90ms;
+}
+
+.home__pouch--bump {
+    scale: 1.1 1.1;
 }
 
 .daily__text {

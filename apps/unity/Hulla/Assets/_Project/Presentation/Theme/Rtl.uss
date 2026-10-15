@@ -401,6 +401,14 @@
     -unity-text-align: middle-center;
 }
 
+.rtl .skin--dhaba .me-badge .seat__name {
+    -unity-text-align: middle-center;
+}
+
+.rtl .skin--dhaba .settings__value {
+    -unity-text-align: middle-left;
+}
+
 /* Screens/Ranked/Ranked.uss */
 .rtl .ranked__league {
     -unity-text-align: middle-center;

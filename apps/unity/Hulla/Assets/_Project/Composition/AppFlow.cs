@@ -388,14 +388,18 @@ namespace Hulla.Composition
             _screen = Screen.Home;
             var root = _shell.Show(_shell.Catalog.Home);
             _shell.ShowNav(Hulla.Presentation.Navigation.NavTab.Home);
-            var server = Debug.isDebugBuild ? _app.Config.HostAndPort : null;
-            var home = new HomeView(root, _app.Home, server, OnCreate, OnJoin, OnQuickPlay, OpenSettings, OnFriends, OnProfile, _app.HomeFriends, () => StartTutorial(false), TutorialText.HowToPlay, OnWatch, _app.Progress, OnMissions, OnLeaderboard, OnShop, OnPass, OnRanked);
+            // The development server address lives in Settings; Home keeps whatever it is set to.
+            var home = new HomeView(root, _app.Home, null, OnCreate, OnJoin, OnQuickPlay, OpenSettings, OnFriends, OnProfile, _app.HomeFriends, () => StartTutorial(false), TutorialText.HowToPlay, OnWatch, _app.Progress, OnMissions, OnLeaderboard, OnShop, OnPass, OnRanked);
             _view = home;
             home.SetQuickPlay(_app.RemoteConfig.QuickPlay, QuickPlayNote());
             var left = LastTableCode();
             home.ShowRejoin(left, left == null ? null : () => Rejoin(home, left));
             RefreshRejoin(home);
-            _daily = new DailyRewardCard(UnityEngine.UIElements.UQueryExtensions.Q<UnityEngine.UIElements.VisualElement>(root, "daily"), _app.DailyReward, ClaimDailyReward);
+            _daily = new DailyRewardCard(UnityEngine.UIElements.UQueryExtensions.Q<UnityEngine.UIElements.VisualElement>(root, "daily"), _app.DailyReward, ClaimDailyReward,
+                UnityEngine.UIElements.UQueryExtensions.Q<UnityEngine.UIElements.VisualElement>(root, "home"),
+                UnityEngine.UIElements.UQueryExtensions.Q<UnityEngine.UIElements.VisualElement>(root, "pouch"),
+                UnityEngine.UIElements.UQueryExtensions.Q<UnityEngine.UIElements.Label>(root, "coins"),
+                _app.Settings.ReduceMotion);
             _app.HomeFriends.Active = _app.Sessions.Current != null;
             _app.HomeFriends.RefreshSoon();
             if (_app.Sessions.Current != null)
@@ -1263,7 +1267,15 @@ namespace Hulla.Composition
             var signedIn = _app.Sessions.Current != null;
             _settingsView = new SettingsView(_shell.ShowOverlay(_shell.Catalog.Settings), _app.Settings, CloseSettings, account,
                 signedIn ? _app.NotificationSettings : null,
-                change => _ = _app.NotificationSettings.ChangeAsync(change, _app.Lifetime));
+                change => _ = _app.NotificationSettings.ChangeAsync(change, _app.Lifetime),
+                Debug.isDebugBuild ? _app.Config.HostAndPort : null,
+                server =>
+                {
+                    if (server.Length > 0 && server != _app.Config.HostAndPort)
+                    {
+                        ApplyServer(server);
+                    }
+                });
             if (signedIn)
             {
                 _ = _app.NotificationSettings.RefreshAsync(_app.Lifetime);

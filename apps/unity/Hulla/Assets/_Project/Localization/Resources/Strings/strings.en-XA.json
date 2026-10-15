@@ -3713,6 +3713,11 @@
    "smart": false
   },
   {
+   "key": "ui.settings_development",
+   "text": "[Dévélöpméñt · ·]",
+   "smart": false
+  },
+  {
    "key": "ui.settings_play",
    "text": "[Plåýîñg · ·]",
    "smart": false
