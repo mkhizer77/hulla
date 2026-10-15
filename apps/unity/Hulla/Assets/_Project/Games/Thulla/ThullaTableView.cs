@@ -595,7 +595,7 @@ namespace Hulla.Games.Thulla
             _hint.text = back ? Strings.Format(UiText.PlayerBack, name) : Strings.Format(UiText.BotPlaysFor, name);
             _hint.style.display = DisplayStyle.Flex;
             _hintLeft = SaySeconds;
-            _ring.BadgeFor(seat)?.Say(back ? UiText.Back : UiText.SeatAutoPlay, SaySeconds);
+            _ring.BadgeFor(seat)?.Say(back ? UiText.BackAtTable : UiText.SeatAutoPlay, SaySeconds);
         }
 
         /// <summary>Shares the room code from the results so someone can take a seat a player left (private rooms).</summary>

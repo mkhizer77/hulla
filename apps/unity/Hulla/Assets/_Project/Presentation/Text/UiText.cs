@@ -39,7 +39,7 @@ namespace Hulla.Presentation.Text
 
         public static string PlayerBack => Strings.Text("ui.player_back");
 
-        public static string Back => Strings.Text("ui.back_at_table");
+        public static string BackAtTable => Strings.Text("ui.back_at_table");
         public static string YouAreOut => Strings.Text("ui.you_are_out");
         public static string OutWatching => Strings.Text("ui.out_watching");
         public static string Escaped => Strings.Text("ui.escaped");
