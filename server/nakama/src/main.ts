@@ -98,6 +98,7 @@ import {
 } from "./rpc/social";
 import { rpcTableCreate } from "./rpc/table_create";
 import { rpcTableJoinByCode } from "./rpc/table_join_by_code";
+import { rpcTableMine } from "./rpc/table_mine";
 import { rpcVoiceToken } from "./rpc/voice_token";
 import { rpcTutorialComplete } from "./rpc/welcome";
 import { ensureLeaderboards } from "./services/leaderboards";
@@ -140,6 +141,7 @@ function InitModule(
   initializer.registerRpc("favourite_set", rpcFavouriteSet);
   initializer.registerRpc("social_overview", rpcSocialOverview);
   initializer.registerRpc("table_list_friends", rpcTableListFriends);
+  initializer.registerRpc("table_mine", rpcTableMine);
   initializer.registerRpc("presence_set", rpcPresenceSet);
   initializer.registerRpc("mute_set", rpcMuteSet);
   initializer.registerRpc("mutes_get", rpcMutesGet);

@@ -145,10 +145,14 @@ namespace Hulla.Application.Tests
         }
 
         [Test]
-        public void SeatsAreKeptBetweenFourAndSix()
+        public void SeatsAreKeptBetweenThreeAndSix()
         {
             _ = _model.StartAsync(9, default);
             Assert.AreEqual(6, _model.Seats);
+            _ = _model.StartAsync(3, default);
+            Assert.AreEqual(3, _model.Seats, "a three-seat table is a real choice");
+            _ = _model.StartAsync(2, default);
+            Assert.AreEqual(3, _model.Seats);
         }
     }
 }

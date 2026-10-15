@@ -45,6 +45,7 @@ describe("InitModule", () => {
       "favourite_set",
       "social_overview",
       "table_list_friends",
+      "table_mine",
       "presence_set",
       "mute_set",
       "mutes_get",

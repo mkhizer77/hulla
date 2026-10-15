@@ -9,7 +9,7 @@ using UnityEngine;
 
 namespace Hulla.Infrastructure.Nakama
 {
-    /// <summary>The table RPCs (table_create, table_join_by_code) and the match socket for one table at a time.</summary>
+    /// <summary>The table RPCs (table_create, table_join_by_code, table_mine) and the match socket for one table at a time.</summary>
     public sealed class NakamaTableGateway : ITableGateway, IDisposable
     {
         private readonly NakamaConnection _connection;
@@ -33,6 +33,34 @@ namespace Hulla.Infrastructure.Nakama
 
         public Awaitable<Result<TableTicket>> JoinByCodeAsync(string code, CancellationToken cancellation) =>
             CallAsync("table_join_by_code", new JObject { ["code"] = code.Trim().ToUpperInvariant() }, cancellation);
+
+        public async Awaitable<Result<TableTicket?>> FindMineAsync(CancellationToken cancellation)
+        {
+            var session = _connection.Session;
+            if (session == null)
+            {
+                return Result<TableTicket?>.Ok(null);
+            }
+
+            try
+            {
+                var response = await _connection.Client.RpcAsync(session, "table_mine", "{}", null, cancellation);
+                var table = JObject.Parse(response.Payload)["table"] as JObject;
+                var matchId = (string?)table?["matchId"];
+                return Result<TableTicket?>.Ok(table == null || string.IsNullOrEmpty(matchId)
+                    ? null
+                    : new TableTicket(matchId!, (string?)table["code"] ?? "", (string?)table["tableId"] ?? ""));
+            }
+            catch (OperationCanceledException)
+            {
+                throw;
+            }
+            catch (Exception error)
+            {
+                Debug.LogWarning($"table_mine failed: {error.Message}");
+                return Result<TableTicket?>.Fail("table.unavailable", error.GetType().Name);
+            }
+        }
 
         public async Awaitable<Result<bool>> EnterAsync(TableTicket ticket, CancellationToken cancellation)
         {

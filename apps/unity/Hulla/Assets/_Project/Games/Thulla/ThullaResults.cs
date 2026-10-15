@@ -32,6 +32,8 @@ namespace Hulla.Games.Thulla
         private readonly Button _share;
         private readonly Button _fair;
         private readonly Button _changeRules;
+        private readonly Action _onPlayAgain;
+        private const int MinimumPlayers = 3;
         private Action? _onShare;
         private Action? _onChangeRules;
         private Fairness? _fairness;
@@ -50,6 +52,7 @@ namespace Hulla.Games.Thulla
             _playAgain = root.Q<Button>("play-again");
             _playAgain.text = UiText.PlayAgain;
             _playAgain.clicked += playAgain;
+            _onPlayAgain = playAgain;
             _status = root.Q<Label>("result-status");
             _reward = root.Q<Label>("result-reward");
             _share = root.Q<Button>("result-share");
@@ -112,6 +115,12 @@ namespace Hulla.Games.Thulla
 
         public Action<string>? AddFriend { get; set; }
 
+        /// <summary>The names of players who left during the round; a bot finished it for them (R44).</summary>
+        public Func<IReadOnlyList<string>>? WhoLeft { get; set; }
+
+        /// <summary>Shares the room code so someone can take a free seat; shown at private tables only.</summary>
+        public Action? Invite { get; set; }
+
         public void Show(TableModel model, bool voted)
         {
             var result = model.LastResult;
@@ -158,6 +167,7 @@ namespace Hulla.Games.Thulla
             }
 
             Highlights(result);
+            LeftPlayers(model, voted);
             FriendChips(model);
             _playAgain.SetEnabled(!voted);
             _shownSeconds = -1;
@@ -303,6 +313,54 @@ namespace Hulla.Games.Thulla
             if (picker >= 0)
             {
                 Line(Strings.Format(UiText.MostPickedUp, _nameOf(picker), biggest), null);
+            }
+        }
+
+        /// <summary>
+        /// Who left mid-round, and what the table can do about it: invite someone into the seat
+        /// (private rooms, by the room code) or play on without them, which needs three players.
+        /// </summary>
+        private void LeftPlayers(TableModel model, bool voted)
+        {
+            var left = WhoLeft?.Invoke();
+            if (left == null || left.Count == 0)
+            {
+                return;
+            }
+
+            Heading(Strings.Format(UiText.LeftTheTable, string.Join(", ", left)));
+            var stayed = 0;
+            foreach (var seat in model.Seats)
+            {
+                stayed += seat.Occupied && seat.Connected ? 1 : 0;
+            }
+
+            var row = new VisualElement();
+            row.AddToClassList("chips");
+            if (Invite != null && model.IsPrivate)
+            {
+                var invite = new Button { text = UiText.InviteSomeone };
+                invite.AddToClassList("chip");
+                invite.clicked += Invite;
+                row.Add(invite);
+            }
+
+            if (stayed >= MinimumPlayers)
+            {
+                var carryOn = new Button { text = UiText.ContinueWithout };
+                carryOn.AddToClassList("chip");
+                carryOn.SetEnabled(!voted);
+                carryOn.clicked += _onPlayAgain;
+                row.Add(carryOn);
+            }
+            else
+            {
+                Line(model.IsPrivate ? UiText.NeedThreeInvite : UiText.NeedThreeFindTable, null);
+            }
+
+            if (row.childCount > 0)
+            {
+                _body.Add(row);
             }
         }
 

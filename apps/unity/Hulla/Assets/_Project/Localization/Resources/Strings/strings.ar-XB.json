@@ -2533,6 +2533,11 @@
    "smart": false
   },
   {
+   "key": "ui.back_at_table",
+   "text": "Back",
+   "smart": false
+  },
+  {
    "key": "ui.balances",
    "text": "{0:N0} coins · {1:N0} gems",
    "smart": true
@@ -2566,6 +2571,11 @@
    "key": "ui.board_empty",
    "text": "No points yet. Win rounds to get on the board.",
    "smart": false
+  },
+  {
+   "key": "ui.bot_plays_for",
+   "text": "{0} left. A bot is playing for them until they're back.",
+   "smart": true
   },
   {
    "key": "ui.buy",
@@ -2660,6 +2670,11 @@
   {
    "key": "ui.connecting",
    "text": "Connecting…",
+   "smart": false
+  },
+  {
+   "key": "ui.continue_without",
+   "text": "Continue without them",
    "smart": false
   },
   {
@@ -3008,6 +3023,11 @@
    "smart": true
   },
   {
+   "key": "ui.invite_someone",
+   "text": "Invite someone",
+   "smart": false
+  },
+  {
    "key": "ui.invite_your_group",
    "text": "Invite your group",
    "smart": false
@@ -3071,6 +3091,11 @@
    "key": "ui.left_handed_label",
    "text": "Left-handed layout",
    "smart": false
+  },
+  {
+   "key": "ui.left_the_table",
+   "text": "{0} left the table",
+   "smart": true
   },
   {
    "key": "ui.level_up",
@@ -3160,6 +3185,16 @@
   {
    "key": "ui.name_too_short",
    "text": "A name needs at least 2 characters.",
+   "smart": false
+  },
+  {
+   "key": "ui.need_three_find_table",
+   "text": "Not enough players left to play on. Play now finds you a new table.",
+   "smart": false
+  },
+  {
+   "key": "ui.need_three_invite",
+   "text": "You need three players to play on. Invite someone to take the empty seat.",
    "smart": false
   },
   {
@@ -3328,6 +3363,11 @@
    "smart": false
   },
   {
+   "key": "ui.player_back",
+   "text": "{0} is back.",
+   "smart": true
+  },
+  {
    "key": "ui.playing",
    "text": "Playing…",
    "smart": false
@@ -3425,6 +3465,11 @@
   {
    "key": "ui.referral_while_seated",
    "text": "Open the link again after this table to add your friend.",
+   "smart": false
+  },
+  {
+   "key": "ui.rejoin_game",
+   "text": "Rejoin your game",
    "smart": false
   },
   {
@@ -3579,12 +3624,12 @@
   },
   {
    "key": "ui.seat_auto_play",
-   "text": "Auto-play",
+   "text": "Bot playing",
    "smart": false
   },
   {
    "key": "ui.seat_away_auto_play",
-   "text": "Away · auto-play",
+   "text": "Left · bot playing",
    "smart": false
   },
   {

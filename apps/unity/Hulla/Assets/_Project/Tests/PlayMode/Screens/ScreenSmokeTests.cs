@@ -93,7 +93,7 @@ namespace Hulla.Screens.Tests
             Assert.AreEqual(1, root.Q<VisualElement>("party").childCount, "the one friend online sits in the party bar");
             Shown(root.Q<Button>("hero"), "the hero");
             StringAssert.Contains("Ayesha", root.Q<Button>("hero").text);
-            Assert.AreEqual(3, root.Q<VisualElement>("seats").childCount, "4, 5 and 6 seat chips");
+            Assert.AreEqual(4, root.Q<VisualElement>("seats").childCount, "3, 4, 5 and 6 seat chips");
             Shown(root.Q<VisualElement>("daily"), "the daily reward");
             Assert.AreEqual("Daily reward, day 4: 80 coins + 2 gems", root.Q<Label>("daily-text").text);
         }

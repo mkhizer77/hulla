@@ -19,6 +19,9 @@ namespace Hulla.Application.Services
 
         Awaitable<Result<TableTicket>> JoinByCodeAsync(string code, CancellationToken cancellation);
 
+        /// <summary>The table the player still holds a seat at (table_mine), connected or not; null when none.</summary>
+        Awaitable<Result<TableTicket?>> FindMineAsync(CancellationToken cancellation);
+
         Awaitable<Result<bool>> EnterAsync(TableTicket ticket, CancellationToken cancellation);
 
         void Send(string type, object payload);

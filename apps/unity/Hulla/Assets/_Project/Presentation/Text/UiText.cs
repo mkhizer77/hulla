@@ -34,6 +34,12 @@ namespace Hulla.Presentation.Text
         public static string AskSheetBody => Strings.Text("ui.ask_sheet_body");
         public static string HandOver => Strings.Text("ui.hand_over");
         public static string KeepPlaying => Strings.Text("ui.keep_playing");
+
+        public static string BotPlaysFor => Strings.Text("ui.bot_plays_for");
+
+        public static string PlayerBack => Strings.Text("ui.player_back");
+
+        public static string BackAtTable => Strings.Text("ui.back_at_table");
         public static string YouAreOut => Strings.Text("ui.you_are_out");
         public static string OutWatching => Strings.Text("ui.out_watching");
         public static string Escaped => Strings.Text("ui.escaped");
@@ -47,6 +53,18 @@ namespace Hulla.Presentation.Text
 
         /// <summary>Whose turn it is when it is not the player's own.</summary>
         public static string RejoinTable => Strings.Text("ui.rejoin_table");
+
+        public static string RejoinGame => Strings.Text("ui.rejoin_game");
+
+        public static string LeftTheTable => Strings.Text("ui.left_the_table");
+
+        public static string InviteSomeone => Strings.Text("ui.invite_someone");
+
+        public static string ContinueWithout => Strings.Text("ui.continue_without");
+
+        public static string NeedThreeInvite => Strings.Text("ui.need_three_invite");
+
+        public static string NeedThreeFindTable => Strings.Text("ui.need_three_find_table");
         public static string Thulla => Strings.Text("ui.thulla");
         public static string PickedUp => Strings.Text("ui.picked_up");
         public static string Bhabhi => Strings.Text("ui.bhabhi");

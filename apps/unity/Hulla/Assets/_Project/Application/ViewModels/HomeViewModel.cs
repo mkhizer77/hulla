@@ -61,6 +61,18 @@ namespace Hulla.Application.ViewModels
             return signedIn;
         }
 
+        /// <summary>The table this player still holds a seat at, for Rejoin (GDD 9.8); null when signed out or seatless.</summary>
+        public async Awaitable<TableTicket?> FindMineAsync(CancellationToken cancellation)
+        {
+            if (_session.Current == null)
+            {
+                return null;
+            }
+
+            var mine = await _tables.FindMineAsync(cancellation);
+            return mine.IsOk ? mine.Value : null;
+        }
+
         private async Awaitable<Result<TableTicket>> RunAsync(string name, string? code, CancellationToken cancellation)
         {
             if (Busy)
