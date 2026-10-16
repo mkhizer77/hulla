@@ -36,11 +36,20 @@ namespace Hulla.Screens.Tests
 
         public static IEnumerable<TableSkin> Skins => (TableSkin[])System.Enum.GetValues(typeof(TableSkin));
 
-        private static IEnumerator Snap(string name, TableSkin skin, VisualTreeAsset? screen, System.Action<VisualElement> bind, bool nav = false)
+        private static IEnumerator Snap(string name, TableSkin skin, VisualTreeAsset? screen, System.Action<VisualElement> bind, bool nav = false) =>
+            Snap(name, skin, screen, bind, nav, CardRenderer.Width, CardRenderer.HeightOf(CardRatio.Story), null);
+
+        /// <summary>At a canvas size in panel units, with that size's class and, when given, safe-area padding.</summary>
+        private static IEnumerator Snap(string name, TableSkin skin, VisualTreeAsset? screen, System.Action<VisualElement> bind, bool nav, int width, int height, Insets? insets)
         {
             name += "-" + skin.ToString().ToLowerInvariant();
-            var task = CardRenderer.RenderAsync(Settings, CardRatio.Story, root =>
+            var task = CardRenderer.RenderAsync(Settings, width, height, root =>
             {
+                if (insets != null)
+                {
+                    ScreenLayout.Apply(root, ScreenLayout.ClassOf(width), insets.Value);
+                }
+
                 root.AddToClassList(ThemeClasses.Skinned);
                 root.AddToClassList(ThemeClasses.ClassOf(skin));
                 var instance = screen!.Instantiate();
@@ -81,6 +90,39 @@ namespace Hulla.Screens.Tests
                 new DailyRewardCard(r.Q<VisualElement>("daily"), daily, () => { });
                 _ = daily.RefreshAsync(0, default);
             }, nav: true);
+        }
+
+        /// <summary>A phone, a 4:3 tablet in portrait and in landscape, with the brief's largest insets for each.</summary>
+        public static IEnumerable<(int Width, int Height, Insets Insets)> Sizes => new[]
+        {
+            (1080, 1920, new Insets(150, 0, 100, 0)),
+            (1440, 1920, new Insets(70, 0, 60, 0)),
+            (1920, 1440, new Insets(70, 130, 60, 0)),
+        };
+
+        [UnityTest, Explicit]
+        public IEnumerator AtEachSize()
+        {
+            foreach (var (width, height, insets) in Sizes)
+            {
+                var suffix = "-" + width + "x" + height;
+                yield return Snap("size-home" + suffix, TableSkin.Club, Catalog.Home, r =>
+                {
+                    new HomeView(r, new HomeViewModel(new Fakes.Session(), new Fakes.Gateway()) { LastName = "Khizer" }, null, (_, _) => { }, (_, _, _) => { }, (_, _, _) => { }, () => { }, (_, _) => { }, (_, _) => { }, new HomeFriendsViewModel(new Fakes.Social()), () => { }, "How to play");
+                }, true, width, height, insets);
+
+                var gateway = new Fakes.Gateway();
+                var client = new TableClient(gateway, new TableTicket("m", "K7Q2MX", "t_K7Q2MX"), "me", 1);
+                yield return Snap("size-table" + suffix, TableSkin.Club, Catalog.Table, r =>
+                {
+                    new ThullaTableView(r, client, new Fakes.Chat(), () => 5000, () => { });
+                    var state = Fakes.InRound(5);
+                    state.Round!.Seats[0].Hand = new List<string> { "AS", "KS", "9S", "QH", "8H", "2H", "JD", "9D", "5C", "3C", "TC" };
+                    state.Round.Seats[0].HandCount = 11;
+                    gateway.Deliver(MessageTypes.TableState, 5, state);
+                    gateway.Deliver(MessageTypes.TurnStart, 5, new TurnStart { RoundId = "r", Seat = 0, Legal = new List<string> { "QH", "8H", "2H" }, DeadlineTs = 15000 });
+                }, false, width, height, insets);
+            }
         }
 
         [UnityTest, Explicit]
