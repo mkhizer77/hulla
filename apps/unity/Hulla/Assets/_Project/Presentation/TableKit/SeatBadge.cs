@@ -150,6 +150,11 @@ namespace Hulla.Presentation.TableKit
         public bool ShowsYou => _you.style.display == DisplayStyle.Flex;
 
         /// <summary>Whether the circle shows a face from the avatar set rather than the tinted initial.</summary>
+        /// <summary>A ring while this player's voice is heard (GDD 11.4).</summary>
+        public void SetSpeaking(bool speaking) => EnableInClassList("seat--speaking", speaking);
+
+        public bool ShowsSpeaking => ClassListContains("seat--speaking");
+
         public bool HasImage => _avatar.ClassListContains(AvatarArt.ImageClass);
 
         /// <param name="leader">Wears the crown (GDD 14.5).</param>

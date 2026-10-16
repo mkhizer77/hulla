@@ -1,11 +1,12 @@
 # Status
 
-Updated: 14 October 2026 (night)
+Updated: 16 October 2026
 
 ## Phase
 M0 complete: the Thulla rulebook runs in TypeScript with full traceability. M1, the vertical slice, starts with the protocol schemas.
 
 ## Done
+- Voice, client and server (#32, 16 Oct, PRs 270 and this one): `IVoiceService` with the Agora adapter behind the `HULLA_AGORA` define, a fake for the editor and `-hulla-fake-voice`, and none on other builds. Seats share their mic through the server (`set_mic`, `seat.mic`); a client joins the channel only while two mics are on and leaves after two quiet minutes (OQ-044). Open mic in private rooms, hold-to-talk elsewhere, listen-only spectators, mutes silence voice too, a failed channel shows a retry and never blocks play (E25). `voice_token` binds the token to the player and returns the app id. Setup in `docs/runbooks/voice-setup.md`.
 - Content pipeline on the client (#56, 14 Oct, PRs 261 and 262): the client ships the signed manifest and its files, checks the signature and every hash, downloads changed files after sign-in for the next launch, pins one manifest per launch and keeps the bundle offline. The manifest is now signed at deploy time (`pnpm content:sign`, `HULLA_CONTENT_SIGNATURE`): Nakama's `rsaSha256Hash` mangles the signature on its way to JSON, so the old on-box signing could never verify. Addressables groups exist (base art in the binary, cosmetics remote from `content_cdn_url`), the avatars moved out of `Resources/`, and device builds now switch platform first so the bundles match the player.
 - UI polish (14 Oct, PR 259 and this one): no grey hover box, each device keeps its own theme on one Mac (`-hulla-device`), menus on the scene without the floor band, one control kit per theme (ghost buttons, accent chips for a choice, one green call to action, themed fields, checkboxes and sliders, no scrollbars), a larger type scale, red for destructive actions, the gear for settings, Home with a full-width Thulla card and Rung as a row, the theme's table under the lobby seats, progress bars for XP, missions and the pass, medal ranks and a full-width own row on the leaderboard. `AuditSnapshots` renders every screen for review.
 - Table themes (14 Oct, PR 246 and the shelf follow-up): five switchable looks for the whole app (Club default, Haveli, Rooftop, Mehndi, Chai Adda) in Settings, each a scene with its own table, frames, card backs, buttons and thulla stamp, and subtle ambient motion that stops under reduce motion; a portrait table with seats on the rail and card-back fans; Home as a game shelf (Thulla, Rung coming soon); drawn nav icons. Design in `docs/design/table-themes.md`, research in `docs/research/card-game-visual-scan.md`; art from `tools/artkit/skins.py`.
@@ -60,10 +61,11 @@ M0 complete: the Thulla rulebook runs in TypeScript with full traceability. M1, 
 - 12 Oct decisions: C# mirror deferred past v1.0 (ADR-0019), no clock in engines (ADR-0020), JSON Schema draft-07 (ADR-0021), one deck and 3–6 seats until v1.2, web client before Rung (M5 → web → Rung → M6, dates in the execution plan), Facebook login stays, Unity stays on 6000.4.9f1.
 
 ## Doing
+- Paused 16 Oct by the owner (PR 269 stays open): UI redesign by an outside designer: brief in `docs/design/ui-redesign-brief.md` (screens, current wireframes, scaling, anchoring, feature list). Decided 15 Oct: tablets are supported in portrait and landscape (#102), with phone, tablet-portrait and tablet-landscape layouts and Expand scaling in place of match-width.
 - A phone pass on the themes: motion speed and strength, quiet text on each scene, touch targets on the shelf.
 
 ## Next
-Monetisation is on hold. Engineering-only work before launch is nearly done; most of the rest waits on the owner: the content signing key (`docs/runbooks/deploy-and-rollback.md`, Before step 3; until then release builds keep their bundled content), the SMS provider for phone sign-in (OQ-041), Firebase for crash reporting (#72), the phase 0 box (#76) and a CDN for the first streamed pack (#56), Test Lab (#78), a low-tier phone (#132), the phone pass and playtests (#36), the art for pass B and the cosmetics (#66 to #68, #80 to #83), translations for Urdu and Hindi (#100), and a decision on tablet landscape (#102). The `shop` remote-config flag is not applied on the client yet: it defaults to off on the server, so applying it hides the shop. The web client starts after v1.1 as planned.
+Monetisation is on hold. Engineering-only work before launch is nearly done; most of the rest waits on the owner: the content signing key (`docs/runbooks/deploy-and-rollback.md`, Before step 3; until then release builds keep their bundled content), the SMS provider for phone sign-in (OQ-041), Firebase for crash reporting (#72), the phase 0 box (#76) and a CDN for the first streamed pack (#56), Test Lab (#78), a low-tier phone (#132), the phone pass and playtests (#36), the art for pass B and the cosmetics (#66 to #68, #80 to #83), translations for Urdu and Hindi (#100), and the Agora project plus the SDK import for voice (`docs/runbooks/voice-setup.md`). The `shop` remote-config flag is not applied on the client yet: it defaults to off on the server, so applying it hides the shop. The web client starts after v1.1 as planned.
 
 ## Blockers
 - None.
