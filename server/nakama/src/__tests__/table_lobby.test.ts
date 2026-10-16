@@ -8,6 +8,7 @@ import {
   presence,
   seated,
   sentTo,
+  started,
   types,
 } from "./table-helpers";
 
@@ -115,6 +116,28 @@ describe("lobby: ready, rules and host", () => {
     h.join(presence(0));
     h.join(presence(1), { asSpectator: "true" });
     expect(sentTo(h.send("s1", "ready", { ready: true }), "s1")[0]?.payload).toMatchObject({
+      code: "table.not_authorised",
+    });
+  });
+
+  it("shares a seat's mic in table_state, ignores a repeat and clears it on disconnect", () => {
+    const h = harness();
+    started(h);
+    const batch = h.send("s1", "set_mic", { mic: true });
+    expect(h.state.seats[1]?.mic).toBe(true);
+    expect(types(batch)).toEqual(["table_state", "table_state", "table_state"]);
+    const shown = payloadOf<TableStateFor<ToyView>>(sentTo(batch, "s0")[0]);
+    expect(shown.seats[1]?.mic).toBe(true);
+    expect(types(h.send("s1", "set_mic", { mic: true }, 2))).toEqual([]);
+    h.core.leave(h.state, [presence(1)], h.now);
+    expect(h.state.seats[1]?.mic).toBe(false);
+  });
+
+  it("refuses a mic from a spectator", () => {
+    const h = harness();
+    h.join(presence(0));
+    h.join(presence(1), { asSpectator: "true" });
+    expect(sentTo(h.send("s1", "set_mic", { mic: true }), "s1")[0]?.payload).toMatchObject({
       code: "table.not_authorised",
     });
   });

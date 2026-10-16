@@ -159,6 +159,9 @@ namespace Hulla.Protocol
         [JsonProperty("seriesState", Required = Required.DisallowNull, NullValueHandling = NullValueHandling.Ignore)]
         public SeriesState? SeriesState { get; set; }
 
+        [JsonProperty("setMicPayload", Required = Required.DisallowNull, NullValueHandling = NullValueHandling.Ignore)]
+        public SetMic? SetMicPayload { get; set; }
+
         [JsonProperty("setRulesPayload", Required = Required.DisallowNull, NullValueHandling = NullValueHandling.Ignore)]
         public SetRules? SetRulesPayload { get; set; }
 
@@ -1014,6 +1017,16 @@ namespace Hulla.Protocol
         public string UserId { get; set; }
     }
 
+    /// <summary>
+    /// A seat turns its microphone on or off (GDD 11.4); clients join the voice channel only
+    /// while two mics are on (GDD 20.14)
+    /// </summary>
+    public partial class SetMic
+    {
+        [JsonProperty("mic", Required = Required.Always)]
+        public bool Mic { get; set; }
+    }
+
     public partial class SetRules
     {
         [JsonProperty("rules", Required = Required.Always)]
@@ -1311,6 +1324,12 @@ namespace Hulla.Protocol
 
         [JsonProperty("displayName", Required = Required.AllowNull)]
         public string? DisplayName { get; set; }
+
+        /// <summary>
+        /// The seat's microphone is on (GDD 11.4); off while disconnected
+        /// </summary>
+        [JsonProperty("mic", Required = Required.DisallowNull, NullValueHandling = NullValueHandling.Ignore)]
+        public bool? Mic { get; set; }
 
         /// <summary>
         /// Players who queued together share a party id (GDD 7.2); shown as a link icon

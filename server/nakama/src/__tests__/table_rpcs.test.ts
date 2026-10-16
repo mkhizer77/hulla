@@ -162,11 +162,13 @@ describe("voice_token", () => {
     expect(response).toMatchObject({
       ok: true,
       provider: "agora",
+      appId: config.appId,
       channel: "t_ABCDEF",
-      uid: 0,
+      account: "u1",
       expiresTs: T0 + VOICE_TOKEN_SECONDS * 1000,
     });
     if (response.ok) expect(response.token.startsWith("007")).toBe(true);
+    expect(JSON.stringify(response)).not.toContain(config.appCertificate);
   });
 
   it("refuses without credentials, away from the table, without a session or a match id", () => {

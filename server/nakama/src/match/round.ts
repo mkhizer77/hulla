@@ -72,6 +72,7 @@ export function compactSeats<S, M>(state: TableState<S, M>): SeatIndex[] {
       rematch: null,
       quickChatTs: 0,
       emoteTs: 0,
+      mic: false,
       party: null,
       cosmetics: null,
       avatar: null,
