@@ -24,6 +24,7 @@ export function emptySlot(): SeatSlot {
     rematch: null,
     quickChatTs: 0,
     emoteTs: 0,
+    mic: false,
     party: null,
     cosmetics: null,
     avatar: null,

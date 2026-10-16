@@ -93,6 +93,13 @@
       "schema": "shell/table.json#/definitions/seat_spectator"
     },
     {
+      "type": "set_mic",
+      "opcode": 14,
+      "direction": "c2s",
+      "visibility": "public",
+      "schema": "shell/table.json#/definitions/set_mic"
+    },
+    {
       "type": "chat_text",
       "opcode": 20,
       "direction": "c2s",
