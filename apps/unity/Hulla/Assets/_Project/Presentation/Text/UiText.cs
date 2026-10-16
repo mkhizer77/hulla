@@ -116,6 +116,33 @@ namespace Hulla.Presentation.Text
         public static string ChatGuest => Strings.Text("ui.chat_guest");
         public static string ChatFiltered => Strings.Text("ui.chat_filtered");
         public static string Mute => Strings.Text("ui.mute");
+
+        public static string MicOn => Strings.Text("ui.voice.mic_on");
+
+        public static string MicOff => Strings.Text("ui.voice.mic_off");
+
+        public static string VoiceRetry => Strings.Text("ui.voice.retry");
+
+        public static string HoldToTalk => Strings.Text("ui.voice.hold_to_talk");
+
+        public static string Talking => Strings.Text("ui.voice.talking");
+
+        /// <summary>The one line beside the microphone prompt (GDD 11.4).</summary>
+        public static string VoiceWhy => Strings.Text("ui.voice.why");
+
+        public static string VoiceWaiting => Strings.Text("ui.voice.waiting");
+
+        public static string VoiceJoining => Strings.Text("ui.voice.joining");
+
+        public static string VoicePaused => Strings.Text("ui.voice.paused");
+
+        public static string VoiceFailed => Strings.Text("ui.voice.failed");
+
+        public static string VoiceSuspended => Strings.Text("ui.voice.suspended");
+
+        public static string VoiceNoPermission => Strings.Text("ui.voice.no_permission");
+
+        public static string VoiceListening => Strings.Text("ui.voice.listening");
         public static string Report => Strings.Text("ui.report");
         public static string ReportWhy => Strings.Text("ui.report_why");
         public static string ReportThanks => Strings.Text("ui.report_thanks");

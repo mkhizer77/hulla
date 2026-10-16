@@ -330,6 +330,10 @@
     -unity-text-align: middle-right;
 }
 
+.rtl .voice-pill {
+    -unity-text-align: middle-center;
+}
+
 /* Theme/Skins.uss */
 .rtl .skinned .seat__count {
     -unity-text-align: middle-center;

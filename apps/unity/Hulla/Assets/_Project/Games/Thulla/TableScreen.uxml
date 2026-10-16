@@ -19,6 +19,9 @@
             </ui:VisualElement>
             <ui:VisualElement name="opponents" class="opponents" picking-mode="Ignore" />
             <ui:VisualElement name="me" class="table__me" />
+            <ui:VisualElement class="voice-pill__row" picking-mode="Ignore">
+                <ui:Label name="voice-pill" class="voice-pill" picking-mode="Ignore" />
+            </ui:VisualElement>
             <ui:VisualElement class="table__notes" picking-mode="Ignore">
                 <ui:Label name="my-say" class="bubble bubble--mine" />
                 <ui:Label name="hint" class="hint" />
@@ -37,6 +40,8 @@
             <ui:VisualElement name="quick-strip" class="quick-strip" />
             <ui:VisualElement class="table__bar-actions">
                 <ui:Button name="take-hand" class="button button--primary button--small" />
+                <ui:Button name="talk" class="button button--small table__talk" />
+                <ui:Button name="mic" class="button button--small table__mic" />
                 <ui:Button name="chat" class="button button--small table__chat" />
             </ui:VisualElement>
         </ui:VisualElement>
