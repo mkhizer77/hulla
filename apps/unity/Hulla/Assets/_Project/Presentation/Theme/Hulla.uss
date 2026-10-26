@@ -1909,6 +1909,8 @@
    gradients and a bottom shadow on controls, shaded avatars, drawn card faces, a rubber stamp. */
 :root {
     -unity-font-definition: url("/Assets/_Project/Presentation/Theme/Fonts/Nunito.ttf");
+    /* HarfBuzz shaping and bidi for Urdu, Hindi and Bengali (#132, docs/research/script-shaping.md). */
+    -unity-text-generator: advanced;
 }
 
 .title, .code, .toast, .results__stamp, .home__title, .seat__initial, .card__rank, .card__court, .nav__glyph, .podium__rank, .turn, .hero, .button--primary, .countdown, .results__title, .coach__text, .daily__text {

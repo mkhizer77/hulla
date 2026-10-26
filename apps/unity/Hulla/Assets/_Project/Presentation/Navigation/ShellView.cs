@@ -72,6 +72,8 @@ namespace Hulla.Presentation.Navigation
             root.Clear();
             // A right-to-left locale mirrors rows and side-aligned text (Theme/Rtl.uss, GDD 26.1).
             root.EnableInClassList("rtl", Text.Strings.RightToLeft);
+            // The paragraph direction, so a line ending in Latin or punctuation still reads right to left (#132).
+            root.languageDirection = Text.Strings.RightToLeft ? LanguageDirection.RTL : LanguageDirection.Inherit;
             var instance = screen.Instantiate();
             instance.style.flexGrow = 1;
             instance.AddToClassList("screen-anim");
