@@ -193,6 +193,7 @@ describe("server analytics emitters (GDD 23.3, ARCHITECTURE 12.4)", () => {
         },
       ],
       kicks: [],
+      voiceRemovals: [],
       end: false,
     };
     const events = analyticsFromBatch(h.state, batch, T0 + 60_000);

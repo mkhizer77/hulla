@@ -7,6 +7,7 @@ import { buildRoomToken, liveKitConfigFrom } from "../services/livekit_token";
 
 const config = {
   url: "wss://voice.example.test",
+  apiUrl: "https://voice.example.test",
   apiKey: "APIhulla",
   apiSecret: "a-local-secret-of-at-least-32-characters",
 };
@@ -67,8 +68,11 @@ describe("the LiveKit token builder", () => {
       LIVEKIT_API_SECRET: config.apiSecret,
     };
     expect(liveKitConfigFrom(env)).toEqual(config);
-    expect(liveKitConfigFrom({ ...env, LIVEKIT_URL: "ws://127.0.0.1:7880" })?.url).toBe(
-      "ws://127.0.0.1:7880",
+    expect(liveKitConfigFrom({ ...env, LIVEKIT_URL: "ws://127.0.0.1:7880/" })).toMatchObject({
+      apiUrl: "http://127.0.0.1:7880",
+    });
+    expect(liveKitConfigFrom({ ...env, LIVEKIT_API_URL: "http://livekit:7880/" })?.apiUrl).toBe(
+      "http://livekit:7880",
     );
     expect(liveKitConfigFrom({})).toBeNull();
     expect(liveKitConfigFrom({ ...env, LIVEKIT_URL: "https://voice.example.test" })).toBeNull();

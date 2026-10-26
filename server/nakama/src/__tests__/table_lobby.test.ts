@@ -67,6 +67,7 @@ describe("lobby: joining and seats", () => {
     h.join(presence(1));
     const kick = h.send("s0", "kick", { seat: 1 });
     expect(kick.kicks).toEqual(["s1"]);
+    expect(kick.voiceRemovals).toEqual(["u1"]);
     expect(broadcasts(kick)[0]?.payload).toMatchObject({
       seat: 1,
       playerId: "u1",
@@ -280,5 +281,17 @@ describe("spectators are friends of the table (GDD 7.6, 7.7, 9.10)", () => {
       (e) => e.type === "presence" && (e.payload as { status: string }).status === "joined",
     );
     expect(joined.map((e) => (e.payload as { seat: number }).seat)).toEqual([3]);
+  });
+});
+
+describe("lobby: voice follows the table (ADR-0024)", () => {
+  it("drops a player from voice when they leave, but not a seat that only lost its socket mid-round", () => {
+    const h = harness();
+    for (let i = 0; i < 3; i += 1) h.join(presence(i));
+    expect(h.send("s2", "leave_table", {}).voiceRemovals).toEqual(["u2"]);
+    expect(h.core.leave(h.state, [presence(1)], h.now).voiceRemovals).toEqual(["u1"]);
+    const watcher = h.join(presence(3), { asSpectator: "true" });
+    expect(watcher.voiceRemovals).toEqual([]);
+    expect(h.core.leave(h.state, [presence(3)], h.now).voiceRemovals).toEqual(["u3"]);
   });
 });

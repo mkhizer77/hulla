@@ -10,6 +10,8 @@ import { equippedFor, nkCatalogStore } from "../services/catalog";
 import { clientTooOld, nkConfigStore } from "../services/config";
 import { postRoundPoints } from "../services/leaderboards";
 import { credit, nkLedgerPorts } from "../services/ledger";
+import { removeFromRoom } from "../services/livekit_admin";
+import { liveKitConfigFrom } from "../services/livekit_token";
 import { metricsFromRound, recordMissionMetrics } from "../services/missions";
 import {
   nkFriendIds,
@@ -354,6 +356,35 @@ function send<S, M>(
   if (kicks.length > 0) dispatcher.matchKick(kicks);
 }
 
+/** Players who left or were kicked lose the table's voice room too (ADR-0024); play never waits on it. */
+function leaveVoice(
+  ctx: nkruntime.Context,
+  logger: nkruntime.Logger,
+  nk: nkruntime.Nakama,
+  batch: Batch,
+  now: number,
+): void {
+  const matchId = ctx.matchId ?? "";
+  if (batch.voiceRemovals.length === 0 || matchId === "") return;
+  const config = liveKitConfigFrom(ctx.env);
+  if (config === null) return;
+  try {
+    const done = removeFromRoom(
+      {
+        httpRequest: (url, method, headers, body, timeout) =>
+          nk.httpRequest(url, method, headers, body, timeout),
+      },
+      config,
+      matchId,
+      batch.voiceRemovals,
+      Math.floor(now / 1000),
+    );
+    if (!done) log.warn(logger, "voice removal refused", { matchId });
+  } catch (error: unknown) {
+    log.warn(logger, "voice removal failed", { matchId, error: String(error) });
+  }
+}
+
 function decodeData(nk: nkruntime.Nakama, data: ArrayBuffer): string {
   const raw: unknown = data;
   return typeof raw === "string" ? raw : nk.binaryToString(data);
@@ -604,6 +635,7 @@ export function tableMatchHandler<S, M, V, E, R>(
       );
       relabel(dispatcher, before, state);
       send(dispatcher, state, batch, presences);
+      leaveVoice(ctx, logger, nk, batch, now);
       logAnalytics(logger, nk, state, batch, now);
       return { state };
     },
@@ -630,6 +662,7 @@ export function tableMatchHandler<S, M, V, E, R>(
             typeByOpcode[message.opCode],
           );
           send(dispatcher, state, batch, senders);
+          leaveVoice(ctx, logger, nk, batch, now);
           logAnalytics(logger, nk, state, batch, now);
           end = end || batch.end;
         } catch (error: unknown) {

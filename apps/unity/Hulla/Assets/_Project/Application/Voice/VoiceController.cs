@@ -30,6 +30,7 @@ namespace Hulla.Application.Voice
         private VoiceState _state;
         private bool _inChannel;
         private bool _joinedSeated;
+        private bool _joinedWithMic;
         private bool _micOn;
         private bool _talking;
         private bool _suspended;
@@ -229,6 +230,13 @@ namespace Hulla.Application.Voice
                 return;
             }
 
+            if (_inChannel && CanSpeak && _micOn && !_joinedWithMic)
+            {
+                // Joined to listen, so the microphone was never opened: join again to send.
+                _ = Leave();
+                return;
+            }
+
             var want = WantChannel();
             if (want && !_inChannel && _state != VoiceState.Joining)
             {
@@ -354,7 +362,10 @@ namespace Hulla.Application.Voice
                     return;
                 }
 
-                var joined = await _voice.JoinAsync(ticket.Value, seated, cancellation);
+                // Only a seat with its mic on opens the microphone; everyone else listens.
+                var withMic = seated && _micOn;
+                var joined = await _voice.JoinAsync(ticket.Value, withMic, cancellation);
+                _joinedWithMic = withMic;
                 if (_disposed)
                 {
                     if (joined.IsOk)

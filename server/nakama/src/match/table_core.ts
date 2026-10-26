@@ -550,6 +550,7 @@ export function tableCore<S, M, V, E, R>(
       case "leave_table": {
         state.presences = without(state.presences, presence.sessionId);
         emit.batch.kicks.push(presence.sessionId);
+        emit.batch.voiceRemovals.push(presence.userId);
         if (seat === null || slot === undefined) {
           emit.public("presence", presencePayload(presence, null, "left"));
           return;
@@ -666,6 +667,7 @@ export function tableCore<S, M, V, E, R>(
           return;
         }
         state.kicked.push(victim.playerId);
+        emit.batch.voiceRemovals.push(victim.playerId);
         const victimPresence =
           victim.sessionId === null ? undefined : state.presences[victim.sessionId];
         if (victimPresence !== undefined) {
@@ -1019,6 +1021,7 @@ export function tableCore<S, M, V, E, R>(
         const slot = seat === null ? undefined : state.seats[seat];
         if (seat === null || slot === undefined) {
           emit.public("presence", presencePayload({ ...record, seat: null }, null, "left"));
+          emit.batch.voiceRemovals.push(record.userId);
           continue;
         }
         if (slot.sessionId !== info.sessionId) {
@@ -1052,6 +1055,7 @@ export function tableCore<S, M, V, E, R>(
           const wasHost = isHost(state, seat);
           freeSlot(state, seat);
           emit.public("presence", presencePayload(record, slot.displayName, "left"));
+          emit.batch.voiceRemovals.push(record.userId);
           if (wasHost) {
             migrateHost(state);
             hostChanged(state, emit, "host_left");

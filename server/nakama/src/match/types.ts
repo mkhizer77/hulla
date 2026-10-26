@@ -306,6 +306,8 @@ export interface Outbound {
 export interface Batch {
   readonly outbound: Outbound[];
   readonly kicks: string[];
+  /** Users to drop from the table's voice room now that they left or were kicked (ADR-0024). */
+  readonly voiceRemovals: string[];
   end: boolean;
 }
 
@@ -322,7 +324,7 @@ export function without<T>(record: Readonly<Record<string, T>>, key: string): Re
 }
 
 export function newBatch(): Batch {
-  return { outbound: [], kicks: [], end: false };
+  return { outbound: [], kicks: [], voiceRemovals: [], end: false };
 }
 
 export interface RoundRecord {

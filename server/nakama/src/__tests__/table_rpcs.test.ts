@@ -146,6 +146,7 @@ describe("presets_get", () => {
 describe("voice_token", () => {
   const config = {
     url: "wss://voice.example.test",
+    apiUrl: "https://voice.example.test",
     apiKey: "APIhulla",
     apiSecret: "a-local-secret-of-at-least-32-characters",
   };
@@ -164,7 +165,7 @@ describe("voice_token", () => {
       ok: true,
       provider: "livekit",
       url: config.url,
-      channel: "t_ABCDEF",
+      channel: "m1",
       account: "u1",
       expiresTs: T0 + VOICE_TOKEN_SECONDS * 1000,
     });

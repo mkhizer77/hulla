@@ -90,6 +90,19 @@ namespace Hulla.Application.Tests
         }
 
         [Test]
+        public void AListenerWhoTurnsTheirMicOnJoinsAgainToSend()
+        {
+            Deliver(mics: new[] { 1, 2 });
+            Assert.IsFalse(_voice.Published, "a listener never opens the microphone");
+            _controller.ToggleMic();
+            Deliver(mics: new[] { 0, 1, 2 });
+            Assert.AreEqual(VoiceState.Live, _controller.State);
+            Assert.AreEqual(2, _voice.Joins);
+            Assert.IsTrue(_voice.Published);
+            Assert.IsTrue(_voice.Transmitting);
+        }
+
+        [Test]
         public void PushToTalkSendsOnlyWhileHeld()
         {
             Deliver(mode: TableMode.Public);

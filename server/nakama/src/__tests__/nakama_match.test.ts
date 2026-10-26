@@ -67,6 +67,43 @@ function booted() {
 }
 
 describe("the Nakama binding", () => {
+  it("removes a player who leaves the table from its LiveKit room, and logs a refusal (ADR-0024)", () => {
+    const b = booted();
+    const [p0, p1, p2] = b.presences;
+    if (p0 === undefined || p1 === undefined || p2 === undefined) throw new Error("presences");
+    const requests: { url: string; body: string }[] = [];
+    let code = 200;
+    Object.assign(b.nk, {
+      httpRequest: (url: string, _method: string, _headers: unknown, body: string) => {
+        requests.push({ url, body });
+        return { code, body: "{}", headers: {} };
+      },
+    });
+    const voiceCtx = {
+      matchId: "m-1",
+      env: {
+        LIVEKIT_URL: "ws://127.0.0.1:7880",
+        LIVEKIT_API_URL: "http://livekit:7880",
+        LIVEKIT_API_KEY: "hulla-local",
+        LIVEKIT_API_SECRET: "local-only-livekit-secret-0123456789",
+      },
+    } as unknown as nkruntime.Context;
+    const leave = matchMessage(p2, OPCODES.leave_table.opcode, b.envelope("leave_table", {}));
+    b.handler.matchLoop(voiceCtx, b.logger, b.nk, b.d.dispatcher, 2, b.state, [leave]);
+    expect(requests).toEqual([
+      {
+        url: "http://livekit:7880/twirp/livekit.RoomService/RemoveParticipant",
+        body: JSON.stringify({ room: "m-1", identity: p2.userId }),
+      },
+    ]);
+    code = 500;
+    b.handler.matchLeave(voiceCtx, b.logger, b.nk, b.d.dispatcher, 3, b.state, [p1]);
+    expect(requests).toHaveLength(2);
+    // Without LiveKit settings nothing is called.
+    b.handler.matchLeave(ctx, b.logger, b.nk, b.d.dispatcher, 4, b.state, [p0]);
+    expect(requests).toHaveLength(2);
+  });
+
   it("creates the table with the tick rate and a queryable label", () => {
     const b = booted();
     expect(b.init.tickRate).toBe(5);
