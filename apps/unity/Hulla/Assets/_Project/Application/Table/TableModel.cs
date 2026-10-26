@@ -299,7 +299,7 @@ namespace Hulla.Application.Table
             MySeat = null;
             foreach (var seat in state.Seats)
             {
-                _seats.Add(new SeatInfo(seat.SeatSeat, seat.PlayerId, seat.DisplayName, seat.Ready, seat.Connected, seat.AutoPlay, seat.Cosmetics?.Table, seat.Cosmetics?.CardBack, seat.Avatar));
+                _seats.Add(new SeatInfo(seat.SeatSeat, seat.PlayerId, seat.DisplayName, seat.Ready, seat.Connected, seat.AutoPlay, seat.Cosmetics?.Table, seat.Cosmetics?.CardBack, seat.Avatar, seat.Mic == true));
                 if (seat.PlayerId == UserId)
                 {
                     MySeat = seat.SeatSeat;

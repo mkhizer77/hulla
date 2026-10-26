@@ -292,6 +292,50 @@ namespace Hulla.Screens.Tests
             }
         }
 
+        /// <summary>Voice that joins at once, sends nothing, and lets a test say who is speaking.</summary>
+        public sealed class Voice : Hulla.Application.Voice.IVoiceService
+        {
+            public bool Supported => true;
+
+            public event System.Action<string, bool>? Speaking;
+
+            public event System.Action? Dropped { add { } remove { } }
+
+            public event System.Action? TokenExpiring { add { } remove { } }
+
+            public Awaitable<bool> AskMicrophoneAsync() => Done(true);
+
+            public Awaitable<Hulla.Domain.Result<bool>> JoinAsync(Hulla.Application.Voice.VoiceTicket ticket, bool publish, CancellationToken cancellation) =>
+                Done(Hulla.Domain.Result<bool>.Ok(true));
+
+            public Awaitable LeaveAsync()
+            {
+                var source = new AwaitableCompletionSource();
+                source.SetResult();
+                return source.Awaitable;
+            }
+
+            public void RenewToken(string token)
+            {
+            }
+
+            public void SetTransmit(bool on)
+            {
+            }
+
+            public void SetPeerMuted(string account, bool muted)
+            {
+            }
+
+            public void Speak(string account, bool speaking) => Speaking?.Invoke(account, speaking);
+        }
+
+        public sealed class VoiceTokens : Hulla.Application.Voice.IVoiceTokens
+        {
+            public Awaitable<Hulla.Domain.Result<Hulla.Application.Voice.VoiceTicket>> TokenAsync(string matchId, CancellationToken cancellation) =>
+                Done(Hulla.Domain.Result<Hulla.Application.Voice.VoiceTicket>.Ok(new Hulla.Application.Voice.VoiceTicket("app", "t_K7Q2MX", "me", "token", 0)));
+        }
+
         /// <summary>A four-seat table in round with the player at seat 0 holding a few cards.</summary>
         public static TableState InRound(long seq, int count = 4)
         {
