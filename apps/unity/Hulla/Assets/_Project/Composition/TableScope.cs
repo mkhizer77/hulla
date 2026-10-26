@@ -18,7 +18,7 @@ namespace Hulla.Composition
             _lifetime = CancellationTokenSource.CreateLinkedTokenSource(session.Lifetime);
             Client = new TableClient(session.App.Tables, ticket, session.Player.UserId, DateTimeOffset.UtcNow.ToUnixTimeMilliseconds());
             var app = session.App;
-            Voice = new VoiceController(app.Voice, app.VoiceTokens, Client, app.Mutes.IsMuted, app.RemoteConfig.Voice);
+            Voice = new VoiceController(app.Voice, app.VoiceTokens, Client, app.Mutes.IsMuted, app.RemoteConfig.Voice, app.Settings);
             Voice.Joined += OnVoiceJoined;
             app.Mutes.Changed += Voice.MutesChanged;
         }

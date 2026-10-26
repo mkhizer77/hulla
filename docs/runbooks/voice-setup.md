@@ -6,7 +6,8 @@ Table voice (GDD 11.4, #32) runs on our own LiveKit server behind `IVoiceService
 - Each seat has a mic button beside Chat. Its state goes to the server (`set_mic`) and back to everyone in `table_state`.
 - A client joins the table's room only while two mics at the table are on (its own counted), and leaves after two minutes in which nobody spoke. After that, the next mic change brings voice back (GDD 20.14, OQ-044). Spectators listen only: their token cannot publish.
 - Private rooms default to open mic; public and ranked tables to push-to-talk, where a Hold to talk button appears once the room is open. A preset's `voiceDefault` overrides both; `off` hides voice.
-- Only a seat with its mic on opens the microphone (and on iOS the call audio session); listeners and mic-off seats hear the table through Unity audio. The microphone records only after the player first sends; holding mutes the published track. Muting a player in the player sheet unsubscribes from their audio on this device. The mute list is on the server, so it holds after a reconnect.
+- Only a seat with its mic on opens the microphone, at its first send; listeners and mic-off seats never see the permission prompt. Holding mutes the published track. Muting a player in the player sheet unsubscribes from their audio on this device. The mute list is on the server, so it holds after a reconnect.
+- Levels are the player's own: Voice chat on or off and Voice volume in Settings (Sound), a voice level per player in the player sheet (kept on this phone), and Voices on or off under the voice pill for this table. With voices off and the mic off the phone leaves the room. Table sounds drop to 30% while someone else talks.
 - Leaving the table or being kicked removes the player from the voice room on the server side (`LIVEKIT_API_URL`); a seat that only dropped its connection mid-round keeps voice while the seat is held.
 - A failed or dropped room never blocks play (E25): the pill says so and the mic button retries. The SDK reconnects by itself first.
 - The server's `voice` switch in remote config hides voice everywhere.
@@ -44,10 +45,10 @@ Audio only: a listener at a six-seat table receives at most five Opus streams of
 2. One mic on: the pill says voice starts when another mic is on. A second mic on: both join and hear each other; rings light on the speaker's seat.
 3. A public table: Hold to talk sends; letting go stops.
 4. Mute a talking player from their badge: they go silent here. Turn the phone's network off and on: after the rejoin they are still silent.
-5. A spectator hears the table without a microphone prompt; on iPhone, table sounds stay at full volume after leaving voice.
+5. A spectator hears the table without a microphone prompt. Table sounds play (they were silent before the app made its audio listener) and drop while someone talks. No echo of other players or of table sounds reaches the others with a phone on loudspeaker. Turn one player down in their sheet and Voice volume down in Settings: both change at once. Voices off under the pill: silence here, rings still light.
 6. One phone on mobile data with UDP blocked (a strict hotspot or VPN): it still connects, over TCP or TURN.
 7. Five players through a full round (#32 done-when).
 8. Leave everyone quiet for two minutes: the pill says voice paused; turning a mic on brings it back.
 
 ## Not done yet
-Per-seat volume, ducking the table sounds under speech, keeping voice for two minutes with the screen locked (VoIP background mode), Bluetooth and earpiece choice in settings, the under-16 voice limits (needs an age field at sign-up), and the web client's adapter (#109).
+Keeping voice for two minutes with the screen locked (VoIP background mode), Bluetooth and earpiece choice in settings, the under-16 voice limits (needs an age field at sign-up), and the web client's adapter (#109).

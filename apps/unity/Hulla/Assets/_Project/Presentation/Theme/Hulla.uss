@@ -2784,6 +2784,24 @@
     display: none;
 }
 
+/* Hear the table or not (GDD 11.4); under the pill so it never covers the felt. */
+.voice-speaker {
+    display: none;
+    margin-top: 6px;
+    min-height: 48px;
+    font-size: var(--font-small);
+}
+
+.voice-speaker--off {
+    opacity: 0.75;
+}
+
+/* A player's voice level in the player sheet. */
+.sheet__level {
+    width: 100%;
+    margin-bottom: 8px;
+}
+
 .seat--speaking .seat__avatar {
     border-color: var(--accent-teal);
     border-width: 5px;

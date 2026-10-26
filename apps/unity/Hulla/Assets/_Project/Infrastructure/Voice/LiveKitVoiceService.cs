@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Runtime.InteropServices;
 using System.Threading;
 using Hulla.Application.Voice;
 using Hulla.Domain;
@@ -16,15 +15,15 @@ namespace Hulla.Infrastructure.Voice
     /// The LiveKit adapter (ADR-0024). One room per table, joined with the player's user id as the identity,
     /// so a speaker maps back to a seat. Room events arrive on the main thread.
     /// <para>
-    /// Two ways in. A seat joining with its mic on gets the platform audio module (hardware echo
-    /// cancellation, noise suppression, gain control), which plays remote audio by itself; the microphone
-    /// records from the first send and holding mutes the published track. Everyone else listens through a
-    /// Unity <see cref="AudioSource"/> per voice, so a listener never opens the microphone, never sees the
-    /// permission prompt and never switches the phone to call audio. A listener who turns a mic on is joined
-    /// again by the controller.
+    /// Everything goes through Unity's audio, so levels are ordinary <see cref="AudioSource"/> volumes: each
+    /// remote voice plays from its own hidden source (the player's level times the voice level), and a seat
+    /// with its mic on sends Unity's microphone through the SDK's audio processing (echo cancellation
+    /// against what Unity plays, table sounds included, plus noise suppression and gain control). The
+    /// microphone opens only at the first send, so a listener never sees the permission prompt; a listener
+    /// who turns a mic on is joined again by the controller. Holding mutes the published track.
     /// </para>
-    /// A muted player is not subscribed at all. LiveKit refreshes the token of a connected client, so
-    /// <see cref="TokenExpiring"/> never fires.
+    /// A muted player, or everyone while the speaker is off, is not subscribed at all. LiveKit refreshes the
+    /// token of a connected client, so <see cref="TokenExpiring"/> never fires.
     /// </summary>
     public sealed class LiveKitVoiceService : IVoiceService, IDisposable
     {
@@ -36,10 +35,13 @@ namespace Hulla.Infrastructure.Voice
         private readonly Dictionary<string, bool> _muted = new Dictionary<string, bool>();
         private readonly Dictionary<string, bool> _subscribed = new Dictionary<string, bool>();
         private readonly Dictionary<string, Listener> _listeners = new Dictionary<string, Listener>();
+        private readonly Dictionary<string, float> _peerVolume = new Dictionary<string, float>();
         private readonly HashSet<string> _speaking = new HashSet<string>();
-        private PlatformAudio? _audio;
-        private PlatformAudioSource? _source;
+        private GameObject? _micHost;
+        private MicrophoneSource? _mic;
         private LocalAudioTrack? _track;
+        private float _outputVolume = 1f;
+        private bool _listening = true;
         private Room? _room;
         private string? _account;
         private bool _recording;
@@ -86,12 +88,7 @@ namespace Hulla.Infrastructure.Voice
         public async Awaitable<Result<bool>> JoinAsync(VoiceTicket ticket, bool publish, CancellationToken cancellation)
         {
             await LeaveAsync();
-            var withMic = publish && MicrophoneAllowed();
-            if (withMic && !StartPlatformAudio())
-            {
-                return Result<bool>.Fail("voice.unavailable", "audio");
-            }
-
+            var withMic = publish && MicrophoneAllowed() && Microphone.devices.Length > 0;
             var room = new Room();
             room.TrackPublished += OnTrackPublished;
             room.TrackSubscribed += OnTrackSubscribed;
@@ -158,9 +155,9 @@ namespace Hulla.Infrastructure.Voice
         public void SetTransmit(bool on)
         {
             _transmitting = on;
-            if (on && !_recording && _audio != null && _track != null && MicrophoneAllowed())
+            if (on && !_recording && _mic != null && _track != null && MicrophoneAllowed())
             {
-                _recording = StartRecording(_audio);
+                _recording = StartRecording(_mic);
             }
 
             (_track as ILocalTrack)?.SetMute(!on);
@@ -194,11 +191,51 @@ namespace Hulla.Infrastructure.Voice
             }
         }
 
+        public void SetPeerVolume(string account, float volume)
+        {
+            _peerVolume[account] = Mathf.Clamp01(volume);
+            ApplyVolumes();
+        }
+
+        public void SetOutputVolume(float volume)
+        {
+            _outputVolume = Mathf.Clamp01(volume);
+            ApplyVolumes();
+        }
+
+        public void SetListening(bool on)
+        {
+            if (_listening == on)
+            {
+                return;
+            }
+
+            _listening = on;
+            if (_room == null)
+            {
+                return;
+            }
+
+            foreach (var participant in _room.RemoteParticipants.Values)
+            {
+                foreach (var publication in participant.Tracks.Values)
+                {
+                    Subscribe(publication, participant.Identity);
+                }
+            }
+        }
+
         public void Dispose()
         {
             if (_room != null)
             {
                 Drop(_room);
+            }
+
+            if (_micHost != null)
+            {
+                Object.Destroy(_micHost);
+                _micHost = null;
             }
         }
 
@@ -213,59 +250,17 @@ namespace Hulla.Infrastructure.Voice
 #endif
         }
 
-        /// <summary>The audio module is made before the room (remote audio plays only through it) and goes with it.</summary>
-        private bool StartPlatformAudio()
-        {
-            try
-            {
-                _audio = new PlatformAudio();
-                // It starts recording on creation; nothing records until this player first sends.
-                _audio.StopRecording();
-                _recording = false;
-                return true;
-            }
-            catch (Exception error)
-            {
-                Debug.LogWarning($"voice: no audio device ({error.Message})");
-                StopPlatformAudio();
-                return false;
-            }
-        }
-
-        private void StopPlatformAudio()
-        {
-            if (_audio == null)
-            {
-                return;
-            }
-
-            _audio.Dispose();
-            _audio = null;
-            _recording = false;
-#if UNITY_IOS && !UNITY_EDITOR
-            // Back from call audio to the game's ambient session, so table sounds play at full volume.
-            RestoreDefaultAudioSession();
-#endif
-        }
-
-#if UNITY_IOS && !UNITY_EDITOR
-        [DllImport("__Internal", EntryPoint = "LiveKit_RestoreDefaultAudioSession")]
-        private static extern void RestoreDefaultAudioSession();
-#endif
-
         private async Awaitable<bool> PublishMicrophone(Room room, CancellationToken cancellation)
         {
-            if (_audio == null)
+            if (_micHost == null)
             {
-                return false;
+                _micHost = new GameObject("voice-mic") { hideFlags = HideFlags.HideAndDontSave };
+                Object.DontDestroyOnLoad(_micHost);
             }
 
-            var processing = AudioProcessingOptions.Default;
-            processing.EchoCancellation = true;
-            processing.NoiseSuppression = true;
-            processing.AutoGainControl = true;
-            _source = new PlatformAudioSource(_audio, processing);
-            _track = LocalAudioTrack.CreateAudioTrack("mic", _source, room);
+            var processing = new AudioProcessingOptions { EchoCancellation = true, NoiseSuppression = true, AutoGainControl = true };
+            _mic = new MicrophoneSource(Microphone.devices[0], _micHost, processing);
+            _track = LocalAudioTrack.CreateAudioTrack("mic", _mic, room);
             ((ILocalTrack)_track).SetMute(true);
             var options = new TrackPublishOptions { Source = TrackSource.SourceMicrophone, Dtx = true, Red = true };
             if (!await Finished(room.LocalParticipant.PublishTrack(_track, options), cancellation) || _room != room)
@@ -278,16 +273,12 @@ namespace Hulla.Infrastructure.Voice
             return true;
         }
 
-        private static bool StartRecording(PlatformAudio audio)
+        private static bool StartRecording(MicrophoneSource mic)
         {
             try
             {
-                // Called only with the permission granted, so the iterator never waits for a prompt.
-                var steps = audio.StartRecording();
-                while (steps.MoveNext())
-                {
-                }
-
+                // Called only with the permission granted, so this never prompts.
+                mic.Start();
                 return true;
             }
             catch (Exception error)
@@ -332,7 +323,7 @@ namespace Hulla.Infrastructure.Voice
                 return;
             }
 
-            var want = !(_muted.TryGetValue(account, out var muted) && muted);
+            var want = _listening && !(_muted.TryGetValue(account, out var muted) && muted);
             if (_subscribed.TryGetValue(remote.Sid, out var current) && current == want)
             {
                 return;
@@ -358,8 +349,18 @@ namespace Hulla.Infrastructure.Voice
 
             _room = null;
             _track = null;
-            _source?.Dispose();
-            _source = null;
+            if (_mic != null)
+            {
+                if (_recording)
+                {
+                    _mic.Stop();
+                }
+
+                _mic.Dispose();
+                _mic = null;
+            }
+
+            _recording = false;
             foreach (var listener in _listeners.Values)
             {
                 listener.Dispose();
@@ -367,23 +368,24 @@ namespace Hulla.Infrastructure.Voice
 
             _listeners.Clear();
             _subscribed.Clear();
-            StopPlatformAudio();
         }
 
         private void OnTrackPublished(RemoteTrackPublication publication, RemoteParticipant participant) =>
             Subscribe(publication, participant.Identity);
 
-        /// <summary>Without the platform audio module a voice plays through its own Unity audio source.</summary>
+        /// <summary>Each voice plays through its own Unity audio source at the player's level.</summary>
         private void OnTrackSubscribed(IRemoteTrack track, RemoteTrackPublication publication, RemoteParticipant participant)
         {
-            if (_audio != null || track is not RemoteAudioTrack audio || _listeners.ContainsKey(publication.Sid))
+            if (track is not RemoteAudioTrack audio || _listeners.ContainsKey(publication.Sid))
             {
                 return;
             }
 
             try
             {
-                _listeners[publication.Sid] = new Listener(audio);
+                var listener = new Listener(audio, participant.Identity);
+                _listeners[publication.Sid] = listener;
+                listener.Volume = LevelOf(participant.Identity);
             }
             catch (Exception error)
             {
@@ -444,6 +446,17 @@ namespace Hulla.Infrastructure.Voice
             }
         }
 
+        private float LevelOf(string account) =>
+            _outputVolume * (_peerVolume.TryGetValue(account, out var level) ? level : 1f);
+
+        private void ApplyVolumes()
+        {
+            foreach (var listener in _listeners.Values)
+            {
+                listener.Volume = LevelOf(listener.Account);
+            }
+        }
+
         /// <summary>The SDK reconnects by itself; a disconnect we did not ask for means it gave up.</summary>
         private void OnDisconnected(Room room, DisconnectReason reason)
         {
@@ -460,15 +473,24 @@ namespace Hulla.Infrastructure.Voice
         private sealed class Listener : IDisposable
         {
             private readonly GameObject _host;
+            private readonly AudioSource _source;
             private readonly AudioStream _stream;
 
-            public Listener(RemoteAudioTrack track)
+            public Listener(RemoteAudioTrack track, string account)
             {
+                Account = account;
                 _host = new GameObject("voice") { hideFlags = HideFlags.HideAndDontSave };
                 Object.DontDestroyOnLoad(_host);
-                var source = _host.AddComponent<AudioSource>();
-                source.spatialBlend = 0f;
-                _stream = new AudioStream(track, source);
+                _source = _host.AddComponent<AudioSource>();
+                _source.spatialBlend = 0f;
+                _stream = new AudioStream(track, _source);
+            }
+
+            public string Account { get; }
+
+            public float Volume
+            {
+                set => _source.volume = value;
             }
 
             public void Dispose()

@@ -65,6 +65,18 @@ namespace Hulla.Infrastructure.Voice
         {
         }
 
+        public void SetPeerVolume(string account, float volume)
+        {
+        }
+
+        public void SetOutputVolume(float volume)
+        {
+        }
+
+        public void SetListening(bool on)
+        {
+        }
+
         /// <summary>Simulates the provider giving up on the channel.</summary>
         public void Drop()
         {

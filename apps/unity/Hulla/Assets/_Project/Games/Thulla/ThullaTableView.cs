@@ -124,6 +124,9 @@ namespace Hulla.Games.Thulla
         private readonly Button _mic;
         private readonly Button _talk;
         private readonly Label _voicePill;
+        private readonly Button _speaker;
+        private Func<string, int>? _peerVolume;
+        private Action<string, int>? _setPeerVolume;
         private VoiceController? _voice;
         private float _voiceWhyLeft;
 
@@ -250,6 +253,8 @@ namespace Hulla.Games.Thulla
             _talk.RegisterCallback<PointerLeaveEvent>(_ => _voice?.SetTalking(false));
             _talk.RegisterCallback<PointerCancelEvent>(_ => _voice?.SetTalking(false));
             _voicePill = root.Q<Label>("voice-pill");
+            _speaker = root.Q<Button>("voice-speaker");
+            _speaker.clicked += () => _voice?.ToggleSpeaker();
             _sheet = root.Q<VisualElement>("player-sheet");
             _sheetTitle = root.Q<Label>("sheet-title");
             _sheetActions = root.Q<VisualElement>("sheet-actions");
@@ -325,6 +330,16 @@ namespace Hulla.Games.Thulla
             if (tray.Count > 0)
             {
                 _sheetStatus.text = Strings.Format(UiText.PickedUpTray, name, string.Join(" ", TrayGlyphs(tray)));
+            }
+
+            if (!muted && _peerVolume != null && _setPeerVolume != null && _voice != null && _voice.State != VoiceState.Hidden)
+            {
+                // Their voice level on this phone only (GDD 11.4).
+                var level = new SliderInt(UiText.VoiceVolumeLabel, 0, 100) { value = _peerVolume(id) };
+                level.AddToClassList("sheet__level");
+                var setLevel = _setPeerVolume;
+                level.RegisterValueChangedCallback(evt => setLevel(id, evt.newValue));
+                _sheetActions.Add(level);
             }
 
             SheetButton(muted ? UiText.Unmute : UiText.Mute, () =>
@@ -812,6 +827,16 @@ namespace Hulla.Games.Thulla
             ShowVoice();
         }
 
+        /// <summary>Each player's voice level for the player sheet, 0 to 100.</summary>
+        public void UseVoiceLevels(Func<string, int> get, Action<string, int> set)
+        {
+            _peerVolume = get;
+            _setPeerVolume = set;
+        }
+
+        /// <summary>The speaker toggle's text; empty when it is hidden. Read by tests.</summary>
+        public string SpeakerNote => _speaker.style.display == DisplayStyle.Flex ? _speaker.text : "";
+
         /// <summary>The voice pill's text; empty when it is hidden. Read by tests.</summary>
         public string VoiceNote => _voicePill.style.display == DisplayStyle.Flex ? _voicePill.text : "";
 
@@ -858,6 +883,11 @@ namespace Hulla.Games.Thulla
             var note = hidden ? "" : asking ? UiText.VoiceWhy : VoiceText(voice);
             _voicePill.text = note;
             _voicePill.style.display = note.Length == 0 ? DisplayStyle.None : DisplayStyle.Flex;
+            // The speaker: hear the table or not; with it off and the mic off, voice is left altogether.
+            var speakerShown = !hidden && state != VoiceState.Suspended && (state == VoiceState.Live || !voice.SpeakerOn);
+            _speaker.style.display = speakerShown ? DisplayStyle.Flex : DisplayStyle.None;
+            _speaker.text = voice.SpeakerOn ? UiText.VoicesOn : UiText.VoicesOff;
+            _speaker.EnableInClassList("voice-speaker--off", !voice.SpeakerOn);
             var model = _client.Model;
             _me.SetSpeaking(!hidden && voice.IsSpeaking(model.UserId));
             foreach (var seat in model.Seats)

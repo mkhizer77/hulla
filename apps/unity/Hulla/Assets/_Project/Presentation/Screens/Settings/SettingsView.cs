@@ -92,6 +92,8 @@ namespace Hulla.Presentation.Screens.Settings
             Toggle(UiText.RulesRecapLabel, () => _settings.ShowRulesRecap, v => _settings.ShowRulesRecap = v);
             Heading(UiText.SettingsSound);
             Level(UiText.SfxLabel, () => _settings.SfxVolume, v => _settings.SfxVolume = v);
+            Toggle(UiText.VoiceChatLabel, () => _settings.VoiceChat, v => _settings.VoiceChat = v);
+            Level(UiText.VoiceVolumeLabel, () => _settings.VoiceVolume, v => _settings.VoiceVolume = v);
             Toggle(UiText.HapticsLabel, () => _settings.Haptics, v => _settings.Haptics = v);
             Heading(UiText.SettingsTheme);
             Themes(() => _settings.Skin, v => _settings.Skin = v);

@@ -61,6 +61,10 @@ namespace Hulla.Integration.Tests
 
         private async Awaitable RunAsync(string host, int port)
         {
+            // The app makes its one listener at start; voice plays and cancels echo through it.
+            var listener = new GameObject("test-listener");
+            listener.AddComponent<AudioListener>();
+            _owned.Add(new Destroyer(listener));
             var stamp = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds().ToString();
             var gateways = new List<NakamaTableGateway>();
             var tokens = new List<NakamaVoiceTokens>();
@@ -124,6 +128,18 @@ namespace Hulla.Integration.Tests
             await gateways[1].LeaveAsync();
             await WaitFor(() => dropped, 15f, "the server to remove the leaver from voice");
             await voices[0].LeaveAsync();
+        }
+
+        private sealed class Destroyer : IDisposable
+        {
+            private readonly GameObject _target;
+
+            public Destroyer(GameObject target)
+            {
+                _target = target;
+            }
+
+            public void Dispose() => UnityEngine.Object.Destroy(_target);
         }
 
         private static async Awaitable WaitFor(Func<bool> done, float seconds, string what)

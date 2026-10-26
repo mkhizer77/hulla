@@ -7,11 +7,15 @@ namespace Hulla.Presentation.Audio
     /// <summary>
     /// Plays the table's sounds (GDD 16.2) from a small pool of sources on a persistent object, so
     /// overlapping sounds keep their own pitch. The volume comes from the SFX setting; 0 skips the
-    /// call. Clips are built once from <see cref="SoundKit"/>.
+    /// call. Sounds duck while someone else is talking on voice (GDD 11.4). Clips are built once from
+    /// <see cref="SoundKit"/>.
     /// </summary>
     public sealed class SoundPlayer : IDisposable
     {
         private const int Voices = 4;
+
+        /// <summary>Table sounds play at this share of their level under speech.</summary>
+        public const float DuckLevel = 0.3f;
         private readonly Dictionary<Sound, AudioClip> _clips = new Dictionary<Sound, AudioClip>();
         private readonly List<AudioSource> _sources = new List<AudioSource>();
         private GameObject? _host;
@@ -19,6 +23,9 @@ namespace Hulla.Presentation.Audio
 
         /// <summary>0 to 1; 0 is off.</summary>
         public float Volume { get; set; } = 0.7f;
+
+        /// <summary>Someone else is talking on voice.</summary>
+        public bool Ducked { get; set; }
 
         public void Play(Sound sound, float pitch = 1f)
         {
@@ -29,7 +36,23 @@ namespace Hulla.Presentation.Audio
 
             var source = Source();
             source.pitch = pitch;
-            source.PlayOneShot(Clip(sound), Volume);
+            source.PlayOneShot(Clip(sound), Ducked ? Volume * DuckLevel : Volume);
+        }
+
+        /// <summary>
+        /// The app's one audio listener: the scenes carry no camera with one, and without a listener
+        /// Unity plays nothing (table sounds and voice alike).
+        /// </summary>
+        public static void EnsureListener()
+        {
+            if (UnityEngine.Object.FindAnyObjectByType<AudioListener>() != null)
+            {
+                return;
+            }
+
+            var host = new GameObject("HullaListener");
+            UnityEngine.Object.DontDestroyOnLoad(host);
+            host.AddComponent<AudioListener>();
         }
 
         public void Dispose()
