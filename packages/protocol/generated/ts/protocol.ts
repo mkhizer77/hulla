@@ -51,6 +51,7 @@ export interface Protocol {
   requestSnapshotPayload?: RequestSnapshot;
   pingPayload?: Ping;
   seatSpectatorPayload?: SeatSpectator;
+  setMicPayload?: SetMic;
   chatTextPayload?: ChatText;
   quickChatPayload?: QuickChat;
   emotePayload?: Emote;
@@ -367,6 +368,12 @@ export interface SeatSpectator {
    */
   userId: string;
 }
+/**
+ * A seat turns its microphone on or off (GDD 11.4); clients join the voice channel only while two mics are on (GDD 20.14)
+ */
+export interface SetMic {
+  mic: boolean;
+}
 export interface ChatText {
   text: string;
 }
@@ -463,6 +470,10 @@ export interface Seat {
    * The auto-play policy holds this seat (R45, R46)
    */
   autoPlay: boolean;
+  /**
+   * The seat's microphone is on (GDD 11.4); off while disconnected
+   */
+  mic?: boolean;
   bot?: boolean;
   /**
    * Players who queued together share a party id (GDD 7.2); shown as a link icon

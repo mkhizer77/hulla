@@ -48,6 +48,8 @@ export interface SeatSlot {
   /** Cooldowns for quick chat and emotes (GDD 11.2). */
   quickChatTs: number;
   emoteTs: number;
+  /** The microphone is on (GDD 11.4); cleared when the seat disconnects or leaves. */
+  mic: boolean;
   /** Players who queued together (GDD 7.2); null for everyone else. */
   party: string | null;
   /** What the seat has equipped, read from the inventory at join and at each round start. */

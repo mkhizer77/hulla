@@ -92,6 +92,10 @@
           "type": "boolean",
           "description": "The auto-play policy holds this seat (R45, R46)"
         },
+        "mic": {
+          "type": "boolean",
+          "description": "The seat's microphone is on (GDD 11.4); off while disconnected"
+        },
         "bot": {
           "type": "boolean"
         },
@@ -245,6 +249,15 @@
       "properties": {
         "roundId": { "$ref": "../common.json#/definitions/roundId" },
         "accept": { "type": "boolean" }
+      }
+    },
+    "set_mic": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "A seat turns its microphone on or off (GDD 11.4); clients join the voice channel only while two mics are on (GDD 20.14)",
+      "required": ["mic"],
+      "properties": {
+        "mic": { "type": "boolean" }
       }
     },
     "seat_spectator": {

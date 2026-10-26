@@ -36,14 +36,20 @@ export type VoiceTokenResponse =
   | {
       readonly ok: true;
       readonly provider: "agora";
+      /** Agora's project id, public by design; the client starts its engine with it. */
+      readonly appId: string;
       readonly channel: string;
-      readonly uid: 0;
+      /** The account the token is bound to (the Nakama user id); speaking rings map back to seats by it. */
+      readonly account: string;
       readonly token: string;
       readonly expiresTs: number;
     }
   | { readonly ok: false; readonly error: RuleError };
 
-/** A short-lived token for the caller's table channel; spectators may listen, seats may speak. */
+/**
+ * A short-lived token for the caller's table channel, bound to their user id so a token can't be
+ * lent to another account; spectators may listen, seats may speak.
+ */
 export function voiceToken(deps: VoiceTokenDeps, payload: string): VoiceTokenResponse {
   if (deps.userId === null) return { ok: false, error: ruleError(ErrorCodes.table.notAuthorised) };
   let matchId: unknown;
@@ -71,7 +77,7 @@ export function voiceToken(deps: VoiceTokenDeps, payload: string): VoiceTokenRes
   );
   const token = buildRtcToken(deps.config, {
     channel: membership.tableId,
-    account: "",
+    account: deps.userId,
     issueTs: Math.floor(now / 1000),
     expireSeconds: VOICE_TOKEN_SECONDS,
     salt: rng.nextInt(99_999_999) + 1,
@@ -80,8 +86,9 @@ export function voiceToken(deps: VoiceTokenDeps, payload: string): VoiceTokenRes
   return {
     ok: true,
     provider: "agora",
+    appId: deps.config.appId,
     channel: membership.tableId,
-    uid: 0,
+    account: deps.userId,
     token,
     expiresTs: now + VOICE_TOKEN_SECONDS * 1000,
   };

@@ -556,6 +556,7 @@ export function tableCore<S, M, V, E, R>(
         }
         slot.sessionId = null;
         slot.connected = false;
+        slot.mic = false;
         if (state.phase === "inRound") {
           slot.left = true;
           slot.autoPlay = true;
@@ -582,6 +583,17 @@ export function tableCore<S, M, V, E, R>(
           return;
         }
         slot.ready = payload["ready"] === true;
+        broadcastTableState(state, emit);
+        return;
+      }
+      case "set_mic": {
+        if (slot === undefined) {
+          reject(ruleError(ErrorCodes.table.notAuthorised));
+          return;
+        }
+        const mic = payload["mic"] === true;
+        if (slot.mic === mic) return;
+        slot.mic = mic;
         broadcastTableState(state, emit);
         return;
       }
@@ -670,6 +682,7 @@ export function tableCore<S, M, V, E, R>(
         emit.public("presence", presencePayload(kickedPresence, victim.displayName, "kicked"));
         victim.sessionId = null;
         victim.connected = false;
+        victim.mic = false;
         if (state.phase === "inRound") {
           victim.left = true;
           victim.autoPlay = true;
@@ -1014,6 +1027,7 @@ export function tableCore<S, M, V, E, R>(
         }
         slot.sessionId = null;
         slot.connected = false;
+        slot.mic = false;
         slot.disconnectedTs = now;
         if (state.phase === "inRound") {
           slot.autoPlay = true;
