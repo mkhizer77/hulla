@@ -13,7 +13,8 @@ namespace Hulla.Integration.Tests
 {
     /// <summary>
     /// Two seated clients take room tokens from `voice_token` and join the compose LiveKit with the real
-    /// adapter (ADR-0024): connect, publish the microphone, send and hold, leave. Runs only when
+    /// adapter (ADR-0024): one publishes its microphone and sends, one listens; the listener leaves the table and the
+    /// server drops it from the room. Runs only when
     /// HULLA_NAKAMA_HOST is set, with server/nakama/compose.yml up.
     /// </summary>
     public sealed class VoiceAgainstLiveKitTests
@@ -40,7 +41,7 @@ namespace Hulla.Integration.Tests
 
         [UnityTest]
         [Timeout(120000)]
-        public IEnumerator TwoSeatsJoinTheTableRoomAndPublishTheirMics()
+        public IEnumerator ASenderAndAListenerJoinTheTableRoomAndALeaverIsRemoved()
         {
             var host = Environment.GetEnvironmentVariable("HULLA_NAKAMA_HOST");
             if (string.IsNullOrEmpty(host))
@@ -106,19 +107,23 @@ namespace Hulla.Integration.Tests
                 var voice = new LiveKitVoiceService();
                 _owned.Add(voice);
                 voices.Add(voice);
-                var inRoom = await voice.JoinAsync(ticket.Value, true, default);
+                // The first seat sends; the second listens through a Unity audio source without the microphone.
+                var inRoom = await voice.JoinAsync(ticket.Value, i == 0, default);
                 Assert.IsTrue(inRoom.IsOk, "join the room: " + inRoom.Error);
             }
 
             voices[0].SetTransmit(true);
-            await Awaitable.WaitForSecondsAsync(1f);
+            await Awaitable.WaitForSecondsAsync(2f);
             voices[0].SetTransmit(false);
             voices[1].SetPeerMuted(accounts[0], true);
             voices[1].SetPeerMuted(accounts[0], false);
-            foreach (var voice in voices)
-            {
-                await voice.LeaveAsync();
-            }
+
+            // Leaving the table takes the player out of the voice room on the server side too.
+            var dropped = false;
+            voices[1].Dropped += () => dropped = true;
+            await gateways[1].LeaveAsync();
+            await WaitFor(() => dropped, 15f, "the server to remove the leaver from voice");
+            await voices[0].LeaveAsync();
         }
 
         private static async Awaitable WaitFor(Func<bool> done, float seconds, string what)
