@@ -324,6 +324,19 @@ namespace Hulla.Screens.Tests
             yield return null;
             var badge = root.Query<SeatBadge>().ToList().Single(b => b.ShowsSpeaking);
             StringAssert.Contains("Bilal", badge.Name);
+
+            // The speaker under the pill: voices on, then off with the mic still going out.
+            Assert.AreEqual("Voices on", view.SpeakerNote);
+            var speaker = root.Q<Button>("voice-speaker");
+            using (var click = NavigationSubmitEvent.GetPooled())
+            {
+                click.target = speaker;
+                speaker.SendEvent(click);
+            }
+
+            yield return null;
+            Assert.IsFalse(controller.SpeakerOn);
+            Assert.AreEqual("Voices off", view.SpeakerNote);
             controller.Dispose();
             view.Dispose();
         }
@@ -455,7 +468,7 @@ namespace Hulla.Screens.Tests
                 root = r;
                 new SettingsView(r, new SettingsModel(new MemoryStore()), () => { }, new SettingsView.AccountActions(_ => { }, _ => { }, _ => { }, () => null));
             });
-            Assert.AreEqual(9, root.Query<Toggle>().ToList().Count, "nine on/off settings, analytics consent among them");
+            Assert.AreEqual(10, root.Query<Toggle>().ToList().Count, "ten on/off settings, voice chat and analytics consent among them");
             Assert.IsTrue(root.Query<Button>().ToList().Any(b => b.text == "Delete my account"));
         }
 
@@ -470,7 +483,7 @@ namespace Hulla.Screens.Tests
                 new SettingsView(r, new SettingsModel(new MemoryStore()), () => { }, null, notifications, change => _ = notifications.ChangeAsync(change, default));
                 _ = notifications.RefreshAsync(default);
             });
-            Assert.AreEqual(16, root.Query<Toggle>().ToList().Count, "nine settings and seven notification switches");
+            Assert.AreEqual(17, root.Query<Toggle>().ToList().Count, "ten settings and seven notification switches");
             var online = root.Query<Toggle>().ToList().First(t => t.label == "A friend comes online");
             Assert.IsFalse(online.value, "loaded from the server");
         }

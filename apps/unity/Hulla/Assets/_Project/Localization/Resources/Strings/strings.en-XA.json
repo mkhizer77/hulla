@@ -3948,6 +3948,16 @@
    "smart": false
   },
   {
+   "key": "ui.voice.speaker_off",
+   "text": "[Vöîçés öff · ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.voice.speaker_on",
+   "text": "[Vöîçés öñ · ·]",
+   "smart": false
+  },
+  {
    "key": "ui.voice.suspended",
    "text": "[Ýöûr vöîçé îs sûspéñdéd för ñöw · · · · ·]",
    "smart": false
@@ -3965,6 +3975,16 @@
   {
    "key": "ui.voice.why",
    "text": "[Ýöûr mîç îs ûséd öñlý åt thîs tåblé, åñd öñlý whîlé ît's öñ. · · · · · · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.voice_chat_label",
+   "text": "[Vöîçé çhåt · ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.voice_volume_label",
+   "text": "[Vöîçé völûmé · ·]",
    "smart": false
   },
   {

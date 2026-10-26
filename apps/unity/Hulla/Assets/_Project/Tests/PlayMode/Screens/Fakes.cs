@@ -327,6 +327,18 @@ namespace Hulla.Screens.Tests
             {
             }
 
+            public void SetPeerVolume(string account, float volume)
+            {
+            }
+
+            public void SetOutputVolume(float volume)
+            {
+            }
+
+            public void SetListening(bool on)
+            {
+            }
+
             public void Speak(string account, bool speaking) => Speaking?.Invoke(account, speaking);
         }
 
