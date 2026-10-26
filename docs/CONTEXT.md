@@ -13,7 +13,7 @@
 - Server: self-hosted Nakama, TypeScript runtime modules, Postgres, Docker Compose (ADR-0002).
 - Engines: TypeScript authoritative; the C# mirror is deferred past v1.0 (ADR-0019); shared vectors; every rule ID tested (ADR-0003); no clock in engines (ADR-0020); one deck and 3–6 seats until v1.2.
 - Protocol: JSON Schema draft-07 source, generated TS and C# (ADR-0005, ADR-0021). Match log is event-sourced (ADR-0006). Deterministic engines with a fair-deal commitment (ADR-0009).
-- Voice: Agora on Unity and web behind an interface (ADR-0012).
+- Voice: self-hosted LiveKit on Unity and web behind an interface (ADR-0012, ADR-0024).
 - Chat: Nakama channels for table and club chat; quick chat and emotes as match data; our own filters (ADR-0018).
 - Hosting: free EU tier for development, paid small boxes with real users, South Asia region for players (ADR-0013, TECH_STACK §6).
 - Repo: public GitHub, PolyForm Noncommercial 1.0.0, tests gate merges, tag-triggered Android builds, iOS later (ADR-0014, 0015).

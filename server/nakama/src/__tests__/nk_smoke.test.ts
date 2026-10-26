@@ -148,7 +148,7 @@ describe("the RPCs and hooks against an in-memory Nakama", () => {
     });
   });
 
-  it("creates a table, joins it by code, refuses voice without Agora, and runs the Thulla callbacks", () => {
+  it("creates a table, joins it by code, refuses voice without LiveKit settings, and runs the Thulla callbacks", () => {
     const m = memoryNk();
     const log = fakeLogger();
     const created = parse(

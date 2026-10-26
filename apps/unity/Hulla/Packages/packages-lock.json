@@ -192,6 +192,15 @@
         "com.unity.modules.imgui": "1.0.0"
       }
     },
+    "io.livekit.livekit-sdk": {
+      "version": "2.1.0",
+      "depth": 0,
+      "source": "registry",
+      "dependencies": {
+        "com.unity.nuget.newtonsoft-json": "3.2.1"
+      },
+      "url": "https://package.openupm.com"
+    },
     "com.unity.modules.accessibility": {
       "version": "1.0.0",
       "depth": 0,

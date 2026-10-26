@@ -4,8 +4,8 @@ The Hulla runtime modules for Nakama (ADR-0002): RPCs, hooks, the table core and
 
 ## Layout
 - `src/main.ts`: `InitModule`, the one function Nakama calls at start-up; everything registers there.
-- `src/rpc/`: RPC handlers. `hello` is the smoke test every environment answers; `table_create` makes a table match and registers its room code; `table_join_by_code` resolves a code to a match; `presets_get` serves the presets bundled from `content/presets`; `voice_token` mints an Agora channel token for a presence at the table.
-- `src/services/`: `table_registry.ts` (room codes in the `table_codes` storage collection with region and expiry), `agora_token.ts` (the AccessToken2 builder, written here because the runtime has no zlib; its test checks it against Agora's reference builder) and `bytes.ts` (HMAC, a stored-block zlib stream, base64).
+- `src/rpc/`: RPC handlers. `hello` is the smoke test every environment answers; `table_create` makes a table match and registers its room code; `table_join_by_code` resolves a code to a match; `presets_get` serves the presets bundled from `content/presets`; `voice_token` signs a LiveKit room token for a presence at the table (ADR-0024).
+- `src/services/`: `table_registry.ts` (room codes in the `table_codes` storage collection with region and expiry), `livekit_token.ts` (the HS256 room token; its test checks it against Node's crypto and the integration test against the compose LiveKit) and `bytes.ts` (HMAC and base64).
 - `src/content/`: content files bundled at build time; `pnpm content:validate` checks them against their schemas and the engine.
 - `integration/`: scripted `nakama-js` clients against a live Nakama (`pnpm --filter @hulla/server test:integration` with `HULLA_NAKAMA_HOST` set); CI runs it in the compose job.
 - `src/games/thulla/`: the Thulla host (`host.ts`: moves in, events out, the legal mask per turn, the seed reveal) and `match.ts`, the named match callbacks InitModule registers.
@@ -58,7 +58,7 @@ HULLA_NAKAMA_HOST=127.0.0.1 pnpm --filter @hulla/server test:integration   # scr
 
 ## Match handler notes
 - Nakama freezes everything reachable from the global object after InitModule and rebuilds the match state as plain data between callbacks: validators are created per call (`createChecks()`), the state holds records and the PRNG words, never Maps or instances (ADR-0022).
-- Voice is off until the box sets `AGORA_APP_ID` and `AGORA_APP_CERTIFICATE` in `runtime.env`; `voice_token` then answers `voice.unavailable`.
+- Voice is off until the box sets `LIVEKIT_URL`, `LIVEKIT_API_KEY` and `LIVEKIT_API_SECRET` in `runtime.env`; until then `voice_token` answers `voice.unavailable`. The compose file runs a local LiveKit with matching keys.
 - Nakama resolves RPC and match callbacks by their global function names, so every registered handler is a named top-level function and `registerMatch` receives identifiers, never literals.
 - Only public messages advance the table sequence number; seat-only messages carry the current one and are logged against their seat, so every client sees a gap-free stream and a reconnect replays exactly what that seat may see.
 - Nakama's `matchJoin` has no metadata, so `matchJoinAttempt` records an admission (seat or spectator) that `matchJoin` consumes.

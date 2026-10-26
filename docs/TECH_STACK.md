@@ -7,7 +7,7 @@
 | Layer | Choice | Why |
 |---|---|---|
 | Mobile client | Unity 6000.4.9f1 (pinned), C#, IL2CPP, URP 2D, UI Toolkit with the Advanced Text Generator, Unity 6 runtime data binding, hand-wired composition root, `Awaitable`, LitMotion tweens, Addressables, Localization, Input System | Newest editor on the development machine; complex-script text; no framework dependencies (ADR-0007, ADR-0008, ADR-0016) |
-| Web client (later) | TypeScript 5, React, PixiJS 8, Vite, `@heroiclabs/nakama-js`, Agora Web SDK, Firebase JS | Reuses the server's engine, protocol, content and tokens (ADR-0017) |
+| Web client (later) | TypeScript 5, React, PixiJS 8, Vite, `@heroiclabs/nakama-js`, LiveKit web SDK, Firebase JS | Reuses the server's engine, protocol, content and tokens (ADR-0017) |
 | Server | Nakama 3.x (open source) with Hulla runtime modules in TypeScript, Postgres 16, Docker Compose | Auth, social, matchmaking, wallets and storage built in; authoritative match handler is ours (ADR-0002) |
 | Shared packages | JSON Schema (draft-07) protocol with generated TypeScript and C#; TypeScript rules engines (authoritative; C# mirrors deferred, ADR-0019); shared JSON test vectors; content as signed JSON | One truth, two clients (ADR-0003, ADR-0005, ADR-0011) |
 | Source and CI | Public GitHub repository, GitHub Actions, GameCI images, GitHub Container Registry | Free hosted runners including macOS on public repos (ADR-0015) |
@@ -32,7 +32,7 @@
 | Haptics | A thin native bridge (Core Haptics, `VibrationEffect`); the open-source Nice Vibrations fork only if it still compiles on 6000.4 | | Decide at vertical slice |
 | Networking | Nakama Unity client | OpenUPM `com.heroiclabs.nakama-unity`, latest stable | WebSocket, JSON |
 | JSON | `com.unity.nuget.newtonsoft-json` with a `link.xml` that preserves the generated DTOs | 3.2.x | Generated converters; never `JsonUtility` for protocol payloads |
-| Voice | Agora Voice SDK for Unity behind `IVoiceService` | latest stable | Shared with web |
+| Voice | LiveKit Unity SDK (`io.livekit.livekit-sdk`, OpenUPM) behind `IVoiceService` | 2.1.0 | Same server and tokens as the web SDK (ADR-0024) |
 | Purchases | Unity IAP | latest stable | Store billing; receipts validated on the server |
 | Ads | AppLovin MAX Unity plugin with AdMob, Meta, Unity Ads, Mintegral, ironSource, Liftoff adapters | latest stable | Rewarded and interstitial only; no banners |
 | Analytics, crashes, config, push | Firebase Unity SDK: Analytics, Crashlytics, Remote Config, Cloud Messaging | latest stable | Free tier |
@@ -54,13 +54,13 @@
 | Admin | Nakama console plus admin RPCs | |
 
 ## 4. Multiplayer, in one paragraph
-Every table is one authoritative Nakama match. Clients send intents (`play_card`, `take_hand`, `vote`, …) as JSON envelopes over Nakama's WebSocket; the match handler validates against the generated schema, applies the move through the pure rules engine, appends events to a sequenced log with a state hash, redacts the state per recipient and broadcasts. Timers are server deadlines; clients render countdowns from the server timestamp. A disconnected seat is covered by the deterministic auto-play policy for 30 seconds and reattached with a snapshot plus the missed events. Matchmaking uses Nakama's matchmaker with region, seat count, language and skill properties; private rooms use six-character codes mapped to match ids. Voice runs in a separate Agora channel per table. Text chat uses Nakama's realtime channels (one per table, one per club) behind a server-side filter hook; quick chat and emotes are match data opcodes (ADR-0018). No bots at launch. Details: `docs/ARCHITECTURE.md` §7 and §8.
+Every table is one authoritative Nakama match. Clients send intents (`play_card`, `take_hand`, `vote`, …) as JSON envelopes over Nakama's WebSocket; the match handler validates against the generated schema, applies the move through the pure rules engine, appends events to a sequenced log with a state hash, redacts the state per recipient and broadcasts. Timers are server deadlines; clients render countdowns from the server timestamp. A disconnected seat is covered by the deterministic auto-play policy for 30 seconds and reattached with a snapshot plus the missed events. Matchmaking uses Nakama's matchmaker with region, seat count, language and skill properties; private rooms use six-character codes mapped to match ids. Voice runs in a LiveKit room per table on our own LiveKit server (ADR-0024). Text chat uses Nakama's realtime channels (one per table, one per club) behind a server-side filter hook; quick chat and emotes are match data opcodes (ADR-0018). No bots at launch. Details: `docs/ARCHITECTURE.md` §7 and §8.
 
 ## 5. Third parties
 | Need | Provider | Plan and cost now | Unity | Web | Swap effort |
 |---|---|---|---|---|---|
 | Sign-in | Nakama auth with Apple, Google, Facebook, device accounts | Free | Yes | Yes | Low |
-| Voice chat | Agora | 10,000 participant-minutes free per month, then about $0.99 per 1,000; about $1,500–2,400 a month at the soft-launch scenario before the on-demand join and silence leave cut it (GDD §20.14); kept on 12 Oct 2026 (O19) | Yes | Yes | One adapter plus the token RPC |
+| Voice chat | LiveKit, self-hosted next to Nakama (ADR-0024) | The box and its traffic: about 1 MB per listener-minute at a six-seat table at most, less with silence suppressed; LiveKit Cloud is the managed fallback with the same tokens | Yes | Yes | One adapter plus the token RPC |
 | Text chat, quick chat, emotes | Nakama channels and match data, our own filters | Free | Yes | Yes | n/a |
 | Multiplayer tables, matchmaking, friends, presence | Nakama (self-hosted) | The server box only | Yes | Yes | High (by design the one fixed piece) |
 | Analytics, crash reporting, remote config, push | Firebase | Free tier | Yes | Yes (push via FCM web) | Medium |
@@ -91,7 +91,7 @@ Everything is defined in `infra/` so a region is a copy of a compose file and a 
 | Content | Presets, quick-chat packs, catalog, missions: the same JSON files and manifest. Strings are authored once in ICU message format (plural, select and simple arguments only) and exported by `tools/strings-export` to Unity Localization tables as Smart Strings and to the web as JSON |
 | Design tokens | USS variables in Unity mirrored to CSS variables on the web from one token file |
 | Backend SDK | Nakama Unity and nakama-js against the same server and RPCs |
-| Voice | Agora Unity and Web SDKs on the same channels |
+| Voice | LiveKit Unity and web SDKs on the same rooms |
 | Analytics | Firebase on both, one event schema |
 | Sign-in | The same Nakama auth providers |
 | Links | One domain, one router |

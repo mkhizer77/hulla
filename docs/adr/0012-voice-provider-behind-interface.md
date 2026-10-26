@@ -1,5 +1,5 @@
 # ADR-0012: Voice provider behind an interface, Agora first
-Status: Accepted
+Status: Accepted; the provider choice is superseded by ADR-0024 (self-hosted LiveKit), the interface stands
 Date: 2026-10-11
 
 ## Context

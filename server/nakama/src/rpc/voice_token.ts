@@ -1,16 +1,8 @@
-import {
-  ErrorCodes,
-  ruleError,
-  sha256,
-  stateFromSeed,
-  utf8Encode,
-  Xoshiro128StarStar,
-  type RuleError,
-} from "@hulla/shared-ts";
+import { ErrorCodes, ruleError, type RuleError } from "@hulla/shared-ts";
 
 import { log } from "../infra/log";
 import { runtimeFrom, type ServerRuntime } from "../infra/nk";
-import { buildRtcToken, isAgoraId, type AgoraConfig } from "../services/agora_token";
+import { buildRoomToken, liveKitConfigFrom, type LiveKitConfig } from "../services/livekit_token";
 import { recordMissionMetrics } from "../services/missions";
 import { isVoiceSuspended, readModeration } from "../services/sanctions";
 
@@ -26,7 +18,7 @@ export interface TableMembership {
 export interface VoiceTokenDeps {
   readonly runtime: ServerRuntime;
   readonly userId: string | null;
-  readonly config: AgoraConfig | null;
+  readonly config: LiveKitConfig | null;
   /** A voice suspension from moderation (GDD 24.3). */
   readonly suspended?: boolean;
   membership(matchId: string): TableMembership | null;
@@ -35,11 +27,12 @@ export interface VoiceTokenDeps {
 export type VoiceTokenResponse =
   | {
       readonly ok: true;
-      readonly provider: "agora";
-      /** Agora's project id, public by design; the client starts its engine with it. */
-      readonly appId: string;
+      readonly provider: "livekit";
+      /** The LiveKit server the client connects to. */
+      readonly url: string;
+      /** The table's room. */
       readonly channel: string;
-      /** The account the token is bound to (the Nakama user id); speaking rings map back to seats by it. */
+      /** The identity the token is bound to (the Nakama user id); speaking rings map back to seats by it. */
       readonly account: string;
       readonly token: string;
       readonly expiresTs: number;
@@ -72,34 +65,22 @@ export function voiceToken(deps: VoiceTokenDeps, payload: string): VoiceTokenRes
     return { ok: false, error: ruleError(ErrorCodes.voice.notAtTable) };
   }
   const now = deps.runtime.nowMs();
-  const rng = Xoshiro128StarStar.fromState(
-    stateFromSeed(sha256(utf8Encode(deps.runtime.uuidv4()))),
-  );
-  const token = buildRtcToken(deps.config, {
-    channel: membership.tableId,
-    account: deps.userId,
+  const token = buildRoomToken(deps.config, {
+    room: membership.tableId,
+    identity: deps.userId,
     issueTs: Math.floor(now / 1000),
     expireSeconds: VOICE_TOKEN_SECONDS,
-    salt: rng.nextInt(99_999_999) + 1,
     publishAudio: membership.seat !== null,
   });
   return {
     ok: true,
-    provider: "agora",
-    appId: deps.config.appId,
+    provider: "livekit",
+    url: deps.config.url,
     channel: membership.tableId,
     account: deps.userId,
     token,
     expiresTs: now + VOICE_TOKEN_SECONDS * 1000,
   };
-}
-
-/** Reads the Agora credentials from the runtime environment; absent means voice is off. */
-export function agoraConfigFrom(env: Readonly<Record<string, string>>): AgoraConfig | null {
-  const appId = env["AGORA_APP_ID"] ?? "";
-  const appCertificate = env["AGORA_APP_CERTIFICATE"] ?? "";
-  if (!isAgoraId(appId) || !isAgoraId(appCertificate)) return null;
-  return { appId, appCertificate };
 }
 
 export function rpcVoiceToken(
@@ -143,7 +124,7 @@ function voiceTokenFor(
     {
       runtime: runtimeFrom(nk, logger),
       userId: ctx.userId ?? null,
-      config: agoraConfigFrom(ctx.env),
+      config: liveKitConfigFrom(ctx.env),
       suspended: isVoiceSuspended(readModeration(nk, ctx.userId ?? ""), Date.now()),
       membership(matchId) {
         try {
