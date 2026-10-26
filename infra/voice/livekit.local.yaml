@@ -1,0 +1,16 @@
+# LiveKit for local development (ADR-0024), started by server/nakama/compose.yml.
+# The key and secret match LIVEKIT_API_KEY and LIVEKIT_API_SECRET in server/nakama/config/local.yml.
+port: 7880
+rtc:
+  tcp_port: 7881
+  # One UDP port for every client, so Docker Desktop maps a single port instead of a range.
+  udp_port: 7882
+  use_external_ip: false
+keys:
+  hulla-local: local-only-livekit-secret-0123456789
+room:
+  # A room closes a minute after its last client leaves.
+  empty_timeout: 60
+  departure_timeout: 20
+logging:
+  level: info
