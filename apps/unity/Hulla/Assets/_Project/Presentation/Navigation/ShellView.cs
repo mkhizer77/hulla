@@ -232,10 +232,72 @@ namespace Hulla.Presentation.Navigation
             banner.text = text;
         }
 
+        private void Awake()
+        {
+            // A copy, so turning the reference on rotation never edits the asset; Expand per brief §2.2.
+            var document = GetComponent<UIDocument>();
+            if (document.panelSettings != null)
+            {
+                var settings = Instantiate(document.panelSettings);
+                settings.scaleMode = PanelScaleMode.ScaleWithScreenSize;
+                settings.screenMatchMode = PanelScreenMatchMode.Expand;
+                document.panelSettings = settings;
+            }
+
+            Relayout();
+        }
+
+        /// <summary>The size class the shell is laid out for now.</summary>
+        public SizeClass Size { get; private set; }
+
+        /// <summary>The safe-area padding on the shell now, in panel units.</summary>
+        public Insets SafeArea { get; private set; }
+
+        /// <summary>Raised after a resize or rotation changed the size class or the insets.</summary>
+        public event Action? LayoutChanged;
+
+        private Vector2Int _screen;
+        private Rect _safeArea;
+
+        /// <summary>
+        /// Turns the reference with the screen, sets the size class and pads the shell by the safe area.
+        /// Only styles change, so a rotation mid-round keeps every screen and the table as they are.
+        /// </summary>
+        private void Relayout()
+        {
+            var screen = new Vector2Int(Screen.width, Screen.height);
+            var safeArea = Screen.safeArea;
+            if (screen == _screen && safeArea == _safeArea)
+            {
+                return;
+            }
+
+            var physicalChange = _screen != default && Mathf.Min(screen.x, screen.y) != Mathf.Min(_screen.x, _screen.y);
+            _screen = screen;
+            _safeArea = safeArea;
+            if (physicalChange)
+            {
+                // A foldable opened or closed, or a split-screen window changed: phone or tablet again.
+                OrientationPolicy.Apply();
+            }
+
+            var settings = GetComponent<UIDocument>().panelSettings;
+            if (settings != null)
+            {
+                settings.referenceResolution = ScreenLayout.Reference(screen.x, screen.y);
+            }
+
+            Size = ScreenLayout.ClassOf(ScreenLayout.Canvas(screen.x, screen.y).x);
+            SafeArea = ScreenLayout.SafeInsets(safeArea, screen.x, screen.y);
+            ScreenLayout.Apply(Root, Size, SafeArea);
+            LayoutChanged?.Invoke();
+        }
+
         private void Update() => Ticked?.Invoke(Time.deltaTime);
 
         private void LateUpdate()
         {
+            Relayout();
             KeyboardAvoidance.Apply(Root, _current);
             KeyboardAvoidance.Apply(Root, Root.Q("shell-overlay"));
         }
