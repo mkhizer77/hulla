@@ -42,6 +42,16 @@
     "com.unity.nuget.newtonsoft-json": "3.2.2",
     "com.unity.render-pipelines.universal": "17.4.0",
     "com.unity.test-framework": "1.6.0",
-    "com.unity.ugui": "2.0.0"
-  }
+    "com.unity.ugui": "2.0.0",
+    "io.livekit.livekit-sdk": "2.1.0"
+  },
+  "scopedRegistries": [
+    {
+      "name": "OpenUPM",
+      "url": "https://package.openupm.com",
+      "scopes": [
+        "io.livekit"
+      ]
+    }
+  ]
 }

@@ -50,16 +50,16 @@ namespace Hulla.Infrastructure.Nakama
                 return Result<VoiceTicket>.Fail((string?)body["error"]?["code"] ?? "voice.unavailable");
             }
 
-            var appId = (string?)body["appId"];
+            var url = (string?)body["url"];
             var channel = (string?)body["channel"];
             var account = (string?)body["account"];
             var token = (string?)body["token"];
-            if (string.IsNullOrEmpty(appId) || string.IsNullOrEmpty(channel) || string.IsNullOrEmpty(account) || string.IsNullOrEmpty(token))
+            if (string.IsNullOrEmpty(url) || string.IsNullOrEmpty(channel) || string.IsNullOrEmpty(account) || string.IsNullOrEmpty(token))
             {
                 return Result<VoiceTicket>.Fail("voice.unavailable", "payload");
             }
 
-            return Result<VoiceTicket>.Ok(new VoiceTicket(appId!, channel!, account!, token!, (long?)body["expiresTs"] ?? 0));
+            return Result<VoiceTicket>.Ok(new VoiceTicket(url!, channel!, account!, token!, (long?)body["expiresTs"] ?? 0));
         }
     }
 }

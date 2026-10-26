@@ -208,9 +208,10 @@ namespace Hulla.Application.Tests
         [Test]
         public void TheTokenReplyNeedsEveryField()
         {
-            var ok = NakamaVoiceTokens.Parse(@"{""ok"":true,""provider"":""agora"",""appId"":""a"",""channel"":""t_X"",""account"":""u1"",""token"":""007x"",""expiresTs"":5}");
+            var ok = NakamaVoiceTokens.Parse(@"{""ok"":true,""provider"":""livekit"",""url"":""wss://voice.test"",""channel"":""t_X"",""account"":""u1"",""token"":""a.b.c"",""expiresTs"":5}");
             Assert.IsTrue(ok.IsOk);
             Assert.AreEqual("u1", ok.Value.Account);
+            Assert.AreEqual("wss://voice.test", ok.Value.Url);
             Assert.AreEqual("voice.suspended", NakamaVoiceTokens.Parse(@"{""ok"":false,""error"":{""code"":""voice.suspended""}}").Error.Code);
             Assert.IsFalse(NakamaVoiceTokens.Parse(@"{""ok"":true,""channel"":""t_X""}").IsOk);
         }
@@ -251,7 +252,7 @@ namespace Hulla.Application.Tests
             public Awaitable<Result<VoiceTicket>> TokenAsync(string matchId, CancellationToken cancellation)
             {
                 Asked++;
-                return Done(Next ?? Result<VoiceTicket>.Ok(new VoiceTicket("app", "t_ABC123", Messages.Me, "token-" + Asked, 0)));
+                return Done(Next ?? Result<VoiceTicket>.Ok(new VoiceTicket("wss://voice.test", "t_ABC123", Messages.Me, "token-" + Asked, 0)));
             }
         }
 

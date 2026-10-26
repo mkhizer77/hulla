@@ -5,6 +5,7 @@
         "Hulla.Application",
         "Hulla.Domain",
         "Hulla.Protocol",
+        "LiveKit",
         "NakamaRuntime",
         "Unity.Addressables",
         "Unity.ResourceManager"

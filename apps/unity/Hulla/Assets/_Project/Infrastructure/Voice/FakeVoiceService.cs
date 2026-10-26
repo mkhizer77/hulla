@@ -9,7 +9,7 @@ namespace Hulla.Infrastructure.Voice
     /// <summary>
     /// Voice without a provider, for the editor and `-hulla-fake-voice` builds: joins succeed, no audio
     /// moves, and the player's own account "speaks" while the mic is sent, so the mic button, the pill and
-    /// the speaking ring can be checked without the SDK or an Agora project.
+    /// the speaking ring can be checked without a voice server.
     /// </summary>
     public sealed class FakeVoiceService : IVoiceService
     {

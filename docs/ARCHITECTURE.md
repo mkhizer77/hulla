@@ -24,12 +24,12 @@
 ## 2. Principles and how they are enforced
 
 ### 2.1 Clean architecture
-Dependencies point inward. The **Domain** (rules engines, models, pure logic) depends on nothing. **Application** (use cases, table client, view models, orchestration) depends on Domain. **Infrastructure** (Nakama, Agora, IAP, ads, analytics, storage) and **Presentation** (UI Toolkit, table scene) depend on Application and Domain, never on each other. The composition root is the only place that knows every concrete type.
+Dependencies point inward. The **Domain** (rules engines, models, pure logic) depends on nothing. **Application** (use cases, table client, view models, orchestration) depends on Domain. **Infrastructure** (Nakama, LiveKit, IAP, ads, analytics, storage) and **Presentation** (UI Toolkit, table scene) depend on Application and Domain, never on each other. The composition root is the only place that knows every concrete type.
 
 ```mermaid
 flowchart TB
     subgraph Outer["Infrastructure and Presentation"]
-      I["Infrastructure adapters: Nakama, Agora, IAP, Ads, Analytics, Addressables, Save"]
+      I["Infrastructure adapters: Nakama, LiveKit, IAP, Ads, Analytics, Addressables, Save"]
       P["Presentation: UI Toolkit screens, table scene, animation scheduler"]
     end
     A["Application: use cases, table client, view models, state machines"]
@@ -78,7 +78,7 @@ flowchart LR
       CDN["Content CDN: manifests, packs, Addressables bundles"]
       ADM["Admin RPCs and Nakama console"]
     end
-    VX["Agora voice"]
+    VX["LiveKit voice"]
     AUTH["Apple, Google, Facebook sign-in"]
     IAP["App Store and Google Play billing"]
     ADS["AppLovin MAX and ad networks"]
@@ -397,7 +397,7 @@ One well-sized node with a managed Postgres serves the first years of expected l
 | `Hulla.Domain` | Pure C#: models, policies, Result type (the engine mirror joins later, ADR-0019). `noEngineReferences: true` | none |
 | `Hulla.Protocol` | Generated DTOs and enums | none |
 | `Hulla.Application` | Use cases, `TableClient`, state machines, view models, service interfaces (`ITableSession`, `IVoiceService`, `IWalletGateway`, `IContentService`…) | Domain, Protocol |
-| `Hulla.Infrastructure` | Adapters: Nakama, Agora, IAP, Ads, Firebase, Addressables, Localization, Save, Deep links | Application, Domain, Protocol |
+| `Hulla.Infrastructure` | Adapters: Nakama, LiveKit, IAP, Ads, Firebase, Addressables, Localization, Save, Deep links | Application, Domain, Protocol |
 | `Hulla.Presentation` | UI Toolkit screens, navigation, table scene kit, animation scheduler, theme | Application, Domain |
 | `Hulla.Games.Thulla` | The client module: layout, renderer, input, rulebook, tutorial, results adapter | Application, Domain, Presentation kit, Protocol (its own game messages: the legal mask, results; the engine mirror that would replace them is deferred, ADR-0019) |
 | `Hulla.Composition` | The hand-written composition root: `AppScope`, `SessionScope`, `TableScope` and their factories; the only assembly that references everything | all |
@@ -458,7 +458,7 @@ sequenceDiagram
 | `RulesEngine` (C#) [LATER] | Offline rounds and parity with TS, when the mirror is built (ADR-0019) |
 | `TutorialPlayer` | Plays the five recorded event streams through `TableClient` and the scheduler, branching on the player's tap (ADR-0019) |
 | `CommsService` | Text, quick chat, emotes, filters, mutes |
-| `VoiceService` | Channel join and leave, PTT and VAD, routing, speaking indicators (adapter over Agora) |
+| `VoiceService` | Channel join and leave, PTT and VAD, routing, speaking indicators (adapter over LiveKit, ADR-0024) |
 | `EconomyService` | Wallet view, catalog, purchases, receipts, ad rewards |
 | `ContentService` | Manifest sync, Addressables loading, signature verification, cache |
 | `ProgressionService` | XP, missions, pass, achievements |
@@ -545,14 +545,14 @@ GitHub Actions workflows: `ci.yml` (lint, TS tests, vectors, codegen drift, cont
 Local: `docker compose` with Nakama and Postgres, seeded content, hot-reloaded bundle. Stage and prod: one Nakama node behind Cloudflare, managed Postgres with point-in-time recovery, object storage plus CDN for content, Grafana Cloud for metrics and alerts. Runbooks in `docs/runbooks/`: deploy and rollback, database restore drill, incident triage, moderation escalation, store rejection response. SLOs as in §1. Nakama's console and runtime HTTP key are never exposed publicly: the console sits behind Cloudflare Access, the default `server_key`, `http_key` and console password are replaced at first boot, and Postgres listens only on the compose network. A restart ends every running table (§8.3), so deploys happen in quiet windows.
 
 ## 16. Evolution paths
-- **Web client** (GDD §21): same protocol and engine package; React shell, PixiJS table; voice through the same provider's web SDK (ADR-0012).
+- **Web client** (GDD §21): same protocol and engine package; React shell, PixiJS table; voice through LiveKit's web SDK on the same rooms (ADR-0012, ADR-0024).
 - **Rung**: exercises teams, anticlockwise direction, phases and a persistent centre pile; no table-core changes expected (GDD §18.7).
 - **Party primitives**: commit-reveal for hidden inputs (`sha256(nonce ‖ value)`), vote tallies, judge roles and text inputs are table-core features built before the party pack, not inside any one module.
 - **Real-time track (Carrom)**: a separate match handler kind with a deterministic physics step and one-shot turns; shares auth, tables, social and economy; designed when wave 8 is scheduled.
 - **Bots and offline play**: `botPolicy` hook and `LocalMatchHost` are reserved; the auto-play policy covers absences until then (ADR-0010). The C# engine mirror is built with offline play (ADR-0019).
 
 ## 17. Decision records
-See `docs/adr/README.md`. Decisions referenced here: ADR-0001 (monorepo), ADR-0002 (Nakama), ADR-0003 (dual engines), ADR-0004 (layering and enforcement), ADR-0005 (schema-first protocol), ADR-0006 (event log), ADR-0007 (UI Toolkit), ADR-0008 (hand-wired composition, runtime binding, Awaitable), ADR-0009 (determinism and fairness), ADR-0010 (bots deferred), ADR-0011 (content as data), ADR-0012 (voice behind an interface, Agora first), ADR-0013 (hosting and cost plan), ADR-0014 (licence), ADR-0015 (CI and release policy), ADR-0016 (Unity version), ADR-0017 (shared stack with the web client), ADR-0018 (text chat on Nakama channels), ADR-0019 (C# mirror deferred), ADR-0020 (no clock in engines), ADR-0021 (JSON Schema draft-07).
+See `docs/adr/README.md`. Decisions referenced here: ADR-0001 (monorepo), ADR-0002 (Nakama), ADR-0003 (dual engines), ADR-0004 (layering and enforcement), ADR-0005 (schema-first protocol), ADR-0006 (event log), ADR-0007 (UI Toolkit), ADR-0008 (hand-wired composition, runtime binding, Awaitable), ADR-0009 (determinism and fairness), ADR-0010 (bots deferred), ADR-0011 (content as data), ADR-0012 (voice behind an interface), ADR-0024 (voice on self-hosted LiveKit), ADR-0013 (hosting and cost plan), ADR-0014 (licence), ADR-0015 (CI and release policy), ADR-0016 (Unity version), ADR-0017 (shared stack with the web client), ADR-0018 (text chat on Nakama channels), ADR-0019 (C# mirror deferred), ADR-0020 (no clock in engines), ADR-0021 (JSON Schema draft-07).
 
 ## 18. Traceability to the GDD
 | GDD section | Implemented in |

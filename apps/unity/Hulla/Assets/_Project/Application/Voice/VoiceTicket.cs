@@ -1,18 +1,19 @@
 namespace Hulla.Application.Voice
 {
-    /// <summary>What `voice_token` returns: the provider's app id, the table's channel and a token bound to this player.</summary>
+    /// <summary>What `voice_token` returns: the voice server, the table's room and a token bound to this player.</summary>
     public sealed class VoiceTicket
     {
-        public VoiceTicket(string appId, string channel, string account, string token, long expiresMs)
+        public VoiceTicket(string url, string channel, string account, string token, long expiresMs)
         {
-            AppId = appId;
+            Url = url;
             Channel = channel;
             Account = account;
             Token = token;
             ExpiresMs = expiresMs;
         }
 
-        public string AppId { get; }
+        /// <summary>The voice server to connect to (`wss://` on a box).</summary>
+        public string Url { get; }
 
         public string Channel { get; }
 

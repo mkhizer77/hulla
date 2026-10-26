@@ -71,15 +71,19 @@ namespace Hulla.Composition
             Voice = CreateVoice();
         }
 
-        /// <summary>Agora when the SDK is in the build; the fake in the editor or with -hulla-fake-voice; else none (ADR-0012).</summary>
+        /// <summary>
+        /// LiveKit on players (ADR-0024); the fake in the editor and with -hulla-fake-voice, so screens and tests
+        /// run without a voice server. -hulla-live-voice uses LiveKit in the editor too.
+        /// </summary>
         private static Hulla.Application.Voice.IVoiceService CreateVoice()
         {
-#if HULLA_AGORA
-            return new Hulla.Infrastructure.Voice.AgoraVoiceService();
+            var args = Environment.GetCommandLineArgs();
+            var fake = Array.IndexOf(args, "-hulla-fake-voice") >= 0
+                || (UnityEngine.Application.isEditor && Array.IndexOf(args, "-hulla-live-voice") < 0);
+#if UNITY_WEBGL
+            return fake ? new Hulla.Infrastructure.Voice.FakeVoiceService() : new Hulla.Infrastructure.Voice.NoVoiceService();
 #else
-            return UnityEngine.Application.isEditor || Array.IndexOf(Environment.GetCommandLineArgs(), "-hulla-fake-voice") >= 0
-                ? new Hulla.Infrastructure.Voice.FakeVoiceService()
-                : new Hulla.Infrastructure.Voice.NoVoiceService();
+            return fake ? new Hulla.Infrastructure.Voice.FakeVoiceService() : new Hulla.Infrastructure.Voice.LiveKitVoiceService();
 #endif
         }
 
