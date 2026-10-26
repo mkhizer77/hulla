@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Threading;
+using Hulla.Application.Settings;
 using Hulla.Application.Table;
 using Hulla.Application.Voice;
 using Hulla.Domain;
@@ -49,6 +50,58 @@ namespace Hulla.Application.Tests
         }
 
         [Test]
+        public void VoiceChatOffInSettingsHidesVoiceAndLeavesTheRoom()
+        {
+            var settings = new SettingsModel(new MemoryStore());
+            _controller.Dispose();
+            _controller = new VoiceController(_voice, _tokens, _client, _ => false, true, settings);
+            Deliver(mics: new[] { 1, 2 });
+            Assert.AreEqual(VoiceState.Live, _controller.State);
+            settings.VoiceChat = false;
+            Assert.AreEqual(VoiceState.Hidden, _controller.State);
+            Assert.IsNull(_voice.Channel, "off leaves the room");
+            settings.VoiceChat = true;
+            Assert.AreEqual(VoiceState.Live, _controller.State);
+        }
+
+        [Test]
+        public void VoiceLevelsApplyLiveForEveryoneAndForEachPlayer()
+        {
+            var settings = new SettingsModel(new MemoryStore());
+            _controller.Dispose();
+            _controller = new VoiceController(_voice, _tokens, _client, _ => false, true, settings);
+            Deliver(mics: new[] { 1, 2 });
+            Assert.AreEqual(1f, _voice.OutputVolume);
+            Assert.AreEqual(1f, _voice.PeerVolumes["user-1"]);
+            settings.VoiceVolume = 50;
+            Assert.AreEqual(0.5f, _voice.OutputVolume);
+            _controller.SetPeerVolume("user-1", 20);
+            Assert.AreEqual(20, _controller.PeerVolume("user-1"));
+            Assert.AreEqual(0.2f, _voice.PeerVolumes["user-1"], 0.001f);
+            Assert.AreEqual(1f, _voice.PeerVolumes["user-2"]);
+        }
+
+        [Test]
+        public void TheSpeakerToggleStopsHearingAndWithTheMicOffLeavesTheRoom()
+        {
+            Deliver(mics: new[] { 1, 2 });
+            _voice.Speak("user-1", true);
+            Assert.IsTrue(_controller.OthersSpeaking, "table sounds duck under speech");
+            _controller.ToggleSpeaker();
+            Assert.IsFalse(_controller.SpeakerOn);
+            Assert.IsFalse(_controller.OthersSpeaking, "nothing heard, nothing to duck");
+            Assert.IsNull(_voice.Channel, "nothing to hear and the mic is off: no room");
+            _controller.ToggleSpeaker();
+            Assert.AreEqual(VoiceState.Live, _controller.State);
+            Assert.IsTrue(_voice.Listening);
+
+            _controller.ToggleMic();
+            _controller.ToggleSpeaker();
+            Assert.AreEqual(VoiceState.Live, _controller.State, "my mic still goes out");
+            Assert.IsFalse(_voice.Listening);
+        }
+
+        [Test]
         public void PrivateRoomsDefaultToOpenMicAndOtherTablesToPushToTalk()
         {
             Assert.AreEqual(VoiceMode.OpenMic, _controller.Mode);
@@ -87,6 +140,19 @@ namespace Hulla.Application.Tests
             Deliver(mics: new[] { 1, 2 });
             Assert.AreEqual(VoiceState.Live, _controller.State);
             Assert.IsFalse(_voice.Transmitting, "my mic is off");
+        }
+
+        [Test]
+        public void AListenerWhoTurnsTheirMicOnJoinsAgainToSend()
+        {
+            Deliver(mics: new[] { 1, 2 });
+            Assert.IsFalse(_voice.Published, "a listener never opens the microphone");
+            _controller.ToggleMic();
+            Deliver(mics: new[] { 0, 1, 2 });
+            Assert.AreEqual(VoiceState.Live, _controller.State);
+            Assert.AreEqual(2, _voice.Joins);
+            Assert.IsTrue(_voice.Published);
+            Assert.IsTrue(_voice.Transmitting);
         }
 
         [Test]
@@ -208,11 +274,25 @@ namespace Hulla.Application.Tests
         [Test]
         public void TheTokenReplyNeedsEveryField()
         {
-            var ok = NakamaVoiceTokens.Parse(@"{""ok"":true,""provider"":""agora"",""appId"":""a"",""channel"":""t_X"",""account"":""u1"",""token"":""007x"",""expiresTs"":5}");
+            var ok = NakamaVoiceTokens.Parse(@"{""ok"":true,""provider"":""livekit"",""url"":""wss://voice.test"",""channel"":""t_X"",""account"":""u1"",""token"":""a.b.c"",""expiresTs"":5}");
             Assert.IsTrue(ok.IsOk);
             Assert.AreEqual("u1", ok.Value.Account);
+            Assert.AreEqual("wss://voice.test", ok.Value.Url);
             Assert.AreEqual("voice.suspended", NakamaVoiceTokens.Parse(@"{""ok"":false,""error"":{""code"":""voice.suspended""}}").Error.Code);
             Assert.IsFalse(NakamaVoiceTokens.Parse(@"{""ok"":true,""channel"":""t_X""}").IsOk);
+        }
+
+        private sealed class MemoryStore : ISettingsStore
+        {
+            private readonly Dictionary<string, int> _values = new Dictionary<string, int>();
+
+            public int GetInt(string key, int fallback) => _values.TryGetValue(key, out var v) ? v : fallback;
+
+            public void SetInt(string key, int value) => _values[key] = value;
+
+            public void Save()
+            {
+            }
         }
 
         private bool LastMic() => ((SetMic)_gateway.Sent.FindLast(s => s.Type == MessageTypes.SetMic).Payload).Mic;
@@ -251,7 +331,7 @@ namespace Hulla.Application.Tests
             public Awaitable<Result<VoiceTicket>> TokenAsync(string matchId, CancellationToken cancellation)
             {
                 Asked++;
-                return Done(Next ?? Result<VoiceTicket>.Ok(new VoiceTicket("app", "t_ABC123", Messages.Me, "token-" + Asked, 0)));
+                return Done(Next ?? Result<VoiceTicket>.Ok(new VoiceTicket("wss://voice.test", "t_ABC123", Messages.Me, "token-" + Asked, 0)));
             }
         }
 
@@ -304,6 +384,18 @@ namespace Hulla.Application.Tests
             public void SetTransmit(bool on) => Transmitting = on;
 
             public void SetPeerMuted(string account, bool muted) => Muted[account] = muted;
+
+            public Dictionary<string, float> PeerVolumes { get; } = new Dictionary<string, float>();
+
+            public float OutputVolume { get; private set; } = 1f;
+
+            public bool Listening { get; private set; } = true;
+
+            public void SetPeerVolume(string account, float volume) => PeerVolumes[account] = volume;
+
+            public void SetOutputVolume(float volume) => OutputVolume = volume;
+
+            public void SetListening(bool on) => Listening = on;
 
             public void Speak(string account, bool speaking) => Speaking?.Invoke(account, speaking);
 

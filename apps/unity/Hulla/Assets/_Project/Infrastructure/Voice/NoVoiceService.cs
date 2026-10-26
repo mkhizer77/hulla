@@ -42,5 +42,17 @@ namespace Hulla.Infrastructure.Voice
         public void SetPeerMuted(string account, bool muted)
         {
         }
+
+        public void SetPeerVolume(string account, float volume)
+        {
+        }
+
+        public void SetOutputVolume(float volume)
+        {
+        }
+
+        public void SetListening(bool on)
+        {
+        }
     }
 }

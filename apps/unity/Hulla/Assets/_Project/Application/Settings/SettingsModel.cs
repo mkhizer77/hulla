@@ -74,6 +74,25 @@ namespace Hulla.Application.Settings
             set => Set("sfx", Math.Clamp(value, 0, 100));
         }
 
+        /// <summary>Voice chat at tables (GDD 11.4); off never joins a voice room and hides the mic.</summary>
+        public bool VoiceChat
+        {
+            get => Get("voice", 1) == 1;
+            set => Set("voice", value ? 1 : 0);
+        }
+
+        /// <summary>The level of every voice, 0 to 100.</summary>
+        public int VoiceVolume
+        {
+            get => Math.Clamp(Get("voice_volume", 100), 0, 100);
+            set => Set("voice_volume", Math.Clamp(value, 0, 100));
+        }
+
+        /// <summary>One player's voice level on this device, 0 to 100 (GDD 11.4); 100 until changed.</summary>
+        public int PeerVoiceVolume(string playerId) => Math.Clamp(Get("voice_peer." + playerId, 100), 0, 100);
+
+        public void SetPeerVoiceVolume(string playerId, int volume) => Set("voice_peer." + playerId, Math.Clamp(volume, 0, 100));
+
         /// <summary>Null until the player has been asked (GDD 23.6).</summary>
         public bool? AnalyticsConsent
         {

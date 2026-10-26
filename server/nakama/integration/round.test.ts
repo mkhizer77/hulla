@@ -71,7 +71,7 @@ describe.skipIf(NAKAMA_HOST === undefined)(
       const matchId = created.matchId;
 
       // The table RPCs: the code resolves to the match, a wrong code does not, presets come from
-      // content, and voice stays off until the box has Agora credentials.
+      // content, and voice waits until the caller is at the table.
       const byCode = await rpc<{ ok: boolean; matchId: string }>(
         clients[1] ?? host,
         "table_join_by_code",
@@ -99,7 +99,7 @@ describe.skipIf(NAKAMA_HOST === undefined)(
       ]);
       expect(await rpc<{ ok: boolean }>(host, "voice_token", { matchId })).toMatchObject({
         ok: false,
-        error: { code: "voice.unavailable" },
+        error: { code: "voice.not_at_table" },
       });
 
       for (const c of clients) await c.socket.joinMatch(matchId);
@@ -111,6 +111,17 @@ describe.skipIf(NAKAMA_HOST === undefined)(
         if (own === undefined) throw new Error(`${c.name} has no seat`);
         seatOf.set(c.name, own.seat);
       }
+      // At the table each seat gets a room token the compose LiveKit accepts (ADR-0024).
+      const voice = await rpc<{ ok: boolean; url: string; channel: string; token: string }>(
+        host,
+        "voice_token",
+        { matchId },
+      );
+      expect(voice).toMatchObject({ ok: true, provider: "livekit", account: host.session.user_id });
+      const validate = await fetch(
+        `${voice.url.replace(/^ws/, "http")}/rtc/validate?access_token=${voice.token}`,
+      );
+      expect(validate.status).toBe(200);
       for (const c of clients)
         await c.send(matchId, "ready", OPCODES.ready.opcode, { ready: true });
       await host.next(

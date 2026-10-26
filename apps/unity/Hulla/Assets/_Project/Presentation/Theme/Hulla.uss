@@ -1863,6 +1863,8 @@
    gradients and a bottom shadow on controls, shaded avatars, drawn card faces, a rubber stamp. */
 :root {
     -unity-font-definition: url("/Assets/_Project/Presentation/Theme/Fonts/Nunito.ttf");
+    /* HarfBuzz shaping and bidi for Urdu, Hindi and Bengali (#132, docs/research/script-shaping.md). */
+    -unity-text-generator: advanced;
 }
 
 .title, .code, .toast, .results__stamp, .home__title, .seat__initial, .card__rank, .card__court, .nav__glyph, .podium__rank, .turn, .hero, .button--primary, .countdown, .results__title, .coach__text, .daily__text {
@@ -3227,6 +3229,24 @@
     white-space: normal;
     -unity-text-align: middle-center;
     display: none;
+}
+
+/* Hear the table or not (GDD 11.4); under the pill so it never covers the felt. */
+.voice-speaker {
+    display: none;
+    margin-top: 6px;
+    min-height: 48px;
+    font-size: var(--font-small);
+}
+
+.voice-speaker--off {
+    opacity: 0.75;
+}
+
+/* A player's voice level in the player sheet. */
+.sheet__level {
+    width: 100%;
+    margin-bottom: 8px;
 }
 
 .seat--speaking .seat__avatar {

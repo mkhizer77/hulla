@@ -97,7 +97,7 @@ Issue by issue, in milestone order. Pick the next open issue, branch as `type/sh
 - #29 Quick Play: search, widening feedback and auto-start
 - #30 Results screen and the rematch vote
 - #31 Quick chat strip and emotes at the table
-- #32 Voice chat with Agora behind IVoiceService
+- #32 Voice chat on LiveKit behind IVoiceService (ADR-0024)
 - #33 The thulla moment: timings, stamp, shake, sounds and reduce-motion
 - #34 Assets: vertical-slice set (one deck, one back, one table, avatars, stamps) · owner
 - #35 Performance baseline: 60 fps at the table on the low-tier device
@@ -185,7 +185,7 @@ Issue by issue, in milestone order. Pick the next open issue, branch as `type/sh
 - #106 Table rendering in PixiJS: seats, fan, pile, timer and the thulla moment
 - #107 Shell screens: Home, private room, Quick Play, results, profile, friends
 - #108 Text, quick chat and emotes on the web
-- #109 Voice on the web with Agora's web SDK
+- #109 Voice on the web with LiveKit's web SDK
 - #110 Cosmetics display and equip; pass purchase through Stripe · owner
 - #111 PWA, CDN hosting, preview deployments and Lighthouse budgets
 - #112 Conformance suite and nightly Unity to web cross-play

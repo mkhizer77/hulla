@@ -78,7 +78,7 @@ Keep the group together while it fills (Kahoot, Jackbox).
 
 - **Code** in 120 px type with Copy and Share; Share opens the system sheet with WhatsApp first. The preset summary in one sentence under it for guests; the host sees Edit rules.
 - **Seat ring:** the same `SeatArc` as the table, so the lobby becomes the table without a re-layout. Empty seats show a dotted circle with "Invite"; the host's seat has a small crown; ready seats get a teal tick; each seat that joins drops in with a 220 ms bounce and a soft tap sound.
-- **Voice toggle** on your own seat once Agora lands (#33); until then the slot is hidden.
+- **Voice toggle** on your own seat once voice lands (#33); until then the slot is hidden.
 - **Ready** (teal) for guests, **Start** (saffron) for the host, enabled at three seats; public tables show the auto-start countdown on the Start button itself.
 - Lobby chat stays as a strip of the last three lines above the bar; tap to open.
 - Joining is confirmed by your own seat lighting up with a bounce; the invite link lands the friend in the lobby, never on Home. A refused join says why in one line (full, in progress, private).

@@ -280,6 +280,8 @@ describe("deadlines and auto-play", () => {
       type: "presence",
       payload: { seat: 0, status: "disconnected", deadlineTs: h.now + 30_000 },
     });
+    // The seat is held for a reconnect, so its voice room is kept too (ADR-0024).
+    expect(gone.voiceRemovals).toEqual([]);
     expect(h.state.seats[0]).toMatchObject({ connected: false, autoPlay: true });
     expect(types(h.tick(2_900))).toEqual([]);
     expect(broadcasts(h.tick(100))[0]).toMatchObject({

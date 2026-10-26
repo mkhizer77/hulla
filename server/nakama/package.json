@@ -18,7 +18,6 @@
   },
   "devDependencies": {
     "@heroiclabs/nakama-js": "2.8.0",
-    "agora-token": "2.0.7",
     "nakama-runtime": "github:heroiclabs/nakama-common#v1.48.0"
   }
 }

@@ -143,6 +143,16 @@ namespace Hulla.Presentation.Text
         public static string VoiceNoPermission => Strings.Text("ui.voice.no_permission");
 
         public static string VoiceListening => Strings.Text("ui.voice.listening");
+
+        /// <summary>The speaker toggle while voices are heard.</summary>
+        public static string VoicesOn => Strings.Text("ui.voice.speaker_on");
+
+        /// <summary>The speaker toggle while voices are off.</summary>
+        public static string VoicesOff => Strings.Text("ui.voice.speaker_off");
+
+        public static string VoiceChatLabel => Strings.Text("ui.voice_chat_label");
+
+        public static string VoiceVolumeLabel => Strings.Text("ui.voice_volume_label");
         public static string Report => Strings.Text("ui.report");
         public static string ReportWhy => Strings.Text("ui.report_why");
         public static string ReportThanks => Strings.Text("ui.report_thanks");

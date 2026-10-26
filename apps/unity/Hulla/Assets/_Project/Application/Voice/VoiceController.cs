@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Threading;
+using Hulla.Application.Settings;
 using Hulla.Application.Table;
 using UnityEngine;
 
@@ -10,7 +11,9 @@ namespace Hulla.Application.Voice
     /// Voice for one table (GDD 11.4). Each seat shares its mic through the server; this client is in the
     /// channel only while two mics at the table are on and leaves after two minutes in which nobody spoke
     /// (GDD 20.14, OQ-044). A failure never blocks play (E25): the mic shows a retry instead. Muted players
-    /// stay silent here, and the mute list lives on the server, so it survives a reconnect.
+    /// stay silent here, and the mute list lives on the server, so it survives a reconnect. The player's
+    /// voice settings (on or off, the level of every voice and of each player) and the table's speaker
+    /// toggle apply live.
     /// </summary>
     public sealed class VoiceController : IDisposable
     {
@@ -25,13 +28,16 @@ namespace Hulla.Application.Voice
         private readonly TableClient _client;
         private readonly Func<string?, bool> _isMuted;
         private readonly bool _enabled;
+        private readonly SettingsModel? _settings;
         private readonly CancellationTokenSource _lifetime = new CancellationTokenSource();
         private readonly HashSet<string> _speaking = new HashSet<string>();
         private VoiceState _state;
         private bool _inChannel;
         private bool _joinedSeated;
+        private bool _joinedWithMic;
         private bool _micOn;
         private bool _talking;
+        private bool _speakerOn = true;
         private bool _suspended;
         private bool _noPermission;
         private float _quiet;
@@ -41,8 +47,10 @@ namespace Hulla.Application.Voice
 
         /// <param name="isMuted">The player's mute list (GDD 11.6); a muted player is silent here too.</param>
         /// <param name="enabled">The server's `voice` switch (GDD 22.5).</param>
-        public VoiceController(IVoiceService voice, IVoiceTokens tokens, TableClient client, Func<string?, bool> isMuted, bool enabled)
+        /// <param name="settings">The player's voice settings; null keeps voice on at full level.</param>
+        public VoiceController(IVoiceService voice, IVoiceTokens tokens, TableClient client, Func<string?, bool> isMuted, bool enabled, SettingsModel? settings = null)
         {
+            _settings = settings;
             _voice = voice;
             _tokens = tokens;
             _client = client;
@@ -52,6 +60,11 @@ namespace Hulla.Application.Voice
             _voice.Dropped += OnDropped;
             _voice.TokenExpiring += OnTokenExpiring;
             _client.Model.Changed += Evaluate;
+            if (_settings != null)
+            {
+                _settings.Changed += Evaluate;
+            }
+
             _state = Compute();
         }
 
@@ -83,6 +96,50 @@ namespace Hulla.Application.Voice
         public bool Transmitting => _inChannel && _micOn && CanSpeak && (Mode == VoiceMode.OpenMic || _talking);
 
         public bool IsSpeaking(string? playerId) => playerId != null && _speaking.Contains(playerId);
+
+        /// <summary>Voices are heard at this table (the speaker toggle on the voice pill).</summary>
+        public bool SpeakerOn => _speakerOn;
+
+        /// <summary>Someone else is talking and heard here: table sounds duck under it.</summary>
+        public bool OthersSpeaking
+        {
+            get
+            {
+                if (!_speakerOn)
+                {
+                    return false;
+                }
+
+                foreach (var id in _speaking)
+                {
+                    if (id != _client.Model.UserId)
+                    {
+                        return true;
+                    }
+                }
+
+                return false;
+            }
+        }
+
+        /// <summary>Stops or restarts hearing voices here. With the mic off too, the room is left altogether.</summary>
+        public void ToggleSpeaker()
+        {
+            if (_state == VoiceState.Hidden)
+            {
+                return;
+            }
+
+            _speakerOn = !_speakerOn;
+            _heldSignature = null;
+            Evaluate();
+            Changed?.Invoke();
+        }
+
+        /// <summary>One player's voice level here, 0 to 100.</summary>
+        public int PeerVolume(string playerId) => _settings?.PeerVoiceVolume(playerId) ?? 100;
+
+        public void SetPeerVolume(string playerId, int volume) => _settings?.SetPeerVoiceVolume(playerId, volume);
 
         /// <summary>
         /// The mic button: turns my mic on (asking for the microphone the first time) or off. After a failure
@@ -186,6 +243,11 @@ namespace Hulla.Application.Voice
             _voice.Dropped -= OnDropped;
             _voice.TokenExpiring -= OnTokenExpiring;
             _client.Model.Changed -= Evaluate;
+            if (_settings != null)
+            {
+                _settings.Changed -= Evaluate;
+            }
+
             if (_inChannel)
             {
                 _inChannel = false;
@@ -229,6 +291,13 @@ namespace Hulla.Application.Voice
                 return;
             }
 
+            if (_inChannel && CanSpeak && _micOn && !_joinedWithMic)
+            {
+                // Joined to listen, so the microphone was never opened: join again to send.
+                _ = Leave();
+                return;
+            }
+
             var want = WantChannel();
             if (want && !_inChannel && _state != VoiceState.Joining)
             {
@@ -245,6 +314,7 @@ namespace Hulla.Application.Voice
             if (_inChannel)
             {
                 ApplyMutes();
+                ApplyLevels();
                 ApplyTransmit();
             }
 
@@ -268,10 +338,16 @@ namespace Hulla.Application.Voice
                 _heldSignature = null;
             }
 
+            if (!_speakerOn && !(_micOn && CanSpeak))
+            {
+                // Nothing to hear and nothing to send.
+                return false;
+            }
+
             return MicsOn() >= 2;
         }
 
-        private bool Available() => _enabled && _voice.Supported && Mode != VoiceMode.Off;
+        private bool Available() => _enabled && _voice.Supported && Mode != VoiceMode.Off && (_settings?.VoiceChat ?? true);
 
         private VoiceState Compute()
         {
@@ -354,7 +430,10 @@ namespace Hulla.Application.Voice
                     return;
                 }
 
-                var joined = await _voice.JoinAsync(ticket.Value, seated, cancellation);
+                // Only a seat with its mic on opens the microphone; everyone else listens.
+                var withMic = seated && _micOn;
+                var joined = await _voice.JoinAsync(ticket.Value, withMic, cancellation);
+                _joinedWithMic = withMic;
                 if (_disposed)
                 {
                     if (joined.IsOk)
@@ -455,8 +534,15 @@ namespace Hulla.Application.Voice
                 if (seat.Occupied && seat.Seat != _client.Model.MySeat)
                 {
                     _voice.SetPeerMuted(seat.PlayerId!, _isMuted(seat.PlayerId));
+                    _voice.SetPeerVolume(seat.PlayerId!, PeerVolume(seat.PlayerId!) / 100f);
                 }
             }
+        }
+
+        private void ApplyLevels()
+        {
+            _voice.SetOutputVolume((_settings?.VoiceVolume ?? 100) / 100f);
+            _voice.SetListening(_speakerOn);
         }
 
         private SeatInfo? MySeatInfo()

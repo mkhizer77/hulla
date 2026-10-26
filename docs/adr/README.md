@@ -15,7 +15,7 @@ One file per decision, numbered, never edited after acceptance except to change 
 | 0009 | Deterministic engines with injected RNG and clock; commitment scheme for fair deals | Accepted; clock input superseded by ADR-0020 |
 | 0010 | Bots and offline play deferred; deterministic auto-play at launch | Accepted |
 | 0011 | Content is signed data delivered through a manifest and Addressables | Accepted |
-| 0012 | Voice provider behind an interface, Agora first | Accepted |
+| 0012 | Voice provider behind an interface, Agora first | Accepted; provider superseded by 0024 |
 | 0013 | Hosting and cost plan: free EU box for testing, paid regions with real users | Accepted |
 | 0014 | PolyForm Noncommercial 1.0.0 licence for the public repository | Accepted |
 | 0015 | CI and release policy: tests gate merges, tag-triggered Android builds | Accepted |
@@ -27,6 +27,7 @@ One file per decision, numbered, never edited after acceptance except to change 
 | 0021 | Protocol schemas use JSON Schema draft-07 | Accepted |
 | 0022 | Server-side validators are compiled ahead of time | Accepted |
 | 0023 | String tables come from content and ship as a text asset | Accepted |
+| 0024 | Voice on self-hosted LiveKit | Accepted |
 
 ## Template
 ```

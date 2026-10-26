@@ -3978,6 +3978,16 @@
    "smart": false
   },
   {
+   "key": "ui.voice.speaker_off",
+   "text": "Voices off",
+   "smart": false
+  },
+  {
+   "key": "ui.voice.speaker_on",
+   "text": "Voices on",
+   "smart": false
+  },
+  {
    "key": "ui.voice.suspended",
    "text": "Your voice is suspended for now",
    "smart": false
@@ -3995,6 +4005,16 @@
   {
    "key": "ui.voice.why",
    "text": "Your mic is used only at this table, and only while it's on.",
+   "smart": false
+  },
+  {
+   "key": "ui.voice_chat_label",
+   "text": "Voice chat",
+   "smart": false
+  },
+  {
+   "key": "ui.voice_volume_label",
+   "text": "Voice volume",
    "smart": false
   },
   {

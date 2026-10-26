@@ -39,5 +39,14 @@ namespace Hulla.Application.Voice
 
         /// <summary>Silences one account on this device; it holds for accounts not in the channel yet.</summary>
         void SetPeerMuted(string account, bool muted);
+
+        /// <summary>One player's level on this device, 0 to 1; it holds for accounts not in the channel yet.</summary>
+        void SetPeerVolume(string account, float volume);
+
+        /// <summary>The level of every voice on this device, 0 to 1.</summary>
+        void SetOutputVolume(float volume);
+
+        /// <summary>False stops receiving voices at all (the speaker toggle); speaking rings still show.</summary>
+        void SetListening(bool on);
     }
 }

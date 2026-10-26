@@ -46,7 +46,7 @@ Assets/
 ├─ AddressableAssetsData/    groups: base, ui-theme-default, cards-classic, cards-desi, tables-*, avatars-*, emotes-*, vo-*, game-thulla
 ├─ Scenes/                   Boot.unity (composition root, loads Main) · Main.unity (UI shell) · Table.unity (additive, per table)
 ├─ Settings/                 URP assets, UI Toolkit panel settings, Localization settings
-└─ Plugins/                  third-party SDKs that are not UPM packages (MAX, Branch, Agora)
+└─ Plugins/                  third-party SDKs that are not UPM packages (MAX, Branch)
 Packages/
 ├─ manifest.json             pinned versions; local reference to ../../../../packages/protocol/generated/csharp (Hulla.Protocol), so nothing generated is copied; ../../../../packages/rules-engine-cs/Hulla.Domain joins when the mirror is built (ADR-0019)
 └─ packages-lock.json

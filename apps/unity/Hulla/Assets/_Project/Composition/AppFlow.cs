@@ -94,6 +94,7 @@ namespace Hulla.Composition
         {
             _app = app;
             _shell = shell;
+            Hulla.Presentation.Audio.SoundPlayer.EnsureListener();
             _shell.Ticked += Tick;
             _shell.NavChosen += OnNav;
             _app.Settings.Changed += ApplySettings;
@@ -1094,7 +1095,11 @@ namespace Hulla.Composition
             _tableView.UseMutes(_app.Mutes.IsMuted, (id, muted) => _ = _app.Mutes.SetAsync(id, muted, _app.Lifetime));
             if (_app.Session?.Table is { } voiceTable)
             {
-                _tableView.UseVoice(voiceTable.Voice);
+                var voice = voiceTable.Voice;
+                _tableView.UseVoice(voice);
+                _tableView.UseVoiceLevels(voice.PeerVolume, voice.SetPeerVolume);
+                // Table sounds duck while someone else talks (GDD 11.4).
+                voice.Changed += () => _sounds.Ducked = _tableView != null && voice.OthersSpeaking;
             }
 
             _tableView.UseModeration(BlockPlayer, (id, reason, done) => ReportPlayer(client, id, reason, done));
@@ -1524,6 +1529,7 @@ namespace Hulla.Composition
             _view?.Dispose();
             _view = null;
             _tableView = null;
+            _sounds.Ducked = false;
             _lobbyView = null;
             _scheduler = null;
             _screen = Screen.None;

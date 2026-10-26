@@ -21,6 +21,7 @@
             <ui:VisualElement name="me" class="table__me" />
             <ui:VisualElement class="voice-pill__row" picking-mode="Ignore">
                 <ui:Label name="voice-pill" class="voice-pill" picking-mode="Ignore" />
+                <ui:Button name="voice-speaker" class="chip voice-speaker" />
             </ui:VisualElement>
             <ui:VisualElement class="table__notes" picking-mode="Ignore">
                 <ui:Label name="my-say" class="bubble bubble--mine" />

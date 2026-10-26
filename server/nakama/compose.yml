@@ -1,4 +1,4 @@
-# Local development stack: Postgres, Nakama with the bundle mounted as a module. docker compose up.
+# Local development stack: Postgres, Nakama with the bundle mounted as a module, LiveKit for table voice. docker compose up.
 services:
   postgres:
     image: postgres:16-alpine
@@ -39,6 +39,17 @@ services:
       interval: 5s
       timeout: 5s
       retries: 20
+
+  # Table voice (ADR-0024). HULLA_VOICE_IP is the address clients reach it on: the Mac's LAN IP for phones.
+  livekit:
+    image: ${LIVEKIT_IMAGE:-livekit/livekit-server:v1.13.9}
+    command: ["--config", "/etc/livekit.yaml", "--node-ip", "${HULLA_VOICE_IP:-127.0.0.1}"]
+    volumes:
+      - ../../infra/voice/livekit.local.yaml:/etc/livekit.yaml:ro
+    ports:
+      - "${HULLA_BIND:-127.0.0.1}:7880:7880"
+      - "${HULLA_BIND:-127.0.0.1}:7881:7881"
+      - "${HULLA_BIND:-127.0.0.1}:7882:7882/udp"
 
 volumes:
   pgdata:

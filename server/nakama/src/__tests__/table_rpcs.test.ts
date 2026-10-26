@@ -3,7 +3,7 @@ import { describe, expect, it } from "vitest";
 import { presetsGet } from "../rpc/presets_get";
 import { DEFAULT_CODE_TTL_SECONDS, tableCreate, type TableCreateDeps } from "../rpc/table_create";
 import { tableJoinByCode } from "../rpc/table_join_by_code";
-import { agoraConfigFrom, voiceToken, VOICE_TOKEN_SECONDS } from "../rpc/voice_token";
+import { voiceToken, VOICE_TOKEN_SECONDS } from "../rpc/voice_token";
 import { lookupCode, type CodeEntry, type CodeStore } from "../services/table_registry";
 
 import { fakeRuntime } from "./fake-nk";
@@ -145,8 +145,10 @@ describe("presets_get", () => {
 
 describe("voice_token", () => {
   const config = {
-    appId: "970CA35de60c44645bbae8a215061b33",
-    appCertificate: "5CFd2fd1755d40ecb72977518be15d3b",
+    url: "wss://voice.example.test",
+    apiUrl: "https://voice.example.test",
+    apiKey: "APIhulla",
+    apiSecret: "a-local-secret-of-at-least-32-characters",
   };
   const at = (present: boolean, seat: number | null) => () => ({
     present,
@@ -154,21 +156,21 @@ describe("voice_token", () => {
     tableId: "t_ABCDEF",
   });
 
-  it("issues an hour-long channel token to a presence at the table", () => {
+  it("issues an hour-long room token to a presence at the table", () => {
     const response = voiceToken(
       { runtime: fakeRuntime({ now: T0 }), userId: "u1", config, membership: at(true, 2) },
       JSON.stringify({ matchId: "m1" }),
     );
     expect(response).toMatchObject({
       ok: true,
-      provider: "agora",
-      appId: config.appId,
-      channel: "t_ABCDEF",
+      provider: "livekit",
+      url: config.url,
+      channel: "m1",
       account: "u1",
       expiresTs: T0 + VOICE_TOKEN_SECONDS * 1000,
     });
-    if (response.ok) expect(response.token.startsWith("007")).toBe(true);
-    expect(JSON.stringify(response)).not.toContain(config.appCertificate);
+    if (response.ok) expect(response.token.split(".")).toHaveLength(3);
+    expect(JSON.stringify(response)).not.toContain(config.apiSecret);
   });
 
   it("refuses without credentials, away from the table, without a session or a match id", () => {
@@ -187,12 +189,5 @@ describe("voice_token", () => {
     });
     expect(voiceToken(deps, "{}")).toMatchObject({ error: { detail: { reason: "match_id" } } });
     expect(voiceToken(deps, "{")).toMatchObject({ error: { detail: { reason: "json" } } });
-    expect(agoraConfigFrom({})).toBeNull();
-    expect(
-      agoraConfigFrom({ AGORA_APP_ID: config.appId, AGORA_APP_CERTIFICATE: "short" }),
-    ).toBeNull();
-    expect(
-      agoraConfigFrom({ AGORA_APP_ID: config.appId, AGORA_APP_CERTIFICATE: config.appCertificate }),
-    ).toEqual(config);
   });
 });
