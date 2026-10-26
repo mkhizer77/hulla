@@ -6,8 +6,11 @@ import { buildRoomToken, liveKitConfigFrom, type LiveKitConfig } from "../servic
 import { recordMissionMetrics } from "../services/missions";
 import { isVoiceSuspended, readModeration } from "../services/sanctions";
 
-/** Tokens last an hour; a client asks again before then (GDD 11.4). */
-export const VOICE_TOKEN_SECONDS = 3_600;
+/**
+ * Long enough to join; LiveKit refreshes the token of a connected client, and a client removed from the
+ * room (left or kicked) can't come back on an old one for longer than this (ADR-0024).
+ */
+export const VOICE_TOKEN_SECONDS = 600;
 
 export interface TableMembership {
   readonly present: boolean;
@@ -66,7 +69,8 @@ export function voiceToken(deps: VoiceTokenDeps, payload: string): VoiceTokenRes
   }
   const now = deps.runtime.nowMs();
   const token = buildRoomToken(deps.config, {
-    room: membership.tableId,
+    // The match id, not the table code: a code can come back for a new table.
+    room: matchId,
     identity: deps.userId,
     issueTs: Math.floor(now / 1000),
     expireSeconds: VOICE_TOKEN_SECONDS,
@@ -76,7 +80,7 @@ export function voiceToken(deps: VoiceTokenDeps, payload: string): VoiceTokenRes
     ok: true,
     provider: "livekit",
     url: deps.config.url,
-    channel: membership.tableId,
+    channel: matchId,
     account: deps.userId,
     token,
     expiresTs: now + VOICE_TOKEN_SECONDS * 1000,
@@ -99,14 +103,14 @@ function noteVoiceInPrivateRoom(
   ctx: nkruntime.Context,
   logger: nkruntime.Logger,
   nk: nkruntime.Nakama,
-  tableId: string,
+  matchId: string,
 ): void {
   const userId = ctx.userId ?? "";
   if (userId === "") return;
   try {
-    const code = tableId.startsWith("t_") ? tableId.slice(2) : tableId;
-    const match = nk.matchList(1, true, null, null, null, `+label.code:${code}`)[0];
-    const label = match === undefined ? null : (JSON.parse(match.label) as { mode?: unknown });
+    const match = nk.matchGet(matchId);
+    const label =
+      match?.label === undefined ? null : (JSON.parse(match.label) as { mode?: unknown });
     if (label?.mode !== "private") return;
     recordMissionMetrics(nk, userId, { voice_private: 1 }, Date.now());
   } catch (error: unknown) {

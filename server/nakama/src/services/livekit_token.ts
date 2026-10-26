@@ -8,6 +8,8 @@ import { base64Url, hmacSha256, utf8Encode } from "./bytes";
 export interface LiveKitConfig {
   /** The server clients connect to: `wss://` on a box, `ws://` for local development. */
   readonly url: string;
+  /** Where the server reaches LiveKit's API: `LIVEKIT_API_URL`, else the client URL over HTTP. */
+  readonly apiUrl: string;
   readonly apiKey: string;
   readonly apiSecret: string;
 }
@@ -55,7 +57,11 @@ export function liveKitConfigFrom(env: Readonly<Record<string, string>>): LiveKi
   const apiSecret = env["LIVEKIT_API_SECRET"] ?? "";
   if (!/^wss?:\/\/[^\s/]+/.test(url)) return null;
   if (apiKey === "" || apiSecret.length < MIN_SECRET_LENGTH) return null;
-  return { url, apiKey, apiSecret };
+  const explicit = (env["LIVEKIT_API_URL"] ?? "").replace(/\/+$/, "");
+  const apiUrl = /^https?:\/\/[^\s/]+/.test(explicit)
+    ? explicit
+    : url.replace(/^ws/, "http").replace(/\/+$/, "");
+  return { url, apiUrl, apiKey, apiSecret };
 }
 
 function encodeJson(value: unknown): string {
