@@ -1092,6 +1092,11 @@ namespace Hulla.Composition
             }
 
             _tableView.UseMutes(_app.Mutes.IsMuted, (id, muted) => _ = _app.Mutes.SetAsync(id, muted, _app.Lifetime));
+            if (_app.Session?.Table is { } voiceTable)
+            {
+                _tableView.UseVoice(voiceTable.Voice);
+            }
+
             _tableView.UseModeration(BlockPlayer, (id, reason, done) => ReportPlayer(client, id, reason, done));
             _tableView.UseShare(() => AskShareRatio(client));
             _tableView.UseFairness(ExplainFairDeal);
@@ -1417,6 +1422,7 @@ namespace Hulla.Composition
             _app.HomeFriends.Tick(deltaSeconds, _app.Lifetime);
             _lobbyView?.Tick();
             _scheduler?.Tick(deltaSeconds);
+            _app.Session?.Table?.Voice.Tick(deltaSeconds);
             _tableView?.Tick(deltaSeconds);
         }
 

@@ -3933,6 +3933,71 @@
    "smart": false
   },
   {
+   "key": "ui.voice.failed",
+   "text": "Voice didn't connect · play goes on · tap to retry",
+   "smart": false
+  },
+  {
+   "key": "ui.voice.hold_to_talk",
+   "text": "Hold to talk",
+   "smart": false
+  },
+  {
+   "key": "ui.voice.joining",
+   "text": "Connecting voice…",
+   "smart": false
+  },
+  {
+   "key": "ui.voice.listening",
+   "text": "Listening",
+   "smart": false
+  },
+  {
+   "key": "ui.voice.mic_off",
+   "text": "Mic off",
+   "smart": false
+  },
+  {
+   "key": "ui.voice.mic_on",
+   "text": "Mic on",
+   "smart": false
+  },
+  {
+   "key": "ui.voice.no_permission",
+   "text": "No microphone · allow it in your phone's settings to talk",
+   "smart": false
+  },
+  {
+   "key": "ui.voice.paused",
+   "text": "Voice paused after a quiet spell · tap the mic",
+   "smart": false
+  },
+  {
+   "key": "ui.voice.retry",
+   "text": "Retry voice",
+   "smart": false
+  },
+  {
+   "key": "ui.voice.suspended",
+   "text": "Your voice is suspended for now",
+   "smart": false
+  },
+  {
+   "key": "ui.voice.talking",
+   "text": "Talking",
+   "smart": false
+  },
+  {
+   "key": "ui.voice.waiting",
+   "text": "Mic on · voice starts when another mic is on",
+   "smart": false
+  },
+  {
+   "key": "ui.voice.why",
+   "text": "Your mic is used only at this table, and only while it's on.",
+   "smart": false
+  },
+  {
    "key": "ui.waiting",
    "text": "Waiting for players",
    "smart": false

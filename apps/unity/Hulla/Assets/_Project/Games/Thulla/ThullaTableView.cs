@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using Hulla.Application.Services;
 using Hulla.Application.Table;
+using Hulla.Application.Voice;
 using Hulla.Presentation.Audio;
 using Hulla.Presentation.TableKit;
 using Hulla.Presentation.Text;
@@ -119,6 +120,14 @@ namespace Hulla.Games.Thulla
         private VisualElement _chatLog = null!;
         private TextField _chatInput = null!;
         private Label _chatStatus = null!;
+        private readonly Button _mic;
+        private readonly Button _talk;
+        private readonly Label _voicePill;
+        private VoiceController? _voice;
+        private float _voiceWhyLeft;
+
+        /// <summary>How long the line beside the microphone prompt stays.</summary>
+        private const float VoiceWhySeconds = 4f;
 
         /// <summary>The chat log keeps the latest lines only.</summary>
         private const int ChatLogLines = 30;
@@ -230,6 +239,16 @@ namespace Hulla.Games.Thulla
             });
             var compose = root.Q<VisualElement>(className: "chat-panel__compose");
             compose.style.display = sendText == null ? DisplayStyle.None : DisplayStyle.Flex;
+            _mic = root.Q<Button>("mic");
+            _mic.style.display = DisplayStyle.None;
+            _talk = root.Q<Button>("talk");
+            _talk.style.display = DisplayStyle.None;
+            _talk.text = UiText.HoldToTalk;
+            _talk.RegisterCallback<PointerDownEvent>(_ => _voice?.SetTalking(true), TrickleDown.TrickleDown);
+            _talk.RegisterCallback<PointerUpEvent>(_ => _voice?.SetTalking(false), TrickleDown.TrickleDown);
+            _talk.RegisterCallback<PointerLeaveEvent>(_ => _voice?.SetTalking(false));
+            _talk.RegisterCallback<PointerCancelEvent>(_ => _voice?.SetTalking(false));
+            _voicePill = root.Q<Label>("voice-pill");
             _sheet = root.Q<VisualElement>("player-sheet");
             _sheetTitle = root.Q<Label>("sheet-title");
             _sheetActions = root.Q<VisualElement>("sheet-actions");
@@ -655,6 +674,15 @@ namespace Hulla.Games.Thulla
                 badge.Tick(deltaSeconds);
             }
 
+            if (_voiceWhyLeft > 0f)
+            {
+                _voiceWhyLeft -= deltaSeconds;
+                if (_voiceWhyLeft <= 0f)
+                {
+                    ShowVoice();
+                }
+            }
+
             Countdown(ref _recapLeft, deltaSeconds, _recap);
             _results.Tick(_client.Model, _voted, _nowMs());
             Countdown(ref _mySayLeft, deltaSeconds, _mySay);
@@ -763,7 +791,90 @@ namespace Hulla.Games.Thulla
         {
             _client.Model.Changed -= Refresh;
             _client.Model.Chat -= OnChat;
+            if (_voice != null)
+            {
+                _voice.Changed -= ShowVoice;
+                _voice.SetTalking(false);
+            }
         }
+
+        /// <summary>
+        /// Voice at this table (GDD 11.4): the mic beside chat, hold-to-talk on push-to-talk tables, the
+        /// voice pill and the speaking rings. Hidden when the build, the server or the table has no voice.
+        /// </summary>
+        public void UseVoice(VoiceController voice)
+        {
+            _voice = voice;
+            _mic.clicked += OnMicTapped;
+            voice.Changed += ShowVoice;
+            ShowVoice();
+        }
+
+        /// <summary>The voice pill's text; empty when it is hidden. Read by tests.</summary>
+        public string VoiceNote => _voicePill.style.display == DisplayStyle.Flex ? _voicePill.text : "";
+
+        public bool ShowsMic => _mic.style.display == DisplayStyle.Flex;
+
+        public bool ShowsTalk => _talk.style.display == DisplayStyle.Flex;
+
+        private void OnMicTapped()
+        {
+            if (_voice == null)
+            {
+                return;
+            }
+
+            if (!_voice.MicOn)
+            {
+                _voiceWhyLeft = VoiceWhySeconds;
+            }
+
+            _voice.ToggleMic();
+            ShowVoice();
+        }
+
+        private void ShowVoice()
+        {
+            var voice = _voice;
+            if (voice == null)
+            {
+                return;
+            }
+
+            var state = voice.State;
+            var hidden = state == VoiceState.Hidden;
+            _mic.style.display = hidden || !voice.CanSpeak ? DisplayStyle.None : DisplayStyle.Flex;
+            var retry = state == VoiceState.Failed || state == VoiceState.Paused;
+            _mic.text = retry && voice.MicOn ? UiText.VoiceRetry : voice.MicOn ? UiText.MicOn : UiText.MicOff;
+            _mic.EnableInClassList("table__mic--on", voice.MicOn && !retry);
+            _mic.EnableInClassList("table__mic--retry", retry && voice.MicOn);
+            var push = !hidden && voice.CanSpeak && voice.MicOn && voice.Mode == VoiceMode.PushToTalk && state == VoiceState.Live;
+            _talk.style.display = push ? DisplayStyle.Flex : DisplayStyle.None;
+            _talk.text = voice.Talking ? UiText.Talking : UiText.HoldToTalk;
+            _talk.EnableInClassList("table__talk--held", voice.Talking);
+            var asking = _voiceWhyLeft > 0f && (state == VoiceState.Idle || state == VoiceState.Waiting || state == VoiceState.Joining);
+            var note = hidden ? "" : asking ? UiText.VoiceWhy : VoiceText(voice);
+            _voicePill.text = note;
+            _voicePill.style.display = note.Length == 0 ? DisplayStyle.None : DisplayStyle.Flex;
+            var model = _client.Model;
+            _me.SetSpeaking(!hidden && voice.IsSpeaking(model.UserId));
+            foreach (var seat in model.Seats)
+            {
+                _ring.BadgeFor(seat.Seat)?.SetSpeaking(!hidden && voice.IsSpeaking(seat.PlayerId));
+            }
+        }
+
+        private static string VoiceText(VoiceController voice) => voice.State switch
+        {
+            VoiceState.Waiting => UiText.VoiceWaiting,
+            VoiceState.Joining => UiText.VoiceJoining,
+            VoiceState.Paused => UiText.VoicePaused,
+            VoiceState.Failed => UiText.VoiceFailed,
+            VoiceState.Suspended => UiText.VoiceSuspended,
+            VoiceState.NoPermission => UiText.VoiceNoPermission,
+            VoiceState.Live when !voice.CanSpeak => UiText.VoiceListening,
+            _ => "",
+        };
 
         private void Buzz(Haptic kind)
         {
@@ -1096,6 +1207,7 @@ namespace Hulla.Games.Thulla
             RefreshHand();
             RefreshTurn();
             RefreshResults();
+            ShowVoice();
         }
 
         /// <summary>An escape (GDD 14.5, 16.2): a chime, a success haptic for the escapee, and the strip follows.</summary>

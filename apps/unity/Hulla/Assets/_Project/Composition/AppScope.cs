@@ -67,7 +67,26 @@ namespace Hulla.Composition
             Friends = new FriendsViewModel(social);
             Profile = new ProfileViewModel(social);
             QuickPlay = new QuickPlayViewModel(_matchmaker);
+            VoiceTokens = new NakamaVoiceTokens(_connection);
+            Voice = CreateVoice();
         }
+
+        /// <summary>Agora when the SDK is in the build; the fake in the editor or with -hulla-fake-voice; else none (ADR-0012).</summary>
+        private static Hulla.Application.Voice.IVoiceService CreateVoice()
+        {
+#if HULLA_AGORA
+            return new Hulla.Infrastructure.Voice.AgoraVoiceService();
+#else
+            return UnityEngine.Application.isEditor || Array.IndexOf(Environment.GetCommandLineArgs(), "-hulla-fake-voice") >= 0
+                ? new Hulla.Infrastructure.Voice.FakeVoiceService()
+                : new Hulla.Infrastructure.Voice.NoVoiceService();
+#endif
+        }
+
+        /// <summary>The voice provider for every table this run (GDD 11.4).</summary>
+        public Hulla.Application.Voice.IVoiceService Voice { get; }
+
+        public Hulla.Application.Voice.IVoiceTokens VoiceTokens { get; }
 
         public AppConfig Config { get; private set; }
 
@@ -190,6 +209,7 @@ namespace Hulla.Composition
             QuickPlay.Dispose();
             _matchmaker.Dispose();
             _tableChat.Dispose();
+            (Voice as IDisposable)?.Dispose();
             _tables.Dispose();
             _lifetime.Cancel();
             _lifetime.Dispose();

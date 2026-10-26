@@ -54,6 +54,11 @@ namespace Hulla.Presentation.TableKit
 
         public bool ShowsYou => _you.style.display == DisplayStyle.Flex;
 
+        /// <summary>A ring while this player's voice is heard (GDD 11.4).</summary>
+        public void SetSpeaking(bool speaking) => EnableInClassList("seat--speaking", speaking);
+
+        public bool ShowsSpeaking => ClassListContains("seat--speaking");
+
         public bool HasImage => _avatar.ClassListContains(AvatarArt.ImageClass);
 
         public bool ShowsCrown => _crown.style.display == DisplayStyle.Flex;

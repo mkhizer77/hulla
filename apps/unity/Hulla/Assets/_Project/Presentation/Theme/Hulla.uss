@@ -3184,3 +3184,52 @@
 .size--expanded.shell--with-nav > TemplateContainer {
     margin-left: 220px;
 }
+
+/* Voice (GDD 11.4): the mic beside chat, hold-to-talk on push-to-talk tables, a pill for the voice
+   state at the top of the felt, and a teal ring on whoever is heard. */
+.table__mic,
+.table__talk {
+    background-image: none;
+    background-color: rgba(255, 255, 255, 0.1);
+    border-bottom-width: 0;
+    color: var(--ink-ivory);
+    margin-right: 12px;
+}
+
+.table__mic--on {
+    background-color: var(--accent-teal);
+}
+
+.table__mic--retry {
+    background-color: rgba(229, 57, 53, 0.35);
+}
+
+.table__talk--held {
+    background-color: var(--accent-teal);
+    scale: 1.06 1.06;
+}
+
+.voice-pill__row {
+    position: absolute;
+    top: 12px;
+    left: 0;
+    right: 0;
+    align-items: center;
+}
+
+.voice-pill {
+    max-width: 90%;
+    padding: 8px 22px;
+    border-radius: 30px;
+    background-color: rgba(0, 0, 0, 0.55);
+    color: var(--ink-ivory);
+    font-size: var(--font-small);
+    white-space: normal;
+    -unity-text-align: middle-center;
+    display: none;
+}
+
+.seat--speaking .seat__avatar {
+    border-color: var(--accent-teal);
+    border-width: 5px;
+}

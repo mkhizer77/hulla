@@ -3,7 +3,7 @@ namespace Hulla.Application.Table
     /// <summary>One seat as the lobby and the table show it.</summary>
     public readonly struct SeatInfo
     {
-        public SeatInfo(long seat, string? playerId, string? displayName, bool ready, bool connected, bool autoPlay, string? tableSurface = null, string? cardBack = null, string? avatar = null)
+        public SeatInfo(long seat, string? playerId, string? displayName, bool ready, bool connected, bool autoPlay, string? tableSurface = null, string? cardBack = null, string? avatar = null, bool mic = false)
         {
             Seat = seat;
             PlayerId = playerId;
@@ -14,7 +14,11 @@ namespace Hulla.Application.Table
             TableSurface = tableSurface;
             CardBack = cardBack;
             Avatar = avatar;
+            Mic = mic;
         }
+
+        /// <summary>The seat's microphone is on (GDD 11.4); the voice channel opens while two are.</summary>
+        public bool Mic { get; }
 
         /// <summary>The catalog id of the table surface this seat has equipped (GDD 12.11); null for the default.</summary>
         public string? TableSurface { get; }

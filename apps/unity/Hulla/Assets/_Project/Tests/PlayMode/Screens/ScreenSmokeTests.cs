@@ -283,6 +283,52 @@ namespace Hulla.Screens.Tests
         }
 
         [UnityTest]
+        public IEnumerator TheMicWaitsForASecondMicThenTheSpeakerGetsARing()
+        {
+            VisualElement root = null!;
+            var gateway = new Fakes.Gateway();
+            var client = new TableClient(gateway, new TableTicket("m", "K7Q2MX", "t_K7Q2MX"), "me", 1);
+            var voice = new Fakes.Voice();
+            var controller = new Hulla.Application.Voice.VoiceController(voice, new Fakes.VoiceTokens(), client, _ => false, true);
+            ThullaTableView view = null!;
+            yield return Open(Catalog.Table, r =>
+            {
+                root = r;
+                view = new ThullaTableView(r, client, new Fakes.Chat(), () => 0, () => { });
+                gateway.Deliver(MessageTypes.TableState, 5, Fakes.InRound(5));
+                view.UseVoice(controller);
+            });
+            var mic = root.Q<Button>("mic");
+            Shown(mic, "the mic");
+            Assert.AreEqual("Mic off", mic.text);
+            Assert.AreEqual("", view.VoiceNote);
+            using (var click = NavigationSubmitEvent.GetPooled())
+            {
+                click.target = mic;
+                mic.SendEvent(click);
+            }
+
+            yield return null;
+            Assert.AreEqual("Mic on", mic.text);
+            StringAssert.Contains("only at this table", view.VoiceNote, "the one line beside the prompt");
+            Assert.IsTrue(((SetMic)gateway.Sent.FindLast(s => s.Type == MessageTypes.SetMic).Payload).Mic);
+
+            var state = Fakes.InRound(6);
+            state.Seats[0].Mic = true;
+            state.Seats[2].Mic = true;
+            gateway.Deliver(MessageTypes.TableState, 6, state);
+            yield return null;
+            Assert.AreEqual(Hulla.Application.Voice.VoiceState.Live, controller.State);
+            Assert.IsFalse(view.ShowsTalk, "open mic in a private room");
+            voice.Speak("u2", true);
+            yield return null;
+            var badge = root.Query<SeatBadge>().ToList().Single(b => b.ShowsSpeaking);
+            StringAssert.Contains("Bilal", badge.Name);
+            controller.Dispose();
+            view.Dispose();
+        }
+
+        [UnityTest]
         public IEnumerator AnEscapedPlayerIsToldAndKeepsWatching()
         {
             VisualElement root = null!;

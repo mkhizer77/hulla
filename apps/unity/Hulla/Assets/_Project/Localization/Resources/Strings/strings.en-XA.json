@@ -3933,6 +3933,71 @@
    "smart": false
   },
   {
+   "key": "ui.voice.failed",
+   "text": "[Vöîçé dîdñ't çöññéçt · plåý göés öñ · tåp tö rétrý · · · · · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.voice.hold_to_talk",
+   "text": "[Höld tö tålk · ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.voice.joining",
+   "text": "[Çöññéçtîñg vöîçé… · · ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.voice.listening",
+   "text": "[Lîstéñîñg · ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.voice.mic_off",
+   "text": "[Mîç öff · ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.voice.mic_on",
+   "text": "[Mîç öñ ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.voice.no_permission",
+   "text": "[Ñö mîçröphöñé · ållöw ît îñ ýöûr phöñé's séttîñgs tö tålk · · · · · · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.voice.paused",
+   "text": "[Vöîçé påûséd åftér å qûîét spéll · tåp thé mîç · · · · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.voice.retry",
+   "text": "[Rétrý vöîçé · ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.voice.suspended",
+   "text": "[Ýöûr vöîçé îs sûspéñdéd för ñöw · · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.voice.talking",
+   "text": "[Tålkîñg · ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.voice.waiting",
+   "text": "[Mîç öñ · vöîçé stårts whéñ åñöthér mîç îs öñ · · · · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.voice.why",
+   "text": "[Ýöûr mîç îs ûséd öñlý åt thîs tåblé, åñd öñlý whîlé ît's öñ. · · · · · · · · ·]",
+   "smart": false
+  },
+  {
    "key": "ui.waiting",
    "text": "[Wåîtîñg för plåýérs · · ·]",
    "smart": false

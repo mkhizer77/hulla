@@ -97,6 +97,9 @@ namespace Hulla.Application.Table
 
         public void SetReady(bool ready) => Send(MessageTypes.Ready, new Ready { ReadyReady = ready });
 
+        /// <summary>Shares this seat's mic with the table, so the voice channel opens only while two are on (GDD 20.14).</summary>
+        public void SetMic(bool on) => Send(MessageTypes.SetMic, new SetMic { Mic = on });
+
         public void StartRound() => Send(MessageTypes.StartRound, new StartRound());
 
         /// <summary>The host seats a watcher now in the lobby, or at the round's end mid-round (seat_spectator).</summary>
