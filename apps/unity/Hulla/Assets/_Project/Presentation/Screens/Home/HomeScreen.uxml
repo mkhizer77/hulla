@@ -45,6 +45,7 @@
                 <ui:Button name="create" class="button button--secondary" />
                 <ui:Button name="join-toggle" class="button" />
             </ui:VisualElement>
+            <ui:VisualElement name="looks" class="panel looks" />
             <ui:VisualElement class="home__quiet">
                 <ui:Button name="how-to-play" class="button button--quiet" />
             </ui:VisualElement>

@@ -216,6 +216,8 @@ namespace Hulla.Presentation.Text
             Hulla.Application.Settings.TableSkin.Dhaba => Strings.Text("skin.dhaba"),
             Hulla.Application.Settings.TableSkin.Mehndi => Strings.Text("skin.mehndi"),
             Hulla.Application.Settings.TableSkin.Adda => Strings.Text("skin.adda"),
+            Hulla.Application.Settings.TableSkin.Basant => Strings.Text("skin.basant"),
+            Hulla.Application.Settings.TableSkin.Pop => Strings.Text("skin.pop"),
             _ => Strings.Text("skin.club"),
         };
         public static string OneTapPlay => Strings.Text("ui.one_tap_play");

@@ -9,6 +9,7 @@ using Hulla.Protocol;
 using Hulla.Games.Thulla;
 using Hulla.Presentation.Navigation;
 using Hulla.Presentation.Screens.Home;
+using Hulla.Presentation.Screens.Looks;
 using Hulla.Presentation.Screens.Friends;
 using Hulla.Presentation.Screens.Lobby;
 using Hulla.Presentation.Screens.Achievements;
@@ -77,6 +78,7 @@ namespace Hulla.Composition
         private string _friendsForRound = "";
         private readonly BigThullaOffer _bigThulla = new BigThullaOffer();
         private DailyRewardCard? _daily;
+        private TableSkin? _appliedSkin;
         private AnalyticsTracker? _tracker;
 
         /// <summary>The table's placeholder sounds (GDD 16.2); the SFX setting sets its level.</summary>
@@ -383,6 +385,7 @@ namespace Hulla.Composition
             var left = LastTableCode();
             home.ShowRejoin(left, left == null ? null : () => Rejoin(home, left));
             RefreshRejoin(home);
+            FillLooks(root);
             _daily = new DailyRewardCard(UnityEngine.UIElements.UQueryExtensions.Q<UnityEngine.UIElements.VisualElement>(root, "daily"), _app.DailyReward, ClaimDailyReward);
             _app.HomeFriends.Active = _app.Sessions.Current != null;
             _app.HomeFriends.RefreshSoon();
@@ -391,6 +394,61 @@ namespace Hulla.Composition
                 _ = _app.Progress.RefreshAsync(LocalOffsetMinutes(), _app.Lifetime);
                 _ = _app.DailyReward.RefreshAsync(LocalOffsetMinutes(), _app.Lifetime);
             }
+        }
+
+        /// <summary>The look playtest card on Home; picking a look applies it at once.</summary>
+        private void FillLooks(UnityEngine.UIElements.VisualElement root)
+        {
+            var playtest = _app.LookPlaytest;
+            var skin = _app.Settings.Skin;
+            var ask = LookPlaytest.IsTestLook(skin) && !playtest.Answered(skin) ? AskAboutLook : (Action?)null;
+            LooksCard.Fill(UnityEngine.UIElements.UQueryExtensions.Q(root, "looks"), playtest.ShowCard(_app.RemoteConfig.LooksTest), skin, look =>
+            {
+                _app.Settings.Skin = look;
+                FillLooks(root);
+            }, ask);
+        }
+
+        /// <summary>Back on Home after a round in a test look, ask once what the player thinks of it.</summary>
+        private bool OfferLookFeedback()
+        {
+            if (!_app.LookPlaytest.Due(_app.Settings.Skin, _app.RemoteConfig.LooksTest))
+            {
+                return false;
+            }
+
+            AskAboutLook();
+            return true;
+        }
+
+        private void AskAboutLook()
+        {
+            var skin = _app.Settings.Skin;
+            var playtest = _app.LookPlaytest;
+            UnityEngine.UIElements.UQueryExtensions.Q(_shell.Root, LookFeedbackSheet.Name)?.RemoveFromHierarchy();
+            _shell.Root.Add(LookFeedbackSheet.Build(UiText.SkinName(skin), UiText.SkinName(playtest.Before), async (rating, keep, comment) =>
+            {
+                var answer = new LookAnswer(LookPlaytest.Id(skin), rating, keep, comment, playtest.Rounds(skin));
+                if (!keep)
+                {
+                    _app.Settings.Skin = playtest.Before;
+                }
+
+                var sent = await _app.LookFeedback.SendAsync(answer, _app.Lifetime);
+                if (sent.IsOk)
+                {
+                    playtest.MarkAnswered(skin);
+                }
+                else
+                {
+                    playtest.Snooze();
+                }
+
+                if (_screen == Screen.Home && _view is HomeView)
+                {
+                    ShowHome();
+                }
+            }, playtest.Snooze));
         }
 
         private async void ClaimDailyReward()
@@ -817,7 +875,7 @@ namespace Hulla.Composition
             await _app.Tables.LeaveAsync();
             _app.Session?.EndTable();
             ShowHome();
-            if (!AskForPushIfDue())
+            if (!AskForPushIfDue() && !OfferLookFeedback())
             {
                 OfferWelcomePrompt();
             }
@@ -1038,6 +1096,7 @@ namespace Hulla.Composition
                 _friendsForRound = model.LastResult.RoundId;
                 ShowReward(model.LastResult.RoundId);
                 new ThullaHints(_app.Store).RoundEnded();
+                _app.LookPlaytest.RoundFinished(_app.Settings.Skin);
                 _app.PushPrompt.RoundFinished();
                 OfferFriends();
                 OfferBigThulla(client);
@@ -1387,6 +1446,12 @@ namespace Hulla.Composition
         {
             var settings = _app.Settings;
             _app.Analytics.SetConsent(settings.AnalyticsConsent == true);
+            if (_appliedSkin is TableSkin before)
+            {
+                _app.LookPlaytest.Switched(before, settings.Skin);
+            }
+
+            _appliedSkin = settings.Skin;
             ThemeClasses.Apply(_shell.Root, settings);
             _shell.ApplySkin(settings.Skin, settings.ReduceMotion);
             _sounds.Volume = settings.SfxVolume / 100f;

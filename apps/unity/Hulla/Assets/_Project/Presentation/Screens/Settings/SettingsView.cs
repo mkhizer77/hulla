@@ -191,7 +191,7 @@ namespace Hulla.Presentation.Screens.Settings
             _list.Add(slider);
         }
 
-        /// <summary>The five table themes as tiles showing each scene and table; the chosen one is ringed.</summary>
+        /// <summary>The table themes as tiles showing each scene and table; the chosen one is ringed.</summary>
         private void Themes(Func<TableSkin> get, Action<TableSkin> set)
         {
             var row = new VisualElement();

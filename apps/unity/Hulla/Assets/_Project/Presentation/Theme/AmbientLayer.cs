@@ -138,6 +138,21 @@ namespace Hulla.Presentation.Theme
                     _movers.Add(new Breathe(warm, 0.3f, 0.05f, Range(8f, 10f), 0f));
                     Motes(6, new Rect(8f, 4f, 84f, 36f), new Color(1f, 0.85f, 0.6f));
                     break;
+                case TableSkin.Basant:
+                    Kite(6f, 30f, new Color(1f, 0.55f, 0.12f), 7.2f);
+                    Kite(94f, 52f, new Color(0.61f, 0.36f, 0.9f), 8.4f);
+                    break;
+                case TableSkin.Pop:
+                    foreach (var (x, y, size) in new[] { (14f, 10f, 520f), (88f, 46f, 640f), (30f, 82f, 560f) })
+                    {
+                        var glow = Sprite("ambient__glow", x, y, size, size);
+                        glow.style.translate = new Translate(-size / 2f, -size / 2f);
+                        glow.style.unityBackgroundImageTintColor = new Color(1f, 0.62f, 0.85f);
+                        _movers.Add(new Breathe(glow, 0.16f, 0.06f, Range(8f, 11f), Range(0f, 8f)));
+                    }
+
+                    Motes(8, new Rect(6f, 6f, 88f, 80f), new Color(1f, 0.9f, 1f));
+                    break;
             }
         }
 
@@ -235,6 +250,17 @@ namespace Hulla.Presentation.Theme
             lamp.Insert(0, halo);
             _movers.Add(new Sway(lamp, swing, period, Range(0f, 6f)));
             _movers.Add(new Flame(halo, 0.5f, Range(0f, 6f)));
+        }
+
+        /// <summary>A kite riding the breeze: it rocks a few degrees and bobs on its string.</summary>
+        private void Kite(float x, float y, Color tint, float period)
+        {
+            var kite = Sprite("ambient__kite", x, y, 54f, 90f);
+            kite.style.translate = new Translate(-27f, 0f);
+            kite.style.transformOrigin = new TransformOrigin(Length.Percent(50f), Length.Percent(80f));
+            kite.style.unityBackgroundImageTintColor = tint;
+            _movers.Add(new Sway(kite, 3f, period, Range(0f, 6f)));
+            _movers.Add(new Bob(kite, 10f, period * 1.3f, Range(0f, 6f)));
         }
 
         private void Garland(float x, float length, float swing, float period)
@@ -407,6 +433,28 @@ namespace Hulla.Presentation.Theme
 
             public override void Update(float time, float dt) =>
                 _element.style.rotate = new Rotate(new Angle(_degrees * Wave(time, _period, _phase)));
+        }
+
+        /// <summary>A slow rise and fall, for a kite on its string.</summary>
+        private sealed class Bob : Mover
+        {
+            private readonly VisualElement _element;
+            private readonly float _pixels;
+            private readonly float _period;
+            private readonly float _phase;
+            private readonly float _left;
+
+            public Bob(VisualElement element, float pixels, float period, float phase)
+            {
+                _element = element;
+                _pixels = pixels;
+                _period = period;
+                _phase = phase;
+                _left = element.style.translate.value.x.value;
+            }
+
+            public override void Update(float time, float dt) =>
+                _element.style.translate = new Translate(_left, _pixels * Wave(time, _period, _phase));
         }
 
         /// <summary>A mote of dust wandering on a slow loop, fading in and out.</summary>

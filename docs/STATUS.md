@@ -1,11 +1,12 @@
 # Status
 
-Updated: 26 October 2026
+Updated: 27 October 2026
 
 ## Phase
 M0 complete: the Thulla rulebook runs in TypeScript with full traceability. M1, the vertical slice, starts with the protocol schemas.
 
 ## Done
+- Look playtest (27 Oct, PR 277 and this one): two of the 26 October Home concepts, Basant (bright kite afternoon) and Pop (clean gradient), are table themes; a Home card offers both, and after a round in one the player is asked once how they like it, whether to keep it, and an optional line. `look_feedback` keeps the answers, `admin_look_feedback` sums them up, `looks_test` turns it off. Plan and decision rule in `docs/design/look-playtest.md`; audience, principles and app flow in `docs/design/design-direction.md`.
 - Merged 26 Oct, in order: layout plumbing (PR 267: Expand scaling, size classes, safe area, tablet rotation), then voice at the table (PR 271). The Rooftop redesign (PR 269) stays open while the redesign is on hold.
 - Voice controls (#32, 26 Oct, this PR): Voice chat on or off and Voice volume in Settings, a voice level per player in the player sheet, Voices on or off under the voice pill (with the mic off too the phone leaves the room), and table sounds ducking under speech. Voice now runs fully through Unity audio (the SDK's platform audio has no volume control), with the SDK's echo cancellation on the Unity mic. Also fixed: no scene had an audio listener, so table sounds were silent; the app now makes one at start.
 - Text shaping spike (#132, 26 Oct, PR 273): the Advanced Text Generator was never on, so Urdu could not render and Hindi and Bengali conjuncts broke. It is now on for the whole app, the shell sets right-to-left paragraph direction, and Noto Nastaliq Urdu, Devanagari and Bengali are in the project (unused until #100). Findings, line heights and cost in `docs/research/script-shaping.md`; the low-tier phone screenshots are still to take.
@@ -67,6 +68,7 @@ M0 complete: the Thulla rulebook runs in TypeScript with full traceability. M1, 
 
 ## Doing
 - Paused 16 Oct by the owner (PR 269 stays open): UI redesign by an outside designer: brief in `docs/design/ui-redesign-brief.md` (screens, current wireframes, scaling, anchoring, feature list). Decided 15 Oct: tablets are supported in portrait and landscape (#102), with phone, tablet-portrait and tablet-landscape layouts and Expand scaling in place of match-width.
+- Look playtest running: the owner gathers testers (`docs/design/look-playtest.md`), then picks the direction for the art pass.
 - Waiting for the owner's device session: voice on phones (five-phone check, listener audio, iOS session), the #132 screenshots on the low-tier phone, and the earlier phone pass.
 - A phone pass on the themes: motion speed and strength, quiet text on each scene, touch targets on the shelf.
 

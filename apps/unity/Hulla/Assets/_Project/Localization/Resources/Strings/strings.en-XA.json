@@ -1168,6 +1168,76 @@
    "smart": false
   },
   {
+   "key": "looks.ask",
+   "text": "[Höw dö ýöû lîké thé {0} löök? · · · · ·]",
+   "smart": true
+  },
+  {
+   "key": "looks.back",
+   "text": "[Båçk tö {0} · ·]",
+   "smart": true
+  },
+  {
+   "key": "looks.card_line",
+   "text": "[Plåý å röûñd îñ öñé, théñ téll ûs whåt ýöû thîñk. · · · · · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "looks.card_title",
+   "text": "[Ñéw lööks tö trý · · ·]",
+   "smart": false
+  },
+  {
+   "key": "looks.comment",
+   "text": "[Åñýthîñg élsé? (öptîöñål) · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "looks.keep",
+   "text": "[Kéép ît · ·]",
+   "smart": false
+  },
+  {
+   "key": "looks.rate_1",
+   "text": "[Döñ't lîké ît · ·]",
+   "smart": false
+  },
+  {
+   "key": "looks.rate_2",
+   "text": "[Ñöt réållý · ·]",
+   "smart": false
+  },
+  {
+   "key": "looks.rate_3",
+   "text": "[Ît's ökåý · ·]",
+   "smart": false
+  },
+  {
+   "key": "looks.rate_4",
+   "text": "[Lîké ît · ·]",
+   "smart": false
+  },
+  {
+   "key": "looks.rate_5",
+   "text": "[Lövé ît · ·]",
+   "smart": false
+  },
+  {
+   "key": "looks.rate_this",
+   "text": "[Téll ûs åböût thîs löök · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "looks.send",
+   "text": "[Séñd ·]",
+   "smart": false
+  },
+  {
+   "key": "looks.thanks",
+   "text": "[Thåñks! Wé réåd évérý åñswér. · · · · ·]",
+   "smart": false
+  },
+  {
    "key": "mission.d_escape_first.description",
    "text": "[{0:plural:Ésçåpé fîrst îñ å röûñd|Ésçåpé fîrst îñ {} röûñds} · · · ·]",
    "smart": true
@@ -2128,6 +2198,11 @@
    "smart": false
   },
   {
+   "key": "skin.basant",
+   "text": "[Båsåñt ·]",
+   "smart": false
+  },
+  {
    "key": "skin.club",
    "text": "[Çlûb ·]",
    "smart": false
@@ -2145,6 +2220,11 @@
   {
    "key": "skin.mehndi",
    "text": "[Méhñdî ·]",
+   "smart": false
+  },
+  {
+   "key": "skin.pop",
+   "text": "[Pöp ·]",
    "smart": false
   },
   {
