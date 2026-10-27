@@ -347,6 +347,10 @@
     -unity-text-align: middle-center;
 }
 
+.rtl .looks__row {
+    flex-direction: row-reverse;
+}
+
 /* Screens/Ranked/Ranked.uss */
 .rtl .ranked__league {
     -unity-text-align: middle-center;

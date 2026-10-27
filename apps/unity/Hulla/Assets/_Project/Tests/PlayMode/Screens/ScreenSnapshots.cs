@@ -92,6 +92,26 @@ namespace Hulla.Screens.Tests
             }, nav: true);
         }
 
+        /// <summary>The look playtest: the Home card (the hero folded away so it shows) and the question over Home.</summary>
+        [UnityTest, Explicit]
+        public IEnumerator Looks([ValueSource(nameof(Skins))] TableSkin skin)
+        {
+            var friends = new HomeFriendsViewModel(new Fakes.Social());
+            yield return Snap("look-card", skin, Catalog.Home, r =>
+            {
+                new HomeView(r, new HomeViewModel(new Fakes.Session(), new Fakes.Gateway()) { LastName = "Khizer" }, null, (_, _) => { }, (_, _, _) => { }, (_, _, _) => { }, () => { }, (_, _) => { }, (_, _) => { }, friends, () => { }, "How to play");
+                r.Q<VisualElement>("games").style.display = DisplayStyle.None;
+                Hulla.Presentation.Screens.Looks.LooksCard.Fill(r.Q<VisualElement>("looks"), true, skin, _ => { }, () => { });
+            }, nav: true);
+            yield return Snap("look-sheet", skin, Catalog.Home, r =>
+            {
+                new HomeView(r, new HomeViewModel(new Fakes.Session(), new Fakes.Gateway()) { LastName = "Khizer" }, null, (_, _) => { }, (_, _, _) => { }, (_, _, _) => { }, () => { }, (_, _) => { }, (_, _) => { }, friends, () => { }, "How to play");
+                var sheet = Hulla.Presentation.Screens.Looks.LookFeedbackSheet.Build(Hulla.Presentation.Text.UiText.SkinName(skin), "Club", (_, _, _) => { }, () => { });
+                r.Add(sheet);
+                sheet.Q<Button>("look-rate-4").AddToClassList("chip--on");
+            }, nav: true);
+        }
+
         /// <summary>A phone, a 4:3 tablet in portrait and in landscape, with the brief's largest insets for each.</summary>
         public static IEnumerable<(int Width, int Height, Insets Insets)> Sizes => new[]
         {

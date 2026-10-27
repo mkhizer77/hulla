@@ -1168,6 +1168,76 @@
    "smart": false
   },
   {
+   "key": "looks.ask",
+   "text": "How do you like the {0} look?",
+   "smart": true
+  },
+  {
+   "key": "looks.back",
+   "text": "Back to {0}",
+   "smart": true
+  },
+  {
+   "key": "looks.card_line",
+   "text": "Play a round in one, then tell us what you think.",
+   "smart": false
+  },
+  {
+   "key": "looks.card_title",
+   "text": "New looks to try",
+   "smart": false
+  },
+  {
+   "key": "looks.comment",
+   "text": "Anything else? (optional)",
+   "smart": false
+  },
+  {
+   "key": "looks.keep",
+   "text": "Keep it",
+   "smart": false
+  },
+  {
+   "key": "looks.rate_1",
+   "text": "Don't like it",
+   "smart": false
+  },
+  {
+   "key": "looks.rate_2",
+   "text": "Not really",
+   "smart": false
+  },
+  {
+   "key": "looks.rate_3",
+   "text": "It's okay",
+   "smart": false
+  },
+  {
+   "key": "looks.rate_4",
+   "text": "Like it",
+   "smart": false
+  },
+  {
+   "key": "looks.rate_5",
+   "text": "Love it",
+   "smart": false
+  },
+  {
+   "key": "looks.rate_this",
+   "text": "Tell us about this look",
+   "smart": false
+  },
+  {
+   "key": "looks.send",
+   "text": "Send",
+   "smart": false
+  },
+  {
+   "key": "looks.thanks",
+   "text": "Thanks! We read every answer.",
+   "smart": false
+  },
+  {
    "key": "mission.d_escape_first.description",
    "text": "{0:plural:Escape first in {} rounds|Escape first in a round|Escape first in {} rounds|Escape first in {} rounds|Escape first in {} rounds|Escape first in {} rounds}",
    "smart": true
@@ -2128,6 +2198,11 @@
    "smart": false
   },
   {
+   "key": "skin.basant",
+   "text": "Basant",
+   "smart": false
+  },
+  {
    "key": "skin.club",
    "text": "Club",
    "smart": false
@@ -2145,6 +2220,11 @@
   {
    "key": "skin.mehndi",
    "text": "Mehndi",
+   "smart": false
+  },
+  {
+   "key": "skin.pop",
+   "text": "Pop",
    "smart": false
   },
   {

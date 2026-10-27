@@ -1,4 +1,4 @@
-"""Placeholder art for the five table themes (docs/design/table-themes.md) until the art track lands.
+"""Placeholder art for the table themes (docs/design/table-themes.md) until the art track lands.
 
 For each theme: the backdrop behind every screen, the whole table seen from above, the avatar
 frame, the card back, nine-slice buttons, panels and name plates, and the small sprites the
@@ -554,6 +554,262 @@ def table_adda() -> Image.Image:
     return out
 
 
+# ---------------------------------------------------------------- Basant and Pop (the look playtest)
+
+BROWN = hexc("5A2E12")
+KITE_COLOURS = [hexc("F0509A"), hexc("FF8A1F"), hexc("5CC23C"), hexc("FFD23F"), hexc("9B5DE5"), hexc("2EC4E8")]
+
+
+def kite(d: ImageDraw.ImageDraw, cx: float, cy: float, size: float, colour: RGB, tilt: float = 0.0, alpha: int = 255) -> None:
+    """A patang on a supersampled canvas: a diamond, one half lighter, two spars and a brown outline."""
+    shape = [(0.0, -1.0), (0.72, -0.18), (0.0, 1.12), (-0.72, -0.18)]
+    cos_t, sin_t = math.cos(tilt), math.sin(tilt)
+
+    def at(px: float, py: float) -> tuple[int, int]:
+        x, y = px * size, py * size
+        return (s(cx + x * cos_t - y * sin_t), s(cy + x * sin_t + y * cos_t))
+
+    pts = [at(px, py) for px, py in shape]
+    d.polygon(pts, fill=rgba(colour, alpha))
+    d.polygon([pts[0], pts[1], pts[2]], fill=rgba(lerp(colour, (255, 255, 255), 0.3), alpha))
+    d.line([pts[0], pts[2]], fill=(90, 46, 18, alpha * 3 // 4), width=s(max(2, size / 28)))
+    d.line([at(-0.72, -0.18), at(0.72, -0.18)], fill=(90, 46, 18, alpha * 3 // 4), width=s(max(2, size / 28)))
+    d.polygon(pts, outline=rgba(BROWN, alpha), width=s(max(3, size / 18)))
+    tail = at(0.0, 1.12)
+    for k in range(2):
+        tx, ty = tail[0] / SS, tail[1] / SS + size * (0.18 + k * 0.22)
+        d.polygon([(s(tx), s(ty - size * 0.08)), (s(tx + size * 0.12), s(ty + size * 0.06)), (s(tx - size * 0.12), s(ty + size * 0.06))],
+                  fill=rgba(KITE_COLOURS[(KITE_COLOURS.index(colour) + 2 + k) % len(KITE_COLOURS)] if colour in KITE_COLOURS else colour, alpha))
+
+
+def kite_string(d: ImageDraw.ImageDraw, x0: float, y0: float, x1: float, y1: float, sag: float) -> None:
+    pts = []
+    for i in range(41):
+        t = i / 40
+        pts.append((s(x0 + (x1 - x0) * t), s(y0 + (y1 - y0) * t + sag * 4 * t * (1 - t))))
+    d.line(pts, fill=(90, 46, 18, 110), width=s(2))
+
+
+def cloud(d: ImageDraw.ImageDraw, cx: float, cy: float, w: float) -> None:
+    for (dx, dy, r) in [(-0.32, 0.08, 0.26), (-0.05, -0.1, 0.34), (0.28, 0.02, 0.27), (0.0, 0.14, 0.3)]:
+        d.ellipse([s(cx + (dx - r) * w), s(cy + (dy - r * 0.8) * w), s(cx + (dx + r) * w), s(cy + (dy + r * 0.8) * w)], fill=(255, 255, 255, 215))
+
+
+def bunting(d: ImageDraw.ImageDraw, x0: float, y0: float, x1: float, y1: float, sag: float, flags: int, rng: random.Random) -> None:
+    kite_string(d, x0, y0, x1, y1, sag)
+    for i in range(flags):
+        t = (i + 0.5) / flags
+        x = x0 + (x1 - x0) * t
+        y = y0 + (y1 - y0) * t + sag * 4 * t * (1 - t)
+        c = KITE_COLOURS[i % len(KITE_COLOURS)]
+        d.polygon([(s(x - 16), s(y)), (s(x + 16), s(y)), (s(x), s(y + 34))], fill=rgba(c), outline=rgba(BROWN), width=s(2))
+
+
+def marigold_line(d: ImageDraw.ImageDraw, x0: float, y0: float, x1: float, y1: float, sag: float) -> None:
+    n = int(abs(x1 - x0) / 15)
+    for i in range(n + 1):
+        t = i / max(1, n)
+        x = x0 + (x1 - x0) * t
+        y = y0 + (y1 - y0) * t + sag * 4 * t * (1 - t)
+        c = hexc("FF9F1C") if i % 3 else hexc("FFC93C")
+        d.ellipse([s(x - 9), s(y - 9), s(x + 9), s(y + 9)], fill=rgba(c), outline=rgba(hexc("C46A00")), width=s(1))
+
+
+def rooftops(d: ImageDraw.ImageDraw, base: float, rng: random.Random, tones: list[RGB], hmin: int, hmax: int, outline: int = 4) -> list[tuple[float, float, float]]:
+    """A row of flat-roofed houses with parapets and windows, standing on `base`; returns their tops."""
+    tops = []
+    x = -30.0
+    while x < W:
+        bw = rng.randint(150, 260)
+        bh = rng.randint(hmin, hmax)
+        col = rng.choice(tones)
+        top = base - bh
+        d.rectangle([s(x), s(top), s(x + bw), s(H + 10)], fill=rgba(col), outline=rgba(BROWN), width=s(outline))
+        d.rectangle([s(x - 6), s(top - 16), s(x + bw + 6), s(top)], fill=rgba(lerp(col, (255, 255, 255), 0.25)), outline=rgba(BROWN), width=s(outline))
+        for wy in range(int(top + 40), int(base) + 200, 110):
+            for wx in range(int(x + 30), int(x + bw - 50), 90):
+                if rng.random() < 0.5:
+                    d.rounded_rectangle([s(wx), s(wy), s(wx + 44), s(wy + 60)], radius=s(6), fill=rgba(hexc("5FA8D8")), outline=rgba(BROWN), width=s(3))
+                    d.line([s(wx + 22), s(wy), s(wx + 22), s(wy + 60)], fill=rgba(BROWN), width=s(3))
+        tops.append((x, x + bw, top - 16))
+        x += bw + rng.randint(-10, 20)
+    return tops
+
+
+def backdrop_basant(floor_on: bool = True) -> Image.Image:
+    """A Basant afternoon: blue sky, clouds and kites over the rooftops; the table version has the terrace floor."""
+    img = vertical((W, H), [(0, hexc("47BDF2")), (0.32, hexc("86D5F8")), (0.6, hexc("C9EEFF")), (1, hexc("E3F6FF"))])
+    img.alpha_composite(glow_layer((W, H), (W * 0.86, 90), 420, hexc("FFF7C8"), 150))
+    rng = random.Random(21)
+    big_img, d = big((W, H))
+    for (cx, cy, w) in [(170, 470, 300), (880, 330, 260), (560, 760, 340), (120, 1010, 240), (940, 900, 280)]:
+        cloud(d, cx, cy, w)
+    sky_bottom = 600 if floor_on else 1360
+    spots = [(90, 430, 50, -0.3), (950, 620, 46, 0.25), (330, 860, 34, 0.15), (780, 150, 42, -0.15), (990, 1080, 36, 0.3), (70, 1160, 40, -0.2), (590, 470, 28, 0.1)]
+    for i, (cx, cy, size, tilt) in enumerate(spots):
+        if cy + size > sky_bottom:
+            continue
+        end_x = cx + (260 if i % 2 else -260)
+        kite_string(d, cx, cy + size * 1.1, end_x, sky_bottom + 80, 60)
+        kite(d, cx, cy, size, KITE_COLOURS[i % len(KITE_COLOURS)], tilt)
+    if floor_on:
+        # Far roofs, the parapet of our own roof and the terrace floor the table stands on.
+        rooftops(d, 650, rng, [hexc("F6D3A0"), hexc("EFC08A"), hexc("F2B98A")], 60, 160, 3)
+        floor_top = 650
+        tile = 120
+        for j, y in enumerate(range(floor_top, H, tile)):
+            for i, x in enumerate(range(0, W, tile)):
+                c = hexc("E8A06E") if (i + j) % 2 else hexc("DD9161")
+                d.rectangle([s(x), s(y), s(x + tile), s(y + tile)], fill=rgba(c), outline=rgba(hexc("B9693E")), width=s(3))
+        d.rectangle([s(0), s(floor_top - 20), s(W), s(floor_top + 26)], fill=rgba(hexc("F4C58E")), outline=rgba(BROWN), width=s(4))
+        marigold_line(d, -10, floor_top + 34, W + 10, floor_top + 34, 26)
+        bunting(d, -10, 520, W + 10, 560, 70, 11, rng)
+    else:
+        tops = rooftops(d, 1760, rng, [hexc("F6C98F"), hexc("EFAE76"), hexc("F2B989"), hexc("E89C6A")], 120, 240)
+        # A water tank on one roof, garlands along the parapets, bunting across the lane.
+        x0, x1, top = tops[1]
+        d.rounded_rectangle([s(x0 + 30), s(top - 120), s(x0 + 150), s(top)], radius=s(18), fill=rgba(hexc("3A7BC8")), outline=rgba(BROWN), width=s(4))
+        for (a, b, t) in tops:
+            marigold_line(d, a + 6, t + 22, b - 6, t + 22, 14)
+        bunting(d, -10, 1470, W + 10, 1500, 60, 12, rng)
+    img.alpha_composite(down(big_img))
+    return img.convert("RGB")
+
+
+def diagonal(size: tuple[int, int], stops: list[tuple[float, RGB]], slope: float = 0.45) -> Image.Image:
+    """A gradient from the top left to the bottom right through the given stops."""
+    w, h = 72, 128
+    small = Image.new("RGB", (w, h))
+    px = small.load()
+    for y in range(h):
+        for x in range(w):
+            t = (x / (w - 1)) * slope + (y / (h - 1)) * (1 - slope)
+            for i in range(len(stops) - 1):
+                (t0, c0), (t1, c1) = stops[i], stops[i + 1]
+                if t0 <= t <= t1:
+                    px[x, y] = lerp(c0, c1, (t - t0) / max(1e-6, t1 - t0))
+                    break
+            else:
+                px[x, y] = stops[-1][1]
+    return small.resize(size, Image.BICUBIC).convert("RGBA")
+
+
+def rosette(d: ImageDraw.ImageDraw, cx: float, cy: float, r: float, alpha: int) -> None:
+    """A line mandala: rings and petals, drawn faint as a texture."""
+    line = (255, 255, 255, alpha)
+    for k in (1.0, 0.82, 0.5, 0.2):
+        d.ellipse([s(cx - r * k), s(cy - r * k), s(cx + r * k), s(cy + r * k)], outline=line, width=s(2))
+    for i in range(16):
+        a = i / 16 * 2 * math.pi
+        px, py = cx + math.cos(a) * r * 0.66, cy + math.sin(a) * r * 0.66
+        d.ellipse([s(px - r * 0.14), s(py - r * 0.14), s(px + r * 0.14), s(py + r * 0.14)], outline=line, width=s(2))
+    for i in range(32):
+        a = i / 32 * 2 * math.pi
+        d.line([s(cx + math.cos(a) * r * 0.5), s(cy + math.sin(a) * r * 0.5), s(cx + math.cos(a) * r * 0.82), s(cy + math.sin(a) * r * 0.82)], fill=line, width=s(1))
+
+
+POP_STOPS = [(0, hexc("2B1B6B")), (0.42, hexc("5B2A8E")), (0.74, hexc("B23F86")), (1, hexc("FF7A59"))]
+
+
+def backdrop_pop() -> Image.Image:
+    img = diagonal((W, H), POP_STOPS)
+    big_img, d = big((W, H))
+    for (cx, cy, r, a) in [(1010, 170, 300, 26), (40, 980, 260, 20), (1000, 1700, 320, 24), (120, 1880, 200, 16)]:
+        rosette(d, cx, cy, r, a)
+    img.alpha_composite(down(big_img))
+    img.alpha_composite(glow_layer((W, H), (W * 0.2, H * 0.12), 520, hexc("7B5CFF"), 70))
+    return img.convert("RGB")
+
+
+def table_basant() -> Image.Image:
+    """A durrie on the roof: pink border, an orange band with a zigzag, a green field and tassels."""
+    w, h = TABLE
+    img, d = big(TABLE)
+    rug = (24, 44, w - 24, h - 44)
+    for x in range(rug[0] + 30, rug[2] - 20, 26):
+        for y0, y1 in ((rug[1], rug[1] - 34), (rug[3], rug[3] + 34)):
+            d.line([s(x), s(y0), s(x), s(y1)], fill=rgba(hexc("FFC93C")), width=s(6))
+    d.rounded_rectangle([s(v) for v in rug], radius=s(26), fill=rgba(hexc("E8457F")), outline=rgba(BROWN), width=s(6))
+    band = (rug[0] + 30, rug[1] + 30, rug[2] - 30, rug[3] - 30)
+    d.rounded_rectangle([s(v) for v in band], radius=s(18), fill=rgba(hexc("FF9B2F")))
+    step = 34
+    for x in range(int(band[0]), int(band[2]) - step + 1, step):
+        for (y, sign) in ((band[1] + 4, 1), (band[3] - 4, -1)):
+            d.polygon([(s(x), s(y)), (s(x + step), s(y)), (s(x + step / 2), s(y + sign * 18))], fill=rgba(hexc("FFD23F")))
+    field = (band[0] + 34, band[1] + 34, band[2] - 34, band[3] - 34)
+    d.rounded_rectangle([s(v) for v in field], radius=s(14), fill=rgba(hexc("FFF4D8")))
+    inner = (field[0] + 16, field[1] + 16, field[2] - 16, field[3] - 16)
+    out = down(img)
+    green = radial(TABLE, (w / 2, h * 0.45), (w * 0.6, h * 0.6), hexc("37B978"), hexc("1D8A55"))
+    green = grain(green, 10, 23)
+    gd = ImageDraw.Draw(green, "RGBA")
+    green.putalpha(mask_rounded(TABLE, inner, 10))
+    out.alpha_composite(green)
+    wm, wd = big(TABLE)
+    kite(wd, w / 2, h / 2 - 20, 150, (255, 255, 255), 0.0, 34)
+    out.alpha_composite(down(wm))
+    od = ImageDraw.Draw(out, "RGBA")
+    for x in range(int(field[0]) + 20, int(field[2]) - 10, 40):
+        for y in (field[1] + 8, field[3] - 8):
+            od.polygon([(x, y - 5), (x + 5, y), (x, y + 5), (x - 5, y)], fill=rgba(hexc("E8457F")))
+    return out
+
+
+def table_pop() -> Image.Image:
+    """A clean modern table: a white rim around a violet felt, the name faint in the middle."""
+    w, h = TABLE
+    out = Image.new("RGBA", TABLE, (0, 0, 0, 0))
+    rim = mask_rounded(TABLE, (8, 8, w - 8, h - 8), 84)
+    white = vertical(TABLE, [(0, hexc("FFFFFF")), (1, hexc("ECE8F8"))])
+    white.putalpha(rim)
+    out.alpha_composite(white)
+    felt_box = (44, 44, w - 44, h - 44)
+    felt = radial(TABLE, (w / 2, h * 0.42), (w * 0.62, h * 0.62), hexc("6A50E0"), hexc("2E1F82"))
+    fd = ImageDraw.Draw(felt, "RGBA")
+    text_centre(fd, (w / 2, h / 2), "HULLA", font("Baloo2.ttf", 120), (255, 255, 255, 14))
+    felt.putalpha(mask_rounded(TABLE, felt_box, 56))
+    out.alpha_composite(felt)
+    od = ImageDraw.Draw(out, "RGBA")
+    od.rounded_rectangle((felt_box[0] + 18, felt_box[1] + 18, felt_box[2] - 18, felt_box[3] - 18), radius=42, outline=(255, 255, 255, 40), width=3)
+    return out
+
+
+def kite_sprite() -> Image.Image:
+    """A white kite with a brown outline and tail, 120 x 200; the ambient layer tints it."""
+    img, d = big((120, 200))
+    kite(d, 60, 64, 52, (255, 255, 255))
+    kite_string(d, 60, 122, 60, 200, 0)
+    return down(img)
+
+
+def horizontal_pill(left: RGB, right: RGB, size: tuple[int, int] = (200, 140), radius: int = 44, gloss: int = 0) -> Image.Image:
+    """A nine-slice pill whose fill runs from left to right."""
+    w, h = size
+    img = Image.new("RGBA", (w, h), (0, 0, 0, 0))
+    sh = Image.new("RGBA", (w, h), (0, 0, 0, 0))
+    ImageDraw.Draw(sh, "RGBA").rounded_rectangle((6, 14, w - 7, h - 10), radius=radius, fill=(30, 10, 60, 90))
+    img.alpha_composite(sh.filter(ImageFilter.GaussianBlur(6)))
+    strip = Image.new("RGB", (w, 1))
+    for x in range(w):
+        strip.putpixel((x, 0), lerp(left, right, x / (w - 1)))
+    fill = strip.resize((w, h)).convert("RGBA")
+    fill.putalpha(mask_rounded((w, h), (4, 4, w - 5, h - 16), radius))
+    img.alpha_composite(fill)
+    if gloss:
+        g = Image.new("RGBA", (w, h), (255, 255, 255, 0))
+        g.putalpha(mask_rounded((w, h), (14, 8, w - 15, 8 + (h - 24) * 0.42), radius - 10).point(lambda v: v * gloss // 255))
+        img.alpha_composite(g)
+    return img
+
+
+def soft_pill(fill: RGB, alpha: int, outline: RGB | None, outline_alpha: int = 255, line: int = 3, size: tuple[int, int] = (160, 112), radius: int = 40) -> Image.Image:
+    w, h = size
+    big_img, d = big((w, h))
+    d.rounded_rectangle([s(3), s(3), s(w - 4), s(h - 4)], radius=s(radius), fill=rgba(fill, alpha),
+                        outline=None if outline is None else rgba(outline, outline_alpha), width=s(line) if outline is not None else 0)
+    return down(big_img)
+
+
 # ---------------------------------------------------------------- frames, backs, nine-slices
 
 
@@ -596,6 +852,14 @@ def frame(kind: str) -> Image.Image:
             x, y = c + math.cos(a) * s(94), c + math.sin(a) * s(94)
             d.ellipse([x - s(7), y - s(7), x + s(7), y + s(7)], fill=rgba(hexc("E91E63")), outline=rgba(hexc("8A0E45")), width=s(2))
         ring(80, rgba(hexc("8A0E45")), 4)
+    elif kind == "basant":
+        ring(95, rgba(BROWN), 5)
+        ring(90, rgba(hexc("FFD23F")), 8)
+        ring(83, rgba(hexc("FF8A1F")), 6)
+        ring(79, rgba(BROWN), 3)
+    elif kind == "pop":
+        ring(93, rgba(hexc("FFFFFF")), 12)
+        ring(85, rgba(hexc("C9BDF5")), 3)
     else:  # adda
         ring(95, rgba(hexc("3A1E0A")), 4)
         ring(91, rgba(hexc("FFE0A0")), 5)
@@ -614,7 +878,8 @@ def card_back(kind: str) -> Image.Image:
     w, h = 300, 420
     img = Image.new("RGBA", (w, h), (0, 0, 0, 0))
     d = ImageDraw.Draw(img, "RGBA")
-    border = {"haveli": hexc("F3E2BE"), "dhaba": hexc("111111"), "club": hexc("FFFFFF"), "mehndi": hexc("FFF3E0"), "adda": hexc("FFF4E2")}[kind]
+    border = {"haveli": hexc("F3E2BE"), "dhaba": hexc("111111"), "club": hexc("FFFFFF"), "mehndi": hexc("FFF3E0"), "adda": hexc("FFF4E2"),
+              "basant": hexc("FFF7E6"), "pop": hexc("FFFFFF")}[kind]
     d.rounded_rectangle((0, 0, w - 1, h - 1), radius=24, fill=rgba(border))
     inner = (16, 16, w - 17, h - 17)
     field = Image.new("RGBA", (w, h), (0, 0, 0, 0))
@@ -650,6 +915,19 @@ def card_back(kind: str) -> Image.Image:
             a = k / 12 * 2 * math.pi
             fd.ellipse((w / 2 + math.cos(a) * 50 - 18, h / 2 + math.sin(a) * 50 - 18, w / 2 + math.cos(a) * 50 + 18, h / 2 + math.sin(a) * 50 + 18), fill=rgba(hexc("FFB300")), outline=rgba(hexc("E65100")), width=3)
         fd.ellipse((w / 2 - 26, h / 2 - 26, w / 2 + 26, h / 2 + 26), fill=rgba(hexc("E91E63")))
+    elif kind == "basant":
+        fd.rectangle((0, 0, w, h), fill=rgba(hexc("E8457F")))
+        for j in range(0, h + 40, 40):
+            for i in range(0, w + 40, 40):
+                cx, cy = i + (20 if (j // 40) % 2 else 0), j
+                fd.polygon([(cx, cy - 9), (cx + 7, cy), (cx, cy + 10), (cx - 7, cy)], fill=rgba(hexc("FFC0D8")))
+        big_img, bd = big((w, h))
+        kite(bd, w / 2, h / 2 - 16, 92, hexc("FF8A1F"))
+        field.alpha_composite(down(big_img))
+    elif kind == "pop":
+        field.alpha_composite(diagonal((w, h), POP_STOPS, 0.5))
+        fd.ellipse((w / 2 - 66, h / 2 - 66, w / 2 + 66, h / 2 + 66), outline=(255, 255, 255, 230), width=6)
+        text_centre(fd, (w / 2, h / 2 + 6), "H", font("Baloo2.ttf", 92), (255, 255, 255, 255))
     else:
         fd.rectangle((0, 0, w, h), fill=rgba(hexc("0F4F4A")))
         for i in range(-h, w + h, 16):
@@ -715,10 +993,16 @@ GHOST: dict[str, tuple[RGB, RGB]] = {
     "club": (hexc("0E1430"), hexc("8FB0FF")),
     "mehndi": (hexc("300520"), hexc("FFC233")),
     "adda": (hexc("1E0E04"), hexc("E8B25A")),
+    "basant": (hexc("FFF7E6"), hexc("FF8A1F")),
+    "pop": (hexc("FFFFFF"), hexc("2A1E78")),
 }
 
 
 def ghost(kind: str) -> Image.Image:
+    if kind == "basant":
+        return soft_pill(hexc("FFF7E6"), 240, BROWN, line=4)
+    if kind == "pop":
+        return soft_pill(hexc("FFFFFF"), 46, hexc("FFFFFF"), 170)
     fill, accent = GHOST[kind]
     w, h, radius, line = 160, 112, 40, 3
     big_img, d = big((w, h))
@@ -729,6 +1013,8 @@ def ghost(kind: str) -> Image.Image:
 def chip_on(kind: str) -> Image.Image:
     """A selected chip: filled with the skin's accent, so a choice reads apart from the green call to action."""
     _, accent = GHOST[kind]
+    if kind == "basant":
+        return soft_pill(accent, 255, BROWN, line=4)
     w, h, radius = 160, 112, 40
     big_img, d = big((w, h))
     d.rounded_rectangle([s(3), s(3), s(w - 4), s(h - 4)], radius=s(radius), fill=rgba(accent, 235), outline=rgba(accent), width=s(3))
@@ -767,6 +1053,24 @@ def skin_nines(kind: str) -> dict[str, Image.Image]:
             "panel": nine(hexc("3C0628"), hexc("2A031C"), outline=hexc("FFC233"), outline_w=2, radius=36, dotted=hexc("FFB300"), shadow=150, size=(220, 220)),
             "plate": nine(hexc("2E7D32"), hexc("1B5E20"), outline=hexc("FFC233"), outline_w=3, radius=30, size=(120, 64)),
             "pill": nine(hexc("300520"), hexc("300520"), outline=hexc("B8862F"), outline_w=2, radius=30, size=(120, 64)),
+        }
+    if kind == "basant":
+        return {
+            "btn-primary": nine(hexc("FFE066"), hexc("F7A21B"), outline=BROWN, outline_w=4, lip=hexc("9A4A08"), lip_h=8, radius=30, gloss=70),
+            "btn-secondary": nine(hexc("4FD6CF"), hexc("17A39D"), outline=BROWN, outline_w=4, lip=hexc("0E6E6A"), lip_h=8, radius=30, gloss=50),
+            "panel": nine(hexc("FFF9EC"), hexc("FFF0D2"), outline=BROWN, outline_w=4, radius=36, inner_line=(232, 69, 127, 110), shadow=50, size=(220, 220)),
+            "plate": nine(hexc("FFF7E6"), hexc("FCE9C6"), outline=BROWN, outline_w=3, radius=16, size=(120, 64)),
+            "pill": nine(hexc("5A2E12"), hexc("5A2E12"), radius=30, size=(120, 64)),
+            "chip": soft_pill(hexc("FFF7E6"), 240, BROWN, line=4),
+        }
+    if kind == "pop":
+        return {
+            "btn-primary": horizontal_pill(hexc("4330C2"), hexc("FF6F61"), gloss=36),
+            "btn-secondary": soft_pill(hexc("FFFFFF"), 46, hexc("FFFFFF"), 170, size=(200, 140), radius=44),
+            "panel": nine(hexc("FFFFFF"), hexc("FAF8FF"), radius=40, shadow=70, size=(220, 220)),
+            "plate": nine(hexc("FFFFFF"), hexc("F1EEFB"), radius=26, size=(120, 64)),
+            "pill": nine(hexc("231862"), hexc("231862"), outline=hexc("5B4BC8"), outline_w=2, radius=30, size=(120, 64)),
+            "chip": soft_pill(hexc("EEEBFA"), 255, None),
         }
     return {
         "btn-primary": nine(hexc("FFD27A"), hexc("E8962A"), lip=hexc("8A4E10"), lip_h=8, radius=30, gloss=60),
@@ -939,6 +1243,8 @@ SKINS = {
     "club": (backdrop_club, table_club),
     "mehndi": (backdrop_mehndi, table_mehndi),
     "adda": (backdrop_adda, table_adda),
+    "basant": (backdrop_basant, table_basant),
+    "pop": (backdrop_pop, table_pop),
 }
 
 
@@ -954,6 +1260,7 @@ def main() -> None:
     steam().save(shared / "steam.png", optimize=True)
     cone().save(shared / "cone.png", optimize=True)
     glass().save(shared / "glass.png", optimize=True)
+    kite_sprite().save(shared / "kite.png", optimize=True)
     stamp_burst().save(shared / "stamp-burst.png", optimize=True)
     stamp_ribbon().save(shared / "stamp-ribbon.png", optimize=True)
     stamp_oval().save(shared / "stamp-oval.png", optimize=True)
@@ -963,7 +1270,7 @@ def main() -> None:
         backdrop = make_backdrop()
         backdrop.save(folder / "backdrop.png", optimize=True)
         # Menus have no table, so no floor or rail across the bottom (the seam on Home and the lists).
-        menu = make_backdrop(False) if make_backdrop in (backdrop_haveli, backdrop_dhaba, backdrop_club) else backdrop
+        menu = make_backdrop(False) if make_backdrop in (backdrop_haveli, backdrop_dhaba, backdrop_club, backdrop_basant) else backdrop
         menu.save(folder / "menu.png", optimize=True)
         table = make_table()
         shadowed_table = Image.new("RGBA", (TABLE[0] + 60, TABLE[1] + 80), (0, 0, 0, 0))

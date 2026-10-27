@@ -12,5 +12,7 @@ namespace Hulla.Application.Settings
         Dhaba = 2,
         Mehndi = 3,
         Adda = 4,
+        Basant = 5,
+        Pop = 6,
     }
 }

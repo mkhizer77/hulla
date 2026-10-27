@@ -1,5 +1,5 @@
 /*
- * The five table themes (docs/design/table-themes.md). Each hangs off a class on the shell root
+ * The table themes (docs/design/table-themes.md). Each hangs off a class on the shell root
  * (ThemeClasses: skin--club and so on) and restyles the shared screens: the scene behind every
  * screen, the table, buttons, panels, name plates, seat frames, card backs, the thulla stamp and
  * the display face. Art comes from tools/artkit/skins.py; the ambient motion from AmbientLayer.
@@ -17,6 +17,7 @@
 .skinned .ambient__steam { background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/shared/steam.png"); -unity-background-scale-mode: stretch-to-fill; }
 .skinned .ambient__cone { background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/shared/cone.png"); -unity-background-scale-mode: stretch-to-fill; }
 .skinned .ambient__glass { background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/shared/glass.png"); -unity-background-scale-mode: stretch-to-fill; }
+.skinned .ambient__kite { background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/shared/kite.png"); -unity-background-scale-mode: stretch-to-fill; }
 
 /* The scene fills the screen; the old lattice ground steps aside. */
 .skinned .screen, .skinned .table {
@@ -248,13 +249,14 @@
 /* The theme picker in settings. */
 .skinned .theme-picker {
     flex-direction: row;
-    justify-content: space-between;
+    flex-wrap: wrap;
+    justify-content: flex-start;
     margin: 8px 0 24px 0;
 }
 
 .skinned .theme-tile {
-    width: 19%;
-    margin: 0;
+    width: 23%;
+    margin: 0 1% 16px 1%;
     padding: 10px 6px 14px 6px;
     align-items: center;
     background-image: none;
@@ -289,6 +291,8 @@
 .theme-tile__preview--dhaba { background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/dhaba/preview.png"); }
 .theme-tile__preview--mehndi { background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/mehndi/preview.png"); }
 .theme-tile__preview--adda { background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/adda/preview.png"); }
+.theme-tile__preview--basant { background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/basant/preview.png"); }
+.theme-tile__preview--pop { background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/pop/preview.png"); }
 
 /* ---- Club Classic ---- */
 
@@ -1251,4 +1255,419 @@
 /* Lists scroll by touch; the desktop scroll bar looked like a stray white rail. */
 .skinned .unity-scroller--vertical, .skinned .unity-scroller--horizontal {
     display: none;
+}
+
+/* ======================================================================================
+ * Basant and Pop: the two looks in the playtest (art-design/concepts, concepts 2 and 4).
+ * Basant is the only light scene, so its ink is dark brown everywhere; Pop keeps white ink
+ * on its gradient and turns it dark inside its white cards.
+ * ====================================================================================== */
+
+/* ---- Basant ---- */
+
+.skin--basant {
+    --surface-ui: #86D5F8;
+    --surface-panel: #FFF3DA;
+    --surface-raised: #FCE6BE;
+    --accent-saffron: #FF8A1F;
+    --accent-teal: #17A39D;
+    --ink-ivory: #4A2511;
+    --ink-muted: #85593A;
+    --gold: #FF8A1F;
+    --felt: #2BA36B;
+    color: #4A2511;
+}
+
+.skin--basant .screen {
+    background-color: #86D5F8;
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/basant/menu.png");
+}
+
+.skin--basant .table {
+    background-color: #E8A06E;
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/basant/backdrop.png");
+}
+
+.skin--basant .table__zone > .rail, .skin--basant .game__art, .skin--basant .lobby-table {
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/basant/table.png");
+}
+
+.skin--basant .title, .skin--basant .code, .skin--basant .home__title, .skin--basant .seat__initial, .skin--basant .card__rank, .skin--basant .card__court, .skin--basant .podium__rank, .skin--basant .turn, .skin--basant .hero, .skin--basant .button--primary, .skin--basant .button--secondary, .skin--basant .countdown, .skin--basant .results__title, .skin--basant .results__stamp, .skin--basant .coach__text, .skin--basant .daily__text, .skin--basant .toast, .skin--basant .game__name {
+    -unity-font-definition: url("/Assets/_Project/Presentation/Theme/Fonts/LilitaOne.ttf");
+    -unity-font-style: normal;
+}
+
+.skin--basant .title, .skin--basant .home__title, .skin--basant .code, .skin--basant .results__title, .skin--basant .game__name {
+    color: #FFD23F;
+    text-shadow: 0 5px 0 #7A3A0A;
+}
+
+.skin--basant .caption, .skin--basant .subtitle, .skin--basant .lobby-rules__text, .skin--basant .button--quiet, .skin--basant .home__links > .button, .skin--basant .status, .skin--basant .podium__name, .skin--basant .podium__rank {
+    text-shadow: 0 1px 2px rgba(255, 255, 255, 0.7);
+}
+
+.skin--basant .button, .skin--basant .chip--share {
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/basant/btn-ghost.png");
+    color: #4A2511;
+}
+
+.skin--basant .button--secondary {
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/basant/btn-secondary.png");
+    color: #FFFFFF;
+    text-shadow: 0 3px 0 #0E5E5A;
+}
+
+.skin--basant .chip {
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/basant/chip.png");
+    color: #4A2511;
+}
+
+.skin--basant .button--primary, .skin--basant .turn--mine {
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/basant/btn-primary.png");
+    color: #4A2511;
+    text-shadow: 0 2px 0 rgba(255, 245, 200, 0.7);
+}
+
+.skin--basant .chip--on {
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/basant/chip-on.png");
+    color: #FFFFFF;
+    text-shadow: 0 2px 0 #9A4A08;
+}
+
+.skin--basant .button--quiet {
+    background-image: none;
+    color: #4A2511;
+}
+
+.skin--basant .button--danger {
+    color: #C62828;
+}
+
+.skin--basant .panel, .skin--basant .game {
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/basant/panel.png");
+    background-color: rgba(0, 0, 0, 0);
+}
+
+.skin--basant .seat__name {
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/basant/plate.png");
+    color: #4A2511;
+}
+
+.skin--basant .seat__frame {
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/basant/frame.png");
+}
+
+.skin--basant .seat__avatar {
+    border-radius: 999px;
+}
+
+.skin--basant .seat__back, .skin--basant .discard__card, .skin--basant .game__back {
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/basant/back.png");
+}
+
+.skin--basant .table__info, .skin--basant .table__pill, .skin--basant .quick-strip__chip, .skin--basant .quick-strip__more, .skin--basant .table__chat, .skin--basant .me-badge {
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/basant/pill.png");
+    color: #FFF3DA;
+}
+
+.skin--basant .me-badge .seat__name, .skin--basant .table__info Label, .skin--basant .table__pill Label {
+    color: #FFF3DA;
+}
+
+.skin--basant .card--legal {
+    border-color: #FF8A1F;
+}
+
+.skin--basant .game__soon, .skin--basant .seat__state, .skin--basant .pile__owner, .skin--basant .seat__void {
+    background-color: rgba(90, 46, 18, 0.85);
+    color: #FFF3DA;
+}
+
+.skin--basant .lobby-seat, .skin--basant .settings__row, .skin--basant .leaderboard__row {
+    background-color: rgba(255, 247, 230, 0.86);
+    border-color: rgba(90, 46, 18, 0.35);
+}
+
+.skin--basant .settings__heading {
+    color: #C2410C;
+}
+
+.skin--basant .meter {
+    background-color: rgba(90, 46, 18, 0.18);
+}
+
+.skin--basant .nav {
+    background-color: #FFF3DA;
+    border-top-color: #5A2E12;
+}
+
+.skin--basant .nav__glyph, .skin--basant .nav__label {
+    color: #85593A;
+}
+
+.skin--basant .nav__tab--on .nav__glyph, .skin--basant .nav__tab--on .nav__label {
+    color: #E8457F;
+}
+
+.skin--basant .toast {
+    color: #FFD23F;
+    background-image: none;
+    padding: 0;
+    text-shadow: 0 8px 0 #7A3A0A;
+}
+
+.skin--basant .unity-toggle__checkmark, .skin--basant .field .unity-base-text-field__input {
+    border-color: #5A2E12;
+    background-color: rgba(255, 247, 230, 0.92);
+}
+
+.skin--basant .unity-toggle:checked .unity-toggle__checkmark {
+    background-color: #FF8A1F;
+}
+
+.skin--basant .field .unity-base-text-field__input, .skin--basant .field TextInput {
+    color: #4A2511;
+}
+
+.skin--basant .unity-toggle > .unity-label, .skin--basant .unity-base-slider > .unity-label, .skin--basant .field > Label {
+    color: #4A2511;
+}
+
+.skin--basant .unity-base-slider__tracker {
+    background-color: rgba(90, 46, 18, 0.25);
+}
+
+.skin--basant .unity-base-slider__dragger {
+    background-color: #FF8A1F;
+}
+
+/* ---- Pop ---- */
+
+.skin--pop {
+    --surface-ui: #3B1F7A;
+    --surface-panel: #FFFFFF;
+    --surface-raised: #4A2E92;
+    --accent-saffron: #FFB35C;
+    --accent-teal: #6A50E0;
+    --ink-ivory: #FFFFFF;
+    --ink-muted: #E3D9FF;
+    --gold: #FFC24A;
+    --felt: #3E2CA0;
+    color: #FFFFFF;
+}
+
+.skin--pop .screen {
+    background-color: #3B1F7A;
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/pop/menu.png");
+}
+
+.skin--pop .table {
+    background-color: #3B1F7A;
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/pop/backdrop.png");
+}
+
+.skin--pop .table__zone > .rail, .skin--pop .game__art, .skin--pop .lobby-table {
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/pop/table.png");
+}
+
+.skin--pop .title, .skin--pop .code, .skin--pop .home__title, .skin--pop .seat__initial, .skin--pop .podium__rank, .skin--pop .turn, .skin--pop .hero, .skin--pop .button--primary, .skin--pop .countdown, .skin--pop .results__title, .skin--pop .results__stamp, .skin--pop .coach__text, .skin--pop .daily__text, .skin--pop .toast, .skin--pop .game__name {
+    -unity-font-definition: url("/Assets/_Project/Presentation/Theme/Fonts/Baloo2.ttf");
+    -unity-font-style: normal;
+}
+
+.skin--pop .title, .skin--pop .home__title, .skin--pop .code, .skin--pop .results__title {
+    color: #FFFFFF;
+    text-shadow: 0 4px 10px rgba(30, 10, 70, 0.45);
+}
+
+.skin--pop .caption, .skin--pop .subtitle, .skin--pop .lobby-rules__text, .skin--pop .button--quiet, .skin--pop .home__links > .button, .skin--pop .status, .skin--pop .podium__name, .skin--pop .podium__rank {
+    text-shadow: 0 1px 3px rgba(30, 10, 70, 0.5);
+}
+
+/* White cards carry dark ink; everything inside them follows. */
+.skin--pop .panel, .skin--pop .game, .skin--pop .lobby-seat, .skin--pop .settings__row, .skin--pop .leaderboard__row {
+    --ink-ivory: #241B4A;
+    --ink-muted: #6E6790;
+    --accent-saffron: #E8590C;
+    color: #241B4A;
+}
+
+.skin--pop .panel .title, .skin--pop .panel .results__title, .skin--pop .panel .code, .skin--pop .dialog__text {
+    color: #241B4A;
+    text-shadow: 0 0 0 rgba(0, 0, 0, 0);
+}
+
+.skin--pop .panel, .skin--pop .game {
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/pop/panel.png");
+    background-color: rgba(0, 0, 0, 0);
+}
+
+.skin--pop .panel .caption, .skin--pop .panel .subtitle, .skin--pop .panel .status, .skin--pop .game .caption, .skin--pop .panel .button--quiet, .skin--pop .settings__row .caption {
+    text-shadow: 0 0 0 rgba(0, 0, 0, 0);
+}
+
+.skin--pop .game__name {
+    color: #241B4A;
+}
+
+.skin--pop .lobby-seat, .skin--pop .settings__row, .skin--pop .leaderboard__row {
+    background-color: rgba(255, 255, 255, 0.94);
+    border-color: rgba(255, 255, 255, 0);
+    border-radius: 28px;
+}
+
+.skin--pop .button, .skin--pop .button--secondary, .skin--pop .chip--share {
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/pop/btn-ghost.png");
+    color: #FFFFFF;
+}
+
+.skin--pop .panel .button, .skin--pop .game .button, .skin--pop .settings__row .button, .skin--pop .chip {
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/pop/chip.png");
+    color: #241B4A;
+}
+
+.skin--pop .button--primary, .skin--pop .turn--mine, .skin--pop .panel .button--primary, .skin--pop .game .button--primary {
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/pop/btn-primary.png");
+    color: #FFFFFF;
+    text-shadow: 0 0 0 rgba(0, 0, 0, 0);
+}
+
+.skin--pop .chip--on, .skin--pop .panel .chip--on, .skin--pop .game .chip--on {
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/pop/chip-on.png");
+    color: #FFFFFF;
+}
+
+.skin--pop .button--quiet, .skin--pop .panel .button--quiet, .skin--pop .game .button--quiet {
+    background-image: none;
+}
+
+.skin--pop .panel .button--danger, .skin--pop .settings__row .button--danger {
+    color: #D32F2F;
+}
+
+.skin--pop .seat__name {
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/pop/plate.png");
+    color: #241B4A;
+}
+
+.skin--pop .seat__frame {
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/pop/frame.png");
+}
+
+.skin--pop .seat__avatar {
+    border-radius: 999px;
+}
+
+.skin--pop .seat__back, .skin--pop .discard__card, .skin--pop .game__back {
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/pop/back.png");
+}
+
+.skin--pop .table__info, .skin--pop .table__pill, .skin--pop .quick-strip__chip, .skin--pop .quick-strip__more, .skin--pop .table__chat, .skin--pop .me-badge {
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/pop/pill.png");
+    color: #FFFFFF;
+}
+
+.skin--pop .card--legal {
+    border-color: #FF6F61;
+}
+
+.skin--pop .meter {
+    background-color: rgba(36, 27, 74, 0.14);
+}
+
+.skin--pop .nav {
+    background-color: #FFFFFF;
+    border-top-color: rgba(255, 255, 255, 0);
+}
+
+.skin--pop .nav__glyph, .skin--pop .nav__label {
+    color: #8E8AA6;
+}
+
+.skin--pop .nav__tab--on .nav__glyph, .skin--pop .nav__tab--on .nav__label {
+    color: #3B2AA8;
+}
+
+.skin--pop .toast {
+    color: #FFFFFF;
+    background-image: none;
+    padding: 0;
+    text-shadow: 0 6px 0 #3B2AA8;
+}
+
+.skin--pop .unity-toggle__checkmark {
+    border-color: #FFFFFF;
+}
+
+.skin--pop .settings__row .unity-toggle__checkmark, .skin--pop .panel .unity-toggle__checkmark {
+    border-color: #6A50E0;
+    background-color: #F1EEFB;
+}
+
+.skin--pop .unity-toggle:checked .unity-toggle__checkmark {
+    background-color: #6A50E0;
+}
+
+.skin--pop .unity-toggle > .unity-label, .skin--pop .unity-base-slider > .unity-label, .skin--pop .field > Label {
+    color: var(--ink-ivory);
+}
+
+.skin--pop .unity-base-slider__dragger {
+    background-color: #FF6F61;
+}
+
+.skin--pop .settings__row .unity-base-slider__tracker {
+    background-color: rgba(36, 27, 74, 0.14);
+}
+
+.skin--pop .field .unity-base-text-field__input {
+    border-color: rgba(255, 255, 255, 0.7);
+}
+
+.skin--pop .panel .field .unity-base-text-field__input, .skin--pop .panel .field TextInput {
+    border-color: #C9BDF5;
+    background-color: #F5F3FC;
+    color: #241B4A;
+}
+
+/* The look playtest: the Home card and the question after a round. */
+.looks {
+    margin-top: 24px;
+    padding: 28px 28px 20px 28px;
+}
+
+.looks__title {
+    font-size: 40px;
+    -unity-font-style: bold;
+    color: var(--ink-ivory);
+}
+
+.looks__row {
+    flex-direction: row;
+    justify-content: center;
+    margin-top: 16px;
+}
+
+.skinned .looks__tile {
+    width: 40%;
+    margin: 0 2%;
+}
+
+.skinned .looks__tile .theme-tile__name {
+    font-size: 32px;
+}
+
+.look-sheet__chips {
+    flex-wrap: wrap;
+    justify-content: center;
+    margin: 12px 0 8px 0;
+}
+
+.look-sheet__chips > .chip {
+    margin: 8px;
+    min-height: 96px;
+}
+
+.look-sheet .field {
+    margin: 16px 0 8px 0;
 }

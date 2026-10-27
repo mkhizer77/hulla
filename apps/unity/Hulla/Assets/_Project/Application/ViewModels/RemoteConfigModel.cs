@@ -30,6 +30,9 @@ namespace Hulla.Application.ViewModels
 
         public bool Voice => Current.Bool("voice", true);
 
+        /// <summary>The look playtest: the Home card and the question after a round in a new look.</summary>
+        public bool LooksTest => Current.Bool("looks_test", true);
+
         public bool UpdateRequired => Current.UpdateRequired;
 
         public async Awaitable RefreshAsync(string clientVersion, string cohort, CancellationToken cancellation)
