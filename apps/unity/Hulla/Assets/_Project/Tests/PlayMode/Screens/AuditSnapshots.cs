@@ -18,12 +18,12 @@ using UnityEngine.UIElements;
 namespace Hulla.Screens.Tests
 {
     /// <summary>
-    /// Every main screen in English and the default theme, with the bottom navigation where the app shows
+    /// Every main screen in English, with the bottom navigation where the app shows
     /// it, as PNGs for a design review; explicit: <c>-testFilter Hulla.Screens.Tests.AuditSnapshots</c>.
     /// </summary>
     public sealed class AuditSnapshots
     {
-        private static readonly string[] WithNav = { "home", "friends", "profile", "shop", "pass", "leaderboard", "ranked", "missions", "achievements" };
+        private static readonly string[] WithNav = { "home", "friends", "profile", "shop", "pass", "leaderboard", "ranked", "missions", "achievements", "inventory" };
 
         [UnityTest, Explicit]
         public IEnumerator EveryScreen()
@@ -32,11 +32,18 @@ namespace Hulla.Screens.Tests
             var settings = AssetDatabase.LoadAssetAtPath<PanelSettings>("Assets/Settings/UI/PanelSettings.asset");
             var dir = System.Environment.GetEnvironmentVariable("HULLA_SNAPSHOT_DIR") ?? "Temp";
             Directory.CreateDirectory(dir);
+            // HULLA_SNAPSHOT_HEIGHT=2400 renders a 1080 x 2400 phone (a Pixel 7a) with its system-bar insets.
+            var tall = int.TryParse(System.Environment.GetEnvironmentVariable("HULLA_SNAPSHOT_HEIGHT"), out var h) ? h : 0;
             foreach (var screen in ScreenCases.All())
             {
-                var task = CardRenderer.RenderAsync(settings, CardRatio.Story, root =>
+                var task = CardRenderer.RenderAsync(settings, CardRenderer.Width, tall > 0 ? tall : CardRenderer.HeightOf(CardRatio.Story), root =>
                 {
-                    ScreenCases.Skin(root, Hulla.Application.Settings.TableSkin.Club);
+                    if (tall > 0)
+                    {
+                        ScreenLayout.Apply(root, SizeClass.Compact, new Insets(118, 0, 63, 0));
+                    }
+
+                    ScreenCases.Skin(root);
                     var instance = screen.Screen!.Instantiate();
                     instance.style.flexGrow = 1;
                     root.Add(instance);
@@ -44,12 +51,12 @@ namespace Hulla.Screens.Tests
                     var face = instance.Q(className: "screen");
                     if (face != null)
                     {
-                        Hulla.Presentation.Theme.AmbientLayer.Decorate(face, Hulla.Application.Settings.TableSkin.Club, false);
+                        Hulla.Presentation.Theme.AmbientLayer.Decorate(face, false);
                     }
                     if (System.Array.IndexOf(WithNav, screen.Name) >= 0)
                     {
                         var bar = new NavBar(UiText.NavLabel);
-                        bar.Select(NavTab.Home);
+                        bar.Select(screen.Name == "home" ? NavTab.Home : screen.Name == "friends" ? NavTab.Friends : NavTab.Inventory);
                         root.Add(bar);
                     }
                 });
@@ -63,22 +70,21 @@ namespace Hulla.Screens.Tests
             }
         }
 
-        /// <summary>The table, mid-round, in every theme, with a table cosmetic equipped and the hand full.</summary>
+        /// <summary>The table, mid-round, on the player's turn and waiting, with a table cosmetic equipped and the hand full.</summary>
         [UnityTest, Explicit]
-        public IEnumerator TableInEveryTheme()
+        public IEnumerator TableMidRound()
         {
             Strings.Use(Strings.Fallback);
             var settings = AssetDatabase.LoadAssetAtPath<PanelSettings>("Assets/Settings/UI/PanelSettings.asset");
             var catalog = AssetDatabase.LoadAssetAtPath<ScreenCatalog>("Assets/Settings/UI/ScreenCatalog.asset");
             var dir = System.Environment.GetEnvironmentVariable("HULLA_SNAPSHOT_DIR") ?? "Temp";
             Directory.CreateDirectory(dir);
-            foreach (TableSkin skin in System.Enum.GetValues(typeof(TableSkin)))
             {
                 foreach (var myTurn in new[] { true, false })
                 {
                     var task = CardRenderer.RenderAsync(settings, CardRatio.Story, root =>
                     {
-                        ScreenCases.Skin(root, skin);
+                        ScreenCases.Skin(root);
                         var instance = catalog.Table!.Instantiate();
                         instance.style.flexGrow = 1;
                         root.Add(instance);
@@ -96,7 +102,7 @@ namespace Hulla.Screens.Tests
                         var face = instance.Q(className: "screen") ?? instance.Q(className: "table");
                         if (face != null)
                         {
-                            Hulla.Presentation.Theme.AmbientLayer.Decorate(face, skin, false);
+                            Hulla.Presentation.Theme.AmbientLayer.Decorate(face, false);
                         }
                     });
                     var awaiter = task.GetAwaiter();
@@ -105,7 +111,7 @@ namespace Hulla.Screens.Tests
                         yield return null;
                     }
 
-                    File.WriteAllBytes(Path.Combine(dir, "theme-" + skin.ToString().ToLowerInvariant() + (myTurn ? "-mine" : "-wait") + ".png"), awaiter.GetResult());
+                    File.WriteAllBytes(Path.Combine(dir, "table" + (myTurn ? "-mine" : "-wait") + ".png"), awaiter.GetResult());
                 }
             }
         }

@@ -9,7 +9,7 @@ namespace Hulla.Presentation.Tests
     public sealed class NavBarTests
     {
         [Test]
-        public void FiveTabsInTheGddOrder()
+        public void FourTabsInTheConceptOrder()
         {
             var bar = new NavBar(UiText.NavLabel);
             var names = new System.Collections.Generic.List<string>();
@@ -18,18 +18,18 @@ namespace Hulla.Presentation.Tests
                 names.Add(child.name);
             }
 
-            CollectionAssert.AreEqual(new[] { "nav-home", "nav-friends", "nav-shop", "nav-pass", "nav-profile" }, names);
+            CollectionAssert.AreEqual(new[] { "nav-home", "nav-friends", "nav-inventory", "nav-settings" }, names);
         }
 
         [Test]
         public void SelectingATabLightsItAlone()
         {
             var bar = new NavBar(UiText.NavLabel);
-            bar.Select(NavTab.Shop);
-            Assert.AreEqual(NavTab.Shop, bar.Active);
+            bar.Select(NavTab.Inventory);
+            Assert.AreEqual(NavTab.Inventory, bar.Active);
             foreach (var child in bar.Children())
             {
-                Assert.AreEqual(child.name == "nav-shop", child.ClassListContains("nav__tab--on"), child.name);
+                Assert.AreEqual(child.name == "nav-inventory", child.ClassListContains("nav__tab--on"), child.name);
             }
         }
 
@@ -39,9 +39,9 @@ namespace Hulla.Presentation.Tests
             var bar = new NavBar(UiText.NavLabel);
             NavTab? chosen = null;
             bar.Chosen += tab => chosen = tab;
-            Assert.IsNotNull(bar.Q<Button>("nav-pass"), "the tab is a button");
-            bar.Tap(NavTab.Pass);
-            Assert.AreEqual(NavTab.Pass, chosen);
+            Assert.IsNotNull(bar.Q<Button>("nav-settings"), "the tab is a button");
+            bar.Tap(NavTab.Settings);
+            Assert.AreEqual(NavTab.Settings, chosen);
         }
 
         [Test]
@@ -58,6 +58,14 @@ namespace Hulla.Presentation.Tests
             Assert.AreEqual(DisplayStyle.Flex, badge.style.display.value);
             bar.SetBadge(NavTab.Friends, 0);
             Assert.AreEqual(DisplayStyle.None, badge.style.display.value);
+        }
+
+        [Test]
+        public void EachTabHasRoomForAPaintedIcon()
+        {
+            var bar = new NavBar(UiText.NavLabel);
+            Assert.IsNotNull(bar.Q<Button>("nav-inventory").Q(className: "nav__art--inventory"));
+            Assert.IsNotNull(bar.Q<Button>("nav-settings").Q(className: "nav__art--settings"));
         }
     }
 }

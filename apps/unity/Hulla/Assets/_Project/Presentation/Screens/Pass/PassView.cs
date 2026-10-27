@@ -88,10 +88,49 @@ namespace Hulla.Presentation.Screens.Pass
                 header.Add(locked);
             }
 
+            _list.Add(Track(info));
+        }
+
+        /// <summary>
+        /// The road (art pack, Season Pass): the free reward over a numbered node on the bar and the premium
+        /// reward under it, one column per tier, scrolling sideways to the tier the player is on.
+        /// </summary>
+        private VisualElement Track(PassInfo info)
+        {
+            var lanes = new VisualElement();
+            lanes.AddToClassList("pass__lanes");
+            var free = new Label(UiText.Free);
+            free.AddToClassList("pass__lane");
+            free.AddToClassList("pass__lane--free");
+            var paid = new Label(UiText.Premium);
+            paid.AddToClassList("pass__lane");
+            paid.AddToClassList("pass__lane--premium");
+            var scroll = new ScrollView(ScrollViewMode.Horizontal) { horizontalScrollerVisibility = ScrollerVisibility.Hidden, verticalScrollerVisibility = ScrollerVisibility.Hidden };
+            scroll.AddToClassList("pass__track");
+            VisualElement? current = null;
             foreach (var tier in info.Tiers)
             {
-                _list.Add(Row(tier, info.Premium));
+                var column = Row(tier, info.Premium);
+                scroll.Add(column);
+                if (tier.Tier == Math.Min(info.Tier + 1, info.Tiers.Count))
+                {
+                    current = column;
+                }
             }
+
+            var labels = new VisualElement();
+            labels.AddToClassList("pass__lane-labels");
+            labels.Add(free);
+            labels.Add(paid);
+            lanes.Add(labels);
+            lanes.Add(scroll);
+            if (current != null)
+            {
+                var target = current;
+                scroll.schedule.Execute(() => scroll.ScrollTo(target)).StartingIn(0);
+            }
+
+            return lanes;
         }
 
         private VisualElement Row(PassTier tier, bool premium)
@@ -103,10 +142,11 @@ namespace Hulla.Presentation.Screens.Pass
                 row.AddToClassList("pass__row--ahead");
             }
 
+            row.Add(Side(tier, tier.Free, false, true));
             var number = new Label(tier.Tier.ToString());
             number.AddToClassList("pass__tier");
+            number.EnableInClassList("pass__tier--reached", tier.Reached);
             row.Add(number);
-            row.Add(Side(tier, tier.Free, false, true));
             row.Add(Side(tier, tier.Premium, true, premium));
             return row;
         }

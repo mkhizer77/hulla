@@ -8,8 +8,9 @@ using UnityEngine.UIElements;
 namespace Hulla.Presentation.Screens.Shop
 {
     /// <summary>
-    /// The shop and collection in one (GDD 12.11): this week's spotlight, then one category at a
-    /// time with a swatch, rarity and price, Buy (after a confirm) or Equip for what you own.
+    /// The shop and collection in one (GDD 12.11, the Bazaar in docs/design/rooftop-redesign.md): this
+    /// week's lead item as a large spotlight card, the rest of the week and one category at a time as
+    /// tiles in a two-column grid, each with a preview, rarity, and Buy (after a confirm) or Equip.
     /// </summary>
     public sealed class ShopView : IDisposable
     {
@@ -72,9 +73,14 @@ namespace Hulla.Presentation.Screens.Shop
             if (spotlight.Count > 0)
             {
                 Heading(UiText.Spotlight);
-                foreach (var item in spotlight)
+                _list.Add(Spotlight(spotlight[0]));
+                if (spotlight.Count > 1)
                 {
-                    _list.Add(Row(item));
+                    var rest = Grid();
+                    for (var i = 1; i < spotlight.Count; i++)
+                    {
+                        rest.Add(Tile(spotlight[i]));
+                    }
                 }
             }
 
@@ -84,9 +90,10 @@ namespace Hulla.Presentation.Screens.Shop
                 ListState.Empty(_list, UiText.NothingThisWeek);
             }
 
+            var grid = Grid();
             foreach (var item in _model.Shown)
             {
-                _list.Add(Row(item));
+                grid.Add(Tile(item));
             }
         }
 
@@ -101,54 +108,112 @@ namespace Hulla.Presentation.Screens.Shop
             _list.Add(heading);
         }
 
-        private VisualElement Row(ShopItem item)
+        private VisualElement Grid()
         {
-            var row = new VisualElement();
-            row.AddToClassList("lobby-seat");
-            row.AddToClassList("friend-row");
-            var swatch = new VisualElement();
-            swatch.AddToClassList("shop__swatch");
-            swatch.AddToClassList("shop__swatch--" + item.Category);
-            swatch.style.backgroundColor = CosmeticLook.Swatch(item.Id, item.Category);
-            row.Add(swatch);
-            var text = new VisualElement();
-            text.AddToClassList("lobby-seat__name");
-            text.Add(new Label(ItemText.Name(item.Id)));
+            var grid = new VisualElement();
+            grid.AddToClassList("shop__grid");
+            _list.Add(grid);
+            return grid;
+        }
+
+        /// <summary>The item's look: a card back or face as a small card, anything else as a swatch.</summary>
+        private static VisualElement Preview(ShopItem item, string size)
+        {
+            var preview = new VisualElement { pickingMode = PickingMode.Ignore };
+            preview.AddToClassList("shop__swatch");
+            preview.AddToClassList("shop__swatch--" + item.Category);
+            preview.AddToClassList("shop__preview");
+            preview.AddToClassList("shop__preview--" + size);
+            preview.style.backgroundColor = CosmeticLook.Swatch(item.Id, item.Category);
+            return preview;
+        }
+
+        private static Label Rarity(ShopItem item)
+        {
             var rarity = new Label(ItemText.Rarity(item.Rarity));
             rarity.AddToClassList("caption");
             rarity.AddToClassList("rarity--" + item.Rarity);
-            text.Add(rarity);
-            row.Add(text);
+            rarity.AddToClassList("shop__rarity");
+            return rarity;
+        }
 
+        /// <summary>This week's lead item: a large preview, its name and price, and one gold button.</summary>
+        private VisualElement Spotlight(ShopItem item)
+        {
+            var card = new VisualElement();
+            card.AddToClassList("shop__spotlight");
+            var top = new VisualElement();
+            top.AddToClassList("shop__spotlight-top");
+            top.Add(Preview(item, "large"));
+            var text = new VisualElement();
+            text.AddToClassList("shop__spotlight-text");
+            var name = new Label(ItemText.Name(item.Id));
+            name.AddToClassList("shop__spotlight-name");
+            text.Add(name);
+            text.Add(Rarity(item));
+            if (!item.Owned)
+            {
+                var price = new Label(Price(item));
+                price.AddToClassList("shop__price");
+                text.Add(price);
+            }
+
+            top.Add(text);
+            card.Add(top);
+            var action = Action(item, true);
+            action.AddToClassList("shop__spotlight-action");
+            card.Add(action);
+            return card;
+        }
+
+        /// <summary>One item in the grid: rarity on top, the preview, and Equip, the price, or Equipped.</summary>
+        private VisualElement Tile(ShopItem item)
+        {
+            var tile = new VisualElement();
+            tile.AddToClassList("lobby-seat");
+            tile.AddToClassList("shop__tile");
+            tile.Add(Rarity(item));
+            tile.Add(Preview(item, "small"));
+            var name = new Label(ItemText.Name(item.Id));
+            name.AddToClassList("lobby-seat__name");
+            name.AddToClassList("shop__tile-name");
+            tile.Add(name);
+            tile.Add(Action(item, false));
+            return tile;
+        }
+
+        private VisualElement Action(ShopItem item, bool spotlight)
+        {
             if (item.Equipped)
             {
                 var tag = new Label(UiText.Equipped);
                 tag.AddToClassList("tag--ok");
-                row.Add(tag);
-                return row;
+                tag.AddToClassList("shop__equipped");
+                return tag;
             }
 
-            var busy = _model.Busy == item.Id;
             Button action;
             if (item.Owned)
             {
                 action = new Button(() => _equip(item)) { text = UiText.Equip };
+                action.AddToClassList("chip");
             }
             else
             {
-                action = new Button(() => _buy(item)) { text = Price(item) };
-                action.AddToClassList("chip--on");
+                // The spotlight shows its price above, so its button says Buy; a tile's button is the price.
+                action = new Button(() => _buy(item)) { text = spotlight ? UiText.Buy : Price(item) };
+                action.AddToClassList(spotlight ? "button" : "chip");
+                action.AddToClassList(spotlight ? "button--primary" : "chip--on");
                 action.SetEnabled(_model.CanAfford(item));
             }
 
-            action.AddToClassList("chip");
-            if (busy || _model.Busy != null)
+            action.AddToClassList("shop__action");
+            if (_model.Busy != null)
             {
                 action.SetEnabled(false);
             }
 
-            row.Add(action);
-            return row;
+            return action;
         }
 
         public static string Price(ShopItem item) =>

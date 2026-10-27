@@ -9,9 +9,10 @@ using UnityEngine.UIElements;
 namespace Hulla.Presentation.Screens.Home
 {
     /// <summary>
-    /// Home (GDD 14.10, design §4): who you are and your coins, the party bar of friends online, the
-    /// adaptive hero (a friend's table to join or watch, the table you left, or Play now), Create a
-    /// room, Join by code, the daily reward. Shop, Pass, Friends and Profile live on the bottom navigation.
+    /// Home (GDD 14.10, docs/design/rooftop-redesign.md): the hanging name sign with the level badge
+    /// and the coin pouch, the party bar and the hero when friends are about, the Thulla card (seat
+    /// count, Casual or Ranked, Play now), Create a room and Join by code on boards, and the reward
+    /// chest. Friends, Inventory and Settings live on the bottom navigation; the badge opens Profile.
     /// </summary>
     public sealed class HomeView : IDisposable
     {
@@ -19,8 +20,7 @@ namespace Hulla.Presentation.Screens.Home
         private readonly TextField _name;
         private readonly Label _nameLabel;
         private readonly VisualElement _namePanel;
-        private readonly VisualElement _avatar;
-        private readonly Label _avatarInitial;
+        private readonly Button _level;
         private readonly TextField _code;
         private readonly VisualElement _joinPanel;
         private readonly Button _create;
@@ -30,7 +30,6 @@ namespace Hulla.Presentation.Screens.Home
         private readonly HomeFriendsViewModel? _friendsOnline;
         private readonly ProgressViewModel? _progress;
         private readonly Label _progressLine;
-        private readonly Meter _xp;
         private readonly Label _coins;
         private readonly Button _hero;
         private readonly Button _rejoin;
@@ -39,20 +38,18 @@ namespace Hulla.Presentation.Screens.Home
         private readonly VisualElement _party;
         private readonly Button _quick;
         private bool _quickAvailable = true;
+        private bool _ranked;
         private string? _note;
         private int _seats = 4;
 
         /// <param name="server">The server to show in a development build, or null to hide the field.</param>
-        public HomeView(VisualElement root, HomeViewModel model, string? server, Action<string, string?> create, Action<string, string, string?> join, Action<string, int, string?> quickPlay, Action? openSettings = null, Action<string, string?>? openFriends = null, Action<string, string?>? openProfile = null, HomeFriendsViewModel? friendsOnline = null, Action? howToPlay = null, string? howToPlayText = null, Action<string, string, string?>? watch = null, ProgressViewModel? progress = null, Action<string, string?>? openMissions = null, Action<string, string?>? openLeaderboard = null, Action<string, string?>? openShop = null, Action<string, string?>? openPass = null)
+        public HomeView(VisualElement root, HomeViewModel model, string? server, Action<string, string?> create, Action<string, string, string?> join, Action<string, int, string?> quickPlay, Action? openSettings = null, Action<string, string?>? openFriends = null, Action<string, string?>? openProfile = null, HomeFriendsViewModel? friendsOnline = null, Action? howToPlay = null, string? howToPlayText = null, Action<string, string, string?>? watch = null, ProgressViewModel? progress = null, Action<string, string?>? openMissions = null, Action<string, string?>? openLeaderboard = null, Action<string, string?>? openShop = null, Action<string, string?>? openPass = null, Action<string, string?>? openRanked = null)
         {
             _model = model;
             _progress = progress;
             _progressLine = root.Q<Label>("progress");
-            _xp = new Meter();
-            _progressLine.parent.Add(_xp);
             _coins = root.Q<Label>("coins");
-            _avatar = root.Q<VisualElement>("avatar");
-            _avatarInitial = root.Q<Label>("avatar-initial");
+            _level = root.Q<Button>("level");
             _nameLabel = root.Q<Label>("name-label");
             _namePanel = root.Q<VisualElement>("name-panel");
             if (_progress != null)
@@ -61,7 +58,10 @@ namespace Hulla.Presentation.Screens.Home
             }
 
             var how = root.Q<Button>("how-to-play");
-            how.text = howToPlayText ?? "";
+            how.text = "";
+            how.tooltip = howToPlayText ?? "";
+            how.AddToClassList("button--icon");
+            how.Add(new LineIcon(LineIconKind.Book));
             how.clicked += () => howToPlay?.Invoke();
             how.style.display = howToPlay == null ? DisplayStyle.None : DisplayStyle.Flex;
             _friendsOnline = friendsOnline;
@@ -71,15 +71,6 @@ namespace Hulla.Presentation.Screens.Home
             _rejoin.clicked += () => _onRejoin?.Invoke();
             _online = root.Q<Label>("online");
             _party = root.Q<VisualElement>("party");
-            var settings = root.Q<Button>("settings");
-            settings.text = "";
-            settings.tooltip = UiText.Settings;
-            settings.AddToClassList("button--icon");
-            settings.Add(new LineIcon(LineIconKind.Gear));
-            settings.clicked += () => openSettings?.Invoke();
-            settings.style.display = openSettings == null ? DisplayStyle.None : DisplayStyle.Flex;
-            root.Q<Label>("title").text = UiText.AppTitle;
-            root.Q<Label>("tagline").text = UiText.Tagline;
             _name = root.Q<TextField>("name");
             _name.label = UiText.NameLabel;
             _name.value = model.LastName;
@@ -123,9 +114,11 @@ namespace Hulla.Presentation.Screens.Home
             for (var n = 3; n <= 6; n++)
             {
                 var count = n;
-                var chip = new Button { text = count.ToString() };
+                var chip = new Button { text = count.ToString(), tooltip = UiText.SeatsLabel };
                 chip.AddToClassList("chip");
                 chip.AddToClassList("chip--seat");
+                chip.AddToClassList("medal");
+                chip.AddToClassList("medal--" + count);
                 chip.clicked += () =>
                 {
                     _seats = count;
@@ -140,8 +133,19 @@ namespace Hulla.Presentation.Screens.Home
 
             BuildShelf(root);
             _quick = root.Q<Button>("quick");
-            _quick.text = UiText.PlayNow;
-            _quick.clicked += () => WithName(name => quickPlay(name, _seats, Server()));
+            _quick.text = UiText.PlayNow.ToUpper(System.Globalization.CultureInfo.CurrentCulture);
+            _quick.clicked += () => WithName(name =>
+            {
+                if (_ranked && openRanked != null)
+                {
+                    openRanked(name, Server());
+                    return;
+                }
+
+                quickPlay(name, _seats, Server());
+            });
+            BuildMode(root, openRanked != null);
+            _level.clicked += () => openProfile?.Invoke(_name.value, Server());
             _hero.clicked += () => WithName(name =>
             {
                 var code = _friendsOnline?.Hero?.TableCode;
@@ -176,37 +180,56 @@ namespace Hulla.Presentation.Screens.Home
         }
 
         /// <summary>
-        /// The game shelf (docs/design/table-themes.md §3): Thulla with its seat count and Play now,
-        /// then the games to come; each tile shows the theme's table with a fan of cards on it.
+        /// The Thulla card (docs/design/rooftop-redesign.md): the title and its line over a fan of cards
+        /// on the felt, the seat medallions on the fan, Casual or Ranked, and Play now on its plaque.
         /// </summary>
         private static void BuildShelf(VisualElement root)
         {
-            root.Q<Label>("game-thulla-name").text = UiText.GameThulla;
+            root.Q<Label>("game-thulla-name").text = UiText.GameThulla.ToUpper(System.Globalization.CultureInfo.CurrentCulture);
             root.Q<Label>("game-thulla-line").text = UiText.GameThullaLine;
-            root.Q<Label>("game-rung-name").text = UiText.GameRung;
-            root.Q<Label>("game-rung-line").text = UiText.GameRungLine;
-            root.Q<Label>("game-rung-soon").text = UiText.ComingSoon;
             var art = root.Q<VisualElement>("game-thulla-art");
-            var fan = new[] { "QH", "AS", "7D" };
+            var fan = new[] { "AH", "KD", "AS", "AC", "6S", "AD", "KS" };
             for (var i = 0; i < fan.Length; i++)
             {
                 var card = new TableKit.CardElement().Show(fan[i]);
                 card.AddToClassList("game__card");
-                card.style.rotate = new Rotate((i - 1) * 14f);
-                card.style.marginTop = i == 1 ? 0f : 24f;
+                var off = i - (fan.Length - 1) / 2f;
+                card.style.rotate = new Rotate(off * 11f);
+                card.style.marginTop = Math.Abs(off) * Math.Abs(off) * 6f;
                 art.Add(card);
             }
-
-            var backs = root.Q<VisualElement>("game-rung-art");
-            for (var i = 0; i < 3; i++)
-            {
-                var back = new VisualElement { pickingMode = PickingMode.Ignore };
-                back.AddToClassList("game__back");
-                back.style.rotate = new Rotate((i - 1) * 14f);
-                back.style.marginTop = i == 1 ? 0f : 24f;
-                backs.Add(back);
-            }
         }
+
+        /// <summary>
+        /// Casual or Ranked on the card: a tap on the switch or either word flips it; Play now then
+        /// starts Quick Play or opens Ranked. Hidden when there is nowhere to send a ranked player.
+        /// </summary>
+        private void BuildMode(VisualElement root, bool rankedAvailable)
+        {
+            var mode = root.Q<VisualElement>("mode");
+            mode.style.display = rankedAvailable ? DisplayStyle.Flex : DisplayStyle.None;
+            var casual = root.Q<Label>("mode-casual");
+            var ranked = root.Q<Label>("mode-ranked");
+            var toggle = root.Q<VisualElement>("mode-switch");
+            casual.text = UiText.Casual;
+            ranked.text = UiText.Ranked;
+            void Set(bool on)
+            {
+                _ranked = on;
+                toggle.EnableInClassList("switch--on", on);
+                casual.EnableInClassList("game__mode-label--on", !on);
+                ranked.EnableInClassList("game__mode-label--on", on);
+                root.Q<VisualElement>("seats").SetEnabled(!on);
+            }
+
+            toggle.RegisterCallback<ClickEvent>(_ => Set(!_ranked));
+            casual.RegisterCallback<ClickEvent>(_ => Set(false));
+            ranked.RegisterCallback<ClickEvent>(_ => Set(true));
+            Set(false);
+        }
+
+        /// <summary>Ranked is on; Play now opens Ranked instead of Quick Play.</summary>
+        public bool RankedChosen => _ranked;
 
         /// <summary>The server keeps names of 2 to 20 characters (GDD 9.4); a shorter one is refused here with the reason.</summary>
         public const int MinNameLength = 2;
@@ -264,8 +287,6 @@ namespace Hulla.Presentation.Screens.Home
         {
             var name = _name.value;
             _nameLabel.text = name.Length == 0 ? UiText.NameLabel : name;
-            _avatarInitial.text = name.Length == 0 ? "?" : name.Substring(0, 1).ToUpperInvariant();
-            AvatarTint.Apply(_avatar, name);
         }
 
         private void RefreshProgress()
@@ -275,7 +296,7 @@ namespace Hulla.Presentation.Screens.Home
             {
                 _progressLine.text = "";
                 _coins.text = "";
-                _xp.style.display = DisplayStyle.None;
+                _level.text = "";
                 return;
             }
 
@@ -286,9 +307,9 @@ namespace Hulla.Presentation.Screens.Home
             }
 
             _progressLine.text = text;
-            _xp.style.display = DisplayStyle.Flex;
-            _xp.Set(info.IntoLevel, info.ToNext);
-            _coins.text = "◉ " + _progress.Coins.ToString("N0");
+            _level.text = info.Level.ToString();
+            _level.tooltip = text;
+            _coins.text = _progress.Coins.ToString("N0");
         }
 
         /// <summary>The party bar (design §4): friends online as avatars with a presence dot, the hero under it.</summary>
@@ -308,9 +329,12 @@ namespace Hulla.Presentation.Screens.Home
 
             _party.Clear();
             var online = _friendsOnline?.Online;
+            var anyone = online != null && online.Count > 0;
+            _party.style.display = anyone ? DisplayStyle.Flex : DisplayStyle.None;
+            _online.style.display = anyone ? DisplayStyle.Flex : DisplayStyle.None;
             if (online == null || online.Count == 0)
             {
-                _online.text = _friendsOnline == null ? "" : UiText.PartyEmpty;
+                _online.text = "";
                 return;
             }
 

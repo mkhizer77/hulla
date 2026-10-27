@@ -1,0 +1,2134 @@
+/*
+ * The rooftop look (docs/design/rooftop-redesign.md), the app's only look: the owner's art pack, imported by
+ * tools/artkit/rooftop_import.py into Art/Skins/Rooftop. Tokens and type follow the pack's
+ * handover; the backdrops are the pack's own, the table felt a stand-in until it ships one. Nine-slice borders are set here with -unity-slice-*, measured on
+ * the exported files. Loaded after Skins.uss, so these rules win over the shared skin rules.
+ */
+
+/* ---------------------------------------------------------------- tokens */
+
+.skinned {
+    --surface-ui: #201844;
+    --surface-panel: #2A170C;
+    --surface-raised: #4A2E1B;
+    --accent-saffron: #F9A825;
+    --accent-mustard: #FFE082;
+    --accent-teal: #00897B;
+    --ink-ivory: #FFF8E1;
+    --ink-muted: #E6D3B3;
+    --gold: #FFE082;
+    --felt: #00897B;
+    --rt-canary: #FFF176;
+    --rt-saffron: #F9A825;
+    --rt-honey: #C17900;
+    --rt-wood: #4A2E1B;
+    --rt-wood-top: #784A29;
+    --rt-wood-shadow: #2A170C;
+    --rt-brass-light: #FFE082;
+    --rt-brass: #D49B35;
+    --rt-brass-shadow: #8C5D14;
+    --rt-crimson: #D32F2F;
+    --rt-peacock: #00897B;
+    --rt-felt-dark: #004D40;
+    --rt-magenta: #C2185B;
+    --rt-cyan: #00BCD4;
+    --rt-olive: #43A047;
+    --rt-cream: #FFF8E1;
+    --rt-ivory: #F5F0E6;
+    --rt-ink: #1F0E05;
+    --rt-sky-deep: #141026;
+    --rt-sky: #201844;
+    color: #FFF8E1;
+    -unity-font-definition: url("/Assets/_Project/Presentation/Theme/Fonts/NunitoBold.ttf");
+}
+
+/* ---------------------------------------------------------------- scene */
+
+/* The pack's night scenes: the rooftop over the old city behind every menu, and the walled roof behind
+   the table. Both carry their own string lights, so the drawn ones are left out (AmbientLayer). Cover,
+   anchored to the top, so a taller phone shows more roof rather than stretching the sky. */
+.skinned .screen {
+    background-color: #120E26;
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/Rooftop/Backdrops/bg_home_rooftop.png");
+    background-size: cover;
+    background-position-y: top;
+}
+
+.skinned .table {
+    background-color: #120E26;
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/Rooftop/Backdrops/bg_table_backdrop.png");
+    background-size: cover;
+    background-position-y: top;
+}
+
+.skinned .table__zone > .rail {
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/Rooftop/Frames/table_felt_rail.png");
+}
+
+/* ---------------------------------------------------------------- type (handover §2) */
+
+.skinned .title, .skinned .code, .skinned .home__title, .skinned .seat__initial, .skinned .podium__rank, .skinned .turn, .skinned .countdown, .skinned .results__title, .skinned .results__stamp, .skinned .toast, .skinned .game__name {
+    -unity-font-definition: url("/Assets/_Project/Presentation/Theme/Fonts/LilitaOne.ttf");
+}
+
+.skinned .title, .skinned .home__title, .skinned .code, .skinned .results__title, .skinned .game__name {
+    color: #FFE082;
+    -unity-text-outline-width: 3px;
+    -unity-text-outline-color: #1F0E05;
+    text-shadow: 0 4px 0 #0D0502;
+    letter-spacing: 2px;
+}
+
+/* UI text a player taps or reads on wood: Baloo 2 ExtraBold, the rounded face of the pack's renders. */
+.skinned .button, .skinned .chip, .skinned .seat__name, .skinned .nav__label, .skinned .hero, .skinned .table__pill, .skinned .quick-strip__chip {
+    -unity-font-definition: url("/Assets/_Project/Presentation/Theme/Fonts/Baloo2.ttf");
+    -unity-font-style: normal;
+    letter-spacing: -0.5px;
+}
+
+/* ---------------------------------------------------------------- shared controls */
+
+/* Planks for every ordinary button; the pressed art sits 4px lower. */
+.skinned .button, .skinned .button--secondary, .skinned .chip--share, .skinned .hero {
+    background-color: rgba(0, 0, 0, 0);
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/Rooftop/Buttons/btn_plank_medium_normal_9.png");
+    -unity-background-scale-mode: stretch-to-fill;
+    -unity-slice-left: 105;
+    -unity-slice-right: 105;
+    -unity-slice-top: 82;
+    -unity-slice-bottom: 87;
+    -unity-slice-scale: 0.55px;
+    border-width: 0;
+    padding: 0 48px 14px 48px;
+    color: #FFF8E1;
+    -unity-text-outline-width: 0;
+    text-shadow: 0 2px 2px rgba(0, 0, 0, 0.7);
+    -unity-slice-type: tiled;
+}
+
+.skinned .button:active, .skinned .button--secondary:active, .skinned .chip--share:active, .skinned .hero:active {
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/Rooftop/Buttons/btn_plank_medium_pressed_9.png");
+    scale: 1 1;
+    -unity-slice-left: 105;
+    -unity-slice-right: 105;
+    -unity-slice-top: 82;
+    -unity-slice-bottom: 87;
+    -unity-slice-scale: 1px;
+    -unity-slice-type: tiled;
+}
+
+/* The gold bar for primary actions; it presses by moving down. */
+.skinned .button--primary, .skinned .turn--mine {
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/Rooftop/Buttons/btn_primary_pressed_9.png");
+    -unity-slice-left: 70;
+    -unity-slice-right: 70;
+    -unity-slice-top: 90;
+    -unity-slice-bottom: 114;
+    -unity-slice-scale: 0.6px;
+    padding: 0 48px 22px 48px;
+    color: #1F0E05;
+    -unity-text-outline-width: 0;
+    text-shadow: 0 1px 0 rgba(255, 241, 118, 0.6);
+    letter-spacing: 2px;
+    -unity-slice-type: tiled;
+}
+
+.skinned .button--primary:active {
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/Rooftop/Buttons/btn_primary_pressed_9.png");
+    translate: 0 4px;
+    -unity-background-image-tint-color: rgb(235, 215, 190);
+    -unity-slice-left: 70;
+    -unity-slice-right: 70;
+    -unity-slice-top: 90;
+    -unity-slice-bottom: 114;
+    -unity-slice-scale: 1px;
+    -unity-slice-type: tiled;
+}
+
+.skinned .button--quiet {
+    background-image: none;
+    color: #E6D3B3;
+    -unity-text-outline-width: 0;
+}
+
+.skinned .chip {
+    background-color: rgba(0, 0, 0, 0);
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/Rooftop/Buttons/btn_chip_pill_normal_9.png");
+    -unity-background-scale-mode: stretch-to-fill;
+    -unity-slice-left: 52;
+    -unity-slice-right: 52;
+    -unity-slice-top: 44;
+    -unity-slice-bottom: 45;
+    -unity-slice-scale: 0.5px;
+    border-width: 0;
+    padding: 0 36px 8px 36px;
+    color: #FFF8E1;
+    -unity-slice-type: tiled;
+}
+
+.skinned .chip:active {
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/Rooftop/Buttons/btn_chip_pill_pressed_9.png");
+    scale: 1 1;
+    -unity-slice-left: 52;
+    -unity-slice-right: 52;
+    -unity-slice-top: 44;
+    -unity-slice-bottom: 45;
+    -unity-slice-scale: 1px;
+    -unity-slice-type: tiled;
+}
+
+/* A chosen chip turns to gold with dark ink. */
+.skinned .chip--on {
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/Rooftop/Buttons/btn_primary_pressed_9.png");
+    -unity-slice-left: 70;
+    -unity-slice-right: 70;
+    -unity-slice-top: 90;
+    -unity-slice-bottom: 114;
+    -unity-slice-scale: 0.45px;
+    color: #1F0E05;
+    -unity-text-outline-width: 0;
+    text-shadow: 0 1px 0 rgba(255, 241, 118, 0.6);
+    -unity-slice-type: tiled;
+}
+
+/* Panels are the large plank with its painted corners. */
+.skinned .panel {
+    background-color: rgba(0, 0, 0, 0);
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/Rooftop/Buttons/btn_plank_large_normal_9.png");
+    -unity-background-scale-mode: stretch-to-fill;
+    -unity-slice-left: 140;
+    -unity-slice-right: 140;
+    -unity-slice-top: 98;
+    -unity-slice-bottom: 120;
+    -unity-slice-scale: 0.6px;
+    padding: 56px 64px;
+    -unity-slice-type: tiled;
+}
+
+.skinned .seat__name {
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/Rooftop/Frames/nameplate_wood_blank_9.png");
+    -unity-background-scale-mode: stretch-to-fill;
+    -unity-slice-left: 50;
+    -unity-slice-right: 50;
+    -unity-slice-top: 46;
+    -unity-slice-bottom: 45;
+    -unity-slice-scale: 0.5px;
+    color: #F5F0E6;
+    -unity-slice-type: tiled;
+}
+
+.skinned .seat__frame {
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/Rooftop/Avatars/avatar_frame_brass.png");
+}
+
+.skinned .seat__back, .skinned .discard__card, .skinned .game__back {
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/Rooftop/Cards/card_back_truckart.png");
+}
+
+.skinned .table__info, .skinned .table__pill, .skinned .quick-strip__chip, .skinned .quick-strip__more, .skinned .table__chat, .skinned .me-badge {
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/Rooftop/Buttons/btn_chip_pill_normal_9.png");
+    -unity-slice-left: 52;
+    -unity-slice-right: 52;
+    -unity-slice-top: 44;
+    -unity-slice-bottom: 45;
+    -unity-slice-scale: 0.5px;
+    color: #FFF8E1;
+    -unity-slice-type: tiled;
+}
+
+.skinned .card--legal {
+    border-color: #FFE082;
+}
+
+/* The thulla stamp is ink on the felt; the word is in the art, so the label only speaks to screen readers. */
+.skinned .toast {
+    color: rgba(0, 0, 0, 0);
+    background-color: rgba(0, 0, 0, 0);
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/Rooftop/FX/stamp_thulla.png");
+    -unity-slice-left: 0;
+    -unity-slice-right: 0;
+    -unity-slice-top: 0;
+    -unity-slice-bottom: 0;
+    -unity-background-scale-mode: scale-to-fit;
+    width: 640px;
+    height: 406px;
+    padding: 0;
+    rotate: -8deg;
+    -unity-text-outline-width: 0;
+    text-shadow: 0 0 0 rgba(0, 0, 0, 0);
+}
+
+.skinned .unity-toggle__checkmark {
+    border-color: #FFE082;
+}
+
+.skinned .unity-base-slider__dragger {
+    background-color: #D49B35;
+    border-color: #FFE082;
+}
+
+.skinned .field .unity-base-text-field__input {
+    border-color: #D49B35;
+    background-color: #2A170C;
+    color: #FFF8E1;
+}
+
+/* ---------------------------------------------------------------- navigation dock */
+
+.skinned .nav {
+    height: 190px;
+    padding: 40px 24px 10px 24px;
+    border-top-width: 0;
+    background-color: rgba(0, 0, 0, 0);
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/Rooftop/Nav/nav_dock_baseboard_9.png");
+    -unity-background-scale-mode: stretch-to-fill;
+    -unity-slice-left: 70;
+    -unity-slice-right: 70;
+    -unity-slice-top: 55;
+    -unity-slice-bottom: 56;
+    -unity-slice-scale: 1px;
+    overflow: visible;
+    -unity-slice-type: tiled;
+}
+
+.skinned .nav__icon {
+    display: none;
+}
+
+.skinned .nav__art {
+    display: flex;
+    width: 120px;
+    height: 120px;
+    margin-top: -60px;
+    -unity-background-scale-mode: scale-to-fit;
+    transition-property: scale, translate;
+    transition-duration: 160ms;
+}
+
+.skinned .nav__tab--on .nav__art {
+    scale: 1.12 1.12;
+    translate: 0 -6px;
+}
+
+.skinned .nav__tab:active .nav__art {
+    translate: 0 4px;
+}
+
+.skinned .nav__art--home {
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/Rooftop/Nav/icon_nav_home.png");
+}
+
+.skinned .nav__art--friends {
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/Rooftop/Nav/icon_nav_friends.png");
+}
+
+.skinned .nav__art--inventory {
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/Rooftop/Nav/icon_nav_inventory.png");
+}
+
+.skinned .nav__art--settings {
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/Rooftop/Nav/icon_nav_settings.png");
+}
+
+.skinned .nav__label {
+    font-size: 34px;
+    color: #FFF8E1;
+    -unity-text-outline-width: 0;
+    text-shadow: 0 3px 2px rgba(20, 10, 4, 0.75);
+}
+
+.skinned .nav__tab--on .nav__label {
+    color: #FFE082;
+}
+
+/* ---------------------------------------------------------------- Home (pack: sprites/01_home) */
+
+.skinned .home .home__rope {
+    display: flex;
+    width: 10px;
+    border-radius: 5px;
+    background-color: #8A6234;
+    border-left-width: 2px;
+    border-right-width: 2px;
+    border-color: #5A3A1A;
+}
+
+.skinned .home .home__rope--sign-left {
+    left: 368px;
+    top: -400px;
+    height: 430px;
+}
+
+.skinned .home .home__rope--sign-right {
+    left: 702px;
+    top: -400px;
+    height: 430px;
+}
+
+/* The signboard carries its own rope loops at the top; the name sits on the board below them. */
+.skinned .home .home__sign {
+    width: 660px;
+    height: 290px;
+    margin-top: -60px;
+    padding: 104px 70px 0 70px;
+    border-radius: 0;
+    background-color: rgba(0, 0, 0, 0);
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/Rooftop/Frames/signboard_header_blank_9.png");
+    -unity-background-scale-mode: stretch-to-fill;
+    -unity-slice-left: 182;
+    -unity-slice-right: 186;
+    -unity-slice-top: 112;
+    -unity-slice-bottom: 95;
+    -unity-slice-scale: 1.3px;
+    -unity-slice-type: tiled;
+}
+
+.skinned .home .home__name {
+    font-size: 50px;
+    max-width: none;
+    overflow: visible;
+    text-overflow: clip;
+    flex-shrink: 0;
+    -unity-font-definition: url("/Assets/_Project/Presentation/Theme/Fonts/Baloo2.ttf");
+    -unity-font-style: normal;
+    color: #FFF8E1;
+    text-shadow: 0 2px 3px rgba(15, 8, 4, 0.85);
+}
+
+.skinned .home .home__shield {
+    top: 196px;
+    translate: -63px 0;
+    width: 126px;
+    height: 134px;
+    padding: 0 0 8px 0;
+    border-radius: 0;
+    background-color: rgba(0, 0, 0, 0);
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/Rooftop/Frames/badge_level_shield_blank.png");
+    -unity-background-scale-mode: stretch-to-fill;
+    -unity-font-definition: url("/Assets/_Project/Presentation/Theme/Fonts/Baloo2.ttf");
+    -unity-font-style: normal;
+    font-size: 48px;
+    color: #FFE082;
+    -unity-text-outline-width: 0;
+    text-shadow: 0 3px 2px rgba(20, 10, 4, 0.75);
+}
+
+.skinned .home .home__pouch {
+    top: -12px;
+    right: 28px;
+    width: 150px;
+    height: 173px;
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/Rooftop/Props/potli_currency_bag.png");
+}
+
+.skinned .home .home__coins {
+    margin-bottom: -22px;
+    padding: 0 18px;
+    border-width: 2px;
+    border-color: #2A170C;
+    background-color: #4A2E1B;
+    color: #FFE082;
+    -unity-font-definition: url("/Assets/_Project/Presentation/Theme/Fonts/Baloo2.ttf");
+    -unity-font-style: normal;
+}
+
+/* The arch keeps its own square proportions; slicing would stretch the crown and the peacocks. */
+.skinned .home .game {
+    width: 770px;
+    height: 767px;
+    padding: 140px 104px 74px 104px;
+    border-radius: 0;
+    background-color: rgba(0, 0, 0, 0);
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/Rooftop/Frames/frame_truckart_arch.png");
+    -unity-background-scale-mode: stretch-to-fill;
+    -unity-slice-left: 0;
+    -unity-slice-right: 0;
+    -unity-slice-top: 0;
+    -unity-slice-bottom: 0;
+}
+
+.skinned .home .game__art {
+    background-image: none;
+}
+
+.skinned .home .game__name {
+    font-size: 112px;
+    color: #FFE082;
+    -unity-text-outline-width: 4px;
+    -unity-text-outline-color: #1F0E05;
+    text-shadow: 0 6px 0 #0D0502;
+}
+
+.skinned .home .game__line {
+    -unity-font-definition: url("/Assets/_Project/Presentation/Theme/Fonts/Baloo2.ttf");
+    font-size: 40px;
+    color: #FFF8E1;
+    -unity-text-outline-width: 0;
+    text-shadow: 0 3px 2px rgba(20, 10, 4, 0.75);
+}
+
+/* Seat coins: the pack paints 4, 5 and 6 into their coins, so those labels only speak to screen
+   readers; the 3 coin is blank and shows its label. */
+.skinned .home .medal {
+    border-width: 0;
+    background-color: rgba(0, 0, 0, 0);
+    -unity-slice-left: 0;
+    -unity-slice-right: 0;
+    -unity-slice-top: 0;
+    -unity-slice-bottom: 0;
+    background-size: 112px 112px;
+    background-repeat: no-repeat no-repeat;
+    background-position-x: center;
+    background-position-y: center;
+    color: rgba(0, 0, 0, 0);
+    -unity-font-definition: url("/Assets/_Project/Presentation/Theme/Fonts/LilitaOne.ttf");
+    font-size: 58px;
+    -unity-text-outline-width: 0;
+    text-shadow: 0 0 0 rgba(0, 0, 0, 0);
+}
+
+.skinned .home .medal--3 {
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/Rooftop/Chips/chip_seat_3_normal.png");
+    color: #FFF8E1;
+    -unity-text-outline-width: 3px;
+    -unity-text-outline-color: #1F0E05;
+}
+
+.skinned .home .medal--3:active {
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/Rooftop/Chips/chip_seat_3_pressed.png");
+}
+
+.skinned .home .medal--4 {
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/Rooftop/Chips/chip_seat_4_normal.png");
+}
+
+.skinned .home .medal--4:active {
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/Rooftop/Chips/chip_seat_4_pressed.png");
+}
+
+.skinned .home .medal--5 {
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/Rooftop/Chips/chip_seat_5_normal.png");
+}
+
+.skinned .home .medal--5:active {
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/Rooftop/Chips/chip_seat_5_pressed.png");
+}
+
+.skinned .home .medal--6 {
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/Rooftop/Chips/chip_seat_6_normal.png");
+}
+
+.skinned .home .medal--6:active {
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/Rooftop/Chips/chip_seat_6_pressed.png");
+}
+
+.skinned .home .medal.chip--on {
+    background-color: rgba(0, 0, 0, 0);
+    color: rgba(0, 0, 0, 0);
+    border-width: 5px;
+    border-radius: 66px;
+    border-color: rgba(255, 224, 130, 0.95);
+    background-size: 120px 120px;
+    -unity-slice-left: 0;
+    -unity-slice-right: 0;
+    -unity-slice-top: 0;
+    -unity-slice-bottom: 0;
+}
+
+.skinned .home .medal--3.chip--on {
+    color: #FFF8E1;
+}
+
+.skinned .home .game__mode-label {
+    -unity-font-definition: url("/Assets/_Project/Presentation/Theme/Fonts/Baloo2.ttf");
+    color: #CDB898;
+    -unity-text-outline-width: 0;
+    text-shadow: 0 3px 2px rgba(20, 10, 4, 0.75);
+}
+
+.skinned .home .game__mode-label--on {
+    color: #FFF8E1;
+}
+
+/* The switch: the pack's track with its words painted out, and its star knob, cut free to slide. */
+.skinned .home .switch {
+    width: 200px;
+    height: 76px;
+    border-radius: 0;
+    background-color: rgba(0, 0, 0, 0);
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/Rooftop/Buttons/toggle_track_blank.png");
+    -unity-background-scale-mode: stretch-to-fill;
+}
+
+.skinned .home .switch--on {
+    -unity-background-image-tint-color: rgb(255, 200, 170);
+}
+
+.skinned .home .switch__knob {
+    width: 70px;
+    height: 70px;
+    margin: -2px 0 0 10px;
+    border-radius: 0;
+    background-color: rgba(0, 0, 0, 0);
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/Rooftop/Buttons/toggle_knob.png");
+    -unity-background-scale-mode: stretch-to-fill;
+}
+
+.skinned .home .switch--on > .switch__knob {
+    translate: 110px 0;
+}
+
+.skinned .home .game__help {
+    top: 140px;
+    right: 104px;
+    color: #FFF8E1;
+}
+
+/* Play now on its floral plinth: the gold face is the top part of the art, so the label rides high. */
+.skinned .home .game__play {
+    width: 540px;
+    height: 335px;
+    margin-top: -72px;
+    padding: 0 0 116px 0;
+    border-width: 0;
+    background-color: rgba(0, 0, 0, 0);
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/Rooftop/Buttons/btn_primary_normal.png");
+    -unity-background-scale-mode: stretch-to-fill;
+    -unity-slice-left: 0;
+    -unity-slice-right: 0;
+    -unity-slice-top: 0;
+    -unity-slice-bottom: 0;
+    -unity-font-definition: url("/Assets/_Project/Presentation/Theme/Fonts/Baloo2.ttf");
+    -unity-font-style: normal;
+    font-size: 72px;
+    letter-spacing: 3px;
+    color: #1F0E05;
+    -unity-text-outline-width: 0;
+    text-shadow: 0 2px 0 rgba(255, 241, 118, 0.7);
+}
+
+.skinned .home .game__play:active {
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/Rooftop/Buttons/btn_primary_normal.png");
+    translate: 0 6px;
+    -unity-background-image-tint-color: rgb(235, 215, 190);
+}
+
+.skinned .home .home__lower {
+    margin-top: -96px;
+}
+
+.skinned .home .game__art {
+    height: 186px;
+}
+
+.skinned .home .game__seats {
+    margin-top: -64px;
+}
+
+.skinned .home .game__mode {
+    margin-top: 10px;
+}
+
+.skinned .home .home__rope--board-left {
+    left: 80px;
+    top: -120px;
+    height: 200px;
+}
+
+.skinned .home .home__rope--board-right {
+    left: 330px;
+    top: -120px;
+    height: 200px;
+}
+
+.skinned .home .plank, .skinned .inventory .plank, .skinned .home .hero {
+    border-width: 0;
+    background-color: rgba(0, 0, 0, 0);
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/Rooftop/Buttons/btn_plank_large_normal_9.png");
+    -unity-background-scale-mode: stretch-to-fill;
+    -unity-slice-left: 140;
+    -unity-slice-right: 140;
+    -unity-slice-top: 98;
+    -unity-slice-bottom: 120;
+    -unity-slice-scale: 0.5px;
+    padding: 0 36px 10px 36px;
+    -unity-font-definition: url("/Assets/_Project/Presentation/Theme/Fonts/Baloo2.ttf");
+    -unity-font-style: normal;
+    color: #FFF8E1;
+    -unity-text-outline-width: 0;
+    text-shadow: 0 2px 2px rgba(0, 0, 0, 0.7);
+    -unity-slice-type: tiled;
+}
+
+.skinned .home .plank, .skinned .inventory .plank {
+    height: 112px;
+    font-size: 50px;
+}
+
+.skinned .home .hero {
+    min-height: 110px;
+    font-size: 40px;
+}
+
+.skinned .home .plank:active, .skinned .inventory .plank:active, .skinned .home .hero:active {
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/Rooftop/Buttons/btn_plank_large_pressed_9.png");
+    -unity-slice-left: 140;
+    -unity-slice-right: 140;
+    -unity-slice-top: 98;
+    -unity-slice-bottom: 120;
+    -unity-slice-scale: 1px;
+    -unity-slice-type: tiled;
+}
+
+.skinned .home .daily {
+    padding-top: 214px;
+}
+
+.skinned .home .daily__chest {
+    left: 30px;
+    width: 300px;
+    height: 261px;
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/Rooftop/Props/chest_daily_reward_closed.png");
+}
+
+.skinned .home .daily--claimed .daily__chest {
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/Rooftop/Props/chest_daily_reward_open.png");
+}
+
+.skinned .home .daily__board {
+    margin-top: 0;
+    padding: 0 22px 10px 22px;
+    font-size: 44px;
+}
+
+.skinned .home .daily__text {
+    color: #FFE082;
+    text-shadow: 0 2px 3px rgba(0, 0, 0, 0.9);
+}
+
+/* ---------------------------------------------------------------- Table (pack: sprites/02_table_gameplay) */
+
+/* The felt and rail are stand-ins (tools/artkit/rooftop_table.py) until the pack ships its own. */
+.skinned .table__zone > .rail {
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/Rooftop/Frames/table_felt_rail.png");
+    padding: 8% 8% 9% 8%;
+}
+
+.skinned .table__top {
+    height: 150px;
+    background-color: rgba(0, 0, 0, 0);
+    border-bottom-width: 0;
+}
+
+/* The room line hangs on the signboard. */
+.skinned .table__info {
+    height: 128px;
+    padding: 50px 60px 0 60px;
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/Rooftop/Frames/signboard_header_blank_9.png");
+    -unity-background-scale-mode: stretch-to-fill;
+    -unity-slice-left: 182;
+    -unity-slice-right: 186;
+    -unity-slice-top: 112;
+    -unity-slice-bottom: 95;
+    -unity-slice-scale: 0.574px;
+    -unity-font-definition: url("/Assets/_Project/Presentation/Theme/Fonts/Baloo2.ttf");
+    font-size: 30px;
+    letter-spacing: 1px;
+    color: #FFF8E1;
+    text-shadow: 0 2px 3px rgba(15, 8, 4, 0.85);
+    -unity-slice-type: tiled;
+}
+
+/* Avatar pod (pack §5): the brass ring over the face, its opening fitted to the avatar; the turn timer
+   arc runs just outside it. */
+.skinned .seat__frame {
+    left: -42px;
+    top: -42px;
+    width: 200px;
+    height: 200px;
+}
+
+.skinned .me-badge .seat__frame {
+    left: -31px;
+    top: -31px;
+    width: 146px;
+    height: 146px;
+}
+
+.skinned .seat__name {
+    margin-top: 34px;
+    padding: 4px 34px 10px 34px;
+    border-radius: 0;
+    background-color: rgba(0, 0, 0, 0);
+    font-size: 26px;
+}
+
+.skinned .seat__count {
+    background-color: #D49B35;
+    color: #1F0E05;
+    border-width: 2px;
+    border-color: #1F0E05;
+}
+
+/* The leader's crown is the pack's jewelled crown; the glyph stays for screen readers. */
+.skinned .seat__crown {
+    top: -86px;
+    left: 18px;
+    right: 18px;
+    height: 60px;
+    color: rgba(0, 0, 0, 0);
+    -unity-text-outline-width: 0;
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/Rooftop/Avatars/badge_leader_crown.png");
+    -unity-background-scale-mode: scale-to-fit;
+}
+
+.skinned .me-badge .seat__crown {
+    top: -58px;
+    left: 8px;
+    right: 8px;
+    height: 44px;
+}
+
+/* ---------------------------------------------------------------- Lobby (pack: sprites/04_lobby_gathering) */
+
+.skinned #lobby .code-box {
+    padding: 0;
+    background-image: none;
+}
+
+.skinned #lobby .code-box > .code {
+    height: 201px;
+    min-width: 560px;
+    padding: 84px 90px 0 90px;
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/Rooftop/Frames/signboard_header_blank_9.png");
+    -unity-background-scale-mode: stretch-to-fill;
+    -unity-slice-left: 182;
+    -unity-slice-right: 186;
+    -unity-slice-top: 112;
+    -unity-slice-bottom: 95;
+    -unity-slice-scale: 0.9px;
+    -unity-slice-type: tiled;
+    font-size: 72px;
+}
+
+.skinned #lobby .lobby-rules {
+    padding: 8px 48px 14px 48px;
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/Rooftop/Frames/nameplate_wood_blank_9.png");
+    -unity-background-scale-mode: stretch-to-fill;
+    -unity-slice-left: 50;
+    -unity-slice-right: 50;
+    -unity-slice-top: 46;
+    -unity-slice-bottom: 45;
+    -unity-slice-scale: 0.7px;
+    -unity-slice-type: tiled;
+}
+
+.skinned #lobby .lobby-rules__text {
+    color: #FFF8E1;
+}
+
+.skinned .lobby-table {
+    left: 12%;
+    right: 12%;
+    top: 0;
+    bottom: 4%;
+    border-radius: 0;
+    background-color: rgba(0, 0, 0, 0);
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/Rooftop/Frames/lobby_table_round.png");
+    -unity-background-scale-mode: scale-to-fit;
+}
+
+/* The chat is a parchment scroll with dark ink. */
+.skinned #lobby .lobby-chat {
+    padding: 30px 80px 30px 80px;
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/Rooftop/Frames/panel_parchment_dialog_blank_9.png");
+    -unity-background-scale-mode: stretch-to-fill;
+    -unity-slice-left: 70;
+    -unity-slice-right: 70;
+    -unity-slice-top: 80;
+    -unity-slice-bottom: 83;
+    -unity-slice-scale: 1px;
+    -unity-slice-type: tiled;
+}
+
+.skinned #lobby .chat-log__line, .skinned #lobby .lobby-chat .caption {
+    color: #3A2412;
+    text-shadow: 0 0 0 rgba(0, 0, 0, 0);
+}
+
+.skinned #lobby .actions > .button--quiet {
+    align-self: center;
+    min-width: 380px;
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/Rooftop/Buttons/btn_plank_medium_normal_9.png");
+    -unity-slice-left: 105;
+    -unity-slice-right: 105;
+    -unity-slice-top: 82;
+    -unity-slice-bottom: 87;
+    -unity-slice-scale: 0.55px;
+    color: #FFF8E1;
+    -unity-slice-type: tiled;
+}
+
+/* ---------------------------------------------------------------- Results (pack: sprites/03_results_celebration) */
+
+.skinned .results__panel {
+    padding: 150px 96px 90px 96px;
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/Rooftop/Frames/frame_truckart_arch.png");
+    -unity-background-scale-mode: stretch-to-fill;
+    -unity-slice-left: 110;
+    -unity-slice-right: 110;
+    -unity-slice-top: 140;
+    -unity-slice-bottom: 100;
+    -unity-slice-scale: 1px;
+}
+
+/* The top three stand on the marigold podium: second, first, third over its tiers. */
+.skinned .podium__stand {
+    width: 640px;
+    height: 430px;
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/Rooftop/Props/podium_3tier_marigold.png");
+    background-size: 640px 432px;
+    background-repeat: no-repeat no-repeat;
+    background-position-y: bottom;
+    align-items: flex-start;
+}
+
+.skinned .podium__place {
+    width: 200px;
+}
+
+.skinned .podium__place--1 {
+    margin-top: -20px;
+}
+
+.skinned .podium__place--2, .skinned .podium__place--3 {
+    margin-top: 80px;
+}
+
+.skinned .podium__place--loser {
+    align-self: flex-end;
+}
+
+.skinned .podium__name {
+    color: #FFF8E1;
+    -unity-font-definition: url("/Assets/_Project/Presentation/Theme/Fonts/Baloo2.ttf");
+    -unity-text-outline-width: 0;
+    text-shadow: 0 3px 2px rgba(20, 10, 4, 0.75);
+}
+
+/* Places wear the pack's ribbons; the ordinal stays for screen readers. */
+.skinned .podium__rank {
+    width: 74px;
+    height: 98px;
+    margin-top: -40px;
+    color: rgba(0, 0, 0, 0);
+    text-shadow: 0 0 0 rgba(0, 0, 0, 0);
+    -unity-background-scale-mode: scale-to-fit;
+}
+
+.skinned .podium__place--1 .podium__rank {
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/Rooftop/Props/ribbon_1st_gold.png");
+}
+
+.skinned .podium__place--2 .podium__rank {
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/Rooftop/Props/ribbon_2nd_silver.png");
+}
+
+.skinned .podium__place--3 .podium__rank {
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/Rooftop/Props/ribbon_3rd_bronze.png");
+}
+
+/* BHABHI! is ink in the art, so the label only speaks to screen readers. */
+.skinned .results__stamp {
+    width: 340px;
+    height: 210px;
+    color: rgba(0, 0, 0, 0);
+    background-color: rgba(0, 0, 0, 0);
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/Rooftop/FX/stamp_bhabhi.png");
+    -unity-slice-left: 0;
+    -unity-slice-right: 0;
+    -unity-slice-top: 0;
+    -unity-slice-bottom: 0;
+    -unity-background-scale-mode: scale-to-fit;
+    border-width: 0;
+    rotate: -8deg;
+    -unity-text-outline-width: 0;
+    text-shadow: 0 0 0 rgba(0, 0, 0, 0);
+}
+
+/* Rewards on the parchment scroll. */
+.skinned .result-reward {
+    align-self: center;
+    padding: 30px 90px;
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/Rooftop/Frames/panel_parchment_dialog_blank_9.png");
+    -unity-background-scale-mode: stretch-to-fill;
+    -unity-slice-left: 70;
+    -unity-slice-right: 70;
+    -unity-slice-top: 80;
+    -unity-slice-bottom: 83;
+    -unity-slice-scale: 1px;
+    color: #3A2412;
+    text-shadow: 0 0 0 rgba(0, 0, 0, 0);
+    -unity-text-outline-width: 0;
+    -unity-slice-type: tiled;
+}
+
+/* Play again on the floral plinth, like Play now. */
+.skinned .results__play {
+    align-self: center;
+    width: 600px;
+    height: 372px;
+    margin-top: -40px;
+    margin-bottom: -60px;
+    padding: 0 0 128px 0;
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/Rooftop/Buttons/btn_primary_normal.png");
+    -unity-slice-left: 0;
+    -unity-slice-right: 0;
+    -unity-slice-top: 0;
+    -unity-slice-bottom: 0;
+    -unity-font-definition: url("/Assets/_Project/Presentation/Theme/Fonts/Baloo2.ttf");
+    font-size: 56px;
+}
+
+.skinned .results__play:active {
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/Rooftop/Buttons/btn_primary_normal.png");
+    translate: 0 6px;
+}
+
+.skinned .results__quiet > .button--quiet {
+    flex-grow: 1;
+    flex-basis: 0;
+    margin: 0 8px;
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/Rooftop/Buttons/btn_plank_medium_normal_9.png");
+    -unity-slice-left: 105;
+    -unity-slice-right: 105;
+    -unity-slice-top: 82;
+    -unity-slice-bottom: 87;
+    -unity-slice-scale: 0.55px;
+    color: #FFF8E1;
+    -unity-slice-type: tiled;
+}
+
+/* ---------------------------------------------------------------- list screens (pack: 05 to 09)
+   Friends, Shop, Pass, Profile, Settings, and Missions, Achievements, Leaderboard, Ranked, Inventory:
+   the title hangs on the signboard with Back or Done as a small pill beside it, the content sits on a
+   carved board, and every row is a dark wood plate. */
+
+.skinned .settings__top {
+    justify-content: center;
+    min-height: 170px;
+    margin-bottom: var(--space-1);
+}
+
+.skinned .settings__top > .title {
+    min-width: 520px;
+    padding: 58px 90px 0 90px;
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/Rooftop/Frames/signboard_header_blank_9.png");
+    -unity-background-scale-mode: stretch-to-fill;
+    -unity-slice-left: 182;
+    -unity-slice-right: 186;
+    -unity-slice-top: 112;
+    -unity-slice-bottom: 95;
+    -unity-slice-scale: 0.7px;
+    font-size: 54px;
+    -unity-text-align: middle-center;
+    -unity-slice-type: tiled;
+    height: 156px;
+}
+
+.skinned .settings__top > .button {
+    position: absolute;
+    right: 0;
+    top: 50px;
+    min-width: 150px;
+}
+
+.skinned .settings__top > .button--quiet {
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/Rooftop/Buttons/btn_chip_pill_normal_9.png");
+    -unity-slice-left: 52;
+    -unity-slice-right: 52;
+    -unity-slice-top: 44;
+    -unity-slice-bottom: 45;
+    -unity-slice-scale: 0.5px;
+    padding: 0 30px 8px 30px;
+    color: #FFF8E1;
+    -unity-font-definition: url("/Assets/_Project/Presentation/Theme/Fonts/Baloo2.ttf");
+    -unity-slice-type: tiled;
+}
+
+.skinned .settings__top > .button--quiet:active {
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/Rooftop/Buttons/btn_chip_pill_pressed_9.png");
+    -unity-slice-left: 52;
+    -unity-slice-right: 52;
+    -unity-slice-top: 44;
+    -unity-slice-bottom: 45;
+    -unity-slice-scale: 1px;
+    -unity-slice-type: tiled;
+}
+
+/* The carved board everything sits on. */
+.skinned .settings__scroll {
+    padding: 40px 34px 30px 34px;
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/Rooftop/Buttons/btn_plank_large_normal_9.png");
+    -unity-background-scale-mode: stretch-to-fill;
+    -unity-slice-left: 140;
+    -unity-slice-right: 140;
+    -unity-slice-top: 98;
+    -unity-slice-bottom: 120;
+    -unity-slice-scale: 0.7px;
+    -unity-background-image-tint-color: rgb(150, 118, 96);
+    -unity-slice-type: tiled;
+}
+
+.skinned .home__scroll, .skinned .inventory, .skinned #inventory .settings__scroll {
+    background-image: none;
+    padding: 0;
+}
+
+.skinned .settings__heading {
+    -unity-font-definition: url("/Assets/_Project/Presentation/Theme/Fonts/Baloo2.ttf");
+    -unity-font-style: normal;
+    color: #FFE082;
+    -unity-text-outline-width: 0;
+    -unity-text-align: middle-center;
+    text-shadow: 0 3px 2px rgba(20, 10, 4, 0.75);
+}
+
+/* Rows: dark wood plates. */
+.skinned .lobby-seat, .skinned .settings__row, .skinned .leaderboard__row {
+    border-radius: 0;
+    border-width: 0;
+    background-color: rgba(0, 0, 0, 0);
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/Rooftop/Frames/nameplate_wood_blank_9.png");
+    -unity-background-scale-mode: stretch-to-fill;
+    -unity-slice-left: 50;
+    -unity-slice-right: 50;
+    -unity-slice-top: 46;
+    -unity-slice-bottom: 45;
+    -unity-slice-scale: 0.8px;
+    padding: 16px 52px;
+    -unity-slice-type: tiled;
+}
+
+.skinned .lobby-seat__name, .skinned .settings__row .unity-label {
+    color: #F5F0E6;
+}
+
+.skinned .settings__scroll .caption {
+    color: #E6D3B3;
+}
+
+/* ---------------------------------------------------------------- Shop, the Bazaar (pack: sprites/05_shop_bazaar) */
+
+.skinned .shop__balances {
+    align-self: center;
+    padding: 6px 30px 10px 76px;
+    margin-bottom: var(--space-1);
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/Rooftop/Frames/nameplate_wood_blank_9.png");
+    -unity-slice-left: 50;
+    -unity-slice-right: 50;
+    -unity-slice-top: 46;
+    -unity-slice-bottom: 45;
+    -unity-slice-scale: 0.6px;
+    color: #FFE082;
+    -unity-font-definition: url("/Assets/_Project/Presentation/Theme/Fonts/Baloo2.ttf");
+    -unity-slice-type: tiled;
+}
+
+/* The spotlight sits in the truck-art arch. */
+.skinned .shop__spotlight {
+    padding: 110px 80px 70px 80px;
+    border-radius: 0;
+    background-color: rgba(0, 0, 0, 0);
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/Rooftop/Frames/frame_truckart_arch.png");
+    -unity-background-scale-mode: stretch-to-fill;
+    -unity-slice-left: 110;
+    -unity-slice-right: 110;
+    -unity-slice-top: 140;
+    -unity-slice-bottom: 100;
+    -unity-slice-scale: 0.8px;
+}
+
+.skinned .shop__spotlight-name {
+    -unity-font-definition: url("/Assets/_Project/Presentation/Theme/Fonts/LilitaOne.ttf");
+    -unity-font-style: normal;
+    color: #FFF8E1;
+    -unity-text-outline-width: 2px;
+    -unity-text-outline-color: #1F0E05;
+}
+
+.skinned .shop__price {
+    align-self: flex-start;
+    padding: 4px 26px 8px 26px;
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/Rooftop/Buttons/btn_chip_pill_normal_9.png");
+    -unity-slice-left: 52;
+    -unity-slice-right: 52;
+    -unity-slice-top: 44;
+    -unity-slice-bottom: 45;
+    -unity-slice-scale: 0.45px;
+    color: #FFE082;
+    -unity-font-definition: url("/Assets/_Project/Presentation/Theme/Fonts/Baloo2.ttf");
+    -unity-slice-type: tiled;
+}
+
+/* Card backs and faces preview as cards with a cream border, like the pack's collection. */
+.skinned .shop__preview {
+    border-width: 5px;
+    border-color: #F5F0E6;
+    border-radius: 14px;
+}
+
+.skinned .shop__tile {
+    padding: 22px 30px 26px 30px;
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/Rooftop/Buttons/btn_plank_large_normal_9.png");
+    -unity-slice-left: 140;
+    -unity-slice-right: 140;
+    -unity-slice-top: 98;
+    -unity-slice-bottom: 120;
+    -unity-slice-scale: 0.45px;
+    -unity-slice-type: tiled;
+}
+
+/* Rarity as a tag on the tile's top edge. */
+.skinned .shop__rarity {
+    padding: 2px 22px 6px 22px;
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/Rooftop/Frames/nameplate_wood_blank_9.png");
+    -unity-slice-left: 50;
+    -unity-slice-right: 50;
+    -unity-slice-top: 46;
+    -unity-slice-bottom: 45;
+    -unity-slice-scale: 0.4px;
+    font-size: 22px;
+    -unity-font-definition: url("/Assets/_Project/Presentation/Theme/Fonts/Baloo2.ttf");
+    letter-spacing: 1px;
+    -unity-slice-type: tiled;
+}
+
+.skinned .shop__equipped {
+    padding: 8px 0 12px 0;
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/Rooftop/Buttons/btn_chip_pill_pressed_9.png");
+    -unity-slice-left: 52;
+    -unity-slice-right: 52;
+    -unity-slice-top: 44;
+    -unity-slice-bottom: 45;
+    -unity-slice-scale: 0.45px;
+    background-color: rgba(0, 0, 0, 0);
+    color: #E6D3B3;
+    -unity-slice-type: tiled;
+}
+
+/* ---------------------------------------------------------------- Season pass (pack: sprites/06_season_pass) */
+
+.skinned .pass__header {
+    padding-top: 40px;
+}
+
+.skinned .pass__header > .title {
+    -unity-font-definition: url("/Assets/_Project/Presentation/Theme/Fonts/LilitaOne.ttf");
+}
+
+/* Lane tags: FREE on wood, PREMIUM on the magenta banner. */
+.skinned .pass__lane {
+    border-radius: 0;
+    background-color: rgba(0, 0, 0, 0);
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/Rooftop/Frames/nameplate_wood_blank_9.png");
+    -unity-slice-left: 50;
+    -unity-slice-right: 50;
+    -unity-slice-top: 46;
+    -unity-slice-bottom: 45;
+    -unity-slice-scale: 0.5px;
+    -unity-font-definition: url("/Assets/_Project/Presentation/Theme/Fonts/Baloo2.ttf");
+    -unity-font-style: normal;
+    color: #FFF8E1;
+    -unity-slice-type: tiled;
+}
+
+.skinned .pass__lane--premium {
+    background-image: none;
+    background-color: #C2185B;
+    border-width: 3px;
+    border-color: #FFE082;
+    border-radius: 12px;
+}
+
+/* Free rewards stand on wood pedestals; the premium lane is a magenta band trimmed in brass. */
+.skinned .pass__track .pass__side {
+    border-radius: 0;
+    background-color: rgba(0, 0, 0, 0);
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/Rooftop/Buttons/btn_plank_medium_normal_9.png");
+    -unity-slice-left: 105;
+    -unity-slice-right: 105;
+    -unity-slice-top: 82;
+    -unity-slice-bottom: 87;
+    -unity-slice-scale: 0.5px;
+    -unity-slice-type: tiled;
+}
+
+.skinned .pass__track .pass__side--premium {
+    background-image: none;
+    background-color: rgba(194, 24, 91, 0.55);
+    border-top-width: 3px;
+    border-bottom-width: 3px;
+    border-color: #FFE082;
+}
+
+.skinned .pass__track .pass__reward {
+    color: #FFF8E1;
+    -unity-font-definition: url("/Assets/_Project/Presentation/Theme/Fonts/Baloo2.ttf");
+    -unity-text-outline-width: 0;
+    text-shadow: 0 3px 2px rgba(20, 10, 4, 0.75);
+}
+
+/* The tier bar: carved wood, saffron up to the player's tier. */
+.skinned .pass__track .pass__tier {
+    background-color: #2A170C;
+    border-top-width: 3px;
+    border-bottom-width: 3px;
+    border-color: #8C5D14;
+    color: #E6D3B3;
+    -unity-font-definition: url("/Assets/_Project/Presentation/Theme/Fonts/Baloo2.ttf");
+}
+
+.skinned .pass__track .pass__tier--reached {
+    background-color: #F9A825;
+    border-color: #FFE082;
+    color: #1F0E05;
+}
+
+/* ---------------------------------------------------------------- Profile, the dossier (pack: sprites/08_profile_dossier) */
+
+.skinned .profile__avatar .seat__frame {
+    left: -80px;
+    top: -80px;
+    width: 380px;
+    height: 380px;
+}
+
+.skinned .profile__dossier {
+    margin-top: 90px;
+}
+
+.skinned .profile__name {
+    margin-top: 90px;
+    padding: 10px 70px 18px 70px;
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/Rooftop/Frames/nameplate_wood_blank_9.png");
+    -unity-slice-left: 50;
+    -unity-slice-right: 50;
+    -unity-slice-top: 46;
+    -unity-slice-bottom: 45;
+    -unity-slice-scale: 0.8px;
+    -unity-font-definition: url("/Assets/_Project/Presentation/Theme/Fonts/Baloo2.ttf");
+    -unity-font-style: normal;
+    color: #FFF8E1;
+    -unity-slice-type: tiled;
+}
+
+/* The friend code is a ticket: a small plank with the code in gold. */
+.skinned .profile__ticket {
+    align-self: center;
+    min-width: 560px;
+    padding: 40px 70px;
+    -unity-slice-scale: 0.45px;
+}
+
+.skinned .profile__ticket .code {
+    font-size: 72px;
+}
+
+.skinned .profile__stat {
+    border-radius: 0;
+    background-color: rgba(0, 0, 0, 0);
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/Rooftop/Frames/nameplate_wood_blank_9.png");
+    -unity-slice-left: 50;
+    -unity-slice-right: 50;
+    -unity-slice-top: 46;
+    -unity-slice-bottom: 45;
+    -unity-slice-scale: 0.7px;
+    padding: 20px 40px 26px 40px;
+    -unity-slice-type: tiled;
+}
+
+.skinned .profile__stat-value {
+    -unity-font-definition: url("/Assets/_Project/Presentation/Theme/Fonts/LilitaOne.ttf");
+    color: #FFF8E1;
+    -unity-text-outline-width: 2px;
+    -unity-text-outline-color: #1F0E05;
+}
+
+.skinned .profile__stat--loss .profile__stat-value {
+    color: #E53935;
+}
+
+.skinned .profile__stat-label {
+    color: #E6D3B3;
+}
+
+/* The bio on the parchment scroll, in dark ink. */
+.skinned .profile__bio {
+    padding: 30px 90px;
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/Rooftop/Frames/panel_parchment_dialog_blank_9.png");
+    -unity-background-scale-mode: stretch-to-fill;
+    -unity-slice-left: 70;
+    -unity-slice-right: 70;
+    -unity-slice-top: 80;
+    -unity-slice-bottom: 83;
+    -unity-slice-scale: 1px;
+    color: #3A2412;
+    text-shadow: 0 0 0 rgba(0, 0, 0, 0);
+    -unity-slice-type: tiled;
+}
+
+/* ---------------------------------------------------------------- Friends (pack: sprites/07_friends_hub) */
+
+.skinned .friend-row__avatar {
+    margin-left: -10px;
+    margin-right: 40px;
+}
+
+.skinned .friend-row__avatar .seat__frame {
+    left: -35px;
+    top: -35px;
+    width: 166px;
+    height: 166px;
+}
+
+.skinned .friend-row__avatar .party__dot {
+    right: -14px;
+    bottom: -14px;
+    border-color: #2A170C;
+    background-color: #43A047;
+}
+
+/* Declines, removals and blocks are red; accepts and adds stay gold. */
+.skinned .chip.button--danger {
+    -unity-background-image-tint-color: rgb(230, 110, 100);
+    color: #FFF8E1;
+}
+
+/* Add by code: the field and its button on one carved plate. */
+.skinned #friends .chat-panel__compose {
+    padding: 16px 44px 22px 44px;
+    margin-bottom: var(--space-1);
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/Rooftop/Frames/nameplate_wood_blank_9.png");
+    -unity-slice-left: 50;
+    -unity-slice-right: 50;
+    -unity-slice-top: 46;
+    -unity-slice-bottom: 45;
+    -unity-slice-scale: 0.8px;
+    -unity-slice-type: tiled;
+}
+
+/* ---------------------------------------------------------------- Settings (pack: sprites/09_settings_comforts) */
+
+/* Every toggle is the carved switch: the star knob left when off, right on a warm groove when on. */
+.skinned .unity-toggle__checkmark {
+    width: 132px;
+    height: 50px;
+    border-width: 0;
+    border-radius: 0;
+    background-color: rgba(0, 0, 0, 0);
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/Rooftop/Buttons/switch_off.png");
+    -unity-background-scale-mode: stretch-to-fill;
+    -unity-background-image-tint-color: rgb(255, 255, 255);
+}
+
+.skinned .unity-toggle:checked .unity-toggle__checkmark {
+    background-color: rgba(0, 0, 0, 0);
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/Rooftop/Buttons/switch_on.png");
+}
+
+/* Sliders: a carved groove and the brass star knob. */
+.skinned .unity-base-slider__tracker {
+    height: 20px;
+    margin-top: -10px;
+    border-radius: 10px;
+    border-width: 2px;
+    border-color: #8C5D14;
+    background-color: #2A170C;
+}
+
+.skinned .unity-base-slider__dragger {
+    width: 68px;
+    height: 68px;
+    margin-top: -34px;
+    border-radius: 0;
+    border-width: 0;
+    background-color: rgba(0, 0, 0, 0);
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/Rooftop/Buttons/toggle_knob.png");
+    -unity-background-scale-mode: stretch-to-fill;
+}
+
+/* ---------------------------------------------------------------- Dialogs (pack: sprites/10_popups_dialogs)
+   The pack ships the pieces, not a layout: the question in dark ink on the parchment scroll, the gold
+   button for yes and a plank for no. */
+.skinned .dialog {
+    padding: 60px 120px 70px 120px;
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/Rooftop/Frames/panel_parchment_dialog_blank_9.png");
+    -unity-slice-left: 70;
+    -unity-slice-right: 70;
+    -unity-slice-top: 80;
+    -unity-slice-bottom: 83;
+    -unity-slice-scale: 1.2px;
+    -unity-background-image-tint-color: rgb(255, 255, 255);
+    -unity-slice-type: tiled;
+}
+
+.skinned .dialog__text {
+    font-size: 46px;
+    color: #3A2412;
+    -unity-text-outline-width: 0;
+    text-shadow: 0 0 0 rgba(0, 0, 0, 0);
+    letter-spacing: 0;
+    -unity-font-definition: url("/Assets/_Project/Presentation/Theme/Fonts/Baloo2.ttf");
+}
+
+.skinned #shell-dialog {
+    background-color: rgba(20, 16, 38, 0.78);
+}
+
+/* ---------------------------------------------------------------- the tablet rail (responsive guide)
+   The dock turns on its side: its trimmed ends become the rail's long edges. */
+.skinned.size--expanded > .nav, .skinned .size--expanded > .nav {
+    height: auto;
+    padding: 60px 0;
+    border-right-width: 0;
+    -unity-slice-left: 110;
+    -unity-slice-right: 110;
+    -unity-slice-top: 60;
+    -unity-slice-bottom: 40;
+    -unity-slice-scale: 1px;
+}
+
+.skinned.size--expanded > .nav .nav__art {
+    margin-top: 0;
+}
+
+/* ---------------------------------------------------------------- the player's own pod at the table
+   The same brass pod as the opponents, a little smaller, with the nameplate under it and the You tag
+   on the ring; no dark pill. */
+.skinned .me-badge {
+    flex-direction: column;
+    align-items: center;
+    padding: 0;
+    border-width: 0;
+    border-radius: 0;
+    background-color: rgba(0, 0, 0, 0);
+    background-image: none;
+}
+
+.skinned .me-badge .seat__avatar {
+    width: 104px;
+    height: 104px;
+    min-width: 104px;
+    border-radius: 52px;
+    border-width: 0;
+}
+
+.skinned .me-badge .seat__initial {
+    font-size: 46px;
+}
+
+.skinned .me-badge .seat__frame {
+    left: -38px;
+    top: -38px;
+    width: 180px;
+    height: 180px;
+}
+
+.skinned .me-badge .seat__timer {
+    left: -50px;
+    top: -50px;
+    right: -50px;
+    bottom: -50px;
+}
+
+.skinned .me-badge .seat__name {
+    margin: 46px 0 0 0;
+    max-width: none;
+    padding: 2px 40px 8px 40px;
+    background-color: rgba(0, 0, 0, 0);
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/Rooftop/Frames/nameplate_wood_blank_9.png");
+    -unity-slice-left: 50;
+    -unity-slice-right: 50;
+    -unity-slice-top: 46;
+    -unity-slice-bottom: 45;
+    -unity-slice-scale: 0.5px;
+    font-size: 28px;
+    color: #F5F0E6;
+    -unity-text-align: middle-center;
+    -unity-slice-type: tiled;
+}
+
+.skinned .seat--turn.me-badge .seat__name {
+    color: #FFE082;
+}
+
+.skinned .me-badge .seat__you {
+    bottom: -22px;
+    padding: 0 12px 2px 12px;
+    border-radius: 10px;
+    background-color: #F9A825;
+    color: #1F0E05;
+    font-size: 18px;
+    -unity-font-definition: url("/Assets/_Project/Presentation/Theme/Fonts/Baloo2.ttf");
+}
+
+/* Opponents' timer sits just outside the brass ring, never under it. */
+.skinned .seat__timer {
+    left: -46px;
+    top: -46px;
+    right: -46px;
+    bottom: -46px;
+}
+
+.skinned .seat--turn .seat__avatar {
+    border-width: 0;
+}
+
+/* Home fills the screen: on a phone taller than the 1920 reference the arch takes the spare height,
+   centred, so the boards stay under it instead of leaving a gap above the dock. */
+.skinned .home__scroll .unity-scroll-view__content-container {
+    min-height: 100%;
+}
+
+.skinned .home .games {
+    flex-grow: 1;
+    justify-content: center;
+}
+
+/* The header holds the sign and the shield under it, so a board below never covers the shield. */
+.skinned .home .home__header {
+    height: 340px;
+    margin-top: 60px;
+}
+
+.skinned .home .game__mode-label {
+    font-size: 40px;
+    padding: 0 14px;
+}
+
+/* The arch keeps its size; the column around it gives way, not the art. */
+.skinned .home .games, .skinned .home .game, .skinned .home .game__play, .skinned .home .home__header, .skinned .home .home__lower {
+    flex-shrink: 0;
+}
+
+/* Settings rows: the label takes the room and wraps; the switch keeps its size at the row's right edge. */
+.skinned .settings__row.unity-toggle > .unity-label {
+    flex-grow: 1;
+    flex-shrink: 1;
+    min-width: 0;
+    white-space: normal;
+    margin-right: 20px;
+}
+
+.skinned .settings__row.unity-toggle > .unity-toggle__input {
+    flex-grow: 0;
+    flex-shrink: 0;
+    min-width: 168px;
+    justify-content: flex-end;
+}
+
+/* Every state of a toggle keeps the carved switch and the cream label. Unity's own focus, hover and
+   checked styles otherwise recolour the label, blank the switch or draw a tick on a tapped row. */
+.skinned .unity-toggle .unity-toggle__input .unity-toggle__checkmark,
+.skinned .unity-toggle:focus .unity-toggle__input .unity-toggle__checkmark,
+.skinned .unity-toggle:hover .unity-toggle__input .unity-toggle__checkmark,
+.skinned .unity-toggle:active .unity-toggle__input .unity-toggle__checkmark,
+.skinned .unity-toggle .unity-toggle__input:focus .unity-toggle__checkmark,
+.skinned .unity-toggle .unity-toggle__input:hover .unity-toggle__checkmark {
+    width: 168px;
+    height: 64px;
+    flex-shrink: 0;
+    border-width: 0;
+    border-radius: 0;
+    background-color: rgba(0, 0, 0, 0);
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/Rooftop/Buttons/switch_off.png");
+    -unity-background-scale-mode: stretch-to-fill;
+    -unity-background-image-tint-color: rgb(255, 255, 255);
+}
+
+.skinned .unity-toggle:checked .unity-toggle__input .unity-toggle__checkmark,
+.skinned .unity-toggle:checked:focus .unity-toggle__input .unity-toggle__checkmark,
+.skinned .unity-toggle:checked:hover .unity-toggle__input .unity-toggle__checkmark,
+.skinned .unity-toggle:checked:active .unity-toggle__input .unity-toggle__checkmark,
+.skinned .unity-toggle:checked .unity-toggle__input:focus .unity-toggle__checkmark,
+.skinned .unity-toggle:checked .unity-toggle__input:checked .unity-toggle__checkmark,
+.skinned .unity-toggle .unity-toggle__input:checked .unity-toggle__checkmark,
+.skinned .unity-toggle .unity-toggle__input:checked:focus .unity-toggle__checkmark {
+    background-color: rgba(0, 0, 0, 0);
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/Rooftop/Buttons/switch_on.png");
+    -unity-background-image-tint-color: rgb(255, 255, 255);
+}
+
+.skinned .settings__row.unity-toggle > .unity-label,
+.skinned .settings__row.unity-toggle:focus > .unity-label,
+.skinned .settings__row.unity-toggle:hover > .unity-label,
+.skinned .settings__row.unity-toggle:active > .unity-label,
+.skinned .settings__row.unity-toggle:checked > .unity-label,
+.skinned .settings__row.unity-toggle:checked:focus > .unity-label {
+    color: #FFF8E1;
+}
+
+/* Destructive actions are red planks with cream text. */
+.skinned .button.button--danger, .skinned .button.button--danger:hover, .skinned .button.button--danger:focus {
+    -unity-background-image-tint-color: rgb(236, 112, 100);
+    color: #FFF8E1;
+}
+
+.skinned .settings__value {
+    min-width: 96px;
+    -unity-text-align: middle-right;
+    color: #FFE082;
+    -unity-font-definition: url("/Assets/_Project/Presentation/Theme/Fonts/Baloo2.ttf");
+}
+
+/* Friends is a tab: the dock already goes back, so the screen has no Back. */
+.skinned #friends .settings__top > .button--quiet {
+    display: none;
+}
+
+/* ---------------------------------------------------------------- fit and contrast */
+
+.skinned .home .hero {
+    min-height: 132px;
+}
+
+.skinned .home .plank, .skinned .inventory .plank {
+    padding: 0 24px 10px 24px;
+    font-size: 44px;
+}
+
+.skinned .home .daily__board {
+    padding: 0 18px 10px 18px;
+    font-size: 40px;
+}
+
+/* Ready reads on a green enamel tag. */
+.skinned .seat__state--ready {
+    padding: 0 12px 2px 12px;
+    border-radius: 10px;
+    background-color: #2E7D32;
+    color: #FFFFFF;
+    text-shadow: 0 0 0 rgba(0, 0, 0, 0);
+}
+
+/* A reward and its button stack in the tier's pedestal; the pedestal grows with them. */
+.skinned .pass__lanes .pass__track .pass__side {
+    height: auto;
+    min-height: 220px;
+}
+
+.skinned .pass__lanes .pass__track .pass__reward {
+    flex-shrink: 0;
+}
+
+/* ================================================================ Home, matched to the reference
+   Every piece sits at its box in the reference render scaled to 1080 wide (1080 x 1937; the dock
+   starts at 1775), on a stage of that width anchored to the top of the safe area. Boxes are in
+   stage pixels; where a pack sprite's proportions differ from the render (sign, arch, Play), the
+   box wins for the arch and a nine-slice keeps the corners for the rest. */
+.skinned .home {
+    padding: 0;
+}
+
+.skinned .home .home__stage {
+    width: 1080px;
+    height: 1760px;
+    flex-shrink: 0;
+    align-self: center;
+}
+
+.skinned .home .home__header, .skinned .home .games, .skinned .home .home__lower, .skinned .home .home__boards {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 1080px;
+    height: 1760px;
+    margin: 0;
+    padding: 0;
+}
+
+/* The sign, its ropes, the level shield and the potli. */
+.skinned .home .home__rope {
+    position: absolute;
+    display: flex;
+    width: 16px;
+    margin: 0;
+    border-radius: 6px;
+    background-color: #8A6234;
+    border-left-width: 3px;
+    border-right-width: 3px;
+    border-color: #5A3A1A;
+}
+
+.skinned .home .home__rope--sign-left {
+    left: 362px;
+    top: -600px;
+    height: 700px;
+}
+
+.skinned .home .home__rope--sign-right {
+    left: 699px;
+    top: -600px;
+    height: 700px;
+}
+
+.skinned .home .home__sign {
+    position: absolute;
+    left: 193px;
+    top: 62px;
+    width: 694px;
+    height: 348px;
+    margin: 0;
+    padding: 0;
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/Rooftop/Frames/signboard_header_blank.png");
+    -unity-background-scale-mode: stretch-to-fill;
+    -unity-slice-left: 0;
+    -unity-slice-right: 0;
+    -unity-slice-top: 0;
+    -unity-slice-bottom: 0;
+}
+
+.skinned .home .home__name {
+    position: absolute;
+    left: 110px;
+    right: 110px;
+    top: 148px;
+    height: 70px;
+    max-width: none;
+    margin: 0;
+    padding: 0;
+    font-size: 55px;
+    -unity-text-align: middle-center;
+}
+
+.skinned .home .home__shield {
+    position: absolute;
+    left: 473px;
+    top: 269px;
+    width: 136px;
+    height: 145px;
+    margin: 0;
+    padding: 0 0 6px 0;
+    translate: 0 0;
+    font-size: 46px;
+}
+
+.skinned .home .home__pouch {
+    position: absolute;
+    left: 749px;
+    top: 181px;
+    right: auto;
+    width: 145px;
+    height: 167px;
+    margin: 0;
+}
+
+.skinned .home .home__coins {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -34px;
+    margin: 0;
+    font-size: 26px;
+    -unity-text-align: middle-center;
+}
+
+/* The arch and what sits in it; children are placed in the arch's own box (left 149, top 408). */
+.skinned .home .game {
+    position: absolute;
+    left: 149px;
+    top: 408px;
+    width: 784px;
+    height: 883px;
+    margin: 0;
+    padding: 0;
+}
+
+.skinned .home .game__name {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 206px;
+    height: 136px;
+    margin: 0;
+    font-size: 123px;
+    -unity-text-align: middle-center;
+}
+
+.skinned .home .game__line {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 332px;
+    height: 52px;
+    margin: 0;
+    font-size: 39px;
+    -unity-text-align: middle-center;
+}
+
+.skinned .home .game__art {
+    position: absolute;
+    left: 148px;
+    top: 392px;
+    width: 493px;
+    height: 252px;
+    margin: 0;
+}
+
+.skinned .home .game__seats {
+    position: absolute;
+    left: 182px;
+    top: 528px;
+    width: 420px;
+    height: 132px;
+    margin: 0;
+    flex-wrap: nowrap;
+    justify-content: center;
+}
+
+.skinned .home .medal {
+    width: 105px;
+    min-width: 105px;
+    max-width: 105px;
+    margin: 0;
+    background-size: 84px 84px;
+}
+
+.skinned .home .medal.chip--on {
+    background-size: 92px 92px;
+    border-width: 0;
+}
+
+.skinned .home .game__mode {
+    position: absolute;
+    left: 176px;
+    top: 654px;
+    width: 443px;
+    height: 68px;
+    margin: 0;
+    justify-content: space-between;
+}
+
+.skinned .home .game__mode-label {
+    padding: 0;
+    font-size: 43px;
+}
+
+/* The track is a pill: its rounded ends keep their shape and only the middle gives. */
+.skinned .home .switch {
+    width: 130px;
+    height: 68px;
+    -unity-slice-left: 84;
+    -unity-slice-right: 84;
+    -unity-slice-top: 0;
+    -unity-slice-bottom: 0;
+    -unity-slice-scale: 0.405px;
+}
+
+.skinned .home .switch__knob {
+    width: 60px;
+    height: 60px;
+    margin: 0 0 0 6px;
+}
+
+.skinned .home .switch--on > .switch__knob {
+    translate: 58px 0;
+}
+
+.skinned .home .game__help {
+    top: 150px;
+    right: 112px;
+}
+
+/* Play, on its plinth's box. */
+.skinned .home .game__play {
+    position: absolute;
+    left: 285px;
+    top: 1155px;
+    width: 510px;
+    height: 192px;
+    margin: 0;
+    padding: 0 0 18px 0;
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/Rooftop/Buttons/btn_primary_pressed_9.png");
+    -unity-slice-left: 70;
+    -unity-slice-right: 70;
+    -unity-slice-top: 90;
+    -unity-slice-bottom: 114;
+    -unity-slice-scale: 0.82px;
+    -unity-slice-type: tiled;
+    font-size: 70px;
+    letter-spacing: 1px;
+}
+
+.skinned .home .game__play:active {
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/Rooftop/Buttons/btn_primary_pressed_9.png");
+}
+
+/* The two boards hang from the arch on their ropes; the chest stands on its board. */
+.skinned .home .home__rope--board-left {
+    left: 202px;
+    top: 1262px;
+    height: 330px;
+}
+
+.skinned .home .home__rope--board-right {
+    left: 494px;
+    top: 1262px;
+    height: 330px;
+}
+
+.skinned .home .home__boards > .plank {
+    position: absolute;
+    left: 155px;
+    width: 400px;
+    height: 115px;
+    margin: 0;
+    padding: 0 0 8px 0;
+    font-size: 57px;
+    -unity-slice-scale: 0.62px;
+}
+
+.skinned .home #create {
+    top: 1420px;
+}
+
+.skinned .home #join-toggle {
+    top: 1565px;
+}
+
+.skinned .home .daily {
+    position: absolute;
+    left: 620px;
+    top: 1340px;
+    width: 330px;
+    height: 400px;
+    margin: 0;
+    padding: 0;
+}
+
+.skinned .home .daily__board {
+    position: absolute;
+    left: 0;
+    top: 205px;
+    width: 330px;
+    height: 133px;
+    margin: 0;
+    padding: 0 0 8px 0;
+    font-size: 47px;
+    -unity-slice-scale: 0.62px;
+}
+
+.skinned .home .daily__chest {
+    position: absolute;
+    left: 20px;
+    top: 4px;
+    width: 299px;
+    height: 260px;
+}
+
+.skinned .home .daily__text {
+    position: absolute;
+    left: -20px;
+    right: -20px;
+    top: 342px;
+    margin: 0;
+    font-size: 24px;
+}
+
+/* Below the stage: the friend banner, the name prompt, friends online and the join panel. */
+.skinned .home .home__scroll .hero {
+    align-self: center;
+    width: 720px;
+    margin: 0 0 12px 0;
+}
+
+/* The dock, matched to the reference: inset 52 left and 50 right, four 218-wide slots, toy icons
+   about 115 tall that rise 15 above its top edge, labels centred 123 below it. */
+.skinned .nav {
+    margin: 0 50px 0 52px;
+    height: 145px;
+    padding: 0 49px 0 57px;
+    -unity-slice-left: 70;
+    -unity-slice-right: 70;
+    -unity-slice-top: 55;
+    -unity-slice-bottom: 56;
+    -unity-slice-scale: 1px;
+}
+
+.skinned .nav__tab {
+    flex-grow: 0;
+    flex-basis: 218px;
+    width: 218px;
+    height: 145px;
+    min-height: 145px;
+    justify-content: flex-start;
+    align-items: center;
+    overflow: visible;
+}
+
+.skinned .nav__art {
+    width: 134px;
+    height: 134px;
+    margin-top: -30px;
+}
+
+.skinned .nav__tab--on .nav__art {
+    scale: 1.08 1.08;
+    translate: 0 -4px;
+}
+
+.skinned .nav__label {
+    margin-top: -6px;
+    height: 50px;
+    font-size: 41px;
+    -unity-text-align: middle-center;
+    text-shadow: 0 3px 2px rgba(20, 10, 4, 0.85);
+}
+
+.skinned .nav__badge {
+    top: -24px;
+    right: 34px;
+}
+
+.skinned .home .game__card {
+    margin: 0 -38px;
+    scale: 0.86 0.86;
+}
+
+/* The reference's board, sign and dock lettering is heavy cream on a dark edge; Unity's outline eats
+   into the letters, so a close, dark shadow gives the edge instead. */
+.skinned .home .home__boards > .plank, .skinned .home .daily__board, .skinned .home .home__name, .skinned .nav__label, .skinned .home .game__mode-label, .skinned .home .game__line {
+    -unity-text-outline-width: 0;
+    text-shadow: 0 3px 1px rgba(30, 14, 5, 0.95);
+}
+
+/* Room for longer languages: the title lines get the height their font needs, and the boards keep the
+   reference width but grow from their centre when a phrase is longer. */
+.skinned .home .game__name {
+    top: 197px;
+    height: 154px;
+    padding: 0;
+}
+
+.skinned .home .game__line {
+    top: 322px;
+    height: 72px;
+    padding: 0;
+}
+
+.skinned .home .home__boards > .plank {
+    left: 355px;
+    width: auto;
+    min-width: 400px;
+    padding: 0 34px 8px 34px;
+    translate: -50% 0;
+}
+
+.skinned .home .daily__board {
+    left: 165px;
+    width: auto;
+    min-width: 330px;
+    padding: 0 28px 8px 28px;
+    translate: -50% 0;
+}

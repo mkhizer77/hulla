@@ -5,12 +5,22 @@
             <ui:Button name="back" class="button button--quiet button--small" />
         </ui:VisualElement>
         <ui:ScrollView class="settings__scroll" horizontal-scroller-visibility="Hidden" vertical-scroller-visibility="Hidden">
-            <ui:VisualElement class="panel code-box">
+            <ui:VisualElement class="profile__dossier">
+                <ui:VisualElement name="avatar" class="seat__avatar profile__avatar" picking-mode="Ignore">
+                    <ui:Label name="avatar-initial" class="seat__initial" />
+                    <ui:VisualElement class="seat__frame" picking-mode="Ignore" />
+                </ui:VisualElement>
+                <ui:Label name="display" class="profile__name" />
+                <ui:Label name="handle-line" class="caption profile__handle" />
+            </ui:VisualElement>
+            <ui:VisualElement class="panel code-box profile__ticket">
                 <ui:Label name="code-label" class="caption" />
                 <ui:Label name="code" class="code" />
                 <ui:Button name="copy" class="button button--small" />
             </ui:VisualElement>
-            <ui:Label name="stats" class="status" />
+            <ui:VisualElement name="stats-grid" class="profile__stats" />
+            <ui:Label name="stats" class="status profile__stats-line" />
+            <ui:Label name="bio-scroll" class="profile__bio" />
             <ui:Button name="achievements" class="button" />
             <ui:VisualElement class="panel">
                 <ui:TextField name="name" class="field" />

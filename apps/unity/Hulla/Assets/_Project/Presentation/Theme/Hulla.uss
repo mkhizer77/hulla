@@ -242,7 +242,6 @@
 .seat--turn .seat__avatar {
     border-color: var(--gold);
     border-width: 7px;
-    scale: 1.08 1.08;
 }
 
 .seat--turn .seat__name {
@@ -1621,57 +1620,6 @@
     color: var(--ink-ivory);
 }
 
-.home__header {
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: var(--space-2);
-}
-
-.home__me {
-    flex-direction: row;
-    align-items: center;
-    flex-shrink: 1;
-    min-width: 0;
-}
-
-.home__avatar {
-    width: 96px;
-    height: 96px;
-    border-radius: 48px;
-    margin-right: var(--space-2);
-}
-
-.home__avatar .seat__initial {
-    font-size: 44px;
-}
-
-.home__who {
-    flex-shrink: 1;
-    min-width: 0;
-}
-
-.home__name {
-    -unity-font-style: bold;
-    overflow: hidden;
-}
-
-.home__coins {
-    color: var(--accent-mustard);
-    -unity-font-style: bold;
-    margin: 0 var(--space-1);
-}
-
-.home__title {
-    font-size: 72px;
-    margin-top: var(--space-1);
-}
-
-.home__quiet {
-    flex-direction: row;
-    justify-content: center;
-}
-
 .home__hidden {
     display: none;
 }
@@ -1794,6 +1742,12 @@
     justify-content: center;
     align-items: flex-end;
     margin-bottom: var(--space-2);
+}
+
+.podium__stand {
+    flex-direction: row;
+    justify-content: center;
+    align-items: flex-end;
 }
 
 .podium__place {
@@ -2579,40 +2533,9 @@
     margin-bottom: var(--space-2);
 }
 
-/* Home, the game shelf (docs/design/table-themes.md §3): the game to play now, the next one as a row under it. */
 .games {
     flex-shrink: 0;
     margin: 20px 0 8px 0;
-}
-
-.game {
-    margin-bottom: 20px;
-    padding: 32px 40px 40px 40px;
-    align-items: stretch;
-    border-radius: 36px;
-    background-color: var(--surface-panel);
-}
-
-.game--soon {
-    flex-direction: row;
-    align-items: center;
-    padding: 20px 28px 20px 20px;
-    opacity: 0.85;
-}
-
-.game__art {
-    height: 240px;
-    flex-direction: row;
-    justify-content: center;
-    align-items: center;
-    border-radius: 28px;
-    overflow: hidden;
-    background-color: var(--felt);
-    -unity-background-scale-mode: scale-and-crop;
-}
-
-.game__card {
-    margin: 0 -26px;
 }
 
 .game__back {
@@ -2624,106 +2547,10 @@
     -unity-background-scale-mode: stretch-to-fill;
 }
 
-.game__name {
-    margin-top: 16px;
-    font-size: 88px;
-    -unity-text-align: middle-center;
-    -unity-font-definition: url("/Assets/_Project/Presentation/Theme/Fonts/LilitaOne.ttf");
-    color: var(--accent-saffron);
-}
-
-.game__line {
-    margin-top: -4px;
-    font-size: var(--font-small);
-    -unity-text-align: middle-center;
-    -unity-font-style: bold;
-    letter-spacing: 2px;
-    color: var(--ink-muted);
-}
-
-.game__seats-label {
-    margin-top: 20px;
-    -unity-text-align: middle-center;
-}
-
-.game__seats {
-    justify-content: center;
-    margin-bottom: 0;
-}
-
-.game__play {
-    margin-top: 16px;
-}
-
-.game__soon {
-    align-self: center;
-    margin-top: 28px;
-    padding: 8px 28px;
-    border-radius: 999px;
-    font-size: var(--font-small);
-    -unity-font-style: bold;
-    background-color: rgba(0, 0, 0, 0.45);
-    color: var(--ink-ivory);
-}
-
-.home__row {
-    flex-direction: row;
-    margin: 0 -8px;
-}
-
-.home__row > .button {
-    flex-grow: 1;
-    flex-basis: 0;
-    margin: 0 8px;
-}
-
 .nav__icon {
     width: 60px;
     height: 60px;
     align-self: center;
-}
-
-.game__seats > .chip {
-    min-width: 132px;
-    font-size: 40px;
-    -unity-font-style: bold;
-}
-
-/* A longer name (another language) wraps instead of spilling out of its tile. */
-.game__name {
-    white-space: normal;
-}
-
-.game--soon .game__art {
-    width: 200px;
-    height: 120px;
-    border-radius: 20px;
-}
-
-.game--soon .game__card, .game--soon .game__back {
-    scale: 0.45 0.45;
-    margin: 0 -60px;
-}
-
-.game__text {
-    flex-grow: 1;
-    flex-shrink: 1;
-    margin: 0 24px;
-}
-
-.game--soon .game__name {
-    margin-top: 0;
-    font-size: 64px;
-    -unity-text-align: middle-left;
-}
-
-.game--soon .game__line {
-    -unity-text-align: middle-left;
-}
-
-.game--soon .game__soon {
-    margin-top: 0;
-    flex-shrink: 0;
 }
 
 /* An icon in place of a word (the gear for settings); the tooltip and the label carry the name. */
@@ -2738,6 +2565,626 @@
     width: 52px;
     height: 52px;
     align-self: center;
+}
+
+/*
+ * Home after the concept art (docs/design/rooftop-redesign.md): a name sign hanging from the top with
+ * the level badge under it and the coin pouch beside it, the game card with its title, a fan of cards,
+ * seat medallions and Casual or Ranked, Play now on a plaque over the card's foot, two boards and the
+ * reward chest. These rules draw it plainly in any theme; a theme with painted pieces (Skins.uss) puts
+ * its art on the same elements.
+ */
+.home {
+    padding: 0 var(--space-2);
+}
+
+.home__scroll > .unity-scroll-view__content-viewport > .unity-scroll-view__content-container {
+    padding-bottom: var(--space-3);
+}
+
+.home__header {
+    height: 244px;
+    margin-top: 80px;
+    align-items: center;
+    flex-shrink: 0;
+}
+
+.home__rope {
+    position: absolute;
+    display: none;
+}
+
+.home__sign {
+    width: 620px;
+    height: 150px;
+    justify-content: center;
+    align-items: center;
+    padding: 0 110px 14px 110px;
+    border-radius: 28px;
+    background-color: var(--surface-panel);
+}
+
+.home__name {
+    font-size: 58px;
+    -unity-font-style: bold;
+    -unity-text-align: middle-center;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 100%;
+}
+
+.home__shield {
+    position: absolute;
+    top: 118px;
+    left: 50%;
+    translate: -66px 0;
+    width: 132px;
+    height: 132px;
+    margin: 0;
+    padding: 0 0 12px 0;
+    border-width: 0;
+    border-radius: 66px;
+    background-color: var(--surface-raised);
+    color: var(--accent-saffron);
+    font-size: 50px;
+    -unity-font-style: bold;
+    -unity-text-align: middle-center;
+}
+
+.home__pouch {
+    position: absolute;
+    top: -6px;
+    right: 36px;
+    width: 170px;
+    height: 170px;
+    justify-content: flex-end;
+    align-items: center;
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/Rooftop/Props/potli_currency_bag.png");
+    -unity-background-scale-mode: scale-to-fit;
+}
+
+.home__coins {
+    margin: 0;
+    padding: 2px 16px;
+    border-radius: 999px;
+    background-color: rgba(0, 0, 0, 0.6);
+    color: var(--accent-mustard);
+    font-size: 30px;
+    -unity-font-style: bold;
+}
+
+.home__progress {
+    display: none;
+}
+
+.games {
+    flex-shrink: 0;
+    align-items: center;
+    margin: 10px 0 0 0;
+}
+
+.game {
+    width: 740px;
+    padding: 70px 70px 120px 70px;
+    align-items: stretch;
+    border-radius: 40px;
+    background-color: var(--surface-panel);
+}
+
+.game__name {
+    font-size: 132px;
+    -unity-text-align: middle-center;
+    -unity-font-definition: url("/Assets/_Project/Presentation/Theme/Fonts/LilitaOne.ttf");
+    color: var(--accent-saffron);
+    white-space: normal;
+}
+
+.game__line {
+    margin-top: -14px;
+    font-size: 42px;
+    -unity-text-align: middle-center;
+    -unity-font-definition: url("/Assets/_Project/Presentation/Theme/Fonts/LilitaOne.ttf");
+    color: var(--ink-ivory);
+    white-space: normal;
+}
+
+.game__art {
+    height: 210px;
+    margin-top: 6px;
+    flex-direction: row;
+    justify-content: center;
+    align-items: flex-start;
+}
+
+.game__card {
+    margin: 0 -42px;
+    scale: 0.74 0.74;
+    transform-origin: 50% 0;
+}
+
+.game__seats-label {
+    display: none;
+}
+
+.game__seats {
+    justify-content: center;
+    margin: -60px 0 0 0;
+}
+
+/* A medallion draws at 100px but takes a full touch target (132px, 48 dp). */
+.home .medal {
+    width: 132px;
+    min-width: 132px;
+    max-width: 132px;
+    height: 132px;
+    min-height: 132px;
+    max-height: 132px;
+    margin: 0 -8px;
+    padding: 0 0 4px 0;
+    border-radius: 66px;
+    font-size: 54px;
+    -unity-font-definition: url("/Assets/_Project/Presentation/Theme/Fonts/LilitaOne.ttf");
+    -unity-text-align: middle-center;
+}
+
+.home .medal.chip--on {
+    scale: 1.14 1.14;
+}
+
+.game__seats:disabled {
+    opacity: 0.45;
+}
+
+.game__mode {
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    margin-top: 22px;
+}
+
+.game__mode-label {
+    font-size: 46px;
+    -unity-font-definition: url("/Assets/_Project/Presentation/Theme/Fonts/LilitaOne.ttf");
+    color: var(--ink-muted);
+    padding: 0 20px;
+}
+
+.game__mode-label--on {
+    color: var(--ink-ivory);
+}
+
+.switch {
+    width: 140px;
+    height: 68px;
+    border-radius: 34px;
+    background-color: var(--surface-raised);
+    justify-content: center;
+}
+
+.switch__knob {
+    width: 54px;
+    height: 54px;
+    margin-left: 8px;
+    border-radius: 27px;
+    background-color: var(--ink-ivory);
+    transition-property: translate;
+    transition-duration: 160ms;
+    transition-timing-function: ease-out-cubic;
+}
+
+.switch--on {
+    background-color: var(--state-thulla);
+}
+
+.switch--on > .switch__knob {
+    translate: 70px 0;
+}
+
+.game__help {
+    position: absolute;
+    top: 24px;
+    right: 24px;
+}
+
+.game__play {
+    width: 520px;
+    height: 150px;
+    margin-top: -90px;
+    font-size: 84px;
+    -unity-font-definition: url("/Assets/_Project/Presentation/Theme/Fonts/LilitaOne.ttf");
+}
+
+.home__lower {
+    flex-direction: row;
+    justify-content: center;
+    align-items: flex-end;
+    margin-top: 8px;
+}
+
+.home .hero {
+    align-self: center;
+    width: 720px;
+    margin: 0 0 8px 0;
+    white-space: normal;
+}
+
+.home .party {
+    margin-top: var(--space-2);
+}
+
+.home__boards {
+    width: 420px;
+    margin-right: 24px;
+}
+
+.plank {
+    height: 112px;
+    margin: 8px 0;
+    font-size: 54px;
+    -unity-font-definition: url("/Assets/_Project/Presentation/Theme/Fonts/LilitaOne.ttf");
+    white-space: nowrap;
+}
+
+/* The chest stands in front of its board, overlapping its top edge. */
+.daily {
+    width: 360px;
+    flex-direction: column;
+    align-items: center;
+    margin: 0;
+    padding: 200px 0 0 0;
+    border-width: 0;
+    background-color: rgba(0, 0, 0, 0);
+}
+
+.daily__chest {
+    position: absolute;
+    top: 0;
+    left: 30px;
+    width: 300px;
+    height: 245px;
+    transition-property: scale;
+    transition-duration: 180ms;
+    transition-timing-function: ease-out-back;
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/Rooftop/Props/chest_daily_reward_closed.png");
+    -unity-background-scale-mode: scale-to-fit;
+    -unity-background-image-tint-color: rgb(190, 175, 170);
+}
+
+.daily--ready .daily__chest {
+    -unity-background-image-tint-color: rgb(255, 255, 255);
+}
+
+.daily__chest--pop {
+    scale: 1.15 1.15;
+}
+
+.daily__board {
+    width: 100%;
+    margin: 0 0 12px 0;
+    font-size: 48px;
+}
+
+/* A coin from the opened chest on its way to the potli (DailyRewardCard). */
+.coin-fly {
+    position: absolute;
+    width: 64px;
+    height: 64px;
+    margin: -32px 0 0 -32px;
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Skins/Rooftop/Props/coin_gold.png");
+    -unity-background-scale-mode: scale-to-fit;
+}
+
+.home__pouch {
+    transition-property: scale;
+    transition-duration: 90ms;
+}
+
+.home__pouch--bump {
+    scale: 1.1 1.1;
+}
+
+.daily__text {
+    margin: 0;
+    font-size: 26px;
+    -unity-text-align: middle-center;
+    white-space: normal;
+}
+
+.inventory {
+    align-items: center;
+    padding-top: var(--space-2);
+}
+
+.inventory__entry {
+    align-self: center;
+    width: 640px;
+    margin: 14px 0;
+}
+
+.inventory .inventory__badge {
+    top: -10px;
+    right: -10px;
+    background-color: #C62828;
+    color: #FFFFFF;
+}
+
+.nav__art {
+    display: none;
+}
+
+/* The shop as a bazaar (docs/design/rooftop-redesign.md): a spotlight card, then tiles two to a row. */
+.shop__grid {
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-between;
+}
+
+.shop__tile {
+    width: 48.5%;
+    flex-direction: column;
+    align-items: center;
+    padding: var(--space-2);
+}
+
+.shop__tile-name {
+    margin: var(--space-1) 0;
+    -unity-text-align: middle-center;
+    white-space: normal;
+}
+
+.shop__preview {
+    margin: 0;
+}
+
+.shop__preview--small {
+    width: 120px;
+    height: 160px;
+    margin-top: var(--space-1);
+}
+
+.shop__preview--large {
+    width: 200px;
+    height: 270px;
+}
+
+.shop__swatch--table.shop__preview--small {
+    width: 200px;
+    height: 120px;
+    border-radius: 60px;
+}
+
+.shop__swatch--table.shop__preview--large {
+    width: 260px;
+    height: 160px;
+    border-radius: 80px;
+}
+
+.shop__action, .shop__equipped {
+    align-self: stretch;
+    -unity-text-align: middle-center;
+}
+
+.shop__spotlight {
+    padding: var(--space-3);
+    margin-bottom: var(--space-2);
+    border-radius: var(--radius);
+    background-color: var(--surface-panel);
+}
+
+.shop__spotlight-top {
+    flex-direction: row;
+    align-items: center;
+    margin-bottom: var(--space-2);
+}
+
+.shop__spotlight-text {
+    flex-grow: 1;
+    flex-shrink: 1;
+    margin-left: var(--space-3);
+}
+
+.shop__spotlight-name {
+    font-size: 52px;
+    -unity-font-style: bold;
+    white-space: normal;
+}
+
+.shop__price {
+    margin-top: var(--space-1);
+    color: var(--accent-mustard);
+    -unity-font-style: bold;
+}
+
+/* The season pass as a road: tiers run sideways, the free reward over the tier bar and the premium under it. */
+.pass__lanes {
+    flex-direction: row;
+    align-items: flex-start;
+}
+
+.pass__lane-labels {
+    width: 190px;
+    height: 520px;
+    flex-shrink: 0;
+    justify-content: space-between;
+    padding: 70px 0;
+}
+
+.pass__lane {
+    -unity-text-align: middle-center;
+    white-space: normal;
+    font-size: 24px;
+    -unity-font-style: bold;
+    letter-spacing: 2px;
+    color: var(--ink-ivory);
+    padding: 8px 0;
+    border-radius: var(--radius);
+    background-color: var(--surface-raised);
+}
+
+.pass__track {
+    flex-grow: 1;
+    flex-shrink: 1;
+}
+
+.pass__track .unity-scroll-view__content-container {
+    flex-direction: row;
+}
+
+.pass__lanes .pass__track .pass__row {
+    flex-direction: column;
+    align-items: stretch;
+    width: 250px;
+    min-height: 0;
+    border-bottom-width: 0;
+}
+
+.pass__lanes .pass__track .pass__side {
+    flex-grow: 0;
+    flex-basis: auto;
+    height: 220px;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin: 0 6px;
+    padding: var(--space-1);
+    border-left-width: 0;
+    border-radius: var(--radius);
+}
+
+.pass__track .pass__reward {
+    -unity-text-align: middle-center;
+    margin-bottom: var(--space-1);
+}
+
+.pass__track .pass__tier {
+    width: auto;
+    height: 72px;
+    margin: 4px 0;
+    font-size: 34px;
+    background-color: var(--surface-raised);
+    color: var(--ink-muted);
+}
+
+.pass__track .pass__tier--reached {
+    background-color: var(--accent-saffron);
+    color: #1F0E05;
+}
+
+/* Profile as a dossier: the face, name and handle, the friend code, four stats, the bio. */
+.profile__dossier {
+    align-items: center;
+    margin: var(--space-2) 0;
+}
+
+.profile__avatar {
+    width: 220px;
+    height: 220px;
+    border-radius: 110px;
+}
+
+.profile__avatar .seat__initial {
+    font-size: 110px;
+}
+
+.seat__frame {
+    display: none;
+}
+
+.skinned .seat__frame {
+    display: flex;
+}
+
+.profile__name {
+    margin-top: var(--space-2);
+    font-size: 56px;
+    -unity-font-style: bold;
+    -unity-text-align: middle-center;
+}
+
+.profile__handle {
+    -unity-text-align: middle-center;
+}
+
+.profile__stats {
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    margin: var(--space-2) 0;
+}
+
+.profile__stat {
+    width: 48.5%;
+    align-items: center;
+    padding: var(--space-2);
+    margin-bottom: var(--space-1);
+    border-radius: var(--radius);
+    background-color: var(--surface-panel);
+}
+
+.profile__stat-value {
+    font-size: 72px;
+    -unity-font-style: bold;
+    color: var(--accent-mustard);
+}
+
+.profile__stat--loss .profile__stat-value {
+    color: var(--state-thulla);
+}
+
+.profile__stat-label {
+    font-size: var(--font-small);
+    -unity-text-align: middle-center;
+}
+
+.profile__stats-line {
+    display: none;
+}
+
+.profile__bio {
+    margin: var(--space-1) 0 var(--space-2) 0;
+    padding: var(--space-2) var(--space-3);
+    white-space: normal;
+    -unity-font-style: italic;
+    -unity-text-align: middle-center;
+}
+
+.friend-row__avatar {
+    width: 96px;
+    height: 96px;
+    border-radius: 48px;
+    margin-right: var(--space-2);
+    flex-shrink: 0;
+}
+
+.friend-row__avatar .seat__initial {
+    font-size: 44px;
+}
+
+/* Tablet landscape (art pack, responsive guide): the tabs become a rail down the left edge. */
+.size--expanded > .nav {
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 220px;
+    height: auto;
+    flex-direction: column;
+    justify-content: center;
+    padding: 40px 0;
+    border-top-width: 0;
+    border-right-width: 2px;
+    border-right-color: var(--surface-raised);
+}
+
+.size--expanded > .nav > .nav__tab {
+    flex-grow: 0;
+    height: 210px;
+    margin: 8px 0;
+}
+
+.size--expanded.shell--with-nav > TemplateContainer {
+    margin-left: 220px;
 }
 
 /* Voice (GDD 11.4): the mic beside chat, hold-to-talk on push-to-talk tables, a pill for the voice

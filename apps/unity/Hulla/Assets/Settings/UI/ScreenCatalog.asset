@@ -27,3 +27,4 @@ MonoBehaviour:
   Pass: {fileID: 9197481963319205126, guid: 3c9f1e7a5d2b4a8c8e0f6b4d2a9c7e1b, type: 3}
   Ranked: {fileID: 9197481963319205126, guid: 1869f5725e7044c9968b246df9d9c31f, type: 3}
   Phone: {fileID: 9197481963319205126, guid: f37459a9d6e64a78b10bbbdef07dc092, type: 3}
+  Inventory: {fileID: 9197481963319205126, guid: dc3171a4f5574601977bf84f65e31e2b, type: 3}

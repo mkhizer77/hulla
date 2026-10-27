@@ -52,11 +52,7 @@ namespace Hulla.Screens.Tests
         }
 
         /// <summary>The classes the shell puts on its root for a table theme (ThemeClasses.Apply).</summary>
-        public static void Skin(VisualElement root, Hulla.Application.Settings.TableSkin skin)
-        {
-            root.AddToClassList(Hulla.Presentation.Theme.ThemeClasses.Skinned);
-            root.AddToClassList(Hulla.Presentation.Theme.ThemeClasses.ClassOf(skin));
-        }
+        public static void Skin(VisualElement root) => root.AddToClassList(Hulla.Presentation.Theme.ThemeClasses.Skinned);
 
         public static IEnumerable<Case> All()
         {
@@ -65,7 +61,7 @@ namespace Hulla.Screens.Tests
             {
                 var friends = new HomeFriendsViewModel(new Fakes.Social());
                 var progress = new ProgressViewModel(new Fakes.Progress());
-                new HomeView(r, new HomeViewModel(new Fakes.Session(), new Fakes.Gateway()) { LastName = "Khizer" }, null, (_, _) => { }, (_, _, _) => { }, (_, _, _) => { }, () => { }, (_, _) => { }, (_, _) => { }, friends, () => { }, TutorialText.HowToPlay, progress: progress);
+                new HomeView(r, new HomeViewModel(new Fakes.Session(), new Fakes.Gateway()) { LastName = "Khizer" }, null, (_, _) => { }, (_, _, _) => { }, (_, _, _) => { }, () => { }, (_, _) => { }, (_, _) => { }, friends, () => { }, TutorialText.HowToPlay, progress: progress, openRanked: (_, _) => { });
                 _ = progress.RefreshAsync(0, default);
                 _ = friends.RefreshAsync(default);
                 var daily = new DailyRewardViewModel(new Fakes.Daily());
@@ -162,6 +158,20 @@ namespace Hulla.Screens.Tests
                 new MissionsView(r, model, () => { }, _ => { }, _ => { });
                 _ = model.RefreshAsync(0, default);
             });
+            yield return new Case("dialog", catalog.Inventory, r =>
+            {
+                new Hulla.Presentation.Screens.Inventory.InventoryView(r, new[] { new Hulla.Presentation.Screens.Inventory.InventoryView.Entry("shop", UiText.Shop, () => { }) });
+                r.Add(ShellView.Dialog(Strings.Format(UiText.BuyQuestion, "Truck art", "1,000 coins"), UiText.Buy, UiText.Cancel, () => { }, () => { }));
+            });
+            yield return new Case("inventory", catalog.Inventory, r =>
+                new Hulla.Presentation.Screens.Inventory.InventoryView(r, new[]
+                {
+                    new Hulla.Presentation.Screens.Inventory.InventoryView.Entry("shop", UiText.Shop, () => { }),
+                    new Hulla.Presentation.Screens.Inventory.InventoryView.Entry("pass", UiText.SeasonPass, () => { }, 2),
+                    new Hulla.Presentation.Screens.Inventory.InventoryView.Entry("missions", UiText.Missions, () => { }),
+                    new Hulla.Presentation.Screens.Inventory.InventoryView.Entry("achievements", UiText.Achievements, () => { }),
+                    new Hulla.Presentation.Screens.Inventory.InventoryView.Entry("leaderboard", UiText.Leaderboard, () => { }),
+                }));
         }
 
         private sealed class MemoryStore : ISettingsStore
