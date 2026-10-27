@@ -97,6 +97,8 @@ describe("InitModule", () => {
       "iap_restore",
       "ad_reward",
       "ads_get",
+      "look_feedback",
+      "admin_look_feedback",
     ]);
     expect([...matches.keys()]).toEqual(["thulla"]);
     expect(hooks.get("rtBefore:ChannelMessageSend")?.name).toBe("beforeChannelMessageSend");
