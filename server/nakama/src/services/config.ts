@@ -50,6 +50,8 @@ export const DEFAULT_CONFIG: RemoteConfig = {
     otp_daily_budget: [{ value: 2000 }],
     // Root URL of the Addressables packs on the content CDN (ADR-0011); empty keeps remote packs off.
     content_cdn_url: [{ value: "" }],
+    // The feedback prompt on the test looks during the playtest (`look_feedback`).
+    looks_test: [{ value: true }],
   },
   updatedTs: 0,
 };

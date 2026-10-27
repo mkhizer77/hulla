@@ -48,6 +48,7 @@ import { rpcDailyRewardClaim, rpcDailyRewardGet } from "./rpc/daily_reward";
 import { rpcProgressGet, rpcWalletGet } from "./rpc/economy";
 import { rpcHello } from "./rpc/hello";
 import { onLeaderboardReset, rpcLeaderboardGet } from "./rpc/leaderboards";
+import { rpcAdminLookFeedback, rpcLookFeedback } from "./rpc/look_feedback";
 import {
   rpcMissionsClaim,
   rpcMissionsGet,
@@ -194,6 +195,8 @@ function InitModule(
   initializer.registerRpc("iap_restore", rpcIapRestore);
   initializer.registerRpc("ad_reward", rpcAdReward);
   initializer.registerRpc("ads_get", rpcAdsGet);
+  initializer.registerRpc("look_feedback", rpcLookFeedback);
+  initializer.registerRpc("admin_look_feedback", rpcAdminLookFeedback);
   initializer.registerAfterValidatePurchaseApple(afterValidatePurchaseApple);
   initializer.registerAfterValidatePurchaseGoogle(afterValidatePurchaseGoogle);
   initializer.registerLeaderboardReset(onLeaderboardReset);

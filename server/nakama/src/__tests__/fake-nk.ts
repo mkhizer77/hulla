@@ -375,9 +375,10 @@ export function memoryNk(): MemoryNk {
         return found === undefined ? [] : [{ ...found, createTime: 0, updateTime: 0 }];
       });
     },
-    storageList(userId: string, collection: string, limit: number, cursor?: string) {
+    storageList(userId: string | undefined, collection: string, limit: number, cursor?: string) {
+      const anyOwner = userId === undefined || userId === "";
       const all = [...storage.values()]
-        .filter((o) => o.collection === collection && (userId === "" || o.userId === userId))
+        .filter((o) => o.collection === collection && (anyOwner || o.userId === userId))
         .sort((a, b) => a.key.localeCompare(b.key));
       const start = cursor === undefined || cursor === "" ? 0 : Number(cursor);
       const page = all.slice(start, start + limit);

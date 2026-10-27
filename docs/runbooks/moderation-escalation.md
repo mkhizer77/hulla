@@ -3,7 +3,7 @@
 Who may act, with what, and when (GDD 24.3, 24.4, 10.11; #91).
 
 ## Who
-The admin RPCs (`admin_sanction`, `admin_table_inspect`, `admin_round_replay`, `admin_audit_list`, `admin_grant`, `admin_drain`, `reports_list`, `chat_filters_set`, `missions_set`, `achievements_set`, `catalog_set`, `config_set`) accept the server key and the owner accounts listed in `HULLA_ADMIN_USER_IDS` on the box. Nobody else. Every call writes an audit row (`admin_audit_list`), and the audit log is reviewed in the weekly ritual.
+The admin RPCs (`admin_sanction`, `admin_table_inspect`, `admin_round_replay`, `admin_audit_list`, `admin_grant`, `admin_drain`, `admin_look_feedback`, `reports_list`, `chat_filters_set`, `missions_set`, `achievements_set`, `catalog_set`, `config_set`) accept the server key and the owner accounts listed in `HULLA_ADMIN_USER_IDS` on the box. Nobody else. Every call writes an audit row (`admin_audit_list`), and the audit log is reviewed in the weekly ritual.
 
 ## The ladder (GDD 24.3)
 1. Filters act first: masked text in Standard rooms, blocked in Family rooms, links and numbers refused.
