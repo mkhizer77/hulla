@@ -1,20 +1,29 @@
 using System;
 using Hulla.Application.Social;
 using Hulla.Application.ViewModels;
-using Hulla.Presentation.Navigation;
 using Hulla.Presentation.TableKit;
 using Hulla.Presentation.Text;
+using Hulla.Presentation.Theme;
 using UnityEngine.UIElements;
 
 namespace Hulla.Presentation.Screens.Home
 {
     /// <summary>
-    /// Home (GDD 14.10, design §4): who you are and your coins, the party bar of friends online, the
-    /// adaptive hero (a friend's table to join or watch, the table you left, or Play now), Create a
-    /// room, Join by code, the daily reward. Shop, Pass, Friends and Profile live on the bottom navigation.
+    /// Home (GDD 14.10, docs/design/basant-home.md): the gear, who you are with your level and coins,
+    /// friends online with Invite, a friend's table to join, the Thulla card (seat size, Casual or
+    /// Ranked, Play now), Create Room and Join by Code, the daily reward and Rung to come. Everything
+    /// sits on one stage drawn at 1080 x 1736 and scaled to fit, so it keeps the concept's layout.
     /// </summary>
     public sealed class HomeView : IDisposable
     {
+        /// <summary>The stage's design size; the dock sits under it.</summary>
+        public const float StageWidth = 1080f;
+
+        public const float StageHeight = 1736f;
+
+        /// <summary>How many friends the panel shows before Invite.</summary>
+        public const int PartySize = 4;
+
         private readonly HomeViewModel _model;
         private readonly TextField _name;
         private readonly Label _nameLabel;
@@ -26,30 +35,30 @@ namespace Hulla.Presentation.Screens.Home
         private readonly Button _create;
         private readonly Button _join;
         private readonly Label _status;
-        private readonly TextField _server;
         private readonly HomeFriendsViewModel? _friendsOnline;
         private readonly ProgressViewModel? _progress;
-        private readonly Label _progressLine;
-        private readonly Meter _xp;
+        private readonly Label _level;
         private readonly Label _coins;
         private readonly Button _hero;
+        private readonly Label _heroText;
+        private readonly VisualElement _heroJoin;
         private readonly Button _rejoin;
+        private readonly Label _rejoinText;
         private Action? _onRejoin;
-        private readonly Label _online;
         private readonly VisualElement _party;
         private readonly Button _quick;
         private bool _quickAvailable = true;
         private string? _note;
         private int _seats = 4;
+        private bool _ranked;
 
-        /// <param name="server">The server to show in a development build, or null to hide the field.</param>
-        public HomeView(VisualElement root, HomeViewModel model, string? server, Action<string, string?> create, Action<string, string, string?> join, Action<string, int, string?> quickPlay, Action? openSettings = null, Action<string, string?>? openFriends = null, Action<string, string?>? openProfile = null, HomeFriendsViewModel? friendsOnline = null, Action? howToPlay = null, string? howToPlayText = null, Action<string, string, string?>? watch = null, ProgressViewModel? progress = null, Action<string, string?>? openMissions = null, Action<string, string?>? openLeaderboard = null, Action<string, string?>? openShop = null, Action<string, string?>? openPass = null)
+        /// <param name="server">Kept for the callers' signature: the server field lives in Settings now, so a null is passed.</param>
+        public HomeView(VisualElement root, HomeViewModel model, string? server, Action<string, string?> create, Action<string, string, string?> join, Action<string, int, string?> quickPlay, Action? openSettings = null, Action<string, string?>? openFriends = null, Action<string, string?>? openProfile = null, HomeFriendsViewModel? friendsOnline = null, Action? howToPlay = null, string? howToPlayText = null, Action<string, string, string?>? watch = null, ProgressViewModel? progress = null, Action<string, string?>? openMissions = null, Action<string, string?>? openLeaderboard = null, Action<string, string?>? openShop = null, Action<string, string?>? openPass = null, Action<string, string?>? openRanked = null)
         {
             _model = model;
             _progress = progress;
-            _progressLine = root.Q<Label>("progress");
-            _xp = new Meter();
-            _progressLine.parent.Add(_xp);
+            Fit(root);
+            _level = root.Q<Label>("level");
             _coins = root.Q<Label>("coins");
             _avatar = root.Q<VisualElement>("avatar");
             _avatarInitial = root.Q<Label>("avatar-initial");
@@ -63,40 +72,43 @@ namespace Hulla.Presentation.Screens.Home
             var how = root.Q<Button>("how-to-play");
             how.text = howToPlayText ?? "";
             how.clicked += () => howToPlay?.Invoke();
-            how.style.display = howToPlay == null ? DisplayStyle.None : DisplayStyle.Flex;
             _friendsOnline = friendsOnline;
             _hero = root.Q<Button>("hero");
+            _heroText = root.Q<Label>("hero-text");
+            _heroJoin = root.Q<VisualElement>("hero-join");
+            TextArt.Mark(root.Q<Label>("hero-join-label"), "join").text = UiText.JoinTable;
             _rejoin = root.Q<Button>("rejoin");
+            _rejoinText = root.Q<Label>("rejoin-text");
             _rejoin.style.display = DisplayStyle.None;
             _rejoin.clicked += () => _onRejoin?.Invoke();
-            _online = root.Q<Label>("online");
             _party = root.Q<VisualElement>("party");
+            TextArt.Mark(root.Q<Label>("friends-title"), "friends-online").text = UiText.FriendsOnline;
+            TextArt.Mark(root.Q<Label>("invite-label"), "invite").text = UiText.Invite;
             var settings = root.Q<Button>("settings");
             settings.text = "";
             settings.tooltip = UiText.Settings;
-            settings.AddToClassList("button--icon");
-            settings.Add(new LineIcon(LineIconKind.Gear));
             settings.clicked += () => openSettings?.Invoke();
             settings.style.display = openSettings == null ? DisplayStyle.None : DisplayStyle.Flex;
-            root.Q<Label>("title").text = UiText.AppTitle;
-            root.Q<Label>("tagline").text = UiText.Tagline;
             _name = root.Q<TextField>("name");
             _name.label = UiText.NameLabel;
             _name.value = model.LastName;
             _name.maxLength = 16;
             _name.RegisterValueChangedCallback(_ => RefreshName());
 
-            // The name is asked once (GDD 17.2); afterwards it sits in the header and a tap edits it.
+            // The name is asked once (GDD 17.2); afterwards it sits in the header, the avatar opens the
+            // profile and a tap on the name edits it.
             _namePanel.style.display = model.LastName.Length == 0 ? DisplayStyle.Flex : DisplayStyle.None;
-            root.Q<VisualElement>("me").RegisterCallback<ClickEvent>(_ =>
+            _nameLabel.RegisterCallback<ClickEvent>(_ =>
                 _namePanel.style.display = _namePanel.style.display == DisplayStyle.Flex ? DisplayStyle.None : DisplayStyle.Flex);
+            _avatar.RegisterCallback<ClickEvent>(_ => openProfile?.Invoke(_name.value, null));
             _code = root.Q<TextField>("code");
             _code.label = UiText.CodeLabel;
             _code.maxLength = 8;
             _joinPanel = root.Q<VisualElement>("join-panel");
             _joinPanel.style.display = DisplayStyle.None;
             var joinToggle = root.Q<Button>("join-toggle");
-            joinToggle.text = UiText.JoinByCode;
+            joinToggle.text = "";
+            TextArt.Mark(root.Q<Label>("join-toggle-label"), "join-by-code").text = UiText.JoinByCode;
             joinToggle.clicked += () =>
             {
                 var open = _joinPanel.style.display != DisplayStyle.Flex;
@@ -107,54 +119,43 @@ namespace Hulla.Presentation.Screens.Home
                 }
             };
             _create = root.Q<Button>("create");
-            _create.text = UiText.CreateRoom;
+            _create.text = "";
+            TextArt.Mark(root.Q<Label>("create-label"), "create-room").text = UiText.CreateRoom;
             _join = root.Q<Button>("join");
             _join.text = UiText.JoinTable;
             _status = root.Q<Label>("status");
-            _server = root.Q<TextField>("server");
-            _server.label = UiText.Server;
-            _server.value = server ?? "";
-            _server.style.display = server == null ? DisplayStyle.None : DisplayStyle.Flex;
-            string? Server() => server == null ? null : _server.value;
-            _create.clicked += () => WithName(name => create(name, Server()));
-            _join.clicked += () => WithName(name => join(name, _code.value, Server()));
-            root.Q<Label>("seats-label").text = UiText.SeatsLabel;
-            var seatChips = root.Q<VisualElement>("seats");
-            for (var n = 3; n <= 6; n++)
-            {
-                var count = n;
-                var chip = new Button { text = count.ToString() };
-                chip.AddToClassList("chip");
-                chip.AddToClassList("chip--seat");
-                chip.clicked += () =>
-                {
-                    _seats = count;
-                    foreach (var other in seatChips.Children())
-                    {
-                        other.EnableInClassList("chip--on", other == chip);
-                    }
-                };
-                chip.EnableInClassList("chip--on", count == _seats);
-                seatChips.Add(chip);
-            }
-
-            BuildShelf(root);
+            _create.clicked += () => WithName(name => create(name, null));
+            _join.clicked += () => WithName(name => join(name, _code.value, null));
+            root.Q<Button>("invite").clicked += () => openFriends?.Invoke(_name.value, null);
+            BuildCard(root);
+            BuildSeats(root);
+            BuildMode(root, openRanked != null);
             _quick = root.Q<Button>("quick");
-            _quick.text = UiText.PlayNow;
-            _quick.clicked += () => WithName(name => quickPlay(name, _seats, Server()));
+            _quick.text = "";
+            TextArt.Mark(root.Q<Label>("quick-label"), "play-now").text = UiText.PlayNow;
+            _quick.clicked += () => WithName(name =>
+            {
+                if (_ranked && openRanked != null)
+                {
+                    openRanked(name, null);
+                    return;
+                }
+
+                quickPlay(name, _seats, null);
+            });
             _hero.clicked += () => WithName(name =>
             {
                 var code = _friendsOnline?.Hero?.TableCode;
                 if (code != null)
                 {
-                    join(name, code, Server());
+                    join(name, code, null);
                     return;
                 }
 
                 var watching = _friendsOnline?.WatchHero?.TableCode;
                 if (watching != null)
                 {
-                    watch?.Invoke(name, watching, Server());
+                    watch?.Invoke(name, watching, null);
                 }
             });
             if (_friendsOnline != null)
@@ -162,12 +163,12 @@ namespace Hulla.Presentation.Screens.Home
                 _friendsOnline.Changed += RefreshFriends;
             }
 
-            Link(root, "missions", UiText.Missions, openMissions, Server);
-            Link(root, "leaderboard", UiText.Leaderboard, openLeaderboard, Server);
-            Link(root, "shop", UiText.Shop, openShop, Server);
-            Link(root, "pass", UiText.SeasonPass, openPass, Server);
-            Link(root, "friends", UiText.Friends, openFriends, Server);
-            Link(root, "profile", UiText.Profile, openProfile, Server);
+            Link(root, "missions", UiText.Missions, openMissions);
+            Link(root, "leaderboard", UiText.Leaderboard, openLeaderboard);
+            Link(root, "shop", UiText.Shop, openShop);
+            Link(root, "pass", UiText.SeasonPass, openPass);
+            Link(root, "friends", UiText.Friends, openFriends);
+            Link(root, "profile", UiText.Profile, openProfile);
             _model.Changed += Refresh;
             RefreshName();
             RefreshProgress();
@@ -175,37 +176,93 @@ namespace Hulla.Presentation.Screens.Home
             Refresh();
         }
 
-        /// <summary>
-        /// The game shelf (docs/design/table-themes.md §3): Thulla with its seat count and Play now,
-        /// then the games to come; each tile shows the theme's table with a fan of cards on it.
-        /// </summary>
-        private static void BuildShelf(VisualElement root)
+        /// <summary>Ranked is on: Play now opens Ranked instead of Quick Play.</summary>
+        public bool RankedChosen => _ranked;
+
+        /// <summary>The seat count Quick Play asks for.</summary>
+        public int Seats => _seats;
+
+        /// <summary>The stage keeps its design size and scales to the room above the dock, centred.</summary>
+        private static void Fit(VisualElement root)
+        {
+            var holder = root.Q<VisualElement>("stage-holder");
+            var stage = root.Q<VisualElement>("stage");
+            holder.RegisterCallback<GeometryChangedEvent>(_ =>
+            {
+                var size = holder.contentRect.size;
+                if (size.x <= 0f || size.y <= 0f)
+                {
+                    return;
+                }
+
+                var scale = Math.Min(size.x / StageWidth, size.y / StageHeight);
+                stage.style.scale = new Scale(new UnityEngine.Vector3(scale, scale, 1f));
+            });
+        }
+
+        /// <summary>The Thulla card: the game's name in its own lettering, the line under it and Rung to come.</summary>
+        private static void BuildCard(VisualElement root)
         {
             root.Q<Label>("game-thulla-name").text = UiText.GameThulla;
-            root.Q<Label>("game-thulla-line").text = UiText.GameThullaLine;
+            TextArt.Mark(root.Q<Label>("game-thulla-line"), "tagline-thulla").text = UiText.GameThullaLine;
             root.Q<Label>("game-rung-name").text = UiText.GameRung;
-            root.Q<Label>("game-rung-line").text = UiText.GameRungLine;
-            root.Q<Label>("game-rung-soon").text = UiText.ComingSoon;
-            var art = root.Q<VisualElement>("game-thulla-art");
-            var fan = new[] { "QH", "AS", "7D" };
-            for (var i = 0; i < fan.Length; i++)
+            TextArt.Mark(root.Q<Label>("game-rung-soon"), "coming-soon").text = UiText.ComingSoon;
+        }
+
+        /// <summary>Four enamel medallions, 3 to 6; the chosen one wears the gold rim.</summary>
+        private void BuildSeats(VisualElement root)
+        {
+            TextArt.Mark(root.Q<Label>("seats-label"), "seat-size").text = UiText.SeatSize;
+            var seats = root.Q<VisualElement>("seats");
+            for (var n = 3; n <= 6; n++)
             {
-                var card = new TableKit.CardElement().Show(fan[i]);
-                card.AddToClassList("game__card");
-                card.style.rotate = new Rotate((i - 1) * 14f);
-                card.style.marginTop = i == 1 ? 0f : 24f;
-                art.Add(card);
+                var count = n;
+                var medal = new Button { name = "seat-" + count };
+                medal.AddToClassList("home__medal");
+                medal.AddToClassList("home__medal--" + count);
+                var face = new VisualElement { pickingMode = PickingMode.Ignore };
+                face.AddToClassList("home__face");
+                face.Add(TextArt.Mark(new Label(Strings.Format("{0}", count)) { pickingMode = PickingMode.Ignore }, "digit-" + count));
+                var ring = new VisualElement { pickingMode = PickingMode.Ignore };
+                ring.AddToClassList("home__medal-ring");
+                face.Add(ring);
+                medal.Add(face);
+                medal.clicked += () =>
+                {
+                    _seats = count;
+                    foreach (var other in seats.Children())
+                    {
+                        other.EnableInClassList("home__medal--on", other == medal);
+                    }
+                };
+                medal.EnableInClassList("home__medal--on", count == _seats);
+                seats.Add(medal);
+            }
+        }
+
+        /// <summary>Casual or Ranked; Ranked plays four seats, so the medallions rest while it is on.</summary>
+        private void BuildMode(VisualElement root, bool rankedAvailable)
+        {
+            var mode = root.Q<VisualElement>("mode");
+            mode.style.display = rankedAvailable ? DisplayStyle.Flex : DisplayStyle.None;
+            var casual = TextArt.Mark(root.Q<Label>("mode-casual"), "casual");
+            var ranked = TextArt.Mark(root.Q<Label>("mode-ranked"), "ranked");
+            var toggle = root.Q<VisualElement>("mode-switch");
+            casual.text = UiText.Casual;
+            ranked.text = UiText.Ranked;
+            void Set(bool on)
+            {
+                _ranked = on;
+                toggle.EnableInClassList("home__switch--on", on);
+                casual.EnableInClassList("home__mode-label--on", !on);
+                ranked.EnableInClassList("home__mode-label--on", on);
+                root.Q<VisualElement>("seats").SetEnabled(!on);
             }
 
-            var backs = root.Q<VisualElement>("game-rung-art");
-            for (var i = 0; i < 3; i++)
-            {
-                var back = new VisualElement { pickingMode = PickingMode.Ignore };
-                back.AddToClassList("game__back");
-                back.style.rotate = new Rotate((i - 1) * 14f);
-                back.style.marginTop = i == 1 ? 0f : 24f;
-                backs.Add(back);
-            }
+            toggle.RegisterCallback<ClickEvent>(_ => Set(!_ranked));
+            casual.RegisterCallback<ClickEvent>(_ => Set(false));
+            ranked.RegisterCallback<ClickEvent>(_ => Set(true));
+            Set(false);
         }
 
         /// <summary>The server keeps names of 2 to 20 characters (GDD 9.4); a shorter one is refused here with the reason.</summary>
@@ -224,26 +281,23 @@ namespace Hulla.Presentation.Screens.Home
             go(name);
         }
 
-        private void Link(VisualElement root, string name, string text, Action<string, string?>? open, Func<string?> server)
+        private void Link(VisualElement root, string name, string text, Action<string, string?>? open)
         {
             var button = root.Q<Button>(name);
             button.text = text;
-            button.clicked += () => open?.Invoke(_name.value, server());
-            if (open == null)
-            {
-                button.style.display = DisplayStyle.None;
-            }
+            button.clicked += () => open?.Invoke(_name.value, null);
         }
 
         /// <summary>
-        /// Offers the table the player left while their seat is held (GDD 9.8); a null code hides the
-        /// offer, an empty one is a matchmade table without a room code.
+        /// Offers the table the player left while their seat is held (GDD 9.8) in the banner's place; a
+        /// null code hides the offer, an empty one is a matchmade table without a room code.
         /// </summary>
         public void ShowRejoin(string? code, Action? rejoin)
         {
             _onRejoin = rejoin;
-            _rejoin.text = code == null ? "" : code.Length == 0 ? UiText.RejoinGame : Strings.Format(UiText.RejoinTable, code);
+            _rejoinText.text = code == null ? "" : code.Length == 0 ? UiText.RejoinGame : Strings.Format(UiText.RejoinTable, code);
             _rejoin.style.display = code == null || rejoin == null ? DisplayStyle.None : DisplayStyle.Flex;
+            RefreshFriends();
         }
 
         public void Dispose()
@@ -271,53 +325,39 @@ namespace Hulla.Presentation.Screens.Home
         private void RefreshProgress()
         {
             var info = _progress?.Info;
-            if (info == null)
-            {
-                _progressLine.text = "";
-                _coins.text = "";
-                _xp.style.display = DisplayStyle.None;
-                return;
-            }
-
-            var text = Strings.Format(UiText.ProgressLine, info.Level, info.IntoLevel, info.ToNext, _progress!.Coins.ToString("N0"));
-            if (info.LoginStreak > 1)
-            {
-                text += Strings.Format(UiText.StreakSuffix, info.LoginStreak);
-            }
-
-            _progressLine.text = text;
-            _xp.style.display = DisplayStyle.Flex;
-            _xp.Set(info.IntoLevel, info.ToNext);
-            _coins.text = "◉ " + _progress.Coins.ToString("N0");
+            _level.text = info == null ? "" : Strings.Format("{0}", info.Level);
+            _level.style.display = info == null ? DisplayStyle.None : DisplayStyle.Flex;
+            _coins.text = info == null ? "" : _progress!.Coins.ToString("N0", Strings.Culture);
         }
 
-        /// <summary>The party bar (design §4): friends online as avatars with a presence dot, the hero under it.</summary>
+        /// <summary>Friends online as faces with a green dot, the table banner under them when a friend has seats open.</summary>
         private void RefreshFriends()
         {
             var hero = _friendsOnline?.Hero;
             var watchHero = _friendsOnline?.WatchHero;
-            _hero.style.display = hero == null && watchHero == null ? DisplayStyle.None : DisplayStyle.Flex;
+            var rejoining = _rejoin.style.display == DisplayStyle.Flex;
+            _hero.style.display = rejoining || (hero == null && watchHero == null) ? DisplayStyle.None : DisplayStyle.Flex;
+            _heroJoin.style.display = hero != null ? DisplayStyle.Flex : DisplayStyle.None;
+            _hero.text = "";
             if (hero != null)
             {
-                _hero.text = Strings.Format(UiText.JoinFriendTable, hero.Name, hero.OpenSeats);
+                _heroText.text = Strings.Format(UiText.FriendTableBanner, hero.Name, hero.OpenSeats);
             }
             else if (watchHero != null)
             {
-                _hero.text = Strings.Format(UiText.WatchFriendTable, watchHero.Name);
+                _heroText.text = Strings.Format(UiText.WatchFriendTable, watchHero.Name);
             }
 
+            _hero.tooltip = _heroText.text;
             _party.Clear();
             var online = _friendsOnline?.Online;
-            if (online == null || online.Count == 0)
+            var shown = online == null ? 0 : Math.Min(online.Count, PartySize);
+            for (var i = 0; i < shown; i++)
             {
-                _online.text = _friendsOnline == null ? "" : UiText.PartyEmpty;
-                return;
-            }
-
-            var names = new System.Text.StringBuilder();
-            foreach (var friend in online)
-            {
-                var avatar = new VisualElement();
+                var friend = online![i];
+                var face = new VisualElement { tooltip = friend.Name + " (" + UiText.Presence(friend.State) + ")" };
+                face.AddToClassList("party__face");
+                var avatar = new VisualElement { pickingMode = PickingMode.Ignore };
                 avatar.AddToClassList("seat__avatar");
                 avatar.AddToClassList("party__avatar");
                 AvatarTint.Apply(avatar, friend.Name);
@@ -325,21 +365,16 @@ namespace Hulla.Presentation.Screens.Home
                 initial.AddToClassList("seat__initial");
                 initial.AddToClassList("party__initial");
                 avatar.Add(initial);
-                var dot = new VisualElement();
+                face.Add(avatar);
+                var frame = new VisualElement { pickingMode = PickingMode.Ignore };
+                frame.AddToClassList("party__frame");
+                face.Add(frame);
+                var dot = new VisualElement { pickingMode = PickingMode.Ignore };
                 dot.AddToClassList("party__dot");
                 dot.EnableInClassList("party__dot--busy", friend.TableCode != null);
-                avatar.Add(dot);
-                avatar.tooltip = friend.Name;
-                _party.Add(avatar);
-                if (names.Length > 0)
-                {
-                    names.Append(" · ");
-                }
-
-                names.Append(friend.Name).Append(" (").Append(UiText.Presence(friend.State)).Append(')');
+                face.Add(dot);
+                _party.Add(face);
             }
-
-            _online.text = names.ToString();
         }
 
         /// <summary>The server can rest Quick Play (remote config, maintenance); the note says why.</summary>

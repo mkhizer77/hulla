@@ -2,11 +2,15 @@ using System;
 using Hulla.Application.Progress;
 using Hulla.Application.ViewModels;
 using Hulla.Presentation.Text;
+using Hulla.Presentation.Theme;
 using UnityEngine.UIElements;
 
 namespace Hulla.Presentation.Screens.Home
 {
-    /// <summary>The daily reward strip on Home: today's reward and Claim, then what tomorrow brings.</summary>
+    /// <summary>
+    /// The daily reward card on Home: the gift, "Daily Reward" and the day of the 7-day calendar. While
+    /// today's reward waits the card glows and a tap claims it; the amount is in the card's tooltip.
+    /// </summary>
     public sealed class DailyRewardCard : IDisposable
     {
         private readonly DailyRewardViewModel _model;
@@ -19,8 +23,10 @@ namespace Hulla.Presentation.Screens.Home
             _root = root;
             _model = model;
             _text = root.Q<Label>("daily-text");
+            TextArt.Mark(root.Q<Label>("daily-title"), "daily-reward").text = UiText.DailyReward;
             _claim = root.Q<Button>("daily-claim");
-            _claim.text = UiText.Claim;
+            _claim.text = "";
+            _claim.tooltip = UiText.Claim;
             _claim.clicked += claim;
             _model.Changed += Refresh;
             Refresh();
@@ -37,9 +43,11 @@ namespace Hulla.Presentation.Screens.Home
                 return;
             }
 
+            _text.text = Strings.Format(UiText.DailyDay, status.Today.Day);
+            _root.EnableInClassList("home__daily--ready", status.Claimable);
             if (status.Claimable)
             {
-                _text.text = Strings.Format(UiText.DailyReady, status.Today.Day, Amount(status.Today));
+                _root.tooltip = Strings.Format(UiText.DailyReady, status.Today.Day, Amount(status.Today));
                 _claim.style.display = DisplayStyle.Flex;
                 _claim.SetEnabled(!_model.Claiming);
                 return;
@@ -47,7 +55,7 @@ namespace Hulla.Presentation.Screens.Home
 
             _claim.style.display = DisplayStyle.None;
             var tomorrow = Strings.Format(UiText.DailyTomorrow, Amount(status.Next));
-            _text.text = _model.Claimed != null ? Strings.Format(UiText.DailyClaimed, Amount(_model.Claimed)) + " " + tomorrow : tomorrow;
+            _root.tooltip = _model.Claimed != null ? Strings.Format(UiText.DailyClaimed, Amount(_model.Claimed)) + " " + tomorrow : tomorrow;
         }
 
         /// <summary>"70 coins" or "80 coins + 2 gems".</summary>

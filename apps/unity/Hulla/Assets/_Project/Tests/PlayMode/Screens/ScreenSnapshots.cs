@@ -34,7 +34,7 @@ namespace Hulla.Screens.Tests
 
         private static string Dir => System.Environment.GetEnvironmentVariable("HULLA_SNAPSHOT_DIR") ?? "Temp";
 
-        public static IEnumerable<TableSkin> Skins => (TableSkin[])System.Enum.GetValues(typeof(TableSkin));
+        public static IEnumerable<TableSkin> Skins => new[] { TableSkin.Basant };
 
         private static IEnumerator Snap(string name, TableSkin skin, VisualTreeAsset? screen, System.Action<VisualElement> bind, bool nav = false) =>
             Snap(name, skin, screen, bind, nav, CardRenderer.Width, CardRenderer.HeightOf(CardRatio.Story), null);
@@ -52,6 +52,7 @@ namespace Hulla.Screens.Tests
 
                 root.AddToClassList(ThemeClasses.Skinned);
                 root.AddToClassList(ThemeClasses.ClassOf(skin));
+                root.AddToClassList(TextArt.LanguageClass(Presentation.Text.Strings.Locale));
                 var instance = screen!.Instantiate();
                 instance.style.flexGrow = 1;
                 root.Add(instance);
@@ -92,24 +93,21 @@ namespace Hulla.Screens.Tests
             }, nav: true);
         }
 
-        /// <summary>The look playtest: the Home card (the hero folded away so it shows) and the question over Home.</summary>
+        /// <summary>Home at the Basant concept's own size (1080 x 1936 with the dock), to lay over the concept.</summary>
         [UnityTest, Explicit]
-        public IEnumerator Looks([ValueSource(nameof(Skins))] TableSkin skin)
+        public IEnumerator HomeAtConceptSize()
         {
-            var friends = new HomeFriendsViewModel(new Fakes.Social());
-            yield return Snap("look-card", skin, Catalog.Home, r =>
+            var friends = new HomeFriendsViewModel(new Fakes.Social { Online = 4 });
+            var progress = new ProgressViewModel(new Fakes.Progress());
+            yield return Snap("home-concept", TableSkin.Basant, Catalog.Home, r =>
             {
-                new HomeView(r, new HomeViewModel(new Fakes.Session(), new Fakes.Gateway()) { LastName = "Khizer" }, null, (_, _) => { }, (_, _, _) => { }, (_, _, _) => { }, () => { }, (_, _) => { }, (_, _) => { }, friends, () => { }, "How to play");
-                r.Q<VisualElement>("games").style.display = DisplayStyle.None;
-                Hulla.Presentation.Screens.Looks.LooksCard.Fill(r.Q<VisualElement>("looks"), true, skin, _ => { }, () => { });
-            }, nav: true);
-            yield return Snap("look-sheet", skin, Catalog.Home, r =>
-            {
-                new HomeView(r, new HomeViewModel(new Fakes.Session(), new Fakes.Gateway()) { LastName = "Khizer" }, null, (_, _) => { }, (_, _, _) => { }, (_, _, _) => { }, () => { }, (_, _) => { }, (_, _) => { }, friends, () => { }, "How to play");
-                var sheet = Hulla.Presentation.Screens.Looks.LookFeedbackSheet.Build(Hulla.Presentation.Text.UiText.SkinName(skin), "Club", (_, _, _) => { }, () => { });
-                r.Add(sheet);
-                sheet.Q<Button>("look-rate-4").AddToClassList("chip--on");
-            }, nav: true);
+                new HomeView(r, new HomeViewModel(new Fakes.Session(), new Fakes.Gateway()) { LastName = "Lahori Lion 42" }, null, (_, _) => { }, (_, _, _) => { }, (_, _, _) => { }, () => { }, (_, _) => { }, (_, _) => { }, friends, () => { }, "How to play", null, progress, null, null, null, null, (_, _) => { });
+                _ = friends.RefreshAsync(default);
+                _ = progress.RefreshAsync(0, default);
+                var daily = new DailyRewardViewModel(new Fakes.Daily());
+                new DailyRewardCard(r.Q<VisualElement>("daily"), daily, () => { });
+                _ = daily.RefreshAsync(0, default);
+            }, true, 1080, 1936, null);
         }
 
         /// <summary>A phone, a 4:3 tablet in portrait and in landscape, with the brief's largest insets for each.</summary>
@@ -126,14 +124,14 @@ namespace Hulla.Screens.Tests
             foreach (var (width, height, insets) in Sizes)
             {
                 var suffix = "-" + width + "x" + height;
-                yield return Snap("size-home" + suffix, TableSkin.Club, Catalog.Home, r =>
+                yield return Snap("size-home" + suffix, TableSkin.Basant, Catalog.Home, r =>
                 {
                     new HomeView(r, new HomeViewModel(new Fakes.Session(), new Fakes.Gateway()) { LastName = "Khizer" }, null, (_, _) => { }, (_, _, _) => { }, (_, _, _) => { }, () => { }, (_, _) => { }, (_, _) => { }, new HomeFriendsViewModel(new Fakes.Social()), () => { }, "How to play");
                 }, true, width, height, insets);
 
                 var gateway = new Fakes.Gateway();
                 var client = new TableClient(gateway, new TableTicket("m", "K7Q2MX", "t_K7Q2MX"), "me", 1);
-                yield return Snap("size-table" + suffix, TableSkin.Club, Catalog.Table, r =>
+                yield return Snap("size-table" + suffix, TableSkin.Basant, Catalog.Table, r =>
                 {
                     new ThullaTableView(r, client, new Fakes.Chat(), () => 5000, () => { });
                     var state = Fakes.InRound(5);
@@ -223,7 +221,7 @@ namespace Hulla.Screens.Tests
         {
             yield return Snap("settings", skin, Catalog.Settings, r =>
             {
-                var settings = new SettingsModel(new Store()) { Skin = skin };
+                var settings = new SettingsModel(new Store());
                 new Presentation.Screens.Settings.SettingsView(r, settings, () => { });
             });
         }

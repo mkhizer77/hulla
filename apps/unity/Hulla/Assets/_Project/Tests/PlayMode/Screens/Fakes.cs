@@ -92,7 +92,20 @@ namespace Hulla.Screens.Tests
 
             public Awaitable<Result<bool>> SetFavouriteAsync(string u, bool p, CancellationToken c) => Done(Result<bool>.Ok(true));
 
-            public Awaitable<Result<IReadOnlyList<FriendPresence>>> PresenceAsync(CancellationToken c) => Done(Result<IReadOnlyList<FriendPresence>>.Ok(new List<FriendPresence> { new FriendPresence("1", "Ayesha", PresenceState.Lobby, true, "K7Q2MX", 2, true) }));
+            /// <summary>How many friends are online; the first has a table with two seats open.</summary>
+            public int Online = 1;
+
+            public Awaitable<Result<IReadOnlyList<FriendPresence>>> PresenceAsync(CancellationToken c)
+            {
+                var all = new List<FriendPresence>
+                {
+                    new FriendPresence("1", "Ayesha", PresenceState.Lobby, true, "K7Q2MX", 2, true),
+                    new FriendPresence("3", "Sara", PresenceState.Online, true, null, 0, false),
+                    new FriendPresence("4", "Zain", PresenceState.Online, true, null, 0, false),
+                    new FriendPresence("6", "Noor", PresenceState.Online, true, null, 0, false),
+                };
+                return Done(Result<IReadOnlyList<FriendPresence>>.Ok(all.GetRange(0, System.Math.Min(Online, all.Count))));
+            }
 
             public Awaitable<Result<bool>> SetAwayAsync(bool a, CancellationToken c) => Done(Result<bool>.Ok(true));
 

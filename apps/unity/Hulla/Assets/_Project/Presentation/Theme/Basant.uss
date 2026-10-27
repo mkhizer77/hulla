@@ -1,0 +1,996 @@
+/*
+ * Basant daytime, the one look (docs/design/basant-home.md). Loads after Skins.uss.
+ *
+ * Home is a 1080 x 1736 stage with every element at its box on the concept scaled to 1080 wide;
+ * HomeView scales the stage to the room above the dock. Plates wider than their art stretch
+ * through a horizontal slice of their plain middle (slice-scale = box height / art height), so
+ * corners keep their drawn shape.
+ *
+ * Words drawn as art: a label marked .text-art--<key> shows its sprite for the root's lang--
+ * class (the rules at the end) and its own text in any other language.
+ */
+
+/* ---------- Scene ---------- */
+
+.skin--basant {
+    background-color: rgb(91, 192, 240);
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Basant/Backdrops/home-basant.png");
+    -unity-background-scale-mode: scale-and-crop;
+}
+
+.skin--basant .home.screen {
+    padding: 0;
+    background-color: rgba(0, 0, 0, 0);
+    background-image: none;
+}
+
+.skin--basant .home .unity-button,
+.skin--basant .home .unity-button:hover,
+.skin--basant .home .unity-button:active,
+.skin--basant .home .unity-button:focus {
+    margin: 0;
+    padding: 0;
+    border-width: 0;
+    border-radius: 0;
+    background-color: rgba(0, 0, 0, 0);
+    -unity-background-image-tint-color: rgb(255, 255, 255);
+}
+
+.skin--basant .home .home__holder {
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    align-items: center;
+    justify-content: center;
+    overflow: visible;
+}
+
+.skin--basant .home .home__stage {
+    width: 1080px;
+    height: 1736px;
+    flex-shrink: 0;
+    transform-origin: center;
+}
+
+.skin--basant .home .home__stage > * {
+    position: absolute;
+}
+
+.skin--basant .home Label {
+    margin: 0;
+    padding: 0;
+    -unity-font-definition: url("/Assets/_Project/Presentation/Theme/Fonts/Baloo2.ttf");
+    -unity-font-style: bold;
+    color: rgb(74, 30, 14);
+    -unity-text-align: middle-center;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+
+/* The scene already flies its kites; the theme's drifting ones stay off Home. */
+.skin--basant .home .ambient {
+    display: none;
+}
+
+/* A control's art sits on its face at the concept's box; the control around it is the 48 dp target. */
+.skin--basant .home .home__face {
+    position: absolute;
+}
+
+/* ---------- Header ---------- */
+
+.skin--basant .home .home__settings {
+    left: 24px;
+    top: 37px;
+    width: 132px;
+    height: 132px;
+}
+
+.skin--basant .home .home__settings .home__face {
+    left: 8px;
+    top: 8px;
+    width: 116px;
+    height: 116px;
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Basant/Home/btn-settings-normal.png");
+}
+
+.skin--basant .home .home__settings:active .home__face {
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Basant/Home/btn-settings-pressed.png");
+}
+
+.skin--basant .home .home__me {
+    left: 205px;
+    top: 48px;
+    width: 552px;
+    height: 112px;
+    overflow: visible;
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Basant/Home/plate-profile.png");
+    -unity-slice-left: 219;
+    -unity-slice-right: 219;
+    -unity-slice-scale: 0.256px;
+}
+
+.skin--basant .home .home__me > * {
+    position: absolute;
+}
+
+.skin--basant .home .home__avatar {
+    left: -6px;
+    top: 5px;
+    width: 98px;
+    height: 98px;
+    margin: 0;
+    border-radius: 49px;
+    border-width: 0;
+}
+
+.skin--basant .home .home__avatar .seat__initial {
+    font-size: 52px;
+    color: rgb(255, 255, 255);
+}
+
+.skin--basant .home .home__avatar-frame {
+    left: -19px;
+    top: -8px;
+    width: 125px;
+    height: 125px;
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Basant/Home/frame-avatar-gold.png");
+}
+
+.skin--basant .home .home__name {
+    left: 128px;
+    top: 0;
+    width: 306px;
+    height: 112px;
+    font-size: 46px;
+    -unity-text-align: middle-left;
+}
+
+.skin--basant .home .home__level {
+    left: 440px;
+    top: 15px;
+    width: 80px;
+    height: 80px;
+    padding-top: 6px;
+    font-size: 34px;
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Basant/Home/badge-level-star.png");
+}
+
+.skin--basant .home .home__wallet {
+    left: 770px;
+    top: 47px;
+    width: 275px;
+    height: 113px;
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Basant/Home/plate-coins.png");
+    -unity-slice-left: 103;
+    -unity-slice-right: 103;
+    -unity-slice-scale: 0.546px;
+}
+
+.skin--basant .home .home__wallet > * {
+    position: absolute;
+}
+
+.skin--basant .home .home__coin {
+    left: 23px;
+    top: 19px;
+    width: 75px;
+    height: 75px;
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Basant/Home/icon-coin.png");
+}
+
+.skin--basant .home .home__coins {
+    left: 108px;
+    top: 34px;
+    width: 148px;
+    height: 46px;
+    font-size: 44px;
+    border-radius: 23px;
+    background-color: rgba(222, 176, 104, 0.45);
+}
+
+/* ---------- Friends online ---------- */
+
+.skin--basant .home .home__friends {
+    left: 180px;
+    top: 192px;
+    width: 722px;
+    height: 205px;
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Basant/Home/panel-friends.png");
+    -unity-slice-left: 100;
+    -unity-slice-right: 100;
+    -unity-slice-scale: 0.403px;
+}
+
+.skin--basant .home .home__friends > * {
+    position: absolute;
+}
+
+.skin--basant .home .home__friends-title {
+    left: 238px;
+    top: 18px;
+    width: 246px;
+    height: 37px;
+    font-size: 36px;
+}
+
+.skin--basant .home .party {
+    left: 30px;
+    top: 73px;
+    flex-direction: row;
+    margin: 0;
+    padding: 0;
+}
+
+.skin--basant .home .party__face {
+    width: 116px;
+    height: 116px;
+    margin-right: 21px;
+}
+
+.skin--basant .home .party__face > * {
+    position: absolute;
+}
+
+.skin--basant .home .party__avatar {
+    left: 12px;
+    top: 12px;
+    width: 92px;
+    height: 92px;
+    margin: 0;
+    border-radius: 46px;
+    border-width: 0;
+}
+
+.skin--basant .home .party__initial {
+    font-size: 46px;
+    color: rgb(255, 255, 255);
+}
+
+.skin--basant .home .party__frame {
+    left: 0;
+    top: 0;
+    width: 116px;
+    height: 116px;
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Basant/Home/frame-friend.png");
+}
+
+.skin--basant .home .party__dot {
+    left: 86px;
+    top: 84px;
+    width: 32px;
+    height: 32px;
+    border-width: 0;
+    border-radius: 0;
+    background-color: rgba(0, 0, 0, 0);
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Basant/Home/dot-online.png");
+}
+
+.skin--basant .home .party__dot--busy {
+    -unity-background-image-tint-color: rgb(255, 176, 32);
+}
+
+.skin--basant .home .home__invite {
+    left: 565px;
+    top: 64px;
+    width: 132px;
+    height: 132px;
+}
+
+.skin--basant .home .home__invite .home__face {
+    left: 7px;
+    top: 7px;
+    width: 118px;
+    height: 118px;
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Basant/Home/btn-invite-normal.png");
+}
+
+.skin--basant .home .home__invite:active .home__face {
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Basant/Home/btn-invite-pressed.png");
+}
+
+.skin--basant .home .home__invite-label {
+    position: absolute;
+    left: 18px;
+    top: 74px;
+    width: 82px;
+    height: 27px;
+    font-size: 26px;
+}
+
+/* ---------- Table banner ---------- */
+
+.skin--basant .home .home__banner {
+    left: 148px;
+    top: 434px;
+    width: 784px;
+    height: 132px;
+}
+
+.skin--basant .home .home__banner .home__face {
+    left: 0;
+    top: 4px;
+    width: 784px;
+    height: 124px;
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Basant/Home/banner-table.png");
+    -unity-slice-left: 200;
+    -unity-slice-right: 200;
+    -unity-slice-scale: 0.337px;
+}
+
+.skin--basant .home .home__banner .home__face > * {
+    position: absolute;
+}
+
+.skin--basant .home .home__banner-text {
+    left: 72px;
+    top: 0;
+    width: 506px;
+    height: 94px;
+    font-size: 44px;
+    -unity-text-auto-size: best-fit 30px 44px;
+    color: rgb(255, 255, 255);
+    -unity-text-outline-width: 3px;
+    -unity-text-outline-color: rgb(27, 94, 32);
+}
+
+.skin--basant .home .home__banner--rejoin .home__banner-text {
+    left: 80px;
+    width: 624px;
+}
+
+.skin--basant .home .home__banner-join {
+    left: 587px;
+    top: 10px;
+    width: 135px;
+    height: 70px;
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Basant/Home/btn-join-small-normal.png");
+    -unity-slice-left: 56;
+    -unity-slice-right: 56;
+    -unity-slice-scale: 0.62px;
+}
+
+.skin--basant .home .home__banner:active .home__banner-join {
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Basant/Home/btn-join-small-pressed.png");
+}
+
+.skin--basant .home .home__banner-join-label {
+    position: absolute;
+    left: 22px;
+    top: 17px;
+    width: 91px;
+    height: 32px;
+    font-size: 30px;
+}
+
+/* ---------- Thulla card ---------- */
+
+.skin--basant .home .home__card {
+    left: 180px;
+    top: 602px;
+    width: 722px;
+    height: 781px;
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Basant/Home/card-hero.png");
+    overflow: visible;
+}
+
+.skin--basant .home .home__card > * {
+    position: absolute;
+}
+
+.skin--basant .home .home__kite {
+    left: 218px;
+    top: -42px;
+    width: 292px;
+    height: 328px;
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Basant/Home/kite-hero.png");
+}
+
+.skin--basant .home .home__title {
+    left: 132px;
+    top: 68px;
+    width: 460px;
+    height: 127px;
+    display: flex;
+    font-size: 110px;
+    color: rgba(0, 0, 0, 0);
+    text-shadow: 0 0 0 rgba(0, 0, 0, 0);
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Basant/Home/title-thulla.png");
+}
+
+.skin--basant .home .home__tagline {
+    left: 160px;
+    top: 193px;
+    width: 405px;
+    height: 43px;
+    font-size: 38px;
+    color: rgb(255, 255, 255);
+    -unity-text-outline-width: 3px;
+    -unity-text-outline-color: rgb(74, 30, 14);
+}
+
+.skin--basant .home .home__fan {
+    left: 190px;
+    top: 258px;
+    width: 342px;
+    height: 135px;
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Basant/Home/cards-fan.png");
+}
+
+.skin--basant .home .home__seat-panel {
+    left: 70px;
+    top: 373px;
+    width: 580px;
+    height: 173px;
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Basant/Home/panel-seat-size.png");
+    -unity-slice-left: 60;
+    -unity-slice-right: 60;
+    -unity-slice-scale: 0.386px;
+    overflow: visible;
+}
+
+.skin--basant .home .home__seat-panel > * {
+    position: absolute;
+}
+
+.skin--basant .home .home__seats-label {
+    left: 198px;
+    top: 4px;
+    width: 184px;
+    height: 32px;
+    font-size: 32px;
+}
+
+.skin--basant .home .home__seats {
+    left: 21px;
+    top: 29px;
+    flex-direction: row;
+}
+
+.skin--basant .home .home__medal {
+    width: 132px;
+    height: 132px;
+    margin-right: 3px;
+    overflow: visible;
+}
+
+.skin--basant .home .home__medal .home__face {
+    left: 10px;
+    top: 10px;
+    width: 112px;
+    height: 112px;
+    overflow: visible;
+}
+
+.skin--basant .home .home__face > * {
+    position: absolute;
+}
+
+.skin--basant .home .home__medal--3 .home__face {
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Basant/Home/medal-seat-3.png");
+}
+
+.skin--basant .home .home__medal--4 .home__face {
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Basant/Home/medal-seat-4.png");
+}
+
+.skin--basant .home .home__medal--5 .home__face {
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Basant/Home/medal-seat-5.png");
+}
+
+.skin--basant .home .home__medal--6 .home__face {
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Basant/Home/medal-seat-6.png");
+}
+
+.skin--basant .home .home__medal Label {
+    left: 26px;
+    top: 26px;
+    width: 60px;
+    height: 60px;
+    font-size: 58px;
+    color: rgb(255, 255, 255);
+    -unity-text-outline-width: 3px;
+    -unity-text-outline-color: rgb(74, 30, 14);
+}
+
+.skin--basant .home .home__medal-ring {
+    left: -5px;
+    top: -5px;
+    width: 122px;
+    height: 122px;
+    display: none;
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Basant/Home/ring-seat-selected.png");
+}
+
+.skin--basant .home .home__medal--on .home__medal-ring {
+    display: flex;
+}
+
+.skin--basant .home .home__seats:disabled {
+    opacity: 0.45;
+}
+
+.skin--basant .home .home__mode {
+    left: 155px;
+    top: 568px;
+    width: 420px;
+    height: 52px;
+}
+
+.skin--basant .home .home__mode > * {
+    position: absolute;
+}
+
+.skin--basant .home .home__switch {
+    left: 0;
+    top: 0;
+    width: 100px;
+    height: 52px;
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Basant/Home/switch-off.png");
+    -unity-slice-left: 39;
+    -unity-slice-right: 39;
+    -unity-slice-scale: 0.66px;
+}
+
+.skin--basant .home .home__switch--on {
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Basant/Home/switch-on.png");
+}
+
+.skin--basant .home .home__mode-label {
+    top: 6px;
+    height: 40px;
+    font-size: 38px;
+    opacity: 0.55;
+}
+
+.skin--basant .home .home__mode-label--on {
+    opacity: 1;
+}
+
+.skin--basant .home #mode-casual {
+    left: 117px;
+    width: 120px;
+}
+
+.skin--basant .home .home__mode-bar {
+    left: 253px;
+    top: 8px;
+    width: 4px;
+    height: 35px;
+    border-radius: 2px;
+    background-color: rgb(74, 30, 14);
+}
+
+.skin--basant .home #mode-ranked {
+    left: 273px;
+    width: 137px;
+}
+
+.skin--basant .home .home__play {
+    left: 122px;
+    top: 637px;
+    width: 476px;
+    height: 132px;
+}
+
+.skin--basant .home .home__play .home__face {
+    left: 0;
+    top: 6px;
+    width: 476px;
+    height: 120px;
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Basant/Home/btn-play-normal.png");
+    -unity-slice-left: 176;
+    -unity-slice-right: 176;
+    -unity-slice-scale: 0.34px;
+}
+
+.skin--basant .home .home__play:active .home__face {
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Basant/Home/btn-play-pressed.png");
+}
+
+.skin--basant .home .home__play:disabled {
+    opacity: 0.6;
+}
+
+.skin--basant .home .home__play-label {
+    position: absolute;
+    left: 86px;
+    top: 33px;
+    width: 307px;
+    height: 50px;
+    font-size: 50px;
+    color: rgb(255, 255, 255);
+    -unity-text-outline-width: 3px;
+    -unity-text-outline-color: rgb(74, 30, 14);
+}
+
+.skin--basant .home .home__play:active .home__play-label,
+.skin--basant .home .home__room:active .home__room-label {
+    translate: 0 4px;
+}
+
+/* ---------- Rooms, the daily reward and Rung ---------- */
+
+.skin--basant .home .home__room {
+    top: 1409px;
+    height: 132px;
+}
+
+.skin--basant .home .home__room .home__face {
+    left: 0;
+    top: 6px;
+    height: 120px;
+}
+
+.skin--basant .home .home__room--create {
+    left: 182px;
+    width: 350px;
+}
+
+.skin--basant .home .home__room--create .home__face {
+    width: 350px;
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Basant/Home/btn-create-room-normal.png");
+    -unity-slice-left: 135;
+    -unity-slice-right: 135;
+    -unity-slice-scale: 0.444px;
+}
+
+.skin--basant .home .home__room--create:active .home__face {
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Basant/Home/btn-create-room-pressed.png");
+}
+
+.skin--basant .home .home__room--join {
+    left: 548px;
+    width: 352px;
+}
+
+.skin--basant .home .home__room--join .home__face {
+    width: 352px;
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Basant/Home/btn-join-code-normal.png");
+    -unity-slice-left: 104;
+    -unity-slice-right: 104;
+    -unity-slice-scale: 0.574px;
+}
+
+.skin--basant .home .home__room--join:active .home__face {
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Basant/Home/btn-join-code-pressed.png");
+}
+
+.skin--basant .home .home__room-label {
+    position: absolute;
+    left: 30px;
+    top: 36px;
+    width: 290px;
+    height: 42px;
+    font-size: 42px;
+    color: rgb(255, 255, 255);
+    -unity-text-outline-width: 3px;
+    -unity-text-outline-color: rgb(74, 30, 14);
+}
+
+.skin--basant .home .home__daily {
+    left: 182px;
+    top: 1558px;
+    width: 348px;
+    height: 150px;
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Basant/Home/card-daily-normal.png");
+    -unity-slice-left: 60;
+    -unity-slice-right: 60;
+    -unity-slice-scale: 0.566px;
+}
+
+.skin--basant .home .home__daily:active {
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Basant/Home/card-daily-pressed.png");
+}
+
+.skin--basant .home .home__daily > * {
+    position: absolute;
+}
+
+.skin--basant .home .home__gift {
+    left: 23px;
+    top: 26px;
+    width: 95px;
+    height: 100px;
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Basant/Home/icon-gift.png");
+}
+
+.skin--basant .home .home__daily--ready .home__gift {
+    scale: 1.06 1.06;
+}
+
+.skin--basant .home .home__daily-title {
+    left: 131px;
+    top: 30px;
+    width: 196px;
+    height: 36px;
+    font-size: 34px;
+    -unity-text-align: middle-left;
+    -unity-background-scale-mode: scale-to-fit;
+}
+
+.skin--basant .home .home__daily-text {
+    left: 131px;
+    top: 72px;
+    width: 200px;
+    height: 44px;
+    font-size: 44px;
+    -unity-text-align: middle-left;
+}
+
+.skin--basant .home .home__daily-claim {
+    left: 0;
+    top: 0;
+    width: 348px;
+    height: 150px;
+}
+
+.skin--basant .home .home__soon {
+    left: 548px;
+    top: 1558px;
+    width: 352px;
+    height: 150px;
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Basant/Home/card-soon.png");
+    -unity-slice-left: 60;
+    -unity-slice-right: 60;
+    -unity-slice-scale: 0.538px;
+}
+
+.skin--basant .home .home__soon > * {
+    position: absolute;
+}
+
+.skin--basant .home .home__soon-title {
+    left: 86px;
+    top: 37px;
+    width: 180px;
+    height: 40px;
+    font-size: 44px;
+    color: rgba(0, 0, 0, 0);
+    text-shadow: 0 0 0 rgba(0, 0, 0, 0);
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Basant/Home/title-rung-soon.png");
+}
+
+.skin--basant .home .home__soon-text {
+    left: 66px;
+    top: 88px;
+    width: 220px;
+    height: 32px;
+    font-size: 30px;
+    color: rgb(98, 98, 98);
+}
+
+/* ---------- Sheets over the stage ---------- */
+
+.skin--basant .home .home__sheet {
+    position: absolute;
+    left: 140px;
+    right: 140px;
+    top: 40%;
+}
+
+.skin--basant .home .home__status {
+    position: absolute;
+    left: 140px;
+    right: 140px;
+    bottom: 12px;
+    color: rgb(255, 255, 255);
+    -unity-text-outline-width: 2px;
+    -unity-text-outline-color: rgb(74, 30, 14);
+}
+
+/* ---------- Dock ---------- */
+
+.skin--basant .nav {
+    height: 200px;
+    padding: 0;
+    flex-direction: row;
+    justify-content: center;
+    align-items: flex-start;
+    overflow: hidden;
+    border-top-width: 0;
+    background-color: rgba(0, 0, 0, 0);
+    background-image: none;
+}
+
+.skin--basant .nav .nav__tab,
+.skin--basant .nav .nav__tab:hover,
+.skin--basant .nav .nav__tab:active,
+.skin--basant .nav .nav__tab:focus {
+    width: 253px;
+    height: 240px;
+    flex-grow: 0;
+    margin: 0 3.5px;
+    padding: 0;
+    border-width: 0;
+    border-radius: 0;
+    background-color: rgba(0, 0, 0, 0);
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Basant/Home/tab-tile-normal.png");
+    -unity-background-scale-mode: stretch-to-fill;
+    -unity-background-image-tint-color: rgb(255, 255, 255);
+    -unity-slice-left: 100;
+    -unity-slice-right: 100;
+    -unity-slice-top: 100;
+    -unity-slice-bottom: 100;
+    -unity-slice-scale: 0.5px;
+}
+
+.skin--basant .nav .nav__tab--on,
+.skin--basant .nav .nav__tab--on:hover,
+.skin--basant .nav .nav__tab--on:active {
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Basant/Home/tab-tile-selected.png");
+}
+
+.skin--basant .nav .nav__icon {
+    display: none;
+}
+
+.skin--basant .nav .nav__art {
+    position: absolute;
+    left: 70px;
+    top: 32px;
+    width: 112px;
+    height: 96px;
+    -unity-background-scale-mode: scale-to-fit;
+}
+
+.skin--basant .nav .nav__art--home {
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Basant/Home/icon-nav-home.png");
+}
+
+.skin--basant .nav .nav__art--friends {
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Basant/Home/icon-nav-friends.png");
+}
+
+.skin--basant .nav .nav__art--trophies {
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Basant/Home/icon-nav-trophies.png");
+}
+
+.skin--basant .nav .nav__art--shop {
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Basant/Home/icon-nav-shop.png");
+}
+
+.skin--basant .nav .nav__label {
+    position: absolute;
+    left: 10px;
+    top: 136px;
+    width: 233px;
+    height: 40px;
+    margin: 0;
+    padding: 0;
+    font-size: 40px;
+    -unity-font-definition: url("/Assets/_Project/Presentation/Theme/Fonts/Baloo2.ttf");
+    -unity-font-style: bold;
+    -unity-text-align: middle-center;
+    color: rgb(74, 30, 14);
+}
+
+.skin--basant .nav .nav__badge {
+    position: absolute;
+    left: 162px;
+    top: 10px;
+    width: 58px;
+    height: 58px;
+    margin: 0;
+    padding: 0;
+    border-width: 0;
+    border-radius: 0;
+    font-size: 36px;
+    -unity-font-definition: url("/Assets/_Project/Presentation/Theme/Fonts/Baloo2.ttf");
+    -unity-font-style: bold;
+    -unity-text-align: middle-center;
+    color: rgb(255, 255, 255);
+    background-color: rgba(0, 0, 0, 0);
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Basant/Home/badge-count.png");
+}
+
+/* The lettered words differ in letter size; these boxes match each word to the concept. */
+.skin--basant .nav #nav-home .nav__label {
+    top: 141px;
+    height: 31px;
+}
+
+.skin--basant .nav #nav-friends .nav__label {
+    top: 138px;
+    height: 34px;
+}
+
+.skin--basant .home #join-toggle-label {
+    top: 32px;
+    height: 52px;
+}
+
+/* ---------- Words drawn as art, English ---------- */
+
+.skin--basant.lang--en .home .text-art,
+.skin--basant.lang--en .nav .text-art {
+    color: rgba(0, 0, 0, 0);
+    -unity-text-outline-width: 0;
+    text-shadow: 0 0 0 rgba(0, 0, 0, 0);
+    background-color: rgba(0, 0, 0, 0);
+    -unity-background-scale-mode: scale-to-fit;
+}
+
+.skin--basant.lang--en .text-art--play-now {
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Basant/Text/en/play-now.png");
+}
+
+.skin--basant.lang--en .text-art--create-room {
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Basant/Text/en/create-room.png");
+}
+
+.skin--basant.lang--en .text-art--join-by-code {
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Basant/Text/en/join-by-code.png");
+}
+
+.skin--basant.lang--en .text-art--friends-online {
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Basant/Text/en/friends-online.png");
+}
+
+.skin--basant.lang--en .text-art--invite {
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Basant/Text/en/invite.png");
+}
+
+.skin--basant.lang--en .text-art--join {
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Basant/Text/en/join.png");
+}
+
+.skin--basant.lang--en .text-art--tagline-thulla {
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Basant/Text/en/tagline-thulla.png");
+}
+
+.skin--basant.lang--en .text-art--seat-size {
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Basant/Text/en/seat-size.png");
+}
+
+.skin--basant.lang--en .text-art--casual {
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Basant/Text/en/casual.png");
+}
+
+.skin--basant.lang--en .text-art--ranked {
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Basant/Text/en/ranked.png");
+}
+
+.skin--basant.lang--en .text-art--daily-reward {
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Basant/Text/en/daily-reward.png");
+    background-position-x: left 0;
+}
+
+.skin--basant.lang--en .text-art--coming-soon {
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Basant/Text/en/coming-soon.png");
+}
+
+.skin--basant.lang--en .text-art--digit-3 {
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Basant/Text/en/digit-3.png");
+}
+
+.skin--basant.lang--en .text-art--digit-4 {
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Basant/Text/en/digit-4.png");
+}
+
+.skin--basant.lang--en .text-art--digit-5 {
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Basant/Text/en/digit-5.png");
+}
+
+.skin--basant.lang--en .text-art--digit-6 {
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Basant/Text/en/digit-6.png");
+}
+
+.skin--basant.lang--en .text-art--nav-home {
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Basant/Text/en/nav-home.png");
+}
+
+.skin--basant.lang--en .text-art--nav-friends {
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Basant/Text/en/nav-friends.png");
+}
+
+.skin--basant.lang--en .text-art--nav-trophies {
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Basant/Text/en/nav-trophies.png");
+}
+
+.skin--basant.lang--en .text-art--nav-shop {
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Basant/Text/en/nav-shop.png");
+}

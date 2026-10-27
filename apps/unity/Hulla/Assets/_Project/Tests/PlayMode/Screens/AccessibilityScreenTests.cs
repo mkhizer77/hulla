@@ -39,10 +39,9 @@ namespace Hulla.Screens.Tests
         [Timeout(1800000)]
         public IEnumerator EveryControlIsBigEnoughAndEveryTextReadable()
         {
-            // Each screen in one theme, the themes taken in turn, so all five are covered without
-            // laying out every screen five times (CI renders in software and is slow).
+            // Each screen in the one look, Basant daytime.
             var problems = new List<string>();
-            var skins = (Hulla.Application.Settings.TableSkin[])System.Enum.GetValues(typeof(Hulla.Application.Settings.TableSkin));
+            var skins = new[] { Hulla.Application.Settings.TableSkin.Basant };
             var index = 0;
             foreach (var screen in ScreenCases.All())
             {

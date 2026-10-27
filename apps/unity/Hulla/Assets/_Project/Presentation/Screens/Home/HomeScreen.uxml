@@ -1,72 +1,101 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements">
-    <ui:VisualElement name="home" class="screen">
-        <ui:ScrollView class="settings__scroll" horizontal-scroller-visibility="Hidden" vertical-scroller-visibility="Hidden">
-            <ui:VisualElement class="home__header">
+    <ui:VisualElement name="home" class="screen home">
+        <ui:VisualElement name="stage-holder" class="home__holder" picking-mode="Ignore">
+            <ui:VisualElement name="stage" class="home__stage" picking-mode="Ignore">
+                <ui:Button name="settings" class="home__settings">
+                    <ui:VisualElement class="home__face" picking-mode="Ignore" />
+                </ui:Button>
                 <ui:VisualElement name="me" class="home__me">
+                    <ui:Label name="name-label" class="home__name" />
                     <ui:VisualElement name="avatar" class="seat__avatar home__avatar">
                         <ui:Label name="avatar-initial" class="seat__initial" />
                     </ui:VisualElement>
-                    <ui:VisualElement class="home__who">
-                        <ui:Label name="name-label" class="home__name" />
-                        <ui:Label name="progress" class="caption progress-line" />
+                    <ui:VisualElement name="avatar-frame" class="home__avatar-frame" picking-mode="Ignore" />
+                    <ui:Label name="level" class="home__level" picking-mode="Ignore" />
+                </ui:VisualElement>
+                <ui:VisualElement name="wallet" class="home__wallet" picking-mode="Ignore">
+                    <ui:VisualElement class="home__coin" picking-mode="Ignore" />
+                    <ui:Label name="coins" class="home__coins" />
+                </ui:VisualElement>
+                <ui:VisualElement name="friends-panel" class="home__friends">
+                    <ui:Label name="friends-title" class="home__friends-title" />
+                    <ui:VisualElement name="party" class="party" />
+                    <ui:Button name="invite" class="home__invite">
+                        <ui:VisualElement class="home__face" picking-mode="Ignore">
+                            <ui:Label name="invite-label" class="home__invite-label" />
+                        </ui:VisualElement>
+                    </ui:Button>
+                </ui:VisualElement>
+                <ui:Button name="hero" class="home__banner">
+                    <ui:VisualElement class="home__face" picking-mode="Ignore">
+                        <ui:Label name="hero-text" class="home__banner-text" />
+                        <ui:VisualElement name="hero-join" class="home__banner-join" picking-mode="Ignore">
+                            <ui:Label name="hero-join-label" class="home__banner-join-label" />
+                        </ui:VisualElement>
                     </ui:VisualElement>
-                </ui:VisualElement>
-                <ui:Label name="coins" class="home__coins" />
-                <ui:Button name="settings" class="button button--quiet button--small" />
-            </ui:VisualElement>
-            <ui:VisualElement name="name-panel" class="panel">
-                <ui:TextField name="name" class="field" />
-            </ui:VisualElement>
-            <ui:Label name="title" class="title home__title" />
-            <ui:Label name="tagline" class="subtitle" />
-            <ui:VisualElement name="party" class="party" />
-            <ui:Label name="online" class="caption home__online" />
-            <ui:Button name="hero" class="button button--secondary hero" />
-            <ui:Button name="rejoin" class="button button--primary hero" />
-            <ui:VisualElement name="games" class="games">
-                <ui:VisualElement name="game-thulla" class="game">
-                    <ui:VisualElement name="game-thulla-art" class="game__art" />
-                    <ui:Label name="game-thulla-name" class="game__name" />
-                    <ui:Label name="game-thulla-line" class="game__line" />
-                    <ui:Label name="seats-label" class="caption game__seats-label" />
-                    <ui:VisualElement name="seats" class="chips chips--seats game__seats" />
-                    <ui:Button name="quick" class="button button--primary game__play" />
-                </ui:VisualElement>
-                <ui:VisualElement name="game-rung" class="game game--soon">
-                    <ui:VisualElement name="game-rung-art" class="game__art" />
-                    <ui:VisualElement class="game__text">
-                        <ui:Label name="game-rung-name" class="game__name" />
-                        <ui:Label name="game-rung-line" class="game__line" />
+                </ui:Button>
+                <ui:Button name="rejoin" class="home__banner home__banner--rejoin">
+                    <ui:VisualElement class="home__face" picking-mode="Ignore">
+                        <ui:Label name="rejoin-text" class="home__banner-text" />
                     </ui:VisualElement>
-                    <ui:Label name="game-rung-soon" class="game__soon" />
+                </ui:Button>
+                <ui:VisualElement name="game-thulla" class="home__card" picking-mode="Ignore">
+                    <ui:VisualElement class="home__kite" picking-mode="Ignore" />
+                    <ui:Label name="game-thulla-name" class="home__title" />
+                    <ui:Label name="game-thulla-line" class="home__tagline" />
+                    <ui:VisualElement class="home__fan" picking-mode="Ignore" />
+                    <ui:VisualElement class="home__seat-panel" picking-mode="Ignore">
+                        <ui:Label name="seats-label" class="home__seats-label" />
+                        <ui:VisualElement name="seats" class="home__seats" />
+                    </ui:VisualElement>
+                    <ui:VisualElement name="mode" class="home__mode">
+                        <ui:VisualElement name="mode-switch" class="home__switch" />
+                        <ui:Label name="mode-casual" class="home__mode-label" />
+                        <ui:VisualElement class="home__mode-bar" picking-mode="Ignore" />
+                        <ui:Label name="mode-ranked" class="home__mode-label" />
+                    </ui:VisualElement>
+                    <ui:Button name="quick" class="home__play">
+                        <ui:VisualElement class="home__face" picking-mode="Ignore">
+                            <ui:Label name="quick-label" class="home__play-label" />
+                        </ui:VisualElement>
+                    </ui:Button>
+                </ui:VisualElement>
+                <ui:Button name="create" class="home__room home__room--create">
+                    <ui:VisualElement class="home__face" picking-mode="Ignore">
+                        <ui:Label name="create-label" class="home__room-label" />
+                    </ui:VisualElement>
+                </ui:Button>
+                <ui:Button name="join-toggle" class="home__room home__room--join">
+                    <ui:VisualElement class="home__face" picking-mode="Ignore">
+                        <ui:Label name="join-toggle-label" class="home__room-label" />
+                    </ui:VisualElement>
+                </ui:Button>
+                <ui:VisualElement name="daily" class="home__daily">
+                    <ui:VisualElement class="home__gift" picking-mode="Ignore" />
+                    <ui:Label name="daily-title" class="home__daily-title" />
+                    <ui:Label name="daily-text" class="home__daily-text" />
+                    <ui:Button name="daily-claim" class="home__daily-claim" />
+                </ui:VisualElement>
+                <ui:VisualElement name="game-rung" class="home__soon">
+                    <ui:Label name="game-rung-name" class="home__soon-title" />
+                    <ui:Label name="game-rung-soon" class="home__soon-text" />
                 </ui:VisualElement>
             </ui:VisualElement>
-            <ui:VisualElement class="home__row">
-                <ui:Button name="create" class="button button--secondary" />
-                <ui:Button name="join-toggle" class="button" />
-            </ui:VisualElement>
-            <ui:VisualElement name="looks" class="panel looks" />
-            <ui:VisualElement class="home__quiet">
-                <ui:Button name="how-to-play" class="button button--quiet" />
-            </ui:VisualElement>
-            <ui:VisualElement name="join-panel" class="panel">
-                <ui:TextField name="code" class="field field--code" />
-                <ui:Button name="join" class="button" />
-            </ui:VisualElement>
-            <ui:Label name="status" class="status" />
-            <ui:VisualElement name="daily" class="daily">
-                <ui:Label name="daily-text" class="daily__text" />
-                <ui:Button name="daily-claim" class="button button--small button--primary" />
-            </ui:VisualElement>
-            <ui:VisualElement class="home__links">
-                <ui:Button name="missions" class="button button--quiet" />
-                <ui:Button name="leaderboard" class="button button--quiet" />
-            </ui:VisualElement>
-            <ui:TextField name="server" class="field field--dev" />
-            <ui:Button name="shop" class="button button--quiet home__hidden" />
-            <ui:Button name="pass" class="button button--quiet home__hidden" />
-            <ui:Button name="friends" class="button button--quiet home__hidden" />
-            <ui:Button name="profile" class="button button--quiet home__hidden" />
-        </ui:ScrollView>
+        </ui:VisualElement>
+        <ui:VisualElement name="name-panel" class="panel home__sheet">
+            <ui:TextField name="name" class="field" />
+        </ui:VisualElement>
+        <ui:VisualElement name="join-panel" class="panel home__sheet">
+            <ui:TextField name="code" class="field field--code" />
+            <ui:Button name="join" class="button" />
+        </ui:VisualElement>
+        <ui:Label name="status" class="status home__status" />
+        <ui:Button name="how-to-play" class="button button--quiet home__hidden" />
+        <ui:Button name="missions" class="button button--quiet home__hidden" />
+        <ui:Button name="leaderboard" class="button button--quiet home__hidden" />
+        <ui:Button name="shop" class="button button--quiet home__hidden" />
+        <ui:Button name="pass" class="button button--quiet home__hidden" />
+        <ui:Button name="friends" class="button button--quiet home__hidden" />
+        <ui:Button name="profile" class="button button--quiet home__hidden" />
     </ui:VisualElement>
 </ui:UXML>

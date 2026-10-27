@@ -48,7 +48,7 @@
 .ranked__banner {
     display: none;
     background-color: var(--surface-raised);
-    color: var(--gold);
+    color: var(--ink-ivory);
     border-radius: var(--radius);
     padding: var(--space-2);
     margin-bottom: var(--space-2);

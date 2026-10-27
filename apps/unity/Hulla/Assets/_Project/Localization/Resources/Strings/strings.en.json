@@ -1508,8 +1508,8 @@
    "smart": false
   },
   {
-   "key": "nav.pass",
-   "text": "Pass",
+   "key": "nav.trophies",
+   "text": "Trophies",
    "smart": false
   },
   {
@@ -2683,6 +2683,11 @@
    "smart": false
   },
   {
+   "key": "ui.casual",
+   "text": "Casual",
+   "smart": false
+  },
+  {
    "key": "ui.change_rules",
    "text": "Change rules",
    "smart": false
@@ -2774,7 +2779,7 @@
   },
   {
    "key": "ui.create_room",
-   "text": "Create a room",
+   "text": "Create Room",
    "smart": false
   },
   {
@@ -2793,9 +2798,19 @@
    "smart": true
   },
   {
+   "key": "ui.daily_day",
+   "text": "Day {0}",
+   "smart": true
+  },
+  {
    "key": "ui.daily_ready",
    "text": "Daily reward, day {0}: {1}",
    "smart": true
+  },
+  {
+   "key": "ui.daily_reward",
+   "text": "Daily Reward",
+   "smart": false
   },
   {
    "key": "ui.daily_tomorrow",
@@ -2983,6 +2998,11 @@
    "smart": false
   },
   {
+   "key": "ui.friend_table_banner",
+   "text": "{0}'s table · {1} seats open",
+   "smart": true
+  },
+  {
    "key": "ui.friends",
    "text": "Friends",
    "smart": false
@@ -2990,6 +3010,11 @@
   {
    "key": "ui.friends_list",
    "text": "Friends",
+   "smart": false
+  },
+  {
+   "key": "ui.friends_online",
+   "text": "Friends online",
    "smart": false
   },
   {
@@ -3119,7 +3144,7 @@
   },
   {
    "key": "ui.join_by_code",
-   "text": "Join by code",
+   "text": "Join by Code",
    "smart": false
   },
   {
@@ -3503,6 +3528,11 @@
    "smart": false
   },
   {
+   "key": "ui.ranked",
+   "text": "Ranked",
+   "smart": false
+  },
+  {
    "key": "ui.ready",
    "text": "Ready",
    "smart": false
@@ -3713,6 +3743,11 @@
    "smart": false
   },
   {
+   "key": "ui.seat_size",
+   "text": "Seat-size",
+   "smart": false
+  },
+  {
    "key": "ui.seat_them",
    "text": "Seat",
    "smart": false
@@ -3755,6 +3790,11 @@
   {
    "key": "ui.settings_account",
    "text": "Account and data",
+   "smart": false
+  },
+  {
+   "key": "ui.settings_development",
+   "text": "Development",
    "smart": false
   },
   {

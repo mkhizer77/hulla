@@ -1508,8 +1508,8 @@
    "smart": false
   },
   {
-   "key": "nav.pass",
-   "text": "[Påss ·]",
+   "key": "nav.trophies",
+   "text": "[Tröphîés · ·]",
    "smart": false
   },
   {
@@ -2683,6 +2683,11 @@
    "smart": false
   },
   {
+   "key": "ui.casual",
+   "text": "[Çåsûål ·]",
+   "smart": false
+  },
+  {
    "key": "ui.change_rules",
    "text": "[Çhåñgé rûlés · ·]",
    "smart": false
@@ -2774,7 +2779,7 @@
   },
   {
    "key": "ui.create_room",
-   "text": "[Çréåté å rööm · ·]",
+   "text": "[Çréåté Rööm · ·]",
    "smart": false
   },
   {
@@ -2793,9 +2798,19 @@
    "smart": true
   },
   {
+   "key": "ui.daily_day",
+   "text": "[Dåý {0} · ·]",
+   "smart": true
+  },
+  {
    "key": "ui.daily_ready",
    "text": "[Dåîlý réwård, dåý {0}: {1} · · · ·]",
    "smart": true
+  },
+  {
+   "key": "ui.daily_reward",
+   "text": "[Dåîlý Réwård · ·]",
+   "smart": false
   },
   {
    "key": "ui.daily_tomorrow",
@@ -2983,6 +2998,11 @@
    "smart": false
   },
   {
+   "key": "ui.friend_table_banner",
+   "text": "[{0}'s tåblé · {1} séåts öpéñ · · · · ·]",
+   "smart": true
+  },
+  {
    "key": "ui.friends",
    "text": "[Frîéñds · ·]",
    "smart": false
@@ -2990,6 +3010,11 @@
   {
    "key": "ui.friends_list",
    "text": "[Frîéñds · ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.friends_online",
+   "text": "[Frîéñds öñlîñé · · ·]",
    "smart": false
   },
   {
@@ -3119,7 +3144,7 @@
   },
   {
    "key": "ui.join_by_code",
-   "text": "[Jöîñ bý çödé · ·]",
+   "text": "[Jöîñ bý Çödé · ·]",
    "smart": false
   },
   {
@@ -3503,6 +3528,11 @@
    "smart": false
   },
   {
+   "key": "ui.ranked",
+   "text": "[Råñkéd ·]",
+   "smart": false
+  },
+  {
    "key": "ui.ready",
    "text": "[Réådý ·]",
    "smart": false
@@ -3713,6 +3743,11 @@
    "smart": false
   },
   {
+   "key": "ui.seat_size",
+   "text": "[Séåt-sîzé · ·]",
+   "smart": false
+  },
+  {
    "key": "ui.seat_them",
    "text": "[Séåt ·]",
    "smart": false
@@ -3755,6 +3790,11 @@
   {
    "key": "ui.settings_account",
    "text": "[Åççöûñt åñd dåtå · · ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.settings_development",
+   "text": "[Dévélöpméñt · ·]",
    "smart": false
   },
   {

@@ -56,6 +56,7 @@ namespace Hulla.Screens.Tests
         {
             root.AddToClassList(Hulla.Presentation.Theme.ThemeClasses.Skinned);
             root.AddToClassList(Hulla.Presentation.Theme.ThemeClasses.ClassOf(skin));
+            root.AddToClassList(Hulla.Presentation.Theme.TextArt.LanguageClass(Hulla.Presentation.Text.Strings.Locale));
         }
 
         public static IEnumerable<Case> All()

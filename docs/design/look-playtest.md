@@ -1,5 +1,7 @@
 # Look playtest: Basant and Pop
 
+> Closed 27 Oct 2026: Basant daytime was chosen as the one look (`basant-home.md`). The client no longer asks; the server's `look_feedback` RPC and the `looks_test` flag stay until they are removed.
+
 Two of the Home concepts from 26 October (`art-design/concepts/`, concepts 2 and 4) are in the app as table themes, so players can try them on every screen and tell us which one to build. Basant is the bright kite-festival afternoon for the main audience; Pop is the clean modern look for the wider market (`docs/design/design-direction.md` §1).
 
 ## What is in the app

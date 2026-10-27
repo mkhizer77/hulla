@@ -68,9 +68,8 @@ M0 complete: the Thulla rulebook runs in TypeScript with full traceability. M1, 
 
 ## Doing
 - Paused 16 Oct by the owner (PR 269 stays open): UI redesign by an outside designer: brief in `docs/design/ui-redesign-brief.md` (screens, current wireframes, scaling, anchoring, feature list). Decided 15 Oct: tablets are supported in portrait and landscape (#102), with phone, tablet-portrait and tablet-landscape layouts and Expand scaling in place of match-width.
-- Look playtest running: the owner gathers testers (`docs/design/look-playtest.md`), then picks the direction for the art pass.
+- Basant daytime is the one look (decided 27 Oct; the look playtest is closed). Screens are rebuilt to the concept one at a time from art made per element (`docs/design/basant-home.md`). Home is done, with a four-tab dock (Home, Friends, Trophies, Shop). The lobby, table, results, shop, pass, friends, profile and settings come next, and the other looks' art and rules still need deleting.
 - Waiting for the owner's device session: voice on phones (five-phone check, listener audio, iOS session), the #132 screenshots on the low-tier phone, and the earlier phone pass.
-- A phone pass on the themes: motion speed and strength, quiet text on each scene, touch targets on the shelf.
 
 ## Next
 Monetisation is on hold. Engineering-only work before launch is nearly done; most of the rest waits on the owner: the content signing key (`docs/runbooks/deploy-and-rollback.md`, Before step 3; until then release builds keep their bundled content), the SMS provider for phone sign-in (OQ-041), Firebase for crash reporting (#72), the phase 0 box (#76) and a CDN for the first streamed pack (#56), Test Lab (#78), a low-tier phone (#132), the phone pass and playtests (#36), the art for pass B and the cosmetics (#66 to #68, #80 to #83), translations for Urdu and Hindi (#100), a five-phone voice check (#32), and LiveKit on the phase 0 box with its TURN domain (`docs/runbooks/voice-setup.md`). The `shop` remote-config flag is not applied on the client yet: it defaults to off on the server, so applying it hides the shop. The web client starts after v1.1 as planned.

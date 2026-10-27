@@ -44,10 +44,16 @@ namespace Hulla.Presentation.Screens.Settings
         private Label? _accountStatus;
         private readonly NotificationSettingsViewModel? _notifications;
         private readonly Action<Action<NotificationSettings>>? _changeNotifications;
+        private readonly string? _server;
+        private readonly Action<string>? _useServer;
 
         /// <param name="notifications">The server-side notification switches; null hides the section.</param>
-        public SettingsView(VisualElement root, SettingsModel settings, Action close, AccountActions? account = null, NotificationSettingsViewModel? notifications = null, Action<Action<NotificationSettings>>? changeNotifications = null)
+        /// <param name="server">The server address, shown in development builds only; null hides it.</param>
+        /// <param name="useServer">Switches to the address typed in, when the field is left or submitted.</param>
+        public SettingsView(VisualElement root, SettingsModel settings, Action close, AccountActions? account = null, NotificationSettingsViewModel? notifications = null, Action<Action<NotificationSettings>>? changeNotifications = null, string? server = null, Action<string>? useServer = null)
         {
+            _server = server;
+            _useServer = useServer;
             _account = account;
             _notifications = notifications;
             _changeNotifications = changeNotifications;
@@ -95,8 +101,6 @@ namespace Hulla.Presentation.Screens.Settings
             Toggle(UiText.VoiceChatLabel, () => _settings.VoiceChat, v => _settings.VoiceChat = v);
             Level(UiText.VoiceVolumeLabel, () => _settings.VoiceVolume, v => _settings.VoiceVolume = v);
             Toggle(UiText.HapticsLabel, () => _settings.Haptics, v => _settings.Haptics = v);
-            Heading(UiText.SettingsTheme);
-            Themes(() => _settings.Skin, v => _settings.Skin = v);
             Heading(UiText.SettingsSeeing);
             Toggle(UiText.FourColourLabel, () => _settings.FourColourDeck, v => _settings.FourColourDeck = v);
             Toggle(UiText.HighContrastLabel, () => _settings.HighContrast, v => _settings.HighContrast = v);
@@ -144,6 +148,18 @@ namespace Hulla.Presentation.Screens.Settings
                 _accountStatus.AddToClassList("status");
                 _list.Add(_accountStatus);
             }
+
+            if (_server != null && _useServer != null)
+            {
+                Heading(UiText.SettingsDevelopment);
+                var field = new TextField(UiText.Server) { name = "server", value = _server };
+                field.AddToClassList("field");
+                field.AddToClassList("field--dev");
+                var use = _useServer;
+                field.RegisterCallback<FocusOutEvent>(_ => use(field.value.Trim()));
+                field.RegisterCallback<NavigationSubmitEvent>(_ => use(field.value.Trim()));
+                _list.Add(field);
+            }
         }
 
         private void Status(string text)
@@ -189,39 +205,6 @@ namespace Hulla.Presentation.Screens.Settings
             slider.AddToClassList("settings__level");
             slider.RegisterValueChangedCallback(evt => set(evt.newValue));
             _list.Add(slider);
-        }
-
-        /// <summary>The table themes as tiles showing each scene and table; the chosen one is ringed.</summary>
-        private void Themes(Func<TableSkin> get, Action<TableSkin> set)
-        {
-            var row = new VisualElement();
-            row.AddToClassList("theme-picker");
-            var tiles = new List<Button>();
-            foreach (TableSkin skin in Enum.GetValues(typeof(TableSkin)))
-            {
-                var tile = new Button { name = "theme-" + skin.ToString().ToLowerInvariant() };
-                tile.AddToClassList("theme-tile");
-                var preview = new VisualElement { pickingMode = PickingMode.Ignore };
-                preview.AddToClassList("theme-tile__preview");
-                preview.AddToClassList("theme-tile__preview--" + skin.ToString().ToLowerInvariant());
-                tile.Add(preview);
-                var label = new Label(UiText.SkinName(skin)) { pickingMode = PickingMode.Ignore };
-                label.AddToClassList("theme-tile__name");
-                tile.Add(label);
-                tile.EnableInClassList("theme-tile--on", skin == get());
-                tile.clicked += () =>
-                {
-                    set(skin);
-                    foreach (var other in tiles)
-                    {
-                        other.EnableInClassList("theme-tile--on", other == tile);
-                    }
-                };
-                tiles.Add(tile);
-                row.Add(tile);
-            }
-
-            _list.Add(row);
         }
 
         private void Choice(string text, string[] options, Func<int> get, Action<int> set)

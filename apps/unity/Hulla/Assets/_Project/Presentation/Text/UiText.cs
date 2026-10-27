@@ -207,6 +207,7 @@ namespace Hulla.Presentation.Text
         public static string GameThullaLine => Strings.Text("ui.game_thulla_line");
         public static string GameRung => Strings.Text("ui.game_rung");
         public static string GameRungLine => Strings.Text("ui.game_rung_line");
+        public static string Trophies => Strings.Text("nav.trophies");
         public static string ComingSoon => Strings.Text("ui.coming_soon");
 
         /// <summary>The table themes in settings order (docs/design/table-themes.md).</summary>
@@ -248,11 +249,11 @@ namespace Hulla.Presentation.Text
         {
             Navigation.NavTab.Home => Strings.Text("nav.home"),
             Navigation.NavTab.Friends => Friends,
-            Navigation.NavTab.Shop => Shop,
-            Navigation.NavTab.Pass => Strings.Text("nav.pass"),
-            _ => Profile,
+            Navigation.NavTab.Trophies => Trophies,
+            _ => Shop,
         };
 
+        public static string SettingsDevelopment => Strings.Text("ui.settings_development");
         public static string SettingsSound => Strings.Text("ui.settings_sound");
         public static string SfxLabel => Strings.Text("ui.sfx_label");
 
@@ -468,6 +469,13 @@ namespace Hulla.Presentation.Text
         public static string RulesChangedBy => Strings.Text("ui.rules_changed_by");
         public static string JoinFriendTable => Strings.Text("ui.join_friend_table");
         public static string WatchFriendTable => Strings.Text("ui.watch_friend_table");
+        public static string FriendTableBanner => Strings.Text("ui.friend_table_banner");
+        public static string FriendsOnline => Strings.Text("ui.friends_online");
+        public static string SeatSize => Strings.Text("ui.seat_size");
+        public static string Casual => Strings.Text("ui.casual");
+        public static string Ranked => Strings.Text("ui.ranked");
+        public static string DailyReward => Strings.Text("ui.daily_reward");
+        public static string DailyDay => Strings.Text("ui.daily_day");
         public static string Watching => Strings.Text("ui.watching");
         public static string WatchingLobby => Strings.Text("ui.watching_lobby");
         public static string Watchers => Strings.Text("ui.watchers");

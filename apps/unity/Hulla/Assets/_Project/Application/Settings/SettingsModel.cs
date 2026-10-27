@@ -117,17 +117,8 @@ namespace Hulla.Application.Settings
             set => Set("text_scale", (int)value);
         }
 
-        /// <summary>The table theme; Club until the player picks another in Settings.</summary>
-        public TableSkin Skin
-        {
-            get
-            {
-                var stored = Get("skin", (int)TableSkin.Club);
-                return Enum.IsDefined(typeof(TableSkin), stored) ? (TableSkin)stored : TableSkin.Club;
-            }
-
-            set => Set("skin", (int)value);
-        }
+        /// <summary>The look of the app: Basant daytime is the only one (docs/design/basant-home.md).</summary>
+        public TableSkin Skin => TableSkin.Basant;
 
         public HandSort HandSort
         {

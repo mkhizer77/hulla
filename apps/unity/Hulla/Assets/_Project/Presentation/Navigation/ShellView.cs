@@ -72,6 +72,16 @@ namespace Hulla.Presentation.Navigation
             root.Clear();
             // A right-to-left locale mirrors rows and side-aligned text (Theme/Rtl.uss, GDD 26.1).
             root.EnableInClassList("rtl", Text.Strings.RightToLeft);
+            // The text sprites follow the language (Theme/TextArt.cs).
+            foreach (var name in new System.Collections.Generic.List<string>(root.GetClasses()))
+            {
+                if (name.StartsWith("lang--", StringComparison.Ordinal))
+                {
+                    root.RemoveFromClassList(name);
+                }
+            }
+
+            root.AddToClassList(TextArt.LanguageClass(Text.Strings.Locale));
             // The paragraph direction, so a line ending in Latin or punctuation still reads right to left (#132).
             root.languageDirection = Text.Strings.RightToLeft ? LanguageDirection.RTL : LanguageDirection.Inherit;
             var instance = screen.Instantiate();
