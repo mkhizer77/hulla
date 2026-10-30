@@ -36,7 +36,7 @@
 | Purchases | Unity IAP | latest stable | Store billing; receipts validated on the server |
 | Ads | AppLovin MAX Unity plugin with AdMob, Meta, Unity Ads, Mintegral, ironSource, Liftoff adapters | latest stable | Rewarded and interstitial only; no banners |
 | Analytics, crashes, config, push | Firebase Unity SDK: Analytics, Crashlytics, Remote Config, Cloud Messaging | latest stable | Free tier |
-| Deep links | Branch Unity SDK | latest stable | Deferred deep linking; `hulla.gg/j/<code>` |
+| Deep links | Our own link page on Cloudflare Pages, App Links and Universal Links | n/a | `playhulla.pages.dev/j/<code>` until the domain (docs/runbooks/links-setup.md) |
 | Tests | Unity Test Framework (edit mode, play mode), NUnit for the pure C# packages | 1.6.x | Rule-ID traceability |
 | Analyzers | Microsoft.Unity.Analyzers, Roslynator | | Warnings are errors in Domain and Application |
 
@@ -66,7 +66,7 @@ Every table is one authoritative Nakama match. Clients send intents (`play_card`
 | Analytics, crash reporting, remote config, push | Firebase | Free tier | Yes | Yes (push via FCM web) | Medium |
 | Ads mediation | AppLovin MAX | Revenue share | Yes | No ads on web at first | Medium |
 | In-app purchases | Apple and Google through Unity IAP; Stripe on web later | Store fees; Stripe about 2.9% + fixed fee | Yes | Stripe | Medium |
-| Deferred deep links | Branch | Free tier | Yes | Own router on `hulla.gg` | Low |
+| Links and the link page | Cloudflare Pages (`infra/cloudflare/links`) | Free | Yes | Yes | Low (static files) |
 | DNS, TLS, proxy, WebSockets, tunnel | Cloudflare | Free plan | n/a | n/a | Low |
 | Content and backups storage | Cloudflare R2 | 10 GB free, free egress | n/a | n/a | Low (S3 API) |
 | Container images | GitHub Container Registry | Free for public repos | n/a | n/a | Low |

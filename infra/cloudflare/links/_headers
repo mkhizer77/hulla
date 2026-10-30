@@ -1,0 +1,11 @@
+/.well-known/*
+  Content-Type: application/json
+  Access-Control-Allow-Origin: *
+
+/assets/*
+  Cache-Control: public, max-age=31536000, immutable
+
+/*
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: no-referrer
+  Permissions-Policy: camera=(), microphone=(), geolocation=()
