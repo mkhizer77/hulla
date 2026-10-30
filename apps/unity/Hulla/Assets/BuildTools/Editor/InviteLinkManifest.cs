@@ -1,13 +1,14 @@
 using System.IO;
 using System.Xml;
+using Hulla.Application.Social;
 using UnityEditor.Android;
 
 namespace Hulla.BuildTools
 {
     /// <summary>
-    /// Lets invite and referral links open the game activity (GDD 10.5, 10.9): <c>hulla://j/CODE</c> and
-    /// <c>hulla://r/FRIENDCODE</c> now, and the same paths on <c>https://hulla.gg</c> as App Links once the
-    /// domain serves its assetlinks.json (#130).
+    /// Lets invite and referral links open the game activity (GDD 10.5, 10.9): <c>hulla://j/CODE</c>,
+    /// <c>hulla://r/FRIENDCODE</c> and the same paths on every <see cref="InviteLink.Hosts"/> as App Links,
+    /// which Android verifies against each host's /.well-known/assetlinks.json (infra/cloudflare/links).
     /// </summary>
     public sealed class InviteLinkManifest : IPostGenerateGradleAndroidProject
     {
@@ -27,14 +28,35 @@ namespace Hulla.BuildTools
                 return;
             }
 
+            RemoveRetiredHosts(activity);
             // j: table invites; r: referral links from share cards (GDD 10.9).
             foreach (var kind in new[] { "j", "r" })
             {
                 AddOnce(document, activity, autoVerify: false, ("scheme", "hulla"), ("host", kind));
-                AddOnce(document, activity, autoVerify: true, ("scheme", "https"), ("host", "hulla.gg"), ("pathPrefix", "/" + kind + "/"));
+                foreach (var host in InviteLink.Hosts)
+                {
+                    AddOnce(document, activity, autoVerify: true, ("scheme", "https"), ("host", host), ("pathPrefix", "/" + kind + "/"));
+                }
             }
 
             document.Save(manifestPath);
+        }
+
+        /// <summary>
+        /// Gradle reuses the exported project, so filters for hosts since dropped from <see cref="InviteLink.Hosts"/>
+        /// would stay; Android before 12 then verifies none of the hosts.
+        /// </summary>
+        private static void RemoveRetiredHosts(XmlElement activity)
+        {
+            foreach (XmlNode data in activity.SelectNodes("intent-filter/data")!)
+            {
+                var scheme = data.Attributes?["scheme", Android]?.Value;
+                var host = data.Attributes?["host", Android]?.Value;
+                if (scheme == "https" && host != null && System.Array.IndexOf(InviteLink.Hosts, host) < 0)
+                {
+                    activity.RemoveChild(data.ParentNode!);
+                }
+            }
         }
 
         /// <summary>Gradle reuses the exported project, so a filter may already be there.</summary>

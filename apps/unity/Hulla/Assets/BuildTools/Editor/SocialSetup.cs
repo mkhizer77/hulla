@@ -81,9 +81,10 @@ namespace Hulla.BuildTools
             AssetDatabase.SaveAssets();
             Facebook.Unity.Editor.ManifestMod.GenerateManifest();
             // Meta's manifest template marks the app debuggable; Unity sets that per build type itself.
+            // It also writes Windows line endings, which would leave the file changed after every build.
             if (File.Exists(Manifest))
             {
-                File.WriteAllText(Manifest, File.ReadAllText(Manifest).Replace(" android:debuggable=\"true\"", ""));
+                File.WriteAllText(Manifest, File.ReadAllText(Manifest).Replace(" android:debuggable=\"true\"", "").Replace("\r\n", "\n"));
             }
         }
 
