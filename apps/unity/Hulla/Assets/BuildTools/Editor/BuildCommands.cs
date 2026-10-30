@@ -103,7 +103,10 @@ namespace Hulla.BuildTools
         /// </summary>
         public static void MacDevelopment()
         {
+#if UNITY_EDITOR_OSX
+            // The macOS build module, and with it this setting, exists only in a Mac editor.
             UnityEditor.OSXStandalone.UserBuildSettings.architecture = UnityEditor.Build.OSArchitecture.ARM64;
+#endif
             ExitIfBatch(Build(BuildTarget.StandaloneOSX, Path.Combine("Builds", "macOS", "Hulla.app")));
         }
 
