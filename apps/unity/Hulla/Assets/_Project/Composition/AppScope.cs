@@ -58,6 +58,14 @@ namespace Hulla.Composition
             Presets = new ContentPresetCatalog(Content);
             Welcome = new NakamaWelcomeService(_connection);
             Phone = new PhoneViewModel(new NakamaPhoneService(_connection, _sessionService));
+            var signIn = new Hulla.Infrastructure.Social.NativeSocialSignIn(Hulla.Infrastructure.Social.SocialConfig.Load());
+            SocialAccounts = new NakamaSocialAccounts(_connection, _sessionService, signIn);
+            FriendSuggestions = new FriendSuggestionsViewModel(
+                new NakamaFriendSuggestions(_connection),
+                new Hulla.Infrastructure.Social.NativeContacts(),
+                signIn,
+                Store,
+                Hulla.Application.Social.PhoneNumbers.CallingCode(System.Globalization.RegionInfo.CurrentRegion.TwoLetterISORegionName));
             Achievements = new AchievementsViewModel(new NakamaAchievementsService(_connection));
             Shop = new ShopViewModel(new NakamaShopService(_connection));
             NotificationsService = new NakamaNotificationsService(_connection);
@@ -141,6 +149,12 @@ namespace Hulla.Composition
         public RemoteConfigModel RemoteConfig { get; }
 
         public PhoneViewModel Phone { get; }
+
+        /// <summary>Apple, Google and Facebook on the account (GDD 10.2, #38).</summary>
+        public ISocialAccounts SocialAccounts { get; }
+
+        /// <summary>People you may know: players in the phone's contacts and Facebook friends who play.</summary>
+        public FriendSuggestionsViewModel FriendSuggestions { get; }
 
         public AchievementsViewModel Achievements { get; }
 

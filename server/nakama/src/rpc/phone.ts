@@ -94,7 +94,7 @@ export function nkOtpStore(nk: nkruntime.Nakama): OtpStore {
 }
 
 /** The pepper keeps the numbers out of reach of anyone holding only the database (OQ-041). */
-function pepperOf(env: Readonly<Record<string, string>>): string | null {
+export function phonePepperOf(env: Readonly<Record<string, string>>): string | null {
   const pepper = env["HULLA_PHONE_PEPPER"] ?? "";
   if (pepper !== "") return pepper;
   return (env["HULLA_ENV"] ?? "local") === "local" ? "local-only-phone-pepper" : null;
@@ -102,7 +102,7 @@ function pepperOf(env: Readonly<Record<string, string>>): string | null {
 
 export function nkOtpPorts(ctx: nkruntime.Context, nk: nkruntime.Nakama): OtpPorts {
   const env = ctx.env;
-  const pepper = pepperOf(env);
+  const pepper = phonePepperOf(env);
   const budget = resolveFlag(nkConfigStore(nk).read(), "otp_daily_budget", {
     region: env["HULLA_REGION"] ?? "local",
     cohort: "",

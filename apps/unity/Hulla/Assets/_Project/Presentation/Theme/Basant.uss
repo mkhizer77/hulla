@@ -10269,3 +10269,294 @@
     background-color: rgba(0, 0, 0, 0);
     -unity-background-scale-mode: scale-to-fit;
 }
+
+/* ==================== Account and people you may know, 30 Oct (concepts: profile-guest, sheet-account, friends-suggestions) ==================== */
+.skin--basant .account-card,
+.skin--basant .find-card {
+    margin: 0 0 22px 0;
+    padding: 40px 44px 44px 44px;
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Basant/Kit/card-row.png");
+    -unity-slice-left: 90;
+    -unity-slice-right: 90;
+    -unity-slice-top: 70;
+    -unity-slice-bottom: 90;
+    -unity-slice-scale: 0.3px;
+}
+
+.skin--basant .account-card__title,
+.skin--basant .find-card__title {
+    font-size: 56px;
+    -unity-font-style: bold;
+    color: rgb(74, 30, 14);
+    -unity-text-align: middle-center;
+    margin-bottom: 10px;
+}
+
+.skin--basant .account-card__line,
+.skin--basant .find-card__note,
+.skin--basant .account-sheet__line,
+.skin--basant .account-sheet__foot {
+    font-size: 40px;
+    color: rgb(120, 70, 40);
+    white-space: normal;
+    -unity-text-align: middle-center;
+    margin-bottom: 26px;
+}
+
+.skin--basant .find-card__note {
+    margin: 22px 0 0 0;
+}
+
+.skin--basant .account-sheet__foot {
+    margin: 26px 0 0 0;
+}
+
+.skin--basant .find-card__buttons {
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.skin--basant .account-button,
+.skin--basant .account-button:hover,
+.skin--basant .account-button:active,
+.skin--basant .find-button,
+.skin--basant .find-button:hover,
+.skin--basant .find-button:active {
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    height: 132px;
+    margin: 0 0 18px 0;
+    padding: 0 40px;
+    border-width: 0;
+    background-color: rgba(0, 0, 0, 0);
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Basant/Account/pill-white.png");
+    -unity-slice-left: 66;
+    -unity-slice-right: 66;
+    -unity-slice-scale: 1px;
+    -unity-background-image-tint-color: rgb(255, 255, 255);
+}
+
+.skin--basant .account-button:active,
+.skin--basant .find-button:active {
+    scale: 0.97 0.97;
+}
+
+.skin--basant .find-button,
+.skin--basant .find-button:hover,
+.skin--basant .find-button:active {
+    flex-grow: 1;
+    flex-basis: 0;
+    margin: 0 8px;
+    padding: 0 20px;
+}
+
+.skin--basant .account-button__mark,
+.skin--basant .find-button__mark {
+    width: 64px;
+    height: 64px;
+    margin-right: 22px;
+    flex-shrink: 0;
+    -unity-background-scale-mode: scale-to-fit;
+}
+
+.skin--basant .account-button__text,
+.skin--basant .find-button__text {
+    font-size: 46px;
+    -unity-font-style: bold;
+    color: rgb(40, 30, 24);
+    -unity-text-outline-width: 0;
+}
+
+.skin--basant .find-button__text {
+    font-size: 42px;
+    flex-shrink: 1;
+    min-width: 0;
+    white-space: normal;
+    -unity-text-align: middle-left;
+}
+
+/* Longer words (translations) wrap to a second line inside the pill instead of clipping. */
+.skin--basant .find-button,
+.skin--basant .find-button:hover,
+.skin--basant .find-button:active {
+    height: auto;
+    min-height: 132px;
+    padding-top: 10px;
+    padding-bottom: 18px;
+}
+
+.skin--basant .account-button--google .account-button__mark {
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Basant/Account/mark-google.png");
+}
+
+.skin--basant .account-button--facebook,
+.skin--basant .account-button--facebook:hover,
+.skin--basant .account-button--facebook:active,
+.skin--basant .find-button--facebook,
+.skin--basant .find-button--facebook:hover,
+.skin--basant .find-button--facebook:active {
+    -unity-background-image-tint-color: rgb(24, 119, 242);
+}
+
+.skin--basant .account-button--facebook .account-button__mark,
+.skin--basant .find-button--facebook .find-button__mark {
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Basant/Account/mark-facebook-white.png");
+}
+
+.skin--basant .account-button--apple,
+.skin--basant .account-button--apple:hover,
+.skin--basant .account-button--apple:active {
+    -unity-background-image-tint-color: rgb(20, 20, 20);
+}
+
+.skin--basant .account-button--apple .account-button__mark {
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Basant/Account/mark-apple-white.png");
+}
+
+.skin--basant .account-button--facebook .account-button__text,
+.skin--basant .account-button--apple .account-button__text,
+.skin--basant .find-button--facebook .find-button__text,
+.skin--basant .find-button--contacts .find-button__text {
+    color: rgb(255, 255, 255);
+}
+
+.skin--basant .account-button--phone,
+.skin--basant .account-button--phone:hover,
+.skin--basant .account-button--phone:active {
+    -unity-background-image-tint-color: rgb(255, 236, 196);
+}
+
+.skin--basant .account-button--phone .account-button__mark,
+.skin--basant .account-row__mark--phone {
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Basant/Account/mark-phone.png");
+}
+
+.skin--basant .find-button--contacts,
+.skin--basant .find-button--contacts:hover,
+.skin--basant .find-button--contacts:active {
+    -unity-background-image-tint-color: rgb(40, 160, 166);
+}
+
+.skin--basant .find-button--contacts .find-button__mark {
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Basant/Account/mark-contacts.png");
+}
+
+.skin--basant .account-signed,
+.skin--basant .account-signed:hover,
+.skin--basant .account-signed:active {
+    flex-direction: row;
+    align-items: center;
+    margin: 0 0 22px 0;
+    padding: 30px 44px;
+    border-width: 0;
+    background-color: rgba(0, 0, 0, 0);
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Basant/Kit/card-row.png");
+    -unity-slice-left: 90;
+    -unity-slice-right: 90;
+    -unity-slice-top: 70;
+    -unity-slice-bottom: 90;
+    -unity-slice-scale: 0.3px;
+}
+
+.skin--basant .account-signed__tick {
+    font-size: 52px;
+    color: rgb(40, 150, 70);
+    margin-right: 18px;
+}
+
+.skin--basant .account-signed__text {
+    flex-grow: 1;
+    flex-shrink: 1;
+    font-size: 44px;
+    color: rgb(74, 30, 14);
+    white-space: normal;
+    -unity-text-align: middle-left;
+}
+
+.skin--basant .account-signed__manage {
+    font-size: 44px;
+    -unity-font-style: bold;
+    color: rgb(30, 120, 126);
+}
+
+.skin--basant .account-row {
+    flex-direction: row;
+    align-items: center;
+    min-height: 150px;
+    border-bottom-width: 2px;
+    border-color: rgba(74, 30, 14, 0.15);
+}
+
+.skin--basant .account-row__mark {
+    width: 72px;
+    height: 72px;
+    margin-right: 28px;
+    -unity-background-scale-mode: scale-to-fit;
+}
+
+.skin--basant .account-row__mark--google {
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Basant/Account/mark-google.png");
+}
+
+.skin--basant .account-row__mark--facebook {
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Basant/Account/mark-facebook.png");
+}
+
+.skin--basant .account-row__mark--apple {
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Basant/Account/mark-apple-black.png");
+}
+
+.skin--basant .account-row__name {
+    flex-grow: 1;
+    font-size: 48px;
+    color: rgb(74, 30, 14);
+}
+
+.skin--basant .account-row__linked {
+    font-size: 42px;
+    -unity-font-style: bold;
+    color: rgb(40, 150, 70);
+}
+
+.skin--basant .suggestion-chip {
+    align-self: flex-start;
+    margin-top: 6px;
+    padding: 4px 18px;
+    font-size: 34px;
+    color: rgb(255, 255, 255);
+    border-top-left-radius: 22px;
+    border-top-right-radius: 22px;
+    border-bottom-left-radius: 22px;
+    border-bottom-right-radius: 22px;
+}
+
+.skin--basant .settings .friend-row .lobby-seat__name > Label.suggestion-chip {
+    font-size: 34px;
+    -unity-font-style: bold;
+    color: rgb(255, 255, 255);
+}
+
+.skin--basant .suggestion-chip--contacts {
+    background-color: rgb(40, 160, 166);
+}
+
+.skin--basant .suggestion-chip--facebook {
+    background-color: rgb(24, 119, 242);
+}
+
+.skin--basant .account-row__link,
+.skin--basant .account-row__link:hover,
+.skin--basant .account-row__link:active {
+    height: 110px;
+    padding: 0 44px;
+    font-size: 44px;
+    -unity-font-style: bold;
+    color: rgb(255, 255, 255);
+    border-width: 0;
+    background-color: rgba(0, 0, 0, 0);
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Basant/Kit/btn-teal-normal.png");
+    -unity-slice-left: 100;
+    -unity-slice-right: 100;
+    -unity-slice-scale: 0.53px;
+}

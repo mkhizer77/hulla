@@ -98,6 +98,7 @@ import {
   rpcMutesGet,
   rpcSocialOverview,
 } from "./rpc/social";
+import { rpcFriendSuggestions } from "./rpc/suggestions";
 import { rpcTableCreate } from "./rpc/table_create";
 import { rpcTableJoinByCode } from "./rpc/table_join_by_code";
 import { rpcTableMine } from "./rpc/table_mine";
@@ -143,6 +144,7 @@ function InitModule(
   initializer.registerRpc("friend_add_by_code", rpcFriendAddByCode);
   initializer.registerRpc("favourite_set", rpcFavouriteSet);
   initializer.registerRpc("social_overview", rpcSocialOverview);
+  initializer.registerRpc("friend_suggestions", rpcFriendSuggestions);
   initializer.registerRpc("table_list_friends", rpcTableListFriends);
   initializer.registerRpc("table_mine", rpcTableMine);
   initializer.registerRpc("presence_set", rpcPresenceSet);

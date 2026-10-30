@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using Hulla.Application.ViewModels;
 using Hulla.Presentation.Navigation;
+using Hulla.Presentation.Screens.Account;
 using Hulla.Presentation.TableKit;
 using Hulla.Presentation.Text;
 using UnityEngine;
@@ -114,7 +115,31 @@ namespace Hulla.Presentation.Screens.Profile
         public string? FallbackAvatar { get; set; }
 
         /// <summary>Draws again, for when the level, medals or ranked line arrive after the card.</summary>
-        public void Redraw() => Refresh();
+        public void Redraw()
+        {
+            Refresh();
+            DrawAccount();
+        }
+
+        /// <summary>Keep your progress (sign-in buttons) for a guest, or Signed in with … and Manage.</summary>
+        public void ShowAccount(AccountOptions options)
+        {
+            _account = options;
+            DrawAccount();
+        }
+
+        private AccountOptions? _account;
+
+        private void DrawAccount()
+        {
+            var host = _root.Q<VisualElement>("account");
+            if (_account == null || host == null)
+            {
+                return;
+            }
+
+            AccountPanel.Build(host, _account);
+        }
 
         private void Refresh()
         {

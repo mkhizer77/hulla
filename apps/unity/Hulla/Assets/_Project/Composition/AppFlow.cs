@@ -545,6 +545,26 @@ namespace Hulla.Composition
             friendsView.InviteToMine = id => InviteToRoom(name, server, id);
             friendsView.LookUpProfile = LookUpCardAsync;
             friendsView.MyCode = () => _app.Profile.Profile?.FriendCode;
+            var suggestions = _app.FriendSuggestions;
+            friendsView.UseSuggestions(suggestions,
+                () => _ = suggestions.FromContactsAsync(lifetime),
+                FindFacebookFriends,
+                id =>
+                {
+                    var source = "contacts";
+                    foreach (var found in suggestions.Suggestions)
+                    {
+                        if (found.UserId == id && found.Source == SuggestionSource.Facebook)
+                        {
+                            source = "facebook";
+                        }
+                    }
+
+                    _app.Analytics.Track(AnalyticsEvents.FriendAdd(source));
+                    suggestions.MarkRequested(id);
+                    _ = friends.AddAsync(id, lifetime);
+                });
+            _ = suggestions.RefreshAsync(lifetime);
             _app.HomeFriends.Active = true;
             _app.HomeFriends.RefreshSoon();
             if (_app.Profile.Profile == null)
@@ -756,6 +776,9 @@ namespace Hulla.Composition
                 return (achievements.UnlockedCount, achievements.Total, first.GetRange(0, Math.Min(5, first.Count)));
             };
             profileView.RankedText = () => _app.Ranked.Card?.League is string league ? Strings.Format(UiText.RankedLine, RankedText.League(league)) : null;
+            profileView.ShowAccount(AccountOptionsHere());
+            RefreshSocialLinks();
+            _ = _app.Phone.RefreshAsync(_app.Lifetime);
             _shell.HideNav();
             await profile.RefreshAsync(_app.Lifetime);
             await _app.Achievements.RefreshAsync(_app.Lifetime);
@@ -1686,8 +1709,13 @@ namespace Hulla.Composition
         private void OpenSettings()
         {
             _settingsView?.Dispose();
-            var account = _app.Sessions.Current == null ? null : new SettingsView.AccountActions(ExportData, DeleteAccount, CancelDeletion, PendingDeletion, OpenPhone);
+            var social = _app.SocialAccounts.Available.Count == 0 ? null : new SettingsView.SocialRows(_app.SocialAccounts.Available, p => _socialLinked.Contains(p), LinkSocial);
+            var account = _app.Sessions.Current == null ? null : new SettingsView.AccountActions(ExportData, DeleteAccount, CancelDeletion, PendingDeletion, OpenPhone, social);
             var signedIn = _app.Sessions.Current != null;
+            if (signedIn && social != null)
+            {
+                RefreshSocialLinks();
+            }
             _settingsView = new SettingsView(_shell.ShowOverlay(_shell.Catalog.Settings), _app.Settings, CloseSettings, account,
                 signedIn ? _app.NotificationSettings : null,
                 change => _ = _app.NotificationSettings.ChangeAsync(change, _app.Lifetime),
@@ -1716,6 +1744,111 @@ namespace Hulla.Composition
             }
         }
 
+        private readonly HashSet<SocialProvider> _socialLinked = new HashSet<SocialProvider>();
+
+        /// <summary>Reads which providers the account has linked, then redraws the account page if it is showing.</summary>
+        private async void RefreshSocialLinks()
+        {
+            var linked = await _app.SocialAccounts.LinkedAsync(_app.Lifetime);
+            if (!linked.IsOk)
+            {
+                return;
+            }
+
+            _socialLinked.Clear();
+            _socialLinked.UnionWith(linked.Value);
+            AccountChanged();
+        }
+
+        /// <summary>Redraws whatever shows the linked methods: the Settings account page and the Profile card.</summary>
+        private void AccountChanged()
+        {
+            if (_settingsView != null && _settingsView.Current == SettingsView.Page.Account)
+            {
+                _settingsView.ShowPage(SettingsView.Page.Account);
+            }
+
+            (_view as ProfileView)?.Redraw();
+        }
+
+        /// <summary>The sign-in methods for the Profile card and the Your account sheet.</summary>
+        private Hulla.Presentation.Screens.Account.AccountOptions AccountOptionsHere() => new Hulla.Presentation.Screens.Account.AccountOptions(
+            _app.SocialAccounts.Available,
+            p => _socialLinked.Contains(p),
+            () => _app.Phone.Current == PhoneViewModel.Stage.Linked,
+            p => LinkSocial(p, Notice),
+            OpenPhone);
+
+        /// <summary>A short pill at the top for results away from Settings (linked, or why not).</summary>
+        private void Notice(string text)
+        {
+            _shell.SetBanner(text);
+            _shell.Root.schedule.Execute(() => _shell.SetBanner(null)).StartingIn(3000);
+        }
+
+        /// <summary>
+        /// From Facebook on Friends: the account links Facebook first, so friends who play can find this
+        /// player too, then the friends list is read.
+        /// </summary>
+        private void FindFacebookFriends()
+        {
+            if (_socialLinked.Contains(SocialProvider.Facebook))
+            {
+                _ = _app.FriendSuggestions.FromFacebookAsync(_app.Lifetime);
+                return;
+            }
+
+            LinkSocial(SocialProvider.Facebook, Notice, () => _ = _app.FriendSuggestions.FromFacebookAsync(_app.Lifetime));
+        }
+
+        /// <summary>
+        /// Links Apple, Google or Facebook (GDD 10.2, #38). When another account already holds it, the player
+        /// may switch to that account, and what this phone has moves there first (the new-phone sign-in).
+        /// </summary>
+        private void LinkSocial(SocialProvider provider, Action<string> status) => LinkSocial(provider, status, null);
+
+        private async void LinkSocial(SocialProvider provider, Action<string> status, Action? then)
+        {
+            var name = UiText.Provider(provider);
+            var linked = await _app.SocialAccounts.LinkAsync(provider, _app.Lifetime);
+            if (!linked.IsOk)
+            {
+                if (linked.Error.Code != "auth.cancelled")
+                {
+                    status(UiText.Error(linked.Error.Code) + (Debug.isDebugBuild && linked.Error.Detail != null ? " (" + linked.Error.Detail + ")" : ""));
+                }
+
+                return;
+            }
+
+            var token = linked.Value.Token;
+            if (linked.Value.Linked || token == null)
+            {
+                _socialLinked.Add(provider);
+                AccountChanged();
+                status(Strings.Format(UiText.SocialLinkedDone, name));
+                then?.Invoke();
+                return;
+            }
+
+            _shell.ShowDialog(Strings.Format(UiText.SocialInUse, name), UiText.SocialSwitch, UiText.NotNow, async () =>
+            {
+                var switched = await _app.SocialAccounts.SwitchAsync(provider, token, _app.Lifetime);
+                if (!switched.IsOk)
+                {
+                    status(UiText.Error(switched.Error.Code));
+                    return;
+                }
+
+                _app.Home.LastName = switched.Value.DisplayName;
+                RememberName(switched.Value.DisplayName);
+                _app.EndSession();
+                _app.BeginSession(switched.Value);
+                CloseSettings();
+                ShowHome();
+            }, () => { });
+        }
+
         /// <summary>The phone number screen over Home (GDD 10.2, #99); a switch to the number's account starts over at Home.</summary>
         private void OpenPhone()
         {
@@ -1737,6 +1870,7 @@ namespace Hulla.Composition
             _phoneView?.Dispose();
             _phoneView = null;
             _shell.CloseOverlay();
+            AccountChanged();
         }
 
         /// <summary>Signed in to the number's account: its name, a fresh session scope, Home again.</summary>

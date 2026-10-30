@@ -61,9 +61,10 @@ namespace Hulla.Presentation.Screens.Settings
         /// <summary>What the account rows do; null hides the section (not signed in).</summary>
         public sealed class AccountActions
         {
-            public AccountActions(Action<Action<string>> export, Action<Action<string>> delete, Action<Action<string>> cancelDelete, Func<string?> pendingText, Action? phone = null)
+            public AccountActions(Action<Action<string>> export, Action<Action<string>> delete, Action<Action<string>> cancelDelete, Func<string?> pendingText, Action? phone = null, SocialRows? social = null)
             {
                 Phone = phone;
+                Social = social;
                 Export = export;
                 Delete = delete;
                 CancelDelete = cancelDelete;
@@ -82,7 +83,31 @@ namespace Hulla.Presentation.Screens.Settings
 
             /// <summary>"Your account will be deleted on …" while a deletion is pending, else null.</summary>
             public Func<string?> PendingText { get; }
+
+            /// <summary>Apple, Google and Facebook (GDD 10.2, #38); null hides the rows.</summary>
+            public SocialRows? Social { get; }
         }
+
+        /// <summary>The sign-in providers this build offers, which are linked, and what a tap does.</summary>
+        public sealed class SocialRows
+        {
+            public SocialRows(IReadOnlyList<Hulla.Application.Services.SocialProvider> providers, Func<Hulla.Application.Services.SocialProvider, bool> linked, Action<Hulla.Application.Services.SocialProvider, Action<string>> link)
+            {
+                Providers = providers;
+                Linked = linked;
+                Link = link;
+            }
+
+            public IReadOnlyList<Hulla.Application.Services.SocialProvider> Providers { get; }
+
+            public Func<Hulla.Application.Services.SocialProvider, bool> Linked { get; }
+
+            /// <summary>Links the provider; the callback gets a one-line status to show.</summary>
+            public Action<Hulla.Application.Services.SocialProvider, Action<string>> Link { get; }
+        }
+
+        /// <summary>The page showing now; a refresh redraws it with <see cref="ShowPage"/>.</summary>
+        public Page Current => _page;
 
         private readonly AccountActions? _account;
         private Label? _accountStatus;
@@ -317,6 +342,23 @@ namespace Hulla.Presentation.Screens.Settings
             }
 
             Heading(null);
+            var social = _account.Social;
+            if (social != null)
+            {
+                foreach (var provider in social.Providers)
+                {
+                    var chosen = provider;
+                    var linked = social.Linked(chosen);
+                    Row(Strings.Format(UiText.SignInWith, UiText.Provider(chosen)), linked ? UiText.SocialLinked : "", () =>
+                    {
+                        if (!social.Linked(chosen))
+                        {
+                            social.Link(chosen, Status);
+                        }
+                    });
+                }
+            }
+
             if (_account.Phone != null)
             {
                 Row(Strings.Text("phone.settings_action"), "", _account.Phone);

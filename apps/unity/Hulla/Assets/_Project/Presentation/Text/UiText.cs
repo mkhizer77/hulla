@@ -767,6 +767,18 @@ namespace Hulla.Presentation.Text
         public static string Copy => Strings.Text("ui.copy");
         public static string Copied => Strings.Text("ui.copied");
         public static string EmotePackLocked => Strings.Text("ui.emote_pack_locked");
+        public static string SignInWith => Strings.Text("social.sign_in_with");
+        public static string SocialLinked => Strings.Text("social.linked");
+        public static string SocialLinkedDone => Strings.Text("social.linked_done");
+        public static string SocialInUse => Strings.Text("social.in_use");
+        public static string SocialSwitch => Strings.Text("social.switch");
+
+        public static string Provider(Hulla.Application.Services.SocialProvider provider) => provider switch
+        {
+            Hulla.Application.Services.SocialProvider.Apple => Strings.Text("social.provider_apple"),
+            Hulla.Application.Services.SocialProvider.Google => Strings.Text("social.provider_google"),
+            _ => Strings.Text("social.provider_facebook"),
+        };
         public static string Share => Strings.Text("ui.share");
         public static string SearchElapsed => Strings.Text("ui.search_elapsed");
         public static string PrivateTable => Strings.Text("ui.private_table");
@@ -779,6 +791,28 @@ namespace Hulla.Presentation.Text
         public static string StatsLine => Strings.Text("ui.stats_line");
         public static string AddByCode => Strings.Text("ui.add_by_code");
         public static string Add => Strings.Text("ui.add");
+        public static string KeepProgress => Strings.Text("account.keep_progress");
+        public static string KeepProgressLine => Strings.Text("account.keep_progress_line");
+        public static string ContinueWith => Strings.Text("account.continue_with");
+        public static string UsePhoneNumber => Strings.Text("account.use_phone");
+        public static string PhoneNumber => Strings.Text("account.phone");
+        public static string SignedInWith => Strings.Text("account.signed_in_with");
+        public static string Manage => Strings.Text("account.manage");
+        public static string YourAccount => Strings.Text("account.title");
+        public static string YourAccountLine => Strings.Text("account.line");
+        public static string ProgressStays => Strings.Text("account.progress_stays");
+        public static string Link => Strings.Text("account.link");
+        public static string FindYourFriends => Strings.Text("suggestions.find");
+        public static string FromContacts => Strings.Text("suggestions.from_contacts");
+        public static string FromFacebook => Strings.Text("suggestions.from_facebook");
+        public static string ContactsChecked => Strings.Text("suggestions.contacts_checked");
+        public static string FacebookChecked => Strings.Text("suggestions.facebook_checked");
+        public static string Looking => Strings.Text("suggestions.looking");
+        public static string NobodyYet => Strings.Text("suggestions.nobody");
+        public static string PeopleYouMayKnow => Strings.Text("suggestions.title");
+        public static string InYourContacts => Strings.Text("suggestions.in_contacts");
+        public static string FacebookFriend => Strings.Text("suggestions.facebook_friend");
+        public static string Requested => Strings.Text("suggestions.requested");
         public static string RequestSent => Strings.Text("ui.request_sent");
         public static string Requests => Strings.Text("ui.requests");
         public static string SentRequests => Strings.Text("ui.sent_requests");

@@ -222,7 +222,7 @@ namespace Hulla.Protocol
         public static AnalyticsEvent FriendAdd(string source)
         {
             var p = new Dictionary<string, object>();
-            // source: code, recent, results, request, qr, referral
+            // source: code, recent, results, request, qr, referral, contacts, facebook
             p["source"] = source;
             return new AnalyticsEvent("friend_add", p);
         }

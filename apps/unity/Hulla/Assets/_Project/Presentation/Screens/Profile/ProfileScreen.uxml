@@ -17,6 +17,7 @@
                 <ui:Label name="display-name" class="profile__name" />
                 <ui:Label name="profile-line" class="profile__line" />
             </ui:VisualElement>
+            <ui:VisualElement name="account" class="profile__account" />
             <ui:VisualElement class="profile__code-row">
                 <ui:VisualElement class="profile__code-text">
                     <ui:Label name="code-label" class="profile__code-label" />

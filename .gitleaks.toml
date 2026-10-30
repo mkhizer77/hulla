@@ -12,3 +12,9 @@ paths = [
   '''apps/unity/Hulla/Assets/_Project/Localization/Resources/Strings/.*\.json''',
   '''packages/strings/generated/.*\.json''',
 ]
+
+# Meta's client token goes into its settings asset and the Android manifest only during a build (SocialSetup).
+[[rules]]
+id = "facebook-client-token"
+description = "Facebook client token left in Meta's settings asset or the Android manifest"
+regex = '''(?:com\.facebook\.sdk\.ClientToken" android:value="|clientTokens:\s*-\s*)([0-9a-f]{32})'''
