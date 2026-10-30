@@ -1,0 +1,12 @@
+[
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "gg.hulla.app",
+      "sha256_cert_fingerprints": [
+        "52:5D:7B:4E:9E:47:24:2E:5C:4F:E2:1F:B6:F4:31:F4:14:AB:70:CF:F8:9E:CA:54:BB:54:11:88:63:23:C1:31"
+      ]
+    }
+  }
+]

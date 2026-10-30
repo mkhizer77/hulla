@@ -1,0 +1,3 @@
+# Invite and referral links open one page; the app takes them over where it is installed.
+/j/*  /open  200
+/r/*  /open  200

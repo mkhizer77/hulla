@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="robots" content="noindex" />
+    <title>Join me on Hulla</title>
+    <meta name="description" content="Play Thulla with your friends on Hulla." />
+    <meta property="og:title" content="Join me on Hulla" />
+    <meta property="og:description" content="Play Thulla with your friends, from anywhere." />
+    <meta property="og:image" content="https://playhulla.pages.dev/assets/share.jpg" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:type" content="website" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="theme-color" content="#7cc8f2" />
+    <link rel="stylesheet" href="/site.css" />
+  </head>
+  <body>
+    <main>
+      <img class="logo" src="/assets/logo.webp" width="560" height="435" alt="Hulla" />
+      <div class="card">
+        <h1 id="title">Join me on Hulla</h1>
+        <p id="line">Play Thulla with your friends, from anywhere.</p>
+        <div id="code" class="code hidden"></div>
+        <div class="actions">
+          <a id="open" class="button primary hidden" href="#">Open Hulla</a>
+          <a id="get" class="button hidden" href="#">Get Hulla</a>
+          <button id="copy" class="button hidden" type="button">Copy code</button>
+        </div>
+        <p id="steps" class="steps hidden"></p>
+      </div>
+      <footer>Hulla: desi games with friends</footer>
+    </main>
+    <script>
+      (function () {
+        // Store pages once the app is listed; until then the buttons say it is coming.
+        var STORE = { android: null, ios: null };
+        var PACKAGE = "gg.hulla.app";
+        // Room and friend codes as the server makes them (shared-ts ROOM_CODE_ALPHABET).
+        var ALPHABET = /^[ABCDEFGHJKLMNPQRSTUVWXYZ23456789]+$/;
+        var KINDS = {
+          j: {
+            length: 6,
+            title: "Join my Hulla table",
+            line: "Your friends are waiting at a Thulla table.",
+            steps: "Already have Hulla? Open it, tap Join by code and type this code.",
+          },
+          r: {
+            length: 8,
+            title: "Add me on Hulla",
+            line: "Play Thulla with me and our friends, from anywhere.",
+            steps: "Already have Hulla? Open it, go to Friends and add this code.",
+          },
+        };
+
+        var parts = location.pathname.split("/");
+        var kind = KINDS[parts[1]] ? parts[1] : null;
+        var code = (parts[2] || "").toUpperCase();
+        var ua = navigator.userAgent;
+        var android = /Android/i.test(ua);
+        var ios =
+          /iPhone|iPad|iPod/i.test(ua) || (/Macintosh/.test(ua) && navigator.maxTouchPoints > 1);
+        var $ = function (id) {
+          return document.getElementById(id);
+        };
+        var show = function (el) {
+          el.classList.remove("hidden");
+        };
+
+        if (!kind || code.length !== KINDS[kind].length || !ALPHABET.test(code)) {
+          $("title").textContent = "This link does not look right";
+          $("line").textContent = "Ask your friend to share it again from Hulla.";
+          return;
+        }
+
+        var info = KINDS[kind];
+        document.title = info.title;
+        $("title").textContent = info.title;
+        $("line").textContent = info.line;
+        $("code").textContent = code;
+        show($("code"));
+        $("steps").textContent = info.steps;
+        show($("steps"));
+
+        // The Play Store hands this to the app on its first launch (Install Referrer).
+        var play =
+          STORE.android &&
+          STORE.android + "&referrer=" + encodeURIComponent("link=" + kind + "/" + code);
+        var store = android ? play : ios ? STORE.ios : null;
+
+        var open = $("open");
+        if (android) {
+          open.href =
+            "intent://" +
+            kind +
+            "/" +
+            code +
+            "#Intent;scheme=hulla;package=" +
+            PACKAGE +
+            (play ? ";S.browser_fallback_url=" + encodeURIComponent(play) : "") +
+            ";end";
+          show(open);
+        } else if (ios) {
+          open.href = "hulla://" + kind + "/" + code;
+          show(open);
+        } else {
+          $("line").textContent = info.line + " Open this link on your phone.";
+        }
+
+        var get = $("get");
+        if (android || ios) {
+          if (store) {
+            get.href = store;
+          } else {
+            get.textContent = android ? "Soon on Google Play" : "Soon on the App Store";
+            get.setAttribute("aria-disabled", "true");
+            get.removeAttribute("href");
+          }
+          show(get);
+        }
+
+        var copy = $("copy");
+        if (navigator.clipboard) {
+          show(copy);
+          copy.addEventListener("click", function () {
+            navigator.clipboard.writeText(code).then(function () {
+              copy.textContent = "Copied";
+              setTimeout(function () {
+                copy.textContent = "Copy code";
+              }, 2000);
+            });
+          });
+        }
+      })();
+    </script>
+  </body>
+</html>
