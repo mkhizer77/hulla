@@ -28,6 +28,7 @@ namespace Hulla.BuildTools
                 return;
             }
 
+            RemoveRetiredHosts(activity);
             // j: table invites; r: referral links from share cards (GDD 10.9).
             foreach (var kind in new[] { "j", "r" })
             {
@@ -39,6 +40,23 @@ namespace Hulla.BuildTools
             }
 
             document.Save(manifestPath);
+        }
+
+        /// <summary>
+        /// Gradle reuses the exported project, so filters for hosts since dropped from <see cref="InviteLink.Hosts"/>
+        /// would stay; Android before 12 then verifies none of the hosts.
+        /// </summary>
+        private static void RemoveRetiredHosts(XmlElement activity)
+        {
+            foreach (XmlNode data in activity.SelectNodes("intent-filter/data")!)
+            {
+                var scheme = data.Attributes?["scheme", Android]?.Value;
+                var host = data.Attributes?["host", Android]?.Value;
+                if (scheme == "https" && host != null && System.Array.IndexOf(InviteLink.Hosts, host) < 0)
+                {
+                    activity.RemoveChild(data.ParentNode!);
+                }
+            }
         }
 
         /// <summary>Gradle reuses the exported project, so a filter may already be there.</summary>
