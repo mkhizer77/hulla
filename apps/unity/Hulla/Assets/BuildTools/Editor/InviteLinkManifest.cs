@@ -1,13 +1,14 @@
 using System.IO;
 using System.Xml;
+using Hulla.Application.Social;
 using UnityEditor.Android;
 
 namespace Hulla.BuildTools
 {
     /// <summary>
-    /// Lets invite and referral links open the game activity (GDD 10.5, 10.9): <c>hulla://j/CODE</c> and
-    /// <c>hulla://r/FRIENDCODE</c> now, and the same paths on <c>https://hulla.gg</c> as App Links once the
-    /// domain serves its assetlinks.json (#130).
+    /// Lets invite and referral links open the game activity (GDD 10.5, 10.9): <c>hulla://j/CODE</c>,
+    /// <c>hulla://r/FRIENDCODE</c> and the same paths on every <see cref="InviteLink.Hosts"/> as App Links,
+    /// which Android verifies against each host's /.well-known/assetlinks.json (infra/cloudflare/links).
     /// </summary>
     public sealed class InviteLinkManifest : IPostGenerateGradleAndroidProject
     {
@@ -31,7 +32,10 @@ namespace Hulla.BuildTools
             foreach (var kind in new[] { "j", "r" })
             {
                 AddOnce(document, activity, autoVerify: false, ("scheme", "hulla"), ("host", kind));
-                AddOnce(document, activity, autoVerify: true, ("scheme", "https"), ("host", "hulla.gg"), ("pathPrefix", "/" + kind + "/"));
+                foreach (var host in InviteLink.Hosts)
+                {
+                    AddOnce(document, activity, autoVerify: true, ("scheme", "https"), ("host", host), ("pathPrefix", "/" + kind + "/"));
+                }
             }
 
             document.Save(manifestPath);

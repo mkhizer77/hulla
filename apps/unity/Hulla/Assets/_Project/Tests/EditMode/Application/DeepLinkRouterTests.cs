@@ -8,8 +8,8 @@ namespace Hulla.Application.Tests
     {
         [TestCase("hulla://j/K7Q2MX", "K7Q2MX")]
         [TestCase("hulla://j/k7q2mx/", "K7Q2MX")]
-        [TestCase("https://hulla.gg/j/K7Q2MX", "K7Q2MX")]
-        [TestCase("https://www.hulla.gg/j/K7Q2MX?utm_source=whatsapp", "K7Q2MX")]
+        [TestCase("https://playhulla.pages.dev/j/K7Q2MX", "K7Q2MX")]
+        [TestCase("https://PlayHulla.pages.dev/j/K7Q2MX?utm_source=whatsapp", "K7Q2MX")]
         public void InviteLinksGiveTheRoomCode(string url, string code)
         {
             Assert.AreEqual(code, InviteLink.CodeFrom(url));
@@ -19,9 +19,11 @@ namespace Hulla.Application.Tests
         [TestCase("")]
         [TestCase("not a link")]
         [TestCase("hulla://profile/K7Q2MX")]
-        [TestCase("http://hulla.gg/j/K7Q2MX")]
+        [TestCase("http://playhulla.pages.dev/j/K7Q2MX")]
         [TestCase("https://evil.example/j/K7Q2MX")]
-        [TestCase("https://hulla.gg/x/K7Q2MX")]
+        [TestCase("https://evil.pages.dev/j/K7Q2MX")]
+        [TestCase("https://playhulla.pages.dev/x/K7Q2MX")]
+        [TestCase("https://hulla.gg/j/K7Q2MX")]
         [TestCase("hulla://j/K7Q2M")]
         [TestCase("hulla://j/K7Q2MXX")]
         [TestCase("hulla://j/K7Q2M0")]
@@ -33,6 +35,7 @@ namespace Hulla.Application.Tests
         [Test]
         public void TheSharedLinkParsesBack()
         {
+            Assert.AreEqual("https://playhulla.pages.dev/j/K7Q2MX", InviteLink.For("K7Q2MX"));
             Assert.AreEqual("K7Q2MX", InviteLink.CodeFrom(InviteLink.For("K7Q2MX")));
         }
 
@@ -60,7 +63,7 @@ namespace Hulla.Application.Tests
             router.InviteOpened += (code, _) => opened.Add(code);
             Assert.IsFalse(router.Ready());
 
-            router.Receive("https://hulla.gg/j/ABCDEF", 10f);
+            router.Receive("https://playhulla.pages.dev/j/ABCDEF", 10f);
             Assert.AreEqual(new[] { "ABCDEF" }, opened);
         }
 
@@ -92,7 +95,7 @@ namespace Hulla.Application.Tests
 
         [TestCase("hulla://r/K7Q2MXAB", "K7Q2MXAB")]
         [TestCase("hulla://r/k7q2mxab/", "K7Q2MXAB")]
-        [TestCase("https://hulla.gg/r/K7Q2MXAB?utm_source=story", "K7Q2MXAB")]
+        [TestCase("https://playhulla.pages.dev/r/K7Q2MXAB?utm_source=story", "K7Q2MXAB")]
         public void ReferralLinksGiveTheFriendCode(string url, string friendCode)
         {
             Assert.AreEqual(friendCode, InviteLink.FriendCodeFrom(url));
