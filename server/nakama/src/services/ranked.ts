@@ -9,6 +9,7 @@ import {
 import { log } from "../infra/log";
 
 import { grant as grantItem, nkCatalogStore } from "./catalog";
+import { playerNames } from "./leaderboards";
 import { nkLedgerPorts, type LedgerPorts } from "./ledger";
 import { nkProgressStore } from "./progression";
 import { nkEntitlementStore } from "./purchases";
@@ -543,7 +544,12 @@ export function rankedBoard(
   } catch {
     return [];
   }
-  return (list.records ?? []).map((r) => {
+  const records = list.records ?? [];
+  const names = playerNames(
+    nk,
+    records.map((r) => r.ownerId),
+  );
+  return records.map((r) => {
     const stored = (r.metadata as { league?: unknown } | undefined)?.league;
     const league = typeof stored === "string" ? stored : leagueFor(config, r.score);
     const shown = displayLeague(
@@ -554,7 +560,7 @@ export function rankedBoard(
     return {
       rank: r.rank,
       userId: r.ownerId,
-      username: r.username,
+      username: names.get(r.ownerId) ?? r.username,
       rating: r.score,
       league: shown,
     };

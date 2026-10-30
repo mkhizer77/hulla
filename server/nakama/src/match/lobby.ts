@@ -27,6 +27,8 @@ export function emptySlot(): SeatSlot {
     mic: false,
     party: null,
     cosmetics: null,
+    emotePacks: null,
+    bot: false,
     avatar: null,
   };
 }
@@ -108,7 +110,7 @@ export function changedRuleKeys(before: RulesSelection, after: RulesSelection): 
 
 /** Count of seated players who are present: public tables dissolve under two (R46). */
 export function humansPresent<S, M>(state: TableState<S, M>): number {
-  return activeSeats(state.seats).length;
+  return activeSeats(state.seats).filter((seat) => state.seats[seat]?.bot !== true).length;
 }
 
 /** After a round: free the seats that left, and in public tables the ones that never returned. */
@@ -120,6 +122,13 @@ export function settleSeatsAfterRound<S, M>(state: TableState<S, M>): SeatIndex[
     if (slot.left || (!slot.connected && state.mode !== "private")) {
       freeSlot(state, seat);
       freed.push(seat);
+      continue;
+    }
+    if (slot.bot) {
+      // A bot stays on auto-play and votes for the next round at once.
+      slot.timeouts = 0;
+      slot.ready = true;
+      slot.rematch = true;
       continue;
     }
     slot.autoPlay = false;

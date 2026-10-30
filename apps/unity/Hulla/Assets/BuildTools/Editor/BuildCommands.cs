@@ -24,7 +24,26 @@ namespace Hulla.BuildTools
         /// The development APK. It starts pointed at this Mac (HULLA_DEV_SERVER, else the Mac's first
         /// private IPv4 address, port 7350) so a fresh install reaches the local server without typing.
         /// </summary>
-        public static void AndroidDevelopment()
+        public static void AndroidDevelopment() =>
+            ExitIfBatch(WithDevServer(() => Build(BuildTarget.Android, Path.Combine("Builds", "Android", "hulla-dev.apk"))));
+
+        /// <summary>
+        /// The development Xcode project, pointed at this Mac like the APK. Signing uses
+        /// HULLA_IOS_TEAM (automatic signing); Xcode builds and installs it on the phone.
+        /// </summary>
+        public static void IOSDevelopment()
+        {
+            var team = Environment.GetEnvironmentVariable("HULLA_IOS_TEAM");
+            if (!string.IsNullOrEmpty(team))
+            {
+                PlayerSettings.iOS.appleDeveloperTeamID = team;
+                PlayerSettings.iOS.appleEnableAutomaticSigning = true;
+            }
+
+            ExitIfBatch(WithDevServer(() => Build(BuildTarget.iOS, Path.Combine("Builds", "iOS", "Xcode"))));
+        }
+
+        private static bool WithDevServer(Func<bool> build)
         {
             var server = Environment.GetEnvironmentVariable("HULLA_DEV_SERVER") ?? LanAddress() + ":7350";
             Directory.CreateDirectory(Path.GetDirectoryName(DevServerAsset)!);
@@ -33,7 +52,7 @@ namespace Hulla.BuildTools
             var succeeded = false;
             try
             {
-                succeeded = Build(BuildTarget.Android, Path.Combine("Builds", "Android", "hulla-dev.apk"));
+                succeeded = build();
             }
             finally
             {
@@ -45,7 +64,7 @@ namespace Hulla.BuildTools
                 }
             }
 
-            ExitIfBatch(succeeded);
+            return succeeded;
         }
 
         /// <summary>Read by AppConfig in development builds; written only for the build, never committed.</summary>
@@ -78,8 +97,18 @@ namespace Hulla.BuildTools
             return "127.0.0.1";
         }
 
-        public static void MacDevelopment() =>
+        /// <summary>
+        /// The development Mac app, Apple Silicon only: the voice SDK ships one dylib per CPU, and a
+        /// universal build includes neither, so voice would fail to load.
+        /// </summary>
+        public static void MacDevelopment()
+        {
+#if UNITY_EDITOR_OSX
+            // The macOS build module, and with it this setting, exists only in a Mac editor.
+            UnityEditor.OSXStandalone.UserBuildSettings.architecture = UnityEditor.Build.OSArchitecture.ARM64;
+#endif
             ExitIfBatch(Build(BuildTarget.StandaloneOSX, Path.Combine("Builds", "macOS", "Hulla.app")));
+        }
 
         private static void ExitIfBatch(bool succeeded)
         {

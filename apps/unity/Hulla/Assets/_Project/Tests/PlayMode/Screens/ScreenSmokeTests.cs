@@ -87,15 +87,16 @@ namespace Hulla.Screens.Tests
                 _ = daily.RefreshAsync(0, default);
             });
             Assert.AreEqual("Khizer", root.Q<TextField>("name").value);
-            Assert.AreEqual("Play now", root.Q<Button>("quick").text);
+            Assert.AreEqual("Play now", root.Q<Label>("quick-label").text);
             Assert.AreEqual("Khizer", root.Q<Label>("name-label").text, "the name sits in the header");
             Assert.AreEqual(DisplayStyle.None, root.Q<VisualElement>("name-panel").style.display.value, "a known name is not asked again");
             Assert.AreEqual(1, root.Q<VisualElement>("party").childCount, "the one friend online sits in the party bar");
             Shown(root.Q<Button>("hero"), "the hero");
-            StringAssert.Contains("Ayesha", root.Q<Button>("hero").text);
-            Assert.AreEqual(4, root.Q<VisualElement>("seats").childCount, "3, 4, 5 and 6 seat chips");
+            StringAssert.Contains("Ayesha", root.Q<Label>("hero-text").text);
+            Assert.AreEqual(4, root.Q<VisualElement>("seats").childCount, "3, 4, 5 and 6 seat medallions");
             Shown(root.Q<VisualElement>("daily"), "the daily reward");
-            Assert.AreEqual("Daily reward, day 4: 80 coins + 2 gems", root.Q<Label>("daily-text").text);
+            Assert.AreEqual("Day 4", root.Q<Label>("daily-text").text);
+            Assert.AreEqual("Daily reward, day 4: 80 coins + 2 gems", root.Q<VisualElement>("daily").tooltip, "the amount is in the tooltip");
         }
 
         [UnityTest]
@@ -132,10 +133,12 @@ namespace Hulla.Screens.Tests
                 gateway.Deliver(MessageTypes.TableState, 3, state);
             });
             Assert.AreEqual("K7Q2MX", root.Q<Label>("code").text);
-            Assert.AreEqual(4, root.Q<VisualElement>("seats").Query(className: "seat--placed").ToList().Count);
+            Assert.AreEqual(4, root.Q<VisualElement>("seats").Query(className: "lobby__seat").ToList().Count(s => s.resolvedStyle.display != DisplayStyle.None));
             Shown(root.Q<Button>("share"), "Share code");
-            Shown(root.Q<Button>("start"), "Start for the host");
-            Shown(root.Q<Button>("edit-rules"), "Edit rules for the host");
+            // The host gets ready first, then the same place shows Start.
+            var hostReady = client.Model.Seats[(int)client.Model.MySeat!.Value].Ready;
+            Shown(root.Q<Button>(hostReady ? "start" : "ready"), "Ready, then Start, for the host");
+            Shown(root.Q<Button>("rulebook"), "the book opens the rules editor for the host");
             StringAssert.Contains("Standard", root.Q<Label>("rules").text);
         }
 
@@ -396,10 +399,9 @@ namespace Hulla.Screens.Tests
                 view.OfferBigThulla("r");
             });
             var share = root.Q<Button>("result-share");
-            Assert.AreEqual(UiText.ShareBigThulla, share.text);
-            Assert.IsTrue(share.ClassListContains("button--secondary"));
+            Assert.AreEqual(UiText.ShareBigThulla, share.tooltip, "the share icon says it for a screen reader");
+            Assert.IsTrue(share.ClassListContains("results__share--hot"));
             Shown(root.Q<Button>("play-again"), "Play again beside the offer");
-            Assert.AreEqual(UiText.RematchHow, root.Q<Label>("result-status").text, "the results say a new round needs everyone");
         }
 
         [UnityTest]
@@ -455,35 +457,45 @@ namespace Hulla.Screens.Tests
                 new QuickPlayView(r, model, () => { });
                 _ = model.StartAsync(5, default);
             });
-            Assert.AreEqual("Finding a table for 5…", root.Q<Label>("title").text);
-            Assert.AreEqual("Cancel", root.Q<Button>("cancel").text);
+            Assert.AreEqual("Finding a table for 5", root.Q<Label>("title").text);
+            Assert.AreEqual("Cancel", root.Q<Button>("cancel").tooltip, "the cross carries the word for a screen reader");
         }
 
         [UnityTest]
         public IEnumerator SettingsListsEverySettingAndTheAccount()
         {
             VisualElement root = null!;
+            SettingsView view = null!;
             yield return Open(Catalog.Settings, r =>
             {
                 root = r;
-                new SettingsView(r, new SettingsModel(new MemoryStore()), () => { }, new SettingsView.AccountActions(_ => { }, _ => { }, _ => { }, () => null));
+                view = new SettingsView(r, new SettingsModel(new MemoryStore()), () => { }, new SettingsView.AccountActions(_ => { }, _ => { }, _ => { }, () => null));
             });
-            Assert.AreEqual(10, root.Query<Toggle>().ToList().Count, "ten on/off settings, voice chat and analytics consent among them");
-            Assert.IsTrue(root.Query<Button>().ToList().Any(b => b.text == "Delete my account"));
+            Assert.AreEqual(9, root.Query<Toggle>().ToList().Count, "nine switches on the main page, voice chat among them");
+            Assert.IsTrue(root.Query<Label>(className: "settings__link-label").ToList().Any(l => l.text == "Account and data"), "the account page is a row");
+            view.ShowPage(SettingsView.Page.Account);
+            yield return null;
+            Assert.IsTrue(root.Query<Label>().ToList().Any(l => l.text == "Delete my account"));
+            view.ShowPage(SettingsView.Page.Privacy);
+            yield return null;
+            Assert.AreEqual(1, root.Query<Toggle>().ToList().Count, "analytics consent on the privacy page");
         }
 
         [UnityTest]
         public IEnumerator SettingsShowTheNotificationSwitchesOnceLoaded()
         {
             VisualElement root = null!;
+            SettingsView view = null!;
             var notifications = new NotificationSettingsViewModel(new Fakes.Notifications());
             yield return Open(Catalog.Settings, r =>
             {
                 root = r;
-                new SettingsView(r, new SettingsModel(new MemoryStore()), () => { }, null, notifications, change => _ = notifications.ChangeAsync(change, default));
+                view = new SettingsView(r, new SettingsModel(new MemoryStore()), () => { }, null, notifications, change => _ = notifications.ChangeAsync(change, default));
                 _ = notifications.RefreshAsync(default);
             });
-            Assert.AreEqual(17, root.Query<Toggle>().ToList().Count, "ten settings and seven notification switches");
+            view.ShowPage(SettingsView.Page.Notifications);
+            yield return null;
+            Assert.AreEqual(7, root.Query<Toggle>().ToList().Count, "seven notification switches on their own page");
             var online = root.Query<Toggle>().ToList().First(t => t.label == "A friend comes online");
             Assert.IsFalse(online.value, "loaded from the server");
         }
@@ -502,6 +514,7 @@ namespace Hulla.Screens.Tests
                 var state = Fakes.InRound(5);
                 state.Status = TableStatus.Open;
                 state.Round = null;
+                state.Seats[3] = new Seat { SeatSeat = 3 };
                 gateway.Deliver(MessageTypes.TableState, 5, state);
                 lobby.UseInvites(() => Fakes.Done<IReadOnlyList<Hulla.Application.Social.FriendEntry>>(new List<Hulla.Application.Social.FriendEntry>
                 {
@@ -510,8 +523,8 @@ namespace Hulla.Screens.Tests
                     new Hulla.Application.Social.FriendEntry("u1", "Ayesha", null, true, null, false),
                 }), _ => Fakes.Done<string?>(null));
             });
-            var invite = root.Q<Button>("invite");
-            Shown(invite, "Invite friends in a private room");
+            var invite = root.Q<VisualElement>("seats").Query<Button>(className: "lobby__seat--empty").First();
+            Shown(invite, "An empty seat invites in a private room");
             using (var click = NavigationSubmitEvent.GetPooled())
             {
                 click.target = invite;
@@ -519,10 +532,11 @@ namespace Hulla.Screens.Tests
             }
 
             yield return null;
-            var names = root.Q("invite-sheet").Query<Label>(className: "lobby-seat__name").ToList().Select(l => l.text).ToList();
-            CollectionAssert.AreEqual(new[] { "Ayesha", "Omar", "Zara · Offline" }, names);
-            var chips = root.Q("invite-sheet").Query<Button>(className: "chip").ToList();
-            Assert.AreEqual("At the table", chips[0].text, "Ayesha is seated");
+            var sheet = root.panel.visualTree.Q(className: "invite-sheet");
+            var names = sheet.Query<Label>(className: "invite-row__name").ToList().Select(l => l.text).ToList();
+            CollectionAssert.AreEqual(new[] { "Ayesha", "Omar", "Zara" }, names);
+            var buttons = sheet.Query<Button>(className: "invite-row__button").ToList();
+            Assert.AreEqual("At the table", buttons[0].text, "Ayesha is seated");
         }
 
         [UnityTest]
@@ -565,7 +579,8 @@ namespace Hulla.Screens.Tests
                 _ = model.RefreshAsync(default);
             });
             var headings = root.Q<VisualElement>("list").Query<Label>(className: "settings__heading").ToList().Select(l => l.text).ToList();
-            CollectionAssert.IsSubsetOf(new[] { "Requests", "Friends", "Played with recently" }, headings);
+            // Grouped by what you can do now (design: Friends): requests, recent players, friends online.
+            CollectionAssert.IsSubsetOf(new[] { "Requests", "Played with recently", "Online" }, headings);
         }
 
         [UnityTest]
@@ -582,7 +597,7 @@ namespace Hulla.Screens.Tests
             Assert.AreEqual(2, root.Q<VisualElement>("list").childCount);
             Assert.AreEqual("Resets in 3d 0h. Top 10 win gems.", root.Q<Label>("reset").text);
             Shown(root.Q<VisualElement>("me"), "my rank off the page");
-            StringAssert.Contains("khizer (you)", root.Q<VisualElement>("me").Q<Label>(className: "leaderboard__name").text);
+            Assert.AreEqual("You", root.Q<VisualElement>("me").Q<Label>(className: "leaderboard__name").text, "the pinned row reads You, as in the concept");
         }
 
         [UnityTest]
@@ -604,7 +619,7 @@ namespace Hulla.Screens.Tests
             Shown(root.Q<Label>("banner"), "the season-end banner");
             StringAssert.Contains("Silver", root.Q<Label>("banner").text);
             var ladder = root.Q<VisualElement>("ladder").Query<Label>(className: "ranked__step-name").ToList().Select(l => l.text).ToList();
-            CollectionAssert.AreEqual(new[] { "Ustad", "Gold", "Bronze" }, ladder);
+            CollectionAssert.AreEqual(new[] { "Ustad", "Gold · you", "Bronze" }, ladder);
             StringAssert.Contains("card back", root.Q<VisualElement>("ladder").Query<Label>(className: "ranked__step-detail").First().text);
             Assert.AreEqual(2, root.Q<VisualElement>("top").childCount);
             using (var click = NavigationSubmitEvent.GetPooled())
@@ -667,12 +682,13 @@ namespace Hulla.Screens.Tests
                 new AchievementsView(r, model, () => { });
                 _ = model.RefreshAsync(default);
             });
-            Assert.AreEqual("1 of 3 unlocked", root.Q<Label>("status").text);
-            var labels = root.Q<VisualElement>("list").Query<Label>().ToList().Select(l => l.text).ToList();
-            CollectionAssert.Contains(labels, "Play");
-            CollectionAssert.Contains(labels, "Friends");
-            CollectionAssert.Contains(labels, "37/1,000");
-            CollectionAssert.Contains(labels, "Give 1000 thullas · 60 gems + the title \"Thulla baaz\"");
+            // A medal grid (design: Trophies · Achievements): the total with its bar, unlocked first.
+            Assert.AreEqual("1 of 3", root.Q<Label>(className: "medals__count").text);
+            var tiles = root.Q<VisualElement>("list").Query<Button>(className: "medal-tile").ToList();
+            Assert.AreEqual(3, tiles.Count);
+            Assert.IsFalse(tiles[0].ClassListContains("medal-tile--locked"), "the unlocked one leads");
+            Assert.AreEqual(2, tiles.Count(t => t.ClassListContains("medal-tile--locked")));
+            Assert.IsNotNull(tiles[1].Q(className: "medal-tile__bar"), "a locked medal shows how far along it is");
         }
 
         [UnityTest]
@@ -687,13 +703,14 @@ namespace Hulla.Screens.Tests
                 model.SetBalances(1200, 50);
                 _ = model.RefreshAsync(default);
             });
-            Assert.AreEqual("1,200 coins · 50 gems", root.Q<Label>("balances").text);
+            Assert.AreEqual("1,200", root.Q<Label>("coin-amount").text, "the balance on the coin pill");
+            Assert.AreEqual("50 gems", root.Q<Label>("balances").text);
             var texts = root.Q<VisualElement>("list").Query<TextElement>().ToList().Select(l => l.text).ToList();
-            CollectionAssert.Contains(texts, "This week");
+            Assert.IsTrue(texts.Any(t => t.StartsWith("This week's spotlight")), "the spotlight card");
             CollectionAssert.Contains(texts, "Marble");
             CollectionAssert.Contains(texts, "Equipped");
             CollectionAssert.Contains(texts, "1,000 coins");
-            CollectionAssert.Contains(texts, "Equip");
+            CollectionAssert.Contains(texts, "Owned · Equip");
         }
 
         [UnityTest]
@@ -709,10 +726,12 @@ namespace Hulla.Screens.Tests
             });
             var texts = root.Q<VisualElement>("list").Query<TextElement>().ToList().Select(l => l.text).ToList();
             CollectionAssert.Contains(texts, "Basant 2026");
-            CollectionAssert.Contains(texts, "Tier 2 of 4 · 300/1,000 XP · ends in 20d 0h");
-            CollectionAssert.Contains(texts, "Done", "tier 1 free is claimed");
+            CollectionAssert.Contains(texts, "20 days left");
+            CollectionAssert.Contains(texts, "Tier 2 → 3");
+            CollectionAssert.Contains(texts, "300 / 1,000 XP");
+            Assert.IsNotNull(root.Q(className: "pass__tick"), "tier 1 free is claimed");
             CollectionAssert.Contains(texts, "Claim", "tier 2 free is claimable");
-            CollectionAssert.Contains(texts, "Locked", "premium without the pass");
+            Assert.IsNotNull(root.Q(className: "pass__lock"), "premium without the pass");
             CollectionAssert.Contains(texts, "Kites");
         }
 
@@ -729,10 +748,11 @@ namespace Hulla.Screens.Tests
             });
             var texts = root.Query<Label>().ToList().Select(l => l.text).ToList();
             CollectionAssert.Contains(texts, "Give 3 thullas");
-            CollectionAssert.Contains(texts, "4/20 · 300 coins, 5 gems");
+            CollectionAssert.Contains(texts, "+300 · 5 gems");
+            CollectionAssert.Contains(texts, "4 of 20");
             var buttons = root.Query<Button>().ToList().Select(b => b.text).ToList();
-            CollectionAssert.Contains(buttons, "Claim");
-            CollectionAssert.Contains(buttons, "Swap");
+            Assert.IsTrue(buttons.Any(b => b.StartsWith("Claim")), "a finished mission claims");
+            CollectionAssert.Contains(buttons, "Swap one", "the one free swap by the Today heading");
         }
 
         private sealed class MemoryStore : ISettingsStore

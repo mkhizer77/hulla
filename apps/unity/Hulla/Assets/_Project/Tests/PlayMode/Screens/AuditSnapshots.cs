@@ -36,7 +36,7 @@ namespace Hulla.Screens.Tests
             {
                 var task = CardRenderer.RenderAsync(settings, CardRatio.Story, root =>
                 {
-                    ScreenCases.Skin(root, Hulla.Application.Settings.TableSkin.Club);
+                    ScreenCases.Skin(root, Hulla.Application.Settings.TableSkin.Basant);
                     var instance = screen.Screen!.Instantiate();
                     instance.style.flexGrow = 1;
                     root.Add(instance);
@@ -44,7 +44,7 @@ namespace Hulla.Screens.Tests
                     var face = instance.Q(className: "screen");
                     if (face != null)
                     {
-                        Hulla.Presentation.Theme.AmbientLayer.Decorate(face, Hulla.Application.Settings.TableSkin.Club, false);
+                        Hulla.Presentation.Theme.AmbientLayer.Decorate(face, Hulla.Application.Settings.TableSkin.Basant, false);
                     }
                     if (System.Array.IndexOf(WithNav, screen.Name) >= 0)
                     {
@@ -72,7 +72,7 @@ namespace Hulla.Screens.Tests
             var catalog = AssetDatabase.LoadAssetAtPath<ScreenCatalog>("Assets/Settings/UI/ScreenCatalog.asset");
             var dir = System.Environment.GetEnvironmentVariable("HULLA_SNAPSHOT_DIR") ?? "Temp";
             Directory.CreateDirectory(dir);
-            foreach (TableSkin skin in System.Enum.GetValues(typeof(TableSkin)))
+            foreach (var skin in new[] { TableSkin.Basant })
             {
                 foreach (var myTurn in new[] { true, false })
                 {

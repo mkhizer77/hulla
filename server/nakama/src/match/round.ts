@@ -75,6 +75,8 @@ export function compactSeats<S, M>(state: TableState<S, M>): SeatIndex[] {
       mic: false,
       party: null,
       cosmetics: null,
+      emotePacks: null,
+      bot: false,
       avatar: null,
     })),
   ];
@@ -379,7 +381,8 @@ export function roundRecord<S, M, V, E, R>(
     mode: state.mode,
     dealerSeat: round.dealerSeat,
     seedHex: round.seedHex,
-    players: state.seats.slice(0, round.seatCount).map((s) => s.playerId),
+    // Bots are not players for stats, rewards or recent players: they count as empty seats.
+    players: state.seats.slice(0, round.seatCount).map((s) => (s.bot ? null : s.playerId)),
     moves: round.moves.map((m) => ({ seat: m.seat, move: m.move, auto: m.auto })),
     result: round.result,
     series: state.series,
@@ -427,6 +430,7 @@ export function fireDeadlines<S, M, V, E, R>(
     if (now < deadline.notBeforeTs) break;
     const due = deadline.seats.find((seat) => {
       const slot = state.seats[seat];
+      if (slot?.bot === true) return now >= deadline.notBeforeTs + deps.config.botPlayDelayMs;
       if (slot?.autoPlay === true) return now >= deadline.autoTs;
       return deadline.humanTs !== null && now >= deadline.humanTs;
     });

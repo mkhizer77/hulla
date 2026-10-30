@@ -19,6 +19,8 @@ namespace Hulla.Presentation.Screens.Rulebook
             closeButton.clicked += close;
             _scroll = root.Q<ScrollView>("scroll");
             var list = root.Q<VisualElement>("list");
+            // The contents as a chip row (design: Rulebook): a tap scrolls to the section.
+            var contents = root.Q<VisualElement>("contents");
             foreach (var section in sections)
             {
                 var box = new VisualElement();
@@ -35,6 +37,13 @@ namespace Hulla.Presentation.Screens.Rulebook
 
                 list.Add(box);
                 _sections[section.Id] = box;
+                if (contents != null)
+                {
+                    var chip = new Button(() => _scroll.ScrollTo(box)) { text = section.Title };
+                    chip.AddToClassList("chip");
+                    chip.AddToClassList("rulebook__chip");
+                    contents.Add(chip);
+                }
             }
 
             if (openAt != null && _sections.TryGetValue(openAt, out var target))

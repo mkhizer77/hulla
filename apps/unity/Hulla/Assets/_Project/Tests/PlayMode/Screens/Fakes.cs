@@ -55,6 +55,8 @@ namespace Hulla.Screens.Tests
         {
             public PlayerSession? Current => null;
 
+            public bool IsConnected => false;
+
             public event Action<string, string>? Notified
             {
                 add { }
@@ -71,6 +73,8 @@ namespace Hulla.Screens.Tests
             public Awaitable<Result<Profile>> MyProfileAsync(CancellationToken c) => Done(Result<Profile>.Ok(new Profile { DisplayName = "Khizer", Handle = "khizer_k", Bio = "", FriendCode = "K7Q2MXRP", Stats = new ProfileStats { Rounds = 3 } }));
 
             public Awaitable<Result<Profile>> UpdateProfileAsync(ProfileUpdate u, CancellationToken c) => MyProfileAsync(c);
+
+            public Awaitable<Result<Profile>> ProfileAsync(string userId, CancellationToken c) => MyProfileAsync(c);
 
             public Awaitable<Result<IReadOnlyList<FriendEntry>>> FriendsAsync(CancellationToken c) => Done(Result<IReadOnlyList<FriendEntry>>.Ok(new List<FriendEntry>
             {
@@ -92,7 +96,20 @@ namespace Hulla.Screens.Tests
 
             public Awaitable<Result<bool>> SetFavouriteAsync(string u, bool p, CancellationToken c) => Done(Result<bool>.Ok(true));
 
-            public Awaitable<Result<IReadOnlyList<FriendPresence>>> PresenceAsync(CancellationToken c) => Done(Result<IReadOnlyList<FriendPresence>>.Ok(new List<FriendPresence> { new FriendPresence("1", "Ayesha", PresenceState.Lobby, true, "K7Q2MX", 2, true) }));
+            /// <summary>How many friends are online; the first has a table with two seats open.</summary>
+            public int Online = 1;
+
+            public Awaitable<Result<IReadOnlyList<FriendPresence>>> PresenceAsync(CancellationToken c)
+            {
+                var all = new List<FriendPresence>
+                {
+                    new FriendPresence("1", "Ayesha", PresenceState.Lobby, true, "K7Q2MX", 2, true),
+                    new FriendPresence("3", "Sara", PresenceState.Online, true, null, 0, false),
+                    new FriendPresence("4", "Zain", PresenceState.Online, true, null, 0, false),
+                    new FriendPresence("6", "Noor", PresenceState.Online, true, null, 0, false),
+                };
+                return Done(Result<IReadOnlyList<FriendPresence>>.Ok(all.GetRange(0, System.Math.Min(Online, all.Count))));
+            }
 
             public Awaitable<Result<bool>> SetAwayAsync(bool a, CancellationToken c) => Done(Result<bool>.Ok(true));
 
@@ -112,6 +129,8 @@ namespace Hulla.Screens.Tests
             public Awaitable<Result<bool>> SearchAsync(int seats, bool anySize, CancellationToken cancellation) => Done(Result<bool>.Ok(true));
 
             public Awaitable<Result<bool>> SearchRankedAsync(int band, CancellationToken cancellation) => Done(Result<bool>.Ok(true));
+
+            public Awaitable<Result<TableTicket>> BotTableAsync(int seats, CancellationToken cancellation) => Done(Result<TableTicket>.Ok(new TableTicket("bots.1", "BOTS42", "t_BOTS42")));
 
             public Awaitable CancelAsync()
             {
@@ -283,6 +302,8 @@ namespace Hulla.Screens.Tests
             public IReadOnlyList<string> Emotes { get; } = new[] { "chai" };
 
             public string? TextFor(string phraseId) => phraseId == "T01" ? "THULLA!" : null;
+
+            public string? EmotePack(string emoteId) => emoteId == "wicket" ? "emotes_cricket" : "emotes_launch";
 
             public Awaitable LoadAsync(CancellationToken cancellation)
             {

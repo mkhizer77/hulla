@@ -52,6 +52,18 @@ namespace Hulla.Games.Thulla
                 save(Build());
                 close();
             };
+            // ✕ leaves without saving, ✓ saves (design: Rules editor).
+            var cancel = root.Q<Button>("back-left");
+            if (cancel != null)
+            {
+                cancel.text = "";
+                cancel.tooltip = UiText.Cancel;
+                cancel.clicked += close;
+                var icon = cancel.Q(className: "kit__icon");
+                icon?.RemoveFromClassList("kit__icon--back");
+                icon?.AddToClassList("kit__icon--close");
+            }
+
             _list = root.Q<VisualElement>("list");
             Draw();
         }

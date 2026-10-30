@@ -31,7 +31,7 @@ namespace Hulla.Screens.Tests
             var settings = AssetDatabase.LoadAssetAtPath<PanelSettings>("Assets/Settings/UI/PanelSettings.asset");
             var task = CardRenderer.RenderAsync(settings, CardRatio.Story, root =>
             {
-                ScreenCases.Skin(root, Hulla.Application.Settings.TableSkin.Club);
+                ScreenCases.Skin(root, Hulla.Application.Settings.TableSkin.Basant);
                 var instance = catalog.Home!.Instantiate();
                 instance.style.flexGrow = 1;
                 root.Add(instance);

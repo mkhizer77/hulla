@@ -1,8 +1,8 @@
 {
   "schema": "../tools/content-schemas/manifest.schema.json",
   "id": "content-manifest",
-  "version": 18,
-  "digest": "b396425aceac423fe8c3807dfa106cef651f7be3a3bffead8ec94377056aa20c",
+  "version": 36,
+  "digest": "d29cfd386908cdf91b2021ffc50e46bd98aea878748ab0cd915552a7465257d8",
   "files": [
     {
       "path": "achievements/v1.json",
@@ -49,8 +49,8 @@
       "type": "emotes",
       "id": "v1",
       "version": 1,
-      "sha256": "a81e8a02cee309ef6f3160bd020f750fe298fe146a90f1af4685cb45071ba55c",
-      "bytes": 1565
+      "sha256": "6e5078df9ab1610dcdf6e413fa4d7d53346615d275a56c21612b1bc28d5484bf",
+      "bytes": 3043
     },
     {
       "path": "missions/v1.json",
@@ -129,8 +129,8 @@
       "type": "strings",
       "id": "strings-en",
       "version": 1,
-      "sha256": "53bc4aadebf15c3d9c0381b4c5c7fbc9c0c7d867c14a378a5a56ec057a21bccb",
-      "bytes": 52727
+      "sha256": "7f07a03c280cabf9d420c95878831682e663645485cc4e6bbaeb59c04d184096",
+      "bytes": 61859
     }
   ]
 }

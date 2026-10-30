@@ -6,82 +6,146 @@
     {
       "id": "thulla_whistle",
       "name": "emote.thulla_whistle",
-      "throwable": true
+      "throwable": true,
+      "pack": "emotes_launch"
     },
     {
       "id": "chai",
       "name": "emote.chai",
-      "throwable": true
+      "throwable": true,
+      "pack": "emotes_launch"
     },
     {
       "id": "turtle",
       "name": "emote.turtle",
-      "throwable": true
+      "throwable": true,
+      "pack": "emotes_launch"
     },
     {
       "id": "donkey",
       "name": "emote.donkey",
-      "throwable": true
+      "throwable": true,
+      "pack": "emotes_launch"
     },
     {
       "id": "clap",
       "name": "emote.clap",
-      "throwable": false
+      "throwable": false,
+      "pack": "emotes_launch"
     },
     {
       "id": "laugh_cry",
       "name": "emote.laugh_cry",
-      "throwable": false
+      "throwable": false,
+      "pack": "emotes_launch"
     },
     {
       "id": "facepalm",
       "name": "emote.facepalm",
-      "throwable": false
+      "throwable": false,
+      "pack": "emotes_launch"
     },
     {
       "id": "mic_drop",
       "name": "emote.mic_drop",
-      "throwable": false
+      "throwable": false,
+      "pack": "emotes_launch"
     },
     {
       "id": "heart",
       "name": "emote.heart",
-      "throwable": true
+      "throwable": true,
+      "pack": "emotes_launch"
     },
     {
       "id": "fire",
       "name": "emote.fire",
-      "throwable": true
+      "throwable": true,
+      "pack": "emotes_launch"
     },
     {
       "id": "ghost",
       "name": "emote.ghost",
-      "throwable": true
+      "throwable": true,
+      "pack": "emotes_launch"
     },
     {
       "id": "six",
       "name": "emote.six",
-      "throwable": false
+      "throwable": false,
+      "pack": "emotes_launch"
     },
     {
       "id": "dhol",
       "name": "emote.dhol",
-      "throwable": false
+      "throwable": false,
+      "pack": "emotes_launch"
     },
     {
       "id": "sunglasses",
       "name": "emote.sunglasses",
-      "throwable": false
+      "throwable": false,
+      "pack": "emotes_launch"
     },
     {
       "id": "sweating",
       "name": "emote.sweating",
-      "throwable": false
+      "throwable": false,
+      "pack": "emotes_launch"
     },
     {
       "id": "sleeping",
       "name": "emote.sleeping",
-      "throwable": true
+      "throwable": true,
+      "pack": "emotes_launch"
+    },
+    {
+      "id": "wicket",
+      "name": "emote.wicket",
+      "throwable": false,
+      "pack": "emotes_cricket"
+    },
+    {
+      "id": "dropped_catch",
+      "name": "emote.dropped_catch",
+      "throwable": false,
+      "pack": "emotes_cricket"
+    },
+    {
+      "id": "howzat",
+      "name": "emote.howzat",
+      "throwable": true,
+      "pack": "emotes_cricket"
+    },
+    {
+      "id": "duck",
+      "name": "emote.duck",
+      "throwable": true,
+      "pack": "emotes_cricket"
+    },
+    {
+      "id": "mehndi",
+      "name": "emote.mehndi",
+      "throwable": false,
+      "pack": "emotes_shaadi"
+    },
+    {
+      "id": "bhangra",
+      "name": "emote.bhangra",
+      "throwable": false,
+      "pack": "emotes_shaadi"
+    },
+    {
+      "id": "laddoo",
+      "name": "emote.laddoo",
+      "throwable": true,
+      "pack": "emotes_shaadi"
+    },
+    {
+      "id": "garland",
+      "name": "emote.garland",
+      "throwable": true,
+      "pack": "emotes_shaadi"
     }
   ]
 }

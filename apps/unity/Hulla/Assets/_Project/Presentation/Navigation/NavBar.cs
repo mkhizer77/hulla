@@ -4,24 +4,24 @@ using UnityEngine.UIElements;
 
 namespace Hulla.Presentation.Navigation
 {
-    /// <summary>The five tabs of the bottom navigation (GDD 14.1).</summary>
+    /// <summary>The four tabs of the bottom navigation (GDD 14.1, docs/design/basant-home.md).</summary>
     public enum NavTab
     {
         Home,
         Friends,
+        Trophies,
         Shop,
-        Pass,
-        Profile,
     }
 
     /// <summary>
-    /// The bottom navigation (GDD 14.1, design §2): Home, Friends, Shop, Pass, Profile, a drawn icon
-    /// over a label, the active tab in the theme's accent and a badge for what waits.
+    /// The bottom navigation (GDD 14.1, docs/design/basant-home.md): Home, Friends, Trophies, Shop,
+    /// each a tile with its icon over its word, the active tile lit and a badge for what waits. The
+    /// word is a localised text sprite where one exists, else the label.
     /// </summary>
     public sealed class NavBar : VisualElement
     {
         public const int BadgeCap = 9;
-        private static readonly NavTab[] Order = { NavTab.Home, NavTab.Friends, NavTab.Shop, NavTab.Pass, NavTab.Profile };
+        private static readonly NavTab[] Order = { NavTab.Home, NavTab.Friends, NavTab.Trophies, NavTab.Shop };
         private readonly Dictionary<NavTab, Button> _buttons = new Dictionary<NavTab, Button>();
         private readonly Dictionary<NavTab, Label> _badges = new Dictionary<NavTab, Label>();
 
@@ -33,9 +33,16 @@ namespace Hulla.Presentation.Navigation
             {
                 var chosen = tab;
                 var button = new Button(() => Tap(chosen)) { name = "nav-" + tab.ToString().ToLowerInvariant() };
+                // Not focusable: a tapped tab would keep :focus and show the normal tile over the selected one.
+                button.focusable = false;
                 button.AddToClassList("nav__tab");
+                var key = tab.ToString().ToLowerInvariant();
                 button.Add(new NavIcon(tab));
-                var text = new Label(label(tab));
+                var art = new VisualElement { pickingMode = PickingMode.Ignore };
+                art.AddToClassList("nav__art");
+                art.AddToClassList("nav__art--" + key);
+                button.Add(art);
+                var text = Theme.TextArt.Mark(new Label(label(tab)), "nav-" + key);
                 text.AddToClassList("nav__label");
                 button.Add(text);
                 var badge = new Label();

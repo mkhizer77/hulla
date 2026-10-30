@@ -5,7 +5,7 @@ namespace Hulla.Presentation.Navigation
 {
     /// <summary>
     /// A tab's icon drawn as strokes in the element's text colour, so the theme and the active state
-    /// colour it like a label: a house, two friends, a bag, a star and a person, on a 24-unit grid.
+    /// colour it like a label: a house, two friends, a cup and a bag, on a 24-unit grid.
     /// </summary>
     public sealed class NavIcon : VisualElement
     {
@@ -52,21 +52,12 @@ namespace Hulla.Presentation.Navigation
                     Path(painter, P(5, 8), P(19, 8), P(18, 21), P(6, 21), P(5, 8));
                     Arc(painter, P(12, 8), 3.2f * unit, 180f, 360f);
                     break;
-                case NavTab.Pass:
-                    var star = new Vector2[11];
-                    for (var i = 0; i < 10; i++)
-                    {
-                        var a = (i * 36f - 90f) * Mathf.Deg2Rad;
-                        var r = i % 2 == 0 ? 9.5f : 4f;
-                        star[i] = P(12 + Mathf.Cos(a) * r, 12.5f + Mathf.Sin(a) * r);
-                    }
-
-                    star[10] = star[0];
-                    Path(painter, star);
-                    break;
                 default:
-                    Circle(painter, P(12, 8), 4f * unit);
-                    Arc(painter, P(12, 22), 8f * unit, 200f, 340f);
+                    Path(painter, P(7, 4), P(17, 4), P(16.5f, 11), P(12, 14.5f), P(7.5f, 11), P(7, 4));
+                    Path(painter, P(12, 14.5f), P(12, 18));
+                    Path(painter, P(8, 20.5f), P(16, 20.5f));
+                    Arc(painter, P(7, 7.5f), 2.6f * unit, 90f, 270f);
+                    Arc(painter, P(17, 7.5f), 2.6f * unit, -90f, 90f);
                     break;
             }
         }

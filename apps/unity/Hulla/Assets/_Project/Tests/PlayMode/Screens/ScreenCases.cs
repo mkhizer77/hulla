@@ -35,6 +35,19 @@ namespace Hulla.Screens.Tests
     /// <summary>Every main screen bound to fakes, for the checks that lay each one out (pseudo-locales, accessibility).</summary>
     internal static class ScreenCases
     {
+        private static readonly SegmentBar.Entry[] Trophies =
+        {
+            new SegmentBar.Entry("missions", "Missions", () => { }),
+            new SegmentBar.Entry("achievements", "Achievements", () => { }),
+            new SegmentBar.Entry("leaderboard", "Leaderboard", () => { }),
+        };
+
+        private static readonly SegmentBar.Entry[] ShopTabs =
+        {
+            new SegmentBar.Entry("shop", "Shop", () => { }),
+            new SegmentBar.Entry("pass", "Pass", () => { }),
+        };
+
         public sealed class Case
         {
             public Case(string name, VisualTreeAsset? screen, System.Action<VisualElement> bind)
@@ -56,11 +69,13 @@ namespace Hulla.Screens.Tests
         {
             root.AddToClassList(Hulla.Presentation.Theme.ThemeClasses.Skinned);
             root.AddToClassList(Hulla.Presentation.Theme.ThemeClasses.ClassOf(skin));
+            root.AddToClassList(Hulla.Presentation.Theme.TextArt.LanguageClass(Hulla.Presentation.Text.Strings.Locale));
         }
 
         public static IEnumerable<Case> All()
         {
             var catalog = AssetDatabase.LoadAssetAtPath<ScreenCatalog>("Assets/Settings/UI/ScreenCatalog.asset");
+            yield return new Case("loading", catalog.Loading, r => new Presentation.Screens.Loading.LoadingView(r).Set(3, 4));
             yield return new Case("home", catalog.Home, r =>
             {
                 var friends = new HomeFriendsViewModel(new Fakes.Social());
@@ -124,6 +139,7 @@ namespace Hulla.Screens.Tests
             {
                 var model = new LeaderboardViewModel(new Fakes.Boards());
                 new LeaderboardView(r, model, () => 1_000_000_000_000, "me", () => { }, (_, _) => { }, () => { });
+                SegmentBar.Mount(r, Trophies, "leaderboard");
                 _ = model.RefreshAsync(default);
             });
             yield return new Case("ranked", catalog.Ranked, r =>
@@ -136,18 +152,22 @@ namespace Hulla.Screens.Tests
             {
                 var model = new AchievementsViewModel(new Fakes.Achievements());
                 new AchievementsView(r, model, () => { });
+                SegmentBar.Mount(r, Trophies, "achievements");
                 _ = model.RefreshAsync(default);
             });
             yield return new Case("shop", catalog.Shop, r =>
             {
                 var model = new ShopViewModel(new Fakes.Shop());
                 new ShopView(r, model, () => { }, _ => { }, _ => { });
+                SegmentBar.Mount(r, ShopTabs, "shop");
                 _ = model.RefreshAsync(default);
             });
             yield return new Case("pass", catalog.Pass, r =>
             {
                 var model = new PassViewModel(new Fakes.Pass());
                 new PassView(r, model, () => 1_000_000_000_000, () => { }, (_, _) => { });
+                SegmentBar.Mount(r, ShopTabs, "pass");
+                SegmentBar.Mount(r, ShopTabs, "pass");
                 _ = model.RefreshAsync(default);
             });
             yield return new Case("phone", catalog.Phone, r =>
@@ -160,6 +180,8 @@ namespace Hulla.Screens.Tests
             {
                 var model = new MissionsViewModel(new Fakes.Missions());
                 new MissionsView(r, model, () => { }, _ => { }, _ => { });
+                SegmentBar.Mount(r, Trophies, "missions");
+                SegmentBar.Mount(r, Trophies, "missions");
                 _ = model.RefreshAsync(0, default);
             });
         }

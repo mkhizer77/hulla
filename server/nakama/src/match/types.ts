@@ -54,8 +54,12 @@ export interface SeatSlot {
   party: string | null;
   /** What the seat has equipped, read from the inventory at join and at each round start. */
   cosmetics: Record<string, string> | null;
+  /** The emote packs the seat owns, read with the cosmetics; null until read (only the free packs then). */
+  emotePacks: readonly string[] | null;
   /** The avatar shown for this seat (GDD 15.6): assigned when the player sits, unique at the table. */
   avatar: string | null;
+  /** A bot holds this seat (match/bots.ts): always under auto-play, never away, earns nothing. */
+  bot: boolean;
 }
 
 /** What `matchJoinAttempt` decided for a session, consumed by `matchJoin`. */
@@ -138,6 +142,8 @@ export interface TableConfig {
   readonly openingSeconds: number;
   /** A seat under auto-play acts this long after its turn starts (R46, OQ-003). */
   readonly autoPlayDelayMs: number;
+  /** A bot acts this long after its turn starts: quicker than an away player, slow enough to follow. */
+  readonly botPlayDelayMs: number;
   readonly reconnectWindowMs: number;
   readonly rematchWindowMs: number;
   readonly emptyTtlMs: Readonly<Record<TableMode, number>>;
@@ -157,6 +163,7 @@ export const DEFAULT_TABLE_CONFIG: TableConfig = {
   tickRate: 5,
   openingSeconds: 10,
   autoPlayDelayMs: 3_000,
+  botPlayDelayMs: 1_400,
   reconnectWindowMs: 30_000,
   rematchWindowMs: 20_000,
   emptyTtlMs: { private: 30 * 60_000, public: 60_000, ranked: 60_000 },
@@ -369,4 +376,6 @@ export interface CreateTableParams {
   /** Set by the matchmaker: how many players are on their way. */
   readonly autoStart?: { readonly expected: number };
   readonly parties?: readonly { readonly id: string; readonly members: readonly string[] }[];
+  /** Quick Play with bots: how many bot seats the table opens with (at most three). */
+  readonly bots?: number;
 }

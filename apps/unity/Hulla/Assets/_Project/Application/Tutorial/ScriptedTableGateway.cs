@@ -69,6 +69,12 @@ namespace Hulla.Application.Tutorial
 
         public int StepIndex => _step;
 
+        /// <summary>The player's own face at the scripted table; null keeps the initial.</summary>
+        public string? MyAvatar { get; set; }
+
+        /// <summary>Faces for the scripted seats, so the coach's table looks like a real one.</summary>
+        private static readonly string[] CoachAvatars = { "a04", "a06", "a02", "a05", "a07" };
+
         public int StepCount => _steps.Count;
 
         public bool StepDone => _stepDone;
@@ -374,7 +380,7 @@ namespace Hulla.Application.Tutorial
             var views = new List<SeatView>();
             for (var i = 0; i < step.Names.Count; i++)
             {
-                seats.Add(new Seat { SeatSeat = i, PlayerId = i == 0 ? "me" : "coach-" + i, DisplayName = step.Names[i], Connected = true, Ready = true });
+                seats.Add(new Seat { SeatSeat = i, PlayerId = i == 0 ? "me" : "coach-" + i, DisplayName = step.Names[i], Connected = true, Ready = true, Avatar = i == 0 ? MyAvatar : CoachAvatars[(i - 1) % CoachAvatars.Length] });
                 views.Add(new SeatView
                 {
                     HandCount = _counts[i],

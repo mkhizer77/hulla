@@ -15,8 +15,8 @@ namespace Hulla.Presentation.TableKit
     /// </summary>
     public sealed class HandView
     {
-        public const float NormalCardWidth = 150f;
-        public const float LargeCardWidth = 180f;
+        public const float NormalCardWidth = 180f;
+        public const float LargeCardWidth = 210f;
 
         /// <summary>How long a picked-up card stays highlighted in the fan (GDD 14.6).</summary>
         public const int NewCardMs = 1000;

@@ -6,7 +6,8 @@ namespace Hulla.Presentation.TableKit
     /// <summary>
     /// A card face until the slice decks arrive (#34): the index (rank over suit) in the top-left and,
     /// upside down, the bottom-right corner, with the pips drawn as vectors in between
-    /// (<see cref="CardFace"/>). Court cards carry their letter over a framed band.
+    /// (<see cref="CardFace"/>). Court cards carry their letter over a framed band,
+    /// or the Desi court deck's portrait (<see cref="Theme.CosmeticArt"/>).
     /// </summary>
     public sealed class CardElement : VisualElement
     {
@@ -23,11 +24,16 @@ namespace Hulla.Presentation.TableKit
         private readonly Label _rankBottom = new Label();
         private readonly Label _suitBottom = new Label();
         private readonly VisualElement _field = new VisualElement();
+        private readonly VisualElement _courtArt = new VisualElement();
         private bool _fourColour;
 
         public CardElement()
         {
             AddToClassList("card");
+            // A soft ring outside the edge for a playable card; first, so the face draws over its inner edge.
+            var glow = new VisualElement { pickingMode = PickingMode.Ignore };
+            glow.AddToClassList("card__glow");
+            Add(glow);
             var top = new VisualElement();
             top.AddToClassList("card__corner");
             _rank.AddToClassList("card__rank");
@@ -38,6 +44,14 @@ namespace Hulla.Presentation.TableKit
             _field.AddToClassList("card__field");
             _field.generateVisualContent += DrawPips;
             Add(_field);
+
+            // The Desi court deck's portrait in the court band, framed; shown only under its face class.
+            _courtArt.AddToClassList("card__court-art");
+            var portrait = new VisualElement { pickingMode = PickingMode.Ignore };
+            portrait.AddToClassList("card__court-face");
+            _courtArt.Add(portrait);
+            _courtArt.pickingMode = PickingMode.Ignore;
+            _field.Add(_courtArt);
             _court.AddToClassList("card__court");
             Add(_court);
             var bottom = new VisualElement();
@@ -82,6 +96,9 @@ namespace Hulla.Presentation.TableKit
             EnableInClassList("card--suit-d", card[1] == 'D');
             EnableInClassList("card--suit-c", card[1] == 'C');
             EnableInClassList("card--court", court);
+            _courtArt.EnableInClassList("card__court-art--j", card[0] == 'J');
+            _courtArt.EnableInClassList("card__court-art--q", card[0] == 'Q');
+            _courtArt.EnableInClassList("card__court-art--k", card[0] == 'K');
             _field.MarkDirtyRepaint();
             return this;
         }

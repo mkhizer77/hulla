@@ -1,8 +1,13 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements">
     <ui:VisualElement name="settings" class="screen settings">
         <ui:VisualElement class="settings__top">
-            <ui:Label name="title" class="title title--small" />
-            <ui:Button name="close" class="button button--primary button--small" />
+            <ui:Label name="title" class="title title--small top__title" />
+            <ui:Button name="back-left" class="top__button top__left">
+                <ui:VisualElement class="kit__icon kit__icon--back" picking-mode="Ignore" />
+            </ui:Button>
+            <ui:Button name="close" class="top__button top__right top__done">
+                <ui:VisualElement class="kit__icon kit__icon--tick" picking-mode="Ignore" />
+            </ui:Button>
         </ui:VisualElement>
         <ui:ScrollView class="settings__scroll" horizontal-scroller-visibility="Hidden" vertical-scroller-visibility="Hidden">
             <ui:VisualElement name="list" />

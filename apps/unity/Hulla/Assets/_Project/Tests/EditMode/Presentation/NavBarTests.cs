@@ -5,11 +5,11 @@ using UnityEngine.UIElements;
 
 namespace Hulla.Presentation.Tests
 {
-    /// <summary>The bottom navigation (GDD 14.1): five tabs in order, one lit, badges that cap at 9+.</summary>
+    /// <summary>The bottom navigation (GDD 14.1): four tabs in order, one lit, badges that cap at 9+.</summary>
     public sealed class NavBarTests
     {
         [Test]
-        public void FiveTabsInTheGddOrder()
+        public void FourTabsInOrder()
         {
             var bar = new NavBar(UiText.NavLabel);
             var names = new System.Collections.Generic.List<string>();
@@ -18,7 +18,7 @@ namespace Hulla.Presentation.Tests
                 names.Add(child.name);
             }
 
-            CollectionAssert.AreEqual(new[] { "nav-home", "nav-friends", "nav-shop", "nav-pass", "nav-profile" }, names);
+            CollectionAssert.AreEqual(new[] { "nav-home", "nav-friends", "nav-trophies", "nav-shop" }, names);
         }
 
         [Test]
@@ -39,9 +39,9 @@ namespace Hulla.Presentation.Tests
             var bar = new NavBar(UiText.NavLabel);
             NavTab? chosen = null;
             bar.Chosen += tab => chosen = tab;
-            Assert.IsNotNull(bar.Q<Button>("nav-pass"), "the tab is a button");
-            bar.Tap(NavTab.Pass);
-            Assert.AreEqual(NavTab.Pass, chosen);
+            Assert.IsNotNull(bar.Q<Button>("nav-trophies"), "the tab is a button");
+            bar.Tap(NavTab.Trophies);
+            Assert.AreEqual(NavTab.Trophies, chosen);
         }
 
         [Test]

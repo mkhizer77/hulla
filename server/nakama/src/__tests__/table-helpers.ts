@@ -37,6 +37,8 @@ export function harness(
     readonly target?: number;
     readonly social?: SocialGate;
     readonly names?: NameSource;
+    /** A Quick Play table for one player with this many bots (match/bots.ts). */
+    readonly bots?: number;
   } = {},
 ): Harness {
   const records: RoundRecord[] = [];
@@ -57,7 +59,10 @@ export function harness(
     {
       code: "ABCDEF",
       gameId: "thulla",
-      mode: options.mode ?? "private",
+      mode: options.mode ?? (options.bots === undefined ? "private" : "public"),
+      ...(options.bots === undefined
+        ? {}
+        : { bots: options.bots, autoStart: { expected: options.bots + 1 }, parties: [] }),
       rules: {
         gameId: "thulla",
         ...(options.settings === undefined ? {} : { settings: options.settings }),

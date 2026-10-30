@@ -35,8 +35,9 @@ namespace Hulla.Presentation.Screens.Leaderboard
             _everyone = Chip(root, "everyone", UiText.Everyone, () => show(_model.Period, false));
             _friends = Chip(root, "friends", UiText.FriendsTab, () => show(_model.Period, true));
             // Ranked has its own season board (GDD 12.9); the chip opens it.
-            var rankedChip = Chip(root, "ranked", RankedText.Title, () => ranked?.Invoke());
-            rankedChip.style.display = ranked == null ? DisplayStyle.None : DisplayStyle.Flex;
+            Chip(root, "ranked", UiText.PlayRankedShort, () => ranked?.Invoke());
+            root.Q<Label>("ranked-title").text = RankedText.Title;
+            root.Q<VisualElement>("ranked-card").style.display = ranked == null ? DisplayStyle.None : DisplayStyle.Flex;
             _list = root.Q<VisualElement>("list");
             _me = root.Q<VisualElement>("me");
             _status = root.Q<Label>("status");
@@ -60,10 +61,10 @@ namespace Hulla.Presentation.Screens.Leaderboard
 
         private void Refresh()
         {
-            _weekly.EnableInClassList("chip--on", _model.Period == LeaderboardPeriod.Weekly);
-            _monthly.EnableInClassList("chip--on", _model.Period == LeaderboardPeriod.Monthly);
-            _everyone.EnableInClassList("chip--on", !_model.Friends);
-            _friends.EnableInClassList("chip--on", _model.Friends);
+            _weekly.EnableInClassList("mini-seg__item--on", _model.Period == LeaderboardPeriod.Weekly);
+            _monthly.EnableInClassList("mini-seg__item--on", _model.Period == LeaderboardPeriod.Monthly);
+            _everyone.EnableInClassList("mini-seg__item--on", !_model.Friends);
+            _friends.EnableInClassList("mini-seg__item--on", _model.Friends);
             var page = _model.Page;
             _status.text = "";
             _reset.text = page?.NextResetTs is long reset ? Strings.Format(UiText.ResetsIn, Duration(reset - _nowMs())) : "";
@@ -92,18 +93,48 @@ namespace Hulla.Presentation.Screens.Leaderboard
                 ListState.Empty(_list, UiText.BoardEmpty);
             }
 
-            var meOnPage = false;
+            LeaderboardRow? above = null;
             foreach (var row in page.Rows)
             {
                 var mine = row.UserId == _myId;
-                meOnPage |= mine;
-                _list.Add(Row(row, mine));
+                // Your own row is pinned above the list; the list holds everyone else.
+                if (!mine || page.Me == null)
+                {
+                    _list.Add(Row(row, mine));
+                }
+
+                if (page.Me != null && row.Rank == page.Me.Rank - 1)
+                {
+                    above = row;
+                }
             }
 
-            _me.style.display = page.Me != null && !meOnPage ? DisplayStyle.Flex : DisplayStyle.None;
-            if (page.Me != null && !meOnPage)
+            // Your own row pinned on top with how far to climb (design: Trophies · Leaderboard).
+            _me.style.display = page.Me != null ? DisplayStyle.Flex : DisplayStyle.None;
+            if (page.Me != null)
             {
-                _me.Add(Row(page.Me, true));
+                var me = Row(page.Me, true);
+                me.AddToClassList("board__me-row");
+                // As in the concept: the face first, then the rank small over "You", then points and the climb.
+                var who = me.Q(className: "board__who");
+                var rank = me.Q<Label>(className: "leaderboard__rank");
+                if (who != null && rank != null)
+                {
+                    who.Insert(0, rank);
+                    var name = who.Q<Label>(className: "leaderboard__name");
+                    if (name != null)
+                    {
+                        name.text = UiText.You;
+                    }
+                }
+
+                var climb = new Label(above != null
+                    ? Strings.Format(UiText.PointsToClimb, page.Me.Points, Math.Max(1, above.Points - page.Me.Points + 1))
+                    : Strings.Format(UiText.PointsShort, page.Me.Points));
+                climb.AddToClassList("board__climb");
+                who?.Add(climb);
+
+                _me.Add(me);
             }
         }
 
@@ -123,9 +154,19 @@ namespace Hulla.Presentation.Screens.Leaderboard
                 rank.AddToClassList("leaderboard__rank--" + row.Rank);
             }
             line.Add(rank);
+            var face = new VisualElement { pickingMode = PickingMode.Ignore };
+            face.AddToClassList("board__face");
+            var initial = new Label();
+            initial.AddToClassList("seat__initial");
+            face.Add(initial);
+            TableKit.AvatarArt.Apply(face, initial, TableKit.AvatarArt.ForAccount(row.UserId), row.Name);
+            line.Add(face);
+            var who = new VisualElement();
+            who.AddToClassList("board__who");
             var name = new Label(mine ? Strings.Format(UiText.YouAre, row.Name) : row.Name);
             name.AddToClassList("leaderboard__name");
-            line.Add(name);
+            who.Add(name);
+            line.Add(who);
             var points = new Label(Strings.Format(UiText.PointsShort, row.Points));
             points.AddToClassList("leaderboard__points");
             line.Add(points);

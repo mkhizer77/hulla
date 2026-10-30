@@ -1,9 +1,15 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements">
     <ui:VisualElement name="pass" class="screen settings">
         <ui:VisualElement class="settings__top">
-            <ui:Label name="title" class="title title--small" />
-            <ui:Button name="back" class="button button--quiet button--small" />
+            <ui:Label name="title" class="title title--small top__title" />
+            <ui:Button name="gear" class="top__button top__left top__gear" />
+            <ui:Button name="back" class="top__button top__hidden" />
+            <ui:VisualElement name="coin-pill" class="top__right top__coins">
+                <ui:VisualElement class="top__coin-icon" picking-mode="Ignore" />
+                <ui:Label name="coin-amount" class="top__coin-amount" />
+            </ui:VisualElement>
         </ui:VisualElement>
+        <ui:VisualElement name="segment" class="segment-host" />
         <ui:Label name="status" class="status" />
         <ui:ScrollView class="settings__scroll" horizontal-scroller-visibility="Hidden" vertical-scroller-visibility="Hidden">
             <ui:VisualElement name="list" />

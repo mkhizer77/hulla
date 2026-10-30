@@ -39,6 +39,16 @@ namespace Hulla.Application.Tests
                 return done.Awaitable;
             }
 
+            public Awaitable<Result<TableTicket>> BotTableAsync(int seats, CancellationToken cancellation)
+            {
+                BotTables.Add(seats);
+                var done = new AwaitableCompletionSource<Result<TableTicket>>();
+                done.SetResult(Result<TableTicket>.Ok(new TableTicket("bots.1", "BOTS42", "t_BOTS42")));
+                return done.Awaitable;
+            }
+
+            public readonly List<int> BotTables = new List<int>();
+
             public Awaitable CancelAsync()
             {
                 Cancels++;
@@ -87,6 +97,33 @@ namespace Hulla.Application.Tests
             _ = _model.StartAsync(4, default);
             _model.Tick(QuickPlayViewModel.StartAtSeconds);
             Assert.AreEqual(QuickPlayViewModel.Stage.Starting, _model.Current);
+        }
+
+        [Test]
+        public void AtThirtySecondsWithNobodyItOpensATableWithBots()
+        {
+            TableTicket? found = null;
+            _model.Found += t => found = t;
+            _ = _model.StartAsync(4, default);
+            _model.Tick(QuickPlayViewModel.BotsAtSeconds - 0.1f);
+            Assert.IsNull(found);
+            CollectionAssert.IsEmpty(_matchmaker.BotTables);
+            _model.Tick(0.2f);
+            CollectionAssert.AreEqual(new[] { 4 }, _matchmaker.BotTables);
+            Assert.AreEqual(1, _matchmaker.Cancels, "the matchmaker ticket goes first");
+            Assert.AreEqual("bots.1", found?.MatchId);
+            Assert.IsTrue(_model.WithBots);
+            Assert.AreEqual(QuickPlayViewModel.Stage.Found, _model.Current);
+            _matchmaker.Match("late");
+            Assert.AreEqual("bots.1", found?.MatchId, "a late human match is ignored");
+        }
+
+        [Test]
+        public void RankedNeverFillsWithBots()
+        {
+            _ = _model.StartRankedAsync(100, 50, 400, default);
+            _model.Tick(QuickPlayViewModel.BotsAtSeconds + 5f);
+            CollectionAssert.IsEmpty(_matchmaker.BotTables);
         }
 
         [Test]

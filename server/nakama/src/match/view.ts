@@ -72,6 +72,7 @@ function seatPayload(slot: SeatSlot, index: number): SeatPayload {
     party: slot.party,
     avatar: slot.avatar,
     cosmetics: slot.cosmetics,
+    ...(slot.bot ? { bot: true } : {}),
   };
 }
 

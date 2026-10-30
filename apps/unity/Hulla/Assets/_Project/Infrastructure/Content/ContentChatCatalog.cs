@@ -19,6 +19,7 @@ namespace Hulla.Infrastructure.Content
         private readonly List<ChatPhrase> _phrases = new List<ChatPhrase>();
         private readonly Dictionary<string, string> _byId = new Dictionary<string, string>();
         private readonly List<string> _emotes = new List<string>();
+        private readonly Dictionary<string, string> _packs = new Dictionary<string, string>();
 
         public ContentChatCatalog(IContentStore content)
         {
@@ -31,11 +32,14 @@ namespace Hulla.Infrastructure.Content
 
         public string? TextFor(string phraseId) => _byId.TryGetValue(phraseId, out var text) ? text : null;
 
+        public string? EmotePack(string emoteId) => _packs.TryGetValue(emoteId, out var pack) ? pack : null;
+
         public async Awaitable LoadAsync(CancellationToken cancellation)
         {
             _phrases.Clear();
             _byId.Clear();
             _emotes.Clear();
+            _packs.Clear();
             var phrases = await ReadAsync(PhrasesFile, cancellation);
             if (phrases?["phrases"] is JArray list)
             {
@@ -62,6 +66,10 @@ namespace Hulla.Infrastructure.Content
                     if (id != null)
                     {
                         _emotes.Add(id);
+                        if ((string?)item["pack"] is string pack)
+                        {
+                            _packs[id] = pack;
+                        }
                     }
                 }
             }

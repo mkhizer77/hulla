@@ -1,14 +1,34 @@
 using System.IO;
+#if UNITY_IOS && !UNITY_EDITOR
+using System.Runtime.InteropServices;
+#endif
 using Hulla.Application.Services;
 using UnityEngine;
 
 namespace Hulla.Infrastructure.Platform
 {
-    /// <summary>Android's ACTION_SEND chooser; elsewhere (editor, iOS until its plugin lands) the clipboard.</summary>
+    /// <summary>
+    /// Android's ACTION_SEND chooser and iOS's activity sheet (Plugins/iOS/HullaShare.mm); elsewhere (the
+    /// editor and desktop builds) the clipboard.
+    /// </summary>
     public sealed class NativeShareSheet : IShareSheet
     {
+#if UNITY_IOS && !UNITY_EDITOR
+        [DllImport("__Internal")]
+        private static extern bool HullaShareText(string text);
+
+        [DllImport("__Internal")]
+        private static extern bool HullaShareImage(string path, string text);
+#endif
+
         public bool Share(string title, string text)
         {
+#if UNITY_IOS && !UNITY_EDITOR
+            if (HullaShareText(text))
+            {
+                return true;
+            }
+#endif
 #if UNITY_ANDROID && !UNITY_EDITOR
             try
             {
@@ -36,7 +56,12 @@ namespace Hulla.Infrastructure.Platform
             Directory.CreateDirectory(folder);
             var path = Path.Combine(folder, fileName);
             File.WriteAllBytes(path, png);
-#if UNITY_ANDROID && !UNITY_EDITOR
+#if UNITY_IOS && !UNITY_EDITOR
+            if (HullaShareImage(path, text))
+            {
+                return true;
+            }
+#elif UNITY_ANDROID && !UNITY_EDITOR
             try
             {
                 using var player = new AndroidJavaClass("com.unity3d.player.UnityPlayer");

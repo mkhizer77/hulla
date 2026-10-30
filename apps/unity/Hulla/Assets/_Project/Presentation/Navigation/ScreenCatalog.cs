@@ -7,6 +7,7 @@ namespace Hulla.Presentation.Navigation
     [CreateAssetMenu(menuName = "Hulla/Screen Catalog")]
     public sealed class ScreenCatalog : ScriptableObject
     {
+        public VisualTreeAsset? Loading;
         public VisualTreeAsset? Home;
         public VisualTreeAsset? Lobby;
         public VisualTreeAsset? Table;

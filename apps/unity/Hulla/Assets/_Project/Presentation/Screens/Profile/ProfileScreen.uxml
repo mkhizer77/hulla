@@ -1,18 +1,40 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements">
     <ui:VisualElement name="profile" class="screen settings">
         <ui:VisualElement class="settings__top">
-            <ui:Label name="title" class="title title--small" />
-            <ui:Button name="back" class="button button--quiet button--small" />
+            <ui:Label name="title" class="title title--small top__title" />
+            <ui:Button name="back" class="top__button top__left">
+                <ui:VisualElement class="kit__icon kit__icon--back" picking-mode="Ignore" />
+            </ui:Button>
+            <ui:Button name="edit" class="top__button top__right">
+                <ui:VisualElement class="kit__icon kit__icon--pencil" picking-mode="Ignore" />
+            </ui:Button>
         </ui:VisualElement>
         <ui:ScrollView class="settings__scroll" horizontal-scroller-visibility="Hidden" vertical-scroller-visibility="Hidden">
-            <ui:VisualElement class="panel code-box">
-                <ui:Label name="code-label" class="caption" />
-                <ui:Label name="code" class="code" />
-                <ui:Button name="copy" class="button button--small" />
+            <ui:VisualElement class="profile__card">
+                <ui:VisualElement name="face" class="profile__face">
+                    <ui:Label name="face-initial" class="seat__initial" />
+                </ui:VisualElement>
+                <ui:Label name="display-name" class="profile__name" />
+                <ui:Label name="profile-line" class="profile__line" />
             </ui:VisualElement>
-            <ui:Label name="stats" class="status" />
-            <ui:Button name="achievements" class="button" />
-            <ui:VisualElement class="panel">
+            <ui:VisualElement class="profile__code-row">
+                <ui:VisualElement class="profile__code-text">
+                    <ui:Label name="code-label" class="profile__code-label" />
+                    <ui:Label name="code" class="profile__code" />
+                </ui:VisualElement>
+                <ui:Button name="copy" class="profile__share">
+                    <ui:VisualElement class="results__share-icon" picking-mode="Ignore" />
+                </ui:Button>
+            </ui:VisualElement>
+            <ui:VisualElement name="tiles" class="profile__tiles" />
+            <ui:Label name="stats" class="status profile__hidden" />
+            <ui:VisualElement class="profile__medals-head">
+                <ui:Label name="medals-title" class="profile__medals-title" />
+                <ui:Button name="achievements" class="profile__see-all" />
+            </ui:VisualElement>
+            <ui:VisualElement name="medals" class="profile__medals" />
+            <ui:Label name="ranked-line" class="profile__ranked" />
+            <ui:VisualElement name="edit-fields" class="profile__hidden">
                 <ui:TextField name="name" class="field" />
                 <ui:TextField name="handle" class="field" />
                 <ui:TextField name="bio" class="field" />

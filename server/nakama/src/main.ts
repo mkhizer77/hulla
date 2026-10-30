@@ -83,6 +83,7 @@ import {
   rpcPushUnregister,
   rpcTableInvite,
 } from "./rpc/push";
+import { rpcQuickPlayBots } from "./rpc/quick_play_bots";
 import { rpcRankedBoard, rpcRankedGet } from "./rpc/ranked";
 import {
   rpcCatalogSet,
@@ -117,6 +118,7 @@ function InitModule(
 ): void {
   initializer.registerRpc("hello", rpcHello);
   initializer.registerRpc("table_create", rpcTableCreate);
+  initializer.registerRpc("quick_play_bots", rpcQuickPlayBots);
   initializer.registerRpc("table_join_by_code", rpcTableJoinByCode);
   initializer.registerRpc("presets_get", rpcPresetsGet);
   initializer.registerRpc("voice_token", rpcVoiceToken);

@@ -4176,7 +4176,7 @@ const check_table_state = validate54;
 const schema90 = {"type":"object","additionalProperties":false,"description":"The full table as the recipient may see it; the round view is redacted per recipient","required":["code","gameId","mode","status","hostSeat","rules","seats","spectatorCount","spectators","series","round","lastSeq","resumeToken"],"properties":{"code":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/roomCode"},"gameId":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/gameId"},"mode":{"$ref":"https://hulla.gg/schemas/protocol/shell/table.json#/definitions/tableMode"},"status":{"$ref":"https://hulla.gg/schemas/protocol/shell/table.json#/definitions/tableStatus"},"hostSeat":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndexOrNull"},"rules":{"$ref":"https://hulla.gg/schemas/protocol/shell/table.json#/definitions/rulesSelection"},"seats":{"type":"array","items":{"$ref":"https://hulla.gg/schemas/protocol/shell/table.json#/definitions/seat"}},"spectatorCount":{"type":"integer","minimum":0},"spectators":{"type":"array","items":{"$ref":"https://hulla.gg/schemas/protocol/shell/table.json#/definitions/spectator"}},"series":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/seriesState"},"round":{"oneOf":[{"$ref":"https://hulla.gg/schemas/protocol/games/thulla/views.json#/definitions/view"},{"type":"null"}]},"lastSeq":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/sequence"},"resumeToken":{"type":["string","null"]},"rematch":{"type":"object","additionalProperties":false,"properties":{"deadlineTs":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/timestamp"},"votes":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/seatList"}}},"autoStart":{"type":"object","additionalProperties":false,"required":["startsAtTs"],"description":"A public table counting down to its first deal (GDD 9.5)","properties":{"startsAtTs":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/timestamp"}}},"handAsk":{"type":"object","additionalProperties":false,"description":"A hand request still waiting for its answer (R33), so a rejoining player sees it","required":["asker","target","cardCount","deadlineTs"],"properties":{"asker":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex"},"target":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex"},"cardCount":{"type":"integer","minimum":1},"deadlineTs":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/timestamp"}}}}};
 const schema93 = {"type":"string","enum":["private","public","ranked"]};
 const schema94 = {"type":"string","enum":["open","locked","inRound","closed"]};
-const schema96 = {"type":"object","additionalProperties":false,"required":["seat","playerId","displayName","ready","connected","autoPlay"],"properties":{"seat":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex"},"playerId":{"oneOf":[{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/playerId"},{"type":"null"}]},"displayName":{"type":["string","null"]},"ready":{"type":"boolean"},"connected":{"type":"boolean"},"autoPlay":{"type":"boolean","description":"The auto-play policy holds this seat (R45, R46)"},"mic":{"type":"boolean","description":"The seat's microphone is on (GDD 11.4); off while disconnected"},"bot":{"type":"boolean"},"party":{"type":["string","null"],"description":"Players who queued together share a party id (GDD 7.2); shown as a link icon"},"avatar":{"type":["string","null"],"pattern":"^[a-z0-9_]{1,32}$","description":"The avatar this seat shows, assigned when the player sits and unique at the table (GDD 15.6)"},"cosmetics":{"type":["object","null"],"description":"What the seat has equipped for this table, by catalog category; null until the inventory is read","additionalProperties":false,"properties":{"cardBack":{"type":"string"},"cardFace":{"type":"string"},"table":{"type":"string"},"emotePack":{"type":"string"},"celebration":{"type":"string"},"soundSet":{"type":"string"}}}}};
+const schema96 = {"type":"object","additionalProperties":false,"required":["seat","playerId","displayName","ready","connected","autoPlay"],"properties":{"seat":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex"},"playerId":{"oneOf":[{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/playerId"},{"type":"null"}]},"displayName":{"type":["string","null"]},"ready":{"type":"boolean"},"connected":{"type":"boolean"},"autoPlay":{"type":"boolean","description":"The auto-play policy holds this seat (R45, R46)"},"bot":{"type":"boolean"},"mic":{"type":"boolean","description":"The seat's microphone is on (GDD 11.4); off while disconnected"},"party":{"type":["string","null"],"description":"Players who queued together share a party id (GDD 7.2); shown as a link icon"},"avatar":{"type":["string","null"],"pattern":"^[a-z0-9_]{1,32}$","description":"The avatar this seat shows, assigned when the player sits and unique at the table (GDD 15.6)"},"cosmetics":{"type":["object","null"],"description":"What the seat has equipped for this table, by catalog category; null until the inventory is read","additionalProperties":false,"properties":{"cardBack":{"type":"string"},"cardFace":{"type":"string"},"table":{"type":"string"},"emotePack":{"type":"string"},"celebration":{"type":"string"},"soundSet":{"type":"string"}}}}};
 
 function validate56(data, {instancePath="", parentData, parentDataProperty, rootData=data}={}){
 let vErrors = null;
@@ -4348,10 +4348,10 @@ else {
 var valid0 = true;
 }
 if(valid0){
-if(data.mic !== undefined){
+if(data.bot !== undefined){
 const _errs20 = errors;
-if(typeof data.mic !== "boolean"){
-validate56.errors = [{instancePath:instancePath+"/mic",schemaPath:"#/properties/mic/type",keyword:"type",params:{type: "boolean"}}];
+if(typeof data.bot !== "boolean"){
+validate56.errors = [{instancePath:instancePath+"/bot",schemaPath:"#/properties/bot/type",keyword:"type",params:{type: "boolean"}}];
 return false;
 }
 var valid0 = _errs20 === errors;
@@ -4360,10 +4360,10 @@ else {
 var valid0 = true;
 }
 if(valid0){
-if(data.bot !== undefined){
+if(data.mic !== undefined){
 const _errs22 = errors;
-if(typeof data.bot !== "boolean"){
-validate56.errors = [{instancePath:instancePath+"/bot",schemaPath:"#/properties/bot/type",keyword:"type",params:{type: "boolean"}}];
+if(typeof data.mic !== "boolean"){
+validate56.errors = [{instancePath:instancePath+"/mic",schemaPath:"#/properties/mic/type",keyword:"type",params:{type: "boolean"}}];
 return false;
 }
 var valid0 = _errs22 === errors;

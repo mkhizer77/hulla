@@ -2,12 +2,20 @@
     <ui:VisualElement name="table" class="screen table">
         <ui:VisualElement class="table__top">
             <ui:Button name="leave" class="button button--quiet button--small table__pill" />
-            <ui:Label name="info" class="table__info" />
+            <ui:VisualElement name="info-plate" class="table__plate">
+                <ui:Label name="info" class="table__info" />
+                <ui:VisualElement name="watch-icon" class="table__eye" picking-mode="Ignore" />
+                <ui:Label name="watch-count" class="table__eye-count" picking-mode="Ignore" />
+            </ui:VisualElement>
             <ui:VisualElement class="table__top-actions">
-                <ui:Button name="rules" class="button button--quiet button--small table__pill" />
-                <ui:Button name="settings" class="button button--quiet button--small table__pill" />
+                <ui:Button name="rules" class="button button--quiet button--small table__pill table__hidden" />
+                <ui:Button name="settings" class="button button--quiet button--small table__pill table__hidden" />
+                <ui:Button name="more" class="table__round">
+                    <ui:VisualElement class="table__icon table__icon--more" picking-mode="Ignore" />
+                </ui:Button>
             </ui:VisualElement>
         </ui:VisualElement>
+        <ui:VisualElement class="table__gap table__gap--top" picking-mode="Ignore" />
         <ui:VisualElement name="zone" class="table__zone">
             <ui:VisualElement name="rail" class="rail">
                 <ui:VisualElement name="felt" class="felt">
@@ -18,7 +26,6 @@
                 </ui:VisualElement>
             </ui:VisualElement>
             <ui:VisualElement name="opponents" class="opponents" picking-mode="Ignore" />
-            <ui:VisualElement name="me" class="table__me" />
             <ui:VisualElement class="voice-pill__row" picking-mode="Ignore">
                 <ui:Label name="voice-pill" class="voice-pill" picking-mode="Ignore" />
                 <ui:Button name="voice-speaker" class="chip voice-speaker" />
@@ -28,22 +35,30 @@
                 <ui:Label name="hint" class="hint" />
             </ui:VisualElement>
         </ui:VisualElement>
-        <ui:VisualElement name="player-sheet" class="coach player-sheet">
-            <ui:Label name="sheet-title" class="coach__text" />
-            <ui:VisualElement name="sheet-actions" class="chips" />
-            <ui:Label name="sheet-status" class="caption" />
+        <ui:VisualElement class="table__gap" picking-mode="Ignore" />
+        <ui:VisualElement name="my-strip" class="table__strip">
+            <ui:VisualElement name="me" class="table__me" />
+            <ui:VisualElement name="status" class="table__status">
+                <ui:Label name="status-text" class="table__status-text" />
+                <ui:Label name="status-secs" class="table__status-secs" />
+            </ui:VisualElement>
+            <ui:Button name="mic" class="button button--small table__mic">
+                <ui:VisualElement class="table__icon table__icon--mic" picking-mode="Ignore" />
+            </ui:Button>
+            <ui:Button name="chat" class="button button--small table__chat">
+                <ui:VisualElement class="table__icon table__icon--chat" picking-mode="Ignore" />
+            </ui:Button>
         </ui:VisualElement>
         <ui:VisualElement name="coach" class="coach">
             <ui:Label name="coach-text" class="coach__text" />
             <ui:Button name="coach-next" class="button button--primary button--small" />
+            <ui:VisualElement name="coach-tail" class="coach__tail" picking-mode="Ignore" />
         </ui:VisualElement>
         <ui:VisualElement class="table__bar">
             <ui:VisualElement name="quick-strip" class="quick-strip" />
             <ui:VisualElement class="table__bar-actions">
                 <ui:Button name="take-hand" class="button button--primary button--small" />
                 <ui:Button name="talk" class="button button--small table__talk" />
-                <ui:Button name="mic" class="button button--small table__mic" />
-                <ui:Button name="chat" class="button button--small table__chat" />
             </ui:VisualElement>
         </ui:VisualElement>
         <ui:VisualElement name="hand" class="hand" />
@@ -54,41 +69,60 @@
                 <ui:Button name="recap-hide" class="button button--quiet button--small" />
             </ui:VisualElement>
         </ui:VisualElement>
+        <ui:VisualElement name="sheet-dim" class="table__dim" />
         <ui:VisualElement name="chat-panel" class="chat-panel">
+            <ui:VisualElement class="sheet__grabber" picking-mode="Ignore" />
+            <ui:VisualElement name="chat-tabs" class="segment chat-panel__tabs" />
+            <ui:ScrollView name="chat-log-scroll" class="chat-sheet__log chat-panel__log" horizontal-scroller-visibility="Hidden" vertical-scroller-visibility="Hidden">
+                <ui:VisualElement name="chat-log" class="chat-log" />
+            </ui:ScrollView>
             <ui:VisualElement class="chat-panel__compose">
                 <ui:TextField name="chat-input" class="field chat-panel__input" />
                 <ui:Button name="chat-send" class="button button--primary button--small" />
             </ui:VisualElement>
             <ui:Label name="chat-status" class="caption" />
-            <ui:ScrollView class="chat-panel__scroll" horizontal-scroller-visibility="Hidden" vertical-scroller-visibility="Hidden">
-                <ui:VisualElement name="chat-log" class="chat-log" />
+            <ui:ScrollView name="chat-picks" class="chat-panel__scroll" horizontal-scroller-visibility="Hidden" vertical-scroller-visibility="Hidden">
                 <ui:VisualElement name="chat-emotes" class="chips" />
                 <ui:VisualElement name="chat-phrases" class="chips" />
             </ui:ScrollView>
-            <ui:Button name="chat-close" class="button button--quiet" />
+            <ui:Button name="chat-close" class="button button--quiet table__hidden" />
+        </ui:VisualElement>
+        <ui:VisualElement name="player-sheet" class="coach player-sheet">
+            <ui:VisualElement class="sheet__grabber player-sheet__grabber" picking-mode="Ignore" />
+            <ui:Label name="sheet-title" class="coach__text" />
+            <ui:VisualElement name="sheet-actions" class="chips" />
+            <ui:Label name="sheet-status" class="caption" />
         </ui:VisualElement>
         <ui:VisualElement name="results" class="results">
             <ui:VisualElement class="panel results__panel">
-                <ui:ScrollView class="results__scroll" vertical-scroller-visibility="Hidden">
+                <ui:ScrollView class="results__scroll" vertical-scroller-visibility="Hidden" horizontal-scroller-visibility="Hidden">
                     <ui:VisualElement name="result-podium" class="podium" />
                     <ui:VisualElement class="results__loser">
                         <ui:Label name="result-title" class="title title--small results__title" />
                         <ui:Label name="result-stamp" class="results__stamp" />
                     </ui:VisualElement>
                     <ui:Label name="result-reward" class="turn result-reward" />
+                    <ui:VisualElement name="result-level" class="results__level">
+                        <ui:VisualElement name="result-level-fill" class="results__level-fill" />
+                        <ui:Label name="result-level-text" class="results__level-text" />
+                    </ui:VisualElement>
                     <ui:VisualElement name="result-order" class="results__order" />
-                    <ui:Button name="result-fair" class="chip chip--fair" />
                 </ui:ScrollView>
-                <ui:VisualElement class="results__again">
-                    <ui:Button name="play-again" class="button button--primary results__play" />
-                    <ui:VisualElement name="result-votes" class="podium__votes" />
-                </ui:VisualElement>
-                <ui:VisualElement class="results__quiet">
-                    <ui:Button name="change-rules" class="button button--quiet button--small" />
-                    <ui:Button name="result-share" class="button button--quiet button--small" />
-                </ui:VisualElement>
-                <ui:Label name="result-status" class="status" />
             </ui:VisualElement>
+            <ui:VisualElement class="results__again">
+                <ui:Button name="play-again" class="button button--primary results__play">
+                    <ui:VisualElement name="result-votes" class="podium__votes" picking-mode="Ignore" />
+                </ui:Button>
+            </ui:VisualElement>
+            <ui:VisualElement class="results__quiet">
+                <ui:Button name="change-rules" class="button button--quiet button--small" />
+                <ui:Button name="result-fair" class="button button--quiet button--small results__fair" />
+                <ui:Button name="result-share" class="button button--quiet button--small results__share">
+                    <ui:VisualElement class="results__share-icon" picking-mode="Ignore" />
+                </ui:Button>
+            </ui:VisualElement>
+            <ui:Button name="result-leave" class="results__leave" />
+            <ui:Label name="result-status" class="status" />
         </ui:VisualElement>
     </ui:VisualElement>
 </ui:UXML>

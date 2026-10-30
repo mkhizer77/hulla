@@ -18,6 +18,7 @@ namespace Hulla.Presentation.TableKit
         private readonly VisualElement _root;
         private readonly VisualElement _stack;
         private readonly Label _count;
+        private readonly System.Collections.Generic.List<VisualElement> _cards = new System.Collections.Generic.List<VisualElement>();
         private long _known;
         private int _inFlight;
 
@@ -33,6 +34,7 @@ namespace Hulla.Presentation.TableKit
                 card.AddToClassList("discard__card--" + i);
                 card.pickingMode = PickingMode.Ignore;
                 _stack.Add(card);
+                _cards.Add(card);
             }
 
             _root.Add(_stack);
@@ -46,6 +48,15 @@ namespace Hulla.Presentation.TableKit
             caption.AddToClassList("discard__label");
             text.Add(caption);
             Apply();
+        }
+
+        /// <summary>The stack shows the player's own card back (GDD 12.11); null keeps the default.</summary>
+        public void SetBack(string? cardBack)
+        {
+            foreach (var card in _cards)
+            {
+                Theme.CosmeticArt.Apply(card, cardBack);
+            }
         }
 
         /// <summary>The count on the stack: the model's count less the cards still flying in.</summary>

@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7557f5624cc1349638820e758fe1482b, type: 3}
   m_Name: ScreenCatalog
   m_EditorClassIdentifier: Hulla.Presentation::Hulla.Presentation.Navigation.ScreenCatalog
+  Loading: {fileID: 9197481963319205126, guid: 25421348c0c44860be52fc91d28ee8c8, type: 3}
   Home: {fileID: 9197481963319205126, guid: 03b6cb46ef1dd4d6c9818395b3239a36, type: 3}
   Lobby: {fileID: 9197481963319205126, guid: 8896cba01213c4230bc680072558a3b4, type: 3}
   Table: {fileID: 9197481963319205126, guid: be95934513b2743dea69339c2559490a, type: 3}

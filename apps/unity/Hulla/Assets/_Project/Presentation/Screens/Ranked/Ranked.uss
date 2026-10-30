@@ -6,23 +6,26 @@
 
 .ranked__league {
     font-size: 72px;
-    color: var(--gold);
+    color: #601A1A;
     -unity-font-definition: url("/Assets/_Project/Presentation/Theme/Fonts/LilitaOne.ttf");
     -unity-font-style: normal;
     -unity-text-align: middle-center;
 }
 
 .ranked__rating {
-    font-size: var(--font-body);
+    font-size: 48px;
+    -unity-font-style: bold;
     color: var(--ink-ivory);
     margin-bottom: var(--space-1);
 }
 
 .ranked__bar {
-    width: 80%;
-    height: 18px;
-    border-radius: 9px;
-    background-color: var(--surface-raised);
+    width: 84%;
+    height: 48px;
+    border-radius: 24px;
+    border-width: 5px;
+    border-color: rgb(92, 40, 22);
+    background-color: rgb(222, 196, 170);
     margin-top: var(--space-1);
     margin-bottom: var(--space-1);
     overflow: hidden;
@@ -30,8 +33,9 @@
 
 .ranked__fill {
     height: 100%;
-    background-color: var(--accent-saffron);
-    border-radius: 9px;
+    min-width: 30px;
+    background-color: rgb(52, 130, 220);
+    border-radius: 19px;
 }
 
 .ranked__rules {
@@ -48,7 +52,7 @@
 .ranked__banner {
     display: none;
     background-color: var(--surface-raised);
-    color: var(--gold);
+    color: var(--ink-ivory);
     border-radius: var(--radius);
     padding: var(--space-2);
     margin-bottom: var(--space-2);
@@ -71,7 +75,7 @@
 }
 
 .ranked__step-name {
-    width: 32%;
+    flex-shrink: 0;
     color: var(--ink-ivory);
     -unity-font-style: bold;
 }

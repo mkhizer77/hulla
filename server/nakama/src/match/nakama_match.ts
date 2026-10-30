@@ -6,7 +6,7 @@ import { METRICS, metrics } from "../infra/metrics";
 import { ROUND_RESULTS_COLLECTION } from "../services/account_deletion";
 import { countRound, nkAchievementStore, settleUnlocks } from "../services/achievements";
 import { emitAnalyticsSafely } from "../services/analytics";
-import { equippedFor, nkCatalogStore } from "../services/catalog";
+import { equippedFor, nkCatalogStore, ownedEmotePacks } from "../services/catalog";
 import { clientTooOld, nkConfigStore } from "../services/config";
 import { postRoundPoints } from "../services/leaderboards";
 import { credit, nkLedgerPorts } from "../services/ledger";
@@ -400,7 +400,9 @@ function parseParams(params: Record<string, unknown>): CreateTableParams {
   };
   const autoStart = params["autoStart"];
   const parties = params["parties"];
-  const extras: Pick<CreateTableParams, "autoStart" | "parties"> = {};
+  const bots = Number(params["bots"] ?? 0);
+  const extras: Pick<CreateTableParams, "autoStart" | "parties" | "bots"> = {};
+  if (Number.isInteger(bots) && bots > 0) Object.assign(extras, { bots });
   if (typeof autoStart === "object" && autoStart !== null) {
     const expected = Number((autoStart as { expected?: unknown }).expected ?? 0);
     Object.assign(extras, { autoStart: { expected } });
@@ -514,12 +516,9 @@ export function tableMatchHandler<S, M, V, E, R>(
       if (userIds !== null && !userIds.includes(slot.playerId)) continue;
       try {
         catalog ??= store.catalog();
-        slot.cosmetics = equippedFor(
-          store.inventory(slot.playerId),
-          catalog,
-          state.gameId,
-          Date.now(),
-        );
+        const inventory = store.inventory(slot.playerId);
+        slot.cosmetics = equippedFor(inventory, catalog, state.gameId, Date.now());
+        slot.emotePacks = ownedEmotePacks(inventory, catalog, Date.now());
       } catch (error: unknown) {
         log.warn(logger, "cosmetics not read", { error: String(error) });
       }
@@ -589,12 +588,10 @@ export function tableMatchHandler<S, M, V, E, R>(
         if (slot === undefined) continue;
         try {
           const store = nkCatalogStore(nk);
-          slot.cosmetics = equippedFor(
-            store.inventory(presence.userId),
-            store.catalog(),
-            state.gameId,
-            Date.now(),
-          );
+          const inventory = store.inventory(presence.userId);
+          const catalog = store.catalog();
+          slot.cosmetics = equippedFor(inventory, catalog, state.gameId, Date.now());
+          slot.emotePacks = ownedEmotePacks(inventory, catalog, Date.now());
         } catch (error: unknown) {
           log.warn(logger, "cosmetics not read", { error: String(error) });
         }

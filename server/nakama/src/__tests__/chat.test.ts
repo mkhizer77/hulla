@@ -11,10 +11,15 @@ function memoryRate(): RateStore & { readonly map: Map<string, readonly number[]
 }
 
 describe("quick chat and emotes as match data (GDD 11.2, 11.3)", () => {
-  it("ships the 48 phrases and 16 emotes from content", () => {
+  it("ships the 48 phrases, the 16 launch emotes and the paid packs from content", () => {
     expect(QUICK_CHAT_PHRASES).toHaveLength(48);
     expect(new Set(QUICK_CHAT_PHRASES.map((p) => p.id)).size).toBe(48);
-    expect(EMOTES).toHaveLength(16);
+    expect(EMOTES.filter((e) => e.pack === "emotes_launch")).toHaveLength(16);
+    expect(EMOTES.filter((e) => e.pack === "emotes_cricket").length).toBeGreaterThan(0);
+    expect(EMOTES.filter((e) => e.pack === "emotes_shaadi").length).toBeGreaterThan(0);
+    expect(BUNDLED_CHAT.emotePack("six")).toBe("emotes_launch");
+    expect(BUNDLED_CHAT.emotePack("wicket")).toBe("emotes_cricket");
+    expect(BUNDLED_CHAT.freeEmotePacks).toEqual(["emotes_launch"]);
     expect(BUNDLED_CHAT.isPhrase("v1", "T01")).toBe(true);
     expect(BUNDLED_CHAT.isPhrase("v2", "T01")).toBe(false);
     expect(BUNDLED_CHAT.isEmote("chai")).toBe(true);
@@ -70,6 +75,32 @@ describe("quick chat and emotes as match data (GDD 11.2, 11.3)", () => {
     });
     expect(sentTo(h.send("s1", "emote", { emoteId: "" }), "s1")[0]?.payload).toMatchObject({
       detail: { reason: "schema" },
+    });
+  });
+});
+
+describe("emote packs (GDD 11.3, 12.11)", () => {
+  it("lets only a pack's owners send its emotes, while every seat sees them", () => {
+    const h = harness();
+    seated(h, 3);
+    const refused = h.send("s1", "emote", { emoteId: "wicket" });
+    expect(broadcasts(refused)).toEqual([]);
+    expect(sentTo(refused, "s1")[0]?.payload).toMatchObject({
+      code: "table.not_authorised",
+      detail: { reason: "not_owned", emotePack: "emotes_cricket" },
+    });
+    expect(broadcasts(h.send("s1", "emote", { emoteId: "chai" }))).toHaveLength(1);
+    const owner = h.state.seats[2];
+    if (owner === undefined) throw new Error("seat 2");
+    owner.emotePacks = ["emotes_launch", "emotes_cricket"];
+    const sent = h.send("s2", "emote", { emoteId: "wicket", targetSeat: 1 });
+    expect(broadcasts(sent)[0]).toMatchObject({
+      type: "emote_sent",
+      payload: { seat: 2, emoteId: "wicket", targetSeat: 1 },
+    });
+    h.now += 3_000;
+    expect(sentTo(h.send("s2", "emote", { emoteId: "laddoo" }), "s2")[0]?.payload).toMatchObject({
+      detail: { reason: "not_owned", emotePack: "emotes_shaadi" },
     });
   });
 });

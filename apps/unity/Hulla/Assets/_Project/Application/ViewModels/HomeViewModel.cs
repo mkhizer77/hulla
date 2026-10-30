@@ -44,6 +44,18 @@ namespace Hulla.Application.ViewModels
         {
             if (_session.Current != null && name == LastName)
             {
+                // A socket dropped in the background is reopened before matchmaking needs it.
+                if (!_session.IsConnected)
+                {
+                    var reconnected = await _session.ReconnectAsync(cancellation);
+                    if (!reconnected.IsOk)
+                    {
+                        ErrorCode = reconnected.Error.Code;
+                        Changed?.Invoke();
+                        return Result<PlayerSession>.Fail(reconnected.Error);
+                    }
+                }
+
                 return Result<PlayerSession>.Ok(_session.Current);
             }
 

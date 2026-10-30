@@ -3,6 +3,7 @@ import { ErrorCodes, ruleError, type RuleError } from "@hulla/shared-ts";
 import { log } from "../infra/log";
 
 import { credit, type LedgerPorts } from "./ledger";
+import { PROFILE_KEY, PROFILES_COLLECTION } from "./profiles";
 import { forDay, nkProgressStore, type Progress } from "./progression";
 
 import type { RoundRecord } from "../match/types";
@@ -118,10 +119,43 @@ export interface BoardView {
   readonly nextResetTs: number | null;
 }
 
-const toRow = (r: nkruntime.LeaderboardRecord): BoardRow => ({
+/**
+ * The names a board shows: the profile's display name, else the account's, else the username.
+ * Records are written without a name, so they are looked up for each page in one read.
+ */
+export function playerNames(nk: nkruntime.Nakama, ids: readonly string[]): Map<string, string> {
+  const names = new Map<string, string>();
+  const unique = [...new Set(ids)].filter((id) => id !== "");
+  if (unique.length === 0) return names;
+  try {
+    const objects = nk.storageRead(
+      unique.map((userId) => ({ collection: PROFILES_COLLECTION, key: PROFILE_KEY, userId })),
+    );
+    for (const object of objects) {
+      const name = (object.value as { displayName?: unknown }).displayName;
+      if (typeof name === "string" && name.trim() !== "") names.set(object.userId, name);
+    }
+  } catch {
+    // Profiles unreadable: fall through to the accounts.
+  }
+  const missing = unique.filter((id) => !names.has(id));
+  if (missing.length > 0) {
+    try {
+      for (const user of nk.usersGetId(missing)) {
+        const name = user.displayName !== "" ? user.displayName : user.username;
+        if (name !== "") names.set(user.userId, name);
+      }
+    } catch {
+      // Accounts unreadable: the record's own username stays.
+    }
+  }
+  return names;
+}
+
+const toRow = (r: nkruntime.LeaderboardRecord, names?: Map<string, string>): BoardRow => ({
   rank: r.rank,
   userId: r.ownerId,
-  username: r.username,
+  username: names?.get(r.ownerId) ?? r.username,
   score: r.score,
   rounds: r.numScore,
 });
@@ -153,17 +187,20 @@ export function boardView(
   // Nakama keeps the page of top records in `records` and the asked-for owners in `ownerRecords`,
   // so the friends view reads the latter and the global view the former.
   const source = scope === "friends" ? (list.ownerRecords ?? []) : (list.records ?? []);
-  const rows = source.map(toRow).sort((a, b) => b.score - a.score || a.rank - b.rank);
   const mine =
     (list.ownerRecords ?? []).find((r) => r.ownerId === userId) ??
     (list.records ?? []).find((r) => r.ownerId === userId);
+  const names = playerNames(nk, [...source.map((r) => r.ownerId), userId]);
+  const rows = source
+    .map((r) => toRow(r, names))
+    .sort((a, b) => b.score - a.score || a.rank - b.rank);
   const nextResetTs = nextResetOf(nk, id);
   return {
     ok: true,
     board,
     scope,
     rows,
-    me: mine === undefined ? null : toRow(mine),
+    me: mine === undefined ? null : toRow(mine, names),
     nextCursor: list.nextCursor ?? null,
     nextResetTs,
   };

@@ -137,7 +137,7 @@ namespace Hulla.Games.Thulla.Tests
         public void TheRulebookHasEverySectionTheGddAsksFor()
         {
             var ids = ThullaRulebook.Build(Table(new RulesSelection { GameId = GameId.Thulla }, null), new Presets()).Select(s => s.Id);
-            CollectionAssert.AreEqual(new[] { "table", "basics", ThullaRulebook.WhyNotSection, "auto-play", "glossary", "tips" }, ids);
+            CollectionAssert.AreEqual(new[] { "basics", ThullaRulebook.WhyNotSection, "auto-play", "glossary", "tips", "table" }, ids);
         }
     }
 }

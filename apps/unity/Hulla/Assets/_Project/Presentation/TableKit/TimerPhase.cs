@@ -21,7 +21,7 @@ namespace Hulla.Presentation.TableKit
         public static Phase For(float secondsLeft) =>
             secondsLeft <= CriticalSeconds ? Phase.Critical : secondsLeft <= WarnSeconds ? Phase.Warn : Phase.Calm;
 
-        /// <summary>The ring's scale: 1 while calm, a soft pulse (up to 1.06) when amber, a quicker one (1.1) when red.</summary>
+        /// <summary>The ring's glow pulse: 1 while calm, a soft pulse (up to 1.06) when amber, a quicker one (1.1) when red.</summary>
         public static float Pulse(float secondsLeft, float elapsedSeconds, bool reduceMotion)
         {
             if (reduceMotion)

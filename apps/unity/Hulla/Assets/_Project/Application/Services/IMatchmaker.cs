@@ -21,6 +21,12 @@ namespace Hulla.Application.Services
         /// <param name="band">How far either side of the player's rating to look.</param>
         Awaitable<Result<bool>> SearchRankedAsync(int band, CancellationToken cancellation);
 
+        /// <summary>
+        /// Nobody came in 30 s (owner decision, 29 Oct): a table for the player and up to three bots
+        /// (quick_play_bots), entered like any other table.
+        /// </summary>
+        Awaitable<Result<TableTicket>> BotTableAsync(int seats, CancellationToken cancellation);
+
         Awaitable CancelAsync();
     }
 }

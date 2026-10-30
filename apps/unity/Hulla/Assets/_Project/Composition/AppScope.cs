@@ -25,7 +25,6 @@ namespace Hulla.Composition
         private SessionScope? _session;
         private PushPrompt? _pushPrompt;
         private WelcomePrompts? _welcomePrompts;
-        private LookPlaytest? _lookPlaytest;
 
         public AppScope(AppConfig config)
         {
@@ -58,7 +57,6 @@ namespace Hulla.Composition
             Chat = new ContentChatCatalog(Content);
             Presets = new ContentPresetCatalog(Content);
             Welcome = new NakamaWelcomeService(_connection);
-            LookFeedback = new NakamaLookFeedbackService(_connection);
             Phone = new PhoneViewModel(new NakamaPhoneService(_connection, _sessionService));
             Achievements = new AchievementsViewModel(new NakamaAchievementsService(_connection));
             Shop = new ShopViewModel(new NakamaShopService(_connection));
@@ -170,10 +168,6 @@ namespace Hulla.Composition
         public WelcomePrompts WelcomePrompts => _welcomePrompts ??= new WelcomePrompts(Store);
 
         public IWelcomeService Welcome { get; }
-
-        public LookPlaytest LookPlaytest => _lookPlaytest ??= new LookPlaytest(Store);
-
-        public ILookFeedbackService LookFeedback { get; }
 
         public SettingsModel Settings { get; }
 

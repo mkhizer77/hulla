@@ -92,6 +92,10 @@
           "type": "boolean",
           "description": "The auto-play policy holds this seat (R45, R46)"
         },
+        "bot": {
+          "type": "boolean",
+          "description": "A bot holds this seat (a lone Quick Play player's table); absent for people"
+        },
         "mic": {
           "type": "boolean",
           "description": "The seat's microphone is on (GDD 11.4); off while disconnected"

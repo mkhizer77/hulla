@@ -10,6 +10,7 @@ import {
 
 import { BUNDLED_CHAT, type ChatContent } from "../content/chat";
 
+import { botNames, botSlot, MAX_BOTS, renameClashingBots } from "./bots";
 import {
   canStart,
   changedRuleKeys,
@@ -54,6 +55,16 @@ import type { RoundDeps } from "./round";
 import type { Check, JoinTable, MessageEnvelope, RulesSelection } from "@hulla/protocol/generated";
 
 const PROTOCOL_MAJOR = 1;
+
+/** A Quick Play table opened for one player with bots (match/bots.ts): the bots take the first seats. */
+function withBots(seats: SeatSlot[], params: CreateTableParams, now: number): SeatSlot[] {
+  const count = Math.max(0, Math.min(MAX_BOTS, params.bots ?? 0, seats.length - 1));
+  let seed = 0;
+  for (const c of params.code) seed = (seed * 31 + c.charCodeAt(0)) % 100_003;
+  const names = botNames(seed, count);
+  for (let i = 0; i < count; i += 1) seats[i] = botSlot(seats, i, names[i] ?? "Bot", now);
+  return seats;
+}
 
 /** Read through a function so TypeScript does not narrow `phase` across the mutations above. */
 function closing<S, M>(state: TableState<S, M>): boolean {
@@ -254,6 +265,7 @@ export function tableCore<S, M, V, E, R>(
       now,
       null,
     );
+    renameClashingBots(state.seats, slot.displayName);
     attachSession(slot, record.sessionId, now);
     const seated: PresenceRecord = { ...record, seat, seatNext: false };
     state.presences[record.sessionId] = seated;
@@ -338,7 +350,9 @@ export function tableCore<S, M, V, E, R>(
     settleSeatsAfterRound(state);
     seatWaitingSpectators(state, emit, now);
     if (state.hostSeat !== hostBefore) hostChanged(state, emit, "host_left");
-    if (state.mode !== "private" && humansPresent(state) < 2) {
+    // A bot table carries on for its one player; other public tables need two people.
+    const fewest = state.seats.some((s) => s.bot) ? 1 : 2;
+    if (state.mode !== "private" && humansPresent(state) < fewest) {
       closeTable(state, emit, "dissolved", now);
       return;
     }
@@ -815,6 +829,12 @@ export function tableCore<S, M, V, E, R>(
           reject(ruleError(ErrorCodes.content.packUnknown, { emoteId }));
           return;
         }
+        // Anyone sees a pack's emotes; only its owners may send them (GDD 11.3, 12.11).
+        const emotePack = chat.emotePack(emoteId);
+        if (emotePack !== null && !(slot.emotePacks ?? chat.freeEmotePacks).includes(emotePack)) {
+          reject(ruleError(ErrorCodes.table.notAuthorised, { reason: "not_owned", emotePack }));
+          return;
+        }
         if (now - slot.emoteTs < config.emoteCooldownMs) {
           reject(ruleError(ErrorCodes.network.rateLimited, { kind: "emote" }));
           return;
@@ -848,7 +868,7 @@ export function tableCore<S, M, V, E, R>(
         lockedByHost: false,
         hostSeat: null,
         rules: normalised(params.rules ?? { gameId: params.gameId }),
-        seats: Array.from({ length: host.module.seats.max }, emptySlot),
+        seats: withBots(Array.from({ length: host.module.seats.max }, emptySlot), params, now),
         presences: {},
         admissions: {},
         kicked: [],
@@ -964,6 +984,7 @@ export function tableCore<S, M, V, E, R>(
               now,
               state.autoStart?.parties[info.userId] ?? null,
             );
+            renameClashingBots(state.seats, slot.displayName);
             status = "joined";
             state.hostSeat ??= admission.seat;
           }
@@ -978,7 +999,9 @@ export function tableCore<S, M, V, E, R>(
         const countdownArmed =
           countdownBefore === null && (state.autoStart?.startsAtTs ?? null) !== null;
         emit.session(info.sessionId, "table_state", tableStateFor(state, host, record));
-        if (countdownArmed) {
+        // The others learn a new occupant's avatar and a new watcher from the table state; the presence
+        // event alone carries only the name, so a taken seat or a new watcher sends it to everyone.
+        if (countdownArmed || status !== "reconnected") {
           for (const other of Object.values(state.presences)) {
             if (other.sessionId !== info.sessionId) {
               emit.session(other.sessionId, "table_state", tableStateFor(state, host, other));
@@ -1207,6 +1230,16 @@ export function tableCore<S, M, V, E, R>(
         resolveRematch(state, emit, now);
       }
       const auto = state.autoStart;
+      // A bot table ends once its player has gone (left, not just dropped: they may reconnect),
+      // and never deals to bots alone if the player never arrived.
+      if (
+        !closing(state) &&
+        state.seats.some((s) => s.bot) &&
+        !state.seats.some((s) => !s.bot && s.playerId !== null && !s.left) &&
+        (state.phase !== "lobby" || auto?.startsAtTs !== null || now >= auto.joinDeadlineTs)
+      ) {
+        closeTable(state, emit, "dissolved", now);
+      }
       if (auto !== null && state.phase === "lobby") {
         const seated = activeSeats(state.seats).length;
         if (auto.startsAtTs === null && now >= auto.joinDeadlineTs) {
