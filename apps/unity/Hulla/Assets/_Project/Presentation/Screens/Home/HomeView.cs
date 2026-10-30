@@ -21,6 +21,15 @@ namespace Hulla.Presentation.Screens.Home
 
         public const float StageHeight = 1736f;
 
+        /// <summary>
+        /// Where the shared top bar centres its gear and coins on every other screen (the screen's 24 px
+        /// padding, the button's 8 px inset, half its 132 px): Home's header lines up with it.
+        /// </summary>
+        public const float TopBarCentre = 98f;
+
+        /// <summary>The gear's centre on the stage (concept: Home).</summary>
+        private const float StageGearCentre = 103f;
+
         /// <summary>How many friends the panel shows before Invite.</summary>
         public const int PartySize = 4;
 
@@ -51,9 +60,12 @@ namespace Hulla.Presentation.Screens.Home
         private string? _note;
         private int _seats = 4;
         private bool _ranked;
+        private Action<string, string, string?>? _join2;
+        private Action<string, string, string?>? _watch;
+        private Action<string, string?>? _openFriends;
 
         /// <param name="server">Kept for the callers' signature: the server field lives in Settings now, so a null is passed.</param>
-        public HomeView(VisualElement root, HomeViewModel model, string? server, Action<string, string?> create, Action<string, string, string?> join, Action<string, int, string?> quickPlay, Action? openSettings = null, Action<string, string?>? openFriends = null, Action<string, string?>? openProfile = null, HomeFriendsViewModel? friendsOnline = null, Action? howToPlay = null, string? howToPlayText = null, Action<string, string, string?>? watch = null, ProgressViewModel? progress = null, Action<string, string?>? openMissions = null, Action<string, string?>? openLeaderboard = null, Action<string, string?>? openShop = null, Action<string, string?>? openPass = null, Action<string, string?>? openRanked = null)
+        public HomeView(VisualElement root, HomeViewModel model, string? server, Action<string, string?> create, Action<string, string, string?> join, Action<string, int, string?> quickPlay, Action? openSettings = null, Action<string, string?>? openFriends = null, Action<string, string?>? openProfile = null, HomeFriendsViewModel? friendsOnline = null, Action? howToPlay = null, string? howToPlayText = null, Action<string, string, string?>? watch = null, ProgressViewModel? progress = null, Action<string, string?>? openMissions = null, Action<string, string?>? openLeaderboard = null, Action<string, string?>? openShop = null, Action<string, string?>? openPass = null, Action<string, string?>? openRanked = null, Action<string, string?>? invite = null)
         {
             _model = model;
             _progress = progress;
@@ -98,9 +110,25 @@ namespace Hulla.Presentation.Screens.Home
             // The name is asked once (GDD 17.2); afterwards it sits in the header, the avatar opens the
             // profile and a tap on the name edits it.
             _namePanel.style.display = model.LastName.Length == 0 ? DisplayStyle.Flex : DisplayStyle.None;
+            // The name board, the avatar and the level star open the profile (docs/design/design-direction.md 5.1);
+            // until a name exists, the board opens the field.
             _nameLabel.RegisterCallback<ClickEvent>(_ =>
-                _namePanel.style.display = _namePanel.style.display == DisplayStyle.Flex ? DisplayStyle.None : DisplayStyle.Flex);
+            {
+                if (_name.value.Trim().Length == 0)
+                {
+                    _namePanel.style.display = _namePanel.style.display == DisplayStyle.Flex ? DisplayStyle.None : DisplayStyle.Flex;
+                    return;
+                }
+
+                openProfile?.Invoke(_name.value, null);
+            });
             _avatar.RegisterCallback<ClickEvent>(_ => openProfile?.Invoke(_name.value, null));
+            _level.pickingMode = PickingMode.Position;
+            _level.RegisterCallback<ClickEvent>(_ => openProfile?.Invoke(_name.value, null));
+            // The coin plate opens the shop.
+            var wallet = root.Q<VisualElement>("wallet");
+            wallet.pickingMode = PickingMode.Position;
+            wallet.RegisterCallback<ClickEvent>(_ => openShop?.Invoke(_name.value, null));
             _code = root.Q<TextField>("code");
             _code.label = UiText.CodeLabel;
             _code.maxLength = 8;
@@ -109,15 +137,7 @@ namespace Hulla.Presentation.Screens.Home
             var joinToggle = root.Q<Button>("join-toggle");
             joinToggle.text = "";
             TextArt.Mark(root.Q<Label>("join-toggle-label"), "join-by-code").text = UiText.JoinByCode;
-            joinToggle.clicked += () =>
-            {
-                var open = _joinPanel.style.display != DisplayStyle.Flex;
-                _joinPanel.style.display = open ? DisplayStyle.Flex : DisplayStyle.None;
-                if (open)
-                {
-                    _code.Focus();
-                }
-            };
+            joinToggle.clicked += () => OpenJoinSheet(root, join);
             _create = root.Q<Button>("create");
             _create.text = "";
             TextArt.Mark(root.Q<Label>("create-label"), "create-room").text = UiText.CreateRoom;
@@ -126,7 +146,13 @@ namespace Hulla.Presentation.Screens.Home
             _status = root.Q<Label>("status");
             _create.clicked += () => WithName(name => create(name, null));
             _join.clicked += () => WithName(name => join(name, _code.value, null));
-            root.Q<Button>("invite").clicked += () => openFriends?.Invoke(_name.value, null);
+            var inviteButton = root.Q<Button>("invite");
+            inviteButton.text = "";
+            inviteButton.tooltip = UiText.Invite;
+            inviteButton.clicked += () => (invite ?? openFriends)?.Invoke(_name.value, null);
+            _join2 = join;
+            _watch = watch;
+            _openFriends = openFriends;
             BuildCard(root);
             BuildSeats(root);
             BuildMode(root, openRanked != null);
@@ -176,17 +202,114 @@ namespace Hulla.Presentation.Screens.Home
             Refresh();
         }
 
+        private Label? _sheetHint;
+        private string? _dismissedError;
+
+        /// <summary>
+        /// Join by code as a sheet over Home (design: Join by code): six boxes with the keyboard up at
+        /// once, a code on the clipboard offered on one line, Join in yellow, and a refused join in the
+        /// hint's place with the boxes kept for a retry.
+        /// </summary>
+        private void OpenJoinSheet(VisualElement root, Action<string, string, string?> join)
+        {
+            var panel = Navigation.Sheet.Open(root, UiText.JoinByCode, () =>
+            {
+                // A refusal said on the sheet is not repeated on Home once the sheet closes.
+                _sheetHint = null;
+                _dismissedError = _model.ErrorCode;
+                Refresh();
+            });
+            panel.AddToClassList("join-sheet");
+            var boxes = new VisualElement();
+            boxes.AddToClassList("join-sheet__boxes");
+            var cells = new Label[CodeLength];
+            for (var i = 0; i < CodeLength; i++)
+            {
+                cells[i] = new Label { pickingMode = PickingMode.Ignore };
+                cells[i].AddToClassList("join-sheet__box");
+                boxes.Add(cells[i]);
+            }
+
+            var field = new TextField { maxLength = CodeLength, name = "join-code" };
+            field.AddToClassList("join-sheet__field");
+            boxes.Add(field);
+            panel.Add(boxes);
+            void Show(string code)
+            {
+                for (var i = 0; i < CodeLength; i++)
+                {
+                    cells[i].text = i < code.Length ? code.Substring(i, 1) : "";
+                    cells[i].EnableInClassList("join-sheet__box--filled", i < code.Length);
+                    cells[i].EnableInClassList("join-sheet__box--next", i == code.Length);
+                }
+            }
+
+            field.RegisterValueChangedCallback(evt =>
+            {
+                var clean = Clean(evt.newValue);
+                if (clean != evt.newValue)
+                {
+                    field.SetValueWithoutNotify(clean);
+                }
+
+                Show(clean);
+            });
+            var clipboard = Clean(UnityEngine.GUIUtility.systemCopyBuffer ?? "");
+            if (clipboard.Length == CodeLength)
+            {
+                var paste = Navigation.Sheet.Line(Strings.Format(UiText.PasteCode, clipboard), "join-sheet__paste");
+                paste.RegisterCallback<ClickEvent>(_ => field.value = clipboard);
+                panel.Add(paste);
+            }
+
+            var go = Navigation.Sheet.Button(UiText.JoinTable, () =>
+            {
+                var code = Clean(field.value);
+                if (code.Length == CodeLength)
+                {
+                    WithName(name => join(name, code, null));
+                }
+            }, "yes");
+            go.AddToClassList("join-sheet__join");
+            panel.Add(go);
+            _sheetHint = Navigation.Sheet.Line(UiText.CodeHint, "join-sheet__hint");
+            panel.Add(_sheetHint);
+            Show("");
+            field.schedule.Execute(() => field.Focus()).StartingIn(50);
+        }
+
+        private const int CodeLength = 6;
+
+        private static string Clean(string text)
+        {
+            var builder = new System.Text.StringBuilder();
+            foreach (var c in text.ToUpperInvariant())
+            {
+                if (char.IsLetterOrDigit(c) && c < 128 && builder.Length < CodeLength)
+                {
+                    builder.Append(c);
+                }
+            }
+
+            return builder.ToString();
+        }
+
         /// <summary>Ranked is on: Play now opens Ranked instead of Quick Play.</summary>
         public bool RankedChosen => _ranked;
 
         /// <summary>The seat count Quick Play asks for.</summary>
         public int Seats => _seats;
 
-        /// <summary>The stage keeps its design size and scales to the room above the dock, centred.</summary>
+        /// <summary>
+        /// The stage keeps its design size and scales to the room above the dock, centred. On a tall
+        /// screen the spare height splits above and below it, so the header and friends panel are lifted
+        /// to the top bar's line on the other screens instead of floating lower.
+        /// </summary>
         private static void Fit(VisualElement root)
         {
             var holder = root.Q<VisualElement>("stage-holder");
             var stage = root.Q<VisualElement>("stage");
+            var top = new[] { root.Q<VisualElement>("settings"), root.Q<VisualElement>("me"), root.Q<VisualElement>("wallet"), root.Q<VisualElement>("friends-panel") };
             holder.RegisterCallback<GeometryChangedEvent>(_ =>
             {
                 var size = holder.contentRect.size;
@@ -197,6 +320,15 @@ namespace Hulla.Presentation.Screens.Home
 
                 var scale = Math.Min(size.x / StageWidth, size.y / StageHeight);
                 stage.style.scale = new Scale(new UnityEngine.Vector3(scale, scale, 1f));
+                var spare = (size.y - (StageHeight * scale)) / 2f;
+                var lift = Math.Min(0f, ((TopBarCentre - spare) / scale) - StageGearCentre);
+                foreach (var element in top)
+                {
+                    if (element != null)
+                    {
+                        element.style.translate = new Translate(0, lift);
+                    }
+                }
             });
         }
 
@@ -212,7 +344,22 @@ namespace Hulla.Presentation.Screens.Home
         /// <summary>Four enamel medallions, 3 to 6; the chosen one wears the gold rim.</summary>
         private void BuildSeats(VisualElement root)
         {
-            TextArt.Mark(root.Q<Label>("seats-label"), "seat-size").text = UiText.SeatSize;
+            // The hero's fan (concept: Home): six cards on one pivot below them, so they arc like a held hand.
+            var fan = root.Q<VisualElement>(className: "home__fan");
+            if (fan != null && fan.childCount == 0)
+            {
+                string[] faces = { "AH", "AS", "AD", "AC", "KS", "QH" };
+                for (var i = 0; i < faces.Length; i++)
+                {
+                    var card = new CardElement().Show(faces[i]);
+                    card.pickingMode = PickingMode.Ignore;
+                    card.AddToClassList("home__fan-card");
+                    card.style.rotate = new Rotate(-30f + 12f * i);
+                    fan.Add(card);
+                }
+            }
+
+            root.Q<Label>("seats-label").text = UiText.SeatSize;
             var seats = root.Q<VisualElement>("seats");
             for (var n = 3; n <= 6; n++)
             {
@@ -314,12 +461,23 @@ namespace Hulla.Presentation.Screens.Home
             }
         }
 
+        private string? _avatarId;
+
+        /// <summary>The player's own face on the profile pill; null keeps the tinted initial.</summary>
+        public void SetAvatar(string? avatarId)
+        {
+            _avatarId = avatarId;
+            RefreshName();
+        }
+
         private void RefreshName()
         {
             var name = _name.value;
             _nameLabel.text = name.Length == 0 ? UiText.NameLabel : name;
-            _avatarInitial.text = name.Length == 0 ? "?" : name.Substring(0, 1).ToUpperInvariant();
-            AvatarTint.Apply(_avatar, name);
+            // Generated names run long ("Pindi Cheetah 82"): the board steps the type down instead of cutting them.
+            _nameLabel.EnableInClassList("home__name--long", name.Length > 11);
+            _nameLabel.EnableInClassList("home__name--longer", name.Length > 15);
+            AvatarArt.Apply(_avatar, _avatarInitial, _avatarId, name.Length == 0 ? "?" : name);
         }
 
         private void RefreshProgress()
@@ -357,14 +515,31 @@ namespace Hulla.Presentation.Screens.Home
                 var friend = online![i];
                 var face = new VisualElement { tooltip = friend.Name + " (" + UiText.Presence(friend.State) + ")" };
                 face.AddToClassList("party__face");
+                // A friend at a table is joined (the server refuses a full or private one in plain words); the rest open Friends.
+                var code = friend.TableCode;
+                face.RegisterCallback<ClickEvent>(_ => WithName(name =>
+                {
+                    if (code != null && friend.Joinable)
+                    {
+                        _join2?.Invoke(name, code, null);
+                    }
+                    else if (code != null && friend.Watchable && _watch != null)
+                    {
+                        _watch(name, code, null);
+                    }
+                    else
+                    {
+                        _openFriends?.Invoke(name, null);
+                    }
+                }));
                 var avatar = new VisualElement { pickingMode = PickingMode.Ignore };
                 avatar.AddToClassList("seat__avatar");
                 avatar.AddToClassList("party__avatar");
-                AvatarTint.Apply(avatar, friend.Name);
-                var initial = new Label(friend.Name.Length == 0 ? "?" : friend.Name.Substring(0, 1).ToUpperInvariant());
+                var initial = new Label();
                 initial.AddToClassList("seat__initial");
                 initial.AddToClassList("party__initial");
                 avatar.Add(initial);
+                AvatarArt.Apply(avatar, initial, AvatarArt.ForAccount(friend.UserId), friend.Name);
                 face.Add(avatar);
                 var frame = new VisualElement { pickingMode = PickingMode.Ignore };
                 frame.AddToClassList("party__frame");
@@ -390,7 +565,18 @@ namespace Hulla.Presentation.Screens.Home
             _create.SetEnabled(!_model.Busy);
             _join.SetEnabled(!_model.Busy);
             _quick.SetEnabled(!_model.Busy && _quickAvailable);
-            _status.text = _model.Busy ? UiText.Connecting : _model.ErrorCode != null ? UiText.Error(_model.ErrorCode) : _note ?? "";
+            var error = _model.ErrorCode != null && _model.ErrorCode != _dismissedError && _sheetHint == null ? _model.ErrorCode : null;
+            if (_model.ErrorCode == null)
+            {
+                _dismissedError = null;
+            }
+
+            _status.text = _model.Busy ? UiText.Connecting : error != null ? UiText.Error(error) : _note ?? "";
+            if (_sheetHint != null)
+            {
+                _sheetHint.text = _model.Busy ? UiText.Connecting : _model.ErrorCode != null ? UiText.Error(_model.ErrorCode) : UiText.CodeHint;
+                _sheetHint.EnableInClassList("join-sheet__hint--error", _model.ErrorCode != null && !_model.Busy);
+            }
         }
     }
 }

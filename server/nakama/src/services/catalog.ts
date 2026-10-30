@@ -223,6 +223,13 @@ export function equip(
 
 export type SeatCosmetics = Partial<Record<Category, string>>;
 
+/** The emote packs a player may send from (GDD 11.3): the ones they own, the starter pack included. */
+export function ownedEmotePacks(inventory: Inventory, catalog: Catalog, now: number): string[] {
+  return catalog.items
+    .filter((i) => i.category === "emotePack" && owns(inventory, catalog, i.id, now))
+    .map((i) => i.id);
+}
+
 /** What a seat shows at a table of `gameId`: the game's choice, else the global one, else the starter. */
 export function equippedFor(
   inventory: Inventory,

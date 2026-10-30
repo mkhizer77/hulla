@@ -32,10 +32,11 @@ namespace Hulla.Presentation.Text
         /// <summary>"title, 600 coins, card back" from what a league pays at season end.</summary>
         public static string Reward(Hulla.Application.Progress.RankedLeague league)
         {
-            var parts = new System.Collections.Generic.List<string> { "\"" + ItemText.Name(league.RewardTitle.Replace("ranked_", "")) + "\" title" };
-            if (league.RewardCoins > 0)
+            // Compact, as in the concept: "frame + card back + 2,000", or "150 coins" on its own.
+            var parts = new System.Collections.Generic.List<string>();
+            if (league.RewardFrame)
             {
-                parts.Add(Strings.Format(Coins, league.RewardCoins.ToString("N0")));
+                parts.Add(Frame);
             }
 
             if (league.RewardCardBack)
@@ -43,12 +44,12 @@ namespace Hulla.Presentation.Text
                 parts.Add(CardBack);
             }
 
-            if (league.RewardFrame)
+            if (league.RewardCoins > 0)
             {
-                parts.Add(Frame);
+                parts.Add(parts.Count > 0 ? league.RewardCoins.ToString("N0", Strings.Culture) : Strings.Format(Coins, league.RewardCoins.ToString("N0", Strings.Culture)));
             }
 
-            return string.Join(", ", parts);
+            return string.Join(Strings.Text("ranked.reward_sep"), parts);
         }
 
         /// <summary>The season number for display: "s3" → "3".</summary>

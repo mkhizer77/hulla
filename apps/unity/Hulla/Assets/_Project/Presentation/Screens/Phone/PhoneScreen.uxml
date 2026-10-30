@@ -1,10 +1,13 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements">
     <ui:VisualElement name="phone" class="screen settings">
         <ui:VisualElement class="settings__top">
-            <ui:Label name="title" class="title title--small" />
-            <ui:Button name="back" class="button button--quiet button--small" />
+            <ui:Label name="title" class="title title--small top__title" />
+            <ui:Button name="back" class="top__button top__left">
+                <ui:VisualElement class="kit__icon kit__icon--back" picking-mode="Ignore" />
+            </ui:Button>
         </ui:VisualElement>
-        <ui:ScrollView class="settings__scroll" horizontal-scroller-visibility="Hidden" vertical-scroller-visibility="Hidden">
+        <ui:ScrollView class="settings__scroll phone__scroll" horizontal-scroller-visibility="Hidden" vertical-scroller-visibility="Hidden">
+            <ui:VisualElement class="phone__plate">
             <ui:Label name="intro" class="caption phone__text" />
             <ui:VisualElement name="number-step">
                 <ui:TextField name="number" class="field" />
@@ -26,6 +29,7 @@
                 <ui:Button name="decline" class="button button--quiet" />
             </ui:VisualElement>
             <ui:Label name="status" class="status phone__text" />
+            </ui:VisualElement>
         </ui:ScrollView>
     </ui:VisualElement>
 </ui:UXML>

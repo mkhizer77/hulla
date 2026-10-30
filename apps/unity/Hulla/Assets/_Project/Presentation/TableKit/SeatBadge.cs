@@ -15,6 +15,7 @@ namespace Hulla.Presentation.TableKit
     /// </summary>
     public sealed class SeatBadge : VisualElement
     {
+        private readonly List<VisualElement> _backs = new List<VisualElement>();
         private readonly VisualElement _avatar = new VisualElement();
         private readonly Label _initial = new Label();
         private readonly Label _you = new Label(Text.UiText.You);
@@ -60,6 +61,7 @@ namespace Hulla.Presentation.TableKit
                 back.AddToClassList("seat__back");
                 back.AddToClassList("seat__back--" + k);
                 _chip.Add(back);
+                _backs.Add(back);
             }
 
             _count.AddToClassList("seat__count");
@@ -83,10 +85,34 @@ namespace Hulla.Presentation.TableKit
         /// <summary>Shows a speech bubble under the badge for a few seconds.</summary>
         public void Say(string text, float seconds)
         {
+            ShowEmote(_bubble, null);
             _bubble.text = text;
             _bubble.style.display = DisplayStyle.Flex;
             _bubbleLeft = seconds;
         }
+
+        /// <summary>An emote's sticker by the badge for a few seconds (GDD 11.3): sent here, or thrown at this seat.</summary>
+        public void SayEmote(string emoteId, float seconds)
+        {
+            ShowEmote(_bubble, emoteId);
+            _bubble.style.display = DisplayStyle.Flex;
+            _bubbleLeft = seconds;
+        }
+
+        /// <summary>Turns a speech bubble into an emote's sticker, or back into a text bubble for null.</summary>
+        public static void ShowEmote(Label bubble, string? emoteId)
+        {
+            if (emoteId != null)
+            {
+                bubble.text = "";
+            }
+
+            Theme.EmoteArt.Apply(bubble, emoteId);
+            bubble.EnableInClassList("bubble--emote", emoteId != null);
+        }
+
+        /// <summary>The emote the bubble shows, or null for text.</summary>
+        public bool ShowsEmote(string emoteId) => _bubble.style.display == DisplayStyle.Flex && _bubble.ClassListContains(Theme.EmoteArt.Prefix + emoteId);
 
         /// <summary>A short red flag on the seat ("THULLA") for the moment (GDD 14.5).</summary>
         public void Flag(string text, float seconds)
@@ -107,8 +133,16 @@ namespace Hulla.Presentation.TableKit
         public void ShowTimer(float fraction, float secondsLeft, float pulse)
         {
             _timer.style.display = DisplayStyle.Flex;
-            _timer.Show(fraction, secondsLeft);
-            _timer.style.scale = new Scale(new Vector2(pulse, pulse));
+            _timer.Show(fraction, secondsLeft, pulse);
+        }
+
+        /// <summary>The fan beside the face shows the seat's own card back (GDD 12.11); null keeps the default.</summary>
+        public void ShowBack(string? cardBack)
+        {
+            foreach (var back in _backs)
+            {
+                Theme.CosmeticArt.Apply(back, cardBack);
+            }
         }
 
         public void HideTimer() => _timer.style.display = DisplayStyle.None;

@@ -99,6 +99,37 @@ namespace Hulla.Infrastructure.Nakama
             }
         }
 
+        public async Awaitable<Result<TableTicket>> BotTableAsync(int seats, CancellationToken cancellation)
+        {
+            var session = _connection.Session;
+            if (session == null)
+            {
+                return Result<TableTicket>.Fail("session.not_signed_in");
+            }
+
+            try
+            {
+                var input = new Newtonsoft.Json.Linq.JObject { ["seats"] = seats };
+                var response = await _connection.Client.RpcAsync(session, "quick_play_bots", input.ToString(Newtonsoft.Json.Formatting.None), null, cancellation);
+                var body = Newtonsoft.Json.Linq.JObject.Parse(response.Payload);
+                if ((bool?)body["ok"] != true)
+                {
+                    return Result<TableTicket>.Fail((string?)body["error"]?["code"] ?? "matchmaker.unavailable");
+                }
+
+                return Result<TableTicket>.Ok(new TableTicket((string)body["matchId"]!, (string)body["code"]!, (string)body["tableId"]!));
+            }
+            catch (OperationCanceledException)
+            {
+                throw;
+            }
+            catch (Exception error)
+            {
+                Debug.LogWarning($"quick_play_bots failed: {error.Message}");
+                return Result<TableTicket>.Fail("matchmaker.unavailable", error.GetType().Name);
+            }
+        }
+
         public async Awaitable CancelAsync()
         {
             try

@@ -1,0 +1,13 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements">
+    <ui:VisualElement name="loading" class="screen loading">
+        <ui:VisualElement name="stage-holder" class="kit__holder" picking-mode="Ignore">
+            <ui:VisualElement name="stage" class="kit__stage loading__stage" picking-mode="Ignore">
+                <ui:VisualElement name="logo" class="loading__logo" picking-mode="Ignore" />
+                <ui:VisualElement name="bar" class="kit__bar loading__bar" picking-mode="Ignore">
+                    <ui:VisualElement name="bar-fill" class="kit__bar-fill" picking-mode="Ignore" />
+                </ui:VisualElement>
+                <ui:Label name="status" class="loading__status" picking-mode="Ignore" />
+            </ui:VisualElement>
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

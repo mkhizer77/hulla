@@ -14,6 +14,7 @@ import {
   EMPTY_INVENTORY,
   equip,
   equippedFor,
+  ownedEmotePacks,
   grant,
   owns,
   purchase,
@@ -34,6 +35,12 @@ const T0 = Date.UTC(2026, 9, 13, 12);
 const WEEK = 7 * 24 * 60 * 60 * 1000;
 
 describe("the cosmetic catalog (GDD 12.11, 13.4)", () => {
+  it("lists the emote packs a player may send from: the starter pack and what they bought", () => {
+    expect(ownedEmotePacks(EMPTY_INVENTORY, BUNDLED_CATALOG, 0)).toEqual(["emotes_launch"]);
+    const bought = { ...EMPTY_INVENTORY, owned: { emotes_shaadi: 1 } };
+    expect(ownedEmotePacks(bought, BUNDLED_CATALOG, 0)).toEqual(["emotes_launch", "emotes_shaadi"]);
+  });
+
   it("prices common and rare items in coins and epic and legendary in gems, within the GDD bands", () => {
     const items = BUNDLED_CATALOG.items;
     expect(items.length).toBeGreaterThanOrEqual(30);

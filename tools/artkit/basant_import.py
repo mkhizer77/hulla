@@ -1,4 +1,4 @@
-"""Brings the Basant Home art into the Unity project (docs/design/basant-home.md).
+"""Brings the Basant art into the Unity project (docs/design/basant-home.md).
 
 The art is delivered as transparent PNGs, one per element: blank plates and their pressed states,
 art without text, and words as separate text sprites per language. This script scales each one to
@@ -33,6 +33,22 @@ WIDTH = {
     "title_thulla": 458, "title_rung_soon": 200,
 }
 
+# The shared kit (art-design/extraction/02_lobby_basant.md): blank plates, buttons and icons every
+# screen after Home draws from, under Kit/; a screen's own piece goes under its folder.
+KIT_WIDTH = {
+    "kite_faint": 70, "btn_round": 124, "btn_square": 92, "btn_pill": 194, "btn_teal": 247, "icon": 64,
+    "plate_name": 222, "tag": 120, "plate_label": 760, "panel_cream": 1012, "seat_empty": 165,
+    "crown_host": 90, "tick_ready": 52, "bar_track": 700, "bar_fill": 700, "ring_turn_glow": 190,
+    "segment_track": 1000, "segment_on": 480, "card_row": 1000, "card_spotlight": 1000, "medal_rank": 80,
+    "medal_gold": 150, "medal_grey": 150, "tier_cell": 160, "icon_lock": 48, "knob_slider": 56, "bar_fill_green": 700,
+    "btn_danger": 300, "btn_circle": 260, "logo_hulla": 700, "icon_kite_break": 160, "icon_kite_update": 160,
+    "icon_coins_stack": 160,
+}
+SCREEN_WIDTH = {
+    "Lobby": {"rug_table": 760},
+    "Table": {"plate_turn": 540, "card_back": 110, "podium": 480, "stamp_bhabhi": 260},
+}
+
 # Display height on the 1080 canvas for each text sprite (written at twice this).
 TEXT_HEIGHT = {
     "play_now": 52, "create_room": 40, "join_by_code": 40, "friends_online": 34, "invite": 26,
@@ -42,10 +58,22 @@ TEXT_HEIGHT = {
 }
 
 
-def width_for(stem: str) -> int | None:
-    for key in sorted(WIDTH, key=len, reverse=True):
+def width_for(stem: str, table: dict[str, int]) -> int | None:
+    for key in sorted(table, key=len, reverse=True):
         if stem.startswith(key):
-            return WIDTH[key]
+            return table[key]
+    return None
+
+
+def place(stem: str) -> tuple[str, int] | None:
+    """The folder and display width for an element: a screen's own piece, else the kit, else Home."""
+    for folder, table in SCREEN_WIDTH.items():
+        if (width := width_for(stem, table)) is not None:
+            return folder, width
+    if (width := width_for(stem, KIT_WIDTH)) is not None:
+        return "Kit", width
+    if (width := width_for(stem, WIDTH)) is not None:
+        return "Home", width
     return None
 
 
@@ -72,7 +100,7 @@ def scaled(img: Image.Image, width: int | None = None, height: int | None = None
 
 
 def main(source: Path) -> None:
-    for png in sorted(p for p in source.glob("*.png") if not p.stem.endswith("_check")):
+    for png in sorted(p for p in source.glob("*.png") if not p.stem.startswith("_")):
         stem = png.stem
         img = Image.open(png).convert("RGBA")
         text = re.match(r"txt_(.+?)(?:_([a-z]{2}))?$", stem)
@@ -87,11 +115,12 @@ def main(source: Path) -> None:
         elif stem.startswith("bg_"):
             out = ART / "Backdrops" / f"{stem[3:].replace('_', '-')}.png"
         else:
-            width = width_for(stem)
-            if width is None:
+            placed = place(stem)
+            if placed is None:
                 print("skipped, no size:", stem)
                 continue
-            out = ART / "Home" / f"{stem.replace('_', '-')}.png"
+            folder, width = placed
+            out = ART / folder / f"{stem.replace('_', '-')}.png"
             img = scaled(img, width=width * 2)
         out.parent.mkdir(parents=True, exist_ok=True)
         img.save(out, optimize=True)

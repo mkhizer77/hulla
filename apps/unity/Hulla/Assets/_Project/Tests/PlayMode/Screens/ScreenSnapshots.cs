@@ -143,6 +143,44 @@ namespace Hulla.Screens.Tests
             }
         }
 
+        /// <summary>The lobby at the Basant concept's size (1080 x 1936), six seats, three taken, the host crowned.</summary>
+        [UnityTest, Explicit]
+        public IEnumerator LobbyAtConceptSize()
+        {
+            var gateway = new Fakes.Gateway();
+            var client = new TableClient(gateway, new TableTicket("m", "K7Q2MX", "t_K7Q2MX"), "me", 1);
+            yield return Snap("lobby-concept", TableSkin.Basant, Catalog.Lobby, r =>
+            {
+                new LobbyView(r, client, () => 0, () => { }, _ => true, _ => Fakes.Done(Domain.Result<bool>.Ok(true)), () => "Standard · 20 s turns · last card wins by draw", () => { }, () => { }, () => { });
+                var state = Fakes.InRound(3, 6);
+                state.Status = TableStatus.Open;
+                state.Round = null;
+                state.HostSeat = 2;
+                state.Seats[0].Ready = false;
+                state.Seats[3] = new Seat { SeatSeat = 3 };
+                state.Seats[5] = new Seat { SeatSeat = 5 };
+                gateway.Deliver(MessageTypes.TableState, 3, state);
+            }, false, 1080, 1936, null);
+        }
+
+        [UnityTest, Explicit]
+        public IEnumerator LoadingAtConceptSize()
+        {
+            yield return Snap("loading-concept", TableSkin.Basant, Catalog.Loading, r => new Presentation.Screens.Loading.LoadingView(r).Set(3, 4), false, 1080, 1936, null);
+        }
+
+        [UnityTest, Explicit]
+        public IEnumerator QuickPlayAtConceptSize()
+        {
+            var model = new QuickPlayViewModel(new Fakes.Matchmaker());
+            yield return Snap("quickplay-concept", TableSkin.Basant, Catalog.QuickPlay, r =>
+            {
+                new Presentation.Screens.QuickPlay.QuickPlayView(r, model, () => { });
+                _ = model.StartAsync(4, default);
+                model.Tick(12f);
+            }, false, 1080, 1936, null);
+        }
+
         [UnityTest, Explicit]
         public IEnumerator Lobby([ValueSource(nameof(Skins))] TableSkin skin)
         {
@@ -175,6 +213,50 @@ namespace Hulla.Screens.Tests
                 state.Round.TurnSeat = 1;
                 gateway.Deliver(MessageTypes.TableState, 5, state);
                 gateway.Deliver(MessageTypes.TurnStart, 5, new TurnStart { RoundId = "r", Seat = 0, Legal = new List<string> { "QH", "8H", "2H" }, DeadlineTs = 12000 });
+                var thulla = new ServerMessage(MessageTypes.MoveApplied, 6, new MoveApplied { RoundId = "r", Seat = 1, Move = new Move { Type = TypeEnum.PlayCard, Card = "7C" }, TrickIndex = 2, Thulla = true });
+                gateway.Deliver(MessageTypes.MoveApplied, 6, thulla.Payload);
+                view.Present(thulla);
+                view.Tick(0.3f);
+            });
+        }
+
+        /// <summary>A first-rounds tip at the start of a round: on my turn with cards I cannot play (GDD 17.4).</summary>
+        [UnityTest, Explicit]
+        public IEnumerator TableWithTip()
+        {
+            var gateway = new Fakes.Gateway();
+            var client = new TableClient(gateway, new TableTicket("m", "K7Q2MX", "t_K7Q2MX"), "me", 1);
+            yield return Snap("table-tip", TableSkin.Basant, Catalog.Table, r =>
+            {
+                var view = new ThullaTableView(r, client, new Fakes.Chat(), () => 5000, () => { });
+                view.UseHints(new ThullaHints(new Store()));
+                var state = Fakes.InRound(5);
+                state.Round!.Seats[0].Hand = new List<string> { "AS", "KS", "9S", "QH", "8H", "2H", "JD", "9D", "5C", "3C", "TC" };
+                state.Round.Seats[0].HandCount = 11;
+                state.Round.Trick.Plays = new List<Play> { new Play { Seat = 2, Card = "KH" }, new Play { Seat = 3, Card = "6H" } };
+                gateway.Deliver(MessageTypes.TableState, 5, state);
+                gateway.Deliver(MessageTypes.TurnStart, 5, new TurnStart { RoundId = "r", Seat = 0, Legal = new List<string> { "QH", "8H", "2H" }, DeadlineTs = 15000 });
+            });
+        }
+
+        /// <summary>The shop's items at the table: your table, back and Desi court cards, and the giver's celebration behind the stamp.</summary>
+        [UnityTest, Explicit]
+        public IEnumerator TableWithCosmetics()
+        {
+            var gateway = new Fakes.Gateway();
+            var client = new TableClient(gateway, new TableTicket("m", "K7Q2MX", "t_K7Q2MX"), "me", 1);
+            yield return Snap("table-cosmetics", TableSkin.Basant, Catalog.Table, r =>
+            {
+                var view = new ThullaTableView(r, client, new Fakes.Chat(), () => 5000, () => { });
+                var state = Fakes.InRound(5);
+                state.Seats[0].Cosmetics = new Cosmetics { Table = "table_basant_night", CardBack = "back_kites", CardFace = "face_desi_court" };
+                state.Seats[1].Cosmetics = new Cosmetics { CardBack = "back_truck_art", Celebration = "celebration_dhol" };
+                state.Round!.Seats[0].Hand = new List<string> { "AS", "KS", "QS", "QH", "8H", "2H", "JD", "9D", "KC", "3C", "TC" };
+                state.Round.Seats[0].HandCount = 11;
+                state.Round.Trick.Plays = new List<Play> { new Play { Seat = 2, Card = "KH" }, new Play { Seat = 3, Card = "6H" } };
+                state.Round.TurnSeat = 1;
+                state.Round.DiscardCount = 9;
+                gateway.Deliver(MessageTypes.TableState, 5, state);
                 var thulla = new ServerMessage(MessageTypes.MoveApplied, 6, new MoveApplied { RoundId = "r", Seat = 1, Move = new Move { Type = TypeEnum.PlayCard, Card = "7C" }, TrickIndex = 2, Thulla = true });
                 gateway.Deliver(MessageTypes.MoveApplied, 6, thulla.Payload);
                 view.Present(thulla);

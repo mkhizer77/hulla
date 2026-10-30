@@ -573,6 +573,11 @@
    "smart": false
   },
   {
+   "key": "emote.bhangra",
+   "text": "[Bhåñgrå · ·]",
+   "smart": false
+  },
+  {
    "key": "emote.chai",
    "text": "[Çhåî ·]",
    "smart": false
@@ -593,6 +598,16 @@
    "smart": false
   },
   {
+   "key": "emote.dropped_catch",
+   "text": "[Dröppéd çåtçh · ·]",
+   "smart": false
+  },
+  {
+   "key": "emote.duck",
+   "text": "[Dûçk ·]",
+   "smart": false
+  },
+  {
    "key": "emote.facepalm",
    "text": "[Fåçépålm · ·]",
    "smart": false
@@ -600,6 +615,11 @@
   {
    "key": "emote.fire",
    "text": "[Fîré ·]",
+   "smart": false
+  },
+  {
+   "key": "emote.garland",
+   "text": "[Gårlåñd · ·]",
    "smart": false
   },
   {
@@ -613,8 +633,23 @@
    "smart": false
   },
   {
+   "key": "emote.howzat",
+   "text": "[Höwzåt ·]",
+   "smart": false
+  },
+  {
+   "key": "emote.laddoo",
+   "text": "[Låddöö ·]",
+   "smart": false
+  },
+  {
    "key": "emote.laugh_cry",
    "text": "[Låûgh çrý · ·]",
+   "smart": false
+  },
+  {
+   "key": "emote.mehndi",
+   "text": "[Méhñdî ·]",
    "smart": false
   },
   {
@@ -650,6 +685,11 @@
   {
    "key": "emote.turtle",
    "text": "[Tûrtlé ·]",
+   "smart": false
+  },
+  {
+   "key": "emote.wicket",
+   "text": "[Wîçkét ·]",
    "smart": false
   },
   {
@@ -698,6 +738,16 @@
    "smart": false
   },
   {
+   "key": "error.content.filtered",
+   "text": "[Thåt méssågé wåsñ't séñt. · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "error.economy.daily_cap_reached",
+   "text": "[Thåt's thé lîmît för tödåý. · · · · ·]",
+   "smart": false
+  },
+  {
    "key": "error.economy.insufficient_funds",
    "text": "[Ñöt éñöûgh çöîñs ör géms för thåt. · · · · · ·]",
    "smart": false
@@ -715,6 +765,16 @@
   {
    "key": "error.economy.item_unknown",
    "text": "[Thåt îtém îsñ't îñ thé shöp åñý möré. · · · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "error.economy.store_unavailable",
+   "text": "[Thé shöp îs çlöséd rîght ñöw. Trý låtér. · · · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "error.network.rate_limited",
+   "text": "[Éåsý, töö måñý tåps. Trý ågåîñ îñ å möméñt. · · · · · · ·]",
    "smart": false
   },
   {
@@ -748,6 +808,11 @@
    "smart": false
   },
   {
+   "key": "error.profile.not_visible",
+   "text": "[Théîr pröfîlé îs prîvåté. · · · ·]",
+   "smart": false
+  },
+  {
    "key": "error.rules.hand_ask_none",
    "text": "[Ñöthîñg tö åñswér. · · ·]",
    "smart": false
@@ -760,6 +825,26 @@
   {
    "key": "error.rules.hand_take_declined",
    "text": "[Théý képt théîr çårds. · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "error.rules.hand_take_disabled",
+   "text": "[Åskîñg för å håñd îs öff åt thîs tåblé. · · · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "error.rules.hand_take_window_closed",
+   "text": "[Töö låté tö åsk för å håñd thîs trîçk. · · · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "error.rules.illegal_move",
+   "text": "[Thåt çård çåñ't bé plåýéd ñöw. · · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "error.rules.round_over",
+   "text": "[Thé röûñd hås ålréådý éñdéd. · · · · ·]",
    "smart": false
   },
   {
@@ -780,6 +865,11 @@
   {
    "key": "error.social.friend_cap",
    "text": "[Ýöû håvé thé möst frîéñds ållöwéd (500). · · · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "error.social.muted",
+   "text": "[Ýöû'ré mûtéd åt thîs tåblé. · · · · ·]",
    "smart": false
   },
   {
@@ -808,6 +898,11 @@
    "smart": false
   },
   {
+   "key": "error.table.draining",
+   "text": "[Thé sérvér îs réstårtîñg. Tåblés öpéñ ågåîñ îñ å mîñûté. · · · · · · · · ·]",
+   "smart": false
+  },
+  {
    "key": "error.table.full",
    "text": "[Thåt tåblé îs fûll. · · ·]",
    "smart": false
@@ -818,13 +913,33 @@
    "smart": false
   },
   {
+   "key": "error.table.invalid_payload",
+   "text": "[Söméthîñg dîdñ't séñd rîght. Trý ågåîñ. · · · · · ·]",
+   "smart": false
+  },
+  {
    "key": "error.table.locked",
    "text": "[Thåt tåblé îsñ't tåkîñg plåýérs rîght ñöw. · · · · · · ·]",
    "smart": false
   },
   {
+   "key": "error.table.not_authorised",
+   "text": "[Ýöû çåñ't dö thåt åt thîs tåblé. · · · · ·]",
+   "smart": false
+  },
+  {
    "key": "error.table.not_found",
    "text": "[Ñö tåblé hås thåt çödé. Çhéçk ît wîth thé höst. · · · · · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "error.table.not_host",
+   "text": "[Öñlý thé höst çåñ dö thåt. · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "error.table.not_in_round",
+   "text": "[Thåt öñlý wörks dûrîñg å röûñd. · · · · ·]",
    "smart": false
   },
   {
@@ -1094,7 +1209,7 @@
   },
   {
    "key": "item.table_charpai",
-   "text": "[Çhårpåî · ·]",
+   "text": "[Båsåñt rûg · ·]",
    "smart": false
   },
   {
@@ -1813,6 +1928,11 @@
    "smart": true
   },
   {
+   "key": "ranked.reward_sep",
+   "text": "[ +  ·]",
+   "smart": false
+  },
+  {
    "key": "ranked.rules",
    "text": "[4 plåýérs · 12 s tûrñs · ñö håñd-tåkîñg · ñö çård mémörý · · · · · · · · ·]",
    "smart": false
@@ -2129,12 +2249,12 @@
   },
   {
    "key": "rulebook.why_ace",
-   "text": "[Thé röûñd öpéñs wîth thé Åçé öf Spådés, åñd îts höldér hås tö léåd ît (R12). · · · · · · · · · · · ·]",
+   "text": "[Thé röûñd öpéñs wîth thé Åçé öf Spådés, åñd îts höldér hås tö léåd ît. · · · · · · · · · · ·]",
    "smart": false
   },
   {
    "key": "rulebook.why_follow",
-   "text": "[Ýöû höld å çård öf thé léd sûît, sö ýöû håvé tö plåý öñé öf thém (R18). Öñlý thösé çårds åré lît. · · · · · · · · · · · · · · ·]",
+   "text": "[Ýöû höld å çård öf thé léd sûît, sö ýöû håvé tö plåý öñé öf thém. Öñlý thösé çårds åré lît. · · · · · · · · · · · · · ·]",
    "smart": false
   },
   {
@@ -2144,7 +2264,7 @@
   },
   {
    "key": "rulebook.why_server",
-   "text": "[Thé sérvér çhéçks évérý çård. Å çård ît réfûsés göés båçk tö ýöûr håñd wîth ñö péñåltý (R47). · · · · · · · · · · · · · ·]",
+   "text": "[Thé sérvér çhéçks évérý çård. Å çård ît réfûsés göés båçk tö ýöûr håñd wîth ñö péñåltý. · · · · · · · · · · · · · ·]",
    "smart": false
   },
   {
@@ -2354,7 +2474,7 @@
   },
   {
    "key": "tutorial.hint_leader",
-   "text": "[\"Léåds\" mårks whö léd thîs trîçk. Thé hîghést çård öf thåt sûît tåkés thé håñd. · · · · · · · · · · · ·]",
+   "text": "[Thé çröwñ mårks whö léd thîs trîçk. Thé hîghést çård öf thåt sûît tåkés thé håñd. · · · · · · · · · · · · ·]",
    "smart": false
   },
   {
@@ -2503,6 +2623,16 @@
    "smart": false
   },
   {
+   "key": "ui.account_data",
+   "text": "[Åççöûñt åñd dåtå · · ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.achievement_reward",
+   "text": "[Réwård: {0} · ·]",
+   "smart": true
+  },
+  {
    "key": "ui.achievement_unlocked",
    "text": "[Åçhîévéméñt ûñlöçkéd: {0} · · · ·]",
    "smart": true
@@ -2515,6 +2645,11 @@
   {
    "key": "ui.achievements_count",
    "text": "[{0} öf {1} ûñlöçkéd · · ·]",
+   "smart": true
+  },
+  {
+   "key": "ui.achievements_of",
+   "text": "[Åçhîévéméñts · {0} öf {1} · · · ·]",
    "smart": true
   },
   {
@@ -2533,13 +2668,33 @@
    "smart": false
   },
   {
+   "key": "ui.add_friend_title",
+   "text": "[Ådd å frîéñd · ·]",
+   "smart": false
+  },
+  {
    "key": "ui.add_name",
    "text": "[Ådd {0} · ·]",
    "smart": true
   },
   {
+   "key": "ui.add_name_plus",
+   "text": "[+ Ådd {0} · ·]",
+   "smart": true
+  },
+  {
    "key": "ui.after_rounds",
    "text": "[Åftér {0} röûñds · · ·]",
+   "smart": true
+  },
+  {
+   "key": "ui.already_friends",
+   "text": "[Ålréådý frîéñds · · ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.also_block",
+   "text": "[Ålsö blöçk {0} · · ·]",
    "smart": true
   },
   {
@@ -2560,6 +2715,11 @@
   {
    "key": "ui.analytics_yes",
    "text": "[Ýés, shåré · ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.another_name",
+   "text": "[Åñöthér · ·]",
    "smart": false
   },
   {
@@ -2601,6 +2761,11 @@
    "key": "ui.at_table",
    "text": "[Åt thé tåblé · ·]",
    "smart": false
+  },
+  {
+   "key": "ui.at_table_seats",
+   "text": "[Thûllå · {0} séåts öpéñ · · · ·]",
+   "smart": true
   },
   {
    "key": "ui.away",
@@ -2648,6 +2813,11 @@
    "smart": false
   },
   {
+   "key": "ui.blocked_players",
+   "text": "[Blöçkéd plåýérs · · ·]",
+   "smart": false
+  },
+  {
    "key": "ui.board_empty",
    "text": "[Ñö pöîñts ýét. Wîñ röûñds tö gét öñ thé böård. · · · · · · ·]",
    "smart": false
@@ -2658,9 +2828,19 @@
    "smart": true
   },
   {
+   "key": "ui.bot_tag",
+   "text": "[Böt ·]",
+   "smart": false
+  },
+  {
    "key": "ui.buy",
    "text": "[Bûý ·]",
    "smart": false
+  },
+  {
+   "key": "ui.buy_equip",
+   "text": "[Bûý & éqûîp · {0} · · ·]",
+   "smart": true
   },
   {
    "key": "ui.buy_question",
@@ -2688,6 +2868,11 @@
    "smart": false
   },
   {
+   "key": "ui.change_any_time",
+   "text": "[Ýöû çåñ çhåñgé ît åñý tîmé · · · ·]",
+   "smart": false
+  },
+  {
    "key": "ui.change_rules",
    "text": "[Çhåñgé rûlés · ·]",
    "smart": false
@@ -2708,6 +2893,11 @@
    "smart": false
   },
   {
+   "key": "ui.chat_placeholder",
+   "text": "[Såý söméthîñg tö thé tåblé · · · ·]",
+   "smart": false
+  },
+  {
    "key": "ui.chat_refused",
    "text": "[Ñöt séñt. Méssågés çåñ't håvé lîñks ör phöñé ñûmbérs, ûp tö 140 çhåråçtérs. · · · · · · · · · · · ·]",
    "smart": false
@@ -2723,6 +2913,11 @@
    "smart": false
   },
   {
+   "key": "ui.claim_coins",
+   "text": "[Çlåîm {0} çöîñs · · ·]",
+   "smart": true
+  },
+  {
    "key": "ui.claimed",
    "text": "[Döñé ·]",
    "smart": false
@@ -2730,6 +2925,11 @@
   {
    "key": "ui.close",
    "text": "[Çlösé ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.code_hint",
+   "text": "[Thé çödé îs öñ ýöûr frîéñd's löbbý sçrééñ · · · · · · ·]",
    "smart": false
   },
   {
@@ -2748,6 +2948,11 @@
    "smart": true
   },
   {
+   "key": "ui.coins_short",
+   "text": "[{0} shört · ·]",
+   "smart": true
+  },
+  {
    "key": "ui.coming_soon",
    "text": "[Çömîñg sööñ · ·]",
    "smart": false
@@ -2755,6 +2960,11 @@
   {
    "key": "ui.connecting",
    "text": "[Çöññéçtîñg… · ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.continue",
+   "text": "[Çöñtîñûé · ·]",
    "smart": false
   },
   {
@@ -2770,6 +2980,11 @@
   {
    "key": "ui.copy",
    "text": "[Çöpý ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.copy_commitment",
+   "text": "[Çöpý thé çödé · ·]",
    "smart": false
   },
   {
@@ -2790,6 +3005,11 @@
   {
    "key": "ui.crown",
    "text": "[♛ ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.daily_back_tomorrow",
+   "text": "[Båçk tömörröw · ·]",
    "smart": false
   },
   {
@@ -2815,6 +3035,11 @@
   {
    "key": "ui.daily_tomorrow",
    "text": "[Tömörröw: {0}. · · ·]",
+   "smart": true
+  },
+  {
+   "key": "ui.days_left",
+   "text": "[{0} dåýs léft · ·]",
    "smart": true
   },
   {
@@ -2868,6 +3093,11 @@
    "smart": false
   },
   {
+   "key": "ui.dot",
+   "text": "[· ·]",
+   "smart": false
+  },
+  {
    "key": "ui.double_xp",
    "text": "[döûblé XP · ·]",
    "smart": false
@@ -2888,8 +3118,23 @@
    "smart": true
   },
   {
+   "key": "ui.edit_profile",
+   "text": "[Édît pröfîlé · ·]",
+   "smart": false
+  },
+  {
    "key": "ui.edit_rules",
    "text": "[Édît rûlés · ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.emote_pack_locked",
+   "text": "[Fröm thé {0} påçk. Gét ît îñ thé Shöp. · · · · · ·]",
+   "smart": true
+  },
+  {
+   "key": "ui.emotes",
+   "text": "[Émötés ·]",
    "smart": false
   },
   {
@@ -2943,6 +3188,11 @@
    "smart": false
   },
   {
+   "key": "ui.everyone_else",
+   "text": "[Évérýöñé élsé · {0} · · ·]",
+   "smart": true
+  },
+  {
    "key": "ui.export_copied",
    "text": "[Ýöûr dåtå wås çöpîéd. · · · ·]",
    "smart": false
@@ -2973,8 +3223,43 @@
    "smart": true
   },
   {
+   "key": "ui.fair_deal_short",
+   "text": "[Fåîr déål · ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.fair_every",
+   "text": "[Évérý röûñd åt évérý tåblé îs déålt thîs wåý. · · · · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.fair_how",
+   "text": "[Höw ît wörks · ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.fair_how_body",
+   "text": "[Béföré déålîñg, thé sérvér pîçks å séçrét sééd åñd shöws évérýöñé îts fîñgérprîñt, thé çödé åbövé. Thé sééd ålöñé déçîdés thé shûfflé. Whéñ thé röûñd éñds thé sééd îs révéåléd. Åñýöñé çåñ tûrñ ît båçk îñtö thé såmé fîñgérprîñt åñd réplåý thé shûfflé, sö thé déål çöûld ñöt håvé bééñ çhåñgéd åftér ýöû såw thé çödé. · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.fair_how_title",
+   "text": "[Höw å fåîr déål wörks · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.fair_round_body",
+   "text": "[Béföré thé déål, thé sérvér çömmîttéd tö {0}. Whéñ thé röûñd éñds ît révéåls thé sééd, åñd åñýöñé çåñ çhéçk thåt thé shûfflé måtçhés. · · · · · · · · · · · · · · · · · · · ·]",
+   "smart": true
+  },
+  {
    "key": "ui.favourite",
    "text": "[★ ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.favourite_word",
+   "text": "[Fåvöûrîté · ·]",
    "smart": false
   },
   {
@@ -2993,6 +3278,11 @@
    "smart": false
   },
   {
+   "key": "ui.free_track",
+   "text": "[Fréé ·]",
+   "smart": false
+  },
+  {
    "key": "ui.friend_code_label",
    "text": "[Ýöûr frîéñd çödé · · ·]",
    "smart": false
@@ -3005,6 +3295,11 @@
   {
    "key": "ui.friends",
    "text": "[Frîéñds · ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.friends_empty",
+   "text": "[Ñöbödý héré ýét. Shåré ýöûr çödé åñd théý låñd îñ ýöûr tåblé. · · · · · · · · · ·]",
    "smart": false
   },
   {
@@ -3048,6 +3343,11 @@
    "smart": true
   },
   {
+   "key": "ui.gems_balance",
+   "text": "[{0} géms · ·]",
+   "smart": true
+  },
+  {
    "key": "ui.gems_only",
    "text": "[{0} géms · ·]",
    "smart": true
@@ -3088,8 +3388,18 @@
    "smart": false
   },
   {
+   "key": "ui.handle_rule",
+   "text": "[3 tö 16 léttérs, ñûmbérs ör _ · · · · ·]",
+   "smart": false
+  },
+  {
    "key": "ui.haptics_label",
    "text": "[Vîbråtîöñ · ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.help_how",
+   "text": "[Hélp åñd höw tö plåý · · ·]",
    "smart": false
   },
   {
@@ -3104,7 +3414,22 @@
   },
   {
    "key": "ui.host",
-   "text": "[höst ·]",
+   "text": "[Höst ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.how_to_play_row",
+   "text": "[Höw tö plåý · ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.how_to_play_step",
+   "text": "[Höw tö plåý · {0} öf {1} · · · ·]",
+   "smart": true
+  },
+  {
+   "key": "ui.in_a_round",
+   "text": "[Îñ å röûñd · ·]",
    "smart": false
   },
   {
@@ -3115,6 +3440,11 @@
   {
    "key": "ui.invite_friends",
    "text": "[Îñvîté frîéñds · · ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.invite_group",
+   "text": "[Îñvîté ýöûr gröûp · · ·]",
    "smart": false
   },
   {
@@ -3133,6 +3463,11 @@
    "smart": false
   },
   {
+   "key": "ui.invite_to_mine",
+   "text": "[Îñvîté tö mîñé · · ·]",
+   "smart": false
+  },
+  {
    "key": "ui.invite_your_group",
    "text": "[Îñvîté ýöûr gröûp · · ·]",
    "smart": false
@@ -3141,6 +3476,11 @@
    "key": "ui.invited",
    "text": "[Îñvîtéd · ·]",
    "smart": false
+  },
+  {
+   "key": "ui.item_type_rarity",
+   "text": "[{0} · {1} · ·]",
+   "smart": true
   },
   {
    "key": "ui.join_by_code",
@@ -3158,6 +3498,11 @@
    "smart": false
   },
   {
+   "key": "ui.join_their_table",
+   "text": "[Jöîñ {0}'s tåblé · · ·]",
+   "smart": true
+  },
+  {
    "key": "ui.keep_playing",
    "text": "[Kéép plåýîñg · ·]",
    "smart": false
@@ -3166,6 +3511,11 @@
    "key": "ui.keeps_cards",
    "text": "[{0} kééps théîr çårds · · · ·]",
    "smart": true
+  },
+  {
+   "key": "ui.language",
+   "text": "[Låñgûågé · ·]",
+   "smart": false
   },
   {
    "key": "ui.large_cards_label",
@@ -3188,8 +3538,28 @@
    "smart": false
   },
   {
+   "key": "ui.league_you",
+   "text": "[{0} · ýöû · ·]",
+   "smart": true
+  },
+  {
    "key": "ui.leave",
    "text": "[Léåvé ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.leave_table",
+   "text": "[Léåvé tåblé · ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.leave_table_body",
+   "text": "[Ýöûr séåt plåýs îtsélf ûñtîl ýöû çömé båçk. Ýöû çåñ réjöîñ fröm Hömé för 30 mîñûtés. · · · · · · · · · · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.leave_table_title",
+   "text": "[Léåvé thé tåblé? · · ·]",
    "smart": false
   },
   {
@@ -3203,6 +3573,11 @@
    "smart": true
   },
   {
+   "key": "ui.level_n",
+   "text": "[Lévél {0} · ·]",
+   "smart": true
+  },
+  {
    "key": "ui.level_up",
    "text": "[Lévél ûp! {0} → {1} · · ·]",
    "smart": true
@@ -3210,6 +3585,21 @@
   {
    "key": "ui.loading",
    "text": "[Löådîñg… · ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.lobby_hint",
+   "text": "[{0} stårts whéñ 3 ör möré åré réådý · · · · · ·]",
+   "smart": true
+  },
+  {
+   "key": "ui.lobby_hint_host",
+   "text": "[Stårt whéñ 3 ör möré åré séåtéd · · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.lobby_hint_host_ready",
+   "text": "[Gét réådý, théñ stårt whéñ 3 ör möré åré réådý · · · · · · ·]",
    "smart": false
   },
   {
@@ -3248,9 +3638,19 @@
    "smart": false
   },
   {
+   "key": "ui.missions_today_resets",
+   "text": "[Tödåý · réséts îñ {0} h · · · ·]",
+   "smart": true
+  },
+  {
    "key": "ui.missions_week",
    "text": "[Thîs wéék · ·]",
    "smart": false
+  },
+  {
+   "key": "ui.missions_week_left",
+   "text": "[Thîs wéék · {0} dåýs léft · · · ·]",
+   "smart": true
   },
   {
    "key": "ui.more",
@@ -3259,12 +3659,12 @@
   },
   {
    "key": "ui.most_picked_up",
-   "text": "[Möst çårds pîçkéd ûp: {0}, {1} · · · · ·]",
+   "text": "[Bîggést pîçk-ûp · {0}, {1:plural:{} çård|{} çårds} · · · · ·]",
    "smart": true
   },
   {
    "key": "ui.most_thullas",
-   "text": "[Möst thûllås: {0}, {1} · · · ·]",
+   "text": "[Möst thûllås · {0}, {1} · · · ·]",
    "smart": true
   },
   {
@@ -3303,8 +3703,18 @@
    "smart": false
   },
   {
+   "key": "ui.new_here",
+   "text": "[Ñéw héré: · ·]",
+   "smart": false
+  },
+  {
    "key": "ui.no_achievements_yet",
    "text": "[Plåý å röûñd tö stårt. · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.no_blocked",
+   "text": "[Ñöbödý blöçkéd. · · ·]",
    "smart": false
   },
   {
@@ -3403,8 +3813,23 @@
    "smart": false
   },
   {
+   "key": "ui.notify_summary",
+   "text": "[Îñvîtés, frîéñds · · ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.of_count",
+   "text": "[{0} öf {1} · ·]",
+   "smart": true
+  },
+  {
    "key": "ui.offline",
    "text": "[Öfflîñé · ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.on_home",
+   "text": "[Öñ Hömé · ·]",
    "smart": false
   },
   {
@@ -3428,6 +3853,11 @@
    "smart": false
   },
   {
+   "key": "ui.owned_equip",
+   "text": "[Öwñéd · Éqûîp · ·]",
+   "smart": false
+  },
+  {
    "key": "ui.party_empty",
    "text": "[Ñö frîéñds öñlîñé. Shåré ýöûr çödé. · · · · · ·]",
    "smart": false
@@ -3443,8 +3873,33 @@
    "smart": true
   },
   {
+   "key": "ui.paste_code",
+   "text": "[Påsté fröm thé çlîpböård: {0} · · · · ·]",
+   "smart": true
+  },
+  {
+   "key": "ui.phone_linked",
+   "text": "[Phöñé lîñkéd · ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.phone_placeholder",
+   "text": "[+92 300 1234567 · · ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.phrases",
+   "text": "[Phråsés · ·]",
+   "smart": false
+  },
+  {
    "key": "ui.picked_up",
    "text": "[{0} pîçks ûp · ·]",
+   "smart": true
+  },
+  {
+   "key": "ui.picked_up_count",
+   "text": "[{0:plural:Pîçkéd ûp {} çård thîs röûñd|Pîçkéd ûp {} çårds thîs röûñd} · · · · ·]",
    "smart": true
   },
   {
@@ -3468,14 +3923,54 @@
    "smart": false
   },
   {
+   "key": "ui.play_ranked",
+   "text": "[Plåý råñkéd · ·]",
+   "smart": false
+  },
+  {
    "key": "ui.player_back",
    "text": "[{0} îs båçk. · ·]",
+   "smart": true
+  },
+  {
+   "key": "ui.player_line",
+   "text": "[@{0} ·]",
+   "smart": true
+  },
+  {
+   "key": "ui.player_line_title",
+   "text": "[@{0} · {1} · ·]",
+   "smart": true
+  },
+  {
+   "key": "ui.player_stats",
+   "text": "[{0} · {1} · ·]",
    "smart": true
   },
   {
    "key": "ui.playing",
    "text": "[Plåýîñg… · ·]",
    "smart": false
+  },
+  {
+   "key": "ui.playing_now",
+   "text": "[Plåýîñg ñöw · ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.plus_coins",
+   "text": "[+{0} çöîñs · ·]",
+   "smart": true
+  },
+  {
+   "key": "ui.plus_reward",
+   "text": "[+{0} ·]",
+   "smart": true
+  },
+  {
+   "key": "ui.plus_reward_gems",
+   "text": "[+{0} · {1} géms · · ·]",
+   "smart": true
   },
   {
    "key": "ui.points_line",
@@ -3488,8 +3983,23 @@
    "smart": true
   },
   {
+   "key": "ui.points_to_climb",
+   "text": "[{0} pts · {1} tö çlîmb · · · ·]",
+   "smart": true
+  },
+  {
    "key": "ui.premium_locked",
    "text": "[Thé prémîûm tråçk öpéñs wîth thé prémîûm påss. · · · · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.premium_store",
+   "text": "[Prémîûm påss årrîvés wîth thé störé låûñçh · · · · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.premium_track",
+   "text": "[Prémîûm · ·]",
    "smart": false
   },
   {
@@ -3508,9 +4018,29 @@
    "smart": true
   },
   {
+   "key": "ui.privacy_blocked",
+   "text": "[Prîvåçý åñd blöçkéd plåýérs · · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.private_table",
+   "text": "[Prîvåté tåblé · ·]",
+   "smart": false
+  },
+  {
    "key": "ui.profile",
    "text": "[Pröfîlé · ·]",
    "smart": false
+  },
+  {
+   "key": "ui.profile_line",
+   "text": "[@{0} · Lévél {1} · · ·]",
+   "smart": true
+  },
+  {
+   "key": "ui.profile_line_title",
+   "text": "[@{0} · Lévél {1} · {2} · · · ·]",
+   "smart": true
   },
   {
    "key": "ui.progress_line",
@@ -3528,9 +4058,19 @@
    "smart": false
   },
   {
+   "key": "ui.rank_short",
+   "text": "[Råñk ·]",
+   "smart": false
+  },
+  {
    "key": "ui.ranked",
    "text": "[Råñkéd ·]",
    "smart": false
+  },
+  {
+   "key": "ui.ranked_line",
+   "text": "[Råñkéd · {0} · ·]",
+   "smart": true
   },
   {
    "key": "ui.ready",
@@ -3603,6 +4143,11 @@
    "smart": false
   },
   {
+   "key": "ui.remove_friend",
+   "text": "[Rémövé frîéñd · ·]",
+   "smart": false
+  },
+  {
    "key": "ui.report",
    "text": "[Répört ·]",
    "smart": false
@@ -3668,9 +4213,19 @@
    "smart": false
   },
   {
-   "key": "ui.rounds_together",
-   "text": "[{0} röûñds tögéthér · · ·]",
+   "key": "ui.rounds_count",
+   "text": "[{0:plural:{} röûñd|{} röûñds} · ·]",
    "smart": true
+  },
+  {
+   "key": "ui.rounds_together",
+   "text": "[{0:plural:1 röûñd tögéthér|{} röûñds tögéthér} · · ·]",
+   "smart": true
+  },
+  {
+   "key": "ui.rulebook_row",
+   "text": "[Thé rûléböök · ·]",
+   "smart": false
   },
   {
    "key": "ui.rules_changed_by",
@@ -3708,9 +4263,59 @@
    "smart": false
   },
   {
-   "key": "ui.searching",
-   "text": "[Fîñdîñg å tåblé för {0}… · · · ·]",
+   "key": "ui.score",
+   "text": "[Sçöré ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.score_bhabhi",
+   "text": "[Bhåbhî ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.score_bhabhi_cards",
+   "text": "[Bhåbhî · çårds · · ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.score_player",
+   "text": "[Plåýér ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.score_rounds",
+   "text": "[{0:plural:{} röûñd plåýéd|{} röûñds plåýéd} · · ·]",
    "smart": true
+  },
+  {
+   "key": "ui.score_title",
+   "text": "[Sçöré · röûñd {0} · · ·]",
+   "smart": true
+  },
+  {
+   "key": "ui.score_value",
+   "text": "[{0} · {1} · ·]",
+   "smart": true
+  },
+  {
+   "key": "ui.search_elapsed",
+   "text": "[{0} s · ûsûållý ûñdér 20 · · · ·]",
+   "smart": true
+  },
+  {
+   "key": "ui.search_friends",
+   "text": "[Séårçh frîéñds · · ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.searching",
+   "text": "[Fîñdîñg å tåblé för {0} · · · ·]",
+   "smart": true
+  },
+  {
+   "key": "ui.searching_bots",
+   "text": "[Ñöbödý fréé rîght ñöw. Stårtîñg wîth böts… · · · · · · ·]",
+   "smart": false
   },
   {
    "key": "ui.searching_start",
@@ -3744,13 +4349,28 @@
   },
   {
    "key": "ui.seat_size",
-   "text": "[Séåt-sîzé · ·]",
+   "text": "[Séåt sîzé · ·]",
    "smart": false
   },
   {
    "key": "ui.seat_them",
    "text": "[Séåt ·]",
    "smart": false
+  },
+  {
+   "key": "ui.seated_next",
+   "text": "[Séåtéd ñéxt röûñd ✓ · · ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.seated_of_three",
+   "text": "[{0} öf 3 séåtéd · · ·]",
+   "smart": true
+  },
+  {
+   "key": "ui.seats_free_next",
+   "text": "[{0:plural:{} séåt fréé · ñéxt röûñd|{} séåts fréé · ñéxt röûñd} · · · · ·]",
+   "smart": true
   },
   {
    "key": "ui.seats_label",
@@ -3763,9 +4383,24 @@
    "smart": false
   },
   {
+   "key": "ui.seats_short",
+   "text": "[Séåts ·]",
+   "smart": false
+  },
+  {
    "key": "ui.seconds_short",
    "text": "[{0}s ·]",
    "smart": true
+  },
+  {
+   "key": "ui.see_all",
+   "text": "[Séé åll · ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.seed_later",
+   "text": "[Béföré thé déål, thé sérvér çömmîttéd tö thé shûfflé. Thé sééd îs révéåléd whéñ thé röûñd éñds. · · · · · · · · · · · · · · ·]",
+   "smart": false
   },
   {
    "key": "ui.send",
@@ -3773,8 +4408,18 @@
    "smart": false
   },
   {
+   "key": "ui.send_report",
+   "text": "[Séñd répört · ·]",
+   "smart": false
+  },
+  {
    "key": "ui.sent_requests",
    "text": "[Wåîtîñg för thém · · ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.sent_tick",
+   "text": "[Séñt ✓ ·]",
    "smart": false
   },
   {
@@ -3795,6 +4440,11 @@
   {
    "key": "ui.settings_development",
    "text": "[Dévélöpméñt · ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.settings_more",
+   "text": "[Möré ·]",
    "smart": false
   },
   {
@@ -3825,6 +4475,11 @@
   {
    "key": "ui.sfx_label",
    "text": "[Söûñd éfféçts · ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.share",
+   "text": "[Shåré ·]",
    "smart": false
   },
   {
@@ -3861,6 +4516,16 @@
    "key": "ui.share_footer_friend",
    "text": "[Ådd mé öñ Hûllå: {0} · · ·]",
    "smart": true
+  },
+  {
+   "key": "ui.share_friend_text",
+   "text": "[Ådd mé öñ Hûllå, frîéñd çödé {0}: {1} · · · · · ·]",
+   "smart": true
+  },
+  {
+   "key": "ui.share_link",
+   "text": "[Shåré lîñk · ·]",
+   "smart": false
   },
   {
    "key": "ui.share_post",
@@ -3933,6 +4598,11 @@
    "smart": false
   },
   {
+   "key": "ui.spotlight_days",
+   "text": "[Thîs wéék's spötlîght · {0} d · · · · ·]",
+   "smart": true
+  },
+  {
    "key": "ui.start",
    "text": "[Stårt röûñd · ·]",
    "smart": false
@@ -3948,14 +4618,59 @@
    "smart": true
   },
   {
+   "key": "ui.stat_bhabhi",
+   "text": "[Tîmés Bhåbhî · ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.stat_escapes",
+   "text": "[Çléåñ ésçåpés · ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.stat_rounds",
+   "text": "[Röûñds ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.stat_thullas",
+   "text": "[Thûllås gîvéñ · ·]",
+   "smart": false
+  },
+  {
    "key": "ui.stats_line",
    "text": "[{0} röûñds · {1} ésçåpés · {2} tîmés Bhåbhî · {3} thûllås gîvéñ · · · · · · · · · ·]",
    "smart": true
   },
   {
+   "key": "ui.stay",
+   "text": "[Ståý ·]",
+   "smart": false
+  },
+  {
    "key": "ui.streak_suffix",
    "text": "[ · dåý {0} stréåk · · ·]",
    "smart": true
+  },
+  {
+   "key": "ui.suit_short",
+   "text": "[Sûît ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.swap",
+   "text": "[Swåp ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.swap_one",
+   "text": "[Swåp öñé · ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.swapped",
+   "text": "[Swåppéd · ·]",
+   "smart": false
   },
   {
    "key": "ui.tagline",
@@ -3970,6 +4685,11 @@
   {
    "key": "ui.text_size_label",
    "text": "[Téxt sîzé · ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.their_code",
+   "text": "[Théîr çödé · ·]",
    "smart": false
   },
   {
@@ -3998,9 +4718,34 @@
    "smart": false
   },
   {
+   "key": "ui.tier_next",
+   "text": "[Tîér {0} → {1} · · ·]",
+   "smart": true
+  },
+  {
+   "key": "ui.times_bhabhi",
+   "text": "[{0:plural:{} tîmé Bhåbhî|{} tîmés Bhåbhî} · · ·]",
+   "smart": true
+  },
+  {
    "key": "ui.title_reward",
    "text": "[tîtlé \"{0}\" · ·]",
    "smart": true
+  },
+  {
+   "key": "ui.turn_any",
+   "text": "[Ýöûr tûrñ · plåý åñý çård · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.turn_follow",
+   "text": "[Ýöûr tûrñ · föllöw {0} · · · ·]",
+   "smart": true
+  },
+  {
+   "key": "ui.turn_lead",
+   "text": "[Ýöûr tûrñ · léåd · · ·]",
+   "smart": false
   },
   {
    "key": "ui.turn_seconds",
@@ -4013,13 +4758,38 @@
    "smart": false
   },
   {
+   "key": "ui.type_my_own",
+   "text": "[Týpé mý öwñ · ·]",
+   "smart": false
+  },
+  {
    "key": "ui.unblock",
    "text": "[Ûñblöçk · ·]",
    "smart": false
   },
   {
+   "key": "ui.unfavourite_word",
+   "text": "[Ûñfåvöûrîté · ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.unlocked_on",
+   "text": "[Ûñlöçkéd {0} · ·]",
+   "smart": true
+  },
+  {
    "key": "ui.unmute",
    "text": "[Ûñmûté ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.version_footer",
+   "text": "[Hûllå {0} · {1} · · ·]",
+   "smart": true
+  },
+  {
+   "key": "ui.voice",
+   "text": "[Vöîçé ·]",
    "smart": false
   },
   {
@@ -4118,6 +4888,21 @@
    "smart": false
   },
   {
+   "key": "ui.waiting_for_seat",
+   "text": "[Wåîtîñg för {0} · · ·]",
+   "smart": true
+  },
+  {
+   "key": "ui.waiting_ready",
+   "text": "[Wåîtîñg för {0} tö bé réådý · · · · ·]",
+   "smart": true
+  },
+  {
+   "key": "ui.watch",
+   "text": "[Wåtçh ·]",
+   "smart": false
+  },
+  {
    "key": "ui.watch_friend_table",
    "text": "[Wåtçh {0}'s gåmé · · ·]",
    "smart": true
@@ -4138,9 +4923,54 @@
    "smart": true
   },
   {
+   "key": "ui.watching_count",
+   "text": "[Wåtçhîñg · {0} · · ·]",
+   "smart": true
+  },
+  {
+   "key": "ui.watching_full",
+   "text": "[Ñö fréé séåts · thé höst çåñ gröw thé tåblé îñ thé rûlés · · · · · · · · ·]",
+   "smart": false
+  },
+  {
    "key": "ui.watching_lobby",
    "text": "[Ýöû'ré wåtçhîñg. Thé höst çåñ gîvé ýöû å séåt. · · · · · · ·]",
    "smart": false
+  },
+  {
+   "key": "ui.watching_no_seats",
+   "text": "[Ñö fréé séåts · ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.watching_pill",
+   "text": "[Ýöû'ré wåtçhîñg. {0} çåñ gîvé ýöû å séåt åt thé röûñd éñd. · · · · · · · · ·]",
+   "smart": true
+  },
+  {
+   "key": "ui.watching_sheet",
+   "text": "[Wåtçhîñg · {0:plural:1 séåt fréé|{} séåts fréé} · ñéxt röûñd · · · · · ·]",
+   "smart": true
+  },
+  {
+   "key": "ui.watching_tap_row",
+   "text": "[Tåp å röw för Mûté · Blöçk · Répört · · · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.where_table",
+   "text": "[Åt å Thûllå tåblé · {0} séåts öpéñ · · · · · ·]",
+   "smart": true
+  },
+  {
+   "key": "ui.where_watching",
+   "text": "[Plåýîñg å röûñd · · ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.xp_of",
+   "text": "[{0:N0} / {1:N0} XP · ·]",
+   "smart": true
   },
   {
    "key": "ui.you",
@@ -4155,6 +4985,21 @@
   {
    "key": "ui.you_are_out",
    "text": "[Ýöû'ré öût, såfé för thîs röûñd! Wåtçh thé rést; çhåt åñd vöîçé ståý öñ. · · · · · · · · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.you_have",
+   "text": "[Ýöû håvé {0} çöîñs · {1} géms · · · · ·]",
+   "smart": true
+  },
+  {
+   "key": "ui.your_friend_code",
+   "text": "[Ýöûr frîéñd çödé · · ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.your_name",
+   "text": "[Ýöûr ñåmé · ·]",
    "smart": false
   },
   {

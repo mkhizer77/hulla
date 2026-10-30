@@ -99,6 +99,8 @@ namespace Hulla.Infrastructure.Nakama
             }
         }
 
+        public bool IsConnected => _connection.Socket?.IsConnected == true;
+
         public async Awaitable<Result<bool>> ReconnectAsync(CancellationToken cancellation)
         {
             var session = _connection.Session;

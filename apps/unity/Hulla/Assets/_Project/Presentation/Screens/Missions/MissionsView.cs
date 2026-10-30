@@ -49,55 +49,104 @@ namespace Hulla.Presentation.Screens.Missions
                 return;
             }
 
-            Section(UiText.MissionsToday, _model.Daily, _model.RerollAvailable);
-            Section(UiText.MissionsWeek, _model.Weekly, false);
+            var now = DateTime.Now;
+            var hours = Math.Max(1, (int)Math.Ceiling((now.Date.AddDays(1) - now).TotalHours));
+            var days = ((int)DayOfWeek.Monday - (int)now.DayOfWeek + 7) % 7;
+            Section(Strings.Format(UiText.MissionsTodayResets, hours), _model.Daily, true);
+            Section(Strings.Format(UiText.MissionsWeekLeft, days == 0 ? 7 : days), _model.Weekly, false);
         }
 
         /// <summary>Loads the missions again after an error; null hides Retry.</summary>
         public Action? Retry { get; set; }
 
-        private void Section(string title, IReadOnlyList<MissionInfo> missions, bool canReroll)
+        private bool _swapping;
+
+        /// <summary>
+        /// A heading and its mission plates (design: Trophies · Missions): title and reward on top, the bar
+        /// and the count under them; a finished one wears the yellow Claim. Today's heading carries the one
+        /// free swap: tap it, then the mission to swap.
+        /// </summary>
+        private void Section(string title, IReadOnlyList<MissionInfo> missions, bool today)
         {
+            var head = new VisualElement();
+            head.AddToClassList("missions__head");
             var heading = new Label(title);
             heading.AddToClassList("caption");
             heading.AddToClassList("settings__heading");
-            _list.Add(heading);
+            heading.AddToClassList("missions__heading");
+            head.Add(heading);
+            if (today)
+            {
+                var swap = new Button(() =>
+                {
+                    _swapping = !_swapping;
+                    Refresh();
+                }) { text = _model.RerollAvailable ? UiText.SwapOne : UiText.Swapped };
+                swap.AddToClassList("chip");
+                swap.AddToClassList("missions__swap");
+                swap.EnableInClassList("chip--on", _swapping);
+                swap.SetEnabled(_model.RerollAvailable);
+                var icon = new VisualElement { pickingMode = PickingMode.Ignore };
+                icon.AddToClassList("missions__swap-icon");
+                swap.Insert(0, icon);
+                head.Add(swap);
+            }
+
+            _list.Add(head);
             foreach (var mission in missions)
             {
-                var row = new VisualElement();
-                row.AddToClassList("lobby-seat");
-                row.AddToClassList("friend-row");
-                var text = new VisualElement();
-                text.AddToClassList("lobby-seat__name");
-                text.Add(new Label(UiText.MissionText(mission.Metric, mission.Target)));
-                var detail = new Label(Strings.Format(UiText.MissionProgress, Math.Min(mission.Progress, mission.Target), mission.Target, Reward(mission)));
-                detail.AddToClassList("caption");
-                text.Add(detail);
-                text.Add(new Meter(mission.Progress, mission.Target));
-                row.Add(text);
+                var plate = new VisualElement();
+                plate.AddToClassList("lobby-seat");
+                plate.AddToClassList("mission");
+                var top = new VisualElement();
+                top.AddToClassList("mission__top");
+                var name = new Label(UiText.MissionText(mission.Metric, mission.Target));
+                name.AddToClassList("mission__name");
+                top.Add(name);
+                var reward = new Label(mission.Gems > 0 ? Strings.Format(UiText.PlusRewardGems, mission.Coins, mission.Gems) : Strings.Format(UiText.PlusReward, mission.Coins));
+                reward.AddToClassList("mission__reward");
+                top.Add(reward);
+                plate.Add(top);
+                var bottom = new VisualElement();
+                bottom.AddToClassList("mission__bottom");
+                var meter = new Meter(mission.Progress, mission.Target);
+                meter.AddToClassList("mission__meter");
+                bottom.Add(meter);
                 if (mission.Claimed)
                 {
                     var done = new Label(UiText.Claimed);
                     done.AddToClassList("tag--ok");
-                    row.Add(done);
+                    bottom.Add(done);
                 }
                 else if (mission.Claimable)
                 {
                     var id = mission.Id;
-                    var claim = new Button(() => _claim(id)) { text = UiText.Claim };
+                    var claim = new Button(() => _claim(id)) { text = Strings.Format(UiText.ClaimCoins, mission.Coins) };
                     claim.AddToClassList("chip");
                     claim.AddToClassList("chip--on");
-                    row.Add(claim);
+                    claim.AddToClassList("mission__claim");
+                    bottom.Add(claim);
                 }
-                else if (canReroll && mission.Daily)
+                else if (_swapping && today && _model.RerollAvailable)
                 {
                     var id = mission.Id;
-                    var reroll = new Button(() => _reroll(id)) { text = UiText.Reroll };
-                    reroll.AddToClassList("chip");
-                    row.Add(reroll);
+                    var swap = new Button(() =>
+                    {
+                        _swapping = false;
+                        _reroll(id);
+                    }) { text = UiText.Swap };
+                    swap.AddToClassList("chip");
+                    bottom.Add(swap);
+                }
+                else
+                {
+                    var count = new Label(Strings.Format(UiText.OfCount, Math.Min(mission.Progress, mission.Target), mission.Target));
+                    count.AddToClassList("mission__count");
+                    bottom.Add(count);
                 }
 
-                _list.Add(row);
+                plate.Add(bottom);
+                _list.Add(plate);
             }
         }
 

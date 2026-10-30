@@ -44,6 +44,7 @@ namespace Hulla.Presentation.Screens.Home
             }
 
             _text.text = Strings.Format(UiText.DailyDay, status.Today.Day);
+            _root.EnableInClassList("home__daily--done", false);
             _root.EnableInClassList("home__daily--ready", status.Claimable);
             if (status.Claimable)
             {
@@ -54,8 +55,29 @@ namespace Hulla.Presentation.Screens.Home
             }
 
             _claim.style.display = DisplayStyle.None;
+            // Claimed today: the card says so, and the claim this session pops its coins once.
+            _text.text = UiText.Claimed;
+            _root.EnableInClassList("home__daily--done", true);
+            if (_model.Claimed != null && _model.Claimed != _popped)
+            {
+                _popped = _model.Claimed;
+                Pop(Strings.Format(UiText.PlusCoins, _model.Claimed.Coins));
+            }
+
             var tomorrow = Strings.Format(UiText.DailyTomorrow, Amount(status.Next));
             _root.tooltip = _model.Claimed != null ? Strings.Format(UiText.DailyClaimed, Amount(_model.Claimed)) + " " + tomorrow : tomorrow;
+        }
+
+        private DailyRewardDay? _popped;
+
+        /// <summary>The amount rises off the card and fades (design: Moments).</summary>
+        private void Pop(string text)
+        {
+            var pop = new Label(text) { pickingMode = PickingMode.Ignore };
+            pop.AddToClassList("daily-pop");
+            _root.Add(pop);
+            pop.schedule.Execute(() => pop.AddToClassList("daily-pop--up")).StartingIn(30);
+            pop.schedule.Execute(() => pop.RemoveFromHierarchy()).StartingIn(1600);
         }
 
         /// <summary>"70 coins" or "80 coins + 2 gems".</summary>

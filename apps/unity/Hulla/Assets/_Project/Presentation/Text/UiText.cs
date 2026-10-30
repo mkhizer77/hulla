@@ -9,6 +9,268 @@ namespace Hulla.Presentation.Text
     /// </summary>
     public static class UiText
     {
+        public static string DailyBackTomorrow => Strings.Text("ui.daily_back_tomorrow");
+
+        public static string PlusCoins => Strings.Text("ui.plus_coins");
+
+        public static string CodeHint => Strings.Text("ui.code_hint");
+
+        public static string PasteCode => Strings.Text("ui.paste_code");
+
+        public static string SeatsShort => Strings.Text("ui.seats_short");
+
+        public static string SeatedOfThree => Strings.Text("ui.seated_of_three");
+
+        public static string WaitingReady => Strings.Text("ui.waiting_ready");
+
+        public static string ChatPlaceholder => Strings.Text("ui.chat_placeholder");
+
+        public static string TurnFollow => Strings.Text("ui.turn_follow");
+
+        public static string TurnLead => Strings.Text("ui.turn_lead");
+
+        public static string TurnAny => Strings.Text("ui.turn_any");
+
+        public static string WaitingForSeat => Strings.Text("ui.waiting_for_seat");
+
+        public static string WatchingPill => Strings.Text("ui.watching_pill");
+
+        public static string LeaveTableTitle => Strings.Text("ui.leave_table_title");
+
+        public static string LeaveTableBody => Strings.Text("ui.leave_table_body");
+
+        public static string Stay => Strings.Text("ui.stay");
+
+        public static string Score => Strings.Text("ui.score");
+
+        public static string ScoreTitle => Strings.Text("ui.score_title");
+
+        public static string ScoreBhabhi => Strings.Text("ui.score_bhabhi");
+
+        public static string ScorePlayer => Strings.Text("ui.score_player");
+
+        public static string SeedLater => Strings.Text("ui.seed_later");
+
+        public static string WatchingSheet => Strings.Text("ui.watching_sheet");
+
+        public static string WatchingFull => Strings.Text("ui.watching_full");
+
+        public static string SeatedNext => Strings.Text("ui.seated_next");
+
+        public static string Phrases => Strings.Text("ui.phrases");
+
+        public static string Emotes => Strings.Text("ui.emotes");
+
+        public static string LeaveTable => Strings.Text("ui.leave_table");
+
+        public static string LevelN => Strings.Text("ui.level_n");
+
+        public static string FairDealShort => Strings.Text("ui.fair_deal_short");
+
+        public static string NewHere => Strings.Text("ui.new_here");
+
+        public static string AddNamePlus => Strings.Text("ui.add_name_plus");
+
+        public static string SearchFriends => Strings.Text("ui.search_friends");
+
+        public static string PlayingNow => Strings.Text("ui.playing_now");
+
+        public static string EveryoneElse => Strings.Text("ui.everyone_else");
+
+        public static string AtTableSeats => Strings.Text("ui.at_table_seats");
+
+        public static string InARound => Strings.Text("ui.in_a_round");
+
+        public static string OnHome => Strings.Text("ui.on_home");
+
+        public static string Watch => Strings.Text("ui.watch");
+
+        public static string JoinTheirTable => Strings.Text("ui.join_their_table");
+
+        public static string InviteToMine => Strings.Text("ui.invite_to_mine");
+
+        public static string RemoveFriend => Strings.Text("ui.remove_friend");
+
+        public static string TheirCode => Strings.Text("ui.their_code");
+
+        public static string YourFriendCode => Strings.Text("ui.your_friend_code");
+
+        public static string FriendsEmpty => Strings.Text("ui.friends_empty");
+
+        public static string AddFriendTitle => Strings.Text("ui.add_friend_title");
+
+        public static string FavouriteWord => Strings.Text("ui.favourite_word");
+
+        public static string UnfavouriteWord => Strings.Text("ui.unfavourite_word");
+
+        public static string WhereTable => Strings.Text("ui.where_table");
+
+        public static string WhereWatching => Strings.Text("ui.where_watching");
+
+        public static string MissionsTodayResets => Strings.Text("ui.missions_today_resets");
+
+        public static string MissionsWeekLeft => Strings.Text("ui.missions_week_left");
+
+        public static string SwapOne => Strings.Text("ui.swap_one");
+
+        public static string Swapped => Strings.Text("ui.swapped");
+
+        public static string Swap => Strings.Text("ui.swap");
+
+        public static string ClaimCoins => Strings.Text("ui.claim_coins");
+
+        public static string OfCount => Strings.Text("ui.of_count");
+
+        public static string PlusReward => Strings.Text("ui.plus_reward");
+
+        public static string PlusRewardGems => Strings.Text("ui.plus_reward_gems");
+
+        public static string UnlockedOn => Strings.Text("ui.unlocked_on");
+
+        public static string AchievementReward => Strings.Text("ui.achievement_reward");
+
+        public static string PointsToClimb => Strings.Text("ui.points_to_climb");
+
+        public static string PlayRankedShort => Strings.Text("ui.play_ranked");
+
+        public static string SpotlightDays => Strings.Text("ui.spotlight_days");
+
+        public static string OwnedEquip => Strings.Text("ui.owned_equip");
+
+        public static string BuyEquip => Strings.Text("ui.buy_equip");
+
+        public static string YouHave => Strings.Text("ui.you_have");
+
+        public static string CoinsShort => Strings.Text("ui.coins_short");
+
+        public static string ItemTypeRarity => Strings.Text("ui.item_type_rarity");
+
+        public static string GemsOnlyBalance => Strings.Text("ui.gems_balance");
+
+        public static string DaysLeft => Strings.Text("ui.days_left");
+
+        public static string TierNext => Strings.Text("ui.tier_next");
+
+        public static string XpOf => Strings.Text("ui.xp_of");
+
+        public static string FreeTrack => Strings.Text("ui.free_track");
+
+        public static string PremiumTrack => Strings.Text("ui.premium_track");
+
+        public static string PremiumStore => Strings.Text("ui.premium_store");
+
+        public static string SettingsMore => Strings.Text("ui.settings_more");
+
+        public static string PrivacyBlocked => Strings.Text("ui.privacy_blocked");
+
+        public static string AccountData => Strings.Text("ui.account_data");
+
+        public static string HelpHow => Strings.Text("ui.help_how");
+
+        public static string NotifySummary => Strings.Text("ui.notify_summary");
+
+        public static string PhoneLinked => Strings.Text("ui.phone_linked");
+
+        public static string HowToPlayRow => Strings.Text("ui.how_to_play_row");
+
+        public static string RulebookRow => Strings.Text("ui.rulebook_row");
+
+        public static string BlockedPlayers => Strings.Text("ui.blocked_players");
+
+        public static string NoBlocked => Strings.Text("ui.no_blocked");
+
+        public static string VersionFooter => Strings.Text("ui.version_footer");
+
+        public static string Language => Strings.Text("ui.language");
+
+        public static string SuitShort => Strings.Text("ui.suit_short");
+
+        public static string RankShort => Strings.Text("ui.rank_short");
+
+        public static string ProfileLine => Strings.Text("ui.profile_line");
+
+        public static string ProfileLineTitle => Strings.Text("ui.profile_line_title");
+
+        public static string StatRounds => Strings.Text("ui.stat_rounds");
+
+        public static string StatEscapes => Strings.Text("ui.stat_escapes");
+
+        public static string StatThullas => Strings.Text("ui.stat_thullas");
+
+        public static string StatBhabhi => Strings.Text("ui.stat_bhabhi");
+
+        public static string AchievementsOf => Strings.Text("ui.achievements_of");
+
+        public static string SeeAll => Strings.Text("ui.see_all");
+
+        public static string RankedLine => Strings.Text("ui.ranked_line");
+
+        public static string EditProfile => Strings.Text("ui.edit_profile");
+
+        public static string HandleRule => Strings.Text("ui.handle_rule");
+
+        public static string LeagueYou => Strings.Text("ui.league_you");
+
+        public static string PhonePlaceholder => Strings.Text("ui.phone_placeholder");
+
+        public static string YourName => Strings.Text("ui.your_name");
+
+        public static string ChangeAnyTime => Strings.Text("ui.change_any_time");
+
+        public static string AnotherName => Strings.Text("ui.another_name");
+
+        public static string TypeMyOwn => Strings.Text("ui.type_my_own");
+
+        public static string Continue => Strings.Text("ui.continue");
+
+        public static string HowToPlayStep => Strings.Text("ui.how_to_play_step");
+
+        public static string AlsoBlock => Strings.Text("ui.also_block");
+
+        public static string SendReport => Strings.Text("ui.send_report");
+
+        public static string InviteGroup => Strings.Text("ui.invite_group");
+
+        public static string ShareLink => Strings.Text("ui.share_link");
+
+        public static string SentTick => Strings.Text("ui.sent_tick");
+
+        public static string SecondsShort => Strings.Text("ui.seconds_short");
+
+        public static string LobbyHintHostReady => Strings.Text("ui.lobby_hint_host_ready");
+
+        public static string ScoreBhabhiCards => Strings.Text("ui.score_bhabhi_cards");
+
+        public static string ScoreValue => Strings.Text("ui.score_value");
+
+        public static string FairRoundBody => Strings.Text("ui.fair_round_body");
+
+        public static string CopyCommitment => Strings.Text("ui.copy_commitment");
+
+        public static string FairHow => Strings.Text("ui.fair_how");
+
+        public static string FairHowTitle => Strings.Text("ui.fair_how_title");
+
+        public static string FairHowBody => Strings.Text("ui.fair_how_body");
+
+        public static string FairEvery => Strings.Text("ui.fair_every");
+
+        public static string PlayerStats => Strings.Text("ui.player_stats");
+
+        public static string Voice => Strings.Text("ui.voice");
+
+        public static string PlayerLine => Strings.Text("ui.player_line");
+
+        public static string PlayerLineTitle => Strings.Text("ui.player_line_title");
+
+        public static string Dot => Strings.Text("ui.dot");
+
+        public static string WatchingCount => Strings.Text("ui.watching_count");
+
+        public static string WatchingNoSeats => Strings.Text("ui.watching_no_seats");
+
+        public static string WatchingTapRow => Strings.Text("ui.watching_tap_row");
+
         public static string AppTitle => Strings.Text("ui.app_title");
         public static string Tagline => Strings.Text("ui.tagline");
         public static string NameLabel => Strings.Text("ui.name_label");
@@ -161,11 +423,11 @@ namespace Hulla.Presentation.Text
         /// <summary>The reasons of GDD 10.11, in the server's order (services/reports REPORT_REASONS).</summary>
         public static (string Id, string Label)[] ReportReasons => new[]
         {
-            ("cheating", Strings.Text("report.reason.cheating")),
             ("abusive_text", Strings.Text("report.reason.abusive_text")),
             ("abusive_voice", Strings.Text("report.reason.abusive_voice")),
-            ("inappropriate_profile", Strings.Text("report.reason.inappropriate_profile")),
+            ("cheating", Strings.Text("report.reason.cheating")),
             ("spam", Strings.Text("report.reason.spam")),
+            ("inappropriate_profile", Strings.Text("report.reason.inappropriate_profile")),
             ("underage", Strings.Text("report.reason.underage")),
         };
         public static string Unmute => Strings.Text("ui.unmute");
@@ -292,6 +554,8 @@ namespace Hulla.Presentation.Text
         public static string SearchingWider => Strings.Text("ui.searching_wider");
         public static string SearchingStart => Strings.Text("ui.searching_start");
         public static string FoundTable => Strings.Text("ui.found_table");
+        public static string SearchingBots => Strings.Text("ui.searching_bots");
+        public static string BotTag => Strings.Text("ui.bot_tag");
         public static string StartsIn => Strings.Text("ui.starts_in");
         public static string QuickPlayTable => Strings.Text("ui.quick_play_table");
         public static string RecapTitle => Strings.Text("ui.recap_title");
@@ -494,12 +758,20 @@ namespace Hulla.Presentation.Text
 
         /// <summary>The bilingual invite (GDD 10.5) with the code and the link that opens the app at the table.</summary>
         public static string ShareText => Strings.Text("ui.share_text");
+
+        public static string ShareFriendText => Strings.Text("ui.share_friend_text");
         public static string Friends => Strings.Text("ui.friends");
         public static string Back => Strings.Text("ui.back");
         public static string Save => Strings.Text("ui.save");
         public static string Saved => Strings.Text("ui.saved");
         public static string Copy => Strings.Text("ui.copy");
         public static string Copied => Strings.Text("ui.copied");
+        public static string EmotePackLocked => Strings.Text("ui.emote_pack_locked");
+        public static string Share => Strings.Text("ui.share");
+        public static string SearchElapsed => Strings.Text("ui.search_elapsed");
+        public static string PrivateTable => Strings.Text("ui.private_table");
+        public static string LobbyHint => Strings.Text("ui.lobby_hint");
+        public static string LobbyHintHost => Strings.Text("ui.lobby_hint_host");
         public static string DisplayNameLabel => Strings.Text("ui.display_name_label");
         public static string HandleLabel => Strings.Text("ui.handle_label");
         public static string BioLabel => Strings.Text("ui.bio_label");

@@ -470,11 +470,11 @@ export interface Seat {
    * The auto-play policy holds this seat (R45, R46)
    */
   autoPlay: boolean;
+  bot?: boolean;
   /**
    * The seat's microphone is on (GDD 11.4); off while disconnected
    */
   mic?: boolean;
-  bot?: boolean;
   /**
    * Players who queued together share a party id (GDD 7.2); shown as a link icon
    */

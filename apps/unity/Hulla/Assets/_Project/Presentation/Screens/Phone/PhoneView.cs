@@ -37,6 +37,7 @@ namespace Hulla.Presentation.Screens.Phone
             _offerStep = root.Q<VisualElement>("offer-step");
             _number = root.Q<TextField>("number");
             _number.label = Strings.Text("phone.number_label");
+            _number.textEdition.placeholder = UiText.PhonePlaceholder;
             _number.keyboardType = TouchScreenKeyboardType.PhonePad;
             _number.maxLength = 20;
             _code = root.Q<TextField>("code");

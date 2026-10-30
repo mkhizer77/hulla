@@ -139,8 +139,10 @@ namespace Hulla.Presentation.Theme
                     Motes(6, new Rect(8f, 4f, 84f, 36f), new Color(1f, 0.85f, 0.6f));
                     break;
                 case TableSkin.Basant:
-                    Kite(6f, 30f, new Color(1f, 0.55f, 0.12f), 7.2f);
-                    Kite(94f, 52f, new Color(0.61f, 0.36f, 0.9f), 8.4f);
+                    // The calm screens (docs/design/basant-lobby.md): three faint far kites drifting on their strings.
+                    FaintKite(1, 7f, 22f, 86f, 7.6f);
+                    FaintKite(2, 90f, 16f, 107f, 8.9f);
+                    FaintKite(3, 85f, 60f, 106f, 9.7f);
                     break;
                 case TableSkin.Pop:
                     foreach (var (x, y, size) in new[] { (14f, 10f, 520f), (88f, 46f, 640f), (30f, 82f, 560f) })
@@ -250,6 +252,17 @@ namespace Hulla.Presentation.Theme
             lamp.Insert(0, halo);
             _movers.Add(new Sway(lamp, swing, period, Range(0f, 6f)));
             _movers.Add(new Flame(halo, 0.5f, Range(0f, 6f)));
+        }
+
+        /// <summary>One of the kit's faint far kites, drawn 70 wide, rocking and bobbing slowly.</summary>
+        private void FaintKite(int index, float x, float y, float height, float period)
+        {
+            var kite = Sprite("ambient__kite-faint", x, y, 70f, height);
+            kite.AddToClassList("ambient__kite-faint--" + index);
+            kite.style.translate = new Translate(-35f, 0f);
+            kite.style.transformOrigin = new TransformOrigin(Length.Percent(50f), Length.Percent(85f));
+            _movers.Add(new Sway(kite, 2.5f, period, Range(0f, 6f)));
+            _movers.Add(new Bob(kite, 8f, period * 1.3f, Range(0f, 6f)));
         }
 
         /// <summary>A kite riding the breeze: it rocks a few degrees and bobs on its string.</summary>

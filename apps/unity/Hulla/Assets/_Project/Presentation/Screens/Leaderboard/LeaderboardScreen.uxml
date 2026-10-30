@@ -1,21 +1,32 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements">
     <ui:VisualElement name="leaderboard" class="screen settings">
         <ui:VisualElement class="settings__top">
-            <ui:Label name="title" class="title title--small" />
-            <ui:Button name="back" class="button button--quiet button--small" />
+            <ui:Label name="title" class="title title--small top__title" />
+            <ui:Button name="gear" class="top__button top__left top__gear" />
+            <ui:Button name="back" class="top__button top__hidden" />
         </ui:VisualElement>
-        <ui:VisualElement class="chips">
-            <ui:Button name="weekly" class="chip" />
-            <ui:Button name="monthly" class="chip" />
-            <ui:Button name="everyone" class="chip" />
-            <ui:Button name="friends" class="chip" />
-            <ui:Button name="ranked" class="chip" />
+        <ui:VisualElement name="segment" class="segment-host" />
+        <ui:VisualElement class="board__filters">
+            <ui:VisualElement class="mini-seg">
+                <ui:Button name="weekly" class="mini-seg__item" />
+                <ui:Button name="monthly" class="mini-seg__item" />
+            </ui:VisualElement>
+            <ui:VisualElement class="mini-seg">
+                <ui:Button name="everyone" class="mini-seg__item" />
+                <ui:Button name="friends" class="mini-seg__item" />
+            </ui:VisualElement>
         </ui:VisualElement>
-        <ui:Label name="reset" class="caption" />
         <ui:Label name="status" class="status" />
+        <ui:VisualElement name="me" class="board__me" />
         <ui:ScrollView class="settings__scroll" horizontal-scroller-visibility="Hidden" vertical-scroller-visibility="Hidden">
             <ui:VisualElement name="list" />
         </ui:ScrollView>
-        <ui:VisualElement name="me" class="lobby-seat leaderboard__me" />
+        <ui:VisualElement name="ranked-card" class="board__ranked">
+            <ui:VisualElement class="board__ranked-text">
+                <ui:Label name="ranked-title" class="board__ranked-title" />
+                <ui:Label name="reset" class="board__ranked-reset" />
+            </ui:VisualElement>
+            <ui:Button name="ranked" class="chip chip--on board__ranked-play" />
+        </ui:VisualElement>
     </ui:VisualElement>
 </ui:UXML>

@@ -67,13 +67,14 @@ export function analyticsFromBatch<S, M>(
       case "round_start": {
         if (o.to.kind !== "all") break;
         const seats = num(p["seatCount"]) ?? 0;
+        const bots = state.seats.slice(0, seats).filter((s) => s.bot).length;
         push(
           "round_start",
           {
             mode: state.mode,
             seats,
-            humans: seats,
-            bots: 0,
+            humans: seats - bots,
+            bots,
             preset_hash: state.rules.preset ?? "standard",
           },
           null,

@@ -30,3 +30,7 @@ Decided 27 Oct 2026: Basant daytime (concept 2 of the 26 Oct Home concepts) is t
 ## Dock
 
 The dock has four tabs: Home, Friends, Trophies and Shop (decided 15 Oct). Trophies holds Missions, Achievements, the Leaderboard and, until the Shop gets its Pass tab, the season pass. Profile opens from the avatar on Home.
+
+## Taps checked against the direction (28 Oct)
+
+`docs/design/design-direction.md` 5.1, row by row: the gear, Play now, Create Room, Join by Code, the banners, the seat coins, the Casual/Ranked switch, the daily reward and Rung were already as listed. Added: the name board and the level star open the profile (the board opens the name field only while no name exists), the coin plate opens the shop, a friend's face joins their table when it has a seat, watches it when it can only be watched, and opens Friends otherwise, and Invite shares the friend code as a referral link (Friends when the code is not known yet). Not built: the player sheet from a face (Favourite, Remove, Block, Report live on Friends) and the "Tell me when it's out" toggle on Rung.

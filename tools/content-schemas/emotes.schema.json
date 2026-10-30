@@ -24,7 +24,7 @@
       "items": {
         "type": "object",
         "additionalProperties": false,
-        "required": ["id", "name"],
+        "required": ["id", "name", "pack"],
         "properties": {
           "id": {
             "type": "string",
@@ -38,6 +38,11 @@
           "throwable": {
             "type": "boolean",
             "description": "May be thrown at a seat"
+          },
+          "pack": {
+            "type": "string",
+            "pattern": "^emotes_[a-z0-9_]+$",
+            "description": "The catalog emote pack it belongs to; only its owners may send it, everyone sees it (GDD 11.3, 12.11)"
           }
         }
       }

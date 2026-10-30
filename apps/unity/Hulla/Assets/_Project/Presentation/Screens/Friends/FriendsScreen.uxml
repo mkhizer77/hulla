@@ -1,12 +1,16 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements">
     <ui:VisualElement name="friends" class="screen settings">
         <ui:VisualElement class="settings__top">
-            <ui:Label name="title" class="title title--small" />
-            <ui:Button name="back" class="button button--quiet button--small" />
+            <ui:Label name="title" class="title title--small top__title" />
+            <ui:Button name="gear" class="top__button top__left top__gear" />
+            <ui:Button name="back" class="top__button top__hidden" />
+            <ui:Button name="add-open" class="top__button top__right">
+                <ui:VisualElement class="kit__icon kit__icon--plus" picking-mode="Ignore" />
+            </ui:Button>
         </ui:VisualElement>
-        <ui:VisualElement class="chat-panel__compose">
-            <ui:TextField name="code" class="field chat-panel__input" />
-            <ui:Button name="add" class="button button--primary button--small" />
+        <ui:VisualElement class="friends__search">
+            <ui:TextField name="search" class="friends__search-field" />
+            <ui:VisualElement class="friends__search-icon" picking-mode="Ignore" />
         </ui:VisualElement>
         <ui:Label name="status" class="status" />
         <ui:ScrollView class="settings__scroll" horizontal-scroller-visibility="Hidden" vertical-scroller-visibility="Hidden">

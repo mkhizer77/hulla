@@ -86,8 +86,7 @@ namespace Hulla.Presentation.TableKit
         public void ShowTimer(float fraction, float secondsLeft, float pulse)
         {
             _timer.style.display = DisplayStyle.Flex;
-            _timer.Show(fraction, secondsLeft);
-            _timer.style.scale = new Scale(new Vector2(pulse, pulse));
+            _timer.Show(fraction, secondsLeft, pulse);
         }
 
         public void HideTimer() => _timer.style.display = DisplayStyle.None;

@@ -17,15 +17,15 @@ namespace Hulla.Games.Thulla
     {
         public const string WhyNotSection = "why-not";
 
-        public static IReadOnlyList<RulebookSection> Build(TableModel model, IPresetCatalog presets)
+        public static IReadOnlyList<RulebookSection> Build(TableModel? model, IPresetCatalog presets)
         {
-            var selection = model.Selection;
+            var selection = model?.Selection;
             var preset = selection?.Preset ?? Preset.Standard;
             var fromPreset = presets.Find(PresetId(preset));
-            var rules = model.ActiveRules ?? ThullaRuleOverrides.Apply(fromPreset?.Rules, selection?.Overrides);
+            var rules = model?.ActiveRules ?? ThullaRuleOverrides.Apply(fromPreset?.Rules, selection?.Overrides);
             var defaults = fromPreset?.Settings ?? new TableSettings();
             var chosen = selection?.Settings;
-            var timer = chosen?.TurnTimerSeconds ?? defaults.TurnTimerSeconds ?? (model.IsPrivate ? 20 : model.IsRanked ? 12 : 15);
+            var timer = chosen?.TurnTimerSeconds ?? defaults.TurnTimerSeconds ?? (model == null || model.IsPrivate ? 20 : model.IsRanked ? 12 : 15);
             var loser = LoserName(chosen?.LoserTitle ?? defaults.LoserTitle ?? LoserTitle.Bhabhi);
 
             var table = new List<string>
@@ -40,7 +40,7 @@ namespace Hulla.Games.Thulla
                     EmptyHandLeader.InstantExit => RulebookText.EmptyHandInstantExit,
                     _ => RulebookText.EmptyHandDrawDiscard,
                 },
-                (rules.HandTaking ?? (model.IsRanked ? HandTaking.Off : HandTaking.LeaderOnly)) switch
+                (rules.HandTaking ?? (model != null && model.IsRanked ? HandTaking.Off : HandTaking.LeaderOnly)) switch
                 {
                     HandTaking.Anyone => RulebookText.HandTakingAnyone,
                     HandTaking.LeaderOnly => RulebookText.HandTakingLeader,
@@ -57,15 +57,21 @@ namespace Hulla.Games.Thulla
                 Strings.Format(RulebookText.LoserTitle, loser),
             };
 
-            return new[]
+            // The rules first; "This table" closes the book, and only at a table (design: Rulebook).
+            var sections = new List<RulebookSection>
             {
-                new RulebookSection("table", RulebookText.ThisTable, table),
                 new RulebookSection("basics", RulebookText.Basics, new[] { RulebookText.Basic1, RulebookText.Basic2, RulebookText.Basic3 }),
                 new RulebookSection(WhyNotSection, RulebookText.WhyNot, new[] { RulebookText.WhyFollow, RulebookText.WhyAce, RulebookText.WhyTurn, RulebookText.WhyServer }),
                 new RulebookSection("auto-play", RulebookText.AutoPlay, new[] { RulebookText.AutoFollow, RulebookText.AutoThulla, RulebookText.AutoLead, RulebookText.AutoOpening, RulebookText.AutoNever }),
                 new RulebookSection("glossary", RulebookText.Glossary, new[] { RulebookText.WordThulla, RulebookText.WordBhabhi, RulebookText.WordHaath, RulebookText.WordHaathLena, RulebookText.WordSuits, RulebookText.WordCourt, RulebookText.WordEscape }),
                 new RulebookSection("tips", RulebookText.Tips, new[] { RulebookText.Tip1, RulebookText.Tip2, RulebookText.Tip3 }),
             };
+            if (model != null)
+            {
+                sections.Add(new RulebookSection("table", RulebookText.ThisTable, table));
+            }
+
+            return sections;
         }
 
         public static string PresetId(Preset preset) => preset switch

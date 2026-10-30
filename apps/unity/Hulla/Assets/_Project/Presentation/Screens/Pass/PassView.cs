@@ -37,119 +37,147 @@ namespace Hulla.Presentation.Screens.Pass
 
         public void Dispose() => _model.Changed -= Refresh;
 
+        /// <summary>
+        /// The pass (design: Pass): the top plate with the season, days left and the bar to the next
+        /// tier; the track scrolls sideways with the current tier lit, free above and premium below;
+        /// a reached tier's small yellow Claim, a tick once claimed, a lock on premium. Between
+        /// seasons the plate says so.
+        /// </summary>
         private void Refresh()
         {
             _list.Clear();
             var info = _model.Info;
-            if (_model.ErrorCode != null)
-            {
-                _status.text = UiText.Error(_model.ErrorCode);
-            }
-            else if (_model.NoSeason)
-            {
-                _status.text = UiText.NoSeason;
-            }
-            else
-            {
-                _status.text = "";
-            }
-
+            _status.text = _model.ErrorCode != null ? UiText.Error(_model.ErrorCode) : "";
             if (info == null)
             {
+                if (_model.NoSeason)
+                {
+                    var plate = new VisualElement();
+                    plate.AddToClassList("panel");
+                    plate.AddToClassList("pass__plate");
+                    var line = new Label(UiText.NoSeason);
+                    line.AddToClassList("pass__empty");
+                    plate.Add(line);
+                    _list.Add(plate);
+                }
+
                 return;
             }
 
-            var header = new VisualElement();
-            header.AddToClassList("panel");
-            header.AddToClassList("pass__header");
-            _list.Add(header);
-            var heading = new Label(SeasonName(info.SeasonName));
-            heading.AddToClassList("title");
-            heading.AddToClassList("title--small");
-            header.Add(heading);
-            var line = info.Tier >= info.Tiers.Count
-                ? Strings.Format(UiText.PassComplete, info.Tiers.Count)
-                : Strings.Format(UiText.PassProgress, info.Tier, info.Tiers.Count, info.IntoTier, info.XpPerTier);
-            line += " · " + Strings.Format(UiText.SeasonEndsIn, LeaderboardView.Duration(info.EndTs - _nowMs()));
-            if (info.CatchUp)
-            {
-                line += " · " + UiText.DoubleXp;
-            }
-
-            var progress = new Label(line);
-            progress.AddToClassList("status");
-            header.Add(progress);
-            header.Add(new Meter(info.Tier >= info.Tiers.Count ? 1 : info.IntoTier, info.Tier >= info.Tiers.Count ? 1 : info.XpPerTier));
-            if (!info.Premium)
-            {
-                var locked = new Label(UiText.PremiumLocked);
-                locked.AddToClassList("caption");
-                locked.style.whiteSpace = WhiteSpace.Normal;
-                header.Add(locked);
-            }
-
+            var card = new VisualElement();
+            card.AddToClassList("panel");
+            card.AddToClassList("pass__plate");
+            var top = new VisualElement();
+            top.AddToClassList("pass__plate-row");
+            var season = new Label(SeasonName(info.SeasonName));
+            season.AddToClassList("pass__season");
+            top.Add(season);
+            var days = Math.Max(0, (int)Math.Ceiling((info.EndTs - _nowMs()) / 86400000.0));
+            var left = new Label(Strings.Format(UiText.DaysLeft, days));
+            left.AddToClassList("pass__days");
+            top.Add(left);
+            card.Add(top);
+            var complete = info.Tier >= info.Tiers.Count;
+            var row = new VisualElement();
+            row.AddToClassList("pass__plate-row");
+            var tierLine = new Label(complete ? Strings.Format(UiText.PassComplete, info.Tiers.Count) : Strings.Format(UiText.TierNext, info.Tier, info.Tier + 1));
+            tierLine.AddToClassList("pass__tierline");
+            row.Add(tierLine);
+            var xp = new Label(complete ? "" : Strings.Format(UiText.XpOf, info.IntoTier, info.XpPerTier));
+            xp.AddToClassList("pass__xp");
+            row.Add(xp);
+            card.Add(row);
+            var meter = new Meter(complete ? 1 : info.IntoTier, complete ? 1 : info.XpPerTier);
+            meter.AddToClassList("pass__meter");
+            card.Add(meter);
+            var track = new ScrollView(ScrollViewMode.Horizontal) { horizontalScrollerVisibility = ScrollerVisibility.Hidden, verticalScrollerVisibility = ScrollerVisibility.Hidden };
+            track.AddToClassList("pass__track");
+            VisualElement? current = null;
             foreach (var tier in info.Tiers)
             {
-                _list.Add(Row(tier, info.Premium));
+                var column = Column(tier, info.Premium, tier.Tier == info.Tier + 1 || (complete && tier.Tier == info.Tiers.Count));
+                if (column.ClassListContains("pass__col--current"))
+                {
+                    current = column;
+                }
+
+                track.Add(column);
+            }
+
+            card.Add(track);
+            var labels = new VisualElement();
+            labels.AddToClassList("pass__plate-row");
+            var free = new Label(UiText.FreeTrack);
+            free.AddToClassList("pass__track-label");
+            labels.Add(free);
+            var premium = new Label(UiText.PremiumTrack);
+            premium.AddToClassList("pass__track-label");
+            premium.AddToClassList("pass__track-label--premium");
+            labels.Add(premium);
+            card.Add(labels);
+            _list.Add(card);
+            if (!info.Premium)
+            {
+                var note = new Label(UiText.PremiumStore);
+                note.AddToClassList("pass__note");
+                _list.Add(note);
+            }
+
+            if (current != null)
+            {
+                var target = current;
+                track.schedule.Execute(() => track.ScrollTo(target)).StartingIn(60);
             }
         }
 
-        private VisualElement Row(PassTier tier, bool premium)
+        private VisualElement Column(PassTier tier, bool premium, bool current)
         {
-            var row = new VisualElement();
-            row.AddToClassList("pass__row");
-            if (!tier.Reached)
-            {
-                row.AddToClassList("pass__row--ahead");
-            }
-
+            var column = new VisualElement();
+            column.AddToClassList("pass__col");
+            column.EnableInClassList("pass__col--current", current);
             var number = new Label(tier.Tier.ToString());
-            number.AddToClassList("pass__tier");
-            row.Add(number);
-            row.Add(Side(tier, tier.Free, false, true));
-            row.Add(Side(tier, tier.Premium, true, premium));
-            return row;
+            number.AddToClassList("pass__num");
+            column.Add(number);
+            column.Add(Cell(tier, tier.Free, false, true));
+            column.Add(Cell(tier, tier.Premium, true, premium));
+            return column;
         }
 
-        private VisualElement Side(PassTier tier, PassReward reward, bool premiumTrack, bool unlocked)
+        private VisualElement Cell(PassTier tier, PassReward reward, bool premiumTrack, bool unlocked)
         {
-            var side = new VisualElement();
-            side.AddToClassList("pass__side");
-            if (premiumTrack)
-            {
-                side.AddToClassList("pass__side--premium");
-            }
-
+            var cell = new VisualElement();
+            cell.AddToClassList("pass__cell");
+            cell.EnableInClassList("pass__cell--premium", premiumTrack);
+            cell.EnableInClassList("pass__cell--ahead", !tier.Reached);
             var text = new Label(reward.Empty ? "" : Describe(reward));
             text.AddToClassList("pass__reward");
-            side.Add(text);
+            cell.Add(text);
             if (reward.Empty)
             {
-                return side;
+                return cell;
             }
 
             if (reward.Claimed)
             {
-                var done = new Label(UiText.Claimed);
-                done.AddToClassList("tag--ok");
-                side.Add(done);
+                var tick = new VisualElement { pickingMode = PickingMode.Ignore };
+                tick.AddToClassList("pass__tick");
+                cell.Add(tick);
             }
             else if (tier.Reached && unlocked)
             {
                 var claim = new Button(() => _claim(tier.Tier, premiumTrack)) { text = UiText.Claim };
-                claim.AddToClassList("chip");
-                claim.AddToClassList("chip--on");
+                claim.AddToClassList("pass__claim");
                 claim.SetEnabled(!_model.Busy);
-                side.Add(claim);
+                cell.Add(claim);
             }
             else if (premiumTrack && !unlocked)
             {
-                var lockTag = new Label(UiText.Locked);
-                lockTag.AddToClassList("caption");
-                side.Add(lockTag);
+                var lockIcon = new VisualElement { pickingMode = PickingMode.Ignore };
+                lockIcon.AddToClassList("pass__lock");
+                cell.Add(lockIcon);
             }
 
-            return side;
+            return cell;
         }
 
         /// <summary>"60 coins", "5 gems", "Kites" or a combination.</summary>

@@ -35,6 +35,8 @@ namespace Hulla.Application.Tests
 
             public Awaitable<Result<Profile>> UpdateProfileAsync(ProfileUpdate update, CancellationToken cancellation) => throw new NotSupportedException();
 
+            public Awaitable<Result<Profile>> ProfileAsync(string userId, CancellationToken cancellation) => throw new NotSupportedException();
+
             public Awaitable<Result<IReadOnlyList<FriendEntry>>> FriendsAsync(CancellationToken cancellation) => throw new NotSupportedException();
 
             public Awaitable<Result<IReadOnlyList<FriendEntry>>> RecentAsync(CancellationToken cancellation) => throw new NotSupportedException();

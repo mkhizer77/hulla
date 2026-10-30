@@ -151,3 +151,30 @@ describe("Baithak points on the boards (GDD 12.8, R50)", () => {
     expect(ledger.balances("p0")).toEqual({ coins: 0, gems: 20 });
   });
 });
+
+describe("board names", () => {
+  it("shows each player's profile name on the board, not the record's blank name", () => {
+    const m = memoryNk();
+    const log = fakeLogger();
+    ensureLeaderboards(m.nk, log);
+    postRoundPoints(m.nk, log, record("public"), "u0", 0);
+    postRoundPoints(m.nk, log, record("public"), "u1", 1);
+    m.nk.storageWrite([
+      {
+        collection: "profiles",
+        key: "profile",
+        userId: "u0",
+        value: { displayName: "Ayesha" },
+        permissionRead: 1,
+        permissionWrite: 0,
+      },
+    ]);
+    const view = boardView(m.nk, "u1", "weekly", "global", [], 10, undefined);
+    expect(view.ok).toBe(true);
+    if (!view.ok) return;
+    const names = new Map(view.rows.map((r) => [r.userId, r.username]));
+    expect(names.get("u0")).toBe("Ayesha");
+    expect(names.get("u1")).not.toBe("");
+    expect(view.me?.username).toBe(names.get("u1"));
+  });
+});

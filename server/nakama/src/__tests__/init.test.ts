@@ -24,6 +24,7 @@ describe("InitModule", () => {
     expect([...rpcs.keys()]).toEqual([
       "hello",
       "table_create",
+      "quick_play_bots",
       "table_join_by_code",
       "presets_get",
       "voice_token",

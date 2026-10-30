@@ -31,7 +31,9 @@ namespace Hulla.Application.ViewModels
                 Profile.Stats?.Rounds ?? 0,
                 Profile.Stats?.Escapes ?? 0,
                 Profile.Stats?.Bhabhis ?? 0,
-                Profile.Stats?.ThullasGiven ?? 0);
+                Profile.Stats?.ThullasGiven ?? 0,
+                Profile.Avatar,
+                Profile.Title);
 
         public string? ErrorCode { get; private set; }
 

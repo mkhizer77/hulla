@@ -26,6 +26,12 @@ namespace Hulla.Infrastructure.Nakama
             return ProfileFrom(body);
         }
 
+        public async Awaitable<Result<Profile>> ProfileAsync(string userId, CancellationToken cancellation)
+        {
+            var body = await RpcAsync("profile_get", new JObject { ["userId"] = userId }, cancellation);
+            return ProfileFrom(body);
+        }
+
         public async Awaitable<Result<Profile>> UpdateProfileAsync(ProfileUpdate update, CancellationToken cancellation)
         {
             var body = await RpcAsync("profile_update", JObject.FromObject(update, ProtocolJson.CreateSerializer()), cancellation);

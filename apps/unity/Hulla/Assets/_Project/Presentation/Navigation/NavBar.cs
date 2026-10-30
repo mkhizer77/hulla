@@ -33,6 +33,8 @@ namespace Hulla.Presentation.Navigation
             {
                 var chosen = tab;
                 var button = new Button(() => Tap(chosen)) { name = "nav-" + tab.ToString().ToLowerInvariant() };
+                // Not focusable: a tapped tab would keep :focus and show the normal tile over the selected one.
+                button.focusable = false;
                 button.AddToClassList("nav__tab");
                 var key = tab.ToString().ToLowerInvariant();
                 button.Add(new NavIcon(tab));

@@ -573,6 +573,11 @@
    "smart": false
   },
   {
+   "key": "emote.bhangra",
+   "text": "Bhangra",
+   "smart": false
+  },
+  {
    "key": "emote.chai",
    "text": "Chai",
    "smart": false
@@ -593,6 +598,16 @@
    "smart": false
   },
   {
+   "key": "emote.dropped_catch",
+   "text": "Dropped catch",
+   "smart": false
+  },
+  {
+   "key": "emote.duck",
+   "text": "Duck",
+   "smart": false
+  },
+  {
    "key": "emote.facepalm",
    "text": "Facepalm",
    "smart": false
@@ -600,6 +615,11 @@
   {
    "key": "emote.fire",
    "text": "Fire",
+   "smart": false
+  },
+  {
+   "key": "emote.garland",
+   "text": "Garland",
    "smart": false
   },
   {
@@ -613,8 +633,23 @@
    "smart": false
   },
   {
+   "key": "emote.howzat",
+   "text": "Howzat",
+   "smart": false
+  },
+  {
+   "key": "emote.laddoo",
+   "text": "Laddoo",
+   "smart": false
+  },
+  {
    "key": "emote.laugh_cry",
    "text": "Laugh cry",
+   "smart": false
+  },
+  {
+   "key": "emote.mehndi",
+   "text": "Mehndi",
    "smart": false
   },
   {
@@ -650,6 +685,11 @@
   {
    "key": "emote.turtle",
    "text": "Turtle",
+   "smart": false
+  },
+  {
+   "key": "emote.wicket",
+   "text": "Wicket",
    "smart": false
   },
   {
@@ -698,6 +738,16 @@
    "smart": false
   },
   {
+   "key": "error.content.filtered",
+   "text": "That message wasn't sent.",
+   "smart": false
+  },
+  {
+   "key": "error.economy.daily_cap_reached",
+   "text": "That's the limit for today.",
+   "smart": false
+  },
+  {
    "key": "error.economy.insufficient_funds",
    "text": "Not enough coins or gems for that.",
    "smart": false
@@ -715,6 +765,16 @@
   {
    "key": "error.economy.item_unknown",
    "text": "That item isn't in the shop any more.",
+   "smart": false
+  },
+  {
+   "key": "error.economy.store_unavailable",
+   "text": "The shop is closed right now. Try later.",
+   "smart": false
+  },
+  {
+   "key": "error.network.rate_limited",
+   "text": "Easy, too many taps. Try again in a moment.",
    "smart": false
   },
   {
@@ -748,6 +808,11 @@
    "smart": false
   },
   {
+   "key": "error.profile.not_visible",
+   "text": "Their profile is private.",
+   "smart": false
+  },
+  {
    "key": "error.rules.hand_ask_none",
    "text": "Nothing to answer.",
    "smart": false
@@ -760,6 +825,26 @@
   {
    "key": "error.rules.hand_take_declined",
    "text": "They kept their cards.",
+   "smart": false
+  },
+  {
+   "key": "error.rules.hand_take_disabled",
+   "text": "Asking for a hand is off at this table.",
+   "smart": false
+  },
+  {
+   "key": "error.rules.hand_take_window_closed",
+   "text": "Too late to ask for a hand this trick.",
+   "smart": false
+  },
+  {
+   "key": "error.rules.illegal_move",
+   "text": "That card can't be played now.",
+   "smart": false
+  },
+  {
+   "key": "error.rules.round_over",
+   "text": "The round has already ended.",
    "smart": false
   },
   {
@@ -780,6 +865,11 @@
   {
    "key": "error.social.friend_cap",
    "text": "You have the most friends allowed (500).",
+   "smart": false
+  },
+  {
+   "key": "error.social.muted",
+   "text": "You're muted at this table.",
    "smart": false
   },
   {
@@ -808,6 +898,11 @@
    "smart": false
   },
   {
+   "key": "error.table.draining",
+   "text": "The server is restarting. Tables open again in a minute.",
+   "smart": false
+  },
+  {
    "key": "error.table.full",
    "text": "That table is full.",
    "smart": false
@@ -818,13 +913,33 @@
    "smart": false
   },
   {
+   "key": "error.table.invalid_payload",
+   "text": "Something didn't send right. Try again.",
+   "smart": false
+  },
+  {
    "key": "error.table.locked",
    "text": "That table isn't taking players right now.",
    "smart": false
   },
   {
+   "key": "error.table.not_authorised",
+   "text": "You can't do that at this table.",
+   "smart": false
+  },
+  {
    "key": "error.table.not_found",
    "text": "No table has that code. Check it with the host.",
+   "smart": false
+  },
+  {
+   "key": "error.table.not_host",
+   "text": "Only the host can do that.",
+   "smart": false
+  },
+  {
+   "key": "error.table.not_in_round",
+   "text": "That only works during a round.",
    "smart": false
   },
   {
@@ -1094,7 +1209,7 @@
   },
   {
    "key": "item.table_charpai",
-   "text": "Charpai",
+   "text": "Basant rug",
    "smart": false
   },
   {
@@ -1813,6 +1928,11 @@
    "smart": true
   },
   {
+   "key": "ranked.reward_sep",
+   "text": " + ",
+   "smart": false
+  },
+  {
    "key": "ranked.rules",
    "text": "4 players · 12 s turns · no hand-taking · no card memory",
    "smart": false
@@ -2129,12 +2249,12 @@
   },
   {
    "key": "rulebook.why_ace",
-   "text": "The round opens with the Ace of Spades, and its holder has to lead it (R12).",
+   "text": "The round opens with the Ace of Spades, and its holder has to lead it.",
    "smart": false
   },
   {
    "key": "rulebook.why_follow",
-   "text": "You hold a card of the led suit, so you have to play one of them (R18). Only those cards are lit.",
+   "text": "You hold a card of the led suit, so you have to play one of them. Only those cards are lit.",
    "smart": false
   },
   {
@@ -2144,7 +2264,7 @@
   },
   {
    "key": "rulebook.why_server",
-   "text": "The server checks every card. A card it refuses goes back to your hand with no penalty (R47).",
+   "text": "The server checks every card. A card it refuses goes back to your hand with no penalty.",
    "smart": false
   },
   {
@@ -2354,7 +2474,7 @@
   },
   {
    "key": "tutorial.hint_leader",
-   "text": "\"Leads\" marks who led this trick. The highest card of that suit takes the hand.",
+   "text": "The crown marks who led this trick. The highest card of that suit takes the hand.",
    "smart": false
   },
   {
@@ -2503,6 +2623,16 @@
    "smart": false
   },
   {
+   "key": "ui.account_data",
+   "text": "Account and data",
+   "smart": false
+  },
+  {
+   "key": "ui.achievement_reward",
+   "text": "Reward: {0}",
+   "smart": true
+  },
+  {
    "key": "ui.achievement_unlocked",
    "text": "Achievement unlocked: {0}",
    "smart": true
@@ -2515,6 +2645,11 @@
   {
    "key": "ui.achievements_count",
    "text": "{0} of {1} unlocked",
+   "smart": true
+  },
+  {
+   "key": "ui.achievements_of",
+   "text": "Achievements · {0} of {1}",
    "smart": true
   },
   {
@@ -2533,13 +2668,33 @@
    "smart": false
   },
   {
+   "key": "ui.add_friend_title",
+   "text": "Add a friend",
+   "smart": false
+  },
+  {
    "key": "ui.add_name",
    "text": "Add {0}",
    "smart": true
   },
   {
+   "key": "ui.add_name_plus",
+   "text": "+ Add {0}",
+   "smart": true
+  },
+  {
    "key": "ui.after_rounds",
    "text": "After {0} rounds",
+   "smart": true
+  },
+  {
+   "key": "ui.already_friends",
+   "text": "Already friends",
+   "smart": false
+  },
+  {
+   "key": "ui.also_block",
+   "text": "Also block {0}",
    "smart": true
   },
   {
@@ -2560,6 +2715,11 @@
   {
    "key": "ui.analytics_yes",
    "text": "Yes, share",
+   "smart": false
+  },
+  {
+   "key": "ui.another_name",
+   "text": "Another",
    "smart": false
   },
   {
@@ -2601,6 +2761,11 @@
    "key": "ui.at_table",
    "text": "At the table",
    "smart": false
+  },
+  {
+   "key": "ui.at_table_seats",
+   "text": "Thulla · {0} seats open",
+   "smart": true
   },
   {
    "key": "ui.away",
@@ -2648,6 +2813,11 @@
    "smart": false
   },
   {
+   "key": "ui.blocked_players",
+   "text": "Blocked players",
+   "smart": false
+  },
+  {
    "key": "ui.board_empty",
    "text": "No points yet. Win rounds to get on the board.",
    "smart": false
@@ -2658,9 +2828,19 @@
    "smart": true
   },
   {
+   "key": "ui.bot_tag",
+   "text": "Bot",
+   "smart": false
+  },
+  {
    "key": "ui.buy",
    "text": "Buy",
    "smart": false
+  },
+  {
+   "key": "ui.buy_equip",
+   "text": "Buy & equip · {0}",
+   "smart": true
   },
   {
    "key": "ui.buy_question",
@@ -2688,6 +2868,11 @@
    "smart": false
   },
   {
+   "key": "ui.change_any_time",
+   "text": "You can change it any time",
+   "smart": false
+  },
+  {
    "key": "ui.change_rules",
    "text": "Change rules",
    "smart": false
@@ -2708,6 +2893,11 @@
    "smart": false
   },
   {
+   "key": "ui.chat_placeholder",
+   "text": "Say something to the table",
+   "smart": false
+  },
+  {
    "key": "ui.chat_refused",
    "text": "Not sent. Messages can't have links or phone numbers, up to 140 characters.",
    "smart": false
@@ -2723,6 +2913,11 @@
    "smart": false
   },
   {
+   "key": "ui.claim_coins",
+   "text": "Claim {0} coins",
+   "smart": true
+  },
+  {
    "key": "ui.claimed",
    "text": "Done",
    "smart": false
@@ -2730,6 +2925,11 @@
   {
    "key": "ui.close",
    "text": "Close",
+   "smart": false
+  },
+  {
+   "key": "ui.code_hint",
+   "text": "The code is on your friend's lobby screen",
    "smart": false
   },
   {
@@ -2748,6 +2948,11 @@
    "smart": true
   },
   {
+   "key": "ui.coins_short",
+   "text": "{0} short",
+   "smart": true
+  },
+  {
    "key": "ui.coming_soon",
    "text": "Coming soon",
    "smart": false
@@ -2755,6 +2960,11 @@
   {
    "key": "ui.connecting",
    "text": "Connecting…",
+   "smart": false
+  },
+  {
+   "key": "ui.continue",
+   "text": "Continue",
    "smart": false
   },
   {
@@ -2770,6 +2980,11 @@
   {
    "key": "ui.copy",
    "text": "Copy",
+   "smart": false
+  },
+  {
+   "key": "ui.copy_commitment",
+   "text": "Copy the code",
    "smart": false
   },
   {
@@ -2790,6 +3005,11 @@
   {
    "key": "ui.crown",
    "text": "♛",
+   "smart": false
+  },
+  {
+   "key": "ui.daily_back_tomorrow",
+   "text": "Back tomorrow",
    "smart": false
   },
   {
@@ -2815,6 +3035,11 @@
   {
    "key": "ui.daily_tomorrow",
    "text": "Tomorrow: {0}.",
+   "smart": true
+  },
+  {
+   "key": "ui.days_left",
+   "text": "{0} days left",
    "smart": true
   },
   {
@@ -2868,6 +3093,11 @@
    "smart": false
   },
   {
+   "key": "ui.dot",
+   "text": "·",
+   "smart": false
+  },
+  {
    "key": "ui.double_xp",
    "text": "double XP",
    "smart": false
@@ -2888,8 +3118,23 @@
    "smart": true
   },
   {
+   "key": "ui.edit_profile",
+   "text": "Edit profile",
+   "smart": false
+  },
+  {
    "key": "ui.edit_rules",
    "text": "Edit rules",
+   "smart": false
+  },
+  {
+   "key": "ui.emote_pack_locked",
+   "text": "From the {0} pack. Get it in the Shop.",
+   "smart": true
+  },
+  {
+   "key": "ui.emotes",
+   "text": "Emotes",
    "smart": false
   },
   {
@@ -2943,6 +3188,11 @@
    "smart": false
   },
   {
+   "key": "ui.everyone_else",
+   "text": "Everyone else · {0}",
+   "smart": true
+  },
+  {
    "key": "ui.export_copied",
    "text": "Your data was copied.",
    "smart": false
@@ -2973,8 +3223,43 @@
    "smart": true
   },
   {
+   "key": "ui.fair_deal_short",
+   "text": "Fair deal",
+   "smart": false
+  },
+  {
+   "key": "ui.fair_every",
+   "text": "Every round at every table is dealt this way.",
+   "smart": false
+  },
+  {
+   "key": "ui.fair_how",
+   "text": "How it works",
+   "smart": false
+  },
+  {
+   "key": "ui.fair_how_body",
+   "text": "Before dealing, the server picks a secret seed and shows everyone its fingerprint, the code above. The seed alone decides the shuffle. When the round ends the seed is revealed. Anyone can turn it back into the same fingerprint and replay the shuffle, so the deal could not have been changed after you saw the code.",
+   "smart": false
+  },
+  {
+   "key": "ui.fair_how_title",
+   "text": "How a fair deal works",
+   "smart": false
+  },
+  {
+   "key": "ui.fair_round_body",
+   "text": "Before the deal, the server committed to {0}. When the round ends it reveals the seed, and anyone can check that the shuffle matches.",
+   "smart": true
+  },
+  {
    "key": "ui.favourite",
    "text": "★",
+   "smart": false
+  },
+  {
+   "key": "ui.favourite_word",
+   "text": "Favourite",
    "smart": false
   },
   {
@@ -2993,6 +3278,11 @@
    "smart": false
   },
   {
+   "key": "ui.free_track",
+   "text": "Free",
+   "smart": false
+  },
+  {
    "key": "ui.friend_code_label",
    "text": "Your friend code",
    "smart": false
@@ -3005,6 +3295,11 @@
   {
    "key": "ui.friends",
    "text": "Friends",
+   "smart": false
+  },
+  {
+   "key": "ui.friends_empty",
+   "text": "Nobody here yet. Share your code and they land in your table.",
    "smart": false
   },
   {
@@ -3048,6 +3343,11 @@
    "smart": true
   },
   {
+   "key": "ui.gems_balance",
+   "text": "{0} gems",
+   "smart": true
+  },
+  {
    "key": "ui.gems_only",
    "text": "{0} gems",
    "smart": true
@@ -3088,8 +3388,18 @@
    "smart": false
   },
   {
+   "key": "ui.handle_rule",
+   "text": "3 to 16 letters, numbers or _",
+   "smart": false
+  },
+  {
    "key": "ui.haptics_label",
    "text": "Vibration",
+   "smart": false
+  },
+  {
+   "key": "ui.help_how",
+   "text": "Help and how to play",
    "smart": false
   },
   {
@@ -3104,7 +3414,22 @@
   },
   {
    "key": "ui.host",
-   "text": "host",
+   "text": "Host",
+   "smart": false
+  },
+  {
+   "key": "ui.how_to_play_row",
+   "text": "How to play",
+   "smart": false
+  },
+  {
+   "key": "ui.how_to_play_step",
+   "text": "How to play · {0} of {1}",
+   "smart": true
+  },
+  {
+   "key": "ui.in_a_round",
+   "text": "In a round",
    "smart": false
   },
   {
@@ -3115,6 +3440,11 @@
   {
    "key": "ui.invite_friends",
    "text": "Invite friends",
+   "smart": false
+  },
+  {
+   "key": "ui.invite_group",
+   "text": "Invite your group",
    "smart": false
   },
   {
@@ -3133,6 +3463,11 @@
    "smart": false
   },
   {
+   "key": "ui.invite_to_mine",
+   "text": "Invite to mine",
+   "smart": false
+  },
+  {
    "key": "ui.invite_your_group",
    "text": "Invite your group",
    "smart": false
@@ -3141,6 +3476,11 @@
    "key": "ui.invited",
    "text": "Invited",
    "smart": false
+  },
+  {
+   "key": "ui.item_type_rarity",
+   "text": "{0} · {1}",
+   "smart": true
   },
   {
    "key": "ui.join_by_code",
@@ -3158,6 +3498,11 @@
    "smart": false
   },
   {
+   "key": "ui.join_their_table",
+   "text": "Join {0}'s table",
+   "smart": true
+  },
+  {
    "key": "ui.keep_playing",
    "text": "Keep playing",
    "smart": false
@@ -3166,6 +3511,11 @@
    "key": "ui.keeps_cards",
    "text": "{0} keeps their cards",
    "smart": true
+  },
+  {
+   "key": "ui.language",
+   "text": "Language",
+   "smart": false
   },
   {
    "key": "ui.large_cards_label",
@@ -3188,8 +3538,28 @@
    "smart": false
   },
   {
+   "key": "ui.league_you",
+   "text": "{0} · you",
+   "smart": true
+  },
+  {
    "key": "ui.leave",
    "text": "Leave",
+   "smart": false
+  },
+  {
+   "key": "ui.leave_table",
+   "text": "Leave table",
+   "smart": false
+  },
+  {
+   "key": "ui.leave_table_body",
+   "text": "Your seat plays itself until you come back. You can rejoin from Home for 30 minutes.",
+   "smart": false
+  },
+  {
+   "key": "ui.leave_table_title",
+   "text": "Leave the table?",
    "smart": false
   },
   {
@@ -3203,6 +3573,11 @@
    "smart": true
   },
   {
+   "key": "ui.level_n",
+   "text": "Level {0}",
+   "smart": true
+  },
+  {
    "key": "ui.level_up",
    "text": "Level up! {0} → {1}",
    "smart": true
@@ -3210,6 +3585,21 @@
   {
    "key": "ui.loading",
    "text": "Loading…",
+   "smart": false
+  },
+  {
+   "key": "ui.lobby_hint",
+   "text": "{0} starts when 3 or more are ready",
+   "smart": true
+  },
+  {
+   "key": "ui.lobby_hint_host",
+   "text": "Start when 3 or more are seated",
+   "smart": false
+  },
+  {
+   "key": "ui.lobby_hint_host_ready",
+   "text": "Get ready, then start when 3 or more are ready",
    "smart": false
   },
   {
@@ -3248,9 +3638,19 @@
    "smart": false
   },
   {
+   "key": "ui.missions_today_resets",
+   "text": "Today · resets in {0} h",
+   "smart": true
+  },
+  {
    "key": "ui.missions_week",
    "text": "This week",
    "smart": false
+  },
+  {
+   "key": "ui.missions_week_left",
+   "text": "This week · {0} days left",
+   "smart": true
   },
   {
    "key": "ui.more",
@@ -3259,12 +3659,12 @@
   },
   {
    "key": "ui.most_picked_up",
-   "text": "Most cards picked up: {0}, {1}",
+   "text": "Biggest pick-up · {0}, {1:plural:{} card|{} cards}",
    "smart": true
   },
   {
    "key": "ui.most_thullas",
-   "text": "Most thullas: {0}, {1}",
+   "text": "Most thullas · {0}, {1}",
    "smart": true
   },
   {
@@ -3303,8 +3703,18 @@
    "smart": false
   },
   {
+   "key": "ui.new_here",
+   "text": "New here:",
+   "smart": false
+  },
+  {
    "key": "ui.no_achievements_yet",
    "text": "Play a round to start.",
+   "smart": false
+  },
+  {
+   "key": "ui.no_blocked",
+   "text": "Nobody blocked.",
    "smart": false
   },
   {
@@ -3403,8 +3813,23 @@
    "smart": false
   },
   {
+   "key": "ui.notify_summary",
+   "text": "Invites, friends",
+   "smart": false
+  },
+  {
+   "key": "ui.of_count",
+   "text": "{0} of {1}",
+   "smart": true
+  },
+  {
    "key": "ui.offline",
    "text": "Offline",
+   "smart": false
+  },
+  {
+   "key": "ui.on_home",
+   "text": "On Home",
    "smart": false
   },
   {
@@ -3428,6 +3853,11 @@
    "smart": false
   },
   {
+   "key": "ui.owned_equip",
+   "text": "Owned · Equip",
+   "smart": false
+  },
+  {
    "key": "ui.party_empty",
    "text": "No friends online. Share your code.",
    "smart": false
@@ -3443,8 +3873,33 @@
    "smart": true
   },
   {
+   "key": "ui.paste_code",
+   "text": "Paste from the clipboard: {0}",
+   "smart": true
+  },
+  {
+   "key": "ui.phone_linked",
+   "text": "Phone linked",
+   "smart": false
+  },
+  {
+   "key": "ui.phone_placeholder",
+   "text": "+92 300 1234567",
+   "smart": false
+  },
+  {
+   "key": "ui.phrases",
+   "text": "Phrases",
+   "smart": false
+  },
+  {
    "key": "ui.picked_up",
    "text": "{0} picks up",
+   "smart": true
+  },
+  {
+   "key": "ui.picked_up_count",
+   "text": "{0:plural:Picked up {} card this round|Picked up {} cards this round}",
    "smart": true
   },
   {
@@ -3468,14 +3923,54 @@
    "smart": false
   },
   {
+   "key": "ui.play_ranked",
+   "text": "Play ranked",
+   "smart": false
+  },
+  {
    "key": "ui.player_back",
    "text": "{0} is back.",
+   "smart": true
+  },
+  {
+   "key": "ui.player_line",
+   "text": "@{0}",
+   "smart": true
+  },
+  {
+   "key": "ui.player_line_title",
+   "text": "@{0} · {1}",
+   "smart": true
+  },
+  {
+   "key": "ui.player_stats",
+   "text": "{0} · {1}",
    "smart": true
   },
   {
    "key": "ui.playing",
    "text": "Playing…",
    "smart": false
+  },
+  {
+   "key": "ui.playing_now",
+   "text": "Playing now",
+   "smart": false
+  },
+  {
+   "key": "ui.plus_coins",
+   "text": "+{0} coins",
+   "smart": true
+  },
+  {
+   "key": "ui.plus_reward",
+   "text": "+{0}",
+   "smart": true
+  },
+  {
+   "key": "ui.plus_reward_gems",
+   "text": "+{0} · {1} gems",
+   "smart": true
   },
   {
    "key": "ui.points_line",
@@ -3488,8 +3983,23 @@
    "smart": true
   },
   {
+   "key": "ui.points_to_climb",
+   "text": "{0} pts · {1} to climb",
+   "smart": true
+  },
+  {
    "key": "ui.premium_locked",
    "text": "The premium track opens with the premium pass.",
+   "smart": false
+  },
+  {
+   "key": "ui.premium_store",
+   "text": "Premium pass arrives with the store launch",
+   "smart": false
+  },
+  {
+   "key": "ui.premium_track",
+   "text": "Premium",
    "smart": false
   },
   {
@@ -3508,9 +4018,29 @@
    "smart": true
   },
   {
+   "key": "ui.privacy_blocked",
+   "text": "Privacy and blocked players",
+   "smart": false
+  },
+  {
+   "key": "ui.private_table",
+   "text": "Private table",
+   "smart": false
+  },
+  {
    "key": "ui.profile",
    "text": "Profile",
    "smart": false
+  },
+  {
+   "key": "ui.profile_line",
+   "text": "@{0} · Level {1}",
+   "smart": true
+  },
+  {
+   "key": "ui.profile_line_title",
+   "text": "@{0} · Level {1} · {2}",
+   "smart": true
   },
   {
    "key": "ui.progress_line",
@@ -3528,9 +4058,19 @@
    "smart": false
   },
   {
+   "key": "ui.rank_short",
+   "text": "Rank",
+   "smart": false
+  },
+  {
    "key": "ui.ranked",
    "text": "Ranked",
    "smart": false
+  },
+  {
+   "key": "ui.ranked_line",
+   "text": "Ranked · {0}",
+   "smart": true
   },
   {
    "key": "ui.ready",
@@ -3603,6 +4143,11 @@
    "smart": false
   },
   {
+   "key": "ui.remove_friend",
+   "text": "Remove friend",
+   "smart": false
+  },
+  {
    "key": "ui.report",
    "text": "Report",
    "smart": false
@@ -3668,9 +4213,19 @@
    "smart": false
   },
   {
-   "key": "ui.rounds_together",
-   "text": "{0} rounds together",
+   "key": "ui.rounds_count",
+   "text": "{0:plural:{} round|{} rounds}",
    "smart": true
+  },
+  {
+   "key": "ui.rounds_together",
+   "text": "{0:plural:1 round together|{} rounds together}",
+   "smart": true
+  },
+  {
+   "key": "ui.rulebook_row",
+   "text": "The rulebook",
+   "smart": false
   },
   {
    "key": "ui.rules_changed_by",
@@ -3708,9 +4263,59 @@
    "smart": false
   },
   {
-   "key": "ui.searching",
-   "text": "Finding a table for {0}…",
+   "key": "ui.score",
+   "text": "Score",
+   "smart": false
+  },
+  {
+   "key": "ui.score_bhabhi",
+   "text": "Bhabhi",
+   "smart": false
+  },
+  {
+   "key": "ui.score_bhabhi_cards",
+   "text": "Bhabhi · cards",
+   "smart": false
+  },
+  {
+   "key": "ui.score_player",
+   "text": "Player",
+   "smart": false
+  },
+  {
+   "key": "ui.score_rounds",
+   "text": "{0:plural:{} round played|{} rounds played}",
    "smart": true
+  },
+  {
+   "key": "ui.score_title",
+   "text": "Score · round {0}",
+   "smart": true
+  },
+  {
+   "key": "ui.score_value",
+   "text": "{0} · {1}",
+   "smart": true
+  },
+  {
+   "key": "ui.search_elapsed",
+   "text": "{0} s · usually under 20",
+   "smart": true
+  },
+  {
+   "key": "ui.search_friends",
+   "text": "Search friends",
+   "smart": false
+  },
+  {
+   "key": "ui.searching",
+   "text": "Finding a table for {0}",
+   "smart": true
+  },
+  {
+   "key": "ui.searching_bots",
+   "text": "Nobody free right now. Starting with bots…",
+   "smart": false
   },
   {
    "key": "ui.searching_start",
@@ -3744,13 +4349,28 @@
   },
   {
    "key": "ui.seat_size",
-   "text": "Seat-size",
+   "text": "Seat size",
    "smart": false
   },
   {
    "key": "ui.seat_them",
    "text": "Seat",
    "smart": false
+  },
+  {
+   "key": "ui.seated_next",
+   "text": "Seated next round ✓",
+   "smart": false
+  },
+  {
+   "key": "ui.seated_of_three",
+   "text": "{0} of 3 seated",
+   "smart": true
+  },
+  {
+   "key": "ui.seats_free_next",
+   "text": "{0:plural:{} seat free · next round|{} seats free · next round}",
+   "smart": true
   },
   {
    "key": "ui.seats_label",
@@ -3763,9 +4383,24 @@
    "smart": false
   },
   {
+   "key": "ui.seats_short",
+   "text": "Seats",
+   "smart": false
+  },
+  {
    "key": "ui.seconds_short",
    "text": "{0}s",
    "smart": true
+  },
+  {
+   "key": "ui.see_all",
+   "text": "See all",
+   "smart": false
+  },
+  {
+   "key": "ui.seed_later",
+   "text": "Before the deal, the server committed to the shuffle. The seed is revealed when the round ends.",
+   "smart": false
   },
   {
    "key": "ui.send",
@@ -3773,8 +4408,18 @@
    "smart": false
   },
   {
+   "key": "ui.send_report",
+   "text": "Send report",
+   "smart": false
+  },
+  {
    "key": "ui.sent_requests",
    "text": "Waiting for them",
+   "smart": false
+  },
+  {
+   "key": "ui.sent_tick",
+   "text": "Sent ✓",
    "smart": false
   },
   {
@@ -3795,6 +4440,11 @@
   {
    "key": "ui.settings_development",
    "text": "Development",
+   "smart": false
+  },
+  {
+   "key": "ui.settings_more",
+   "text": "More",
    "smart": false
   },
   {
@@ -3825,6 +4475,11 @@
   {
    "key": "ui.sfx_label",
    "text": "Sound effects",
+   "smart": false
+  },
+  {
+   "key": "ui.share",
+   "text": "Share",
    "smart": false
   },
   {
@@ -3861,6 +4516,16 @@
    "key": "ui.share_footer_friend",
    "text": "Add me on Hulla: {0}",
    "smart": true
+  },
+  {
+   "key": "ui.share_friend_text",
+   "text": "Add me on Hulla, friend code {0}: {1}",
+   "smart": true
+  },
+  {
+   "key": "ui.share_link",
+   "text": "Share link",
+   "smart": false
   },
   {
    "key": "ui.share_post",
@@ -3933,6 +4598,11 @@
    "smart": false
   },
   {
+   "key": "ui.spotlight_days",
+   "text": "This week's spotlight · {0} d",
+   "smart": true
+  },
+  {
    "key": "ui.start",
    "text": "Start round",
    "smart": false
@@ -3948,14 +4618,59 @@
    "smart": true
   },
   {
+   "key": "ui.stat_bhabhi",
+   "text": "Times Bhabhi",
+   "smart": false
+  },
+  {
+   "key": "ui.stat_escapes",
+   "text": "Clean escapes",
+   "smart": false
+  },
+  {
+   "key": "ui.stat_rounds",
+   "text": "Rounds",
+   "smart": false
+  },
+  {
+   "key": "ui.stat_thullas",
+   "text": "Thullas given",
+   "smart": false
+  },
+  {
    "key": "ui.stats_line",
    "text": "{0} rounds · {1} escapes · {2} times Bhabhi · {3} thullas given",
    "smart": true
   },
   {
+   "key": "ui.stay",
+   "text": "Stay",
+   "smart": false
+  },
+  {
    "key": "ui.streak_suffix",
    "text": " · day {0} streak",
    "smart": true
+  },
+  {
+   "key": "ui.suit_short",
+   "text": "Suit",
+   "smart": false
+  },
+  {
+   "key": "ui.swap",
+   "text": "Swap",
+   "smart": false
+  },
+  {
+   "key": "ui.swap_one",
+   "text": "Swap one",
+   "smart": false
+  },
+  {
+   "key": "ui.swapped",
+   "text": "Swapped",
+   "smart": false
   },
   {
    "key": "ui.tagline",
@@ -3970,6 +4685,11 @@
   {
    "key": "ui.text_size_label",
    "text": "Text size",
+   "smart": false
+  },
+  {
+   "key": "ui.their_code",
+   "text": "Their code",
    "smart": false
   },
   {
@@ -3998,9 +4718,34 @@
    "smart": false
   },
   {
+   "key": "ui.tier_next",
+   "text": "Tier {0} → {1}",
+   "smart": true
+  },
+  {
+   "key": "ui.times_bhabhi",
+   "text": "{0:plural:{} time Bhabhi|{} times Bhabhi}",
+   "smart": true
+  },
+  {
    "key": "ui.title_reward",
    "text": "title \"{0}\"",
    "smart": true
+  },
+  {
+   "key": "ui.turn_any",
+   "text": "Your turn · play any card",
+   "smart": false
+  },
+  {
+   "key": "ui.turn_follow",
+   "text": "Your turn · follow {0}",
+   "smart": true
+  },
+  {
+   "key": "ui.turn_lead",
+   "text": "Your turn · lead",
+   "smart": false
   },
   {
    "key": "ui.turn_seconds",
@@ -4013,13 +4758,38 @@
    "smart": false
   },
   {
+   "key": "ui.type_my_own",
+   "text": "Type my own",
+   "smart": false
+  },
+  {
    "key": "ui.unblock",
    "text": "Unblock",
    "smart": false
   },
   {
+   "key": "ui.unfavourite_word",
+   "text": "Unfavourite",
+   "smart": false
+  },
+  {
+   "key": "ui.unlocked_on",
+   "text": "Unlocked {0}",
+   "smart": true
+  },
+  {
    "key": "ui.unmute",
    "text": "Unmute",
+   "smart": false
+  },
+  {
+   "key": "ui.version_footer",
+   "text": "Hulla {0} · {1}",
+   "smart": true
+  },
+  {
+   "key": "ui.voice",
+   "text": "Voice",
    "smart": false
   },
   {
@@ -4118,6 +4888,21 @@
    "smart": false
   },
   {
+   "key": "ui.waiting_for_seat",
+   "text": "Waiting for {0}",
+   "smart": true
+  },
+  {
+   "key": "ui.waiting_ready",
+   "text": "Waiting for {0} to be ready",
+   "smart": true
+  },
+  {
+   "key": "ui.watch",
+   "text": "Watch",
+   "smart": false
+  },
+  {
    "key": "ui.watch_friend_table",
    "text": "Watch {0}'s game",
    "smart": true
@@ -4138,9 +4923,54 @@
    "smart": true
   },
   {
+   "key": "ui.watching_count",
+   "text": "Watching · {0}",
+   "smart": true
+  },
+  {
+   "key": "ui.watching_full",
+   "text": "No free seats · the host can grow the table in the rules",
+   "smart": false
+  },
+  {
    "key": "ui.watching_lobby",
    "text": "You're watching. The host can give you a seat.",
    "smart": false
+  },
+  {
+   "key": "ui.watching_no_seats",
+   "text": "No free seats",
+   "smart": false
+  },
+  {
+   "key": "ui.watching_pill",
+   "text": "You're watching. {0} can give you a seat at the round end.",
+   "smart": true
+  },
+  {
+   "key": "ui.watching_sheet",
+   "text": "Watching · {0:plural:1 seat free|{} seats free} · next round",
+   "smart": true
+  },
+  {
+   "key": "ui.watching_tap_row",
+   "text": "Tap a row for Mute · Block · Report",
+   "smart": false
+  },
+  {
+   "key": "ui.where_table",
+   "text": "At a Thulla table · {0} seats open",
+   "smart": true
+  },
+  {
+   "key": "ui.where_watching",
+   "text": "Playing a round",
+   "smart": false
+  },
+  {
+   "key": "ui.xp_of",
+   "text": "{0:N0} / {1:N0} XP",
+   "smart": true
   },
   {
    "key": "ui.you",
@@ -4155,6 +4985,21 @@
   {
    "key": "ui.you_are_out",
    "text": "You're out, safe for this round! Watch the rest; chat and voice stay on.",
+   "smart": false
+  },
+  {
+   "key": "ui.you_have",
+   "text": "You have {0} coins · {1} gems",
+   "smart": true
+  },
+  {
+   "key": "ui.your_friend_code",
+   "text": "Your friend code",
+   "smart": false
+  },
+  {
+   "key": "ui.your_name",
+   "text": "Your name",
    "smart": false
   },
   {

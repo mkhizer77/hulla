@@ -2,27 +2,33 @@
     <Style src="Ranked.uss" />
     <ui:VisualElement name="ranked" class="screen settings">
         <ui:VisualElement class="settings__top">
-            <ui:Label name="title" class="title title--small" />
-            <ui:Button name="back" class="button button--quiet button--small" />
+            <ui:Label name="title" class="title title--small top__title" />
+            <ui:Button name="back" class="top__button top__left">
+                <ui:VisualElement class="kit__icon kit__icon--back" picking-mode="Ignore" />
+            </ui:Button>
+            <ui:Button name="rules" class="top__button top__right">
+                <ui:VisualElement class="kit__icon kit__icon--book" picking-mode="Ignore" />
+            </ui:Button>
         </ui:VisualElement>
         <ui:Label name="status" class="status" />
         <ui:ScrollView class="settings__scroll" horizontal-scroller-visibility="Hidden" vertical-scroller-visibility="Hidden">
             <ui:Label name="banner" class="ranked__banner" />
-            <ui:VisualElement name="card" class="panel ranked__card">
+            <ui:VisualElement name="card" class="ranked__card">
+                <ui:VisualElement name="medal" class="ranked__medal" picking-mode="Ignore" />
                 <ui:Label name="league" class="ranked__league" />
                 <ui:Label name="rating" class="ranked__rating" />
                 <ui:VisualElement name="bar" class="ranked__bar">
                     <ui:VisualElement name="fill" class="ranked__fill" />
                 </ui:VisualElement>
-                <ui:Label name="progress" class="caption" />
-                <ui:Label name="season" class="caption" />
-                <ui:Label name="rules" class="caption ranked__rules" />
-                <ui:Button name="play" class="button button--primary ranked__play" />
+                <ui:Label name="progress" class="caption ranked__progress" />
             </ui:VisualElement>
-            <ui:Label name="ladder-heading" class="settings__heading" />
-            <ui:VisualElement name="ladder" />
+            <ui:Label name="rules" class="caption ranked__rules" />
+            <ui:Label name="season" class="caption ranked__season" />
+            <ui:Label name="ladder-heading" class="settings__heading profile__hidden" />
+            <ui:VisualElement name="ladder" class="ranked__ladder" />
             <ui:Label name="top-heading" class="settings__heading" />
             <ui:VisualElement name="top" />
         </ui:ScrollView>
+        <ui:Button name="play" class="button button--primary ranked__play" />
     </ui:VisualElement>
 </ui:UXML>

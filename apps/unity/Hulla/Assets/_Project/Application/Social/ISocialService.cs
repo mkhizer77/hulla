@@ -16,6 +16,9 @@ namespace Hulla.Application.Social
 
         Awaitable<Result<Profile>> UpdateProfileAsync(ProfileUpdate update, CancellationToken cancellation);
 
+        /// <summary>Another player's public profile (profile_get with their id), as their privacy allows.</summary>
+        Awaitable<Result<Profile>> ProfileAsync(string userId, CancellationToken cancellation);
+
         /// <summary>Friends, requests both ways and blocks, with favourites marked.</summary>
         Awaitable<Result<IReadOnlyList<FriendEntry>>> FriendsAsync(CancellationToken cancellation);
 

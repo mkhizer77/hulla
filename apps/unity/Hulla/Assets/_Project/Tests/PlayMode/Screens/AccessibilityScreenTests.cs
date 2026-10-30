@@ -13,8 +13,8 @@ namespace Hulla.Screens.Tests
     /// <summary>
     /// The accessibility baseline on every screen (GDD 27, #64), laid out on a 1080 × 1920 phone panel:
     /// every visible control is at least 48 dp (132 px at this width) high, and text on a solid
-    /// background reaches 4.5:1 contrast, 3:1 when it is large. Text over an image is left to the
-    /// theme's own token check, since its background is not one colour.
+    /// background reaches 4.5:1 contrast, 3:1 when it is large (a thick outline counts as its edge).
+    /// Text over an image is left to the theme's own token check, since its background is not one colour.
     /// </summary>
     public sealed class AccessibilityScreenTests
     {
@@ -133,6 +133,15 @@ namespace Hulla.Screens.Tests
                 }
 
                 var ratio = Ratio(text, background.Value);
+
+                // A drawn outline of 2 px or more is the glyphs' edge against the background (the
+                // display headlines: yellow fill, dark outline), so it counts when it reads better.
+                var outline = element.resolvedStyle.unityTextOutlineColor;
+                if (element.resolvedStyle.unityTextOutlineWidth >= 2f && outline.a >= 0.99f)
+                {
+                    ratio = Mathf.Max(ratio, Ratio(outline, background.Value));
+                }
+
                 var needed = element.resolvedStyle.fontSize >= LargeText ? 3f : 4.5f;
                 if (ratio + 0.01f < needed)
                 {

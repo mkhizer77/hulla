@@ -38,6 +38,21 @@ describe("lobby: joining and seats", () => {
     });
   });
 
+  it("sends the table state to the seated players when a seat is taken, so they see the new face", () => {
+    const h = harness();
+    h.join(presence(0));
+    const batch = h.join(presence(1));
+    expect(sentTo(batch, "s0").map((e) => e.type)).toContain("table_state");
+    expect(sentTo(batch, "s1").map((e) => e.type)).toContain("table_state");
+  });
+
+  it("sends the table state to the seated players when someone starts watching, so the eye count shows", () => {
+    const h = harness();
+    h.join(presence(0));
+    const batch = h.join(presence(1), { asSpectator: "true" });
+    expect(sentTo(batch, "s0").map((e) => e.type)).toContain("table_state");
+  });
+
   it("fills the lowest free seat, then seats spectators and rejects a full table", () => {
     const h = harness({ config: { maxSpectators: 1 } });
     for (let i = 0; i < 4; i += 1) h.join(presence(i));

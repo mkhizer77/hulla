@@ -19,6 +19,26 @@ namespace Hulla.Presentation.TableKit
 
         private static readonly Dictionary<string, Texture2D?> Cache = new Dictionary<string, Texture2D?>();
 
+        /// <summary>The avatar set's ids, in the order of content/avatars/v1.json.</summary>
+        public static readonly string[] Ids = { "a01", "a02", "a03", "a04", "a05", "a06", "a07", "a08" };
+
+        /// <summary>
+        /// A player's starting avatar, the same pick the server makes for a new account (server
+        /// content/avatars.ts avatarForAccount): the first two bytes of SHA-256 over the user id.
+        /// </summary>
+        public static string ForAccount(string? userId)
+        {
+            if (string.IsNullOrEmpty(userId))
+            {
+                return Ids[0];
+            }
+
+            using var sha = System.Security.Cryptography.SHA256.Create();
+            var digest = sha.ComputeHash(System.Text.Encoding.UTF8.GetBytes(userId));
+            var n = (digest[0] << 8) | digest[1];
+            return Ids[n % Ids.Length];
+        }
+
         /// <summary>The face for an avatar id, or null when the set has no such file.</summary>
         public static Texture2D? Find(string? id)
         {

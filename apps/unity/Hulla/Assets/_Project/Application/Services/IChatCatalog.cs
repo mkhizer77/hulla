@@ -13,6 +13,9 @@ namespace Hulla.Application.Services
 
         string? TextFor(string phraseId);
 
+        /// <summary>The catalog emote pack an emote belongs to (GDD 11.3); only its owners may send it.</summary>
+        string? EmotePack(string emoteId);
+
         Awaitable LoadAsync(CancellationToken cancellation);
     }
 }

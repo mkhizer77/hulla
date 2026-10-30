@@ -66,6 +66,7 @@ namespace Hulla.Presentation.Navigation
             }
 
             // The navigation, an open overlay (settings) and the top pill stay across the swap.
+            root.Q(Sheet.Name)?.RemoveFromHierarchy();
             var overlay = root.Q("shell-overlay");
             var banner = root.Q("shell-banner");
             var nav = root.Q("shell-nav");
@@ -90,6 +91,7 @@ namespace Hulla.Presentation.Navigation
             instance.AddToClassList(ReduceMotion ? "screen--enter-fade" : "screen--enter");
             root.Add(instance);
             _current = instance;
+            Backdrop.Set(root, Backdrop.For(instance));
             Decorate(instance);
             instance.schedule.Execute(() =>
             {
@@ -167,6 +169,7 @@ namespace Hulla.Presentation.Navigation
             var instance = screen.Instantiate();
             instance.name = "shell-overlay";
             instance.AddToClassList("overlay");
+            instance.AddToClassList(Backdrop.CalmClass);
             instance.AddToClassList("screen-anim");
             instance.AddToClassList(ReduceMotion ? "screen--enter-fade" : "screen--enter");
             Root.Add(instance);
@@ -182,46 +185,114 @@ namespace Hulla.Presentation.Navigation
         public void CloseOverlay() => Root.Q("shell-overlay")?.RemoveFromHierarchy();
 
         /// <summary>A question with two answers over the current screen; either answer closes it.</summary>
-        public void ShowDialog(string question, string yes, string no, Action onYes, Action onNo)
+        /// <param name="danger">A destructive yes (delete the account) wears the red button, not the yellow one.</param>
+        public void ShowDialog(string question, string yes, string no, Action onYes, Action onNo, bool danger = false)
         {
             Root.Q("shell-dialog")?.RemoveFromHierarchy();
-            Root.Add(Dialog(question, yes, no, onYes, onNo));
+            Root.Add(Dialog(question, yes, no, onYes, onNo, danger));
         }
 
-        /// <summary>The dialog element itself; either answer removes it.</summary>
-        public static VisualElement Dialog(string question, string yes, string no, Action onYes, Action onNo)
+        /// <summary>
+        /// The dialog element itself (design: every question is a bottom sheet over the dimmed screen,
+        /// the safe answer left, the other right, red when destructive); either answer removes it.
+        /// </summary>
+        public static VisualElement Dialog(string question, string yes, string no, Action onYes, Action onNo, bool danger = false)
         {
             var overlay = new VisualElement { name = "shell-dialog" };
             overlay.AddToClassList("overlay");
-            overlay.AddToClassList("results");
-            overlay.style.display = DisplayStyle.Flex;
+            overlay.AddToClassList("sheet-scrim");
             var panel = new VisualElement();
-            panel.AddToClassList("panel");
-            panel.AddToClassList("dialog");
-            var title = new Label(question);
-            title.AddToClassList("title");
+            panel.AddToClassList("sheet");
+            var grabber = new VisualElement { pickingMode = PickingMode.Ignore };
+            grabber.AddToClassList("sheet__grabber");
+            panel.Add(grabber);
+            var (head, body) = SplitQuestion(question);
+            var title = new Label(head);
+            title.AddToClassList("sheet__title");
             title.AddToClassList("dialog__text");
             panel.Add(title);
-            var yesButton = new Button(() =>
+            if (body.Length > 0)
             {
-                overlay.RemoveFromHierarchy();
-                onYes();
-            }) { text = yes };
-            yesButton.AddToClassList("button");
-            yesButton.AddToClassList("button--primary");
+                var text = new Label(body);
+                text.AddToClassList("sheet__body");
+                panel.Add(text);
+            }
+
+            var answers = new VisualElement();
+            answers.AddToClassList("sheet__answers");
             var noButton = new Button(() =>
             {
                 overlay.RemoveFromHierarchy();
                 onNo();
             }) { text = no };
-            noButton.AddToClassList("button");
+            noButton.AddToClassList("sheet__answer");
             noButton.AddToClassList("dialog__button");
+            var yesButton = new Button(() =>
+            {
+                overlay.RemoveFromHierarchy();
+                onYes();
+            }) { text = yes };
+            yesButton.AddToClassList("sheet__answer");
             yesButton.AddToClassList("dialog__button");
-            panel.Add(yesButton);
-            panel.Add(noButton);
+            yesButton.AddToClassList(danger ? "sheet__answer--danger" : "sheet__answer--yes");
+            yesButton.AddToClassList(danger ? "button--danger" : "button--primary");
+            answers.Add(noButton);
+            answers.Add(yesButton);
+            panel.Add(answers);
             overlay.Add(panel);
             return overlay;
         }
+
+        /// <summary>The first sentence as the sheet's title and the rest as its line, when the first is short.</summary>
+        public static (string Title, string Body) SplitQuestion(string question)
+        {
+            for (var i = 0; i < question.Length - 1; i++)
+            {
+                var c = question[i];
+                if ((c == '?' || c == '.' || c == '!') && question[i + 1] == ' ' && i < 64)
+                {
+                    var rest = question.Substring(i + 2).Trim();
+                    if (rest.Length > 0)
+                    {
+                        return (question.Substring(0, i + 1), rest);
+                    }
+                }
+            }
+
+            return (question, "");
+        }
+
+        /// <summary>
+        /// A first-launch step (design: First launch): one plate on the calm sky, one question each. The
+        /// caller fills the plate; <see cref="CloseGate"/> takes it away.
+        /// </summary>
+        public VisualElement ShowGate(string title, string? picture = null)
+        {
+            CloseGate();
+            var overlay = new VisualElement { name = "shell-gate" };
+            overlay.AddToClassList("overlay");
+            overlay.AddToClassList("gate");
+            overlay.AddToClassList(Backdrop.CalmClass);
+            var plate = new VisualElement();
+            plate.AddToClassList("gate__plate");
+            if (picture != null)
+            {
+                var art = new VisualElement { pickingMode = PickingMode.Ignore };
+                art.AddToClassList("gate__picture");
+                art.AddToClassList("gate__picture--" + picture);
+                plate.Add(art);
+            }
+
+            var label = new Label(title);
+            label.AddToClassList("gate__title");
+            plate.Add(label);
+            overlay.Add(plate);
+            Root.Add(overlay);
+            Decorate(overlay);
+            return plate;
+        }
+
+        public void CloseGate() => Root.Q("shell-gate")?.RemoveFromHierarchy();
 
         /// <summary>A pill at the top of whatever screen is showing (GDD 14.5: pills, never modals); null hides it.</summary>
         public void SetBanner(string? text)
@@ -246,6 +317,7 @@ namespace Hulla.Presentation.Navigation
 
         private void Awake()
         {
+            Root.AddToClassList("shell-root");
             // A copy, so turning the reference on rotation never edits the asset; Expand per brief §2.2.
             var document = GetComponent<UIDocument>();
             if (document.panelSettings != null)
@@ -278,7 +350,7 @@ namespace Hulla.Presentation.Navigation
         private void Relayout()
         {
             var screen = new Vector2Int(Screen.width, Screen.height);
-            var safeArea = Screen.safeArea;
+            var safeArea = FakeNotch ? NotchSafeArea(screen) : Screen.safeArea;
             if (screen == _screen && safeArea == _safeArea)
             {
                 return;
@@ -305,6 +377,79 @@ namespace Hulla.Presentation.Navigation
             LayoutChanged?.Invoke();
         }
 
+        /// <summary>
+        /// Development builds only: <c>-hulla-notch</c> gives a desktop window the iPhone 17 Pro's safe area
+        /// (62 pt clear at the top, 34 pt at the bottom of 874 pt) and draws the island and the home bar,
+        /// so notch spacing is checked without a phone.
+        /// </summary>
+        private static bool? _fakeNotch;
+
+        private static bool FakeNotch => _fakeNotch ??= Debug.isDebugBuild && Array.IndexOf(Environment.GetCommandLineArgs(), "-hulla-notch") >= 0;
+
+        private static Rect NotchSafeArea(Vector2Int screen) =>
+            new Rect(0f, screen.y * 34f / 874f, screen.x, screen.y * (874f - 62f - 34f) / 874f);
+
+        private void DrawFakeNotch()
+        {
+            if (!FakeNotch)
+            {
+                return;
+            }
+
+            var island = Root.Q("dev-island");
+            if (island == null)
+            {
+                island = DevMark("dev-island", 34.3f, 1.26f, 31.4f, 4.2f, new Color(0f, 0f, 0f, 1f));
+                Root.Add(island);
+                Root.Add(DevMark("dev-homebar", 32f, 98.6f, 36f, 0.6f, new Color(0f, 0f, 0f, 0.8f)));
+            }
+
+            island.BringToFront();
+            Root.Q("dev-homebar")?.BringToFront();
+        }
+
+        private static VisualElement DevMark(string name, float left, float top, float width, float height, Color color)
+        {
+            var mark = new VisualElement { name = name, pickingMode = PickingMode.Ignore };
+            mark.style.position = Position.Absolute;
+            mark.style.left = Length.Percent(left);
+            mark.style.top = Length.Percent(top);
+            mark.style.width = Length.Percent(width);
+            mark.style.height = Length.Percent(height);
+            mark.style.backgroundColor = color;
+            var radius = new StyleLength(new Length(60f));
+            mark.style.borderTopLeftRadius = radius;
+            mark.style.borderTopRightRadius = radius;
+            mark.style.borderBottomLeftRadius = radius;
+            mark.style.borderBottomRightRadius = radius;
+            return mark;
+        }
+
+        /// <summary>
+        /// Overlays fill the whole screen (their scene or dim reaches under the notch) and keep their
+        /// content inside the safe area, like the screens the root pads.
+        /// </summary>
+        private void PadToSafeArea(VisualElement? overlay)
+        {
+            if (overlay == null)
+            {
+                return;
+            }
+
+            var insets = SafeArea;
+            if (Math.Abs(overlay.style.paddingTop.value.value - insets.Top) < 0.5f
+                && Math.Abs(overlay.style.paddingBottom.value.value - insets.Bottom) < 0.5f
+                && overlay.style.paddingTop.keyword != StyleKeyword.Null)
+            {
+                return;
+            }
+
+            overlay.style.paddingTop = insets.Top;
+            overlay.style.paddingBottom = insets.Bottom;
+            overlay.style.paddingLeft = insets.Left;
+            overlay.style.paddingRight = insets.Right;
+        }
+
         private void Update() => Ticked?.Invoke(Time.deltaTime);
 
         private void LateUpdate()
@@ -312,6 +457,17 @@ namespace Hulla.Presentation.Navigation
             Relayout();
             KeyboardAvoidance.Apply(Root, _current);
             KeyboardAvoidance.Apply(Root, Root.Q("shell-overlay"));
+            PadToSafeArea(Root.Q("shell-overlay"));
+            PadToSafeArea(Root.Q("shell-dialog"));
+            PadToSafeArea(Root.Q(Sheet.Name));
+            PadToSafeArea(Root.Q("shell-gate"));
+            var banner = Root.Q("shell-banner");
+            if (banner != null && Math.Abs(banner.style.marginTop.value.value - SafeArea.Top) > 0.5f)
+            {
+                banner.style.marginTop = SafeArea.Top;
+            }
+
+            DrawFakeNotch();
         }
     }
 }

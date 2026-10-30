@@ -82,7 +82,7 @@ namespace Hulla.Presentation.Screens.Ranked
             _top.Clear();
             var shown = card != null;
             _card.style.display = shown ? DisplayStyle.Flex : DisplayStyle.None;
-            _ladderHeading.style.display = shown ? DisplayStyle.Flex : DisplayStyle.None;
+            _ladderHeading.style.display = DisplayStyle.None;
             _topHeading.style.display = shown ? DisplayStyle.Flex : DisplayStyle.None;
             _play.SetEnabled(shown && !_model.Loading);
             if (_model.ErrorCode != null)
@@ -105,6 +105,19 @@ namespace Hulla.Presentation.Screens.Ranked
 
             ShowBanner(card);
             _league.text = RankedText.League(card.League);
+            // The league's medal: gold and up, silver, bronze; grey until placed.
+            var medal = _card.Q<VisualElement>("medal");
+            var tier = card.League ?? "";
+            medal.EnableInClassList("ranked__medal--gold", tier.StartsWith("gold") || tier.StartsWith("platinum") || tier.StartsWith("diamond") || tier.StartsWith("ustad"));
+            medal.EnableInClassList("ranked__medal--silver", tier.StartsWith("silver"));
+            medal.EnableInClassList("ranked__medal--bronze", tier.StartsWith("bronze"));
+            // Each league has its own medal once its art is in (Basant.uss .ranked__medal--league-*).
+            foreach (var league in new[] { "bronze", "silver", "gold", "platinum", "diamond", "ustad" })
+            {
+                medal.EnableInClassList("ranked__medal--league-" + league, tier.StartsWith(league));
+            }
+
+            medal.EnableInClassList("ranked__medal--league-none", tier.Length == 0);
             _rating.text = Strings.Format(RankedText.Rating, card.Rating) + (card.Rank is long rank ? " · " + Strings.Format(RankedText.Rank, rank) : "");
             if (card.Placed)
             {
@@ -160,11 +173,10 @@ namespace Hulla.Presentation.Screens.Ranked
                 line.AddToClassList("ranked__step--me");
             }
 
-            var name = new Label(RankedText.League(league.Id));
+            var name = new Label(league.Id == mine ? Strings.Format(UiText.LeagueYou, RankedText.League(league.Id)) : RankedText.League(league.Id));
             name.AddToClassList("ranked__step-name");
             line.Add(name);
-            var floor = league.TopOnly ? Strings.Format(RankedText.UstadNote, 500) : league.MinRating + "+";
-            var detail = new Label(floor + " · " + RankedText.Reward(league));
+            var detail = new Label(RankedText.Reward(league));
             detail.AddToClassList("ranked__step-detail");
             line.Add(detail);
             return line;

@@ -50,6 +50,20 @@ namespace Hulla.Games.Thulla
         private readonly Func<long> _nowMs;
         private readonly OpponentRing _ring;
         private readonly PlayerBadge _me = new PlayerBadge();
+        private readonly VisualElement _root;
+        private readonly Action _leave;
+        private readonly Action<string?>? _openRules;
+        private readonly Action? _openSettings;
+        private readonly Label _watchCount;
+        private readonly VisualElement _watchIcon;
+        private readonly Label _statusText;
+        private readonly Label _statusSecs;
+        private readonly VisualElement _status;
+        private readonly VisualElement _dim;
+        private Action<Fairness>? _explainFairness;
+        private readonly Dictionary<string, int> _bhabhiTally = new Dictionary<string, int>();
+        private readonly HashSet<string> _talliedRounds = new HashSet<string>();
+        private int _roundsPlayed;
         private readonly PileView _pile;
         private readonly DiscardView _discard;
         private readonly Label _pileNote;
@@ -58,6 +72,10 @@ namespace Hulla.Games.Thulla
         private readonly Label _info;
         private readonly Button _takeHand;
         private readonly Label _toast;
+        private readonly Dictionary<string, Button> _emoteTiles = new Dictionary<string, Button>();
+        private Func<string, bool>? _ownsPack;
+        private readonly VisualElement _burst;
+        private readonly VisualElement _rail;
         private readonly ThullaResults _results;
         private readonly IChatCatalog _chat;
         private readonly VisualElement _chatPanel;
@@ -167,6 +185,7 @@ namespace Hulla.Games.Thulla
             _reduceMotion = reduceMotion;
             _hideRecapForGood = hideRecapForGood;
             _felt = root.Q<VisualElement>("felt");
+            _rail = root.Q<VisualElement>("rail");
             _ring = new OpponentRing(root.Q<VisualElement>("opponents"));
             root.Q<VisualElement>("me")?.Add(_me);
             _ring.Tapped += OnBadgeTapped;
@@ -191,19 +210,52 @@ namespace Hulla.Games.Thulla
             _takeHand.text = UiText.TakeHand;
             _takeHand.clicked += AskForHand;
             _toast = root.Q<Label>("toast");
+            // The thulla giver's celebration (GDD 12.11) bursts behind the stamp, so it sits just before it.
+            _burst = new VisualElement { name = "stamp-burst", pickingMode = PickingMode.Ignore };
+            _burst.AddToClassList("stamp-burst");
+            _burst.style.display = DisplayStyle.None;
+            _toast.parent.Insert(_toast.parent.IndexOf(_toast), _burst);
             _results = new ThullaResults(root.Q<VisualElement>("results"), NameOf, AvatarOf, VoteAgain);
             _results.WhoLeft = () => new List<string>(_leftThisRound.Values);
+            _results.Leave = leave;
             var settingsButton = root.Q<Button>("settings");
             settingsButton.text = UiText.Settings;
             settingsButton.clicked += () => openSettings?.Invoke();
-            settingsButton.style.display = openSettings == null ? DisplayStyle.None : DisplayStyle.Flex;
+            settingsButton.style.display = DisplayStyle.None;
             var rulesButton = root.Q<Button>("rules");
             rulesButton.text = RulebookText.Title;
             rulesButton.clicked += () => openRules?.Invoke(null);
-            rulesButton.style.display = openRules == null ? DisplayStyle.None : DisplayStyle.Flex;
+            rulesButton.style.display = DisplayStyle.None;
             var leaveButton = root.Q<Button>("leave");
             leaveButton.text = UiText.Leave;
-            leaveButton.clicked += leave;
+            _root = root;
+            _leave = leave;
+            _openRules = openRules;
+            _openSettings = openSettings;
+            leaveButton.clicked += AskLeave;
+            var moreButton = root.Q<Button>("more");
+            moreButton.text = "";
+            moreButton.tooltip = UiText.More;
+            moreButton.clicked += OpenMenu;
+            var plate = root.Q<VisualElement>("info-plate");
+            plate.RegisterCallback<ClickEvent>(_ => OpenFairDeal());
+            _watchCount = root.Q<Label>("watch-count");
+            _watchIcon = root.Q<VisualElement>("watch-icon");
+            foreach (var eye in new VisualElement[] { _watchCount, _watchIcon })
+            {
+                eye.pickingMode = PickingMode.Position;
+                eye.RegisterCallback<ClickEvent>(evt =>
+                {
+                    evt.StopPropagation();
+                    OpenWatchers();
+                });
+            }
+
+            _statusText = root.Q<Label>("status-text");
+            _statusSecs = root.Q<Label>("status-secs");
+            _status = root.Q<VisualElement>("status");
+            _dim = root.Q<VisualElement>("sheet-dim");
+            _dim.RegisterCallback<PointerDownEvent>(_ => CloseSheets());
             _recap = root.Q<VisualElement>("recap");
             root.Q<Label>("recap-title").text = UiText.RecapTitle;
             root.Q<Label>("recap-text").text = UiText.Recap;
@@ -219,8 +271,10 @@ namespace Hulla.Games.Thulla
             _chatPanel = root.Q<VisualElement>("chat-panel");
             _strip = root.Q<VisualElement>("quick-strip");
             var chatButton = root.Q<Button>("chat");
-            chatButton.text = UiText.Chat;
+            chatButton.text = "";
+            chatButton.tooltip = UiText.Chat;
             chatButton.clicked += () => SetChatOpen(_chatPanel.style.display != DisplayStyle.Flex);
+            BuildChatTabs(root.Q<VisualElement>("chat-tabs"));
             var closeChat = root.Q<Button>("chat-close");
             closeChat.text = UiText.Close;
             closeChat.clicked += () => SetChatOpen(false);
@@ -229,10 +283,16 @@ namespace Hulla.Games.Thulla
             _chatLog = root.Q<VisualElement>("chat-log");
             _chatStatus = root.Q<Label>("chat-status");
             _chatInput = root.Q<TextField>("chat-input");
+            _chatInput.textEdition.placeholder = UiText.ChatPlaceholder;
             _chatInput.maxLength = ITableChat.MaxLength;
             _chatInput.label = "";
             var send = root.Q<Button>("chat-send");
-            send.text = UiText.Send;
+            send.text = "";
+            send.tooltip = UiText.Send;
+            send.AddToClassList("chat-sheet__send");
+            var arrow = new VisualElement { pickingMode = PickingMode.Ignore };
+            arrow.AddToClassList("chat-sheet__send-icon");
+            send.Add(arrow);
             send.clicked += SendTyped;
             _chatInput.RegisterCallback<KeyDownEvent>(evt =>
             {
@@ -316,33 +376,106 @@ namespace Hulla.Games.Thulla
             }
 
             var id = model.Seats[(int)seat].PlayerId;
-            if (id == null)
+            if (id == null || model.Seats[(int)seat].Bot)
             {
                 return;
             }
 
-            var name = NameOf(seat);
+            ShowPlayer(id, NameOf(seat), model.Seats[(int)seat].Avatar, seat);
+        }
+
+        /// <summary>The player sheet for anyone at the table, seated or watching (seat null for a watcher).</summary>
+        private void ShowPlayer(string id, string name, string? avatar, long? seat)
+        {
+            var model = _client.Model;
+            if (_setMuted == null)
+            {
+                return;
+            }
+
             var muted = _isMuted?.Invoke(id) == true;
-            _sheetTitle.text = name;
+            _sheetTitle.style.display = DisplayStyle.None;
             _sheetStatus.text = "";
             _sheetActions.Clear();
-            var tray = model.CardMemoryAssist ? model.PickedUp((int)seat) : Array.Empty<string>();
-            if (tray.Count > 0)
+
+            // The player sheet (concept: Player sheet at the table): face, name, handle and title, one stats
+            // line, cards picked up this round, Add friend, their voice level, then Mute · Block · Report.
+            var head = new VisualElement();
+            head.AddToClassList("psheet__head");
+            var face = new VisualElement { pickingMode = PickingMode.Ignore };
+            face.AddToClassList("seat__avatar");
+            face.AddToClassList("psheet__face");
+            var initial = new Label { pickingMode = PickingMode.Ignore };
+            initial.AddToClassList("seat__initial");
+            face.Add(initial);
+            AvatarArt.Apply(face, initial, avatar, name);
+            head.Add(face);
+            var lines = new VisualElement();
+            lines.AddToClassList("psheet__lines");
+            lines.Add(Line(name, "psheet__name"));
+            var who = Line("", "psheet__line");
+            var stats = Line("", "psheet__line");
+            lines.Add(who);
+            lines.Add(stats);
+            head.Add(lines);
+            _sheetActions.Add(head);
+            if (LookUpProfile != null)
             {
-                _sheetStatus.text = Strings.Format(UiText.PickedUpTray, name, string.Join(" ", TrayGlyphs(tray)));
+                FillProfile(id, who, stats);
+            }
+
+            if (model.InRound && seat is long seated)
+            {
+                var picked = model.PickedUp((int)seated);
+                var strip = Line(Strings.Get("ui.picked_up_count", picked.Count), "psheet__strip");
+                if (model.CardMemoryAssist && picked.Count > 0)
+                {
+                    strip.text += "\n" + string.Join(" ", TrayGlyphs(picked));
+                }
+
+                _sheetActions.Add(strip);
+            }
+
+            if (_addFriend != null && _canAddFriend?.Invoke(id) == true)
+            {
+                Button add = null!;
+                add = new Button(() =>
+                {
+                    _addFriend(id);
+                    add.text = UiText.RequestSent;
+                    add.SetEnabled(false);
+                }) { text = UiText.AddFriend };
+                add.AddToClassList("psheet__add");
+                _sheetActions.Add(add);
             }
 
             if (!muted && _peerVolume != null && _setPeerVolume != null && _voice != null && _voice.State != VoiceState.Hidden)
             {
                 // Their voice level on this phone only (GDD 11.4).
-                var level = new SliderInt(UiText.VoiceVolumeLabel, 0, 100) { value = _peerVolume(id) };
+                var level = new SliderInt(UiText.Voice, 0, 100) { value = _peerVolume(id), tooltip = UiText.VoiceVolumeLabel };
                 level.AddToClassList("sheet__level");
+                level.AddToClassList("psheet__voice");
                 var setLevel = _setPeerVolume;
                 level.RegisterValueChangedCallback(evt => setLevel(id, evt.newValue));
                 _sheetActions.Add(level);
             }
 
-            SheetButton(muted ? UiText.Unmute : UiText.Mute, () =>
+            var links = new VisualElement();
+            links.AddToClassList("psheet__links");
+            _sheetActions.Add(links);
+            void Link(string text, Action click)
+            {
+                if (links.childCount > 0)
+                {
+                    links.Add(Line(UiText.Dot, "psheet__dot"));
+                }
+
+                var link = new Button(click) { text = text };
+                link.AddToClassList("psheet__link");
+                links.Add(link);
+            }
+
+            Link(muted ? UiText.Unmute : UiText.Mute, () =>
             {
                 _setMuted(id, !muted);
                 _sheetStatus.text = muted ? "" : Strings.Format(UiText.MutedNote, name);
@@ -350,7 +483,7 @@ namespace Hulla.Games.Thulla
             });
             if (_block != null)
             {
-                SheetButton(UiText.Block, () =>
+                Link(UiText.Block, () =>
                 {
                     _block(id);
                     _sheetStatus.text = Strings.Format(UiText.Blocked, name);
@@ -360,11 +493,43 @@ namespace Hulla.Games.Thulla
 
             if (_report != null)
             {
-                SheetButton(UiText.Report, () => ShowReasons(id, name));
+                Link(UiText.Report, () => ShowReasons(id, name));
             }
 
-            SheetButton(UiText.Close, () => _sheet.style.display = DisplayStyle.None);
+            OpenPlayerSheet();
+        }
+
+        /// <summary>Looks up a player's public profile for the sheet's handle, title and stats; null hides them.</summary>
+        public Func<string, Awaitable<Profile?>>? LookUpProfile { get; set; }
+
+        private async void FillProfile(string id, Label who, Label stats)
+        {
+            var profile = LookUpProfile == null ? null : await LookUpProfile(id);
+            if (profile == null)
+            {
+                return;
+            }
+
+            who.text = string.IsNullOrEmpty(profile.Title)
+                ? Strings.Format(UiText.PlayerLine, profile.Handle)
+                : Strings.Format(UiText.PlayerLineTitle, profile.Handle, UiText.TitleName(profile.Title!));
+            if (profile.Stats != null)
+            {
+                stats.text = Strings.Format(UiText.PlayerStats, Strings.Get("ui.rounds_count", profile.Stats.Rounds), Strings.Get("ui.times_bhabhi", profile.Stats.Bhabhis));
+            }
+        }
+
+        private static Label Line(string text, string cls)
+        {
+            var label = new Label(text) { pickingMode = PickingMode.Ignore };
+            label.AddToClassList(cls);
+            return label;
+        }
+
+        private void OpenPlayerSheet()
+        {
             _sheet.style.display = DisplayStyle.Flex;
+            _dim.style.display = DisplayStyle.Flex;
         }
 
         private static IEnumerable<string> TrayGlyphs(IReadOnlyList<string> cards)
@@ -375,22 +540,66 @@ namespace Hulla.Games.Thulla
             }
         }
 
+        /// <summary>
+        /// Report (design: Report and block): six reasons as a single-choice list, "Also block" on by
+        /// default, then Send report; the thanks line replaces the sheet.
+        /// </summary>
         private void ShowReasons(string id, string name)
         {
+            _sheetTitle.style.display = DisplayStyle.Flex;
             _sheetTitle.text = Strings.Format(UiText.ReportWhy, name);
             _sheetActions.Clear();
+            _sheetStatus.text = "";
+            string? chosen = null;
+            var rows = new List<Button>();
+            var list = new VisualElement();
+            list.AddToClassList("report__list");
             foreach (var (reason, label) in UiText.ReportReasons)
             {
-                var chosen = reason;
-                SheetButton(label, () => _report?.Invoke(id, chosen, ok =>
+                var value = reason;
+                var row = new Button { text = label };
+                row.AddToClassList("report__reason");
+                row.clicked += () =>
+                {
+                    chosen = value;
+                    foreach (var other in rows)
+                    {
+                        other.EnableInClassList("report__reason--on", other == row);
+                    }
+                };
+                var dot = new VisualElement { pickingMode = PickingMode.Ignore };
+                dot.AddToClassList("report__radio");
+                row.Add(dot);
+                rows.Add(row);
+                list.Add(row);
+            }
+
+            _sheetActions.Add(list);
+            var block = new Toggle(Strings.Format(UiText.AlsoBlock, name)) { value = _block != null };
+            block.AddToClassList("report__block");
+            block.style.display = _block != null ? DisplayStyle.Flex : DisplayStyle.None;
+            _sheetActions.Add(block);
+            var send = new Button(() =>
+            {
+                if (chosen == null)
+                {
+                    return;
+                }
+
+                if (block.value)
+                {
+                    _block?.Invoke(id);
+                }
+
+                _report?.Invoke(id, chosen, ok =>
                 {
                     _sheetActions.Clear();
                     _sheetStatus.text = ok ? UiText.ReportThanks : UiText.Error("social.unavailable");
                     CloseSheetSoon();
-                }));
-            }
-
-            SheetButton(UiText.Close, () => _sheet.style.display = DisplayStyle.None);
+                });
+            }) { text = UiText.SendReport };
+            send.AddToClassList("report__send");
+            _sheetActions.Add(send);
         }
 
         private void SheetButton(string text, Action click)
@@ -400,7 +609,11 @@ namespace Hulla.Games.Thulla
             _sheetActions.Add(button);
         }
 
-        private void CloseSheetSoon() => _sheet.schedule.Execute(() => _sheet.style.display = DisplayStyle.None).StartingIn(2500);
+        private void CloseSheetSoon() => _sheet.schedule.Execute(() =>
+        {
+            _sheet.style.display = DisplayStyle.None;
+            _dim.style.display = _chatPanel.style.display == DisplayStyle.Flex ? DisplayStyle.Flex : DisplayStyle.None;
+        }).StartingIn(2500);
 
         private bool Muted(long seat)
         {
@@ -629,7 +842,11 @@ namespace Hulla.Games.Thulla
             _hint.text = back ? Strings.Format(UiText.PlayerBack, name) : Strings.Format(UiText.BotPlaysFor, name);
             _hint.style.display = DisplayStyle.Flex;
             _hintLeft = SaySeconds;
-            _ring.BadgeFor(seat)?.Say(back ? UiText.BackAtTable : UiText.SeatAutoPlay, SaySeconds);
+            // The seat's own tag already says "Bot playing"; only the return gets a bubble.
+            if (back)
+            {
+                _ring.BadgeFor(seat)?.Say(UiText.BackAtTable, SaySeconds);
+            }
         }
 
         /// <summary>Shares the room code from the results so someone can take a seat a player left (private rooms).</summary>
@@ -645,6 +862,7 @@ namespace Hulla.Games.Thulla
             {
                 _askSheetOpen = false;
                 _sheet.style.display = DisplayStyle.None;
+                _dim.style.display = DisplayStyle.None;
             }
 
             if (answered.Accepted || answered.Reason != HandAnsweredPayloadReason.Declined)
@@ -672,13 +890,14 @@ namespace Hulla.Games.Thulla
             SheetButton(UiText.HandOver, () => AnswerAsk(true));
             SheetButton(UiText.KeepPlaying, () => AnswerAsk(false));
             _askSheetOpen = true;
-            _sheet.style.display = DisplayStyle.Flex;
+            OpenPlayerSheet();
         }
 
         private void AnswerAsk(bool accept)
         {
             _askSheetOpen = false;
             _sheet.style.display = DisplayStyle.None;
+            _dim.style.display = DisplayStyle.None;
             _client.AnswerHand(accept);
         }
 
@@ -688,6 +907,15 @@ namespace Hulla.Games.Thulla
             foreach (var badge in _ring.Badges)
             {
                 badge.Tick(deltaSeconds);
+            }
+
+            if (_micTipLeft > 0f)
+            {
+                _micTipLeft -= deltaSeconds;
+                if (_micTipLeft <= 0f)
+                {
+                    ShowVoice();
+                }
             }
 
             if (_voiceWhyLeft > 0f)
@@ -763,6 +991,8 @@ namespace Hulla.Games.Thulla
                 if (seconds != _shownSeconds)
                 {
                     _shownSeconds = seconds;
+                    _statusSecs.text = Strings.Format(UiText.SecondsShort, seconds);
+                    _statusSecs.style.display = seconds <= 10 ? DisplayStyle.Flex : DisplayStyle.None;
                     if (TimerPhase.TickAt(seconds) && _tickedAt != seconds)
                     {
                         _tickedAt = seconds;
@@ -797,7 +1027,8 @@ namespace Hulla.Games.Thulla
         public void ApplySettings(bool oneTap, bool reduceMotion, bool largeCards, bool haptics, Action? hideRecapForGood)
         {
             _hand.OneTap = oneTap;
-            _hand.SetLargeCards(largeCards);
+            // The tutorial always shows the larger hand (concept: Tutorial).
+            _hand.SetLargeCards(largeCards || _tutorialHeader != null);
             _reduceMotion = reduceMotion;
             _pile.ReduceMotion = reduceMotion;
             _haptics = haptics;
@@ -823,6 +1054,14 @@ namespace Hulla.Games.Thulla
         {
             _voice = voice;
             _mic.clicked += OnMicTapped;
+            // Push-to-talk lives on the mic itself (owner, 28 Oct): hold it to talk, a tip says so.
+            _micTip = new Label { pickingMode = PickingMode.Ignore };
+            _micTip.AddToClassList("table__mic-tip");
+            _mic.Add(_micTip);
+            _mic.RegisterCallback<PointerDownEvent>(_ => OnMicDown(), TrickleDown.TrickleDown);
+            _mic.RegisterCallback<PointerUpEvent>(_ => OnMicUp(), TrickleDown.TrickleDown);
+            _mic.RegisterCallback<PointerLeaveEvent>(_ => OnMicUp());
+            _mic.RegisterCallback<PointerCancelEvent>(_ => OnMicUp());
             voice.Changed += ShowVoice;
             ShowVoice();
         }
@@ -842,12 +1081,53 @@ namespace Hulla.Games.Thulla
 
         public bool ShowsMic => _mic.style.display == DisplayStyle.Flex;
 
-        public bool ShowsTalk => _talk.style.display == DisplayStyle.Flex;
+        /// <summary>True while the mic offers hold-to-talk (its tip is armed). Read by tests.</summary>
+        public bool ShowsTalk => _micTip != null && _micTip.ClassListContains("table__mic-tip--ready");
+
+        private Label? _micTip;
+        private bool _micHeld;
+        private bool _micTalked;
+        private float _micTipLeft;
+        private const float MicTipSeconds = 4f;
+
+        private bool PushReady => _voice is { } v && v.CanSpeak && v.MicOn && v.Mode == VoiceMode.PushToTalk && v.State == VoiceState.Live;
+
+        private void OnMicDown()
+        {
+            if (!PushReady)
+            {
+                return;
+            }
+
+            _micHeld = true;
+            _micTalked = true;
+            _voice!.SetTalking(true);
+            ShowVoice();
+        }
+
+        private void OnMicUp()
+        {
+            if (!_micHeld)
+            {
+                return;
+            }
+
+            _micHeld = false;
+            _voice?.SetTalking(false);
+            ShowVoice();
+        }
 
         private void OnMicTapped()
         {
             if (_voice == null)
             {
+                return;
+            }
+
+            // A hold that talked is not a tap: the mic stays on.
+            if (_micTalked)
+            {
+                _micTalked = false;
                 return;
             }
 
@@ -870,13 +1150,29 @@ namespace Hulla.Games.Thulla
 
             var state = voice.State;
             var hidden = state == VoiceState.Hidden;
-            _mic.style.display = hidden || !voice.CanSpeak ? DisplayStyle.None : DisplayStyle.Flex;
+            // A watcher sees the mic too, off and inert (design: Watching a table): only seats speak.
+            _mic.style.display = hidden ? DisplayStyle.None : DisplayStyle.Flex;
+            _mic.SetEnabled(voice.CanSpeak);
+            _mic.EnableInClassList("table__mic--off", !voice.CanSpeak || !voice.MicOn);
             var retry = state == VoiceState.Failed || state == VoiceState.Paused;
             _mic.text = retry && voice.MicOn ? UiText.VoiceRetry : voice.MicOn ? UiText.MicOn : UiText.MicOff;
             _mic.EnableInClassList("table__mic--on", voice.MicOn && !retry);
             _mic.EnableInClassList("table__mic--retry", retry && voice.MicOn);
             var push = !hidden && voice.CanSpeak && voice.MicOn && voice.Mode == VoiceMode.PushToTalk && state == VoiceState.Live;
-            _talk.style.display = push ? DisplayStyle.Flex : DisplayStyle.None;
+            _talk.style.display = DisplayStyle.None;
+            if (_micTip != null)
+            {
+                if (push && !_micTip.ClassListContains("table__mic-tip--ready"))
+                {
+                    _micTipLeft = MicTipSeconds;
+                }
+
+                _micTip.EnableInClassList("table__mic-tip--ready", push);
+                _micTip.text = voice.Talking ? UiText.Talking : UiText.HoldToTalk;
+                _micTip.style.display = push && (voice.Talking || _micTipLeft > 0f) ? DisplayStyle.Flex : DisplayStyle.None;
+            }
+
+            _mic.EnableInClassList("table__mic--held", voice.Talking);
             _talk.text = voice.Talking ? UiText.Talking : UiText.HoldToTalk;
             _talk.EnableInClassList("table__talk--held", voice.Talking);
             var asking = _voiceWhyLeft > 0f && (state == VoiceState.Idle || state == VoiceState.Waiting || state == VoiceState.Joining);
@@ -971,10 +1267,41 @@ namespace Hulla.Games.Thulla
             foreach (var emote in _chat.Emotes)
             {
                 var id = emote;
-                var button = new Button(() => Say(() => _client.SendEmote(id))) { text = UiText.EmoteLabel(id) };
-                button.AddToClassList("chip");
-                button.AddToClassList("chip--emote");
-                emotes.Add(button);
+                var tile = EmoteArt.Tile(id, UiText.EmoteLabel(id), !CanSend(id), () => TapEmote(id));
+                _emoteTiles[id] = tile;
+                emotes.Add(tile);
+            }
+        }
+
+        /// <summary>Which emote packs the player owns (GDD 11.3); until set, only the free pack.</summary>
+        public void UseEmotePacks(Func<string, bool> owns)
+        {
+            _ownsPack = owns;
+            foreach (var pair in _emoteTiles)
+            {
+                EmoteArt.SetLocked(pair.Value, !CanSend(pair.Key));
+            }
+        }
+
+        private bool CanSend(string emoteId)
+        {
+            var pack = _chat.EmotePack(emoteId) ?? EmoteArt.FreePack;
+            return _ownsPack?.Invoke(pack) ?? pack == EmoteArt.FreePack;
+        }
+
+        /// <summary>An owned emote is sent; a locked one says which shop pack it comes from.</summary>
+        private void TapEmote(string emoteId)
+        {
+            if (CanSend(emoteId))
+            {
+                Say(() => _client.SendEmote(emoteId));
+                return;
+            }
+
+            var grid = _root.Q<VisualElement>("chat-emotes");
+            if (grid != null)
+            {
+                EmoteArt.ShowLockNote(grid, Strings.Format(UiText.EmotePackLocked, ItemText.Name(_chat.EmotePack(emoteId) ?? "")));
             }
         }
 
@@ -996,7 +1323,8 @@ namespace Hulla.Games.Thulla
                 return;
             }
 
-            _strip.style.display = DisplayStyle.Flex;
+            // The strip steps aside in the tutorial and while Ask for hand fills the bar.
+            _strip.style.display = _tutorialHeader != null || _root.ClassListContains("table--take-hand") ? DisplayStyle.None : DisplayStyle.Flex;
             foreach (var phrase in picks)
             {
                 var id = phrase.Id;
@@ -1006,7 +1334,7 @@ namespace Hulla.Games.Thulla
                 _strip.Add(chip);
             }
 
-            var more = new Button(() => SetChatOpen(true)) { text = UiText.More };
+            var more = new Button(() => SetChatOpen(true, "phrases")) { text = UiText.More };
             more.AddToClassList("chip");
             more.AddToClassList("quick-strip__more");
             _strip.Add(more);
@@ -1018,7 +1346,312 @@ namespace Hulla.Games.Thulla
             SetChatOpen(false);
         }
 
-        private void SetChatOpen(bool open) => _chatPanel.style.display = open ? DisplayStyle.Flex : DisplayStyle.None;
+        private void SetChatOpen(bool open) => SetChatOpen(open, "chat");
+
+        /// <summary>The chat sheet (design: Chat and quick-chat panel), on the tab asked for; "…" opens Phrases.</summary>
+        private void SetChatOpen(bool open, string tab)
+        {
+            _chatPanel.style.display = open ? DisplayStyle.Flex : DisplayStyle.None;
+            _dim.style.display = open || _sheet.style.display == DisplayStyle.Flex ? DisplayStyle.Flex : DisplayStyle.None;
+            if (open)
+            {
+                ShowChatTab(tab);
+            }
+        }
+
+        private string _chatTab = "chat";
+
+        private void BuildChatTabs(VisualElement tabs)
+        {
+            foreach (var (name, label) in new[] { ("chat", UiText.Chat), ("phrases", UiText.Phrases), ("emotes", UiText.Emotes) })
+            {
+                var tab = name;
+                var item = new Button(() => ShowChatTab(tab)) { name = "chat-tab-" + tab, text = label };
+                item.AddToClassList("segment__item");
+                tabs.Add(item);
+            }
+        }
+
+        private void ShowChatTab(string tab)
+        {
+            _chatTab = tab;
+            foreach (var item in _root.Q<VisualElement>("chat-tabs").Children())
+            {
+                item.EnableInClassList("segment__item--on", item.name == "chat-tab-" + tab);
+            }
+
+            var chat = tab == "chat";
+            _root.Q<VisualElement>("chat-log-scroll").style.display = chat ? DisplayStyle.Flex : DisplayStyle.None;
+            _root.Q<VisualElement>(className: "chat-panel__compose").style.display = chat && _sendText != null ? DisplayStyle.Flex : DisplayStyle.None;
+            _chatStatus.style.display = chat ? DisplayStyle.Flex : DisplayStyle.None;
+            _root.Q<VisualElement>("chat-picks").style.display = chat ? DisplayStyle.None : DisplayStyle.Flex;
+            _root.Q<VisualElement>("chat-phrases").style.display = tab == "phrases" ? DisplayStyle.Flex : DisplayStyle.None;
+            _root.Q<VisualElement>("chat-emotes").style.display = tab == "emotes" ? DisplayStyle.Flex : DisplayStyle.None;
+        }
+
+        /// <summary>Closes whichever sheet is open on the table (a tap on the dim).</summary>
+        private void CloseSheets()
+        {
+            if (_askSheetOpen)
+            {
+                return;
+            }
+
+            _chatPanel.style.display = DisplayStyle.None;
+            _sheet.style.display = DisplayStyle.None;
+            _dim.style.display = DisplayStyle.None;
+        }
+
+        /// <summary>Leaving mid-round costs the seat: one question first (design: Dialogs), straight out otherwise.</summary>
+        private void AskLeave()
+        {
+            var model = _client.Model;
+            var playing = model.InRound && !model.Spectating && model.MySeat is long mine && !model.IsEscaped((int)mine);
+            if (!playing || _tutorialHeader != null)
+            {
+                _leave();
+                return;
+            }
+
+            var panel = Hulla.Presentation.Navigation.Sheet.Open(_root, UiText.LeaveTableTitle);
+            panel.Add(Hulla.Presentation.Navigation.Sheet.Line(UiText.LeaveTableBody));
+            var answers = Hulla.Presentation.Navigation.Sheet.Answers(panel);
+            answers.Add(Hulla.Presentation.Navigation.Sheet.Button(UiText.Stay, () => Hulla.Presentation.Navigation.Sheet.Close(panel)));
+            answers.Add(Hulla.Presentation.Navigation.Sheet.Button(UiText.Leave, () =>
+            {
+                Hulla.Presentation.Navigation.Sheet.Close(panel);
+                _leave();
+            }, "danger"));
+        }
+
+        /// <summary>The ⋯ menu (design: Table): Rules, Score and Settings.</summary>
+        private void OpenMenu()
+        {
+            var panel = Hulla.Presentation.Navigation.Sheet.Open(_root, null);
+            panel.AddToClassList("menu-sheet");
+            void Item(string text, Action action)
+            {
+                var button = Hulla.Presentation.Navigation.Sheet.Button(text, () =>
+                {
+                    Hulla.Presentation.Navigation.Sheet.Close(panel);
+                    action();
+                });
+                button.AddToClassList("menu-sheet__item");
+                panel.Add(button);
+            }
+
+            if (_openRules != null)
+            {
+                Item(RulebookText.Title, () => _openRules(null));
+            }
+
+            Item(UiText.Score, OpenScore);
+            if (_openSettings != null)
+            {
+                Item(UiText.Settings, _openSettings);
+            }
+        }
+
+        /// <summary>The scoreboard (design: Scoreboard): times each player was the Bhabhi at this table, fewest first.</summary>
+        private void OpenScore()
+        {
+            var model = _client.Model;
+            var rounds = _roundsPlayed;
+            var panel = Hulla.Presentation.Navigation.Sheet.Open(_root, Strings.Format(UiText.ScoreTitle, Math.Max(1, rounds + (model.InRound ? 1 : 0))));
+            panel.AddToClassList("score-sheet");
+            // A header band, then one plate per player with the face, the name and Bhabhi · cards (concept: Score).
+            var head = new VisualElement();
+            head.AddToClassList("score__row");
+            head.AddToClassList("score__row--head");
+            head.Add(new Label(UiText.ScorePlayer) { name = "score-name" });
+            head.Add(new Label(model.InRound ? UiText.ScoreBhabhiCards : UiText.ScoreBhabhi));
+            panel.Add(head);
+            var rows = new List<(string Name, int Count, long Cards, string? Avatar, bool Me)>();
+            foreach (var seat in model.Seats)
+            {
+                if (seat.PlayerId == null)
+                {
+                    continue;
+                }
+
+                _bhabhiTally.TryGetValue(seat.PlayerId, out var count);
+                rows.Add((seat.Seat == model.MySeat ? UiText.You : seat.DisplayName ?? "?", count, model.HandCount((int)seat.Seat), seat.Avatar, seat.Seat == model.MySeat));
+            }
+
+            rows.Sort((a, b) => a.Count != b.Count ? a.Count.CompareTo(b.Count) : string.Compare(a.Name, b.Name, StringComparison.CurrentCulture));
+            foreach (var (name, count, cards, avatar, me) in rows)
+            {
+                var row = new VisualElement();
+                row.AddToClassList("score__row");
+                row.AddToClassList("score__plate");
+                row.EnableInClassList("score__row--me", me);
+                var face = new VisualElement { pickingMode = PickingMode.Ignore };
+                face.AddToClassList("seat__avatar");
+                face.AddToClassList("score__face");
+                var initial = new Label { pickingMode = PickingMode.Ignore };
+                initial.AddToClassList("seat__initial");
+                face.Add(initial);
+                AvatarArt.Apply(face, initial, avatar, name);
+                row.Add(face);
+                row.Add(new Label(name) { name = "score-name" });
+                row.Add(new Label(model.InRound ? Strings.Format(UiText.ScoreValue, count, cards) : Strings.Format("{0}", count)) { name = "score-value" });
+                panel.Add(row);
+            }
+
+            if (rounds > 0)
+            {
+                panel.Add(Hulla.Presentation.Navigation.Sheet.Line(Strings.Get("ui.score_rounds", rounds), "score__foot"));
+            }
+        }
+
+        private void TallyRound()
+        {
+            var result = _client.Model.LastResult;
+            if (result == null || !_talliedRounds.Add(result.RoundId))
+            {
+                return;
+            }
+
+            _roundsPlayed++;
+            var seat = result.BhabhiSeat;
+            if (seat is long bhabhi && bhabhi < _client.Model.Seats.Count && _client.Model.Seats[(int)bhabhi].PlayerId is string id)
+            {
+                _bhabhiTally.TryGetValue(id, out var count);
+                _bhabhiTally[id] = count + 1;
+            }
+        }
+
+        /// <summary>The tick on the code plate (design: Fair deal): the commitment now, the seed once the round ends.</summary>
+        private void OpenFairDeal()
+        {
+            var fairness = _client.Model.LastResult?.Fairness;
+            if (fairness != null && _explainFairness != null && !_client.Model.InRound)
+            {
+                _explainFairness(fairness);
+                return;
+            }
+
+            // During the round (concept: Fair deal): the code the server committed to, a copy of it,
+            // how it works, and the reminder that every round is dealt this way.
+            var commitment = _client.Model.Commitment;
+            var panel = Hulla.Presentation.Navigation.Sheet.Open(_root, UiText.FairDeal);
+            panel.AddToClassList("fair-sheet");
+            panel.Add(Hulla.Presentation.Navigation.Sheet.Line(commitment.Length > 0 ? Strings.Format(UiText.FairRoundBody, ShortCode(commitment)) : UiText.SeedLater, "fair-sheet__body"));
+            var answers = Hulla.Presentation.Navigation.Sheet.Answers(panel);
+            if (commitment.Length > 0)
+            {
+                answers.Add(Hulla.Presentation.Navigation.Sheet.Button(UiText.CopyCommitment, () => GUIUtility.systemCopyBuffer = commitment));
+            }
+
+            answers.Add(Hulla.Presentation.Navigation.Sheet.Button(UiText.FairHow, () =>
+            {
+                var how = Hulla.Presentation.Navigation.Sheet.Open(_root, UiText.FairHowTitle);
+                how.Add(Hulla.Presentation.Navigation.Sheet.Line(UiText.FairHowBody));
+                Hulla.Presentation.Navigation.Sheet.Answers(how).Add(Hulla.Presentation.Navigation.Sheet.Button(UiText.Close, () => Hulla.Presentation.Navigation.Sheet.Close(how), "yes"));
+            }));
+            panel.Add(Hulla.Presentation.Navigation.Sheet.Line(UiText.FairEvery, "fair-sheet__foot"));
+        }
+
+        private static string ShortCode(string value) => value.Length > 12 ? value.Substring(0, 4) + "…" + value.Substring(value.Length - 4) : value;
+
+        /// <summary>The Watching sheet (design: Watching a table): who watches, the free seats, Seat for the host.</summary>
+        private void OpenWatchers()
+        {
+            var model = _client.Model;
+            var free = 0;
+            foreach (var seat in model.Seats)
+            {
+                if (!seat.Occupied)
+                {
+                    free++;
+                }
+            }
+
+            foreach (var watcher in model.Spectators)
+            {
+                if (watcher.SeatNext)
+                {
+                    free--;
+                }
+            }
+
+            free = Math.Max(0, free);
+            // The Watching sheet (concept: Watching sheet): the count and the free seats on one line, a plate
+            // per watcher with the face, Seated next round or the host's Seat, and a row tap for the player sheet.
+            var panel = Hulla.Presentation.Navigation.Sheet.Open(_root, null);
+            panel.AddToClassList("watch-sheet");
+            var head = new VisualElement();
+            head.AddToClassList("watch-sheet__head");
+            head.Add(Line(Strings.Format(UiText.WatchingCount, model.Spectators.Count), "watch-sheet__title"));
+            head.Add(Line(free > 0 ? Strings.Get("ui.seats_free_next", free) : UiText.WatchingNoSeats, "watch-sheet__free"));
+            panel.Add(head);
+            foreach (var watcher in model.Spectators)
+            {
+                var id = watcher.UserId;
+                var watcherName = watcher.Name;
+                var row = new Button(() =>
+                {
+                    Hulla.Presentation.Navigation.Sheet.Close(panel);
+                    ShowPlayer(id, watcherName, AvatarArt.ForAccount(id), null);
+                }) { text = "" };
+                row.AddToClassList("watch-row");
+                var face = new VisualElement { pickingMode = PickingMode.Ignore };
+                face.AddToClassList("seat__avatar");
+                face.AddToClassList("watch-row__face");
+                var initial = new Label { pickingMode = PickingMode.Ignore };
+                initial.AddToClassList("seat__initial");
+                face.Add(initial);
+                AvatarArt.Apply(face, initial, AvatarArt.ForAccount(id), watcherName);
+                row.Add(face);
+                row.Add(Line(watcherName, "watch-row__name"));
+                if (watcher.SeatNext)
+                {
+                    row.Add(Line(UiText.SeatedNext, "watch-row__tag"));
+                }
+                else if (model.IsHost && SeatSpectator != null)
+                {
+                    var seatButton = new Button(() =>
+                    {
+                        SeatSpectator?.Invoke(id);
+                        Hulla.Presentation.Navigation.Sheet.Close(panel);
+                    }) { text = UiText.SeatThem };
+                    seatButton.AddToClassList("watch-row__seat");
+                    seatButton.SetEnabled(free > 0);
+                    row.Add(seatButton);
+                }
+
+                panel.Add(row);
+            }
+
+            panel.Add(Line(UiText.WatchingTapRow, "watch-sheet__foot"));
+        }
+
+        private Func<string>? _tutorialHeader;
+
+        /// <summary>
+        /// The tutorial's table (design: Tutorial): ✕ to skip, the step counter in the plate, no quick
+        /// chat, mic, chat or menu, since the seats are scripted.
+        /// </summary>
+        public void UseTutorial(Func<string> header)
+        {
+            _tutorialHeader = header;
+            _root.AddToClassList("table--tutorial");
+            _root.AddToClassList("cards--large");
+            _hand.SetLargeCards(true);
+            _strip.style.display = DisplayStyle.None;
+            var leave = _root.Q<Button>("leave");
+            leave.text = "";
+            leave.tooltip = UiText.Close;
+            leave.AddToClassList("table__close");
+            var icon = new VisualElement { pickingMode = PickingMode.Ignore };
+            icon.AddToClassList("table__icon");
+            icon.AddToClassList("table__icon--close");
+            leave.Add(icon);
+            RefreshInfo();
+        }
+
+        /// <summary>The host seats a watcher from the Watching sheet; null hides Seat.</summary>
+        public Action<string>? SeatSpectator { get; set; }
 
         private void OnChat(ChatLine line)
         {
@@ -1027,11 +1660,28 @@ namespace Hulla.Games.Thulla
                 return;
             }
 
-            var text = line.PhraseId != null
-                ? _chat.TextFor(line.PhraseId) ?? line.PhraseId
-                : UiText.EmoteLabel(line.EmoteId ?? "") + (line.TargetSeat == null ? "" : " → " + NameOf(line.TargetSeat.Value));
+            if (line.PhraseId == null && !string.IsNullOrEmpty(line.EmoteId))
+            {
+                // The sticker shows where it lands: by the seat it was thrown at, else by the sender (GDD 11.3).
+                var at = line.TargetSeat ?? line.Seat;
+                if (at == _client.Model.MySeat)
+                {
+                    SeatBadge.ShowEmote(_mySay, line.EmoteId);
+                    _mySay.style.display = DisplayStyle.Flex;
+                    _mySayLeft = SaySeconds;
+                }
+                else
+                {
+                    _ring.BadgeFor(at)?.SayEmote(line.EmoteId!, SaySeconds);
+                }
+
+                return;
+            }
+
+            var text = _chat.TextFor(line.PhraseId ?? "") ?? line.PhraseId ?? "";
             if (line.Seat == _client.Model.MySeat)
             {
+                SeatBadge.ShowEmote(_mySay, null);
                 _mySay.text = text;
                 _mySay.style.display = DisplayStyle.Flex;
                 _mySayLeft = SaySeconds;
@@ -1111,6 +1761,9 @@ namespace Hulla.Games.Thulla
         {
             _toast.text = text;
             _toast.style.rotate = new Rotate(StampAngle(seat));
+            var seats = _client.Model.Seats;
+            CosmeticArt.Apply(_burst, seat < seats.Count ? seats[(int)seat].Celebration : null);
+            _burst.style.rotate = new Rotate(-StampAngle(seat));
             _stampSounded = false;
             _stamp.Play(_reduceMotion);
             ApplyStamp();
@@ -1123,6 +1776,9 @@ namespace Hulla.Games.Thulla
             _toast.style.display = _stamp.Visible ? DisplayStyle.Flex : DisplayStyle.None;
             _toast.style.opacity = _stamp.Opacity;
             _toast.style.scale = new Scale(new Vector2(_stamp.Scale, _stamp.Scale));
+            _burst.style.display = _stamp.Visible && _burst.ClassListContains(CosmeticArt.Class) ? DisplayStyle.Flex : DisplayStyle.None;
+            _burst.style.opacity = _stamp.Opacity;
+            _burst.style.scale = new Scale(new Vector2(_stamp.Scale, _stamp.Scale));
             _felt.style.translate = new Translate(_stamp.ShakeX, 0f);
             if (_stamp.Visible && !_stampSounded)
             {
@@ -1161,20 +1817,23 @@ namespace Hulla.Games.Thulla
         }
 
         /// <summary>
-        /// Your equipped table surface colours the felt (GDD 12.11) until its art lands; under a table theme the
-        /// theme's own table picture is the surface, so a flat colour would only cover it.
+        /// Your equipped cosmetics at the table (GDD 12.11): your table under the seats, your card back on the
+        /// discard stack and your card face style on the cards; each opponent's fan shows their own back.
+        /// Without a table theme the surface colours the felt instead.
         /// </summary>
         private void RefreshSurface()
         {
+            var me = _client.Model.MySeat is long mine && mine < _client.Model.Seats.Count ? _client.Model.Seats[(int)mine] : default;
+            CosmeticArt.Apply(_rail, me.TableSurface);
+            _discard.SetBack(me.CardBack);
+            CosmeticArt.ApplyFace(_root, me.CardFace);
             if (Skinned(_felt))
             {
                 _felt.style.backgroundColor = new StyleColor(StyleKeyword.Null);
                 return;
             }
 
-            var model = _client.Model;
-            var mine = model.MySeat is long seat && seat < model.Seats.Count ? model.Seats[(int)seat].TableSurface : null;
-            var colour = CosmeticLook.TableColour(mine);
+            var colour = CosmeticLook.TableColour(me.TableSurface);
             _felt.style.backgroundColor = colour is UnityEngine.Color c ? new StyleColor(c) : new StyleColor(StyleKeyword.Null);
         }
 
@@ -1212,6 +1871,7 @@ namespace Hulla.Games.Thulla
             if (model.Spectating || model.MySeat is not long mine || mine >= model.Seats.Count)
             {
                 _me.style.display = DisplayStyle.None;
+                RefreshStatus();
                 return;
             }
 
@@ -1221,6 +1881,54 @@ namespace Hulla.Games.Thulla
             // Out of cards: the seat stays for watching, chat and voice (R25), and says so.
             var state = model.InRound && escaped ? UiText.OutWatching : "";
             _me.Show(info.DisplayName ?? UiText.You, info.Avatar, true, model.InRound && model.TurnSeat == mine, model.InRound && model.LeaderSeat == mine && !escaped, state);
+            RefreshStatus();
+        }
+
+        /// <summary>
+        /// The status pill beside the player's own face (design: Table, own-seat strip): what to do now,
+        /// whom we wait for, or that the player is out; the seconds join it in the last ten.
+        /// </summary>
+        private void RefreshStatus()
+        {
+            var model = _client.Model;
+            string text;
+            if (model.Spectating)
+            {
+                var host = model.HostSeat is long h && h < model.Seats.Count ? model.Seats[(int)h].DisplayName ?? "" : "";
+                text = model.IsPrivate && host.Length > 0 ? Strings.Format(UiText.WatchingPill, host) : UiText.Watching;
+            }
+            else if (!model.InRound || model.MySeat is not long mine)
+            {
+                text = "";
+            }
+            else if (model.IsEscaped((int)mine))
+            {
+                text = UiText.OutWatching;
+            }
+            else if (model.MyTurn)
+            {
+                text = model.LedSuit is char suit
+                    ? (model.HoldsSuit(suit) ? Strings.Format(UiText.TurnFollow, CardElement.SuitGlyph(suit)) : UiText.TurnAny)
+                    : model.Trick.Count == 0 && model.DiscardCount == 0 && System.Linq.Enumerable.Contains(model.Hand, "AS") ? UiText.LeadAceOfSpades : UiText.TurnLead;
+            }
+            else if (model.TurnSeat is long turn)
+            {
+                text = Strings.Format(UiText.WaitingForSeat, NameOf(turn));
+            }
+            else
+            {
+                text = "";
+            }
+
+            _statusText.text = text;
+            _root.EnableInClassList("table--watching", model.Spectating);
+            // An empty pill keeps its room, so the mic and chat stay at the right edge.
+            _status.style.visibility = text.Length == 0 ? UnityEngine.UIElements.Visibility.Hidden : UnityEngine.UIElements.Visibility.Visible;
+            _status.EnableInClassList("table__status--mine", model.MyTurn);
+            if (!model.MyTurn)
+            {
+                _statusSecs.style.display = DisplayStyle.None;
+            }
         }
 
         private void Refresh()
@@ -1280,16 +1988,19 @@ namespace Hulla.Games.Thulla
         {
             var model = _client.Model;
             var text = model.IsPrivate && model.Code.Length > 0 ? model.Code : model.IsRanked ? RankedText.Title : UiText.QuickPlayTable;
-            if (model.Spectating)
+            // The code with the fair-deal tick; the eye and its count when someone watches (design: Table, Watching).
+            if (model.FairDealCommitted || model.LastResult != null)
             {
-                text = UiText.Watching + " · " + text;
-            }
-            if (model.InRound && model.FairDealCommitted)
-            {
-                text += " · " + UiText.FairDeal;
+                text += " ✓";
             }
 
-            _info.text = text;
+            _info.text = _tutorialHeader?.Invoke() ?? text;
+            var watchers = model.Spectators.Count;
+            var showEye = watchers > 0;
+            _watchIcon.style.display = showEye ? DisplayStyle.Flex : DisplayStyle.None;
+            _watchCount.style.display = showEye ? DisplayStyle.Flex : DisplayStyle.None;
+            _watchCount.text = Strings.Format("{0}", watchers);
+            TallyRound();
         }
 
         private void RefreshOpponents()
@@ -1309,7 +2020,9 @@ namespace Hulla.Games.Thulla
             {
                 var seat = _ring.SeatAt(i);
                 var info = seat < model.Seats.Count ? model.Seats[(int)seat] : default;
-                var state = model.IsEscaped((int)seat)
+                var state = info.Bot
+                    ? UiText.BotTag
+                    : model.IsEscaped((int)seat)
                     ? UiText.Escaped
                     : info.Occupied && !info.Connected
                         ? UiText.SeatAwayAutoPlay
@@ -1319,6 +2032,7 @@ namespace Hulla.Games.Thulla
                 var leader = model.InRound && model.LeaderSeat == seat && !model.IsEscaped((int)seat);
                 var voids = model.InRound && model.CardMemoryAssist ? model.KnownVoids((int)seat) : null;
                 _ring.Badges[i].Show(NameOf(seat), model.HandCount((int)seat), model.TurnSeat == seat && model.InRound, state, leader, voids, info.Avatar);
+                _ring.Badges[i].ShowBack(info.CardBack);
             }
         }
 
@@ -1440,12 +2154,36 @@ namespace Hulla.Games.Thulla
                 _me.HideTimer();
             }
 
-            _takeHand.style.display = model.MyTurn && model.CanTakeHand && model.PendingAsk == null ? DisplayStyle.Flex : DisplayStyle.None;
+            var canTake = model.MyTurn && model.CanTakeHand && model.PendingAsk == null;
+            _takeHand.style.display = canTake ? DisplayStyle.Flex : DisplayStyle.None;
+            // Ask for a hand takes the whole bar while it is offered, so it never mixes with the chips.
+            if (_root.ClassListContains("table--take-hand") != canTake)
+            {
+                _root.EnableInClassList("table--take-hand", canTake);
+                RefreshStrip();
+            }
         }
 
-        private void RefreshResults() => _results.Show(_client.Model, _voted);
+        private bool _resultsShown;
+
+        /// <summary>The results take the screen; a chat or player sheet left open at the last card closes with the round.</summary>
+        private void RefreshResults()
+        {
+            var model = _client.Model;
+            var showing = model.LastResult != null && !model.InRound;
+            if (showing && !_resultsShown)
+            {
+                CloseSheets();
+                Hulla.Presentation.Navigation.Sheet.Close(_root);
+            }
+
+            _resultsShown = showing;
+            _results.Show(model, _voted);
+        }
 
         public void ShowReward(string? text) => _results.ShowReward(text);
+
+        public void ShowLevel(long level, float fraction) => _results.ShowLevel(level, fraction);
 
         /// <summary>Shows Share on the results.</summary>
         public void UseShare(Action share) => _results.Share = share;
@@ -1454,14 +2192,23 @@ namespace Hulla.Games.Thulla
         public void OfferBigThulla(string roundId) => _results.OfferBigThulla(roundId);
 
         /// <summary>Shows the fair-deal chip on the results (ADR-0009).</summary>
-        public void UseFairness(Action<Fairness> explain) => _results.ShowFairness = explain;
+        public void UseFairness(Action<Fairness> explain)
+        {
+            _results.ShowFairness = explain;
+            _explainFairness = explain;
+        }
 
         /// <summary>Lets the host change the rules from the results (design §8).</summary>
         public void UseChangeRules(Action open) => _results.ChangeRules = open;
 
         /// <summary>Lets the results offer "Add friend" for co-players who aren't friends or pending yet.</summary>
+        private Func<string, bool>? _canAddFriend;
+        private Action<string>? _addFriend;
+
         public void SetFriendActions(Func<string, bool> canAdd, Action<string> addFriend)
         {
+            _canAddFriend = canAdd;
+            _addFriend = addFriend;
             _results.CanAdd = canAdd;
             _results.AddFriend = addFriend;
             RefreshResults();

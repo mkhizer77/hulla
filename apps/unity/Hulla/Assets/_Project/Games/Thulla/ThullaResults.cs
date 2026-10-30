@@ -56,11 +56,12 @@ namespace Hulla.Games.Thulla
             _status = root.Q<Label>("result-status");
             _reward = root.Q<Label>("result-reward");
             _share = root.Q<Button>("result-share");
-            _share.text = UiText.ShareResult;
+            _share.text = "";
+            _share.tooltip = UiText.ShareResult;
             _share.clicked += () => _onShare?.Invoke();
             _share.style.display = DisplayStyle.None;
             _fair = root.Q<Button>("result-fair");
-            _fair.text = UiText.FairDealCheck;
+            _fair.text = UiText.FairDealShort;
             _fair.clicked += () =>
             {
                 if (_fairness != null)
@@ -72,6 +73,33 @@ namespace Hulla.Games.Thulla
             _changeRules.text = UiText.ChangeRules;
             _changeRules.clicked += () => _onChangeRules?.Invoke();
             _changeRules.style.display = DisplayStyle.None;
+            _level = root.Q<VisualElement>("result-level");
+            _levelFill = root.Q<VisualElement>("result-level-fill");
+            _levelText = root.Q<Label>("result-level-text");
+            _level.style.display = DisplayStyle.None;
+            _leaveButton = root.Q<Button>("result-leave");
+            // Underlined, a quiet link rather than a button (concept: Results): the words sit on a line of their own.
+            _leaveButton.text = "";
+            var leaveText = new Label(UiText.LeaveTable) { pickingMode = PickingMode.Ignore };
+            leaveText.AddToClassList("results__leave-text");
+            _leaveButton.Add(leaveText);
+            _leaveButton.clicked += () => Leave?.Invoke();
+        }
+
+        private readonly VisualElement _level;
+        private readonly VisualElement _levelFill;
+        private readonly Label _levelText;
+        private readonly Button _leaveButton;
+
+        /// <summary>Leave the table, a plain plank at the bottom so nobody leaves by accident (design: Results).</summary>
+        public Action? Leave { get; set; }
+
+        /// <summary>The level bar under the reward line: the level reached and how far into the next.</summary>
+        public void ShowLevel(long level, float fraction)
+        {
+            _level.style.display = DisplayStyle.Flex;
+            _levelFill.style.width = Length.Percent(Math.Clamp(fraction, 0.04f, 1f) * 100f);
+            _levelText.text = Strings.Format(UiText.LevelN, level);
         }
 
         /// <summary>Shares the result as a card (GDD 10.9); null hides the button (the tutorial).</summary>
@@ -92,9 +120,8 @@ namespace Hulla.Games.Thulla
         public void OfferBigThulla(string roundId)
         {
             _bigThullaRound = roundId;
-            _share.text = UiText.ShareBigThulla;
-            _share.RemoveFromClassList("button--quiet");
-            _share.AddToClassList("button--secondary");
+            _share.tooltip = UiText.ShareBigThulla;
+            _share.AddToClassList("results__share--hot");
         }
 
         /// <summary>Opens the fair-deal explanation (ADR-0009); null hides the chip.</summary>
@@ -126,6 +153,9 @@ namespace Hulla.Games.Thulla
             var result = model.LastResult;
             var show = result != null && !model.InRound;
             _root.style.display = show ? DisplayStyle.Flex : DisplayStyle.None;
+            Hulla.Presentation.Theme.Backdrop.Set(_root, show ? Hulla.Presentation.Theme.BackdropKind.Felt : Hulla.Presentation.Theme.BackdropKind.Calm);
+            // The results own the screen: the table underneath (seats, hand, strip) steps out of view.
+            _root.parent?.EnableInClassList("table--results", show);
             if (result == null || !show)
             {
                 return;
@@ -134,9 +164,8 @@ namespace Hulla.Games.Thulla
             if (_bigThullaRound != null && _bigThullaRound != result.RoundId)
             {
                 _bigThullaRound = null;
-                _share.text = UiText.ShareResult;
-                _share.RemoveFromClassList("button--secondary");
-                _share.AddToClassList("button--quiet");
+                _share.tooltip = UiText.ShareResult;
+                _share.RemoveFromClassList("results__share--hot");
             }
 
             _fairness = result.Fairness;
@@ -174,57 +203,75 @@ namespace Hulla.Games.Thulla
             UpdateStatus(model, voted, 0);
         }
 
-        /// <summary>The first three out on a podium, the loser beside them with the stamp (GDD 14.8).</summary>
+        /// <summary>
+        /// The podium (concept: Results): drawn columns for second, first and third, the winner tallest in the
+        /// middle under a crown, gold, silver and bronze tags, a name plate on each column, and the Bhabhi on
+        /// the shortest column at the end, greyed under the stamp (GDD 14.8).
+        /// </summary>
         private void Podium(TableModel model, RoundEnd result)
         {
             _podium.Clear();
+            var stand = new VisualElement();
+            stand.AddToClassList("podium__stand");
+            _podium.Add(stand);
             var places = Math.Min(3, result.EscapeOrder.Count);
-            // Second, first, third: the winner stands in the middle and tallest.
             var order = places == 3 ? new[] { 1, 0, 2 } : places == 2 ? new[] { 1, 0 } : places == 1 ? new[] { 0 } : Array.Empty<int>();
             foreach (var place in order)
             {
                 var seat = result.EscapeOrder[place];
-                var column = new VisualElement();
-                column.AddToClassList("podium__place");
-                column.AddToClassList("podium__place--" + (place + 1));
-                column.Add(Avatar(_nameOf(seat), _avatarOf(seat), seat == model.MySeat));
-                var name = new Label(_nameOf(seat));
-                name.AddToClassList("podium__name");
-                column.Add(name);
-                var rank = new Label(Ordinal(place + 1));
-                rank.AddToClassList("podium__rank");
-                column.Add(rank);
-                _podium.Add(column);
+                stand.Add(Column(_nameOf(seat), _avatarOf(seat), seat == model.MySeat, "podium__col--" + (place + 1), Ordinal(place + 1), place == 0));
             }
 
-            var loser = new VisualElement();
-            loser.AddToClassList("podium__place");
-            loser.AddToClassList("podium__place--loser");
-            loser.Add(Avatar(_nameOf(result.BhabhiSeat), _avatarOf(result.BhabhiSeat), result.BhabhiSeat == model.MySeat));
-            var loserName = new Label(_nameOf(result.BhabhiSeat));
-            loserName.AddToClassList("podium__name");
-            loser.Add(loserName);
-            _podium.Add(loser);
+            var loser = Column(_nameOf(result.BhabhiSeat), _avatarOf(result.BhabhiSeat), result.BhabhiSeat == model.MySeat, "podium__col--loser", null, false);
+            // The stamp lands on the Bhabhi's own face (design: Results), not over the headline.
+            _stamp.RemoveFromHierarchy();
+            loser.Add(_stamp);
+            stand.Add(loser);
         }
 
-        /// <summary>The face from the avatar set, else the tinted initial; the player's own carries the "You" tag.</summary>
-        private static VisualElement Avatar(string name, string? avatarId, bool mine)
+        private static VisualElement Column(string name, string? avatarId, bool mine, string cls, string? rank, bool crown)
+        {
+            var column = new VisualElement();
+            column.AddToClassList("podium__place");
+            column.AddToClassList("podium__col");
+            column.AddToClassList(cls);
+            if (crown)
+            {
+                var top = new VisualElement { pickingMode = PickingMode.Ignore };
+                top.AddToClassList("podium__crown");
+                column.Add(top);
+            }
+
+            column.Add(Avatar(name, avatarId));
+            var block = new VisualElement();
+            block.AddToClassList("podium__block");
+            if (rank != null)
+            {
+                var tag = new Label(rank);
+                tag.AddToClassList("podium__rank");
+                block.Add(tag);
+            }
+
+            var spacer = new VisualElement();
+            spacer.AddToClassList("podium__spacer");
+            block.Add(spacer);
+            var plate = new Label(mine ? UiText.You : name);
+            plate.AddToClassList("podium__name");
+            block.Add(plate);
+            column.Add(block);
+            return column;
+        }
+
+        /// <summary>The face from the avatar set, else the tinted initial.</summary>
+        private static VisualElement Avatar(string name, string? avatarId)
         {
             var avatar = new VisualElement();
             avatar.AddToClassList("seat__avatar");
             avatar.AddToClassList("podium__avatar");
-            avatar.EnableInClassList("podium__avatar--me", mine);
             var initial = new Label();
             initial.AddToClassList("seat__initial");
             avatar.Add(initial);
             AvatarArt.Apply(avatar, initial, avatarId, name);
-            if (mine)
-            {
-                var you = new Label(UiText.You);
-                you.AddToClassList("seat__you");
-                avatar.Add(you);
-            }
-
             return avatar;
         }
 
@@ -249,7 +296,7 @@ namespace Hulla.Games.Thulla
                 _votes.Clear();
                 foreach (var seat in model.RematchVotes)
                 {
-                    var avatar = Avatar(_nameOf(seat), _avatarOf(seat), seat == model.MySeat);
+                    var avatar = Avatar(_nameOf(seat), _avatarOf(seat));
                     avatar.AddToClassList("podium__avatar--vote");
                     _votes.Add(avatar);
                 }
@@ -267,14 +314,9 @@ namespace Hulla.Games.Thulla
                 players += seat.Occupied ? 1 : 0;
             }
 
-            var text = voted ? UiText.Waiting4Rematch : votes == 0 ? UiText.RematchHow : "";
-            if (votes > 0)
-            {
-                text = (text.Length > 0 ? text + " " : "") + Strings.Format(UiText.RematchVotes, votes, players);
-            }
-
-            _playAgain.text = seconds >= 0 ? Strings.Get("ui.play_again_countdown", seconds) : UiText.PlayAgain;
-            _status.text = text;
+            // The countdown sits on the button and the accepted faces fill along it (design: Results).
+            _playAgain.text = voted ? UiText.Waiting4Rematch : seconds >= 0 ? Strings.Get("ui.play_again_countdown", seconds) : UiText.PlayAgain;
+            _status.text = "";
         }
 
         private void Highlights(RoundEnd result)
@@ -304,16 +346,23 @@ namespace Hulla.Games.Thulla
                 return;
             }
 
-            Heading(UiText.Highlights);
-            if (giver >= 0)
-            {
-                Line(Strings.Format(UiText.MostThullas, _nameOf(giver), thullas), null);
-            }
-
+            var box = new VisualElement();
+            box.AddToClassList("results__highlights");
             if (picker >= 0)
             {
-                Line(Strings.Format(UiText.MostPickedUp, _nameOf(picker), biggest), null);
+                var line = new Label(Strings.Format(UiText.MostPickedUp, _nameOf(picker), biggest));
+                line.AddToClassList("results__highlight");
+                box.Add(line);
             }
+
+            if (giver >= 0)
+            {
+                var line = new Label(Strings.Format(UiText.MostThullas, _nameOf(giver), thullas));
+                line.AddToClassList("results__highlight");
+                box.Add(line);
+            }
+
+            _body.Add(box);
         }
 
         /// <summary>
@@ -381,7 +430,7 @@ namespace Hulla.Games.Thulla
                 }
 
                 var id = seat.PlayerId;
-                var chip = new Button { text = Strings.Format(UiText.AddName, seat.DisplayName ?? "?") };
+                var chip = new Button { text = Strings.Format(UiText.AddNamePlus, seat.DisplayName ?? "?") };
                 chip.AddToClassList("chip");
                 chip.clicked += () =>
                 {
@@ -394,7 +443,11 @@ namespace Hulla.Games.Thulla
 
             if (row.childCount > 0)
             {
-                Heading(UiText.MakeFriends);
+                // "New here:" and the chips on one line (design: Results).
+                var label = new Label(UiText.NewHere);
+                label.AddToClassList("results__new-here");
+                row.Insert(0, label);
+                row.AddToClassList("results__friends");
                 _body.Add(row);
             }
         }

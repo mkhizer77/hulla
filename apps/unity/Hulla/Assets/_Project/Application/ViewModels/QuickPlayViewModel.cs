@@ -8,7 +8,9 @@ namespace Hulla.Application.ViewModels
     /// <summary>
     /// The Quick Play search (GDD 7.2, 9.6): strict on table size for 10 s, then any size; the server's
     /// matchmaker intervals accept a group of three at the 20 s mark. A Ranked search (GDD 7.5) is
-    /// four seats only and widens its rating band every 10 s up to the cap. Time comes in through
+    /// four seats only and widens its rating band every 10 s up to the cap. A Quick Play search that finds
+    /// nobody in 30 s opens a table with up to three bots instead (owner decision, 29 Oct; never Ranked).
+    /// Time comes in through
     /// <see cref="Tick"/>, so the schedule is testable without a clock.
     /// </summary>
     public sealed class QuickPlayViewModel : IDisposable
@@ -16,6 +18,7 @@ namespace Hulla.Application.ViewModels
         public const float WidenAtSeconds = 10f;
         public const float WideAtSeconds = 15f;
         public const float StartAtSeconds = 20f;
+        public const float BotsAtSeconds = 30f;
 
         private readonly IMatchmaker _matchmaker;
         private CancellationToken _cancellation;
@@ -32,6 +35,8 @@ namespace Hulla.Application.ViewModels
             Strict,
             Widened,
             Starting,
+            /// <summary>Nobody came: asking the server for a table with bots.</summary>
+            Bots,
             Found,
             Failed,
         }
@@ -56,11 +61,15 @@ namespace Hulla.Application.ViewModels
         private int _widenBy;
         private int _maxBand;
 
-        public bool Searching => Current == Stage.Strict || Current == Stage.Widened || Current == Stage.Starting;
+        public bool Searching => Current == Stage.Strict || Current == Stage.Widened || Current == Stage.Starting || Current == Stage.Bots;
+
+        /// <summary>The table found is the one with bots (for the search's analytics outcome).</summary>
+        public bool WithBots { get; private set; }
 
         public async Awaitable StartAsync(int seats, CancellationToken cancellation)
         {
             Ranked = false;
+            WithBots = false;
             Seats = Math.Clamp(seats, 3, 6);
             Elapsed = 0f;
             ErrorCode = null;
@@ -128,6 +137,11 @@ namespace Hulla.Application.ViewModels
                 Current = Stage.Starting;
             }
 
+            if (before < BotsAtSeconds && Elapsed >= BotsAtSeconds)
+            {
+                FillWithBots();
+            }
+
             Changed?.Invoke();
         }
 
@@ -170,9 +184,33 @@ namespace Hulla.Application.ViewModels
             Changed?.Invoke();
         }
 
+        /// <summary>Drops the matchmaker ticket and asks for a table with bots; a cancel in between wins.</summary>
+        private async void FillWithBots()
+        {
+            Current = Stage.Bots;
+            Changed?.Invoke();
+            await _matchmaker.CancelAsync();
+            var table = await _matchmaker.BotTableAsync(Seats, _cancellation);
+            if (Current != Stage.Bots)
+            {
+                return;
+            }
+
+            if (!table.IsOk)
+            {
+                Fail(table.Error.Code);
+                return;
+            }
+
+            WithBots = true;
+            Current = Stage.Found;
+            Changed?.Invoke();
+            Found?.Invoke(table.Value);
+        }
+
         private void OnMatched(TableTicket ticket)
         {
-            if (!Searching)
+            if (!Searching || Current == Stage.Bots)
             {
                 return;
             }

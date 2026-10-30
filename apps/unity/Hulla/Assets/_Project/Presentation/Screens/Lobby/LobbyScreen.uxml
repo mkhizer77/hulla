@@ -1,35 +1,78 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements">
-    <ui:VisualElement name="lobby" class="screen">
-        <ui:VisualElement class="code-box">
-            <ui:Label name="code-label" class="caption" />
-            <ui:Label name="code" class="code" />
-            <ui:VisualElement class="chips lobby-share">
-                <ui:Button name="copy" class="chip" />
-                <ui:Button name="share" class="chip chip--share" />
-                <ui:Button name="invite" class="chip" />
+    <ui:VisualElement name="lobby" class="screen lobby">
+        <ui:VisualElement name="stage-holder" class="lobby__holder" picking-mode="Ignore">
+            <ui:VisualElement name="stage" class="lobby__stage" picking-mode="Ignore">
+                <ui:Button name="leave" class="lobby__leave">
+                    <ui:VisualElement class="lobby__face" picking-mode="Ignore">
+                        <ui:Label name="leave-label" class="lobby__leave-label" />
+                    </ui:VisualElement>
+                </ui:Button>
+                <ui:Label name="title" class="lobby__title" />
+                <ui:Button name="rulebook" class="lobby__round lobby__rulebook">
+                    <ui:VisualElement class="lobby__face" picking-mode="Ignore">
+                        <ui:VisualElement class="lobby__icon lobby__icon--book" picking-mode="Ignore" />
+                    </ui:VisualElement>
+                </ui:Button>
+                <ui:VisualElement name="code-card" class="lobby__card">
+                    <ui:Label name="code-label" class="lobby__code-label" />
+                    <ui:Label name="code" class="lobby__code" />
+                    <ui:Button name="share" class="lobby__share">
+                        <ui:VisualElement class="lobby__face" picking-mode="Ignore">
+                            <ui:VisualElement class="lobby__icon lobby__icon--share" picking-mode="Ignore" />
+                            <ui:Label name="share-label" class="lobby__share-label" />
+                        </ui:VisualElement>
+                    </ui:Button>
+                    <ui:Button name="copy" class="lobby__copy">
+                        <ui:VisualElement class="lobby__face" picking-mode="Ignore">
+                            <ui:VisualElement name="copy-icon" class="lobby__icon lobby__icon--copy" picking-mode="Ignore" />
+                            <ui:VisualElement name="copy-done" class="lobby__icon lobby__icon--tick" picking-mode="Ignore" />
+                        </ui:VisualElement>
+                    </ui:Button>
+                </ui:VisualElement>
+                <ui:VisualElement name="rug" class="lobby__rug" picking-mode="Ignore" />
+                <ui:VisualElement name="seats" class="lobby__seats" picking-mode="Ignore" />
+                <ui:Label name="rules" class="lobby__rules" />
+                <ui:Button name="edit-rules" class="lobby__round lobby__edit-rules">
+                    <ui:VisualElement class="lobby__face" picking-mode="Ignore">
+                        <ui:VisualElement class="lobby__icon lobby__icon--pencil" picking-mode="Ignore" />
+                    </ui:VisualElement>
+                </ui:Button>
+                <ui:Label name="rules-changed" class="lobby__note" />
+                <ui:Label name="countdown" class="lobby__countdown" />
+                <ui:VisualElement name="watchers" class="lobby__watchers" />
+                <ui:VisualElement name="chat" class="lobby__strip">
+                    <ui:Label name="chat-last" class="lobby__strip-text" />
+                    <ui:Button name="mic" class="lobby__round lobby__mic">
+                        <ui:VisualElement class="lobby__face" picking-mode="Ignore">
+                            <ui:VisualElement name="mic-icon" class="lobby__icon lobby__icon--mic" picking-mode="Ignore" />
+                        </ui:VisualElement>
+                    </ui:Button>
+                    <ui:Button name="chat-open" class="lobby__round lobby__chat">
+                        <ui:VisualElement class="lobby__face" picking-mode="Ignore">
+                            <ui:VisualElement class="lobby__icon lobby__icon--chat" picking-mode="Ignore" />
+                        </ui:VisualElement>
+                    </ui:Button>
+                </ui:VisualElement>
+                <ui:Button name="ready" class="lobby__play">
+                    <ui:VisualElement class="lobby__face" picking-mode="Ignore">
+                        <ui:Label name="ready-label" class="lobby__play-label" />
+                    </ui:VisualElement>
+                </ui:Button>
+                <ui:Button name="start" class="lobby__play">
+                    <ui:VisualElement class="lobby__face" picking-mode="Ignore">
+                        <ui:Label name="start-label" class="lobby__play-label" />
+                    </ui:VisualElement>
+                </ui:Button>
+                <ui:Label name="status" class="lobby__hint" />
             </ui:VisualElement>
         </ui:VisualElement>
-        <ui:VisualElement class="lobby-rules">
-            <ui:Label name="rules" class="lobby-rules__text" />
-            <ui:Button name="edit-rules" class="button button--quiet button--small" />
-        </ui:VisualElement>
-        <ui:Label name="rules-changed" class="caption" />
-        <ui:VisualElement name="seats" class="lobby-ring" />
-        <ui:VisualElement name="watchers" class="lobby-watchers" />
-        <ui:VisualElement name="chat" class="lobby-chat">
+        <ui:VisualElement name="chat-sheet" class="panel lobby__sheet">
             <ui:VisualElement name="chat-log" class="chat-log" />
             <ui:VisualElement class="chat-panel__compose">
                 <ui:TextField name="chat-input" class="field chat-panel__input" />
                 <ui:Button name="chat-send" class="button button--small" />
             </ui:VisualElement>
             <ui:Label name="chat-status" class="caption" />
-        </ui:VisualElement>
-        <ui:Label name="countdown" class="turn countdown" />
-        <ui:Label name="status" class="status" />
-        <ui:VisualElement class="actions">
-            <ui:Button name="ready" class="button button--secondary" />
-            <ui:Button name="start" class="button button--primary" />
-            <ui:Button name="leave" class="button button--quiet" />
         </ui:VisualElement>
     </ui:VisualElement>
 </ui:UXML>

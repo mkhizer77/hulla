@@ -2806,3 +2806,17 @@
     border-color: var(--accent-teal);
     border-width: 5px;
 }
+
+/* The Desi court deck's portrait over the court band; only under its face class (Theme/CosmeticArt.cs). */
+.card__court-art {
+    display: none;
+    position: absolute;
+    left: 8%;
+    right: 8%;
+    top: 6%;
+    bottom: 6%;
+}
+
+.face--desi .card--court .card__court-art {
+    display: flex;
+}

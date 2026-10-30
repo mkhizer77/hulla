@@ -1,9 +1,14 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements">
     <ui:VisualElement name="rulebook" class="screen settings">
-        <ui:VisualElement class="settings__top">
-            <ui:Label name="title" class="title title--small" />
-            <ui:Button name="close" class="button button--primary button--small" />
+        <ui:VisualElement class="settings__top settings__top--start">
+            <ui:Label name="title" class="title title--small top__title" />
+            <ui:Button name="close" class="top__button top__left">
+                <ui:VisualElement class="kit__icon kit__icon--close" picking-mode="Ignore" />
+            </ui:Button>
         </ui:VisualElement>
+        <ui:ScrollView mode="Horizontal" class="rulebook__contents-scroll" horizontal-scroller-visibility="Hidden" vertical-scroller-visibility="Hidden">
+            <ui:VisualElement name="contents" class="rulebook__contents" />
+        </ui:ScrollView>
         <ui:ScrollView name="scroll" class="settings__scroll" horizontal-scroller-visibility="Hidden" vertical-scroller-visibility="Hidden">
             <ui:VisualElement name="list" />
         </ui:ScrollView>

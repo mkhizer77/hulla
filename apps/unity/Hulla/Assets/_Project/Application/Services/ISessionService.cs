@@ -10,6 +10,9 @@ namespace Hulla.Application.Services
     {
         PlayerSession? Current { get; }
 
+        /// <summary>Whether the realtime socket is open; iOS drops it while the app is in the background.</summary>
+        bool IsConnected { get; }
+
         /// <summary>A server notice on the socket: its subject and JSON content (an achievement unlock, the daily reward).</summary>
         event Action<string, string>? Notified;
 

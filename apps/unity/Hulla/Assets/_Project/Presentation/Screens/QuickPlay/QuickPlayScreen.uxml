@@ -1,8 +1,24 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements">
-    <ui:VisualElement name="quick-play" class="screen screen--center">
-        <ui:Label name="title" class="title title--small" />
-        <ui:Label name="elapsed" class="code elapsed" />
-        <ui:Label name="status" class="status" />
-        <ui:Button name="cancel" class="button button--quiet" />
+    <ui:VisualElement name="quick-play" class="screen quick">
+        <ui:VisualElement name="stage-holder" class="kit__holder" picking-mode="Ignore">
+            <ui:VisualElement name="stage" class="kit__stage quick__stage" picking-mode="Ignore">
+                <ui:Button name="cancel" class="kit__round quick__close">
+                    <ui:VisualElement class="kit__face" picking-mode="Ignore">
+                        <ui:VisualElement class="kit__icon kit__icon--close" picking-mode="Ignore" />
+                    </ui:VisualElement>
+                </ui:Button>
+                <ui:VisualElement name="panel" class="kit__panel quick__panel">
+                    <ui:VisualElement name="faces" class="quick__faces" />
+                    <ui:Label name="title" class="quick__title" />
+                    <ui:Label name="elapsed" class="quick__elapsed" />
+                    <ui:VisualElement name="bar" class="kit__bar quick__bar">
+                        <ui:VisualElement name="bar-fill" class="kit__bar-fill" />
+                    </ui:VisualElement>
+                    <ui:Label name="seats-label" class="quick__seats-label" />
+                    <ui:VisualElement name="seats" class="quick__seats" />
+                    <ui:Label name="status" class="quick__status" />
+                </ui:VisualElement>
+            </ui:VisualElement>
+        </ui:VisualElement>
     </ui:VisualElement>
 </ui:UXML>

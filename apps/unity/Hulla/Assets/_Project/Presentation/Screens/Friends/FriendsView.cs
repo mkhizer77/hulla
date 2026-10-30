@@ -2,31 +2,38 @@ using System;
 using System.Collections.Generic;
 using Hulla.Application.Social;
 using Hulla.Application.ViewModels;
+using Hulla.Presentation.Navigation;
+using Hulla.Presentation.TableKit;
 using Hulla.Presentation.Text;
+using UnityEngine;
 using UnityEngine.UIElements;
 
 namespace Hulla.Presentation.Screens.Friends
 {
     /// <summary>
-    /// Add by code, requests in and out, friends (favourites first) with online state, recent
-    /// co-players to add, and blocks (GDD 10.3).
+    /// Friends (design: Friends), ordered by what you can do now: Playing now (Join or Watch),
+    /// Requests (Accept or ✕), Played with recently (Add), Online (Invite), then everyone else. One
+    /// action per row; a tap on the row opens the player sheet with Favourite, Remove and Block.
+    /// The + opens the add-friend sheet; the search field filters every group (GDD 10.3).
     /// </summary>
     public sealed class FriendsView : IDisposable
     {
         private readonly FriendsViewModel _model;
+        private readonly VisualElement _root;
         private readonly VisualElement _list;
         private readonly Label _status;
-        private readonly TextField _code;
+        private readonly TextField _search;
         private readonly Actions _actions;
 
         private readonly Action? _retry;
         private readonly Action? _showMyCode;
 
         /// <param name="retry">Loads the lists again after an error; null hides Retry.</param>
-        /// <param name="showMyCode">Opens the profile with the friend code from the empty state.</param>
+        /// <param name="showMyCode">Shares the friend code from the empty state.</param>
         public FriendsView(VisualElement root, FriendsViewModel model, Action back, Actions actions, Action? retry = null, Action? showMyCode = null)
         {
             _model = model;
+            _root = root;
             _actions = actions;
             _retry = retry;
             _showMyCode = showMyCode;
@@ -34,12 +41,17 @@ namespace Hulla.Presentation.Screens.Friends
             var backButton = root.Q<Button>("back");
             backButton.text = UiText.Back;
             backButton.clicked += back;
-            _code = root.Q<TextField>("code");
-            _code.label = UiText.AddByCode;
-            _code.maxLength = 10;
-            var add = root.Q<Button>("add");
-            add.text = UiText.Add;
-            add.clicked += () => actions.AddByCode(_code.value);
+            var addOpen = root.Q<Button>("add-open");
+            if (addOpen != null)
+            {
+                addOpen.text = "";
+                addOpen.tooltip = UiText.AddFriendTitle;
+                addOpen.clicked += OpenAddSheet;
+            }
+
+            _search = root.Q<TextField>("search");
+            _search.textEdition.placeholder = UiText.SearchFriends;
+            _search.RegisterValueChangedCallback(_ => Refresh());
             _status = root.Q<Label>("status");
             _list = root.Q<VisualElement>("list");
             _model.Changed += Refresh;
@@ -48,14 +60,23 @@ namespace Hulla.Presentation.Screens.Friends
 
         public void Dispose() => _model.Changed -= Refresh;
 
+        /// <summary>Where a friend is now (Home presence); null treats everyone as on Home or offline.</summary>
+        public Func<string, FriendPresence?>? PresenceOf { get; set; }
+
+        /// <summary>Joins or watches a friend's table by its code.</summary>
+        public Action<string>? Join { get; set; }
+
+        public Action<string>? WatchTable { get; set; }
+
+        /// <summary>Opens a room and invites the friend to it.</summary>
+        public Action<string>? InviteToMine { get; set; }
+
+        /// <summary>The player's own friend code for the add sheet.</summary>
+        public Func<string?>? MyCode { get; set; }
+
         private void Refresh()
         {
             _status.text = _model.RequestSent ? UiText.RequestSent : "";
-            if (_model.RequestSent)
-            {
-                _code.value = "";
-            }
-
             _list.Clear();
             var nothingYet = _model.Received.Count + _model.Friends.Count + _model.Sent.Count + _model.Recent.Count + _model.Blocked.Count == 0;
             if (_model.ErrorCode != null && nothingYet)
@@ -75,74 +96,376 @@ namespace Hulla.Presentation.Screens.Friends
                 _status.text = UiText.Error(_model.ErrorCode);
             }
 
-            Section(UiText.Requests, _model.Received, entry => new[]
+            if (_model.Friends.Count + _model.Received.Count + _model.Recent.Count + _model.Sent.Count == 0)
             {
-                Action(UiText.Accept, () => _actions.Add(entry.UserId), true),
-                Action(UiText.Decline, () => _actions.Remove(entry.UserId), danger: true),
+                ListState.Empty(_list, UiText.FriendsEmpty, _showMyCode == null ? null : UiText.Share, _showMyCode);
+                return;
+            }
+
+            var filter = _search.value.Trim();
+            var playing = new List<FriendEntry>();
+            var online = new List<FriendEntry>();
+            var rest = new List<FriendEntry>();
+            foreach (var friend in _model.Friends)
+            {
+                if (!Matches(friend, filter))
+                {
+                    continue;
+                }
+
+                var presence = PresenceOf?.Invoke(friend.UserId);
+                if (presence?.TableCode != null && (presence.Joinable || presence.Watchable))
+                {
+                    playing.Add(friend);
+                }
+                else if (friend.Online)
+                {
+                    online.Add(friend);
+                }
+                else
+                {
+                    rest.Add(friend);
+                }
+            }
+
+            Section(UiText.PlayingNow, playing, friend =>
+            {
+                var presence = PresenceOf?.Invoke(friend.UserId);
+                var code = presence?.TableCode ?? "";
+                return presence != null && presence.Joinable
+                    ? Primary(UiText.JoinTable, () => Join?.Invoke(code))
+                    : Quiet(UiText.Watch, () => WatchTable?.Invoke(code));
+            }, friend =>
+            {
+                var presence = PresenceOf?.Invoke(friend.UserId);
+                return presence != null && presence.Joinable ? Strings.Format(UiText.AtTableSeats, presence.OpenSeats) : UiText.InARound;
             });
-            Section(UiText.FriendsList, _model.Friends, entry => new[]
-            {
-                Action(entry.Favourite ? UiText.Favourite : UiText.NotFavourite, () => _actions.Favourite(entry)),
-                Action(UiText.Remove, () => _actions.Remove(entry.UserId), danger: true),
-                Action(UiText.Block, () => _actions.Block(entry.UserId), danger: true),
-            }, UiText.NoFriendsYet);
-            Section(UiText.SentRequests, _model.Sent, entry => new[] { Action(UiText.CancelRequest, () => _actions.Remove(entry.UserId)) });
-            Section(UiText.Recent, _model.Recent, entry => new[] { Action(UiText.AddFriend, () => _actions.Add(entry.UserId), true) });
-            Section(UiText.BlockedList, _model.Blocked, entry => new[] { Action(UiText.Unblock, () => _actions.Unblock(entry.UserId)) });
+            Section(UiText.Requests, Filter(_model.Received, filter), friend => Primary(UiText.Accept, () => _actions.Add(friend.UserId)), friend => friend.Handle != null ? "@" + friend.Handle : "", friend => Dismiss(() => _actions.Remove(friend.UserId)), counted: true);
+            Section(UiText.Recent, Filter(_model.Recent, filter), friend => Primary(UiText.Add, () => _actions.Add(friend.UserId)), friend => Strings.Get("ui.rounds_together", friend.Rounds));
+            Section(UiText.Online, online, friend => Teal(UiText.Invite, () => InviteToMine?.Invoke(friend.UserId)), _ => UiText.OnHome);
+            Section(UiText.SentRequests, Filter(_model.Sent, filter), friend => Quiet(UiText.CancelRequest, () => _actions.Remove(friend.UserId)), friend => friend.Handle != null ? "@" + friend.Handle : "");
+            Section(Strings.Format(UiText.EveryoneElse, rest.Count), rest, null, _ => UiText.Offline);
         }
 
-        private void Section(string title, IReadOnlyList<FriendEntry> entries, Func<FriendEntry, Button[]> buttons, string? empty = null)
+        private static bool Matches(FriendEntry entry, string filter) =>
+            filter.Length == 0 || entry.Name.IndexOf(filter, StringComparison.CurrentCultureIgnoreCase) >= 0;
+
+        private static List<FriendEntry> Filter(IReadOnlyList<FriendEntry> entries, string filter)
         {
-            if (entries.Count == 0 && empty == null)
+            var list = new List<FriendEntry>();
+            foreach (var entry in entries)
+            {
+                if (Matches(entry, filter))
+                {
+                    list.Add(entry);
+                }
+            }
+
+            return list;
+        }
+
+        private void Section(string title, IReadOnlyList<FriendEntry> entries, Func<FriendEntry, Button>? action, Func<FriendEntry, string> detail, Func<FriendEntry, Button>? extra = null, bool counted = false)
+        {
+            if (entries.Count == 0)
             {
                 return;
             }
 
-            var heading = new Label(title);
-            heading.AddToClassList("caption");
-            heading.AddToClassList("settings__heading");
+            // The heading's words and the count side by side: a label's own text ignores its children.
+            var heading = new VisualElement();
+            heading.AddToClassList("friends__heading");
+            var words = new Label(title);
+            words.AddToClassList("caption");
+            words.AddToClassList("settings__heading");
+            words.AddToClassList("friends__heading-text");
+            heading.Add(words);
             _list.Add(heading);
-            if (entries.Count == 0)
+            if (counted)
             {
-                ListState.Empty(_list, empty!, _showMyCode == null ? null : UiText.ShowMyCode, _showMyCode);
-                return;
+                var count = new Label(Strings.Format("{0}", entries.Count));
+                count.AddToClassList("friends__count");
+                heading.Add(count);
             }
 
             foreach (var entry in entries)
             {
-                var row = new VisualElement();
-                row.AddToClassList("lobby-seat");
-                row.AddToClassList("friend-row");
-                var text = new VisualElement();
-                text.AddToClassList("lobby-seat__name");
-                text.Add(new Label(entry.Name));
-                var detail = entry.Rounds > 0 && entry.State == null
-                    ? Strings.Format(UiText.RoundsTogether, entry.Rounds)
-                    : entry.State == FriendState.Friend ? (entry.Online ? UiText.Online : UiText.Offline) : entry.Handle != null ? "@" + entry.Handle : "";
-                var sub = new Label(detail);
-                sub.AddToClassList("caption");
-                text.Add(sub);
-                row.Add(text);
-                foreach (var button in buttons(entry))
+                var row = Row(entry, detail(entry));
+                if (action != null)
                 {
-                    row.Add(button);
+                    row.Add(action(entry));
+                }
+
+                if (extra != null)
+                {
+                    row.Add(extra(entry));
                 }
 
                 _list.Add(row);
             }
         }
 
-        private static Button Action(string text, Action click, bool primary = false, bool danger = false)
+        /// <summary>A friend's row: face with the online dot, name with the star, and the line under it.</summary>
+        private VisualElement Row(FriendEntry entry, string detail)
+        {
+            var row = new VisualElement();
+            row.AddToClassList("lobby-seat");
+            row.AddToClassList("friend-row");
+            var face = new VisualElement { pickingMode = PickingMode.Ignore };
+            face.AddToClassList("friend-row__face");
+            var initial = new Label { pickingMode = PickingMode.Ignore };
+            initial.AddToClassList("seat__initial");
+            face.Add(initial);
+            AvatarArt.Apply(face, initial, AvatarArt.ForAccount(entry.UserId), entry.Name);
+            if (entry.Online)
+            {
+                var dot = new VisualElement { pickingMode = PickingMode.Ignore };
+                dot.AddToClassList("friend-row__dot");
+                face.Add(dot);
+            }
+
+            row.Add(face);
+            var text = new VisualElement { pickingMode = PickingMode.Ignore };
+            text.AddToClassList("lobby-seat__name");
+            text.Add(new Label(entry.Name + (entry.Favourite ? " ★" : "")));
+            var sub = new Label(detail);
+            sub.AddToClassList("caption");
+            text.Add(sub);
+            row.Add(text);
+            row.RegisterCallback<ClickEvent>(evt =>
+            {
+                if (evt.target is Button)
+                {
+                    return;
+                }
+
+                OpenPlayerSheet(entry);
+            });
+            return row;
+        }
+
+        /// <summary>
+        /// The player sheet (design: Player sheet): face, name and handle, where they are, one yellow
+        /// action that follows their state, Favourite, and Remove and Block as quiet links.
+        /// </summary>
+        private void OpenPlayerSheet(FriendEntry entry)
+        {
+            var panel = Sheet.Open(_root, null);
+            panel.AddToClassList("player-card");
+            var head = new VisualElement();
+            head.AddToClassList("player-card__head");
+            var face = new VisualElement { pickingMode = PickingMode.Ignore };
+            face.AddToClassList("player-card__face");
+            var initial = new Label { pickingMode = PickingMode.Ignore };
+            initial.AddToClassList("seat__initial");
+            face.Add(initial);
+            AvatarArt.Apply(face, initial, AvatarArt.ForAccount(entry.UserId), entry.Name);
+            if (entry.Online)
+            {
+                var dot = new VisualElement { pickingMode = PickingMode.Ignore };
+                dot.AddToClassList("player-card__dot");
+                face.Add(dot);
+            }
+
+            head.Add(face);
+            var who = new VisualElement();
+            who.AddToClassList("player-card__who");
+            var name = new Label(entry.Name);
+            name.AddToClassList("player-card__name");
+            who.Add(name);
+            // @handle · title and the stats line come from their public profile (design: Player sheet).
+            var handle = new Label("");
+            handle.AddToClassList("player-card__handle");
+            who.Add(handle);
+            var stats = new Label("");
+            stats.AddToClassList("player-card__stats");
+            who.Add(stats);
+            FillProfile(entry, handle, stats);
+            head.Add(who);
+            if (entry.State == FriendState.Friend)
+            {
+                // The star top right: on for a favourite, a tap pins or unpins them.
+                var star = new Button(() => { Sheet.Close(panel); _actions.Favourite(entry); }) { text = "", tooltip = entry.Favourite ? UiText.UnfavouriteWord : UiText.FavouriteWord };
+                star.AddToClassList("player-card__star");
+                star.EnableInClassList("player-card__star--on", entry.Favourite);
+                head.Add(star);
+            }
+
+            panel.Add(head);
+            var presence = PresenceOf?.Invoke(entry.UserId);
+            var friend = entry.State == FriendState.Friend;
+            string where;
+            Button? main = null;
+            if (presence?.TableCode is string code && presence.Joinable)
+            {
+                where = Strings.Format(UiText.WhereTable, presence.OpenSeats);
+                main = Sheet.Button(Strings.Format(UiText.JoinTheirTable, entry.Name), () => { Sheet.Close(panel); Join?.Invoke(code); }, "yes");
+            }
+            else if (presence?.TableCode is string watchCode && presence.Watchable)
+            {
+                where = UiText.WhereWatching;
+                main = Sheet.Button(UiText.Watch, () => { Sheet.Close(panel); WatchTable?.Invoke(watchCode); }, "yes");
+            }
+            else if (entry.State == FriendState.Received)
+            {
+                where = entry.Online ? UiText.Online : UiText.Offline;
+                main = Sheet.Button(UiText.Accept, () => { Sheet.Close(panel); _actions.Add(entry.UserId); }, "yes");
+            }
+            else if (!friend && entry.State != FriendState.Sent)
+            {
+                where = entry.Rounds > 0 ? Strings.Get("ui.rounds_together", entry.Rounds) : "";
+                main = Sheet.Button(UiText.AddFriend, () => { Sheet.Close(panel); _actions.Add(entry.UserId); }, "yes");
+            }
+            else
+            {
+                where = entry.Online ? UiText.OnHome : UiText.Offline;
+            }
+
+            if (where.Length > 0)
+            {
+                var line = new Label(where);
+                line.AddToClassList("player-card__where");
+                panel.Add(line);
+            }
+
+            if (main != null)
+            {
+                main.AddToClassList("player-card__main");
+                panel.Add(main);
+            }
+
+            if (friend)
+            {
+                var row = Sheet.Answers(panel);
+                if (InviteToMine != null && entry.Online)
+                {
+                    row.Add(Sheet.Button(UiText.InviteToMine, () => { Sheet.Close(panel); InviteToMine(entry.UserId); }));
+                }
+
+                row.Add(Sheet.Button(entry.Favourite ? UiText.UnfavouriteWord : UiText.FavouriteWord, () => { Sheet.Close(panel); _actions.Favourite(entry); }));
+            }
+
+            // Quiet links at the bottom for everyone: Remove friend for a friend, then Block.
+            var links = new VisualElement();
+            links.AddToClassList("player-card__links");
+            if (friend)
+            {
+                links.Add(Link(UiText.RemoveFriend, () => { Sheet.Close(panel); _actions.Remove(entry.UserId); }));
+                links.Add(Dot());
+            }
+
+            links.Add(Link(UiText.Block, () => { Sheet.Close(panel); _actions.Block(entry.UserId); }));
+            panel.Add(links);
+        }
+
+        /// <summary>Looks up a player's public profile for the sheet's handle, title and stats.</summary>
+        public Func<string, Awaitable<ProfileCard?>>? LookUpProfile { get; set; }
+
+        private async void FillProfile(FriendEntry entry, Label handle, Label stats)
+        {
+            handle.text = entry.Handle != null ? Strings.Format(UiText.PlayerLine, entry.Handle) : "";
+            var profile = LookUpProfile == null ? null : await LookUpProfile(entry.UserId);
+            if (profile == null)
+            {
+                return;
+            }
+
+            handle.text = string.IsNullOrEmpty(profile.Title)
+                ? Strings.Format(UiText.PlayerLine, profile.Handle)
+                : Strings.Format(UiText.PlayerLineTitle, profile.Handle, UiText.TitleName(profile.Title!));
+            stats.text = Strings.Format(UiText.PlayerStats, Strings.Get("ui.rounds_count", profile.Rounds), Strings.Get("ui.times_bhabhi", profile.Bhabhis));
+        }
+
+        private static Label Dot()
+        {
+            var dot = new Label(UiText.Dot) { pickingMode = PickingMode.Ignore };
+            dot.AddToClassList("player-card__sep");
+            return dot;
+        }
+
+        private static Button Link(string text, Action click)
+        {
+            var link = new Button(click) { text = text };
+            link.AddToClassList("player-card__link");
+            return link;
+        }
+
+        /// <summary>The add-friend sheet (design: Add friend): your code with Share, their code and Add.</summary>
+        private void OpenAddSheet()
+        {
+            var panel = Sheet.Open(_root, UiText.AddFriendTitle);
+            panel.AddToClassList("add-friend");
+            var mine = MyCode?.Invoke();
+            if (!string.IsNullOrEmpty(mine))
+            {
+                panel.Add(Sheet.Line(UiText.YourFriendCode, "add-friend__label"));
+                var codeRow = new VisualElement();
+                codeRow.AddToClassList("add-friend__mine");
+                var code = new Label(mine);
+                code.AddToClassList("add-friend__code");
+                codeRow.Add(code);
+                if (_showMyCode != null)
+                {
+                    var share = Sheet.Button(UiText.Share, _showMyCode, "teal");
+                    share.AddToClassList("add-friend__share");
+                    codeRow.Add(share);
+                }
+
+                panel.Add(codeRow);
+            }
+
+            panel.Add(Sheet.Line(UiText.TheirCode, "add-friend__label"));
+            var field = new TextField { maxLength = 10, name = "code" };
+            field.AddToClassList("add-friend__field");
+            panel.Add(field);
+            var result = Sheet.Line("", "add-friend__result");
+            var add = Sheet.Button(UiText.Add, () =>
+            {
+                if (field.value.Trim().Length == 0)
+                {
+                    return;
+                }
+
+                _actions.AddByCode(field.value.Trim());
+                result.text = UiText.RequestSent;
+                field.value = "";
+            }, "yes");
+            add.AddToClassList("add-friend__add");
+            panel.Add(add);
+            panel.Add(result);
+            field.schedule.Execute(() => field.Focus()).StartingIn(50);
+        }
+
+        private static Button Primary(string text, Action click)
         {
             var button = new Button(click) { text = text };
             button.AddToClassList("chip");
-            if (primary)
-            {
-                button.AddToClassList("chip--on");
-            }
+            button.AddToClassList("chip--on");
+            return button;
+        }
 
-            button.EnableInClassList("button--danger", danger);
+        private static Button Quiet(string text, Action click)
+        {
+            var button = new Button(click) { text = text };
+            button.AddToClassList("chip");
+            return button;
+        }
 
+        private static Button Teal(string text, Action click)
+        {
+            var button = new Button(click) { text = text };
+            button.AddToClassList("chip");
+            button.AddToClassList("chip--teal");
+            return button;
+        }
+
+        private static Button Dismiss(Action click)
+        {
+            var button = new Button(click) { text = "", tooltip = UiText.Decline };
+            button.AddToClassList("friend-row__dismiss");
+            var icon = new VisualElement { pickingMode = PickingMode.Ignore };
+            icon.AddToClassList("kit__icon");
+            icon.AddToClassList("kit__icon--close");
+            button.Add(icon);
             return button;
         }
 
