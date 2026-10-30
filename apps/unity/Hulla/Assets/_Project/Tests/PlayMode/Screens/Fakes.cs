@@ -12,6 +12,38 @@ namespace Hulla.Screens.Tests
     /// <summary>Stand-ins for the services the screens read, so each screen opens without a server.</summary>
     internal static class Fakes
     {
+        public sealed class Suggestions : IFriendSuggestions
+        {
+            public Awaitable<Result<IReadOnlyList<FriendSuggestion>>> FindAsync(IReadOnlyList<string> phones, IReadOnlyList<string> facebookIds, CancellationToken cancellation)
+            {
+                IReadOnlyList<FriendSuggestion> found = new[]
+                {
+                    new FriendSuggestion("s1", "Ayesha Khan", null, SuggestionSource.Contacts),
+                    new FriendSuggestion("s2", "Bilal", null, SuggestionSource.Facebook),
+                    new FriendSuggestion("s3", "Sana Mirza", null, SuggestionSource.Contacts),
+                };
+                return Done(Result<IReadOnlyList<FriendSuggestion>>.Ok(found));
+            }
+        }
+
+        public sealed class Contacts : IContactsSource
+        {
+            public bool Supported => true;
+
+            public Awaitable<Result<IReadOnlyList<string>>> PhoneNumbersAsync(CancellationToken cancellation) =>
+                Done(Result<IReadOnlyList<string>>.Ok(new[] { "+923001234567" }));
+        }
+
+        public sealed class SignIn : ISocialSignIn
+        {
+            public bool Supports(SocialProvider provider) => true;
+
+            public Awaitable<Result<string>> TokenAsync(SocialProvider provider, CancellationToken cancellation) => Done(Result<string>.Ok("token"));
+
+            public Awaitable<Result<IReadOnlyList<string>>> FacebookFriendIdsAsync(CancellationToken cancellation) =>
+                Done(Result<IReadOnlyList<string>>.Ok(new string[0]));
+        }
+
         public static Awaitable<T> Done<T>(T value)
         {
             var source = new AwaitableCompletionSource<T>();

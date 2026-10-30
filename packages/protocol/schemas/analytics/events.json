@@ -360,7 +360,7 @@
       "properties": {
         "source": {
           "type": "string",
-          "enum": ["code", "recent", "results", "request", "qr", "referral"]
+          "enum": ["code", "recent", "results", "request", "qr", "referral", "contacts", "facebook"]
         }
       },
       "required": ["source"]

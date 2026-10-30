@@ -45,6 +45,7 @@ describe("InitModule", () => {
       "friend_add_by_code",
       "favourite_set",
       "social_overview",
+      "friend_suggestions",
       "table_list_friends",
       "table_mine",
       "presence_set",

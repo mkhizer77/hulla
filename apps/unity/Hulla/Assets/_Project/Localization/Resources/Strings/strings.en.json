@@ -3,6 +3,61 @@
  "rtl": false,
  "entries": [
   {
+   "key": "account.continue_with",
+   "text": "Continue with {0}",
+   "smart": true
+  },
+  {
+   "key": "account.keep_progress",
+   "text": "Keep your progress",
+   "smart": false
+  },
+  {
+   "key": "account.keep_progress_line",
+   "text": "Sign in so your coins, friends and cosmetics follow you to any phone.",
+   "smart": false
+  },
+  {
+   "key": "account.line",
+   "text": "Link more than one so you can always get back in.",
+   "smart": false
+  },
+  {
+   "key": "account.link",
+   "text": "Link",
+   "smart": false
+  },
+  {
+   "key": "account.manage",
+   "text": "Manage",
+   "smart": false
+  },
+  {
+   "key": "account.phone",
+   "text": "Phone number",
+   "smart": false
+  },
+  {
+   "key": "account.progress_stays",
+   "text": "Your progress stays with this account whichever way you sign in.",
+   "smart": false
+  },
+  {
+   "key": "account.signed_in_with",
+   "text": "Signed in with {0}",
+   "smart": true
+  },
+  {
+   "key": "account.title",
+   "text": "Your account",
+   "smart": false
+  },
+  {
+   "key": "account.use_phone",
+   "text": "Use phone number",
+   "smart": false
+  },
+  {
    "key": "achievement.bhabhis_50.description",
    "text": "{0:plural:Be the Bhabhi once|Be the Bhabhi {} times}",
    "smart": true
@@ -698,6 +753,11 @@
    "smart": false
   },
   {
+   "key": "error.auth.cancelled",
+   "text": "Sign-in was cancelled.",
+   "smart": false
+  },
+  {
    "key": "error.auth.device_limit",
    "text": "You're at this table on another device. Close it there first.",
    "smart": false
@@ -733,8 +793,23 @@
    "smart": false
   },
   {
+   "key": "error.auth.provider_unavailable",
+   "text": "That sign-in isn't available right now. Try again later.",
+   "smart": false
+  },
+  {
    "key": "error.auth.update_required",
    "text": "Please update Hulla to keep playing.",
+   "smart": false
+  },
+  {
+   "key": "error.contacts.denied",
+   "text": "Hulla can't see your contacts. Allow it in your phone's settings.",
+   "smart": false
+  },
+  {
+   "key": "error.contacts.unavailable",
+   "text": "Contacts can't be read on this device.",
    "smart": false
   },
   {
@@ -884,7 +959,7 @@
   },
   {
    "key": "error.social.unavailable",
-   "text": "Can't reach the server. Check the connection and try again.",
+   "text": "Facebook isn't available right now. Try again later.",
    "smart": false
   },
   {
@@ -2345,6 +2420,101 @@
   {
    "key": "skin.pop",
    "text": "Pop",
+   "smart": false
+  },
+  {
+   "key": "social.in_use",
+   "text": "This {0} account already has its own Hulla progress. Switch to it? What you have on this phone moves there.",
+   "smart": true
+  },
+  {
+   "key": "social.linked",
+   "text": "Linked",
+   "smart": false
+  },
+  {
+   "key": "social.linked_done",
+   "text": "{0} is linked. Your progress stays safe on a new phone.",
+   "smart": true
+  },
+  {
+   "key": "social.provider_apple",
+   "text": "Apple",
+   "smart": false
+  },
+  {
+   "key": "social.provider_facebook",
+   "text": "Facebook",
+   "smart": false
+  },
+  {
+   "key": "social.provider_google",
+   "text": "Google",
+   "smart": false
+  },
+  {
+   "key": "social.sign_in_with",
+   "text": "Sign in with {0}",
+   "smart": true
+  },
+  {
+   "key": "social.switch",
+   "text": "Switch",
+   "smart": false
+  },
+  {
+   "key": "suggestions.contacts_checked",
+   "text": "Contacts checked",
+   "smart": false
+  },
+  {
+   "key": "suggestions.facebook_checked",
+   "text": "Facebook checked",
+   "smart": false
+  },
+  {
+   "key": "suggestions.facebook_friend",
+   "text": "Facebook friend",
+   "smart": false
+  },
+  {
+   "key": "suggestions.find",
+   "text": "Find your friends",
+   "smart": false
+  },
+  {
+   "key": "suggestions.from_contacts",
+   "text": "From contacts",
+   "smart": false
+  },
+  {
+   "key": "suggestions.from_facebook",
+   "text": "From Facebook",
+   "smart": false
+  },
+  {
+   "key": "suggestions.in_contacts",
+   "text": "In your contacts",
+   "smart": false
+  },
+  {
+   "key": "suggestions.looking",
+   "text": "Looking for friends who play…",
+   "smart": false
+  },
+  {
+   "key": "suggestions.nobody",
+   "text": "None of them play Hulla yet. Share your code to bring them in.",
+   "smart": false
+  },
+  {
+   "key": "suggestions.requested",
+   "text": "Requested",
+   "smart": false
+  },
+  {
+   "key": "suggestions.title",
+   "text": "People you may know",
    "smart": false
   },
   {

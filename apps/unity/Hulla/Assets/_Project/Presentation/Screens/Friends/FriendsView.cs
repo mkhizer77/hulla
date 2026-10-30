@@ -58,7 +58,136 @@ namespace Hulla.Presentation.Screens.Friends
             Refresh();
         }
 
-        public void Dispose() => _model.Changed -= Refresh;
+        public void Dispose()
+        {
+            _model.Changed -= Refresh;
+            if (_suggestions != null)
+            {
+                _suggestions.Changed -= Refresh;
+            }
+        }
+
+        private FriendSuggestionsViewModel? _suggestions;
+        private Action? _findContacts;
+        private Action? _findFacebook;
+        private Action<string>? _addSuggestion;
+
+        /// <summary>
+        /// People you may know (concept: friends-suggestions, 30 Oct): Find your friends with From contacts
+        /// and From Facebook, then the players found, each tagged with where they were found and an Add.
+        /// </summary>
+        public void UseSuggestions(FriendSuggestionsViewModel suggestions, Action findContacts, Action findFacebook, Action<string> add)
+        {
+            _suggestions = suggestions;
+            _findContacts = findContacts;
+            _findFacebook = findFacebook;
+            _addSuggestion = add;
+            suggestions.Changed += Refresh;
+            Refresh();
+        }
+
+        private void BuildSuggestions()
+        {
+            var model = _suggestions;
+            if (model == null || (!model.ContactsSupported && !model.FacebookSupported))
+            {
+                return;
+            }
+
+            var card = new VisualElement();
+            card.AddToClassList("find-card");
+            var title = new Label(UiText.FindYourFriends);
+            title.AddToClassList("find-card__title");
+            card.Add(title);
+            var buttons = new VisualElement();
+            buttons.AddToClassList("find-card__buttons");
+            if (model.ContactsSupported)
+            {
+                buttons.Add(FindButton(model.ContactsOn ? UiText.ContactsChecked : UiText.FromContacts, "contacts", () => _findContacts?.Invoke()));
+            }
+
+            if (model.FacebookSupported)
+            {
+                buttons.Add(FindButton(model.FacebookOn ? UiText.FacebookChecked : UiText.FromFacebook, "facebook", () => _findFacebook?.Invoke()));
+            }
+
+            card.Add(buttons);
+            if (model.Busy)
+            {
+                card.Add(Caption(UiText.Looking));
+            }
+            else if (model.ErrorCode != null)
+            {
+                card.Add(Caption(UiText.Error(model.ErrorCode)));
+            }
+            else if ((model.ContactsOn || model.FacebookOn) && model.Suggestions.Count == 0)
+            {
+                card.Add(Caption(UiText.NobodyYet));
+            }
+
+            _list.Add(card);
+            if (model.Suggestions.Count == 0)
+            {
+                return;
+            }
+
+            var heading = new VisualElement();
+            heading.AddToClassList("friends__heading");
+            var words = new Label(UiText.PeopleYouMayKnow);
+            words.AddToClassList("caption");
+            words.AddToClassList("settings__heading");
+            words.AddToClassList("friends__heading-text");
+            heading.Add(words);
+            _list.Add(heading);
+            foreach (var suggestion in model.Suggestions)
+            {
+                var entry = suggestion;
+                var row = new VisualElement();
+                row.AddToClassList("lobby-seat");
+                row.AddToClassList("friend-row");
+                var face = new VisualElement { pickingMode = PickingMode.Ignore };
+                face.AddToClassList("friend-row__face");
+                var initial = new Label { pickingMode = PickingMode.Ignore };
+                initial.AddToClassList("seat__initial");
+                face.Add(initial);
+                AvatarArt.Apply(face, initial, entry.Avatar ?? AvatarArt.ForAccount(entry.UserId), entry.Name);
+                row.Add(face);
+                var text = new VisualElement { pickingMode = PickingMode.Ignore };
+                text.AddToClassList("lobby-seat__name");
+                text.Add(new Label(entry.Name));
+                var facebook = entry.Source == Hulla.Application.Social.SuggestionSource.Facebook;
+                var chip = new Label(facebook ? UiText.FacebookFriend : UiText.InYourContacts);
+                chip.AddToClassList("suggestion-chip");
+                chip.AddToClassList(facebook ? "suggestion-chip--facebook" : "suggestion-chip--contacts");
+                text.Add(chip);
+                row.Add(text);
+                row.Add(model.Requested(entry.UserId)
+                    ? Quiet(UiText.Requested, () => { })
+                    : Primary(UiText.Add, () => _addSuggestion?.Invoke(entry.UserId)));
+                _list.Add(row);
+            }
+        }
+
+        private static Button FindButton(string text, string key, Action tap)
+        {
+            var button = new Button(tap) { text = "" };
+            button.AddToClassList("find-button");
+            button.AddToClassList("find-button--" + key);
+            var mark = new VisualElement { pickingMode = PickingMode.Ignore };
+            mark.AddToClassList("find-button__mark");
+            button.Add(mark);
+            var label = new Label(text) { pickingMode = PickingMode.Ignore };
+            label.AddToClassList("find-button__text");
+            button.Add(label);
+            return button;
+        }
+
+        private static Label Caption(string text)
+        {
+            var label = new Label(text);
+            label.AddToClassList("find-card__note");
+            return label;
+        }
 
         /// <summary>Where a friend is now (Home presence); null treats everyone as on Home or offline.</summary>
         public Func<string, FriendPresence?>? PresenceOf { get; set; }
@@ -96,7 +225,8 @@ namespace Hulla.Presentation.Screens.Friends
                 _status.text = UiText.Error(_model.ErrorCode);
             }
 
-            if (_model.Friends.Count + _model.Received.Count + _model.Recent.Count + _model.Sent.Count == 0)
+            BuildSuggestions();
+            if (_model.Friends.Count + _model.Received.Count + _model.Recent.Count + _model.Sent.Count == 0 && (_suggestions?.Suggestions.Count ?? 0) == 0)
             {
                 ListState.Empty(_list, UiText.FriendsEmpty, _showMyCode == null ? null : UiText.Share, _showMyCode);
                 return;

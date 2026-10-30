@@ -3,6 +3,61 @@
  "rtl": false,
  "entries": [
   {
+   "key": "account.continue_with",
+   "text": "[Çöñtîñûé wîth {0} · · ·]",
+   "smart": true
+  },
+  {
+   "key": "account.keep_progress",
+   "text": "[Kéép ýöûr prögréss · · ·]",
+   "smart": false
+  },
+  {
+   "key": "account.keep_progress_line",
+   "text": "[Sîgñ îñ sö ýöûr çöîñs, frîéñds åñd çösmétîçs föllöw ýöû tö åñý phöñé. · · · · · · · · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "account.line",
+   "text": "[Lîñk möré thåñ öñé sö ýöû çåñ ålwåýs gét båçk îñ. · · · · · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "account.link",
+   "text": "[Lîñk ·]",
+   "smart": false
+  },
+  {
+   "key": "account.manage",
+   "text": "[Måñågé ·]",
+   "smart": false
+  },
+  {
+   "key": "account.phone",
+   "text": "[Phöñé ñûmbér · ·]",
+   "smart": false
+  },
+  {
+   "key": "account.progress_stays",
+   "text": "[Ýöûr prögréss ståýs wîth thîs åççöûñt whîçhévér wåý ýöû sîgñ îñ. · · · · · · · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "account.signed_in_with",
+   "text": "[Sîgñéd îñ wîth {0} · · ·]",
+   "smart": true
+  },
+  {
+   "key": "account.title",
+   "text": "[Ýöûr åççöûñt · ·]",
+   "smart": false
+  },
+  {
+   "key": "account.use_phone",
+   "text": "[Ûsé phöñé ñûmbér · · ·]",
+   "smart": false
+  },
+  {
    "key": "achievement.bhabhis_50.description",
    "text": "[{0:plural:Bé thé Bhåbhî öñçé|Bé thé Bhåbhî {} tîmés} · · · ·]",
    "smart": true
@@ -698,6 +753,11 @@
    "smart": false
   },
   {
+   "key": "error.auth.cancelled",
+   "text": "[Sîgñ-îñ wås çåñçélléd. · · · ·]",
+   "smart": false
+  },
+  {
    "key": "error.auth.device_limit",
    "text": "[Ýöû'ré åt thîs tåblé öñ åñöthér dévîçé. Çlösé ît théré fîrst. · · · · · · · · · ·]",
    "smart": false
@@ -733,8 +793,23 @@
    "smart": false
   },
   {
+   "key": "error.auth.provider_unavailable",
+   "text": "[Thåt sîgñ-îñ îsñ't åvåîlåblé rîght ñöw. Trý ågåîñ låtér. · · · · · · · · ·]",
+   "smart": false
+  },
+  {
    "key": "error.auth.update_required",
    "text": "[Pléåsé ûpdåté Hûllå tö kéép plåýîñg. · · · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "error.contacts.denied",
+   "text": "[Hûllå çåñ't séé ýöûr çöñtåçts. Ållöw ît îñ ýöûr phöñé's séttîñgs. · · · · · · · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "error.contacts.unavailable",
+   "text": "[Çöñtåçts çåñ't bé réåd öñ thîs dévîçé. · · · · · ·]",
    "smart": false
   },
   {
@@ -884,7 +959,7 @@
   },
   {
    "key": "error.social.unavailable",
-   "text": "[Çåñ't réåçh thé sérvér. Çhéçk thé çöññéçtîöñ åñd trý ågåîñ. · · · · · · · · ·]",
+   "text": "[Fåçéböök îsñ't åvåîlåblé rîght ñöw. Trý ågåîñ låtér. · · · · · · · ·]",
    "smart": false
   },
   {
@@ -2345,6 +2420,101 @@
   {
    "key": "skin.pop",
    "text": "[Pöp ·]",
+   "smart": false
+  },
+  {
+   "key": "social.in_use",
+   "text": "[Thîs {0} åççöûñt ålréådý hås îts öwñ Hûllå prögréss. Swîtçh tö ît? Whåt ýöû håvé öñ thîs phöñé mövés théré. · · · · · · · · · · · · · · · · ·]",
+   "smart": true
+  },
+  {
+   "key": "social.linked",
+   "text": "[Lîñkéd ·]",
+   "smart": false
+  },
+  {
+   "key": "social.linked_done",
+   "text": "[{0} îs lîñkéd. Ýöûr prögréss ståýs såfé öñ å ñéw phöñé. · · · · · · · · ·]",
+   "smart": true
+  },
+  {
+   "key": "social.provider_apple",
+   "text": "[Åpplé ·]",
+   "smart": false
+  },
+  {
+   "key": "social.provider_facebook",
+   "text": "[Fåçéböök · ·]",
+   "smart": false
+  },
+  {
+   "key": "social.provider_google",
+   "text": "[Gööglé ·]",
+   "smart": false
+  },
+  {
+   "key": "social.sign_in_with",
+   "text": "[Sîgñ îñ wîth {0} · · ·]",
+   "smart": true
+  },
+  {
+   "key": "social.switch",
+   "text": "[Swîtçh ·]",
+   "smart": false
+  },
+  {
+   "key": "suggestions.contacts_checked",
+   "text": "[Çöñtåçts çhéçkéd · · ·]",
+   "smart": false
+  },
+  {
+   "key": "suggestions.facebook_checked",
+   "text": "[Fåçéböök çhéçkéd · · ·]",
+   "smart": false
+  },
+  {
+   "key": "suggestions.facebook_friend",
+   "text": "[Fåçéböök frîéñd · · ·]",
+   "smart": false
+  },
+  {
+   "key": "suggestions.find",
+   "text": "[Fîñd ýöûr frîéñds · · ·]",
+   "smart": false
+  },
+  {
+   "key": "suggestions.from_contacts",
+   "text": "[Fröm çöñtåçts · ·]",
+   "smart": false
+  },
+  {
+   "key": "suggestions.from_facebook",
+   "text": "[Fröm Fåçéböök · ·]",
+   "smart": false
+  },
+  {
+   "key": "suggestions.in_contacts",
+   "text": "[Îñ ýöûr çöñtåçts · · ·]",
+   "smart": false
+  },
+  {
+   "key": "suggestions.looking",
+   "text": "[Löökîñg för frîéñds whö plåý… · · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "suggestions.nobody",
+   "text": "[Ñöñé öf thém plåý Hûllå ýét. Shåré ýöûr çödé tö brîñg thém îñ. · · · · · · · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "suggestions.requested",
+   "text": "[Réqûéstéd · ·]",
+   "smart": false
+  },
+  {
+   "key": "suggestions.title",
+   "text": "[Péöplé ýöû måý kñöw · · ·]",
    "smart": false
   },
   {

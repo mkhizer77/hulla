@@ -129,6 +129,31 @@ namespace Hulla.Screens.Tests
                 new ProfileView(r, model, () => { }, (_, _, _) => { });
                 _ = model.RefreshAsync(default);
             });
+            yield return new Case("profile-guest", catalog.Profile, r =>
+            {
+                var model = new ProfileViewModel(new Fakes.Social());
+                var view = new ProfileView(r, model, () => { }, (_, _, _) => { });
+                view.ShowAccount(new Hulla.Presentation.Screens.Account.AccountOptions(
+                    new[] { SocialProvider.Google, SocialProvider.Facebook }, _ => false, () => false, _ => { }, () => { }));
+                _ = model.RefreshAsync(default);
+            });
+            yield return new Case("profile-linked", catalog.Profile, r =>
+            {
+                var model = new ProfileViewModel(new Fakes.Social());
+                var view = new ProfileView(r, model, () => { }, (_, _, _) => { });
+                view.ShowAccount(new Hulla.Presentation.Screens.Account.AccountOptions(
+                    new[] { SocialProvider.Google, SocialProvider.Facebook }, p => p == SocialProvider.Google, () => true, _ => { }, () => { }));
+                _ = model.RefreshAsync(default);
+            });
+            yield return new Case("friends-suggestions", catalog.Friends, r =>
+            {
+                var model = new FriendsViewModel(new Fakes.Social());
+                var view = new FriendsView(r, model, () => { }, new FriendsView.Actions(_ => { }, _ => { }, _ => { }, _ => { }, _ => { }));
+                var suggestions = new FriendSuggestionsViewModel(new Fakes.Suggestions(), new Fakes.Contacts(), new Fakes.SignIn(), new MemoryStore(), "92");
+                view.UseSuggestions(suggestions, () => { }, () => { }, _ => { });
+                _ = suggestions.FromContactsAsync(default);
+                suggestions.MarkRequested("s2");
+            });
             yield return new Case("friends", catalog.Friends, r =>
             {
                 var model = new FriendsViewModel(new Fakes.Social());

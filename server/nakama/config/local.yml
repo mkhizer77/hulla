@@ -58,6 +58,14 @@ iap:
   google:
     client_email: ""
     private_key: ""
+# Sign in with Apple and Facebook's Limited Login on iOS (GDD 10.2, #38): Apple tokens are checked for the
+# app's bundle id, Limited Login tokens for the Meta app id (docs/runbooks/sign-in-setup.md). Google ID
+# tokens need nothing here.
+social:
+  apple:
+    bundle_id: "gg.hulla.app"
+  facebook_limited_login:
+    app_id: "2149156025694624"
 # Prometheus metrics for infra/observability (docs/runbooks/observability.md).
 metrics:
   prometheus_port: 9100

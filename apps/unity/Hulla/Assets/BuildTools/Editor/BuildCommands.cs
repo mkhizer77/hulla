@@ -132,13 +132,22 @@ namespace Hulla.BuildTools
                 return false;
             }
 
-            var report = BuildPipeline.BuildPlayer(new BuildPlayerOptions
+            BuildReport report;
+            try
             {
-                scenes = Scenes,
-                locationPathName = path,
-                target = target,
-                options = BuildOptions.Development,
-            });
+                report = BuildPipeline.BuildPlayer(new BuildPlayerOptions
+                {
+                    scenes = Scenes,
+                    locationPathName = path,
+                    target = target,
+                    options = BuildOptions.Development,
+                });
+            }
+            finally
+            {
+                SocialSetup.ClearToken();
+            }
+
             Debug.Log($"build {target}: {report.summary.result}, {report.summary.totalErrors} errors, {path}");
             return report.summary.result == BuildResult.Succeeded;
         }
