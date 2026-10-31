@@ -1,5 +1,43 @@
 {
   "dependencies": {
+    "com.google.external-dependency-manager": {
+      "version": "file:firebase/com.google.external-dependency-manager-1.2.190.tgz",
+      "depth": 0,
+      "source": "local-tarball",
+      "dependencies": {}
+    },
+    "com.google.firebase.analytics": {
+      "version": "file:firebase/com.google.firebase.analytics-14.1.0.tgz",
+      "depth": 0,
+      "source": "local-tarball",
+      "dependencies": {
+        "com.google.firebase.app": "14.1.0"
+      }
+    },
+    "com.google.firebase.app": {
+      "version": "file:firebase/com.google.firebase.app-14.1.0.tgz",
+      "depth": 0,
+      "source": "local-tarball",
+      "dependencies": {
+        "com.google.external-dependency-manager": "1.2.190"
+      }
+    },
+    "com.google.firebase.crashlytics": {
+      "version": "file:firebase/com.google.firebase.crashlytics-14.1.0.tgz",
+      "depth": 0,
+      "source": "local-tarball",
+      "dependencies": {
+        "com.google.firebase.app": "14.1.0"
+      }
+    },
+    "com.google.firebase.messaging": {
+      "version": "file:firebase/com.google.firebase.messaging-14.1.0.tgz",
+      "depth": 0,
+      "source": "local-tarball",
+      "dependencies": {
+        "com.google.firebase.app": "14.1.0"
+      }
+    },
     "com.heroiclabs.nakama-unity": {
       "version": "https://github.com/heroiclabs/nakama-unity.git?path=/Packages/Nakama#v3.22.1",
       "depth": 0,

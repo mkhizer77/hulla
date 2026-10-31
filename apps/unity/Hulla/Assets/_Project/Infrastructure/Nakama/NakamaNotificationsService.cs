@@ -8,7 +8,7 @@ using UnityEngine;
 
 namespace Hulla.Infrastructure.Nakama
 {
-    public sealed class NakamaNotificationsService : INotificationsService
+    public sealed class NakamaNotificationsService : INotificationsService, IPushRegistry
     {
         private readonly NakamaConnection _connection;
 
@@ -69,6 +69,20 @@ namespace Hulla.Infrastructure.Nakama
             };
             var body = await RpcAsync("push_settings_set", input, cancellation);
             return body.IsOk ? Result<NotificationSettings>.Ok(Read(body.Value["settings"])) : Result<NotificationSettings>.Fail(body.Error);
+        }
+
+        public async Awaitable<Result<bool>> RegisterAsync(PushDeviceInput device, CancellationToken cancellation)
+        {
+            var input = new JObject
+            {
+                ["installId"] = device.InstallId,
+                ["token"] = device.Token,
+                ["platform"] = device.Platform,
+                ["locale"] = device.Locale,
+                ["tzOffsetMinutes"] = device.TzOffsetMinutes,
+            };
+            var body = await RpcAsync("push_register", input, cancellation);
+            return body.IsOk ? Result<bool>.Ok(true) : Result<bool>.Fail(body.Error);
         }
 
         private static NotificationSettings Read(JToken? s) => new NotificationSettings

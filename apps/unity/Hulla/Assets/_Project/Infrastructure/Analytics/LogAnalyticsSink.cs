@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace Hulla.Infrastructure.Analytics
 {
-    /// <summary>Writes batches to the log in development builds; the Firebase and GameAnalytics adapters replace it (#71).</summary>
+    /// <summary>Writes batches to the log in development builds, next to Firebase (#71).</summary>
     public sealed class LogAnalyticsSink : IAnalyticsSink
     {
         public void Send(IReadOnlyList<AnalyticsEvent> batch)
