@@ -1,2 +1,4 @@
 * text=auto eol=lf
 pnpm-lock.yaml -diff
+# Videos go through Git LFS (ADR-0014).
+*.mp4 filter=lfs diff=lfs merge=lfs -text
