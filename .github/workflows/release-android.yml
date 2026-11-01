@@ -23,13 +23,13 @@ jobs:
       # LFS objects are cached so each run does not spend the LFS bandwidth quota again.
       - name: List LFS objects
         run: git lfs ls-files --long | cut -d' ' -f1 | sort > .lfs-assets-id
-      - uses: actions/cache@v4
+      - uses: actions/cache@v6
         with:
           path: .git/lfs
           key: lfs-${{ hashFiles('.lfs-assets-id') }}
           restore-keys: lfs-
       - run: git lfs pull
-      - uses: actions/cache@v4
+      - uses: actions/cache@v6
         with:
           path: apps/unity/Hulla/Library
           key: library-${{ hashFiles('apps/unity/Hulla/Packages/packages-lock.json') }}
