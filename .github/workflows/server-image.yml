@@ -21,7 +21,7 @@ jobs:
     outputs:
       dockerfile: ${{ steps.check.outputs.dockerfile }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - id: check
         run: |
           if [ -f server/nakama/Dockerfile ]; then echo "dockerfile=true"; else echo "dockerfile=false"; fi >> "$GITHUB_OUTPUT"
@@ -32,7 +32,7 @@ jobs:
     if: needs.detect.outputs.dockerfile == 'true'
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - uses: pnpm/action-setup@v4
       - uses: actions/setup-node@v7
         with:
