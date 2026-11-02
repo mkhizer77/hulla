@@ -824,9 +824,20 @@ namespace Hulla.Composition
             {
                 RememberName(name);
                 SyncContent();
+                RegisterPush();
             }
 
             return ok;
+        }
+
+        /// <summary>The phone's push token goes to the server for the signed-in player (GDD 10.10).</summary>
+        private void RegisterPush()
+        {
+            var player = _app.Sessions.Current;
+            if (player != null)
+            {
+                _app.PushRegistration?.SignedIn(player.UserId, _app.Lifetime);
+            }
         }
 
         /// <summary>Newer signed content downloads once a launch, in the background, for the next launch (ADR-0011).</summary>
@@ -866,6 +877,7 @@ namespace Hulla.Composition
             if (signedIn.IsOk)
             {
                 SyncContent();
+                RegisterPush();
                 await _app.RemoteConfig.RefreshAsync(UnityEngine.Application.version, "*", _app.Lifetime);
                 ApplyRemoteConfig();
                 await _app.Progress.RefreshAsync(LocalOffsetMinutes(), _app.Lifetime);
@@ -1965,6 +1977,7 @@ namespace Hulla.Composition
         {
             var settings = _app.Settings;
             _app.Analytics.SetConsent(settings.AnalyticsConsent == true);
+            _app.Firebase.SetConsent(settings.AnalyticsConsent == true);
             ThemeClasses.Apply(_shell.Root, settings);
             _shell.ApplySkin(settings.Skin, settings.ReduceMotion);
             _sounds.Volume = settings.SfxVolume / 100f;

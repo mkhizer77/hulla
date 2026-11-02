@@ -68,8 +68,21 @@ namespace Hulla.Composition
                 Hulla.Application.Social.PhoneNumbers.CallingCode(System.Globalization.RegionInfo.CurrentRegion.TwoLetterISORegionName));
             Achievements = new AchievementsViewModel(new NakamaAchievementsService(_connection));
             Shop = new ShopViewModel(new NakamaShopService(_connection));
-            NotificationsService = new NakamaNotificationsService(_connection);
-            NotificationSettings = new NotificationSettingsViewModel(NotificationsService);
+            var notifications = new NakamaNotificationsService(_connection);
+            NotificationsService = notifications;
+            NotificationSettings = new NotificationSettingsViewModel(notifications);
+            Analytics = new Hulla.Application.Analytics.AnalyticsClient(
+                new Hulla.Infrastructure.Analytics.FirebaseAnalyticsSink(Firebase, new Hulla.Infrastructure.Analytics.LogAnalyticsSink()));
+            var platform = Hulla.Infrastructure.Platform.PushDevices.Platform;
+            if (platform != null)
+            {
+                var push = new PushRegistration(
+                    notifications, Hulla.Infrastructure.Platform.PushDevices.InstallId(), platform, () => Hulla.Presentation.Text.Strings.Locale);
+                Firebase.TokenReceived += token => push.TokenReceived(token, _lifetime.Token);
+                PushRegistration = push;
+            }
+
+            Firebase.Start();
             Pass = new PassViewModel(new NakamaPassService(_connection));
             Missions = new MissionsViewModel(new NakamaMissionsService(_connection));
             Friends = new FriendsViewModel(social);
@@ -168,7 +181,13 @@ namespace Hulla.Composition
 
         public MissionsViewModel Missions { get; }
 
-        public Hulla.Application.Analytics.AnalyticsClient Analytics { get; } = new Hulla.Application.Analytics.AnalyticsClient(new Hulla.Infrastructure.Analytics.LogAnalyticsSink());
+        /// <summary>Analytics, Crashlytics and the push token; off until the player agrees (#71, #72).</summary>
+        public Hulla.Infrastructure.Platform.FirebaseServices Firebase { get; } = new Hulla.Infrastructure.Platform.FirebaseServices();
+
+        public Hulla.Application.Analytics.AnalyticsClient Analytics { get; }
+
+        /// <summary>Sends this phone's push token after sign-in; null where the app has no token yet.</summary>
+        public PushRegistration? PushRegistration { get; }
 
         public ProfileViewModel Profile { get; }
 

@@ -35,7 +35,7 @@
 | Voice | LiveKit Unity SDK (`io.livekit.livekit-sdk`, OpenUPM) behind `IVoiceService` | 2.1.0 | Same server and tokens as the web SDK (ADR-0024) |
 | Purchases | Unity IAP | latest stable | Store billing; receipts validated on the server |
 | Ads | AppLovin MAX Unity plugin with AdMob, Meta, Unity Ads, Mintegral, ironSource, Liftoff adapters | latest stable | Rewarded and interstitial only; no banners |
-| Analytics, crashes, config, push | Firebase Unity SDK: Analytics, Crashlytics, Remote Config, Cloud Messaging | latest stable | Free tier |
+| Analytics, crashes, push | Firebase Unity SDK: Analytics, Crashlytics, Cloud Messaging; remote config stays on our server | 14.1.0 | Free tier; off until consent (docs/runbooks/firebase-setup.md) |
 | Deep links | Our own link page on Cloudflare Pages, App Links and Universal Links | n/a | `playhulla.pages.dev/j/<code>` until the domain (docs/runbooks/links-setup.md) |
 | Tests | Unity Test Framework (edit mode, play mode), NUnit for the pure C# packages | 1.6.x | Rule-ID traceability |
 | Analyzers | Microsoft.Unity.Analyzers, Roslynator | | Warnings are errors in Domain and Application |

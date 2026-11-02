@@ -8,6 +8,34 @@ namespace Hulla.Infrastructure.Platform
     /// <summary>The device for the current platform.</summary>
     public static class PushDevices
     {
+        private const string InstallKey = "hulla.push_install";
+
+        /// <summary>"android" or "ios" for push_register; null where the app has no push token yet.</summary>
+#if UNITY_ANDROID
+        public const string? Platform = "android";
+#else
+        public const string? Platform = null;
+#endif
+
+        /// <summary>
+        /// A random id for this install's push token, apart from the sign-in device id, which is a
+        /// credential and never leaves for anything else.
+        /// </summary>
+        public static string InstallId()
+        {
+            var key = Hulla.Infrastructure.Settings.DeviceProfile.Key(InstallKey);
+            var stored = PlayerPrefs.GetString(key, "");
+            if (stored.Length > 0)
+            {
+                return stored;
+            }
+
+            var created = Guid.NewGuid().ToString("N");
+            PlayerPrefs.SetString(key, created);
+            PlayerPrefs.Save();
+            return created;
+        }
+
         /// <param name="channelName">The Android notification channel's name in settings.</param>
         public static IPushDevice Create(string channelName)
         {

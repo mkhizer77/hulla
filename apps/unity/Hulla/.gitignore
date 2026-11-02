@@ -21,3 +21,15 @@ crashlytics-build.properties
 /Assets/StreamingAssets/content.meta
 /Assets/Resources/hulla-dev-server.txt*
 /HullaSocial.local.json
+# Firebase config for this checkout and the files Firebase generates from it (docs/runbooks/firebase-setup.md)
+/Assets/Firebase/
+/Assets/Firebase.meta
+/Assets/Plugins/Android/FirebaseApp.androidlib/
+/Assets/Plugins/Android/FirebaseApp.androidlib.meta
+/Assets/Plugins/Android/FirebaseCrashlytics.androidlib/
+/Assets/Plugins/Android/FirebaseCrashlytics.androidlib.meta
+/Assets/StreamingAssets/google-services-desktop.json*
+/Assets/Plugins/Android/MessagingUnityPlayerActivity.java*
+# The External Dependency Manager copies the Firebase Android libraries here on import
+/Assets/GeneratedLocalRepo/
+/Assets/GeneratedLocalRepo.meta
