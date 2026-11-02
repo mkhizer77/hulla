@@ -24,6 +24,7 @@ import {
 } from "./lobby";
 import { emitter, replayFor, type Emitter } from "./log";
 import {
+  acceptHandAsk,
   announceRound,
   applyRoundMove,
   compactSeats,
@@ -523,6 +524,7 @@ export function tableCore<S, M, V, E, R>(
       cardCount: asked.value.cardCount,
       clientSeq,
       deadlineTs,
+      askedTs: now,
     };
     emit.public("hand_asked", {
       roundId: current.roundId,
@@ -765,23 +767,7 @@ export function tableCore<S, M, V, E, R>(
           resolveHandAsk(state, emit, false, "declined");
           return;
         }
-        const asked = host.askHand?.(current.state, ask.asker);
-        if (!asked?.ok) {
-          // The table moved on between the ask and the answer; the asker hears why.
-          resolveHandAsk(state, emit, false, "lead");
-          return;
-        }
-        const accepted = resolveHandAsk(state, emit, true, "accepted");
-        if (accepted === null) return;
-        applyRoundMove(
-          round,
-          state,
-          emit,
-          accepted.asker,
-          asked.value.move,
-          accepted.clientSeq,
-          now,
-        );
+        acceptHandAsk(round, state, emit, now);
         finishRound(state, emit, now);
         return;
       }

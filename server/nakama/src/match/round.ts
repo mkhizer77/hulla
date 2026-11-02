@@ -7,6 +7,7 @@ import {
   Xoshiro128StarStar,
 } from "@hulla/shared-ts";
 
+import { botRng, botThinkMs } from "./bots";
 import { maybeSnapshot, type Emitter } from "./log";
 import { activeSeats, emptySeries } from "./view";
 
@@ -126,6 +127,10 @@ export function startRound<S, M, V, E, R>(
     deadline: null,
     handAsk: null,
     askClosedAtMove: null,
+    botMemory:
+      deps.host.module.bot !== undefined && state.seats.some((s) => s.bot)
+        ? deps.host.module.bot.start(created.value)
+        : null,
     startedTs: now,
     result: null,
   };
@@ -297,6 +302,10 @@ export function applyRoundMove<S, M, V, E, R>(
     resolveHandAsk(state, emit, false, "lead");
   }
   round.state = applied.state;
+  const bot = deps.host.module.bot;
+  if (bot !== undefined && round.botMemory !== undefined && round.botMemory !== null) {
+    round.botMemory = bot.observe(round.botMemory, applied.events);
+  }
   round.moves.push({ seat, move, auto: clientSeq === null, clientSeq, seq: state.seq + 1 });
   const over = deps.host.module.isRoundOver(round.state);
   let result: RoundResult | null = null;
@@ -420,6 +429,12 @@ export function fireDeadlines<S, M, V, E, R>(
       resolveHandAsk(state, emit, false, "left");
     } else if (now >= ask.deadlineTs) {
       resolveHandAsk(state, emit, false, "timeout");
+    } else if (
+      target?.bot === true &&
+      now >= (ask.askedTs ?? 0) + botThinkMs(deps.config.botPlayDelayMs, "ask", 2)
+    ) {
+      // Giving up your hand means escaping, so a bot says yes, as nearly everyone would.
+      acceptHandAsk(deps, state, emit, now);
     }
   }
   for (let guard = 0; guard < state.seats.length * 2; guard += 1) {
@@ -430,7 +445,7 @@ export function fireDeadlines<S, M, V, E, R>(
     if (now < deadline.notBeforeTs) break;
     const due = deadline.seats.find((seat) => {
       const slot = state.seats[seat];
-      if (slot?.bot === true) return now >= deadline.notBeforeTs + deps.config.botPlayDelayMs;
+      if (slot?.bot === true) return now >= deadline.notBeforeTs + botDelay(deps, round, seat);
       if (slot?.autoPlay === true) return now >= deadline.autoTs;
       return deadline.humanTs !== null && now >= deadline.humanTs;
     });
@@ -443,7 +458,10 @@ export function fireDeadlines<S, M, V, E, R>(
         escalated.push(due);
       }
     }
-    const move = deps.host.module.onDeadline(round.state, due);
+    const move =
+      slot?.bot === true
+        ? botChoice(deps, round, due)
+        : deps.host.module.onDeadline(round.state, due);
     if (move === null) {
       round.deadline = { ...deadline, seats: deadline.seats.filter((s) => s !== due) };
       if (round.deadline.seats.length === 0) round.deadline = null;
@@ -452,4 +470,51 @@ export function fireDeadlines<S, M, V, E, R>(
     applyRoundMove(deps, state, emit, due, move, null, now);
   }
   return escalated;
+}
+
+/** A bot's pause before this decision (match/bots.ts), the same on every tick that asks. */
+function botDelay<S, M, V, E, R>(
+  deps: RoundDeps<S, M, V, E, R>,
+  round: RoundRuntime<S, M>,
+  seat: SeatIndex,
+): number {
+  const choices = deps.host.module.legalMoves(round.state, seat).length;
+  const key = `${round.roundId}:${String(round.moves.length)}:${String(seat)}`;
+  return botThinkMs(deps.config.botPlayDelayMs, key, choices);
+}
+
+/** The game's bot plays from the round's memory; a game without bots falls back to R44. */
+function botChoice<S, M, V, E, R>(
+  deps: RoundDeps<S, M, V, E, R>,
+  round: RoundRuntime<S, M>,
+  seat: SeatIndex,
+): M | null {
+  const bot = deps.host.module.bot;
+  if (bot === undefined) return deps.host.module.onDeadline(round.state, seat);
+  const memory = round.botMemory ?? bot.start(round.state);
+  const rng = botRng(round.seedHex, round.moves.length, seat);
+  return (
+    bot.choose(round.state, seat, memory, rng) ?? deps.host.module.onDeadline(round.state, seat)
+  );
+}
+
+/** The target said yes (R33): the asker takes the hand, if the table still allows it. */
+export function acceptHandAsk<S, M, V, E, R>(
+  deps: RoundDeps<S, M, V, E, R>,
+  state: TableState<S, M>,
+  emit: Emitter,
+  now: number,
+): void {
+  const current = state.round;
+  const ask = current?.handAsk ?? null;
+  if (current === null || ask === null) return;
+  const asked = deps.host.askHand?.(current.state, ask.asker);
+  if (!asked?.ok) {
+    // The table moved on between the ask and the answer; the asker hears why.
+    resolveHandAsk(state, emit, false, "lead");
+    return;
+  }
+  const accepted = resolveHandAsk(state, emit, true, "accepted");
+  if (accepted === null) return;
+  applyRoundMove(deps, state, emit, accepted.asker, asked.value.move, accepted.clientSeq, now);
 }

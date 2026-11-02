@@ -58,7 +58,7 @@ export interface SeatSlot {
   emotePacks: readonly string[] | null;
   /** The avatar shown for this seat (GDD 15.6): assigned when the player sits, unique at the table. */
   avatar: string | null;
-  /** A bot holds this seat (match/bots.ts): always under auto-play, never away, earns nothing. */
+  /** A bot holds this seat (match/bots.ts): it plays the game's bot policy, never away, earns nothing. */
   bot: boolean;
 }
 
@@ -229,6 +229,8 @@ export interface HandAsk {
   cardCount: number;
   clientSeq: number;
   deadlineTs: number;
+  /** When the request was made, so a bot target answers after a person's pause. */
+  askedTs?: number;
 }
 
 export interface RoundRuntime<S, M> {
@@ -253,6 +255,8 @@ export interface RoundRuntime<S, M> {
   handAsk: HandAsk | null;
   /** `moves.length` when a request was declined or lapsed: no second ask until a move is applied. */
   askClosedAtMove: number | null;
+  /** What the table has seen this round, for the game's bots; null at a table without bots. */
+  botMemory?: unknown;
 }
 
 /** Plain data only: Nakama exports it to Go and rebuilds it between callbacks. */

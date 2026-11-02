@@ -60,6 +60,19 @@ export interface SeriesState {
 }
 
 /**
+ * A bot for a seat no person holds (GDD 8). It plays from what the table has seen, folded into a
+ * memory the table core keeps between callbacks as plain data; the core never reads inside it.
+ */
+export interface BotPolicy<S, M, E> {
+  /** A fresh memory for a round that has just been dealt. */
+  start(state: S): unknown;
+  /** The memory after `events`; a game folds in only what every seat could see. */
+  observe(memory: unknown, events: readonly E[]): unknown;
+  /** The bot's move for `seat`; null when it has nothing to play. Never a hand-take. */
+  choose(state: S, seat: SeatIndex, memory: unknown, rng: Rng): M | null;
+}
+
+/**
  * The server-side contract every game implements and only the table core consumes
  * (ARCHITECTURE 7.1). Pure functions over immutable state; the only randomness is the injected
  * `Rng`; there is no clock (ADR-0020); nothing throws for bad input.
@@ -78,6 +91,8 @@ export interface GameModule<S, M, V, E, R> {
   applyMove(state: S, seat: SeatIndex, move: M, rng: Rng): ApplyResult<S, E>;
   /** The R44 move for the acting seat; null when that seat has nothing to play (total, no throw). */
   onDeadline(state: S, seat: SeatIndex): M | null;
+  /** Absent for a game without bots; bot seats then play the R44 policy. */
+  readonly bot?: BotPolicy<S, M, E>;
   redact(state: S, viewer: Viewer): V;
   isRoundOver(state: S): boolean;
   results(state: S): RoundResult;

@@ -212,7 +212,7 @@ export interface GameModule<S, M, V, R extends RuleSet = RuleSet> {
   results(state: S): RoundResult;
   seriesUpdate(series: SeriesState, result: RoundResult): SeriesState;
 
-  botPolicy?(view: V, tier: BotTier, rng: Rng): M;              // optional, GDD D7
+  bot?: BotPolicy<S, M, E>;                  // optional, GDD 8: start / observe(events) / choose(state, seat, memory, rng)
   quickChatContext?(events: readonly GameEvent[]): readonly QuickChatContext[];
 }
 
@@ -220,7 +220,7 @@ export type ApplyResult<S> =
   | { ok: true; state: S; events: readonly GameEvent[] }
   | { ok: false; error: RuleError };        // code from the error catalogue, never a thrown exception
 ```
-`rulesSchema` covers only the toggles that change legality or outcomes; table settings such as timers, the loser's title, card-count display and the memory assist are table-core configuration delivered through the same preset files. Rules of the contract [MUST]: pure functions; no IO; no clock at all (ADR-0020); no randomness except through the injected `Rng`; state is never mutated; `redact` is total (works for every state and viewer, including spectators); `onDeadline` returns a legal move for any seat that has one and null otherwise; `legalMoves` and `applyMove` agree (a move is legal if and only if `applyMove` returns `ok`); a replay needs only the seed and the move log.
+`rulesSchema` covers only the toggles that change legality or outcomes; table settings such as timers, the loser's title, card-count display and the memory assist are table-core configuration delivered through the same preset files. Rules of the contract [MUST]: pure functions; no IO; no clock at all (ADR-0020); no randomness except through the injected `Rng`; state is never mutated; `redact` is total (works for every state and viewer, including spectators); `onDeadline` returns a legal move for any seat that has one and null otherwise; a `bot` folds only public events into its memory, which the table core stores as plain data per round, and reads no hand but its own seat's (its tests redeal the other hands and expect the same move); `legalMoves` and `applyMove` agree (a move is legal if and only if `applyMove` returns `ok`); a replay needs only the seed and the move log.
 
 ### 7.2 Table core
 `TableCore` is the generic host for any module. It owns seats and teams, presences and reconnection tokens, phase deadlines and the tick clock, the event log and snapshots, redaction dispatch, idempotency, the rematch loop and series state, and the bridge to shell services (rewards, stats, missions) at round end.
@@ -549,7 +549,7 @@ Local: `docker compose` with Nakama and Postgres, seeded content, hot-reloaded b
 - **Rung**: exercises teams, anticlockwise direction, phases and a persistent centre pile; no table-core changes expected (GDD §18.7).
 - **Party primitives**: commit-reveal for hidden inputs (`sha256(nonce ‖ value)`), vote tallies, judge roles and text inputs are table-core features built before the party pack, not inside any one module.
 - **Real-time track (Carrom)**: a separate match handler kind with a deterministic physics step and one-shot turns; shares auth, tables, social and economy; designed when wave 8 is scheduled.
-- **Bots and offline play**: `botPolicy` hook and `LocalMatchHost` are reserved; the auto-play policy covers absences until then (ADR-0010). The C# engine mirror is built with offline play (ADR-0019).
+- **Bots and offline play**: Quick Play bots for a lone player use the module's `bot` policy (Thulla's in `packages/rules-engine/src/thulla/bot.ts`); absent and disconnected people stay on the R44 auto-play policy. `LocalMatchHost` is reserved (ADR-0010). The C# engine mirror is built with offline play (ADR-0019).
 
 ## 17. Decision records
 See `docs/adr/README.md`. Decisions referenced here: ADR-0001 (monorepo), ADR-0002 (Nakama), ADR-0003 (dual engines), ADR-0004 (layering and enforcement), ADR-0005 (schema-first protocol), ADR-0006 (event log), ADR-0007 (UI Toolkit), ADR-0008 (hand-wired composition, runtime binding, Awaitable), ADR-0009 (determinism and fairness), ADR-0010 (bots deferred), ADR-0011 (content as data), ADR-0012 (voice behind an interface), ADR-0024 (voice on self-hosted LiveKit), ADR-0013 (hosting and cost plan), ADR-0014 (licence), ADR-0015 (CI and release policy), ADR-0016 (Unity version), ADR-0017 (shared stack with the web client), ADR-0018 (text chat on Nakama channels), ADR-0019 (C# mirror deferred), ADR-0020 (no clock in engines), ADR-0021 (JSON Schema draft-07).
@@ -559,7 +559,7 @@ See `docs/adr/README.md`. Decisions referenced here: ADR-0001 (monorepo), ADR-00
 |---|---|
 | §6 Rules specification | `packages/rules-engine/src/thulla`, `packages/test-vectors/thulla` (`packages/rules-engine-cs/Thulla` later, ADR-0019) |
 | §7, §9 Modes, tables, matchmaking | `server/nakama/src/match/TableCore.ts`, `rpc/table_*.ts`, matchmaker properties |
-| §8 AI players [LATER] | `botPolicy` hook, `BotRunner` placeholder |
+| §8 AI players | `bot` policy on the module (Thulla: Regular tier), bot seats in the table core |
 | §10, §11 Social and communication | Nakama friends, groups, channels; `CommsService`, `VoiceService`, filter hook |
 | §12, §13 Progression and economy | `services/progression`, `services/wallet`, catalog content, IAP hooks |
 | §14–17 UX, art, audio, onboarding | `Hulla.Presentation`, table kit, `Hulla.Games.Thulla` tutorial |

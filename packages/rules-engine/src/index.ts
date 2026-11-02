@@ -1,5 +1,6 @@
 export type {
   ApplyResult,
+  BotPolicy,
   CreateRoundInput,
   DeadlinePolicy,
   GameId,

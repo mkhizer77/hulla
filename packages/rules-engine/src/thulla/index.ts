@@ -41,6 +41,10 @@ export {
   takeHandError,
 } from "./engine";
 export { autoPlayMove } from "./autoplay";
+export type { BotTuning, ScoredCard } from "./bot";
+export { REGULAR_BOT, botMove, scoreCards } from "./bot";
+export type { ThullaBotMemory } from "./bot-memory";
+export { asBotMemory, botMemory, observeBotMemory } from "./bot-memory";
 export { CONFIRM_NODE_CAP, cardsInPlay, forcedBhabhi, shouldSearch } from "./confirm";
 export type { ThullaEvent } from "./events";
 export { createThullaRound, fairDealCommitment, nextDealer, roundStartedEvent } from "./deal";
@@ -49,6 +53,6 @@ export { redact, redactEvent } from "./view";
 export type { ThullaRoundResult } from "./results";
 export { createSeries, results, seriesUpdate } from "./results";
 export type { ThullaModule } from "./module";
-export { THULLA_PHASES, onDeadline, thullaModule } from "./module";
+export { THULLA_PHASES, onDeadline, thullaBot, thullaModule } from "./module";
 export type { ThullaSetup } from "./setup";
 export { stateFromSetup } from "./setup";
