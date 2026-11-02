@@ -1,0 +1,24 @@
+# Delivers Prometheus alerts to the owner's phone (GDD 20.13, docs/runbooks/observability.md).
+# The webhook URL is a secret: compose writes HULLA_ALERT_WEBHOOK_URL into the file below at start.
+# An ntfy topic URL with ?template=alertmanager gives a readable push on the ntfy phone app.
+route:
+  receiver: phone
+  group_by: [alertname]
+  group_wait: 30s
+  group_interval: 5m
+  repeat_interval: 4h
+  routes:
+    # Warnings wait for waking hours in practice: they repeat less often and never page twice an hour.
+    - matchers: ['severity="warn"']
+      receiver: phone
+      repeat_interval: 12h
+inhibit_rules:
+  # When Nakama is down, everything that depends on its metrics is noise.
+  - source_matchers: ['alertname=~"NakamaDown|NakamaUnreachable"']
+    target_matchers: ['alertname=~"Hulla.*"']
+receivers:
+  - name: phone
+    webhook_configs:
+      - url_file: /tmp/alert-webhook-url
+        send_resolved: true
+        max_alerts: 10

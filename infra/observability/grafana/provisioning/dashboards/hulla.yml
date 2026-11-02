@@ -4,4 +4,4 @@ providers:
     folder: Hulla
     type: file
     options:
-      path: /var/lib/grafana/dashboards
+      path: /etc/grafana/dashboards

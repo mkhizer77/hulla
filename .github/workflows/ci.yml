@@ -103,10 +103,26 @@ jobs:
         run: pnpm --filter @hulla/server test:integration
         env:
           HULLA_NAKAMA_HOST: 127.0.0.1
+      - name: Observability configs, alert rules and their tests
+        run: bash infra/observability/check.sh
+      - name: Prometheus sees the round and the healthcheck
+        working-directory: server/nakama
+        run: |
+          docker compose -f compose.yml -f ../../infra/observability/compose.yml up -d prometheus blackbox alertmanager
+          q() { curl -sf "http://127.0.0.1:9090/api/v1/query" --data-urlencode "query=$1" | jq -r '.data.result[0].value[1] // "0"'; }
+          for i in $(seq 1 40); do
+            rounds=$(q 'sum(nakama_custom_hulla_rounds_started)' || true)
+            health=$(q 'min(probe_success{job="nakama_health"})' || true)
+            rounds=${rounds:-0}
+            echo "rounds=$rounds health=$health"
+            if [ "$rounds" != "0" ] && [ "$health" = "1" ]; then exit 0; fi
+            sleep 5
+          done
+          exit 1
       - name: Logs and shutdown
         if: always()
         working-directory: server/nakama
-        run: docker compose logs nakama | tail -40; docker compose down -v
+        run: docker compose logs nakama | tail -40; docker compose -f compose.yml -f ../../infra/observability/compose.yml down -v
 
   csharp:
     name: C# packages

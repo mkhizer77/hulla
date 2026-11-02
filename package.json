@@ -23,7 +23,8 @@
     "content:manifest": "pnpm -r --if-present run content:manifest",
     "content:sign": "pnpm --filter @hulla/content-sign run content:sign",
     "equivalence": "pnpm -r --if-present run equivalence",
-    "format": "prettier --write ."
+    "format": "prettier --write .",
+    "observability:check": "bash infra/observability/check.sh"
   },
   "devDependencies": {
     "@apidevtools/json-schema-ref-parser": "^16.0.3",
