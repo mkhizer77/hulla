@@ -26,9 +26,32 @@ namespace Hulla.Infrastructure.Social
         private static volatile string? _error;
         private static volatile string? _detail;
 
+        private static bool _usageConsent;
+
         public NativeSocialSignIn(SocialConfig config)
         {
             _config = config;
+        }
+
+        /// <summary>
+        /// Meta's automatic app events and advertising id follow the usage-data consent (GDD 23.6). The build
+        /// writes both off (SocialSetup); they can only change once Facebook has started for a sign-in.
+        /// </summary>
+        public static void SetUsageConsent(bool consented)
+        {
+            _usageConsent = consented;
+            ApplyUsageConsent();
+        }
+
+        private static void ApplyUsageConsent()
+        {
+#if (UNITY_ANDROID || UNITY_IOS) && !UNITY_EDITOR
+            if (Facebook.Unity.FB.IsInitialized)
+            {
+                Facebook.Unity.FB.Mobile.SetAutoLogAppEventsEnabled(_usageConsent);
+                Facebook.Unity.FB.Mobile.SetAdvertiserIDCollectionEnabled(_usageConsent);
+            }
+#endif
         }
 
         public bool Supports(SocialProvider provider)
@@ -168,6 +191,8 @@ namespace Hulla.Infrastructure.Social
                 {
                     return ready;
                 }
+
+                ApplyUsageConsent();
             }
 
             Begin();
