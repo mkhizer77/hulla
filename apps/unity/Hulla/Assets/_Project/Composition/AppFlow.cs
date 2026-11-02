@@ -1978,6 +1978,7 @@ namespace Hulla.Composition
             var settings = _app.Settings;
             _app.Analytics.SetConsent(settings.AnalyticsConsent == true);
             _app.Firebase.SetConsent(settings.AnalyticsConsent == true);
+            Hulla.Infrastructure.Social.NativeSocialSignIn.SetUsageConsent(settings.AnalyticsConsent == true);
             ThemeClasses.Apply(_shell.Root, settings);
             _shell.ApplySkin(settings.Skin, settings.ReduceMotion);
             _sounds.Volume = settings.SfxVolume / 100f;

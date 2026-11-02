@@ -77,6 +77,10 @@ namespace Hulla.BuildTools
 
             FacebookSettings.ClientTokens = new List<string> { clientToken };
             FacebookSettings.AppLabels = new List<string> { "Hulla" };
+            // Meta's automatic app events and the advertising id start off; the usage-data consent turns
+            // them on once Facebook has started for a sign-in (GDD 23.6, NativeSocialSignIn.SetUsageConsent).
+            FacebookSettings.AutoLogAppEventsEnabled = false;
+            FacebookSettings.AdvertiserIDCollectionEnabled = false;
             EditorUtility.SetDirty(settings);
             AssetDatabase.SaveAssets();
             Facebook.Unity.Editor.ManifestMod.GenerateManifest();
