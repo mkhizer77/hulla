@@ -95,6 +95,8 @@ export function buildRoot(opcodes: readonly OpcodeEntry[]): JsonSchema {
     tableInviteNotice: {
       $ref: `${PROTOCOL_BASE}shell/notifications.json#/definitions/table_invite`,
     },
+    phoneStart: { $ref: `${PROTOCOL_BASE}shell/phone.json#/definitions/phone_start` },
+    phoneStarted: { $ref: `${PROTOCOL_BASE}shell/phone.json#/definitions/phone_started` },
   };
   for (const entry of opcodes) {
     properties[`${camel(entry.type)}Payload`] = { $ref: entryRef(entry) };
