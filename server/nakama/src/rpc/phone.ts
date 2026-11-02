@@ -1,14 +1,20 @@
+import { createChecks } from "@hulla/protocol/generated";
 import { ErrorCodes, ruleError } from "@hulla/shared-ts";
 
 import { log } from "../infra/log";
 import { metrics, METRICS } from "../infra/metrics";
 import { nkConfigStore, resolveFlag } from "../services/config";
 import {
+  codeFromUuid,
+  NO_PROVIDERS,
+  providersFromEnv,
+  type OtpChannel,
+} from "../services/otp_providers";
+import {
   CUSTOM_ID_PREFIX,
   EMPTY_PHONE,
   OTP_COLLECTION,
   PHONE_TOKENS_COLLECTION,
-  providerFromEnv,
   redeemToken,
   startOtp,
   SYSTEM_USER_ID,
@@ -107,18 +113,21 @@ export function nkOtpPorts(ctx: nkruntime.Context, nk: nkruntime.Nakama): OtpPor
     region: env["HULLA_REGION"] ?? "local",
     cohort: "",
   });
+  const http = {
+    request: (url: string, method: string, headers: Record<string, string>, body: string) => {
+      const res = nk.httpRequest(url, method as nkruntime.RequestMethod, headers, body);
+      return { code: res.code, body: res.body };
+    },
+    base64: (text: string) => nk.base64Encode(text),
+  };
+  const codes = {
+    newCode: () => codeFromUuid(nk.uuidv4()),
+    hashCode: (phone: string, code: string) =>
+      nk.sha256Hash(`${pepper ?? ""}:code:${phone}:${code}`),
+  };
   return {
     store: nkOtpStore(nk),
-    provider:
-      pepper === null
-        ? null
-        : providerFromEnv(env, {
-            request: (url, method, headers, body) => {
-              const res = nk.httpRequest(url, method as nkruntime.RequestMethod, headers, body);
-              return { code: res.code, body: res.body };
-            },
-            base64: (text) => nk.base64Encode(text),
-          }),
+    providers: pepper === null ? NO_PROVIDERS : providersFromEnv(env, http, codes),
     hashPhone: (phone) => nk.sha256Hash(`${pepper ?? ""}:${phone}`),
     linkedAccount(customId) {
       try {
@@ -135,15 +144,21 @@ export function nkOtpPorts(ctx: nkruntime.Context, nk: nkruntime.Nakama): OtpPor
     },
     newToken: () => nk.uuidv4(),
     count(metric, tags, cents) {
-      const name =
-        metric === "sent"
-          ? METRICS.otpSent
-          : metric === "verified"
-            ? METRICS.otpVerified
-            : METRICS.otpRefused;
+      const name = {
+        sent: METRICS.otpSent,
+        failed: METRICS.otpSendFailed,
+        verified: METRICS.otpVerified,
+        refused: METRICS.otpRefused,
+      }[metric];
       metrics.count(nk, name, tags);
       if (cents !== undefined && cents > 0) {
-        metrics.count(nk, METRICS.otpCostCents, { country: tags["country"] ?? "other" }, cents);
+        // Counters take whole numbers, and a WhatsApp code costs a fraction of a cent.
+        metrics.count(
+          nk,
+          METRICS.otpCostMicroUsd,
+          { country: tags["country"] ?? "other", channel: tags["channel"] ?? "sms" },
+          Math.round(cents * 10_000),
+        );
       }
     },
     dailyBudget: typeof budget === "number" ? budget : DEFAULT_DAILY_BUDGET,
@@ -153,7 +168,10 @@ export function nkOtpPorts(ctx: nkruntime.Context, nk: nkruntime.Nakama): OtpPor
 const unauthorised = (): string =>
   JSON.stringify({ ok: false, error: ruleError(ErrorCodes.table.notAuthorised) });
 
-/** `{ phone }`: sends a code to a number for the signed-in account (GDD 10.2). */
+/**
+ * `{ phone, channel? }`: sends a code to a number for the signed-in account (GDD 10.2), on
+ * WhatsApp first unless the channel is "sms"; the answer says which channel was used.
+ */
 export function rpcPhoneStart(
   ctx: nkruntime.Context,
   logger: nkruntime.Logger,
@@ -162,12 +180,20 @@ export function rpcPhoneStart(
 ): string {
   const userId = ctx.userId ?? "";
   if (userId === "") return unauthorised();
+  const input = parse(payload);
+  if (!createChecks().phoneStart(input)) {
+    return JSON.stringify({
+      ok: false,
+      error: ruleError(ErrorCodes.table.invalidPayload, { reason: "schema" }),
+    });
+  }
   const response = startOtp(
     nkOtpPorts(ctx, nk),
     userId,
     ctx.clientIp ?? "",
-    parse(payload)["phone"],
+    input["phone"],
     Date.now(),
+    input["channel"] as OtpChannel | undefined,
   );
   if (!response.ok)
     log.info(logger, "otp refused", { reason: String(response.error.detail?.["reason"]) });

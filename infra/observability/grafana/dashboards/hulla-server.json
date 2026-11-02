@@ -606,7 +606,7 @@
     {
       "id": 11,
       "type": "timeseries",
-      "title": "Phone codes sent per hour, by country",
+      "title": "Phone codes sent per hour, by country and channel",
       "gridPos": {
         "x": 0,
         "y": 52,
@@ -623,9 +623,14 @@
       },
       "targets": [
         {
-          "expr": "sum by (country) (increase(nakama_custom_hulla_otp_sent[1h]))",
-          "legendFormat": "{{country}}",
+          "expr": "sum by (country, channel) (increase(nakama_custom_hulla_otp_sent[1h]))",
+          "legendFormat": "{{country}} {{channel}}",
           "refId": "A"
+        },
+        {
+          "expr": "sum by (channel, reason) (increase(nakama_custom_hulla_otp_send_failed[1h]))",
+          "legendFormat": "failed {{channel}} {{reason}}",
+          "refId": "B"
         }
       ]
     },
@@ -649,14 +654,19 @@
       },
       "targets": [
         {
-          "expr": "sum(increase(nakama_custom_hulla_otp_cost_cents[1d])) / 100",
+          "expr": "sum(increase(nakama_custom_hulla_otp_cost_microusd[1d])) / 1e6",
           "legendFormat": "all",
           "refId": "A"
         },
         {
-          "expr": "sum by (country) (increase(nakama_custom_hulla_otp_cost_cents[1d])) / 100",
+          "expr": "sum by (country) (increase(nakama_custom_hulla_otp_cost_microusd[1d])) / 1e6",
           "legendFormat": "{{country}}",
           "refId": "B"
+        },
+        {
+          "expr": "sum by (channel) (increase(nakama_custom_hulla_otp_cost_microusd[1d])) / 1e6",
+          "legendFormat": "{{channel}}",
+          "refId": "C"
         }
       ]
     },
