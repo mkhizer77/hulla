@@ -28,3 +28,6 @@ pnpm lint
 
 ## Boundaries
 Depends on `@hulla/shared-ts` and nothing else. No Node built-ins, no npm runtime packages, no `Date`, no `Math.random`; ESLint and dependency-cruiser enforce it outside `__tests__`. Tests name the GDD rule IDs they cover.
+
+## Bots
+Bots (GDD 8) live in `thulla/bot.ts` and `thulla/bot-memory.ts`, apart from the R44 policy, which still covers timeouts and absent players. The memory folds the public events of a round: the suits each seat showed it lacks and the cards each seat picked up. For a decision the bot deals the unseen cards many times in ways that fit that memory and the hand counts, plays the rest of the trick out with a plain human reply for the others, and keeps the card that leaves it with the fewest and lowest cards without picking up. With two players left and twelve or fewer cards it searches the endgame exactly (600 positions at most). `REGULAR_BOT` holds the weights; a close second-best card is played now and then so it does not feel like a machine. In self-play one bot against three seats on the R44 policy is the Bhabhi in about 2% of rounds; in Nakama's runtime a decision takes about 18 ms on average and at most about 130 ms.

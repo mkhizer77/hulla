@@ -1,4 +1,6 @@
 import { autoPlayMove } from "./autoplay";
+import { botMove } from "./bot";
+import { asBotMemory, botMemory, observeBotMemory } from "./bot-memory";
 import { createThullaRound } from "./deal";
 import { applyMove, currentPhase, isRoundOver, legalMoves } from "./engine";
 import { results, seriesUpdate } from "./results";
@@ -8,7 +10,7 @@ import { redact, type ThullaView } from "./view";
 
 import type { ThullaEvent } from "./events";
 import type { ThullaMove } from "./moves";
-import type { GameModule, PhaseSpec, RoundResult, SeriesState } from "../contract";
+import type { BotPolicy, GameModule, PhaseSpec, RoundResult, SeriesState } from "../contract";
 import type { Rng, SeatIndex } from "@hulla/shared-ts";
 
 /** R43: the opening trick is one simultaneous window; every later phase is a per-seat timer. */
@@ -22,6 +24,16 @@ export const THULLA_PHASES: readonly PhaseSpec[] = [
 export function onDeadline(state: ThullaState, seat: SeatIndex): ThullaMove | null {
   return autoPlayMove(state, seat);
 }
+
+/** GDD 8: bots play from public facts only; a memory that does not read back starts over. */
+export const thullaBot: BotPolicy<ThullaState, ThullaMove, ThullaEvent> = {
+  start: (state) => botMemory(state.seatCount),
+  observe: (memory, events) => {
+    const known = asBotMemory(memory);
+    return known === null ? memory : observeBotMemory(known, events);
+  },
+  choose: (state, seat, memory, rng) => botMove(state, seat, asBotMemory(memory), rng),
+};
 
 export type ThullaModule = GameModule<
   ThullaState,
@@ -44,6 +56,7 @@ export const thullaModule: ThullaModule = {
   legalMoves,
   applyMove,
   onDeadline,
+  bot: thullaBot,
   redact,
   isRoundOver,
   results: (state): RoundResult => {

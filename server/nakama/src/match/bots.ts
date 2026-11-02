@@ -1,3 +1,5 @@
+import { utf8Encode, Xoshiro128StarStar, type Rng } from "@hulla/shared-ts";
+
 import { pickSeatAvatar } from "./avatars";
 import { emptySlot } from "./lobby";
 
@@ -5,9 +7,10 @@ import type { SeatSlot } from "./types";
 
 /**
  * Bots for a lone Quick Play player (owner decision, 29 Oct; GDD D7, 12.x): after 30 s without other
- * players the client asks for a table with up to three bots. A bot is a seat the auto-play policy (R44)
- * always holds: ready, present, never away, its name marked as a bot on every client. Bots earn
- * nothing and are left out of stats, rewards and recent players (the round record lists them as empty).
+ * players the client asks for a table with up to three bots. A bot seat is ready, present and never
+ * away, its name marked as a bot on every client. It plays the game's bot policy (GDD 8) from what
+ * the table has seen, or the R44 policy for a game without one. Bots earn nothing and are left out
+ * of stats, rewards and recent players (the round record lists them as empty).
  */
 export const MAX_BOTS = 3;
 
@@ -70,4 +73,32 @@ export function renameClashingBots(seats: readonly SeatSlot[], name: string | nu
     const taken = new Set(seats.map((s) => s.displayName?.toLowerCase() ?? ""));
     slot.displayName = BOT_NAMES.find((n) => !taken.has(n.toLowerCase())) ?? slot.displayName;
   }
+}
+
+/**
+ * How long a bot thinks before it plays (GDD 8.3): around the configured delay, quicker for a lone
+ * legal card, a little longer the more it can choose from. `key` names the decision, so the pause
+ * stays the same on every tick that checks it.
+ */
+export function botThinkMs(baseMs: number, key: string, choices: number): number {
+  if (choices <= 1) return Math.round(baseMs * 0.5);
+  const spread = 0.6 + 0.6 * unit(key);
+  return Math.round(baseMs * spread + 40 * Math.min(choices, 8));
+}
+
+/** The bot's own randomness for one decision, apart from the round's deal and draws (ADR-0009). */
+export function botRng(seedHex: string, moveCount: number, seat: number): Rng {
+  return Xoshiro128StarStar.fromSeed(
+    utf8Encode(`bot:${seedHex}:${String(moveCount)}:${String(seat)}`),
+  );
+}
+
+/** A number in [0, 1) from `key` (FNV-1a). */
+function unit(key: string): number {
+  let hash = 0x811c9dc5;
+  for (let i = 0; i < key.length; i += 1) {
+    hash ^= key.charCodeAt(i);
+    hash = Math.imul(hash, 0x01000193) >>> 0;
+  }
+  return hash / 0x100000000;
 }
