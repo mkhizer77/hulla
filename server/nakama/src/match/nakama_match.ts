@@ -320,8 +320,9 @@ function logAnalytics<S, M>(
   state: TableState<S, M>,
   batch: Batch,
   now: number,
-): void {
-  for (const event of analyticsFromBatch(state, batch, now)) {
+): TableEvent[] {
+  const events = analyticsFromBatch(state, batch, now);
+  for (const event of events) {
     recordMetric(nk, state.gameId, event);
     emitAnalyticsSafely(logger, event.name, event.params, {
       gameId: state.gameId,
@@ -331,6 +332,25 @@ function logAnalytics<S, M>(
       ...(event.seat === null ? {} : { seat: event.seat }),
     });
   }
+  return events;
+}
+
+/**
+ * The server's share of a move's round trip (GDD 20.13): from Nakama receiving the message to the
+ * broadcast that answers it, so the wait for the next tick counts. Auto-play is not a player's move.
+ */
+function recordMoveLatency(
+  nk: nkruntime.Nakama,
+  gameId: string,
+  message: nkruntime.MatchMessage,
+  events: readonly TableEvent[],
+): void {
+  if (!(message.receiveTimeMs > 0)) return;
+  const played = events.some(
+    (e) => e.name === "move_played" && (e.params as { auto?: unknown }).auto !== true,
+  );
+  if (!played) return;
+  metrics.time(nk, METRICS.moveLatency, { game: gameId }, Date.now() - message.receiveTimeMs);
 }
 
 function send<S, M>(
@@ -660,7 +680,7 @@ export function tableMatchHandler<S, M, V, E, R>(
           );
           send(dispatcher, state, batch, senders);
           leaveVoice(ctx, logger, nk, batch, now);
-          logAnalytics(logger, nk, state, batch, now);
+          recordMoveLatency(nk, state.gameId, message, logAnalytics(logger, nk, state, batch, now));
           end = end || batch.end;
         } catch (error: unknown) {
           metrics.count(nk, METRICS.messagesDropped, { game: state.gameId });
