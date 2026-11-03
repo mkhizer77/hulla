@@ -10701,3 +10701,30 @@
     display: none;
 }
 
+
+/* ==================== Watching sheet: whose friend and Remove (GDD 7.7) ==================== */
+
+.skin--basant .watch-sheet .watch-row__who {
+    flex-grow: 1;
+    flex-shrink: 1;
+}
+
+.skin--basant .watch-sheet .watch-row__friend {
+    font-size: 36px;
+    color: rgb(110, 70, 50);
+}
+
+
+.skin--basant .watch-sheet .watch-row__friend {
+    white-space: normal;
+}
+
+.skin--basant .watch-sheet .watch-row__seat:disabled {
+    opacity: 1;
+    color: rgb(110, 70, 50);
+    border-color: rgb(110, 70, 50);
+}
+
+.skin--basant .watch-sheet .watch-row__tag {
+    background-color: rgb(30, 112, 42);
+}

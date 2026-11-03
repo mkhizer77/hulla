@@ -1391,6 +1391,18 @@ namespace Hulla.Composition
             }
         }
 
+        /// <summary>The host removed this watcher (GDD 7.7): back on Home with the reason in plain words.</summary>
+        private async void ShowRemovedByHost()
+        {
+            var text = UiText.RemovedByHost;
+            _shell.SetBanner(text);
+            await Awaitable.WaitForSecondsAsync(5f);
+            if (UnityEngine.UIElements.UQueryExtensions.Q<UnityEngine.UIElements.Label>(_shell.Root, "shell-banner")?.text == text)
+            {
+                _shell.SetBanner(null);
+            }
+        }
+
         private void FollowModel()
         {
             var client = _app.Session?.Table?.Client;
@@ -1403,6 +1415,13 @@ namespace Hulla.Composition
             if (model.Closed)
             {
                 Leave();
+                return;
+            }
+
+            if (model.RemovedByHost)
+            {
+                Leave();
+                ShowRemovedByHost();
                 return;
             }
 
@@ -1483,6 +1502,7 @@ namespace Hulla.Composition
             _tableView.UseShare(() => AskShareRatio(client));
             _tableView.UseFairness(ExplainFairDeal);
             _tableView.SeatSpectator = client.SeatSpectator;
+            _tableView.RemoveSpectator = client.RemoveSpectator;
             if (client.Model.IsPrivate)
             {
                 _tableView.UseChangeRules(() => OpenRulesEditor(client));

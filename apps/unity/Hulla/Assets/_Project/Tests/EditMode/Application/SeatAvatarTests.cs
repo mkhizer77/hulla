@@ -34,6 +34,17 @@ namespace Hulla.Application.Tests
         }
 
         [Test]
+        public void AWatcherRemovedByTheHostKnowsItAndOthersDoNot()
+        {
+            var model = new TableModel(Messages.Me);
+            model.Apply(Messages.TableState(1, avatars: new List<string> { "a03", "a01", "a02", "a04" }));
+            model.Apply(new ServerMessage(MessageTypes.Presence, 2, new Presence { Seat = null, PlayerId = "someone-else", Status = Status.Removed }));
+            Assert.IsFalse(model.RemovedByHost, "another watcher's removal");
+            model.Apply(new ServerMessage(MessageTypes.Presence, 3, new Presence { Seat = null, PlayerId = Messages.Me, Status = Status.Removed }));
+            Assert.IsTrue(model.RemovedByHost);
+        }
+
+        [Test]
         public void ANewOccupantWaitsForTheTableStateForTheirs()
         {
             var model = new TableModel(Messages.Me);

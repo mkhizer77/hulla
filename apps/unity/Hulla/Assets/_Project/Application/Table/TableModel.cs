@@ -62,6 +62,9 @@ namespace Hulla.Application.Table
         /// <summary>Who is watching, and who takes a seat at the next round (GDD 7.7, 9.10).</summary>
         public IReadOnlyList<SpectatorInfo> Spectators => _spectators;
 
+        /// <summary>The host removed this player from the watchers; the table is over for them.</summary>
+        public bool RemovedByHost { get; private set; }
+
         /// <summary>True when this client watches rather than sits.</summary>
         public bool Spectating => MySeat == null && Seats.Count > 0;
 
@@ -291,7 +294,7 @@ namespace Hulla.Application.Table
             {
                 foreach (var watcher in state.Spectators)
                 {
-                    _spectators.Add(new SpectatorInfo(watcher.UserId, watcher.DisplayName ?? "?", watcher.SeatNext));
+                    _spectators.Add(new SpectatorInfo(watcher.UserId, watcher.DisplayName ?? "?", watcher.SeatNext, watcher.FriendOfSeat));
                 }
             }
             RematchDeadlineTs = state.Rematch?.DeadlineTs;
@@ -551,6 +554,12 @@ namespace Hulla.Application.Table
 
         private void ApplyPresence(Presence presence)
         {
+            // The host took this player off the watchers (GDD 7.7); the socket drops right after.
+            if (presence.Status == Hulla.Protocol.Status.Removed && presence.PlayerId == UserId)
+            {
+                RemovedByHost = true;
+            }
+
             if (presence.Seat == null)
             {
                 return;
