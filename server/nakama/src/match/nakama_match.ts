@@ -39,6 +39,7 @@ import type {
   CreateTableParams,
   GameHost,
   Persistence,
+  PresenceRecord,
   RoundRecord,
   TableConfig,
   TableState,
@@ -274,7 +275,10 @@ function presenceFor<S, M>(
   const match = known.find((p) => p.sessionId === sessionId);
   if (match !== undefined) return match;
   const record = state.presences[sessionId];
-  if (record === undefined) return null;
+  return record === undefined ? null : asNkPresence(record);
+}
+
+function asNkPresence(record: PresenceRecord): nkruntime.Presence {
   return {
     sessionId: record.sessionId,
     userId: record.userId,
@@ -468,9 +472,9 @@ export function tableMatchHandler<S, M, V, E, R>(
       ids: { uuid: () => nk.uuidv4() },
       persist: storagePersistence(nk, logger),
       social: {
-        mayWatch: (userId, seatedIds) => {
+        friendsAmong: (userId, playerIds) => {
           const friends = nkFriendIds(nk, userId);
-          return seatedIds.some((id) => friends.includes(id));
+          return playerIds.filter((id) => friends.includes(id));
         },
       },
       names: {
@@ -671,6 +675,9 @@ export function tableMatchHandler<S, M, V, E, R>(
         if (typeByOpcode[message.opCode] === "start_round")
           refreshCosmetics(nk, logger, state, null);
         try {
+          // A kicked player or removed watcher leaves the state in the same callback; their
+          // socket must still be found to drop it.
+          const present = Object.values(state.presences).map(asNkPresence);
           const batch = core.inbound(
             state,
             message.sender.sessionId,
@@ -678,7 +685,7 @@ export function tableMatchHandler<S, M, V, E, R>(
             now,
             typeByOpcode[message.opCode],
           );
-          send(dispatcher, state, batch, senders);
+          send(dispatcher, state, batch, [...senders, ...present]);
           leaveVoice(ctx, logger, nk, batch, now);
           recordMoveLatency(nk, state.gameId, message, logAnalytics(logger, nk, state, batch, now));
           end = end || batch.end;

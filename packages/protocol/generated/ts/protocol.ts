@@ -54,6 +54,7 @@ export interface Protocol {
   pingPayload?: Ping;
   seatSpectatorPayload?: SeatSpectator;
   setMicPayload?: SetMic;
+  removeSpectatorPayload?: RemoveSpectator;
   chatTextPayload?: ChatText;
   quickChatPayload?: QuickChat;
   emotePayload?: Emote;
@@ -422,6 +423,15 @@ export interface SeatSpectator {
 export interface SetMic {
   mic: boolean;
 }
+/**
+ * Host only: removes a watcher from the table; they cannot come back to it (GDD 7.7, 9.9)
+ */
+export interface RemoveSpectator {
+  /**
+   * Server-issued; no length constraint because nullable constrained strings crash quicktype's generated converter
+   */
+  userId: string;
+}
 export interface ChatText {
   text: string;
 }
@@ -553,6 +563,10 @@ export interface Spectator {
   userId: string;
   displayName: string | null;
   seatNext: boolean;
+  /**
+   * The lowest seat whose player the watcher is a friend of (GDD 7.7); null when none is seated now
+   */
+  friendOfSeat?: number | null;
 }
 export interface RulesChanged {
   rules: RulesSelection;
@@ -572,8 +586,18 @@ export interface Presence {
    */
   playerId: string;
   displayName?: string;
+  /**
+   * removed: the host removed this watcher from the table
+   */
   status:
-    "joined" | "left" | "disconnected" | "reconnected" | "auto_play" | "kicked" | "spectating";
+    | "joined"
+    | "left"
+    | "disconnected"
+    | "reconnected"
+    | "auto_play"
+    | "kicked"
+    | "spectating"
+    | "removed";
   /**
    * Unix milliseconds from the server clock
    */

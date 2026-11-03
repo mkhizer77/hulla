@@ -23,8 +23,10 @@
             "reconnected",
             "auto_play",
             "kicked",
-            "spectating"
-          ]
+            "spectating",
+            "removed"
+          ],
+          "description": "removed: the host removed this watcher from the table"
         },
         "deadlineTs": {
           "$ref": "../common.json#/definitions/timestamp",

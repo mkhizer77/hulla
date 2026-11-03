@@ -141,6 +141,9 @@ namespace Hulla.Protocol
         [JsonProperty("removeBotPayload", Required = Required.DisallowNull, NullValueHandling = NullValueHandling.Ignore)]
         public RemoveBot? RemoveBotPayload { get; set; }
 
+        [JsonProperty("removeSpectatorPayload", Required = Required.DisallowNull, NullValueHandling = NullValueHandling.Ignore)]
+        public RemoveSpectator? RemoveSpectatorPayload { get; set; }
+
         [JsonProperty("requestSnapshotPayload", Required = Required.DisallowNull, NullValueHandling = NullValueHandling.Ignore)]
         public RequestSnapshot? RequestSnapshotPayload { get; set; }
 
@@ -636,6 +639,9 @@ namespace Hulla.Protocol
         [JsonProperty("seat", Required = Required.AllowNull)]
         public long? Seat { get; set; }
 
+        /// <summary>
+        /// removed: the host removed this watcher from the table
+        /// </summary>
         [JsonProperty("status", Required = Required.Always)]
         public Status Status { get; set; }
     }
@@ -900,6 +906,15 @@ namespace Hulla.Protocol
     {
         [JsonProperty("seat", Required = Required.Always)]
         public long Seat { get; set; }
+    }
+
+    /// <summary>
+    /// Host only: removes a watcher from the table; they cannot come back to it (GDD 7.7, 9.9)
+    /// </summary>
+    public partial class RemoveSpectator
+    {
+        [JsonProperty("userId", Required = Required.Always)]
+        public string UserId { get; set; }
     }
 
     public partial class RequestSnapshot
@@ -1442,6 +1457,13 @@ namespace Hulla.Protocol
         [JsonProperty("displayName", Required = Required.AllowNull)]
         public string? DisplayName { get; set; }
 
+        /// <summary>
+        /// The lowest seat whose player the watcher is a friend of (GDD 7.7); null when none is
+        /// seated now
+        /// </summary>
+        [JsonProperty("friendOfSeat")]
+        public long? FriendOfSeat { get; set; }
+
         [JsonProperty("seatNext", Required = Required.Always)]
         public bool SeatNext { get; set; }
 
@@ -1581,7 +1603,10 @@ namespace Hulla.Protocol
     /// </summary>
     public enum OtpChannel { Sms, Whatsapp };
 
-    public enum Status { AutoPlay, Disconnected, Joined, Kicked, Left, Reconnected, Spectating };
+    /// <summary>
+    /// removed: the host removed this watcher from the table
+    /// </summary>
+    public enum Status { AutoPlay, Disconnected, Joined, Kicked, Left, Reconnected, Removed, Spectating };
 
     public enum Source { Discard, NextPlayer, Opponent };
 
@@ -2146,6 +2171,8 @@ namespace Hulla.Protocol
                     return Status.Left;
                 case "reconnected":
                     return Status.Reconnected;
+                case "removed":
+                    return Status.Removed;
                 case "spectating":
                     return Status.Spectating;
             }
@@ -2179,6 +2206,9 @@ namespace Hulla.Protocol
                     return;
                 case Status.Reconnected:
                     serializer.Serialize(writer, "reconnected");
+                    return;
+                case Status.Removed:
+                    serializer.Serialize(writer, "removed");
                     return;
                 case Status.Spectating:
                     serializer.Serialize(writer, "spectating");

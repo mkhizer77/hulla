@@ -29,6 +29,17 @@ export function spectatorCount(presences: Readonly<Record<string, PresenceRecord
   return Object.values(presences).filter((p) => p.seat === null).length;
 }
 
+/** The lowest seat held by one of the watcher's friends; a player who left mid-round no longer counts. */
+export function friendOfSeat(
+  seats: readonly SeatSlot[],
+  friendIds: readonly string[],
+): SeatIndex | null {
+  const index = seats.findIndex(
+    (slot) => slot.playerId !== null && !slot.left && friendIds.includes(slot.playerId),
+  );
+  return index === -1 ? null : index;
+}
+
 export function tableStatus<S, M>(state: TableState<S, M>): TableStatePayload["status"] {
   if (state.phase === "closing") return "closed";
   if (state.phase === "inRound") return "inRound";
@@ -101,6 +112,7 @@ export function tableStateFor<S, M, V, E, R>(
         userId: p.userId,
         displayName: p.displayName ?? displayNameOf(p.username),
         seatNext: p.seatNext === true,
+        friendOfSeat: friendOfSeat(state.seats, p.friendOf ?? []),
       })),
     series: seriesPayload(state.series ?? emptySeries(state.seats.length, state.hostSeat ?? 0)),
     round,

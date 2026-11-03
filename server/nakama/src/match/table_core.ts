@@ -99,7 +99,8 @@ export interface NameSource {
 }
 
 export interface SocialGate {
-  mayWatch(userId: string, seatedIds: readonly string[]): boolean;
+  /** Which of `playerIds` are friends of `userId`; a watcher needs at least one seated. */
+  friendsAmong(userId: string, playerIds: readonly string[]): readonly string[];
 }
 
 /**
@@ -249,6 +250,29 @@ export function tableCore<S, M, V, E, R>(
     round.deadline = { ...deadline, humanTs: Math.max(deadline.humanTs, now + seconds * 1000) };
   };
 
+  /** Seated people, not bots: the players a watcher can be a friend of. */
+  const seatedPlayerIds = (state: TableState<S, M>, except?: string): string[] =>
+    state.seats.flatMap((s) =>
+      s.playerId === null || s.bot || s.playerId === except ? [] : [s.playerId],
+    );
+
+  const friendsAmong = (userId: string, playerIds: readonly string[]): string[] =>
+    deps.social === undefined || playerIds.length === 0
+      ? []
+      : [...deps.social.friendsAmong(userId, playerIds)];
+
+  /** Someone new sat down: watchers who are their friends now name them too (GDD 7.7). */
+  const noteSeated = (state: TableState<S, M>, playerId: string): void => {
+    for (const record of Object.values(state.presences)) {
+      if (record.seat !== null || record.userId === playerId) continue;
+      const known = record.friendOf ?? [];
+      if (known.includes(playerId)) continue;
+      if (friendsAmong(record.userId, [playerId]).length > 0) {
+        record.friendOf = [...known, playerId];
+      }
+    }
+  };
+
   /** Moves a spectator into a free seat; the caller broadcasts the table afterwards. */
   const seatSpectator = (
     state: TableState<S, M>,
@@ -270,6 +294,7 @@ export function tableCore<S, M, V, E, R>(
     attachSession(slot, record.sessionId, now);
     const seated: PresenceRecord = { ...record, seat, seatNext: false };
     state.presences[record.sessionId] = seated;
+    noteSeated(state, record.userId);
     state.hostSeat ??= seat;
     emit.public("presence", presencePayload(seated, slot.displayName, "joined"));
   };
@@ -366,6 +391,7 @@ export function tableCore<S, M, V, E, R>(
     state.rematchDeadlineTs = null;
     const yes = activeSeats(state.seats).filter((seat) => state.seats[seat]?.rematch === true);
     if (yes.length >= host.module.seats.min) {
+      const demoted: PresenceRecord[] = [];
       for (const seat of activeSeats(state.seats)) {
         const slot = state.seats[seat];
         if (slot === undefined) continue;
@@ -377,8 +403,13 @@ export function tableCore<S, M, V, E, R>(
         freeSlot(state, seat);
         if (presence !== undefined) {
           presence.seat = null;
+          demoted.push(presence);
           emit.public("presence", presencePayload(presence, null, "spectating"));
         }
+      }
+      // A player who stays to watch is named by the friends still seated.
+      for (const presence of demoted) {
+        presence.friendOf = friendsAmong(presence.userId, seatedPlayerIds(state, presence.userId));
       }
       if (state.hostSeat !== null && state.seats[state.hostSeat]?.playerId === null) {
         migrateHost(state);
@@ -667,6 +698,32 @@ export function tableCore<S, M, V, E, R>(
         broadcastTableState(state, emit);
         return;
       }
+      case "remove_spectator": {
+        if (!isHost(state, seat)) {
+          reject(ruleError(ErrorCodes.table.notHost));
+          return;
+        }
+        const target = payload["userId"];
+        const watchers = Object.values(state.presences).filter(
+          (p) => p.seat === null && p.userId === target,
+        );
+        const first = watchers[0];
+        if (typeof target !== "string" || first === undefined) {
+          reject(ruleError(ErrorCodes.table.invalidPayload, { reason: "user_id" }));
+          return;
+        }
+        // Removed for the life of the table, like a kick (OQ-050): sent before the socket is
+        // dropped, so the watcher hears why.
+        if (!state.kicked.includes(target)) state.kicked.push(target);
+        emit.public("presence", presencePayload(first, first.displayName ?? null, "removed"));
+        for (const watcher of watchers) {
+          state.presences = without(state.presences, watcher.sessionId);
+          emit.batch.kicks.push(watcher.sessionId);
+        }
+        emit.batch.voiceRemovals.push(target);
+        broadcastTableState(state, emit);
+        return;
+      }
       case "kick": {
         if (!isHost(state, seat)) {
           reject(ruleError(ErrorCodes.table.notHost));
@@ -931,15 +988,17 @@ export function tableCore<S, M, V, E, R>(
           code: free === -1 ? ErrorCodes.table.full : ErrorCodes.table.locked,
         };
       }
-      const seatedIds = state.seats.flatMap((s) => (s.playerId === null ? [] : [s.playerId]));
-      if (deps.social !== undefined && !deps.social.mayWatch(presence.userId, seatedIds)) {
+      const friendOf = friendsAmong(presence.userId, seatedPlayerIds(state));
+      if (deps.social !== undefined && friendOf.length === 0) {
         return { accept: false, code: ErrorCodes.social.notFriends };
       }
       // A late arrival who wanted a seat takes the next free one when the round ends (GDD 7.6).
       const late = parsed.data.asSpectator !== true && state.phase === "inRound";
-      state.admissions[presence.sessionId] = late
-        ? { kind: "spectator", seatNext: true }
-        : { kind: "spectator" };
+      state.admissions[presence.sessionId] = {
+        kind: "spectator",
+        ...(late ? { seatNext: true } : {}),
+        ...(friendOf.length > 0 ? { friendOf } : {}),
+      };
       return { accept: true };
     },
 
@@ -952,6 +1011,9 @@ export function tableCore<S, M, V, E, R>(
         const record: PresenceRecord = { ...info, node: info.node ?? "", seat: null, displayName };
         let status: "joined" | "reconnected" | "spectating" = "spectating";
         if (admission.kind === "spectator" && admission.seatNext === true) record.seatNext = true;
+        if (admission.kind === "spectator" && admission.friendOf !== undefined) {
+          record.friendOf = [...admission.friendOf];
+        }
         if (admission.kind === "seat") {
           const slot = state.seats[admission.seat];
           if (slot === undefined) continue;
@@ -971,6 +1033,7 @@ export function tableCore<S, M, V, E, R>(
               state.autoStart?.parties[info.userId] ?? null,
             );
             renameClashingBots(state.seats, slot.displayName);
+            noteSeated(state, info.userId);
             status = "joined";
             state.hostSeat ??= admission.seat;
           }
