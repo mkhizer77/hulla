@@ -38,6 +38,8 @@ export interface Protocol {
   profileGet?: ProfileGet;
   pushData?: PushData;
   tableInviteNotice?: TableInvite;
+  phoneStart?: PhoneStart;
+  phoneStarted?: PhoneStarted;
   joinTablePayload?: JoinTable;
   leaveTablePayload?: LeaveTable;
   readyPayload?: Ready;
@@ -297,6 +299,48 @@ export interface TableInvite {
   fromName: string;
   openSeats: number;
   sentTs: number;
+}
+/**
+ * The phone_start RPC: a code for the number. Without a channel the server tries WhatsApp, then SMS; sms sends by SMS only, for the "send by SMS instead" button. Every send counts against the same resend wait and limits.
+ */
+export interface PhoneStart {
+  phone: string;
+  /**
+   * Where a code goes. A client treats an unknown value as sms when it words the screen.
+   */
+  channel?: "whatsapp" | "sms";
+}
+/**
+ * phone_start's answer when a code went out; a refusal is { ok: false, error } with an auth.otp_* or table.invalid_payload code
+ */
+export interface PhoneStarted {
+  ok: boolean;
+  /**
+   * The number masked: country code and last two digits
+   */
+  phone: string;
+  /**
+   * Where a code goes. A client treats an unknown value as sms when it words the screen.
+   */
+  channel: "whatsapp" | "sms";
+  /**
+   * The channels the server can send on, in the order it tries them; offer "send by SMS instead" only when it holds sms
+   *
+   * Items: Where a code goes. A client treats an unknown value as sms when it words the screen.
+   */
+  channels: ("whatsapp" | "sms")[];
+  /**
+   * WhatsApp was tried first and failed, so the code went by SMS
+   */
+  fallback: boolean;
+  /**
+   * Unix milliseconds from the server clock
+   */
+  expiresTs: number;
+  /**
+   * Unix milliseconds from the server clock
+   */
+  resendAfterTs: number;
 }
 export interface JoinTable {
   code?: string;

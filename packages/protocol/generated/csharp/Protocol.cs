@@ -90,6 +90,12 @@ namespace Hulla.Protocol
         [JsonProperty("moveRejectedPayload", Required = Required.DisallowNull, NullValueHandling = NullValueHandling.Ignore)]
         public MoveRejected? MoveRejectedPayload { get; set; }
 
+        [JsonProperty("phoneStart", Required = Required.DisallowNull, NullValueHandling = NullValueHandling.Ignore)]
+        public PhoneStart? PhoneStart { get; set; }
+
+        [JsonProperty("phoneStarted", Required = Required.DisallowNull, NullValueHandling = NullValueHandling.Ignore)]
+        public PhoneStarted? PhoneStarted { get; set; }
+
         [JsonProperty("pickupPayload", Required = Required.DisallowNull, NullValueHandling = NullValueHandling.Ignore)]
         public Pickup? PickupPayload { get; set; }
 
@@ -514,6 +520,59 @@ namespace Hulla.Protocol
         public Dictionary<string, ErrorDetail>? Detail { get; set; }
     }
 
+    /// <summary>
+    /// The phone_start RPC: a code for the number. Without a channel the server tries WhatsApp,
+    /// then SMS; sms sends by SMS only, for the "send by SMS instead" button. Every send counts
+    /// against the same resend wait and limits.
+    /// </summary>
+    public partial class PhoneStart
+    {
+        [JsonProperty("channel", Required = Required.DisallowNull, NullValueHandling = NullValueHandling.Ignore)]
+        public OtpChannel? Channel { get; set; }
+
+        [JsonProperty("phone", Required = Required.Always)]
+        [JsonConverter(typeof(IndigoMinMaxLengthCheckConverter))]
+        public string Phone { get; set; }
+    }
+
+    /// <summary>
+    /// phone_start's answer when a code went out; a refusal is { ok: false, error } with an
+    /// auth.otp_* or table.invalid_payload code
+    /// </summary>
+    public partial class PhoneStarted
+    {
+        [JsonProperty("channel", Required = Required.Always)]
+        public OtpChannel Channel { get; set; }
+
+        /// <summary>
+        /// The channels the server can send on, in the order it tries them; offer "send by SMS
+        /// instead" only when it holds sms
+        /// </summary>
+        [JsonProperty("channels", Required = Required.Always)]
+        public List<OtpChannel> Channels { get; set; }
+
+        [JsonProperty("expiresTs", Required = Required.Always)]
+        public long ExpiresTs { get; set; }
+
+        /// <summary>
+        /// WhatsApp was tried first and failed, so the code went by SMS
+        /// </summary>
+        [JsonProperty("fallback", Required = Required.Always)]
+        public bool Fallback { get; set; }
+
+        [JsonProperty("ok", Required = Required.Always)]
+        public bool Ok { get; set; }
+
+        /// <summary>
+        /// The number masked: country code and last two digits
+        /// </summary>
+        [JsonProperty("phone", Required = Required.Always)]
+        public string Phone { get; set; }
+
+        [JsonProperty("resendAfterTs", Required = Required.Always)]
+        public long ResendAfterTs { get; set; }
+    }
+
     public partial class Pickup
     {
         [JsonProperty("cards", Required = Required.Always)]
@@ -568,7 +627,7 @@ namespace Hulla.Protocol
         public long? DeadlineTs { get; set; }
 
         [JsonProperty("displayName", Required = Required.DisallowNull, NullValueHandling = NullValueHandling.Ignore)]
-        [JsonConverter(typeof(IndigoMinMaxLengthCheckConverter))]
+        [JsonConverter(typeof(IndecentMinMaxLengthCheckConverter))]
         public string? DisplayName { get; set; }
 
         [JsonProperty("playerId", Required = Required.Always)]
@@ -620,11 +679,11 @@ namespace Hulla.Protocol
         public string Avatar { get; set; }
 
         [JsonProperty("bio", Required = Required.Always)]
-        [JsonConverter(typeof(IndecentMinMaxLengthCheckConverter))]
+        [JsonConverter(typeof(HilariousMinMaxLengthCheckConverter))]
         public string Bio { get; set; }
 
         [JsonProperty("displayName", Required = Required.Always)]
-        [JsonConverter(typeof(IndigoMinMaxLengthCheckConverter))]
+        [JsonConverter(typeof(IndecentMinMaxLengthCheckConverter))]
         public string DisplayName { get; set; }
 
         [JsonProperty("flag", Required = Required.AllowNull)]
@@ -763,11 +822,11 @@ namespace Hulla.Protocol
         public string? Avatar { get; set; }
 
         [JsonProperty("bio", Required = Required.DisallowNull, NullValueHandling = NullValueHandling.Ignore)]
-        [JsonConverter(typeof(IndecentMinMaxLengthCheckConverter))]
+        [JsonConverter(typeof(HilariousMinMaxLengthCheckConverter))]
         public string? Bio { get; set; }
 
         [JsonProperty("displayName", Required = Required.DisallowNull, NullValueHandling = NullValueHandling.Ignore)]
-        [JsonConverter(typeof(IndigoMinMaxLengthCheckConverter))]
+        [JsonConverter(typeof(IndecentMinMaxLengthCheckConverter))]
         public string? DisplayName { get; set; }
 
         [JsonProperty("flag")]
@@ -1533,6 +1592,11 @@ namespace Hulla.Protocol
     public enum TypeEnum { PlayCard, TakeHand };
 
     /// <summary>
+    /// Where a code goes. A client treats an unknown value as sms when it words the screen.
+    /// </summary>
+    public enum OtpChannel { Sms, Whatsapp };
+
+    /// <summary>
     /// removed: the host removed this watcher from the table
     /// </summary>
     public enum Status { AutoPlay, Disconnected, Joined, Kicked, Left, Reconnected, Removed, Spectating };
@@ -1612,6 +1676,7 @@ namespace Hulla.Protocol
                 HandAnsweredPayloadReasonConverter.Singleton,
                 HostChangedPayloadReasonConverter.Singleton,
                 TypeEnumConverter.Singleton,
+                OtpChannelConverter.Singleton,
                 StatusConverter.Singleton,
                 SourceConverter.Singleton,
                 VisibilityConverter.Singleton,
@@ -1980,7 +2045,76 @@ namespace Hulla.Protocol
         public static readonly TypeEnumConverter Singleton = new TypeEnumConverter();
     }
 
+    internal class OtpChannelConverter : JsonConverter
+    {
+        public override bool CanConvert(Type t) => t == typeof(OtpChannel) || t == typeof(OtpChannel?);
+
+        public override object ReadJson(JsonReader reader, Type t, object existingValue, JsonSerializer serializer)
+        {
+            if (reader.TokenType == JsonToken.Null) return null;
+            var value = serializer.Deserialize<string>(reader);
+            switch (value)
+            {
+                case "sms":
+                    return OtpChannel.Sms;
+                case "whatsapp":
+                    return OtpChannel.Whatsapp;
+            }
+            throw new Exception("Cannot unmarshal type OtpChannel");
+        }
+
+        public override void WriteJson(JsonWriter writer, object untypedValue, JsonSerializer serializer)
+        {
+            if (untypedValue == null)
+            {
+                serializer.Serialize(writer, null);
+                return;
+            }
+            var value = (OtpChannel)untypedValue;
+            switch (value)
+            {
+                case OtpChannel.Sms:
+                    serializer.Serialize(writer, "sms");
+                    return;
+                case OtpChannel.Whatsapp:
+                    serializer.Serialize(writer, "whatsapp");
+                    return;
+            }
+            throw new Exception("Cannot marshal type OtpChannel");
+        }
+
+        public static readonly OtpChannelConverter Singleton = new OtpChannelConverter();
+    }
+
     internal class IndigoMinMaxLengthCheckConverter : JsonConverter
+    {
+        public override bool CanConvert(Type t) => t == typeof(string);
+
+        public override object ReadJson(JsonReader reader, Type t, object existingValue, JsonSerializer serializer)
+        {
+            var value = serializer.Deserialize<string>(reader);
+            if (value.Length <= 32)
+            {
+                return value;
+            }
+            throw new Exception("Cannot unmarshal type string");
+        }
+
+        public override void WriteJson(JsonWriter writer, object untypedValue, JsonSerializer serializer)
+        {
+            var value = (string)untypedValue;
+            if (value.Length <= 32)
+            {
+                serializer.Serialize(writer, value);
+                return;
+            }
+            throw new Exception("Cannot marshal type string");
+        }
+
+        public static readonly IndigoMinMaxLengthCheckConverter Singleton = new IndigoMinMaxLengthCheckConverter();
+    }
+
+    internal class IndecentMinMaxLengthCheckConverter : JsonConverter
     {
         public override bool CanConvert(Type t) => t == typeof(string);
 
@@ -2005,7 +2139,7 @@ namespace Hulla.Protocol
             throw new Exception("Cannot marshal type string");
         }
 
-        public static readonly IndigoMinMaxLengthCheckConverter Singleton = new IndigoMinMaxLengthCheckConverter();
+        public static readonly IndecentMinMaxLengthCheckConverter Singleton = new IndecentMinMaxLengthCheckConverter();
     }
 
     internal class StatusConverter : JsonConverter
@@ -2125,7 +2259,7 @@ namespace Hulla.Protocol
         public static readonly SourceConverter Singleton = new SourceConverter();
     }
 
-    internal class IndecentMinMaxLengthCheckConverter : JsonConverter
+    internal class HilariousMinMaxLengthCheckConverter : JsonConverter
     {
         public override bool CanConvert(Type t) => t == typeof(string);
 
@@ -2150,7 +2284,7 @@ namespace Hulla.Protocol
             throw new Exception("Cannot marshal type string");
         }
 
-        public static readonly IndecentMinMaxLengthCheckConverter Singleton = new IndecentMinMaxLengthCheckConverter();
+        public static readonly HilariousMinMaxLengthCheckConverter Singleton = new HilariousMinMaxLengthCheckConverter();
     }
 
     internal class VisibilityConverter : JsonConverter

@@ -27,8 +27,10 @@ export const METRICS = {
   adRewards: "hulla_ad_rewards",
   adRewardsRejected: "hulla_ad_rewards_rejected",
   otpSent: "hulla_otp_sent",
-  /** Estimated SMS spend in US cents, by country (OQ-041). */
-  otpCostCents: "hulla_otp_cost_cents",
+  /** A channel that could not send a code, before the next one was tried. */
+  otpSendFailed: "hulla_otp_send_failed",
+  /** Estimated spend on codes in millionths of a US dollar, by country and channel (OQ-041). */
+  otpCostMicroUsd: "hulla_otp_cost_microusd",
   otpVerified: "hulla_otp_verified",
   otpRefused: "hulla_otp_refused",
 } as const;

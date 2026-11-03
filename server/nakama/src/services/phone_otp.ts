@@ -1,12 +1,20 @@
 import { ErrorCodes, ruleError, type RuleError } from "@hulla/shared-ts";
 
+import {
+  OTP_CHANNELS,
+  type OtpChannel,
+  type OtpProvider,
+  type OtpProviders,
+} from "./otp_providers";
+
 /**
  * Phone OTP sign-in and linking (GDD 10.2, #99). A verified number links to the account as a
  * Nakama custom id made from the number and a server-side pepper, so the database never holds the
  * number itself. On a new device the guest verifies the number and gets a one-time token that the
  * custom sign-in hook trades for the linked account. Limits per number, account, address and day
  * keep SMS pumping and brute force out; every send is counted with its estimated cost for the
- * dashboard. The SMS provider is behind `OtpProvider` (the contract is the owner's, OQ-041).
+ * dashboard. Codes go by WhatsApp first and SMS when WhatsApp is not set up or fails
+ * (`otp_providers.ts`; the contracts are the owner's, OQ-041).
  */
 export const OTP_COLLECTION = "phone_otp";
 export const PHONE_TOKENS_COLLECTION = "phone_tokens";
@@ -37,32 +45,37 @@ export const OTP_LIMITS = {
 } as const;
 
 /**
- * Calling codes for the markets of GDD 1.4 with an estimated cost per verification in US cents
- * (provider fee plus the SMS), for the dashboard until the contract sets real prices (OQ-041).
- * Numbers elsewhere are refused: SMS pumping fraud targets premium destinations.
+ * Calling codes for the markets of GDD 1.4 with an estimated cost per code in US cents, per channel,
+ * for the dashboard. SMS is Twilio Verify's fee plus the message; WhatsApp is Meta's authentication
+ * rate for the country or its region, with no per-verification fee. Both are estimates until the
+ * contracts set real prices (OQ-041). Numbers elsewhere are refused: SMS pumping fraud targets
+ * premium destinations.
  */
 export const OTP_COUNTRIES: Readonly<
-  Record<string, { readonly country: string; readonly costCents: number }>
+  Record<
+    string,
+    { readonly country: string; readonly costCents: Readonly<Record<OtpChannel, number>> }
+  >
 > = {
-  "92": { country: "PK", costCents: 15 },
-  "91": { country: "IN", costCents: 8 },
-  "880": { country: "BD", costCents: 20 },
-  "44": { country: "GB", costCents: 9 },
-  "971": { country: "AE", costCents: 12 },
-  "966": { country: "SA", costCents: 12 },
-  "974": { country: "QA", costCents: 12 },
-  "965": { country: "KW", costCents: 12 },
-  "968": { country: "OM", costCents: 12 },
-  "973": { country: "BH", costCents: 12 },
-  "1": { country: "US", costCents: 6 },
-  "61": { country: "AU", costCents: 9 },
-  "64": { country: "NZ", costCents: 9 },
-  "353": { country: "IE", costCents: 9 },
-  "31": { country: "NL", costCents: 12 },
-  "49": { country: "DE", costCents: 12 },
-  "60": { country: "MY", costCents: 8 },
-  "65": { country: "SG", costCents: 8 },
-  "977": { country: "NP", costCents: 18 },
+  "92": { country: "PK", costCents: { sms: 15, whatsapp: 1 } },
+  "91": { country: "IN", costCents: { sms: 8, whatsapp: 0.2 } },
+  "880": { country: "BD", costCents: { sms: 20, whatsapp: 1.5 } },
+  "44": { country: "GB", costCents: { sms: 9, whatsapp: 3.6 } },
+  "971": { country: "AE", costCents: { sms: 12, whatsapp: 1.6 } },
+  "966": { country: "SA", costCents: { sms: 12, whatsapp: 1.1 } },
+  "974": { country: "QA", costCents: { sms: 12, whatsapp: 1.6 } },
+  "965": { country: "KW", costCents: { sms: 12, whatsapp: 1.6 } },
+  "968": { country: "OM", costCents: { sms: 12, whatsapp: 1.6 } },
+  "973": { country: "BH", costCents: { sms: 12, whatsapp: 1.6 } },
+  "1": { country: "US", costCents: { sms: 6, whatsapp: 1.4 } },
+  "61": { country: "AU", costCents: { sms: 9, whatsapp: 1.8 } },
+  "64": { country: "NZ", costCents: { sms: 9, whatsapp: 1.8 } },
+  "353": { country: "IE", costCents: { sms: 9, whatsapp: 3.7 } },
+  "31": { country: "NL", costCents: { sms: 12, whatsapp: 7.2 } },
+  "49": { country: "DE", costCents: { sms: 12, whatsapp: 7.7 } },
+  "60": { country: "MY", costCents: { sms: 8, whatsapp: 1.8 } },
+  "65": { country: "SG", costCents: { sms: 8, whatsapp: 1.8 } },
+  "977": { country: "NP", costCents: { sms: 18, whatsapp: 1.8 } },
 };
 
 export type OtpProblem =
@@ -134,107 +147,6 @@ export function prune(times: readonly number[], windows: readonly Window[], now:
   return times.filter((t) => now - t < longest);
 }
 
-/* --------------------------------------------------------------- the provider */
-
-export type ProviderResult<T> =
-  { readonly ok: true; readonly value: T } | { readonly ok: false; readonly reason: string };
-
-export interface OtpProvider {
-  readonly name: string;
-  /** Sends a code to the number; `ref` is whatever the provider needs to check it later. */
-  send(phone: string): ProviderResult<{ readonly ref: string | null }>;
-  /** True when the code is the one sent; false for a wrong code. */
-  check(phone: string, code: string, ref: string | null): ProviderResult<boolean>;
-}
-
-export interface HttpPort {
-  request(
-    url: string,
-    method: string,
-    headers: Record<string, string>,
-    body: string,
-  ): { code: number; body: string };
-  base64(text: string): string;
-}
-
-const form = (fields: Record<string, string>): string =>
-  Object.entries(fields)
-    .map(([k, v]) => `${encodeURIComponent(k)}=${encodeURIComponent(v)}`)
-    .join("&");
-
-/** Twilio Verify: Twilio generates, sends and checks the code (env TWILIO_*; owner's account). */
-export function twilioVerify(
-  http: HttpPort,
-  accountSid: string,
-  authToken: string,
-  serviceSid: string,
-): OtpProvider {
-  const base = `https://verify.twilio.com/v2/Services/${serviceSid}`;
-  const headers = {
-    Authorization: `Basic ${http.base64(`${accountSid}:${authToken}`)}`,
-    "Content-Type": "application/x-www-form-urlencoded",
-  };
-  return {
-    name: "twilio",
-    send(phone) {
-      try {
-        const res = http.request(
-          `${base}/Verifications`,
-          "POST",
-          headers,
-          form({ To: phone, Channel: "sms" }),
-        );
-        if (res.code >= 200 && res.code < 300) return { ok: true, value: { ref: null } };
-        return { ok: false, reason: `http_${String(res.code)}` };
-      } catch (error: unknown) {
-        return { ok: false, reason: String(error) };
-      }
-    },
-    check(phone, code) {
-      try {
-        const res = http.request(
-          `${base}/VerificationCheck`,
-          "POST",
-          headers,
-          form({ To: phone, Code: code }),
-        );
-        if (res.code === 404) return { ok: true, value: false };
-        if (res.code < 200 || res.code >= 300)
-          return { ok: false, reason: `http_${String(res.code)}` };
-        const body = JSON.parse(res.body) as { status?: unknown };
-        return { ok: true, value: body.status === "approved" };
-      } catch (error: unknown) {
-        return { ok: false, reason: String(error) };
-      }
-    },
-  };
-}
-
-/**
- * A development box's provider: nothing is sent and the code is the last six digits of the number,
- * so a tester can sign in from any number. Only HULLA_ENV=local gets it.
- */
-export function localProvider(): OtpProvider {
-  const codeFor = (phone: string): string => phone.slice(-6).padStart(6, "0");
-  return {
-    name: "local",
-    send: () => ({ ok: true, value: { ref: null } }),
-    check: (phone, code) => ({ ok: true, value: code === codeFor(phone) }),
-  };
-}
-
-export function providerFromEnv(
-  env: Readonly<Record<string, string>>,
-  http: HttpPort,
-): OtpProvider | null {
-  const sid = env["TWILIO_ACCOUNT_SID"] ?? "";
-  const token = env["TWILIO_AUTH_TOKEN"] ?? "";
-  const service = env["TWILIO_VERIFY_SID"] ?? "";
-  if (sid !== "" && token !== "" && service !== "") return twilioVerify(http, sid, token, service);
-  if ((env["HULLA_ENV"] ?? "local") === "local") return localProvider();
-  return null;
-}
-
 /* -------------------------------------------------------------------- state */
 
 export interface PhoneState {
@@ -244,6 +156,8 @@ export interface PhoneState {
   readonly ref: string | null;
   /** The account that asked; a code is good only for the account it was sent to. */
   readonly requestedBy: string | null;
+  /** The channel the live code went out on; codes stored before WhatsApp have none and are SMS. */
+  readonly channel?: OtpChannel;
 }
 
 export const EMPTY_PHONE: PhoneState = {
@@ -266,7 +180,7 @@ export interface OtpStore {
 
 export interface OtpPorts {
   readonly store: OtpStore;
-  readonly provider: OtpProvider | null;
+  readonly providers: OtpProviders;
   /** sha256 hex of the number with the pepper; also the storage key, so no number is stored. */
   hashPhone(phone: string): string;
   /** The account a phone custom id is linked to, or null. */
@@ -274,8 +188,9 @@ export interface OtpPorts {
   link(userId: string, customId: string): void;
   unlink(userId: string, customId: string): void;
   newToken(): string;
+  /** `failed` is a channel that could not send, before the next one is tried. */
   count(
-    metric: "sent" | "verified" | "refused",
+    metric: "sent" | "failed" | "verified" | "refused",
     tags: Record<string, string>,
     cents?: number,
   ): void;
@@ -292,6 +207,12 @@ export type StartResponse =
   | {
       readonly ok: true;
       readonly phone: string;
+      /** Where the code went, so the client can say "Sent on WhatsApp" or "Sent by SMS". */
+      readonly channel: OtpChannel;
+      /** Every channel this server can send on, in the order it tries them. */
+      readonly channels: readonly OtpChannel[];
+      /** True when WhatsApp was tried first and failed, so the code went by SMS. */
+      readonly fallback: boolean;
       readonly expiresTs: number;
       readonly resendAfterTs: number;
     }
@@ -306,46 +227,96 @@ function refuse(
   return { ok: false, error: otpError(problem, detail) };
 }
 
-/** Sends a code to a number for the signed-in account (a guest is fine). */
+/** The channels set up on this server, in the order a send tries them. */
+export function configuredChannels(providers: OtpProviders): OtpChannel[] {
+  return OTP_CHANNELS.filter((channel) => providers[channel] !== null);
+}
+
+/** Asking for SMS means SMS only; anything else tries WhatsApp, then SMS. */
+function providersFor(providers: OtpProviders, asked: OtpChannel | undefined): OtpProvider[] {
+  const order = asked === "sms" ? ["sms" as const] : OTP_CHANNELS;
+  return order.flatMap((channel) => {
+    const provider = providers[channel];
+    return provider === null ? [] : [provider];
+  });
+}
+
+/** Sends on the first provider that takes it, counting the ones that fail. */
+function sendFirst(
+  ports: OtpPorts,
+  providers: readonly OtpProvider[],
+  phone: string,
+): { readonly provider: OtpProvider; readonly ref: string | null } | { readonly failed: string } {
+  let failed = "";
+  for (const provider of providers) {
+    const sent = provider.send(phone);
+    if (sent.ok) return { provider, ref: sent.value.ref };
+    failed = provider.name;
+    ports.count("failed", {
+      channel: provider.channel,
+      provider: provider.name,
+      reason: sent.reason,
+    });
+  }
+  return { failed };
+}
+
+/** Null when the number, the account and the address may have another code now. */
+function limitsRefusal(
+  state: PhoneState,
+  account: readonly number[],
+  fromAddress: readonly number[],
+  now: number,
+): Record<string, number> | null {
+  const last = state.sends[state.sends.length - 1] ?? 0;
+  if (now - last < OTP_LIMITS.resendMs) return { retryAfterTs: last + OTP_LIMITS.resendMs };
+  const fits =
+    allowed(state.sends, OTP_LIMITS.perPhone, now) &&
+    allowed(account, OTP_LIMITS.perAccount, now) &&
+    allowed(fromAddress, OTP_LIMITS.perAddress, now);
+  return fits ? null : {};
+}
+
+/**
+ * Sends a code to a number for the signed-in account (a guest is fine). `channel` is optional:
+ * "sms" sends by SMS only (the "send by SMS instead" button), anything else tries WhatsApp first
+ * and falls back to SMS when WhatsApp is not set up or refuses the message. Either way it is one
+ * send against the resend wait and every limit.
+ */
 export function startOtp(
   ports: OtpPorts,
   userId: string,
   address: string,
   input: unknown,
   now: number,
+  channel?: OtpChannel,
 ): StartResponse {
   const phone = typeof input === "string" ? normalisePhone(input) : null;
   if (phone === null) return refuse(ports, "invalid_phone");
   const calling = callingCodeOf(phone);
   const market = calling === null ? undefined : OTP_COUNTRIES[calling];
   if (market === undefined) return refuse(ports, "country");
-  if (ports.provider === null) return refuse(ports, "unavailable");
+  const providers = providersFor(ports.providers, channel);
+  if (providers.length === 0)
+    return refuse(ports, "unavailable", channel === undefined ? {} : { channel });
   const key = ports.hashPhone(phone);
   const state = ports.store.phone(key);
-  const last = state.sends[state.sends.length - 1] ?? 0;
-  if (now - last < OTP_LIMITS.resendMs) {
-    return refuse(ports, "rate_limited", { retryAfterTs: last + OTP_LIMITS.resendMs });
-  }
   const account = ports.store.times("account", userId);
   const fromAddress = address === "" ? [] : ports.store.times("address", address);
   const today = new Date(now).toISOString().slice(0, 10);
   const day = ports.store.times("day", today);
-  if (
-    !allowed(state.sends, OTP_LIMITS.perPhone, now) ||
-    !allowed(account, OTP_LIMITS.perAccount, now) ||
-    !allowed(fromAddress, OTP_LIMITS.perAddress, now)
-  ) {
-    return refuse(ports, "rate_limited");
-  }
+  const limited = limitsRefusal(state, account, fromAddress, now);
+  if (limited !== null) return refuse(ports, "rate_limited", limited);
   if (day.length >= ports.dailyBudget) return refuse(ports, "budget");
-  const sent = ports.provider.send(phone);
-  if (!sent.ok) return refuse(ports, "unavailable", { provider: ports.provider.name });
+  const sent = sendFirst(ports, providers, phone);
+  if ("failed" in sent) return refuse(ports, "unavailable", { provider: sent.failed });
   ports.store.writePhone(key, {
     sends: [...prune(state.sends, OTP_LIMITS.perPhone, now), now],
     expiresTs: now + OTP_LIMITS.codeTtlMs,
     attempts: 0,
-    ref: sent.value.ref,
+    ref: sent.ref,
     requestedBy: userId,
+    channel: sent.provider.channel,
   });
   ports.store.writeTimes("account", userId, [...prune(account, OTP_LIMITS.perAccount, now), now]);
   if (address !== "") {
@@ -355,10 +326,18 @@ export function startOtp(
     ]);
   }
   ports.store.writeTimes("day", today, [...day, now]);
-  ports.count("sent", { country: market.country, provider: ports.provider.name }, market.costCents);
+  const used = sent.provider.channel;
+  ports.count(
+    "sent",
+    { country: market.country, provider: sent.provider.name, channel: used },
+    market.costCents[used],
+  );
   return {
     ok: true,
     phone: maskPhone(phone),
+    channel: used,
+    channels: configuredChannels(ports.providers),
+    fallback: used !== providers[0]?.channel,
     expiresTs: now + OTP_LIMITS.codeTtlMs,
     resendAfterTs: now + OTP_LIMITS.resendMs,
   };
@@ -390,13 +369,15 @@ export function verifyOtp(
   if (phone === null) return refuse(ports, "invalid_phone");
   const code = typeof codeInput === "string" ? codeInput.trim() : "";
   if (!/^\d{4,8}$/.test(code)) return refuse(ports, "wrong_code");
-  if (ports.provider === null) return refuse(ports, "unavailable");
+  if (configuredChannels(ports.providers).length === 0) return refuse(ports, "unavailable");
   const key = ports.hashPhone(phone);
   const state = ports.store.phone(key);
   if (state.requestedBy !== userId || state.expiresTs <= now) return refuse(ports, "expired");
   if (state.attempts >= OTP_LIMITS.maxAttempts) return refuse(ports, "locked");
-  const checked = ports.provider.check(phone, code, state.ref);
-  if (!checked.ok) return refuse(ports, "unavailable", { provider: ports.provider.name });
+  const provider = ports.providers[state.channel ?? "sms"];
+  if (provider === null) return refuse(ports, "unavailable");
+  const checked = provider.check(phone, code, state.ref);
+  if (!checked.ok) return refuse(ports, "unavailable", { provider: provider.name });
   if (!checked.value) {
     ports.store.writePhone(key, { ...state, attempts: state.attempts + 1 });
     return refuse(ports, "wrong_code", {
@@ -415,12 +396,12 @@ export function verifyOtp(
   const owner = ports.linkedAccount(customId);
   if (owner === null) ports.link(userId, customId);
   if (owner === null || owner === userId) {
-    ports.count("verified", { country, result: "linked" });
+    ports.count("verified", { country, channel: provider.channel, result: "linked" });
     return { ok: true, result: "linked", phone: maskPhone(phone) };
   }
   const token = ports.newToken();
   ports.store.writeToken(token, customId, now + OTP_LIMITS.tokenTtlMs);
-  ports.count("verified", { country, result: "sign_in" });
+  ports.count("verified", { country, channel: provider.channel, result: "sign_in" });
   return {
     ok: true,
     result: "signIn",
