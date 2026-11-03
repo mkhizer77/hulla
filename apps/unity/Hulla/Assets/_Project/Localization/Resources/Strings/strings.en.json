@@ -3903,6 +3903,11 @@
    "smart": false
   },
   {
+   "key": "ui.more_for_friend",
+   "text": "More options",
+   "smart": false
+  },
+  {
    "key": "ui.most_picked_up",
    "text": "Biggest pick-up · {0}, {1:plural:{} card|{} cards}",
    "smart": true
@@ -4696,6 +4701,26 @@
    "key": "ui.seed_later",
    "text": "Before the deal, the server committed to the shuffle. The seed is revealed when the round ends.",
    "smart": false
+  },
+  {
+   "key": "ui.seen_days",
+   "text": "Seen {0} d ago",
+   "smart": true
+  },
+  {
+   "key": "ui.seen_hours",
+   "text": "Seen {0} h ago",
+   "smart": true
+  },
+  {
+   "key": "ui.seen_just_now",
+   "text": "Seen just now",
+   "smart": false
+  },
+  {
+   "key": "ui.seen_minutes",
+   "text": "Seen {0} min ago",
+   "smart": true
   },
   {
    "key": "ui.send",

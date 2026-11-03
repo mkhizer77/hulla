@@ -1074,7 +1074,12 @@
     "ui.ad_no_reward": "The ad didn't finish, so there's no reward this time.",
     "phone.sent_whatsapp": "We sent a code on WhatsApp to {0}.",
     "phone.sent_fallback": "WhatsApp didn't work, so we sent a code by SMS to {0}.",
-    "phone.sms_instead": "Send by SMS instead"
+    "phone.sms_instead": "Send by SMS instead",
+    "ui.seen_just_now": "Seen just now",
+    "ui.seen_minutes": "Seen {0} min ago",
+    "ui.seen_hours": "Seen {0} h ago",
+    "ui.seen_days": "Seen {0} d ago",
+    "ui.more_for_friend": "More options"
   },
   "notes": {
     "achievement.goal.bhabhis": "{0} the target count.",
@@ -1144,6 +1149,9 @@
     "welcome.first_round_bonus": "{0} coins, paid once with the first live round.",
     "welcome.tutorial_bonus": "{0} coins, paid once for finishing the tutorial.",
     "phone.sent_whatsapp": "{0} the number with its middle hidden, such as +92 ••• 67.",
-    "phone.sent_fallback": "{0} the number with its middle hidden, such as +92 ••• 67."
+    "phone.sent_fallback": "{0} the number with its middle hidden, such as +92 ••• 67.",
+    "ui.seen_minutes": "{0} a whole number; the unit stays short (min, h, d) to fit one line.",
+    "ui.seen_hours": "{0} a whole number; the unit stays short (min, h, d) to fit one line.",
+    "ui.seen_days": "{0} a whole number; the unit stays short (min, h, d) to fit one line."
   }
 }

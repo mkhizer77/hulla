@@ -184,7 +184,8 @@ namespace Hulla.Infrastructure.Nakama
                         (string?)table?["code"],
                         (long?)table?["open"] ?? 0,
                         (bool?)table?["joinable"] == true,
-                        (bool?)table?["watchable"] == true));
+                        (bool?)table?["watchable"] == true,
+                        (long?)item["lastSeenTs"]));
                 }
             }
 

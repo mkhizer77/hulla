@@ -30,6 +30,9 @@ namespace Hulla.Application.ViewModels
 
         public bool Voice => Current.Bool("voice", true);
 
+        /// <summary>The Shop tab and store purchases (GDD 22.5); off hides them.</summary>
+        public bool Shop => Current.Bool("shop", true);
+
         public bool UpdateRequired => Current.UpdateRequired;
 
         public async Awaitable RefreshAsync(string clientVersion, string cohort, CancellationToken cancellation)

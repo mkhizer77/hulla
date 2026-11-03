@@ -412,6 +412,81 @@ namespace Hulla.Presentation.Screens.Home
             Set(false);
         }
 
+        /// <summary>Invites the friend to the player's own table; null hides the button.</summary>
+        public Action<string, string>? InviteToMine { get; set; }
+
+        /// <summary>Opens Friends with the friend's full sheet (Favourite, Remove, Block); null hides More.</summary>
+        public Action<string, string>? OpenFriend { get; set; }
+
+        /// <summary>
+        /// The player sheet over Home (design: Home, friend avatar): face, name and where they are, then
+        /// one yellow action (Join or Watch their table, else Invite to mine), and More for the rest.
+        /// </summary>
+        private void OpenFriendSheet(string name, FriendPresence friend)
+        {
+            var panel = Navigation.Sheet.Open(_party, null);
+            panel.AddToClassList("player-card");
+            var head = new VisualElement();
+            head.AddToClassList("player-card__head");
+            var face = new VisualElement { pickingMode = PickingMode.Ignore };
+            face.AddToClassList("player-card__face");
+            var initial = new Label { pickingMode = PickingMode.Ignore };
+            initial.AddToClassList("seat__initial");
+            face.Add(initial);
+            AvatarArt.Apply(face, initial, AvatarArt.ForAccount(friend.UserId), friend.Name);
+            var dot = new VisualElement { pickingMode = PickingMode.Ignore };
+            dot.AddToClassList("player-card__dot");
+            face.Add(dot);
+            head.Add(face);
+            var who = new VisualElement();
+            who.AddToClassList("player-card__who");
+            var title = new Label(friend.Name);
+            title.AddToClassList("player-card__name");
+            who.Add(title);
+            head.Add(who);
+            panel.Add(head);
+            var code = friend.TableCode;
+            Button? main = null;
+            string where;
+            if (code != null && friend.Joinable)
+            {
+                where = Strings.Format(UiText.WhereTable, friend.OpenSeats);
+                main = Navigation.Sheet.Button(Strings.Format(UiText.JoinTheirTable, friend.Name), () => { Navigation.Sheet.Close(panel); _join2?.Invoke(name, code, null); }, "yes");
+            }
+            else if (code != null && friend.Watchable && _watch != null)
+            {
+                where = UiText.WhereWatching;
+                main = Navigation.Sheet.Button(UiText.Watch, () => { Navigation.Sheet.Close(panel); _watch(name, code, null); }, "yes");
+            }
+            else
+            {
+                where = code != null ? UiText.InARound : UiText.OnHome;
+                if (InviteToMine != null && code == null)
+                {
+                    main = Navigation.Sheet.Button(UiText.InviteToMine, () => { Navigation.Sheet.Close(panel); InviteToMine(name, friend.UserId); }, "yes");
+                }
+            }
+
+            var line = new Label(where);
+            line.AddToClassList("player-card__where");
+            panel.Add(line);
+            if (main != null)
+            {
+                main.AddToClassList("player-card__main");
+                panel.Add(main);
+            }
+
+            if (OpenFriend != null)
+            {
+                var links = new VisualElement();
+                links.AddToClassList("player-card__links");
+                var more = new Button(() => { Navigation.Sheet.Close(panel); OpenFriend(name, friend.UserId); }) { text = UiText.MoreForFriend };
+                more.AddToClassList("player-card__link");
+                links.Add(more);
+                panel.Add(links);
+            }
+        }
+
         /// <summary>The server keeps names of 2 to 20 characters (GDD 9.4); a shorter one is refused here with the reason.</summary>
         public const int MinNameLength = 2;
 
@@ -515,23 +590,8 @@ namespace Hulla.Presentation.Screens.Home
                 var friend = online![i];
                 var face = new VisualElement { tooltip = friend.Name + " (" + UiText.Presence(friend.State) + ")" };
                 face.AddToClassList("party__face");
-                // A friend at a table is joined (the server refuses a full or private one in plain words); the rest open Friends.
-                var code = friend.TableCode;
-                face.RegisterCallback<ClickEvent>(_ => WithName(name =>
-                {
-                    if (code != null && friend.Joinable)
-                    {
-                        _join2?.Invoke(name, code, null);
-                    }
-                    else if (code != null && friend.Watchable && _watch != null)
-                    {
-                        _watch(name, code, null);
-                    }
-                    else
-                    {
-                        _openFriends?.Invoke(name, null);
-                    }
-                }));
+                // A face opens the player sheet over Home (design: Home, friend avatar).
+                face.RegisterCallback<ClickEvent>(_ => WithName(name => OpenFriendSheet(name, friend)));
                 var avatar = new VisualElement { pickingMode = PickingMode.Ignore };
                 avatar.AddToClassList("seat__avatar");
                 avatar.AddToClassList("party__avatar");

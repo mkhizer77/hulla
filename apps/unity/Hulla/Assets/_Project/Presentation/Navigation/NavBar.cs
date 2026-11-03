@@ -72,6 +72,10 @@ namespace Hulla.Presentation.Navigation
             }
         }
 
+        /// <summary>Shows or hides a tab (the Shop follows the remote switch).</summary>
+        public void SetShown(NavTab tab, bool shown) =>
+            _buttons[tab].style.display = shown ? DisplayStyle.Flex : DisplayStyle.None;
+
         /// <summary>A count on the tab; 0 hides it, more than nine shows "9+".</summary>
         public void SetBadge(NavTab tab, int count)
         {

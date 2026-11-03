@@ -124,6 +124,10 @@ namespace Hulla.Presentation.Navigation
             {
                 _nav = new NavBar(Text.UiText.NavLabel);
                 _nav.Chosen += tab => NavChosen?.Invoke(tab);
+                foreach (var hidden in _hiddenTabs)
+                {
+                    _nav.SetShown(hidden, false);
+                }
             }
 
             if (_nav.parent != root)
@@ -138,6 +142,23 @@ namespace Hulla.Presentation.Navigation
         }
 
         public void HideNav() => _nav?.RemoveFromHierarchy();
+
+        private readonly System.Collections.Generic.HashSet<NavTab> _hiddenTabs = new System.Collections.Generic.HashSet<NavTab>();
+
+        /// <summary>Shows or hides a tab now and whenever the bar is built again.</summary>
+        public void SetNavTabShown(NavTab tab, bool shown)
+        {
+            if (shown)
+            {
+                _hiddenTabs.Remove(tab);
+            }
+            else
+            {
+                _hiddenTabs.Add(tab);
+            }
+
+            _nav?.SetShown(tab, shown);
+        }
 
         /// <summary>A count on a tab, shown whether or not the bar is on screen right now.</summary>
         public void SetNavBadge(NavTab tab, int count)
