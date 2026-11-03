@@ -153,6 +153,10 @@
         },
         "seatNext": {
           "type": "boolean"
+        },
+        "friendOfSeat": {
+          "$ref": "../common.json#/definitions/seatIndexOrNull",
+          "description": "The lowest seat whose player the watcher is a friend of (GDD 7.7); null when none is seated now"
         }
       }
     },
@@ -268,6 +272,17 @@
       "type": "object",
       "additionalProperties": false,
       "description": "Host only: seats a spectator now, or for the next round while one is in progress (GDD 9.10)",
+      "required": ["userId"],
+      "properties": {
+        "userId": {
+          "$ref": "../common.json#/definitions/playerId"
+        }
+      }
+    },
+    "remove_spectator": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Host only: removes a watcher from the table; they cannot come back to it (GDD 7.7, 9.9)",
       "required": ["userId"],
       "properties": {
         "userId": {

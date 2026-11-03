@@ -15,6 +15,7 @@ export const OPCODES = {
   ping: { opcode: 12, direction: "c2s", visibility: "public" },
   seat_spectator: { opcode: 13, direction: "c2s", visibility: "public" },
   set_mic: { opcode: 14, direction: "c2s", visibility: "public" },
+  remove_spectator: { opcode: 15, direction: "c2s", visibility: "public" },
   chat_text: { opcode: 20, direction: "c2s", visibility: "public" },
   quick_chat: { opcode: 21, direction: "c2s", visibility: "public" },
   emote: { opcode: 22, direction: "c2s", visibility: "public" },
