@@ -1,0 +1,13 @@
+# Firebase Test Lab devices for the nightly matrix (GDD 28.4; docs/runbooks/device-matrix.md).
+# One device per line as gcloud's --device value. Virtual devices fall in the free daily quota;
+# physical ones stand in for the GDD tiers and cost quota, so check the ids with
+# `gcloud firebase test android models list` before adding them.
+#
+# Low tier: a small, older phone.
+model=SmallPhone.arm,version=30,locale=en,orientation=portrait
+# Mid tier.
+model=MediumPhone.arm,version=34,locale=en,orientation=portrait
+# The same phone in Urdu, so right-to-left layout is crawled too.
+model=MediumPhone.arm,version=34,locale=ur,orientation=portrait
+# Physical stand-ins, off until the quota allows (Pixel 6a for the mid tier, a Galaxy A for the low tier):
+# model=bluejay,version=33,locale=en,orientation=portrait
