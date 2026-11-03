@@ -1724,7 +1724,7 @@
   },
   {
    "key": "phone.code_label",
-   "text": "The code from the text",
+   "text": "The code we sent",
    "smart": false
   },
   {
@@ -1773,8 +1773,23 @@
    "smart": true
   },
   {
+   "key": "phone.sent_fallback",
+   "text": "WhatsApp didn't work, so we sent a code by SMS to {0}.",
+   "smart": true
+  },
+  {
+   "key": "phone.sent_whatsapp",
+   "text": "We sent a code on WhatsApp to {0}.",
+   "smart": true
+  },
+  {
    "key": "phone.settings_action",
    "text": "Phone number",
+   "smart": false
+  },
+  {
+   "key": "phone.sms_instead",
+   "text": "Send by SMS instead",
    "smart": false
   },
   {

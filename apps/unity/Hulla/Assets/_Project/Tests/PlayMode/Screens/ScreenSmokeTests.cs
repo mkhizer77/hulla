@@ -664,7 +664,7 @@ namespace Hulla.Screens.Tests
             _ = model.SendAsync("+923001234567", default);
             yield return null;
             Shown(root.Q<VisualElement>("code-step"), "the code field");
-            Assert.AreEqual("We sent a code to +92 ••• 67.", root.Q<Label>("sent").text);
+            Assert.AreEqual("We sent a code to +92\u00A0•••\u00A067.", root.Q<Label>("sent").text, "the masked number keeps to one line");
             _ = model.VerifyAsync("234567", default);
             yield return null;
             Shown(root.Q<VisualElement>("offer-step"), "the switch offer");

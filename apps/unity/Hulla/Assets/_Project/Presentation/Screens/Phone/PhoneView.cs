@@ -1,4 +1,5 @@
 using System;
+using Hulla.Application.Services;
 using Hulla.Application.ViewModels;
 using Hulla.Presentation.Text;
 using UnityEngine;
@@ -22,6 +23,8 @@ namespace Hulla.Presentation.Screens.Phone
         private readonly Label _sent;
         private readonly Label _status;
         private readonly Button[] _actions;
+        private readonly Button _smsInstead;
+        private readonly bool _smsWired;
 
         public PhoneView(VisualElement root, PhoneViewModel model, Action back, PhoneActions act)
         {
@@ -49,12 +52,14 @@ namespace Hulla.Presentation.Screens.Phone
             var send = Button(root, "send", Strings.Text("phone.send"), () => act.Send(_number.value));
             var verify = Button(root, "verify", Strings.Text("phone.verify"), () => act.Verify(_code.value));
             var other = Button(root, "other-number", Strings.Text("phone.other_number"), act.StartOver);
+            _smsInstead = Button(root, "sms-instead", Strings.Text("phone.sms_instead"), () => act.SendBySms?.Invoke());
+            _smsWired = act.SendBySms != null;
             var remove = Button(root, "remove", Strings.Text("phone.remove"), act.Remove);
             var switchButton = Button(root, "switch", Strings.Text("phone.switch"), act.Switch);
             var decline = Button(root, "decline", UiText.Cancel, act.StartOver);
             root.Q<Label>("linked").text = Strings.Text("phone.linked");
             root.Q<Label>("offer").text = Strings.Text("phone.offer");
-            _actions = new[] { send, verify, other, remove, switchButton, decline };
+            _actions = new[] { send, verify, other, _smsInstead, remove, switchButton, decline };
             _model.Changed += Refresh;
             Refresh();
         }
@@ -81,9 +86,13 @@ namespace Hulla.Presentation.Screens.Phone
                 action.SetEnabled(!_model.Busy);
             }
 
+            Show(_smsInstead, false);
             if (stage == PhoneViewModel.Stage.CodeSent)
             {
-                _sent.text = Strings.Get("phone.sent", _model.MaskedPhone);
+                _sent.text = Strings.Get(
+                    _model.Channel == PhoneChannels.WhatsApp ? "phone.sent_whatsapp" : _model.Fallback ? "phone.sent_fallback" : "phone.sent",
+                    _model.MaskedPhone.Replace(' ', '\u00A0'));
+                Show(_smsInstead, _model.CanSendBySms && _smsWired);
                 _code.value = "";
             }
 
@@ -120,6 +129,9 @@ namespace Hulla.Presentation.Screens.Phone
             public Action Switch { get; }
 
             public Action StartOver { get; }
+
+            /// <summary>Sends the code again by SMS; null hides the button.</summary>
+            public Action? SendBySms { get; set; }
         }
     }
 }

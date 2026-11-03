@@ -56,17 +56,37 @@ namespace Hulla.Application.ViewModels
             Changed?.Invoke();
         }
 
-        public async Awaitable SendAsync(string phone, CancellationToken cancellation)
+        /// <summary>Where the last code went (whatsapp or sms).</summary>
+        public string Channel { get; private set; } = PhoneChannels.Sms;
+
+        /// <summary>WhatsApp failed and the server sent the code by SMS instead.</summary>
+        public bool Fallback { get; private set; }
+
+        /// <summary>A code on WhatsApp may not arrive (no WhatsApp on the number): offer SMS when the server has it.</summary>
+        public bool CanSendBySms { get; private set; }
+
+        public Awaitable SendAsync(string phone, CancellationToken cancellation)
+        {
+            Phone = phone.Trim();
+            return StartAsync(null, cancellation);
+        }
+
+        /// <summary>"Send by SMS instead": the same number, by SMS, within the same resend wait and limits.</summary>
+        public Awaitable SendBySmsAsync(CancellationToken cancellation) => StartAsync(PhoneChannels.Sms, cancellation);
+
+        private async Awaitable StartAsync(string? channel, CancellationToken cancellation)
         {
             Begin();
             Removed = false;
-            Phone = phone.Trim();
-            var sent = await _service.StartAsync(Phone, cancellation);
+            var sent = await _service.StartAsync(Phone, channel, cancellation);
             Finish(sent.IsOk ? null : sent.Error.Code);
             if (sent.IsOk)
             {
                 MaskedPhone = sent.Value.MaskedPhone;
                 ResendAfterTs = sent.Value.ResendAfterTs;
+                Channel = sent.Value.Channel == PhoneChannels.WhatsApp ? PhoneChannels.WhatsApp : PhoneChannels.Sms;
+                Fallback = sent.Value.Fallback;
+                CanSendBySms = Channel == PhoneChannels.WhatsApp && System.Linq.Enumerable.Contains(sent.Value.Channels, PhoneChannels.Sms);
                 Current = Stage.CodeSent;
             }
 

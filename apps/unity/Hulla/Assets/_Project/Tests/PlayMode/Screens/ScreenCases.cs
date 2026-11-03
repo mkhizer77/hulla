@@ -254,6 +254,16 @@ namespace Hulla.Screens.Tests
                 new Hulla.Presentation.Screens.Phone.PhoneView(r, model, () => { }, new Hulla.Presentation.Screens.Phone.PhoneView.PhoneActions(_ => { }, _ => { }, () => { }, () => { }, () => { }));
                 _ = model.RefreshAsync(default);
             });
+            yield return new Case("phone-whatsapp", catalog.Phone, r =>
+            {
+                var model = new PhoneViewModel(new Fakes.Phone { WhatsApp = true });
+                new Hulla.Presentation.Screens.Phone.PhoneView(r, model, () => { }, new Hulla.Presentation.Screens.Phone.PhoneView.PhoneActions(_ => { }, _ => { }, () => { }, () => { }, () => { })
+                {
+                    SendBySms = () => { },
+                });
+                _ = model.RefreshAsync(default);
+                _ = model.SendAsync("+923001234567", default);
+            });
             yield return new Case("missions", catalog.Missions, r =>
             {
                 var model = new MissionsViewModel(new Fakes.Missions());

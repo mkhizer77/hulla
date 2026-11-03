@@ -15,6 +15,7 @@ namespace Hulla.Application.Tests
             public bool Linked;
             public Result<PhoneVerified> Verify = Result<PhoneVerified>.Ok(new PhoneVerified(true, "+92 ••• 67", null));
             public readonly List<string> Calls = new List<string>();
+            public bool WhatsApp;
 
             private static Awaitable<T> Done<T>(T value)
             {
@@ -25,11 +26,14 @@ namespace Hulla.Application.Tests
 
             public Awaitable<Result<bool>> StatusAsync(CancellationToken c) => Done(Result<bool>.Ok(Linked));
 
-            public Awaitable<Result<PhoneCodeSent>> StartAsync(string phone, CancellationToken c)
+            public Awaitable<Result<PhoneCodeSent>> StartAsync(string phone, string? channel, CancellationToken c)
             {
-                Calls.Add("start " + phone);
+                Calls.Add("start " + phone + (channel == null ? "" : " " + channel));
+                var sent = WhatsApp && channel == null
+                    ? new PhoneCodeSent("+92 ••• 67", 1000, 60, PhoneChannels.WhatsApp, new[] { PhoneChannels.WhatsApp, PhoneChannels.Sms })
+                    : new PhoneCodeSent("+92 ••• 67", 1000, 60, PhoneChannels.Sms, WhatsApp ? new[] { PhoneChannels.WhatsApp, PhoneChannels.Sms } : null);
                 return Done(phone.StartsWith("+")
-                    ? Result<PhoneCodeSent>.Ok(new PhoneCodeSent("+92 ••• 67", 1000, 60))
+                    ? Result<PhoneCodeSent>.Ok(sent)
                     : Result<PhoneCodeSent>.Fail("auth.otp_invalid_phone"));
             }
 
@@ -65,6 +69,23 @@ namespace Hulla.Application.Tests
             _ = model.VerifyAsync(" 234567", CancellationToken.None);
             Assert.AreEqual(PhoneViewModel.Stage.Linked, model.Current);
             CollectionAssert.AreEqual(new[] { "start +923001234567", "verify +923001234567 234567" }, service.Calls);
+        }
+
+        [Test]
+        public void ACodeOnWhatsAppOffersSmsInsteadAndSmsDoesNot()
+        {
+            var service = new FakePhone { WhatsApp = true };
+            var model = new PhoneViewModel(service);
+            _ = model.RefreshAsync(CancellationToken.None);
+            _ = model.SendAsync("+923001234567", CancellationToken.None);
+            Assert.AreEqual(PhoneChannels.WhatsApp, model.Channel);
+            Assert.IsTrue(model.CanSendBySms);
+
+            _ = model.SendBySmsAsync(CancellationToken.None);
+            Assert.AreEqual(PhoneChannels.Sms, model.Channel);
+            Assert.IsFalse(model.CanSendBySms);
+            Assert.AreEqual(PhoneViewModel.Stage.CodeSent, model.Current);
+            CollectionAssert.AreEqual(new[] { "start +923001234567", "start +923001234567 sms" }, service.Calls);
         }
 
         [Test]
