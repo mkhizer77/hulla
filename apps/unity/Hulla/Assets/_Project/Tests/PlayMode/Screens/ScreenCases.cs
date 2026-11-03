@@ -195,6 +195,38 @@ namespace Hulla.Screens.Tests
                 SegmentBar.Mount(r, ShopTabs, "pass");
                 _ = model.RefreshAsync(default);
             });
+            yield return new Case("shop-gems", catalog.Shop, r =>
+            {
+                var model = new ShopViewModel(new Fakes.Shop());
+                new ShopView(r, model, () => { }, _ => { }, _ => { }, Fakes.ReadyPurchases());
+                SegmentBar.Mount(r, ShopTabs, "shop");
+                _ = model.RefreshAsync(default);
+                model.Show(StoreView.Category);
+            });
+            yield return new Case("store-product", catalog.Shop, r =>
+            {
+                var model = new ShopViewModel(new Fakes.Shop());
+                var purchases = Fakes.ReadyPurchases();
+                new ShopView(r, model, () => { }, _ => { }, _ => { }, purchases);
+                model.Show(StoreView.Category);
+                StoreView.OpenProduct(r, purchases, purchases.Info("starter_bundle")!);
+            });
+            yield return new Case("pass-premium", catalog.Pass, r =>
+            {
+                var model = new PassViewModel(new Fakes.Pass());
+                var purchases = Fakes.ReadyPurchases();
+                new PassView(r, model, () => 1_000_000_000_000, () => { }, (_, _) => { }, purchases);
+                SegmentBar.Mount(r, ShopTabs, "pass");
+                _ = model.RefreshAsync(default);
+            });
+            yield return new Case("premium-sheet", catalog.Pass, r =>
+            {
+                var model = new PassViewModel(new Fakes.Pass());
+                var purchases = Fakes.ReadyPurchases();
+                new PassView(r, model, () => 1_000_000_000_000, () => { }, (_, _) => { }, purchases);
+                _ = model.RefreshAsync(default);
+                StoreView.OpenPremium(r, purchases);
+            });
             yield return new Case("phone", catalog.Phone, r =>
             {
                 var model = new PhoneViewModel(new Fakes.Phone());

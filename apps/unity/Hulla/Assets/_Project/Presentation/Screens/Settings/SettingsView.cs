@@ -86,6 +86,9 @@ namespace Hulla.Presentation.Screens.Settings
 
             /// <summary>Apple, Google and Facebook (GDD 10.2, #38); null hides the rows.</summary>
             public SocialRows? Social { get; }
+
+            /// <summary>Restore purchases (GDD 13.4); null hides the row where the phone has no store.</summary>
+            public Action<Action<string>>? RestorePurchases { get; set; }
         }
 
         /// <summary>The sign-in providers this build offers, which are linked, and what a tap does.</summary>
@@ -362,6 +365,11 @@ namespace Hulla.Presentation.Screens.Settings
             if (_account.Phone != null)
             {
                 Row(Strings.Text("phone.settings_action"), "", _account.Phone);
+            }
+
+            if (_account.RestorePurchases != null)
+            {
+                Row(UiText.RestorePurchases, "", () => _account.RestorePurchases(Status));
             }
 
             Row(UiText.ExportData, "", () => _account.Export(Status));

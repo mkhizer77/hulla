@@ -843,6 +843,26 @@
    "smart": false
   },
   {
+   "key": "error.economy.payment_declined",
+   "text": "[Thé påýméñt dîdñ't gö thröûgh. · · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "error.economy.purchase_deferred",
+   "text": "[Wåîtîñg för åpprövål. Ît's åddéd öñçé ît's åpprövéd. · · · · · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "error.economy.purchase_pending",
+   "text": "[Å pûrçhåsé îs stîll wåîtîñg för thé störé. · · · · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "error.economy.receipt_invalid",
+   "text": "[Thé störé çöûldñ't çöñfîrm thåt pûrçhåsé. Ñöthîñg wås åddéd. · · · · · · · · ·]",
+   "smart": false
+  },
+  {
    "key": "error.economy.store_unavailable",
    "text": "[Thé shöp îs çlöséd rîght ñöw. Trý låtér. · · · · · ·]",
    "smart": false
@@ -2853,6 +2873,11 @@
    "smart": true
   },
   {
+   "key": "ui.ads_removed",
+   "text": "[Åds rémövéd. Thåñk ýöû! · · · ·]",
+   "smart": false
+  },
+  {
    "key": "ui.after_rounds",
    "text": "[Åftér {0} röûñds · · ·]",
    "smart": true
@@ -3003,6 +3028,11 @@
    "smart": false
   },
   {
+   "key": "ui.bundle_added",
+   "text": "[Stårtér bûñdlé åddéd. Thåñk ýöû! · · · · ·]",
+   "smart": false
+  },
+  {
    "key": "ui.buy",
    "text": "[Bûý ·]",
    "smart": false
@@ -3010,6 +3040,11 @@
   {
    "key": "ui.buy_equip",
    "text": "[Bûý & éqûîp · {0} · · ·]",
+   "smart": true
+  },
+  {
+   "key": "ui.buy_price",
+   "text": "[Bûý · {0} · ·]",
    "smart": true
   },
   {
@@ -3508,6 +3543,11 @@
    "smart": false
   },
   {
+   "key": "ui.gems_added",
+   "text": "[{0} géms åddéd. Thåñk ýöû! · · · ·]",
+   "smart": true
+  },
+  {
    "key": "ui.gems_and_title",
    "text": "[{0} géms + thé tîtlé \"{1}\" · · · ·]",
    "smart": true
@@ -3521,6 +3561,11 @@
    "key": "ui.gems_only",
    "text": "[{0} géms · ·]",
    "smart": true
+  },
+  {
+   "key": "ui.get_gems",
+   "text": "[Gét géms · ·]",
+   "smart": false
   },
   {
    "key": "ui.hand_over",
@@ -4023,6 +4068,11 @@
    "smart": false
   },
   {
+   "key": "ui.owned",
+   "text": "[Öwñéd ·]",
+   "smart": false
+  },
+  {
    "key": "ui.owned_equip",
    "text": "[Öwñéd · Éqûîp · ·]",
    "smart": false
@@ -4041,6 +4091,16 @@
    "key": "ui.pass_progress",
    "text": "[Tîér {0} öf {1} · {2:N0}/{3:N0} XP · · · · ·]",
    "smart": true
+  },
+  {
+   "key": "ui.pass_unlocked",
+   "text": "[Prémîûm påss ûñlöçkéd. Thåñk ýöû! · · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.pass_waiting",
+   "text": "[Ýöûr prémîûm påss stårts wîth thé ñéxt séåsöñ · · · · · · ·]",
+   "smart": false
   },
   {
    "key": "ui.paste_code",
@@ -4158,8 +4218,18 @@
    "smart": true
   },
   {
+   "key": "ui.premium_line",
+   "text": "[Prémîûm réwårds öñ évérý tîér thîs séåsöñ · · · · · · ·]",
+   "smart": false
+  },
+  {
    "key": "ui.premium_locked",
    "text": "[Thé prémîûm tråçk öpéñs wîth thé prémîûm påss. · · · · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.premium_plus_line",
+   "text": "[Prémîûm réwårds åñd 10 tîérs åhéåd · · · · · ·]",
    "smart": false
   },
   {
@@ -4198,6 +4268,16 @@
    "smart": false
   },
   {
+   "key": "ui.product_frame",
+   "text": "[Å pröfîlé fråmé · · ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.product_gems",
+   "text": "[{0} géms · ·]",
+   "smart": true
+  },
+  {
    "key": "ui.profile",
    "text": "[Pröfîlé · ·]",
    "smart": false
@@ -4216,6 +4296,11 @@
    "key": "ui.progress_line",
    "text": "[Lévél {0} · {1}/{2} XP · {3} çöîñs · · · · · ·]",
    "smart": true
+  },
+  {
+   "key": "ui.purchases_restored",
+   "text": "[Pûrçhåsés réstöréd · · ·]",
+   "smart": false
   },
   {
    "key": "ui.quick_play",
@@ -4313,6 +4398,11 @@
    "smart": false
   },
   {
+   "key": "ui.remove_ads_line",
+   "text": "[Ñö åds bétwééñ röûñds. Åds för réwårds ståý ýöûr çhöîçé. · · · · · · · · ·]",
+   "smart": false
+  },
+  {
    "key": "ui.remove_friend",
    "text": "[Rémövé frîéñd · ·]",
    "smart": false
@@ -4351,6 +4441,11 @@
    "key": "ui.resets_in",
    "text": "[Réséts îñ {0}. Töp 10 wîñ géms. · · · · ·]",
    "smart": true
+  },
+  {
+   "key": "ui.restore_purchases",
+   "text": "[Réstöré pûrçhåsés · · ·]",
+   "smart": false
   },
   {
    "key": "ui.retry",
@@ -4818,6 +4913,21 @@
    "smart": false
   },
   {
+   "key": "ui.store_offline",
+   "text": "[Thé störé îsñ't réåçhåblé rîght ñöw · · · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.store_phone_only",
+   "text": "[Pûrçhåsés öpéñ îñ thé åpp öñ ýöûr phöñé · · · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.store_tab",
+   "text": "[Géms ·]",
+   "smart": false
+  },
+  {
    "key": "ui.streak_suffix",
    "text": "[ · dåý {0} stréåk · · ·]",
    "smart": true
@@ -4940,6 +5050,11 @@
   {
    "key": "ui.unfavourite_word",
    "text": "[Ûñfåvöûrîté · ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.unlock_premium",
+   "text": "[Ûñlöçk Prémîûm · · ·]",
    "smart": false
   },
   {

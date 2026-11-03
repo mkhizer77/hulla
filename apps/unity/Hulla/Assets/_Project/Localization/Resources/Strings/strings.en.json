@@ -843,6 +843,26 @@
    "smart": false
   },
   {
+   "key": "error.economy.payment_declined",
+   "text": "The payment didn't go through.",
+   "smart": false
+  },
+  {
+   "key": "error.economy.purchase_deferred",
+   "text": "Waiting for approval. It's added once it's approved.",
+   "smart": false
+  },
+  {
+   "key": "error.economy.purchase_pending",
+   "text": "A purchase is still waiting for the store.",
+   "smart": false
+  },
+  {
+   "key": "error.economy.receipt_invalid",
+   "text": "The store couldn't confirm that purchase. Nothing was added.",
+   "smart": false
+  },
+  {
    "key": "error.economy.store_unavailable",
    "text": "The shop is closed right now. Try later.",
    "smart": false
@@ -2853,6 +2873,11 @@
    "smart": true
   },
   {
+   "key": "ui.ads_removed",
+   "text": "Ads removed. Thank you!",
+   "smart": false
+  },
+  {
    "key": "ui.after_rounds",
    "text": "After {0} rounds",
    "smart": true
@@ -3003,6 +3028,11 @@
    "smart": false
   },
   {
+   "key": "ui.bundle_added",
+   "text": "Starter bundle added. Thank you!",
+   "smart": false
+  },
+  {
    "key": "ui.buy",
    "text": "Buy",
    "smart": false
@@ -3010,6 +3040,11 @@
   {
    "key": "ui.buy_equip",
    "text": "Buy & equip · {0}",
+   "smart": true
+  },
+  {
+   "key": "ui.buy_price",
+   "text": "Buy · {0}",
    "smart": true
   },
   {
@@ -3508,6 +3543,11 @@
    "smart": false
   },
   {
+   "key": "ui.gems_added",
+   "text": "{0} gems added. Thank you!",
+   "smart": true
+  },
+  {
    "key": "ui.gems_and_title",
    "text": "{0} gems + the title \"{1}\"",
    "smart": true
@@ -3521,6 +3561,11 @@
    "key": "ui.gems_only",
    "text": "{0} gems",
    "smart": true
+  },
+  {
+   "key": "ui.get_gems",
+   "text": "Get gems",
+   "smart": false
   },
   {
    "key": "ui.hand_over",
@@ -4023,6 +4068,11 @@
    "smart": false
   },
   {
+   "key": "ui.owned",
+   "text": "Owned",
+   "smart": false
+  },
+  {
    "key": "ui.owned_equip",
    "text": "Owned · Equip",
    "smart": false
@@ -4041,6 +4091,16 @@
    "key": "ui.pass_progress",
    "text": "Tier {0} of {1} · {2:N0}/{3:N0} XP",
    "smart": true
+  },
+  {
+   "key": "ui.pass_unlocked",
+   "text": "Premium pass unlocked. Thank you!",
+   "smart": false
+  },
+  {
+   "key": "ui.pass_waiting",
+   "text": "Your premium pass starts with the next season",
+   "smart": false
   },
   {
    "key": "ui.paste_code",
@@ -4158,8 +4218,18 @@
    "smart": true
   },
   {
+   "key": "ui.premium_line",
+   "text": "Premium rewards on every tier this season",
+   "smart": false
+  },
+  {
    "key": "ui.premium_locked",
    "text": "The premium track opens with the premium pass.",
+   "smart": false
+  },
+  {
+   "key": "ui.premium_plus_line",
+   "text": "Premium rewards and 10 tiers ahead",
    "smart": false
   },
   {
@@ -4198,6 +4268,16 @@
    "smart": false
   },
   {
+   "key": "ui.product_frame",
+   "text": "A profile frame",
+   "smart": false
+  },
+  {
+   "key": "ui.product_gems",
+   "text": "{0} gems",
+   "smart": true
+  },
+  {
    "key": "ui.profile",
    "text": "Profile",
    "smart": false
@@ -4216,6 +4296,11 @@
    "key": "ui.progress_line",
    "text": "Level {0} · {1}/{2} XP · {3} coins",
    "smart": true
+  },
+  {
+   "key": "ui.purchases_restored",
+   "text": "Purchases restored",
+   "smart": false
   },
   {
    "key": "ui.quick_play",
@@ -4313,6 +4398,11 @@
    "smart": false
   },
   {
+   "key": "ui.remove_ads_line",
+   "text": "No ads between rounds. Ads for rewards stay your choice.",
+   "smart": false
+  },
+  {
    "key": "ui.remove_friend",
    "text": "Remove friend",
    "smart": false
@@ -4351,6 +4441,11 @@
    "key": "ui.resets_in",
    "text": "Resets in {0}. Top 10 win gems.",
    "smart": true
+  },
+  {
+   "key": "ui.restore_purchases",
+   "text": "Restore purchases",
+   "smart": false
   },
   {
    "key": "ui.retry",
@@ -4818,6 +4913,21 @@
    "smart": false
   },
   {
+   "key": "ui.store_offline",
+   "text": "The store isn't reachable right now",
+   "smart": false
+  },
+  {
+   "key": "ui.store_phone_only",
+   "text": "Purchases open in the app on your phone",
+   "smart": false
+  },
+  {
+   "key": "ui.store_tab",
+   "text": "Gems",
+   "smart": false
+  },
+  {
    "key": "ui.streak_suffix",
    "text": " · day {0} streak",
    "smart": true
@@ -4940,6 +5050,11 @@
   {
    "key": "ui.unfavourite_word",
    "text": "Unfavourite",
+   "smart": false
+  },
+  {
+   "key": "ui.unlock_premium",
+   "text": "Unlock Premium",
    "smart": false
   },
   {

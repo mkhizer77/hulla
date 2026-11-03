@@ -68,6 +68,7 @@ namespace Hulla.Composition
                 Hulla.Application.Social.PhoneNumbers.CallingCode(System.Globalization.RegionInfo.CurrentRegion.TwoLetterISORegionName));
             Achievements = new AchievementsViewModel(new NakamaAchievementsService(_connection));
             Shop = new ShopViewModel(new NakamaShopService(_connection));
+            Purchases = new PurchasesViewModel(CreateStore(), new NakamaPurchaseService(_connection));
             var notifications = new NakamaNotificationsService(_connection);
             NotificationsService = notifications;
             NotificationSettings = new NotificationSettingsViewModel(notifications);
@@ -105,6 +106,16 @@ namespace Hulla.Composition
             return fake ? new Hulla.Infrastructure.Voice.FakeVoiceService() : new Hulla.Infrastructure.Voice.NoVoiceService();
 #else
             return fake ? new Hulla.Infrastructure.Voice.FakeVoiceService() : new Hulla.Infrastructure.Voice.LiveKitVoiceService();
+#endif
+        }
+
+        /// <summary>Apple or Google on phones; no store in the editor and on desktop, so purchases stay hidden there.</summary>
+        private static Hulla.Application.Economy.IAppStore CreateStore()
+        {
+#if (UNITY_ANDROID || UNITY_IOS) && !UNITY_EDITOR
+            return new Hulla.Infrastructure.Purchasing.UnityIapStore();
+#else
+            return new Hulla.Application.Economy.NoAppStore();
 #endif
         }
 
@@ -172,6 +183,9 @@ namespace Hulla.Composition
         public AchievementsViewModel Achievements { get; }
 
         public ShopViewModel Shop { get; }
+
+        /// <summary>Store purchases, validated and granted by the server (GDD 13.4, #58).</summary>
+        public PurchasesViewModel Purchases { get; }
 
         public INotificationsService NotificationsService { get; }
 
