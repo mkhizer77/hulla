@@ -159,6 +159,14 @@ namespace Hulla.Presentation.Text
 
         public static string PremiumStore => Strings.Text("ui.premium_store");
 
+        public static string FriendOf => Strings.Text("ui.friend_of");
+
+        public static string RemoveFromTable => Strings.Text("ui.remove_from_table");
+
+        public static string RemovedWatcher => Strings.Text("ui.removed_watcher");
+
+        public static string RemovedByHost => Strings.Text("ui.removed_by_host");
+
         public static string MoreForFriend => Strings.Text("ui.more_for_friend");
 
         public static string SeenJustNow => Strings.Text("ui.seen_just_now");

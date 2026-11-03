@@ -584,6 +584,46 @@ namespace Hulla.Screens.Tests
         }
 
         [UnityTest]
+        public IEnumerator TheHostSeesWhoseFriendEachWatcherIsAndRemovesOneFromTheirSheet()
+        {
+            VisualElement root = null!;
+            var removed = new List<string>();
+            yield return Open(Catalog.Table, r =>
+            {
+                root = r;
+                var gateway = new Fakes.Gateway();
+                var client = new TableClient(gateway, new TableTicket("m", "K7Q2MX", "t_K7Q2MX"), "me", 1);
+                var view = new ThullaTableView(r, client, new Fakes.Chat(), () => 0, () => { }) { RemoveSpectator = removed.Add };
+                view.UseMutes(_ => false, (_, _) => { });
+                var state = Fakes.InRound(4);
+                state.Spectators = new List<Spectator> { new Spectator { UserId = "w1", DisplayName = "Hamza", SeatNext = false, FriendOfSeat = 1 } };
+                gateway.Deliver(MessageTypes.TableState, 5, state);
+                view.OpenWatchers();
+            });
+            var tree = root.panel.visualTree;
+            var friend = UQueryExtensions.Q<Label>(tree, className: "watch-row__friend");
+            Assert.IsNotNull(friend, "the watcher's row names their seated friend");
+            StringAssert.EndsWith("'s friend", friend.text);
+            var row = UQueryExtensions.Q<Button>(tree, className: "watch-row");
+            using (var submit = NavigationSubmitEvent.GetPooled())
+            {
+                submit.target = row;
+                row.SendEvent(submit);
+            }
+
+            yield return null;
+            var remove = UQueryExtensions.Query<Button>(tree, className: "psheet__link").Where(b => b.text == "Remove from table").First();
+            Assert.IsNotNull(remove, "the host's sheet for a watcher offers Remove from table");
+            using (var submit = NavigationSubmitEvent.GetPooled())
+            {
+                submit.target = remove;
+                remove.SendEvent(submit);
+            }
+
+            CollectionAssert.AreEqual(new[] { "w1" }, removed);
+        }
+
+        [UnityTest]
         public IEnumerator AFriendsSheetLeadsWithTheirLevel()
         {
             VisualElement root = null!;

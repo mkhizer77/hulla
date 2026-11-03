@@ -3523,6 +3523,11 @@
    "smart": false
   },
   {
+   "key": "ui.friend_of",
+   "text": "{0}'s friend",
+   "smart": true
+  },
+  {
    "key": "ui.friend_table_banner",
    "text": "{0}'s table · {1} seats open",
    "smart": true
@@ -4441,6 +4446,21 @@
    "key": "ui.remove_friend",
    "text": "Remove friend",
    "smart": false
+  },
+  {
+   "key": "ui.remove_from_table",
+   "text": "Remove from table",
+   "smart": false
+  },
+  {
+   "key": "ui.removed_by_host",
+   "text": "The host removed you from this table.",
+   "smart": false
+  },
+  {
+   "key": "ui.removed_watcher",
+   "text": "{0} can't watch this table again.",
+   "smart": true
   },
   {
    "key": "ui.report",

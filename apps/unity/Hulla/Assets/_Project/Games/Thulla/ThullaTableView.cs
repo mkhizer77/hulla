@@ -496,6 +496,17 @@ namespace Hulla.Games.Thulla
                 Link(UiText.Report, () => ShowReasons(id, name));
             }
 
+            // The host takes a watcher off the table here, not on the Watching sheet's row (one action per row).
+            if (seat == null && _client.Model.IsHost && RemoveSpectator != null && IsWatching(id))
+            {
+                Link(UiText.RemoveFromTable, () =>
+                {
+                    RemoveSpectator?.Invoke(id);
+                    _sheetStatus.text = Strings.Format(UiText.RemovedWatcher, name);
+                    CloseSheetSoon();
+                });
+            }
+
             OpenPlayerSheet();
         }
 
@@ -1562,8 +1573,8 @@ namespace Hulla.Games.Thulla
 
         private static string ShortCode(string value) => value.Length > 12 ? value.Substring(0, 4) + "…" + value.Substring(value.Length - 4) : value;
 
-        /// <summary>The Watching sheet (design: Watching a table): who watches, the free seats, Seat for the host.</summary>
-        private void OpenWatchers()
+        /// <summary>The Watching sheet (design: Watching a table): who watches and whose friend, the free seats, Seat and Remove for the host.</summary>
+        public void OpenWatchers()
         {
             var model = _client.Model;
             var free = 0;
@@ -1611,7 +1622,16 @@ namespace Hulla.Games.Thulla
                 face.Add(initial);
                 AvatarArt.Apply(face, initial, AvatarArt.ForAccount(id), watcherName);
                 row.Add(face);
-                row.Add(Line(watcherName, "watch-row__name"));
+                var who = new VisualElement { pickingMode = PickingMode.Ignore };
+                who.AddToClassList("watch-row__who");
+                who.Add(Line(watcherName, "watch-row__name"));
+                // Whose friend they are (concept: Watching sheet), from the seat the server names.
+                if (watcher.FriendOfSeat is long friendSeat && friendSeat < model.Seats.Count && model.Seats[(int)friendSeat].Occupied)
+                {
+                    who.Add(Line(Strings.Format(UiText.FriendOf, NameOf(friendSeat)), "watch-row__friend"));
+                }
+
+                row.Add(who);
                 if (watcher.SeatNext)
                 {
                     row.Add(Line(UiText.SeatedNext, "watch-row__tag"));
@@ -1627,6 +1647,7 @@ namespace Hulla.Games.Thulla
                     seatButton.SetEnabled(free > 0);
                     row.Add(seatButton);
                 }
+
 
                 panel.Add(row);
             }
@@ -1660,6 +1681,22 @@ namespace Hulla.Games.Thulla
 
         /// <summary>The host seats a watcher from the Watching sheet; null hides Seat.</summary>
         public Action<string>? SeatSpectator { get; set; }
+
+        /// <summary>The host removes a watcher from their player sheet; null hides Remove from table.</summary>
+        public Action<string>? RemoveSpectator { get; set; }
+
+        private bool IsWatching(string userId)
+        {
+            foreach (var watcher in _client.Model.Spectators)
+            {
+                if (watcher.UserId == userId)
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
 
         private void OnChat(ChatLine line)
         {

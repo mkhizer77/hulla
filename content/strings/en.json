@@ -1079,7 +1079,11 @@
     "ui.seen_minutes": "Seen {0} min ago",
     "ui.seen_hours": "Seen {0} h ago",
     "ui.seen_days": "Seen {0} d ago",
-    "ui.more_for_friend": "More options"
+    "ui.more_for_friend": "More options",
+    "ui.friend_of": "{0}'s friend",
+    "ui.removed_by_host": "The host removed you from this table.",
+    "ui.remove_from_table": "Remove from table",
+    "ui.removed_watcher": "{0} can't watch this table again."
   },
   "notes": {
     "achievement.goal.bhabhis": "{0} the target count.",
@@ -1152,6 +1156,8 @@
     "phone.sent_fallback": "{0} the number with its middle hidden, such as +92 ••• 67.",
     "ui.seen_minutes": "{0} a whole number; the unit stays short (min, h, d) to fit one line.",
     "ui.seen_hours": "{0} a whole number; the unit stays short (min, h, d) to fit one line.",
-    "ui.seen_days": "{0} a whole number; the unit stays short (min, h, d) to fit one line."
+    "ui.seen_days": "{0} a whole number; the unit stays short (min, h, d) to fit one line.",
+    "ui.friend_of": "{0} the seated player the watcher is a friend of.",
+    "ui.removed_watcher": "{0} the watcher the host removed."
   }
 }

@@ -3523,6 +3523,11 @@
    "smart": false
   },
   {
+   "key": "ui.friend_of",
+   "text": "[{0}'s frîéñd · ·]",
+   "smart": true
+  },
+  {
    "key": "ui.friend_table_banner",
    "text": "[{0}'s tåblé · {1} séåts öpéñ · · · · ·]",
    "smart": true
@@ -4441,6 +4446,21 @@
    "key": "ui.remove_friend",
    "text": "[Rémövé frîéñd · ·]",
    "smart": false
+  },
+  {
+   "key": "ui.remove_from_table",
+   "text": "[Rémövé fröm tåblé · · ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.removed_by_host",
+   "text": "[Thé höst rémövéd ýöû fröm thîs tåblé. · · · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.removed_watcher",
+   "text": "[{0} çåñ't wåtçh thîs tåblé ågåîñ. · · · · ·]",
+   "smart": true
   },
   {
    "key": "ui.report",
