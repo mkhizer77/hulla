@@ -118,9 +118,17 @@ describe.skipIf(NAKAMA_HOST === undefined)(
       await host.next(
         (e) => e.type === "table_state" && (e.payload as TableState).spectators.length === 0,
       );
-      await expect(
-        friend.socket.joinMatch(created.matchId, undefined, { asSpectator: "true" }),
-      ).rejects.toBeDefined();
+      // A fresh socket, so the join goes through the table's checks rather than racing the drop of
+      // the old one, which Nakama may still count as in the match for a moment.
+      const again = api.createSocket(false, false);
+      await again.connect(friend.session, true);
+      try {
+        await expect(
+          again.joinMatch(created.matchId, undefined, { asSpectator: "true" }),
+        ).rejects.toBeDefined();
+      } finally {
+        again.disconnect(false);
+      }
     }, 60_000);
   },
 );
