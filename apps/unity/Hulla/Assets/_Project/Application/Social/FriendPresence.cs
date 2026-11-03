@@ -3,8 +3,9 @@ namespace Hulla.Application.Social
     /// <summary>A friend on Home: their presence and, when seated, the table and whether it can be joined.</summary>
     public sealed class FriendPresence
     {
-        public FriendPresence(string userId, string name, PresenceState state, bool favourite, string? tableCode, long openSeats, bool joinable, bool watchable = false)
+        public FriendPresence(string userId, string name, PresenceState state, bool favourite, string? tableCode, long openSeats, bool joinable, bool watchable = false, long? lastSeenTs = null)
         {
+            LastSeenTs = lastSeenTs;
             Watchable = watchable;
             UserId = userId;
             Name = name;
@@ -31,5 +32,8 @@ namespace Hulla.Application.Social
 
         /// <summary>Their table takes watchers (GDD 7.7).</summary>
         public bool Watchable { get; }
+
+        /// <summary>When an offline friend was last seen, in Unix ms; null while online or when they hide it.</summary>
+        public long? LastSeenTs { get; }
     }
 }

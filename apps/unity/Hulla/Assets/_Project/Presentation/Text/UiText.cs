@@ -159,6 +159,16 @@ namespace Hulla.Presentation.Text
 
         public static string PremiumStore => Strings.Text("ui.premium_store");
 
+        public static string MoreForFriend => Strings.Text("ui.more_for_friend");
+
+        public static string SeenJustNow => Strings.Text("ui.seen_just_now");
+
+        public static string SeenMinutes => Strings.Text("ui.seen_minutes");
+
+        public static string SeenHours => Strings.Text("ui.seen_hours");
+
+        public static string SeenDays => Strings.Text("ui.seen_days");
+
         public static string SwapForAd => Strings.Text("ui.swap_for_ad");
 
         public static string TryTableForAd => Strings.Text("ui.try_table_for_ad");

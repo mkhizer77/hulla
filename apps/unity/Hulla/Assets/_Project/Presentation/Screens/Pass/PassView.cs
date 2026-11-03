@@ -178,9 +178,18 @@ namespace Hulla.Presentation.Screens.Pass
             cell.AddToClassList("pass__cell");
             cell.EnableInClassList("pass__cell--premium", premiumTrack);
             cell.EnableInClassList("pass__cell--ahead", !tier.Reached);
-            var text = new Label(reward.Empty ? "" : Describe(reward));
+            // The reward's picture (concept: Pass): the item itself, else a coin or a gem, with the amount small.
+            var art = reward.Empty ? null : Art(reward);
+            if (art != null)
+            {
+                cell.Add(art);
+            }
+
+            var text = new Label(reward.Empty ? "" : art != null && reward.Items.Count > 0 ? "" : art != null ? Amount(reward) : Describe(reward));
             text.AddToClassList("pass__reward");
+            text.EnableInClassList("pass__reward--amount", art != null);
             cell.Add(text);
+            cell.tooltip = reward.Empty ? "" : Describe(reward);
             if (reward.Empty)
             {
                 return cell;
@@ -196,6 +205,7 @@ namespace Hulla.Presentation.Screens.Pass
             {
                 var claim = new Button(() => _claim(tier.Tier, premiumTrack)) { text = UiText.Claim };
                 claim.AddToClassList("pass__claim");
+                cell.AddToClassList("pass__cell--claim");
                 claim.SetEnabled(!_model.Busy);
                 cell.Add(claim);
             }
@@ -208,6 +218,40 @@ namespace Hulla.Presentation.Screens.Pass
 
             return cell;
         }
+
+        /// <summary>The cell's picture: a pictured item, else coins or gems; null for a title alone.</summary>
+        private static VisualElement? Art(PassReward reward)
+        {
+            var art = new VisualElement { pickingMode = PickingMode.Ignore };
+            art.AddToClassList("pass__art");
+            foreach (var item in reward.Items)
+            {
+                if (Theme.CosmeticArt.Has(item))
+                {
+                    art.AddToClassList("pass__art--item");
+                    Theme.CosmeticArt.Apply(art, item);
+                    return art;
+                }
+            }
+
+            if (reward.Gems > 0)
+            {
+                art.AddToClassList("pass__art--gems");
+                return art;
+            }
+
+            if (reward.Coins > 0)
+            {
+                art.AddToClassList("pass__art--coins");
+                return art;
+            }
+
+            return null;
+        }
+
+        /// <summary>The number under a coin or gem picture.</summary>
+        private static string Amount(PassReward reward) =>
+            (reward.Gems > 0 ? reward.Gems : reward.Coins).ToString("N0", System.Globalization.CultureInfo.CurrentCulture);
 
         /// <summary>"60 coins", "5 gems", "Kites" or a combination.</summary>
         public static string Describe(PassReward reward)

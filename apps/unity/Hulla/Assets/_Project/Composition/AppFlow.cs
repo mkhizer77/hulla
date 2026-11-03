@@ -110,6 +110,13 @@ namespace Hulla.Composition
             _app.Pass.Changed += RefreshBadges;
             _app.Missions.Changed += RefreshBadges;
             _app.Purchases.Granted += OnPurchaseGranted;
+            _app.RemoteConfig.Changed += ApplyShopSwitch;
+        }
+
+        /// <summary>The remote shop switch (GDD 22.5): off hides the Shop tab and leaves the shop if it is open.</summary>
+        private void ApplyShopSwitch()
+        {
+            _shell.SetNavTabShown(Hulla.Presentation.Navigation.NavTab.Shop, _app.RemoteConfig.Shop);
         }
 
         /// <summary>
@@ -390,6 +397,8 @@ namespace Hulla.Composition
             _phoneView?.Dispose();
             _app.Links.InviteOpened -= OnInviteLink;
             _app.Links.ReferralOpened -= OnReferralLink;
+            _app.Purchases.Granted -= OnPurchaseGranted;
+            _app.RemoteConfig.Changed -= ApplyShopSwitch;
             _app.TableChat.Received -= OnText;
             _app.Tables.Disconnected -= OnDisconnected;
             CloseView();
@@ -403,6 +412,8 @@ namespace Hulla.Composition
             var root = _shell.Show(_shell.Catalog.Home);
             _shell.ShowNav(Hulla.Presentation.Navigation.NavTab.Home);
             var home = new HomeView(root, _app.Home, null, OnCreate, OnJoin, OnQuickPlay, OpenSettings, OnFriends, OnProfile, _app.HomeFriends, () => StartTutorial(false), TutorialText.HowToPlay, OnWatch, _app.Progress, OnMissions, OnLeaderboard, OnShop, OnPass, OnRanked, InviteFriend);
+            home.InviteToMine = (name, id) => InviteToRoom(name, null, id);
+            home.OpenFriend = OnFriend;
             _view = home;
             home.SetQuickPlay(_app.RemoteConfig.QuickPlay, QuickPlayNote());
             var left = LastTableCode();
@@ -504,6 +515,21 @@ namespace Hulla.Composition
             await _app.QuickPlay.StartAsync(seats, _app.Lifetime);
         }
 
+        /// <summary>Friends with that friend's full sheet open (from "More" on a face's sheet on Home).</summary>
+        private async void OnFriend(string name, string userId)
+        {
+            OnFriends(name, null);
+            for (var i = 0; i < 20; i++)
+            {
+                if (_view is not FriendsView view || view.OpenPlayer(userId))
+                {
+                    return;
+                }
+
+                await Awaitable.WaitForSecondsAsync(0.25f, _app.Lifetime);
+            }
+        }
+
         private async void OnFriends(string name, string? server)
         {
             if (!await SignedInAsync(name, server))
@@ -579,7 +605,7 @@ namespace Hulla.Composition
 
         private async void OnPass(string name, string? server)
         {
-            if (!await SignedInAsync(name, server))
+            if (!await SignedInAsync(name, server) || !_app.RemoteConfig.Shop)
             {
                 return;
             }
@@ -599,7 +625,7 @@ namespace Hulla.Composition
 
         private async void OnShop(string name, string? server)
         {
-            if (!await SignedInAsync(name, server))
+            if (!await SignedInAsync(name, server) || !_app.RemoteConfig.Shop)
             {
                 return;
             }

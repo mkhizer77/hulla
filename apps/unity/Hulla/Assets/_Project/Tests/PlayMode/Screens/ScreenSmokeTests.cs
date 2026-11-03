@@ -732,7 +732,9 @@ namespace Hulla.Screens.Tests
             Assert.IsNotNull(root.Q(className: "pass__tick"), "tier 1 free is claimed");
             CollectionAssert.Contains(texts, "Claim", "tier 2 free is claimable");
             Assert.IsNotNull(root.Q(className: "pass__lock"), "premium without the pass");
-            CollectionAssert.Contains(texts, "Kites");
+            var kites = root.Query<VisualElement>(className: "pass__cell").Where(c => c.tooltip == "Kites").First();
+            Assert.IsNotNull(kites, "an item reward names itself on its cell");
+            Assert.IsNotNull(kites.Q(className: "pass__art--item"), "and shows its picture");
         }
 
         [UnityTest]

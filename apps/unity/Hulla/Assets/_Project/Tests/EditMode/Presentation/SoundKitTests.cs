@@ -27,6 +27,32 @@ namespace Hulla.Presentation.Tests
         }
 
         [Test]
+        public void TheDhabaSetSoundsItsOwnAndStaysWithinLevel()
+        {
+            foreach (Sound sound in Enum.GetValues(typeof(Sound)))
+            {
+                var samples = SoundKit.Samples(sound, SoundKit.Dhaba);
+                Assert.Greater(samples.Length, 0, sound.ToString());
+                Assert.LessOrEqual(samples.Length, SoundKit.SampleRate / 2, sound + " stays under half a second");
+                var peak = 0f;
+                foreach (var s in samples)
+                {
+                    peak = Math.Max(peak, Math.Abs(s));
+                }
+
+                Assert.LessOrEqual(peak, 1f, sound + " does not clip");
+                Assert.Greater(peak, 0.2f, sound + " is audible");
+            }
+
+            foreach (var own in new[] { Sound.CardTap, Sound.Slam, Sound.Stamp, Sound.Escape, Sound.Sting, Sound.Tick })
+            {
+                CollectionAssert.AreNotEqual(SoundKit.Samples(own), SoundKit.Samples(own, SoundKit.Dhaba), own + " differs from the classic set");
+            }
+
+            CollectionAssert.AreEqual(SoundKit.Samples(Sound.Slam), SoundKit.Samples(Sound.Slam, "sounds_classic"), "the classic set is the default");
+        }
+
+        [Test]
         public void ATrickClimbsAPentatonicScaleAndStopsAtTheOctave()
         {
             Assert.AreEqual(1f, SoundKit.TrickPitch(0));

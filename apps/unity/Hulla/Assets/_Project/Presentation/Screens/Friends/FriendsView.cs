@@ -274,7 +274,22 @@ namespace Hulla.Presentation.Screens.Friends
             Section(UiText.Recent, Filter(_model.Recent, filter), friend => Primary(UiText.Add, () => _actions.Add(friend.UserId)), friend => Strings.Get("ui.rounds_together", friend.Rounds));
             Section(UiText.Online, online, friend => Teal(UiText.Invite, () => InviteToMine?.Invoke(friend.UserId)), _ => UiText.OnHome);
             Section(UiText.SentRequests, Filter(_model.Sent, filter), friend => Quiet(UiText.CancelRequest, () => _actions.Remove(friend.UserId)), friend => friend.Handle != null ? "@" + friend.Handle : "");
-            Section(Strings.Format(UiText.EveryoneElse, rest.Count), rest, null, _ => UiText.Offline);
+            Section(Strings.Format(UiText.EveryoneElse, rest.Count), rest, null, friend => LastSeen(PresenceOf?.Invoke(friend.UserId)?.LastSeenTs));
+        }
+
+        /// <summary>"Seen 3 h ago" for an offline friend (design: Friends), or Offline when they hide it.</summary>
+        public static string LastSeen(long? lastSeenTs)
+        {
+            if (lastSeenTs is not long seen)
+            {
+                return UiText.Offline;
+            }
+
+            var minutes = Math.Max(0, (DateTimeOffset.UtcNow.ToUnixTimeMilliseconds() - seen) / 60_000);
+            return minutes < 2 ? UiText.SeenJustNow
+                : minutes < 60 ? Strings.Format(UiText.SeenMinutes, minutes)
+                : minutes < 48 * 60 ? Strings.Format(UiText.SeenHours, minutes / 60)
+                : Strings.Format(UiText.SeenDays, minutes / (24 * 60));
         }
 
         private static bool Matches(FriendEntry entry, string filter) =>
@@ -377,6 +392,21 @@ namespace Hulla.Presentation.Screens.Friends
         /// The player sheet (design: Player sheet): face, name and handle, where they are, one yellow
         /// action that follows their state, Favourite, and Remove and Block as quiet links.
         /// </summary>
+        /// <summary>Opens a friend's sheet once the list holds them (from a face on Home); false while it does not yet.</summary>
+        public bool OpenPlayer(string userId)
+        {
+            foreach (var entry in _model.Friends)
+            {
+                if (entry.UserId == userId)
+                {
+                    OpenPlayerSheet(entry);
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
         private void OpenPlayerSheet(FriendEntry entry)
         {
             var panel = Sheet.Open(_root, null);
@@ -447,7 +477,7 @@ namespace Hulla.Presentation.Screens.Friends
             }
             else
             {
-                where = entry.Online ? UiText.OnHome : UiText.Offline;
+                where = entry.Online ? UiText.OnHome : LastSeen(presence?.LastSeenTs);
             }
 
             if (where.Length > 0)

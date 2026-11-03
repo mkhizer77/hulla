@@ -16,13 +16,16 @@ namespace Hulla.Presentation.Audio
 
         /// <summary>Table sounds play at this share of their level under speech.</summary>
         public const float DuckLevel = 0.3f;
-        private readonly Dictionary<Sound, AudioClip> _clips = new Dictionary<Sound, AudioClip>();
+        private readonly Dictionary<(Sound, string?), AudioClip> _clips = new Dictionary<(Sound, string?), AudioClip>();
         private readonly List<AudioSource> _sources = new List<AudioSource>();
         private GameObject? _host;
         private int _next;
 
         /// <summary>0 to 1; 0 is off.</summary>
         public float Volume { get; set; } = 0.7f;
+
+        /// <summary>The player's equipped sound set (catalog id); null plays the classic set.</summary>
+        public string? Set { get; set; }
 
         /// <summary>Someone else is talking on voice.</summary>
         public bool Ducked { get; set; }
@@ -72,12 +75,13 @@ namespace Hulla.Presentation.Audio
 
         private AudioClip Clip(Sound sound)
         {
-            if (!_clips.TryGetValue(sound, out var clip))
+            var key = (sound, Set == SoundKit.Dhaba ? Set : null);
+            if (!_clips.TryGetValue(key, out var clip))
             {
-                var samples = SoundKit.Samples(sound);
+                var samples = SoundKit.Samples(sound, key.Item2);
                 clip = AudioClip.Create(sound.ToString(), samples.Length, 1, SoundKit.SampleRate, false);
                 clip.SetData(samples, 0);
-                _clips[sound] = clip;
+                _clips[key] = clip;
             }
 
             return clip;

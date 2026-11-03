@@ -10650,3 +10650,54 @@
 .skin--basant .missions__swap--ad {
     color: rgb(16, 92, 96);
 }
+
+/* ==================== Pass cells with pictures (concept: Pass v2) ==================== */
+
+.skin--basant .pass__art {
+    width: 92px;
+    height: 92px;
+    -unity-background-scale-mode: scale-to-fit;
+}
+
+.skin--basant .pass__art--item {
+    width: 80px;
+    height: 112px;
+    rotate: 0;
+}
+
+.skin--basant .pass__art--coins {
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Basant/Home/icon-coin.png");
+}
+
+.skin--basant .pass__art--gems {
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Basant/Shop/product_gems_120.png");
+}
+
+.skin--basant .pass__reward--amount {
+    margin-top: 2px;
+    font-size: 30px;
+}
+
+.skin--basant .pass__cell--ahead .pass__art {
+    opacity: 0.55;
+}
+
+/* A claimable cell keeps its picture above the Claim plate. */
+.skin--basant .pass__cell--claim {
+    justify-content: flex-start;
+}
+
+.skin--basant .pass__cell--claim .pass__art {
+    width: 70px;
+    height: 70px;
+}
+
+.skin--basant .pass__cell--claim .pass__art--item {
+    width: 52px;
+    height: 74px;
+}
+
+.skin--basant .pass__cell--claim .pass__reward--amount {
+    display: none;
+}
+

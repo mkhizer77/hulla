@@ -302,7 +302,7 @@ namespace Hulla.Application.Table
             MySeat = null;
             foreach (var seat in state.Seats)
             {
-                _seats.Add(new SeatInfo(seat.SeatSeat, seat.PlayerId, seat.DisplayName, seat.Ready, seat.Connected, seat.AutoPlay, seat.Cosmetics?.Table, seat.Cosmetics?.CardBack, seat.Avatar, seat.Mic == true, seat.Cosmetics?.CardFace, seat.Cosmetics?.Celebration, seat.Bot == true));
+                _seats.Add(new SeatInfo(seat.SeatSeat, seat.PlayerId, seat.DisplayName, seat.Ready, seat.Connected, seat.AutoPlay, seat.Cosmetics?.Table, seat.Cosmetics?.CardBack, seat.Avatar, seat.Mic == true, seat.Cosmetics?.CardFace, seat.Cosmetics?.Celebration, seat.Bot == true, seat.Cosmetics?.SoundSet));
                 if (seat.PlayerId == UserId)
                 {
                     MySeat = seat.SeatSeat;
@@ -569,7 +569,7 @@ namespace Hulla.Application.Table
                 case Hulla.Protocol.Status.Reconnected:
                     // A new occupant's avatar and cosmetics arrive with the table state that follows.
                     var same = presence.PlayerId == old.PlayerId;
-                    _seats[index] = new SeatInfo(old.Seat, presence.PlayerId, presence.DisplayName ?? old.DisplayName, old.Ready, true, false, same ? old.TableSurface : null, same ? old.CardBack : null, same ? old.Avatar : null, false, same ? old.CardFace : null, same ? old.Celebration : null, same && old.Bot);
+                    _seats[index] = new SeatInfo(old.Seat, presence.PlayerId, presence.DisplayName ?? old.DisplayName, old.Ready, true, false, same ? old.TableSurface : null, same ? old.CardBack : null, same ? old.Avatar : null, false, same ? old.CardFace : null, same ? old.Celebration : null, same && old.Bot, same ? old.SoundSet : null);
                     if (presence.PlayerId == UserId)
                     {
                         MySeat = old.Seat;
@@ -577,10 +577,10 @@ namespace Hulla.Application.Table
 
                     break;
                 case Hulla.Protocol.Status.Disconnected:
-                    _seats[index] = new SeatInfo(old.Seat, old.PlayerId, old.DisplayName, old.Ready, false, true, old.TableSurface, old.CardBack, old.Avatar, false, old.CardFace, old.Celebration, old.Bot);
+                    _seats[index] = new SeatInfo(old.Seat, old.PlayerId, old.DisplayName, old.Ready, false, true, old.TableSurface, old.CardBack, old.Avatar, false, old.CardFace, old.Celebration, old.Bot, old.SoundSet);
                     break;
                 case Hulla.Protocol.Status.AutoPlay:
-                    _seats[index] = new SeatInfo(old.Seat, old.PlayerId, old.DisplayName, old.Ready, old.Connected, true, old.TableSurface, old.CardBack, old.Avatar, false, old.CardFace, old.Celebration, old.Bot);
+                    _seats[index] = new SeatInfo(old.Seat, old.PlayerId, old.DisplayName, old.Ready, old.Connected, true, old.TableSurface, old.CardBack, old.Avatar, false, old.CardFace, old.Celebration, old.Bot, old.SoundSet);
                     break;
                 case Hulla.Protocol.Status.Left:
                 case Hulla.Protocol.Status.Kicked:

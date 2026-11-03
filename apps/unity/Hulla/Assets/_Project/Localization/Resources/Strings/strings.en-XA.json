@@ -3903,6 +3903,11 @@
    "smart": false
   },
   {
+   "key": "ui.more_for_friend",
+   "text": "[Möré öptîöñs · ·]",
+   "smart": false
+  },
+  {
    "key": "ui.most_picked_up",
    "text": "[Bîggést pîçk-ûp · {0}, {1:plural:{} çård|{} çårds} · · · · ·]",
    "smart": true
@@ -4696,6 +4701,26 @@
    "key": "ui.seed_later",
    "text": "[Béföré thé déål, thé sérvér çömmîttéd tö thé shûfflé. Thé sééd îs révéåléd whéñ thé röûñd éñds. · · · · · · · · · · · · · · ·]",
    "smart": false
+  },
+  {
+   "key": "ui.seen_days",
+   "text": "[Sééñ {0} d ågö · · ·]",
+   "smart": true
+  },
+  {
+   "key": "ui.seen_hours",
+   "text": "[Sééñ {0} h ågö · · ·]",
+   "smart": true
+  },
+  {
+   "key": "ui.seen_just_now",
+   "text": "[Sééñ jûst ñöw · ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.seen_minutes",
+   "text": "[Sééñ {0} mîñ ågö · · ·]",
+   "smart": true
   },
   {
    "key": "ui.send",
