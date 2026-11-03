@@ -12,6 +12,84 @@ namespace Hulla.Screens.Tests
     /// <summary>Stand-ins for the services the screens read, so each screen opens without a server.</summary>
     internal static class Fakes
     {
+        /// <summary>A connected store that prices every product in rupees.</summary>
+        public sealed class AppStore : Hulla.Application.Economy.IAppStore
+        {
+            public bool Supported => true;
+
+            public event Action<Hulla.Application.Economy.StoreReceipt>? Pending
+            {
+                add { }
+                remove { }
+            }
+
+            public event Action<string, string>? Failed
+            {
+                add { }
+                remove { }
+            }
+
+            public Awaitable<bool> ConnectAsync(IReadOnlyList<(string Id, bool Consumable)> products, CancellationToken cancellation) => Done(true);
+
+            public Hulla.Application.Economy.StoreProduct? Product(string id) => new Hulla.Application.Economy.StoreProduct(id, id switch
+            {
+                "gems_120" => "Rs 280",
+                "gems_650" => "Rs 1,400",
+                "gems_1400" => "Rs 2,800",
+                "gems_3000" => "Rs 5,600",
+                "gems_8000" => "Rs 14,000",
+                "remove_ads" => "Rs 850",
+                "starter_bundle" => "Rs 560",
+                "pass_premium" => "Rs 1,400",
+                _ => "Rs 2,800",
+            });
+
+            public void Buy(string productId)
+            {
+            }
+
+            public void Finish(Hulla.Application.Economy.StoreReceipt receipt)
+            {
+            }
+
+            public void Restore()
+            {
+            }
+        }
+
+        public sealed class Purchases : Hulla.Application.Economy.IPurchaseService
+        {
+            private static readonly IReadOnlyList<Hulla.Application.Economy.ProductInfo> Products = new List<Hulla.Application.Economy.ProductInfo>
+            {
+                new Hulla.Application.Economy.ProductInfo("remove_ads", false, 0, null, true, new List<string>()),
+                new Hulla.Application.Economy.ProductInfo("gems_120", true, 120, null, false, new List<string>()),
+                new Hulla.Application.Economy.ProductInfo("gems_650", true, 650, null, false, new List<string>()),
+                new Hulla.Application.Economy.ProductInfo("gems_1400", true, 1400, null, false, new List<string>()),
+                new Hulla.Application.Economy.ProductInfo("gems_3000", true, 3000, null, false, new List<string>()),
+                new Hulla.Application.Economy.ProductInfo("gems_8000", true, 8000, null, false, new List<string>()),
+                new Hulla.Application.Economy.ProductInfo("pass_premium", true, 0, "premium", false, new List<string>()),
+                new Hulla.Application.Economy.ProductInfo("pass_premium_plus", true, 0, "plus", false, new List<string>()),
+                new Hulla.Application.Economy.ProductInfo("starter_bundle", false, 200, null, false, new List<string> { "back_ajrak" }),
+            };
+
+            public Awaitable<Result<(IReadOnlyList<Hulla.Application.Economy.ProductInfo> Products, Hulla.Application.Economy.Entitlements Entitlements)>> ProductsAsync(CancellationToken cancellation) =>
+                Done(Result<(IReadOnlyList<Hulla.Application.Economy.ProductInfo>, Hulla.Application.Economy.Entitlements)>.Ok((Products, Hulla.Application.Economy.Entitlements.None)));
+
+            public Awaitable<Result<Hulla.Application.Economy.PurchaseOutcome>> VerifyAsync(string store, string receipt, CancellationToken cancellation) =>
+                Done(Result<Hulla.Application.Economy.PurchaseOutcome>.Fail("economy.store_unavailable"));
+
+            public Awaitable<Result<Hulla.Application.Economy.PurchaseOutcome>> RestoreAsync(CancellationToken cancellation) =>
+                Done(Result<Hulla.Application.Economy.PurchaseOutcome>.Fail("economy.store_unavailable"));
+        }
+
+        /// <summary>Store purchases ready to buy, for the Gems tab and the premium sheet.</summary>
+        public static Hulla.Application.ViewModels.PurchasesViewModel ReadyPurchases()
+        {
+            var model = new Hulla.Application.ViewModels.PurchasesViewModel(new AppStore(), new Purchases());
+            _ = model.StartAsync(default);
+            return model;
+        }
+
         public sealed class Suggestions : IFriendSuggestions
         {
             public Awaitable<Result<IReadOnlyList<FriendSuggestion>>> FindAsync(IReadOnlyList<string> phones, IReadOnlyList<string> facebookIds, CancellationToken cancellation)

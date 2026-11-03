@@ -37,7 +37,7 @@ namespace Hulla.Composition
     /// a round in play or a result on screen means the table, otherwise the lobby; a closed table or
     /// a dropped socket returns home (reconnection is #19).
     /// </summary>
-    public sealed class AppFlow : IDisposable
+    public sealed partial class AppFlow : IDisposable
     {
         private enum Screen
         {
@@ -109,6 +109,7 @@ namespace Hulla.Composition
             _app.Friends.Changed += RefreshBadges;
             _app.Pass.Changed += RefreshBadges;
             _app.Missions.Changed += RefreshBadges;
+            _app.Purchases.Granted += OnPurchaseGranted;
         }
 
         /// <summary>
@@ -588,7 +589,7 @@ namespace Hulla.Composition
             var pass = _app.Pass;
             var passRoot = _shell.Show(_shell.Catalog.Pass);
             _view = new PassView(passRoot, pass, () => DateTimeOffset.UtcNow.ToUnixTimeMilliseconds(), ShowHome,
-                (tier, premium) => _ = pass.ClaimAsync(tier, premium, _app.Lifetime));
+                (tier, premium) => _ = pass.ClaimAsync(tier, premium, _app.Lifetime), _app.Purchases);
             Hulla.Presentation.Navigation.SegmentBar.Mount(passRoot, ShopSegments(name, server), "pass");
             TabTop(passRoot, Hulla.Presentation.Navigation.NavTab.Shop);
             Hulla.Presentation.Navigation.TopBar.Coins(passRoot, _app.Progress.Coins);
@@ -609,7 +610,7 @@ namespace Hulla.Composition
             var shopRoot = _shell.Show(_shell.Catalog.Shop);
             // Buy & equip from the item sheet: the sheet is the one confirm (design: Shop).
             var shopView = new ShopView(shopRoot, shop, ShowHome, item => BuyAndEquip(shop, item.Id),
-                item => _ = shop.EquipAsync(item.Id, _app.Lifetime));
+                item => _ = shop.EquipAsync(item.Id, _app.Lifetime), _app.Purchases);
             shopView.Retry = () => _ = shop.RefreshAsync(_app.Lifetime);
             Hulla.Presentation.Navigation.SegmentBar.Mount(shopRoot, ShopSegments(name, server), "shop");
             TabTop(shopRoot, Hulla.Presentation.Navigation.NavTab.Shop);
@@ -825,6 +826,7 @@ namespace Hulla.Composition
                 RememberName(name);
                 SyncContent();
                 RegisterPush();
+                StartPurchases();
             }
 
             return ok;
@@ -1722,7 +1724,10 @@ namespace Hulla.Composition
         {
             _settingsView?.Dispose();
             var social = _app.SocialAccounts.Available.Count == 0 ? null : new SettingsView.SocialRows(_app.SocialAccounts.Available, p => _socialLinked.Contains(p), LinkSocial);
-            var account = _app.Sessions.Current == null ? null : new SettingsView.AccountActions(ExportData, DeleteAccount, CancelDeletion, PendingDeletion, OpenPhone, social);
+            var account = _app.Sessions.Current == null ? null : new SettingsView.AccountActions(ExportData, DeleteAccount, CancelDeletion, PendingDeletion, OpenPhone, social)
+            {
+                RestorePurchases = RestorePurchasesAction(),
+            };
             var signedIn = _app.Sessions.Current != null;
             if (signedIn && social != null)
             {
