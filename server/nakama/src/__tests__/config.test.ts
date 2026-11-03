@@ -68,7 +68,7 @@ describe("remote configuration and the minimum client version (GDD 22.5, 20.15)"
     expect(resolveAll(DEFAULT_CONFIG, { region: "local", cohort: "*" })).toMatchObject({
       quick_play: true,
       voice: true,
-      shop: false,
+      shop: true,
     });
     expect(isRemoteConfig(staged)).toBe(true);
     expect(isRemoteConfig({ version: 1, minClientVersion: "x", flags: {} })).toBe(false);

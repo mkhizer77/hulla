@@ -194,6 +194,16 @@ describe("profiles (GDD 10.1)", () => {
       error: { code: "profile.not_visible" },
     });
     expect(profileGet(d, "{")).toMatchObject({ error: { detail: { reason: "schema" } } });
+    expect(
+      profileGet(
+        { ...d, level: (id) => (id === "u2" ? 12 : null) },
+        JSON.stringify({ handle: "sara_k" }),
+      ),
+    ).toMatchObject({
+      ok: true,
+      profile: { userId: "u2", level: 12 },
+    });
+    expect(profileGet(d, JSON.stringify({ handle: "sara_k" }))).not.toHaveProperty("profile.level");
     expect(profileGet(deps(store, null), "")).toMatchObject({
       error: { code: "table.not_authorised" },
     });
