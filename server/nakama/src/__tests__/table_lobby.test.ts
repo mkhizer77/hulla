@@ -219,11 +219,18 @@ describe("lobby: ready, rules and host", () => {
 });
 
 describe("spectators are friends of the table (GDD 7.6, 7.7, 9.10)", () => {
-  const friendsOf = (userId: string, seatedIds: readonly string[]): boolean =>
-    userId === "u9" && seatedIds.includes("u0");
+  /** u9 is a friend of u0; u7 of u1 and u3. */
+  const friends: Readonly<Record<string, readonly string[]>> = {
+    u9: ["u0"],
+    u7: ["u1", "u3"],
+  };
+  const social = {
+    friendsAmong: (userId: string, playerIds: readonly string[]): readonly string[] =>
+      playerIds.filter((id) => friends[userId]?.includes(id) === true),
+  };
 
   it("refuses a stranger who wants to watch and admits a friend of a seated player", () => {
-    const h = harness({ social: { mayWatch: friendsOf } });
+    const h = harness({ social });
     h.join(presence(0));
     h.join(presence(1));
     expect(h.core.joinAttempt(h.state, presence(8), { asSpectator: "true" }, h.now)).toEqual({
@@ -232,11 +239,95 @@ describe("spectators are friends of the table (GDD 7.6, 7.7, 9.10)", () => {
     });
     const batch = h.join(presence(9), { asSpectator: "true" });
     const state = payloadOf<TableStateFor<ToyView>>(sentTo(batch, "s9")[0]);
-    expect(state.spectators).toEqual([{ userId: "u9", displayName: "Player9", seatNext: false }]);
+    expect(state.spectators).toEqual([
+      { userId: "u9", displayName: "Player9", seatNext: false, friendOfSeat: 0 },
+    ]);
+  });
+
+  it("names the lowest seated friend of each watcher and follows the seats (GDD 7.7)", () => {
+    const h = harness({ social });
+    h.join(presence(0));
+    h.join(presence(1));
+    h.join(presence(7), { asSpectator: "true" });
+    const spectatorsIn = (batch: ReturnType<typeof h.join>, sessionId: string) =>
+      payloadOf<TableStateFor<ToyView>>(
+        sentTo(batch, sessionId)
+          .filter((e) => e.type === "table_state")
+          .at(-1),
+      ).spectators;
+    // The friend left: the watcher stays, named by nobody.
+    h.core.leave(h.state, [presence(1)], h.now);
+    expect(h.state.presences["s7"]?.friendOf).toEqual(["u1"]);
+    const seatedAgain = h.join(presence(3));
+    expect(h.state.seats[1]?.playerId).toBe("u3");
+    expect(spectatorsIn(seatedAgain, "s0")).toEqual([
+      { userId: "u7", displayName: "Player7", seatNext: false, friendOfSeat: 1 },
+    ]);
+    // A friend who sits lower down is named instead; a stranger who sits changes nothing.
+    h.core.leave(h.state, [presence(0)], h.now);
+    const lower = h.join(presence(1));
+    expect(h.state.seats[0]?.playerId).toBe("u1");
+    expect(spectatorsIn(lower, "s3")[0]?.friendOfSeat).toBe(0);
+    expect(h.state.presences["s7"]?.friendOf).toEqual(["u1", "u3"]);
+    h.join(presence(2));
+    expect(h.state.presences["s7"]?.friendOf).toEqual(["u1", "u3"]);
+  });
+
+  it("names nobody without a friend check (tests and tables without one)", () => {
+    const h = harness();
+    h.join(presence(0));
+    const batch = h.join(presence(9), { asSpectator: "true" });
+    const state = payloadOf<TableStateFor<ToyView>>(sentTo(batch, "s9")[0]);
+    expect(state.spectators[0]?.friendOfSeat).toBeNull();
+  });
+
+  it("lets the host remove a watcher for good, and only the host (OQ-048)", () => {
+    const h = harness({ social });
+    h.join(presence(0));
+    h.join(presence(1));
+    h.join(presence(9), { asSpectator: "true" });
+    expect(
+      sentTo(h.send("s1", "remove_spectator", { userId: "u9" }), "s1")[0]?.payload,
+    ).toMatchObject({ code: "table.not_host" });
+    expect(
+      sentTo(h.send("s9", "remove_spectator", { userId: "u9" }), "s9")[0]?.payload,
+    ).toMatchObject({ code: "table.not_host" });
+    // A seated player is kicked, not removed.
+    expect(
+      sentTo(h.send("s0", "remove_spectator", { userId: "u1" }), "s0")[0]?.payload,
+    ).toMatchObject({ code: "table.invalid_payload" });
+    expect(h.state.presences["s9"]).toBeDefined();
+
+    const batch = h.send("s0", "remove_spectator", { userId: "u9" });
+    expect(broadcasts(batch)[0]).toMatchObject({
+      type: "presence",
+      payload: { seat: null, playerId: "u9", displayName: "Player9", status: "removed" },
+    });
+    expect(batch.kicks).toEqual(["s9"]);
+    expect(batch.voiceRemovals).toEqual(["u9"]);
+    expect(h.state.presences["s9"]).toBeUndefined();
+    const state = payloadOf<TableStateFor<ToyView>>(
+      sentTo(batch, "s1").find((e) => e.type === "table_state"),
+    );
+    expect(state.spectators).toEqual([]);
+    expect(state.spectatorCount).toBe(0);
+    expect(sentTo(batch, "s9")).toEqual([]);
+
+    // No way back to this table, as a watcher or for a seat.
+    for (const metadata of [{ asSpectator: "true" }, {}]) {
+      expect(h.core.joinAttempt(h.state, presence(9), metadata, h.now)).toEqual({
+        accept: false,
+        code: "table.banned",
+      });
+    }
+    expect(h.state.kicked).toEqual(["u9"]);
+    expect(
+      sentTo(h.send("s0", "remove_spectator", { userId: "u9" }), "s0")[0]?.payload,
+    ).toMatchObject({ code: "table.invalid_payload" });
   });
 
   it("keeps the spectators toggle and the cap ahead of the friend check", () => {
-    const h = harness({ settings: { spectators: false }, social: { mayWatch: friendsOf } });
+    const h = harness({ settings: { spectators: false }, social });
     h.join(presence(0));
     expect(h.core.joinAttempt(h.state, presence(9), { asSpectator: "true" }, h.now)).toEqual({
       accept: false,

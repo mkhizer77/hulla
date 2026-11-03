@@ -10,7 +10,14 @@ export type TablePhase = "lobby" | "inRound" | "roundEnded" | "closing";
 export type TableCloseReason = "host_closed" | "empty" | "dissolved" | "server";
 
 export type PresenceStatus =
-  "joined" | "left" | "disconnected" | "reconnected" | "auto_play" | "kicked" | "spectating";
+  | "joined"
+  | "left"
+  | "disconnected"
+  | "reconnected"
+  | "auto_play"
+  | "kicked"
+  | "spectating"
+  | "removed";
 
 /** A connected socket at the table; `seat` is null for spectators. */
 export interface PresenceRecord {
@@ -24,6 +31,11 @@ export interface PresenceRecord {
   seat: SeatIndex | null;
   /** A spectator who takes the next free seat when the round ends (GDD 7.6, 9.10). */
   seatNext?: boolean;
+  /**
+   * A spectator's friends among the players seated at this table (GDD 7.7), checked when they
+   * arrive and whenever someone new sits; the Watching sheet names the lowest seat still held.
+   */
+  friendOf?: string[];
 }
 
 export interface SeatSlot {
@@ -65,7 +77,11 @@ export interface SeatSlot {
 /** What `matchJoinAttempt` decided for a session, consumed by `matchJoin`. */
 export type Admission =
   | { readonly kind: "seat"; readonly seat: SeatIndex; readonly reattach: boolean }
-  | { readonly kind: "spectator"; readonly seatNext?: boolean };
+  | {
+      readonly kind: "spectator";
+      readonly seatNext?: boolean;
+      readonly friendOf?: readonly string[];
+    };
 
 /** A wire message produced from engine events; `seat` set means that seat only. */
 export interface GameMessage {
@@ -272,7 +288,7 @@ export interface TableState<S, M> {
   seats: SeatSlot[];
   presences: Record<string, PresenceRecord>;
   admissions: Record<string, Admission>;
-  /** User ids that may not rejoin (GDD 9.9). */
+  /** User ids that may not rejoin: kicked players and removed watchers (GDD 9.9, OQ-048). */
   kicked: string[];
   series: SeriesState | null;
   round: RoundRuntime<S, M> | null;

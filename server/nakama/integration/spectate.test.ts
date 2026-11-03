@@ -61,6 +61,7 @@ describe.skipIf(NAKAMA_HOST === undefined)(
           userId: friend.session.user_id,
           displayName: expect.any(String) as string,
           seatNext: false,
+          friendOfSeat: 0,
         },
       ]);
       expect(watching.resumeToken).toBeNull();
@@ -82,6 +83,44 @@ describe.skipIf(NAKAMA_HOST === undefined)(
         friends: { userId: string; table: { watchable: boolean; seated: number } | null }[];
       }>(friend, "table_list_friends", {});
       expect(list.friends[0]?.table).toMatchObject({ watchable: true, seated: 3 });
+    }, 60_000);
+
+    it("the host removes a watcher, who is told and cannot come back (OQ-048)", async () => {
+      const suffix = String(Date.now());
+      const host = await scriptedClient("rh", suffix);
+      const friend = await scriptedClient("rf", suffix);
+      clients.push(host, friend);
+      const api = new Client(SERVER_KEY, NAKAMA_HOST ?? "", NAKAMA_PORT, false);
+      const hostCode =
+        (await rpc<{ profile?: Profile }>(host, "profile_get", {})).profile?.friendCode ?? "";
+      await rpc<object>(friend, "friend_add_by_code", { friendCode: hostCode });
+      await api.addFriends(host.session, [friend.session.user_id ?? ""]);
+
+      const created = await rpc<{ ok: boolean; matchId: string; tableId: string }>(
+        host,
+        "table_create",
+        { gameId: "thulla", mode: "private" },
+      );
+      setTableId(created.tableId);
+      await host.socket.joinMatch(created.matchId);
+      await friend.socket.joinMatch(created.matchId, undefined, { asSpectator: "true" });
+      await host.next(
+        (e) => e.type === "table_state" && (e.payload as TableState).spectators.length === 1,
+      );
+
+      await host.send(created.matchId, "remove_spectator", OPCODES.remove_spectator.opcode, {
+        userId: friend.session.user_id,
+      });
+      const told = await friend.next(
+        (e) => e.type === "presence" && (e.payload as { status: string }).status === "removed",
+      );
+      expect(told.payload).toMatchObject({ seat: null, playerId: friend.session.user_id });
+      await host.next(
+        (e) => e.type === "table_state" && (e.payload as TableState).spectators.length === 0,
+      );
+      await expect(
+        friend.socket.joinMatch(created.matchId, undefined, { asSpectator: "true" }),
+      ).rejects.toBeDefined();
     }, 60_000);
   },
 );

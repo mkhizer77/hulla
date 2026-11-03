@@ -122,6 +122,61 @@ describe("the Nakama binding", () => {
     expect(b.d.labels.at(-1)).toBe(labelFor(b.state));
   });
 
+  it("names a watcher's seated friend from Nakama's friend list, and the host removes them (OQ-048)", () => {
+    const b = booted();
+    const [p0] = b.presences;
+    if (p0 === undefined) throw new Error("presences");
+    Object.assign(b.nk, {
+      friendsList: (userId: string) => ({
+        friends: userId === "u9" ? [{ user: { userId: "u1" }, state: 0 }] : [],
+      }),
+    });
+    const rebuilt = <T>(value: T): T => JSON.parse(JSON.stringify(value)) as T;
+    const meta = { asSpectator: "true" };
+    const p9 = nkPresence(9);
+    const stranger = nkPresence(8);
+    expect(
+      b.handler.matchJoinAttempt(ctx, b.logger, b.nk, b.d.dispatcher, 2, b.state, stranger, meta)
+        ?.accept,
+    ).toBe(false);
+    const attempt = b.handler.matchJoinAttempt(
+      ctx,
+      b.logger,
+      b.nk,
+      b.d.dispatcher,
+      2,
+      b.state,
+      p9,
+      meta,
+    );
+    expect(attempt?.accept).toBe(true);
+    let state = rebuilt(attempt?.state ?? b.state);
+    state = rebuilt(
+      b.handler.matchJoin(ctx, b.logger, b.nk, b.d.dispatcher, 2, state, [p9])?.state ?? state,
+    );
+    const watching = b.d.broadcasts.filter((x) => x.envelope.type === "table_state").at(-1);
+    expect(watching?.envelope.payload).toMatchObject({
+      spectators: [{ userId: "u9", friendOfSeat: 1 }],
+    });
+    const remove = matchMessage(
+      p0,
+      OPCODES.remove_spectator.opcode,
+      b.envelope("remove_spectator", { userId: "u9" }),
+    );
+    state = rebuilt(
+      b.handler.matchLoop(ctx, b.logger, b.nk, b.d.dispatcher, 3, state, [remove])?.state ?? state,
+    );
+    expect(b.d.kicks.at(-1)).toEqual(["s9"]);
+    expect(
+      b.d.broadcasts.find(
+        (x) => x.to === null && (x.envelope.payload as { status?: string }).status === "removed",
+      )?.opcode,
+    ).toBe(OPCODES.presence.opcode);
+    expect(
+      b.handler.matchJoinAttempt(ctx, b.logger, b.nk, b.d.dispatcher, 4, state, p9, meta),
+    ).toMatchObject({ accept: false });
+  });
+
   it("sends table_state to the joiner only and presence to everyone, using the registered opcodes", () => {
     const b = booted();
     const first = b.d.broadcasts.slice(0, 2);
