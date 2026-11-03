@@ -33,7 +33,8 @@ namespace Hulla.Application.ViewModels
                 Profile.Stats?.Bhabhis ?? 0,
                 Profile.Stats?.ThullasGiven ?? 0,
                 Profile.Avatar,
-                Profile.Title);
+                Profile.Title,
+                Profile.Level);
 
         public string? ErrorCode { get; private set; }
 

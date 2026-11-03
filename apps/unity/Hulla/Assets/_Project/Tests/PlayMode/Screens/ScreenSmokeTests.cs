@@ -584,6 +584,30 @@ namespace Hulla.Screens.Tests
         }
 
         [UnityTest]
+        public IEnumerator AFriendsSheetLeadsWithTheirLevel()
+        {
+            VisualElement root = null!;
+            var model = new FriendsViewModel(new Fakes.Social());
+            FriendsView view = null!;
+            yield return Open(Catalog.Friends, r =>
+            {
+                root = r;
+                view = new FriendsView(r, model, () => { }, new FriendsView.Actions(_ => { }, _ => { }, _ => { }, _ => { }, _ => { }));
+                view.LookUpProfile = _ =>
+                {
+                    var done = new UnityEngine.AwaitableCompletionSource<Hulla.Application.Social.ProfileCard?>();
+                    done.SetResult(new Hulla.Application.Social.ProfileCard("Ayesha", "ayesha", "", "", 214, 61, 9, 312, null, null, 12));
+                    return done.Awaitable;
+                };
+                _ = model.RefreshAsync(default);
+            });
+            Assert.IsTrue(view.OpenPlayer("1"), "Ayesha is a friend");
+            yield return null;
+            var stats = UQueryExtensions.Q<Label>(root.panel.visualTree, className: "player-card__stats");
+            StringAssert.StartsWith("Level 12 · ", stats.text);
+        }
+
+        [UnityTest]
         public IEnumerator LeaderboardShowsRowsTheResetAndMyRank()
         {
             VisualElement root = null!;

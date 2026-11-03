@@ -533,6 +533,10 @@ namespace Hulla.Presentation.Screens.Friends
                 ? Strings.Format(UiText.PlayerLine, profile.Handle)
                 : Strings.Format(UiText.PlayerLineTitle, profile.Handle, UiText.TitleName(profile.Title!));
             stats.text = Strings.Format(UiText.PlayerStats, Strings.Get("ui.rounds_count", profile.Rounds), Strings.Get("ui.times_bhabhi", profile.Bhabhis));
+            if (profile.Level is long level)
+            {
+                stats.text = Strings.Format(UiText.PlayerStats, Strings.Format(UiText.LevelN, level), stats.text);
+            }
         }
 
         private static Label Dot()
