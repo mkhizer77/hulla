@@ -1,0 +1,47 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://hulla.gg/schemas/protocol/shell/phone.json",
+  "title": "Phone sign-in codes (GDD 10.2, #99)",
+  "definitions": {
+    "otpChannel": {
+      "type": "string",
+      "enum": ["whatsapp", "sms"],
+      "description": "Where a code goes. A client treats an unknown value as sms when it words the screen."
+    },
+    "phone_start": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["phone"],
+      "description": "The phone_start RPC: a code for the number. Without a channel the server tries WhatsApp, then SMS; sms sends by SMS only, for the \"send by SMS instead\" button. Every send counts against the same resend wait and limits.",
+      "properties": {
+        "phone": { "type": "string", "maxLength": 32 },
+        "channel": { "$ref": "#/definitions/otpChannel" }
+      }
+    },
+    "phone_started": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["ok", "phone", "channel", "channels", "fallback", "expiresTs", "resendAfterTs"],
+      "description": "phone_start's answer when a code went out; a refusal is { ok: false, error } with an auth.otp_* or table.invalid_payload code",
+      "properties": {
+        "ok": { "type": "boolean" },
+        "phone": {
+          "type": "string",
+          "description": "The number masked: country code and last two digits"
+        },
+        "channel": { "$ref": "#/definitions/otpChannel" },
+        "channels": {
+          "type": "array",
+          "items": { "$ref": "#/definitions/otpChannel" },
+          "description": "The channels the server can send on, in the order it tries them; offer \"send by SMS instead\" only when it holds sms"
+        },
+        "fallback": {
+          "type": "boolean",
+          "description": "WhatsApp was tried first and failed, so the code went by SMS"
+        },
+        "expiresTs": { "$ref": "../common.json#/definitions/timestamp" },
+        "resendAfterTs": { "$ref": "../common.json#/definitions/timestamp" }
+      }
+    }
+  }
+}

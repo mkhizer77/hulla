@@ -31,6 +31,7 @@ export function generateChecks(
     check_profile: `${PROTOCOL_BASE}shell/profile.json#/definitions/profile`,
     check_profile_update: `${PROTOCOL_BASE}shell/profile.json#/definitions/profile_update`,
     check_profile_get: `${PROTOCOL_BASE}shell/profile.json#/definitions/profile_get`,
+    check_phone_start: `${PROTOCOL_BASE}shell/phone.json#/definitions/phone_start`,
   };
   for (const entry of opcodes) {
     mapping[`check_${entry.type}`] = entryRef(entry);
@@ -57,6 +58,7 @@ export function generateChecks(
     "  readonly profile: Check;",
     "  readonly profileUpdate: Check;",
     "  readonly profileGet: Check;",
+    "  readonly phoneStart: Check;",
     "  /** One check per message type in the opcode table. */",
     "  readonly payload: Readonly<Record<string, Check>>;",
     "}",
@@ -74,6 +76,7 @@ export function generateChecks(
     "    profile: check_profile,",
     "    profileUpdate: check_profile_update,",
     "    profileGet: check_profile_get,",
+    "    phoneStart: check_phone_start,",
     "    payload: {",
     ...table,
     "    },",
