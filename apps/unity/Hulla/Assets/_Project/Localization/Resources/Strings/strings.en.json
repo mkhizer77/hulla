@@ -2843,6 +2843,11 @@
    "smart": true
   },
   {
+   "key": "ui.ad_no_reward",
+   "text": "The ad didn't finish, so there's no reward this time.",
+   "smart": false
+  },
+  {
    "key": "ui.add",
    "text": "Add",
    "smart": false
@@ -3148,6 +3153,11 @@
    "smart": true
   },
   {
+   "key": "ui.coins_doubled",
+   "text": "Coins doubled: +{0}",
+   "smart": true
+  },
+  {
    "key": "ui.coins_only",
    "text": "{0:N0} coins",
    "smart": true
@@ -3300,6 +3310,11 @@
   {
    "key": "ui.dot",
    "text": "·",
+   "smart": false
+  },
+  {
+   "key": "ui.double_for_ad",
+   "text": "Watch an ad · 2× coins",
    "smart": false
   },
   {
@@ -4943,6 +4958,11 @@
    "smart": false
   },
   {
+   "key": "ui.swap_for_ad",
+   "text": "Watch ad",
+   "smart": false
+  },
+  {
    "key": "ui.swap_one",
    "text": "Swap one",
    "smart": false
@@ -5011,6 +5031,16 @@
    "key": "ui.title_reward",
    "text": "title \"{0}\"",
    "smart": true
+  },
+  {
+   "key": "ui.trial_started",
+   "text": "{0} is yours for 24 hours",
+   "smart": true
+  },
+  {
+   "key": "ui.try_table_for_ad",
+   "text": "Watch an ad · try it for 24 hours",
+   "smart": false
   },
   {
    "key": "ui.turn_any",

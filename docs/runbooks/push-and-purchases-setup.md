@@ -27,7 +27,7 @@ The server never writes notification text. The push carries `push.<type>.title` 
 
 ## Rewarded ads (GDD 13.6)
 
-1. AppLovin MAX account with the adapters of GDD 13.6; create the three rewarded ad units (results 2× coins, missions re-roll, shop theme trial) and the Quick Play interstitial per platform. Content categories exclude gambling, alcohol, dating and politics.
+1. AppLovin MAX account with the adapters of GDD 13.6; per platform create one rewarded ad unit and one interstitial. The app names the placement on each rewarded ad (`double_coins`, `reroll`, `theme_trial`), so one rewarded unit serves all three and reports them apart. Content categories exclude gambling, alcohol, dating and politics.
 2. Event key: copy it from Account > General > Keys into the box's `HULLA_APPLOVIN_EVENT_KEY`. Restart Nakama.
 3. On each rewarded ad unit set the server-side callback URL to
    `https://<box>/v2/rpc/ad_reward?http_key=<runtime http key>&unwrap&user_id={USER_ID}&event_id={EVENT_ID}&token={EVENT_TOKEN}&custom={CUSTOM_DATA}`
@@ -36,5 +36,7 @@ The server never writes notification text. The push carries `push.<type>.title` 
    `TOKEN=$(printf '%s%s' evt-test "$EVENT_KEY" | shasum | cut -c1-40)` then `curl "https://<box>/v2/rpc/ad_reward?http_key=<key>&unwrap&user_id=<user id>&event_id=evt-test&token=$TOKEN&custom=reroll"`
    The answer is `{"ok":true,"applied":true,...}` once and `"applied":false` on a repeat; a wrong token answers `economy.ad_reward_invalid` and leaves an `ad reward refused` line.
 5. Check with a live ad on a device (AppLovin sends no callback for test ads): watch the results-screen ad, then `wallet_get` shows the round's coins twice and `ads_get` shows `used.double_coins: 1`.
-6. Caps and interstitial rules change live through `config_set` (`ad_cap_*`, `interstitial_from_round`, `interstitial_interval_seconds`, `interstitials`, `rewarded_ads`).
+6. The app: put the ad unit ids in `apps/unity/Hulla/Assets/_Project/Infrastructure/Ads/Resources/HullaAds.json` (not secrets; an empty id turns that kind off). Put the SDK key in `HULLA_APPLOVIN_SDK_KEY` or in a git-ignored `apps/unity/Hulla/HullaAds.local.json` as `{"applovinSdkKey": "..."}`; the build reads it and clears it again afterwards. In Unity, AppLovin › Integration Manager: turn on the Terms and Privacy Policy flow with the privacy policy and terms URLs, and set the iOS tracking text (GDD 13.6: ATT and consent through the partner's flow). The app starts the SDK only after the player's first live round, so the questions come then.
+7. Rewarded ads are off until `config_set` turns `rewarded_ads` on; interstitials follow `interstitials`. Interstitials show only on leaving a Quick Play table between rounds, from the fourth round on this phone, once per interval, never in private rooms or Ranked, and never for an account that has bought anything.
+8. Caps and interstitial rules change live through `config_set` (`ad_cap_*`, `interstitial_from_round`, `interstitial_interval_seconds`, `interstitials`, `rewarded_ads`).
 

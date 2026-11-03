@@ -33,7 +33,8 @@ export const DEFAULT_CONFIG: RemoteConfig = {
     maintenance: [{ value: false }],
     quick_play: [{ value: true }],
     voice: [{ value: true }],
-    shop: [{ value: false }],
+    // The shop and store purchases; off hides the Shop tab (monetisation on since 30 Oct 2026).
+    shop: [{ value: true }],
     rewarded_ads: [{ value: false }],
     interstitials: [{ value: true }],
     // The placements and caps of GDD 13.6; the server enforces the rewarded caps per local day.

@@ -2843,6 +2843,11 @@
    "smart": true
   },
   {
+   "key": "ui.ad_no_reward",
+   "text": "[Thé åd dîdñ't fîñîsh, sö théré's ñö réwård thîs tîmé. · · · · · · · ·]",
+   "smart": false
+  },
+  {
    "key": "ui.add",
    "text": "[Ådd ·]",
    "smart": false
@@ -3148,6 +3153,11 @@
    "smart": true
   },
   {
+   "key": "ui.coins_doubled",
+   "text": "[Çöîñs döûbléd: +{0} · · ·]",
+   "smart": true
+  },
+  {
    "key": "ui.coins_only",
    "text": "[{0:N0} çöîñs · ·]",
    "smart": true
@@ -3300,6 +3310,11 @@
   {
    "key": "ui.dot",
    "text": "[· ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.double_for_ad",
+   "text": "[Wåtçh åñ åd · 2× çöîñs · · · ·]",
    "smart": false
   },
   {
@@ -4943,6 +4958,11 @@
    "smart": false
   },
   {
+   "key": "ui.swap_for_ad",
+   "text": "[Wåtçh åd · ·]",
+   "smart": false
+  },
+  {
    "key": "ui.swap_one",
    "text": "[Swåp öñé · ·]",
    "smart": false
@@ -5011,6 +5031,16 @@
    "key": "ui.title_reward",
    "text": "[tîtlé \"{0}\" · ·]",
    "smart": true
+  },
+  {
+   "key": "ui.trial_started",
+   "text": "[{0} îs ýöûrs för 24 höûrs · · · ·]",
+   "smart": true
+  },
+  {
+   "key": "ui.try_table_for_ad",
+   "text": "[Wåtçh åñ åd · trý ît för 24 höûrs · · · · ·]",
+   "smart": false
   },
   {
    "key": "ui.turn_any",

@@ -113,6 +113,27 @@ namespace Hulla.Screens.Tests
                 gateway.Deliver(MessageTypes.TableState, 5, Fakes.InRound(5));
                 gateway.Deliver(MessageTypes.RoundEnd, 6, new RoundEnd { RoundId = "r", BhabhiSeat = 2, EscapeOrder = new List<long> { 0, 1, 3 }, Points = new List<long>(), Stats = new List<SeatStats>(), Fairness = new Fairness { Seed = "s", Commitment = "c", DeckOrder = new List<string>() } });
             });
+            yield return new Case("results-double", catalog.Table, r =>
+            {
+                var gateway = new Fakes.Gateway();
+                var client = new TableClient(gateway, new TableTicket("m", "K7Q2MX", "t_K7Q2MX"), "me", 1);
+                var view = new ThullaTableView(r, client, new Fakes.Chat(), () => 0, () => { });
+                gateway.Deliver(MessageTypes.TableState, 5, Fakes.InRound(5));
+                gateway.Deliver(MessageTypes.RoundEnd, 6, new RoundEnd { RoundId = "r", BhabhiSeat = 2, EscapeOrder = new List<long> { 0, 1, 3 }, Points = new List<long>(), Stats = new List<SeatStats>(), Fairness = new Fairness { Seed = "s", Commitment = "c", DeckOrder = new List<string>() } });
+                view.ShowReward(Strings.Format(UiText.RewardLine, 120, 40));
+                view.OfferDouble(UiText.DoubleForAd, () => { });
+            });
+            yield return new Case("missions-swap-ad", catalog.Missions, r =>
+            {
+                var model = new MissionsViewModel(new Fakes.Missions { Swapped = true });
+                var view = new MissionsView(r, model, () => { }, _ => { }, _ => { })
+                {
+                    SwapAdOffered = () => true,
+                    WatchForSwap = _ => { },
+                };
+                SegmentBar.Mount(r, Trophies, "missions");
+                _ = model.RefreshAsync(0, default);
+            });
             yield return new Case("quick-play", catalog.QuickPlay, r =>
             {
                 var model = new QuickPlayViewModel(new Fakes.Matchmaker());

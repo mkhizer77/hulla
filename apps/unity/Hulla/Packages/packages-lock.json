@@ -1,5 +1,14 @@
 {
   "dependencies": {
+    "com.applovin.mediation.ads": {
+      "version": "8.6.6",
+      "depth": 0,
+      "source": "registry",
+      "dependencies": {
+        "com.google.external-dependency-manager": "1.2.182"
+      },
+      "url": "https://unity.packages.applovin.com"
+    },
     "com.google.external-dependency-manager": {
       "version": "file:firebase/com.google.external-dependency-manager-1.2.190.tgz",
       "depth": 0,

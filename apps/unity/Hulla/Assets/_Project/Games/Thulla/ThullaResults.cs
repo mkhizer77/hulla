@@ -29,6 +29,8 @@ namespace Hulla.Games.Thulla
         private readonly Func<long, string?> _avatarOf;
         private long _shownSeconds = -1;
         private readonly Label _reward;
+        private readonly Button _double;
+        private Action? _onDouble;
         private readonly Button _share;
         private readonly Button _fair;
         private readonly Button _changeRules;
@@ -55,6 +57,11 @@ namespace Hulla.Games.Thulla
             _onPlayAgain = playAgain;
             _status = root.Q<Label>("result-status");
             _reward = root.Q<Label>("result-reward");
+            // The rewarded 2x coins (GDD 13.6), under the reward line; hidden unless offered.
+            _double = new Button(() => _onDouble?.Invoke()) { name = "result-double" };
+            _double.AddToClassList("results__double");
+            _double.style.display = DisplayStyle.None;
+            _reward.parent.Insert(_reward.parent.IndexOf(_reward) + 1, _double);
             _share = root.Q<Button>("result-share");
             _share.text = "";
             _share.tooltip = UiText.ShareResult;
@@ -136,6 +143,15 @@ namespace Hulla.Games.Thulla
 
         /// <summary>The round's XP, coins and any level-up (GDD 14.8), once the server has paid it.</summary>
         public void ShowReward(string? text) => _reward.text = text ?? "";
+
+        /// <summary>Offers 2x coins for a rewarded ad; a null text hides it, a null action shows it waiting.</summary>
+        public void OfferDouble(string? text, Action? onTap)
+        {
+            _double.style.display = text == null ? DisplayStyle.None : DisplayStyle.Flex;
+            _double.text = text ?? "";
+            _onDouble = onTap;
+            _double.SetEnabled(onTap != null);
+        }
 
         /// <summary>Who may get an "Add friend" chip; null hides the chips.</summary>
         public Func<string, bool>? CanAdd { get; set; }

@@ -146,6 +146,7 @@ namespace Hulla.BuildTools
             finally
             {
                 SocialSetup.ClearToken();
+                AdsSetup.ClearKey();
             }
 
             Debug.Log($"build {target}: {report.summary.result}, {report.summary.totalErrors} errors, {path}");

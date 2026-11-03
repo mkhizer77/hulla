@@ -204,6 +204,10 @@ export interface Profile {
   frame: string;
   flag: string | null;
   title: string | null;
+  /**
+   * The player's level (GDD 12.2), shown on player sheets; absent when their progress has not been read
+   */
+  level?: number;
   bio: string;
   stats: ProfileStats;
   /**
