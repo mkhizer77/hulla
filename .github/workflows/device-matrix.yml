@@ -1,0 +1,82 @@
+name: device-matrix
+
+# Nightly Robo crawl of a development APK on the Firebase Test Lab devices in
+# tools/testlab/devices.txt (#78, GDD 28.4). It runs only once the TESTLAB_SERVICE_ACCOUNT
+# secret is set (docs/runbooks/device-matrix.md); results land in the run's summary.
+
+on:
+  schedule:
+    - cron: '0 3 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  detect:
+    name: Detect the Test Lab and Unity secrets
+    runs-on: ubuntu-latest
+    outputs:
+      ready: ${{ steps.check.outputs.ready }}
+    steps:
+      - id: check
+        env:
+          TESTLAB: ${{ secrets.TESTLAB_SERVICE_ACCOUNT }}
+          UNITY: ${{ secrets.UNITY_LICENSE }}
+        run: |
+          if [ -n "$TESTLAB" ] && [ -n "$UNITY" ]; then ready=true; else ready=false; fi
+          echo "ready=$ready" >> "$GITHUB_OUTPUT"
+
+  apk:
+    name: Development APK
+    needs: detect
+    if: needs.detect.outputs.ready == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: List LFS objects
+        run: git lfs ls-files --long | cut -d' ' -f1 | sort > .lfs-assets-id
+      - uses: actions/cache@v4
+        with:
+          path: .git/lfs
+          key: lfs-${{ hashFiles('.lfs-assets-id') }}
+          restore-keys: lfs-
+      - run: git lfs pull
+      - uses: actions/cache@v4
+        with:
+          path: apps/unity/Hulla/Library
+          key: library-android-${{ hashFiles('apps/unity/Hulla/Packages/packages-lock.json') }}
+          restore-keys: library-
+      - name: Build the development APK
+        uses: game-ci/unity-builder@v6
+        env:
+          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+          UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
+          UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
+          HULLA_DEV_SERVER: ${{ vars.HULLA_TESTLAB_SERVER }}
+        with:
+          projectPath: apps/unity/Hulla
+          unityVersion: 6000.4.9f1
+          targetPlatform: Android
+          buildMethod: Hulla.BuildTools.BuildCommands.AndroidDevelopment
+      - uses: actions/upload-artifact@v4
+        with:
+          name: hulla-dev-apk
+          path: apps/unity/Hulla/Builds/Android/hulla-dev.apk
+          retention-days: 3
+
+  testlab:
+    name: Robo crawl on the device matrix
+    needs: apk
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: hulla-dev-apk
+      - uses: google-github-actions/auth@v2
+        with:
+          credentials_json: ${{ secrets.TESTLAB_SERVICE_ACCOUNT }}
+      - uses: google-github-actions/setup-gcloud@v2
+      - name: Run the matrix
+        run: tools/testlab/run.sh hulla-dev.apk "${{ vars.TESTLAB_RESULTS_BUCKET }}"
