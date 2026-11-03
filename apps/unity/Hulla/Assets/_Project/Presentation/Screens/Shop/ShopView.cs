@@ -131,6 +131,12 @@ namespace Hulla.Presentation.Screens.Shop
         /// <summary>Loads the catalog again after an error; null hides Retry.</summary>
         public Action? Retry { get; set; }
 
+        /// <summary>Whether a rewarded ad for a 24-hour table trial can be offered (GDD 13.6); null never offers it.</summary>
+        public Func<bool>? TrialOffered { get; set; }
+
+        /// <summary>Watches the ad for a trial of the table.</summary>
+        public Action<ShopItem>? WatchForTrial { get; set; }
+
         private VisualElement SpotlightCard(ShopItem item)
         {
             var card = new Button(() => OpenItem(item)) { text = "" };
@@ -270,6 +276,17 @@ namespace Hulla.Presentation.Screens.Shop
             }
 
             panel.Add(action);
+            if (!item.Owned && item.Category == "table" && WatchForTrial != null && TrialOffered?.Invoke() == true)
+            {
+                var trial = Navigation.Sheet.Button(UiText.TryTableForAd, () =>
+                {
+                    Navigation.Sheet.Close(panel);
+                    WatchForTrial(item);
+                }, "teal");
+                trial.AddToClassList("item-sheet__action");
+                panel.Add(trial);
+            }
+
             panel.Add(Navigation.Sheet.Line(Strings.Format(UiText.YouHave, _model.Coins ?? 0, _model.Gems ?? 0), "item-sheet__balance"));
         }
 

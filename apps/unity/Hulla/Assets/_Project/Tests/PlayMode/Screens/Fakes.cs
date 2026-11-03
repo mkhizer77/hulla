@@ -392,13 +392,16 @@ namespace Hulla.Screens.Tests
 
         public sealed class Missions : Hulla.Application.Progress.IMissionsService
         {
+            /// <summary>Today's free swap is used, as after a re-roll.</summary>
+            public bool Swapped;
+
             public Awaitable<Result<(IReadOnlyList<Hulla.Application.Progress.MissionInfo> Missions, bool RerollAvailable)>> MissionsAsync(int tz, CancellationToken c) =>
                 Done(Result<(IReadOnlyList<Hulla.Application.Progress.MissionInfo> Missions, bool RerollAvailable)>.Ok((new List<Hulla.Application.Progress.MissionInfo>
                 {
                     new Hulla.Application.Progress.MissionInfo("d1", "thullas_given", 3, 3, false, true, 60, 0, true),
                     new Hulla.Application.Progress.MissionInfo("d2", "escapes", 2, 0, false, false, 60, 0, true),
                     new Hulla.Application.Progress.MissionInfo("w1", "rounds_played", 20, 4, false, false, 300, 5, false),
-                }, true)));
+                }, !Swapped)));
 
             public Awaitable<Result<bool>> ClaimAsync(string id, CancellationToken c) => Done(Result<bool>.Ok(true));
 

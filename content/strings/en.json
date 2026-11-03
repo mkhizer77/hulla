@@ -1065,7 +1065,13 @@
     "error.economy.receipt_invalid": "The store couldn't confirm that purchase. Nothing was added.",
     "error.economy.purchase_pending": "A purchase is still waiting for the store.",
     "error.economy.purchase_deferred": "Waiting for approval. It's added once it's approved.",
-    "error.economy.payment_declined": "The payment didn't go through."
+    "error.economy.payment_declined": "The payment didn't go through.",
+    "ui.swap_for_ad": "Watch ad",
+    "ui.try_table_for_ad": "Watch an ad · try it for 24 hours",
+    "ui.double_for_ad": "Watch an ad · 2× coins",
+    "ui.coins_doubled": "Coins doubled: +{0}",
+    "ui.trial_started": "{0} is yours for 24 hours",
+    "ui.ad_no_reward": "The ad didn't finish, so there's no reward this time."
   },
   "notes": {
     "achievement.goal.bhabhis": "{0} the target count.",

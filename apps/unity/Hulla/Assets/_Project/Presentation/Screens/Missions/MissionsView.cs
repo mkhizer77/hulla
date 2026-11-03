@@ -59,6 +59,20 @@ namespace Hulla.Presentation.Screens.Missions
         /// <summary>Loads the missions again after an error; null hides Retry.</summary>
         public Action? Retry { get; set; }
 
+        /// <summary>Re-rolls earned from ads today (GDD 13.6); null counts none.</summary>
+        public Func<int>? ExtraSwaps { get; set; }
+
+        /// <summary>Whether a rewarded ad for one more swap can be offered; null never offers it.</summary>
+        public Func<bool>? SwapAdOffered { get; set; }
+
+        /// <summary>Watches the ad for a swap, then calls back to start swapping.</summary>
+        public Action<Action>? WatchForSwap { get; set; }
+
+        /// <summary>Draws the screen again, when the ad state changes.</summary>
+        public void Redraw() => Refresh();
+
+        private bool CanSwap => _model.RerollAvailable || (ExtraSwaps?.Invoke() ?? 0) > 0;
+
         private bool _swapping;
 
         /// <summary>
@@ -77,15 +91,27 @@ namespace Hulla.Presentation.Screens.Missions
             head.Add(heading);
             if (today)
             {
+                var ad = !CanSwap && SwapAdOffered?.Invoke() == true && WatchForSwap != null;
                 var swap = new Button(() =>
                 {
+                    if (ad)
+                    {
+                        WatchForSwap!(() =>
+                        {
+                            _swapping = true;
+                            Refresh();
+                        });
+                        return;
+                    }
+
                     _swapping = !_swapping;
                     Refresh();
-                }) { text = _model.RerollAvailable ? UiText.SwapOne : UiText.Swapped };
+                }) { text = CanSwap ? UiText.SwapOne : ad ? UiText.SwapForAd : UiText.Swapped };
                 swap.AddToClassList("chip");
                 swap.AddToClassList("missions__swap");
                 swap.EnableInClassList("chip--on", _swapping);
-                swap.SetEnabled(_model.RerollAvailable);
+                swap.EnableInClassList("missions__swap--ad", ad);
+                swap.SetEnabled(CanSwap || ad);
                 var icon = new VisualElement { pickingMode = PickingMode.Ignore };
                 icon.AddToClassList("missions__swap-icon");
                 swap.Insert(0, icon);
@@ -127,7 +153,7 @@ namespace Hulla.Presentation.Screens.Missions
                     claim.AddToClassList("mission__claim");
                     bottom.Add(claim);
                 }
-                else if (_swapping && today && _model.RerollAvailable)
+                else if (_swapping && today && CanSwap)
                 {
                     var id = mission.Id;
                     var swap = new Button(() =>
