@@ -288,7 +288,7 @@ export interface TableState<S, M> {
   seats: SeatSlot[];
   presences: Record<string, PresenceRecord>;
   admissions: Record<string, Admission>;
-  /** User ids that may not rejoin: kicked players and removed watchers (GDD 9.9, OQ-048). */
+  /** User ids that may not rejoin: kicked players and removed watchers (GDD 9.9, OQ-050). */
   kicked: string[];
   series: SeriesState | null;
   round: RoundRuntime<S, M> | null;

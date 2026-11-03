@@ -712,7 +712,7 @@ export function tableCore<S, M, V, E, R>(
           reject(ruleError(ErrorCodes.table.invalidPayload, { reason: "user_id" }));
           return;
         }
-        // Removed for the life of the table, like a kick (OQ-048): sent before the socket is
+        // Removed for the life of the table, like a kick (OQ-050): sent before the socket is
         // dropped, so the watcher hears why.
         if (!state.kicked.includes(target)) state.kicked.push(target);
         emit.public("presence", presencePayload(first, first.displayName ?? null, "removed"));

@@ -281,7 +281,7 @@ describe("spectators are friends of the table (GDD 7.6, 7.7, 9.10)", () => {
     expect(state.spectators[0]?.friendOfSeat).toBeNull();
   });
 
-  it("lets the host remove a watcher for good, and only the host (OQ-048)", () => {
+  it("lets the host remove a watcher for good, and only the host (OQ-050)", () => {
     const h = harness({ social });
     h.join(presence(0));
     h.join(presence(1));

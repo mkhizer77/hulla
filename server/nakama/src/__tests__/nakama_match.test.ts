@@ -122,7 +122,7 @@ describe("the Nakama binding", () => {
     expect(b.d.labels.at(-1)).toBe(labelFor(b.state));
   });
 
-  it("names a watcher's seated friend from Nakama's friend list, and the host removes them (OQ-048)", () => {
+  it("names a watcher's seated friend from Nakama's friend list, and the host removes them (OQ-050)", () => {
     const b = booted();
     const [p0] = b.presences;
     if (p0 === undefined) throw new Error("presences");

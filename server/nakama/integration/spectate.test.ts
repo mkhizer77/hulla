@@ -85,7 +85,7 @@ describe.skipIf(NAKAMA_HOST === undefined)(
       expect(list.friends[0]?.table).toMatchObject({ watchable: true, seated: 3 });
     }, 60_000);
 
-    it("the host removes a watcher, who is told and cannot come back (OQ-048)", async () => {
+    it("the host removes a watcher, who is told and cannot come back (OQ-050)", async () => {
       const suffix = String(Date.now());
       const host = await scriptedClient("rh", suffix);
       const friend = await scriptedClient("rf", suffix);
