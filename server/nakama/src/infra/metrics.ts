@@ -10,6 +10,8 @@ export const METRICS = {
   /** A timer: Nakama takes nanoseconds and exposes seconds as a summary. */
   roundDuration: "hulla_round_duration",
   moves: "hulla_moves",
+  /** A timer: a player's move from receipt to the broadcast that answers it (the server's share). */
+  moveLatency: "hulla_move_latency",
   timeouts: "hulla_timeouts",
   thullas: "hulla_thullas",
   disconnects: "hulla_disconnects",

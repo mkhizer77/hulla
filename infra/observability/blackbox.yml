@@ -1,0 +1,10 @@
+# The availability probe (GDD 20.13: 99.5% a month): Nakama's API healthcheck must answer 200.
+modules:
+  http_ok:
+    prober: http
+    timeout: 5s
+    http:
+      valid_status_codes: [200]
+      method: GET
+      # Compose networks are IPv4; the prober would otherwise try IPv6 first.
+      preferred_ip_protocol: ip4

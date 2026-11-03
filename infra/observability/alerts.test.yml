@@ -1,0 +1,123 @@
+# Unit tests for alerts.yml: each alert fires on an induced fault and stays quiet on healthy traffic.
+# Run with `pnpm observability:check` (promtool in the Prometheus image).
+rule_files:
+  - alerts.yml
+evaluation_interval: 1m
+tests:
+  # One round a minute and two dropped messages a minute: far above 1% of rounds with an error.
+  - interval: 1m
+    input_series:
+      - series: 'nakama_custom_hulla_rounds_started{game="thulla",mode="private",node_name="n1"}'
+        values: "0+1x60"
+      - series: 'nakama_custom_hulla_messages_dropped{game="thulla",node_name="n1"}'
+        values: "0+2x60"
+    alert_rule_test:
+      - eval_time: 30m
+        alertname: HullaRoundErrorRate
+        exp_alerts:
+          - exp_labels:
+              severity: page
+            exp_annotations:
+              summary: "More than 1% of rounds hit a server-side error"
+      - eval_time: 30m
+        alertname: HullaMessagesDropped
+        exp_alerts:
+          - exp_labels:
+              severity: page
+            exp_annotations:
+              summary: "Table messages are being dropped"
+              description: "More than one message in a hundred seconds fails inside a match handler."
+
+  # Healthy traffic: rounds, no errors, the healthcheck answering.
+  - interval: 1m
+    input_series:
+      - series: 'nakama_custom_hulla_rounds_started{game="thulla",mode="private",node_name="n1"}'
+        values: "0+1x120"
+      - series: 'nakama_custom_hulla_messages_dropped{game="thulla",node_name="n1"}'
+        values: "0x120"
+      - series: 'probe_success{job="nakama_health",instance="http://nakama:7350/healthcheck"}'
+        values: "1x120"
+      - series: 'up{job="nakama_health",instance="http://nakama:7350/healthcheck"}'
+        values: "1x120"
+      - series: 'nakama_custom_hulla_move_latency{game="thulla",node_name="n1",quantile="0.95"}'
+        values: "0.12x120"
+    alert_rule_test:
+      - eval_time: 90m
+        alertname: HullaRoundErrorRate
+        exp_alerts: []
+      - eval_time: 90m
+        alertname: HullaMessagesDropped
+        exp_alerts: []
+      - eval_time: 90m
+        alertname: NakamaUnreachable
+        exp_alerts: []
+      - eval_time: 90m
+        alertname: HullaAvailabilityBurnFast
+        exp_alerts: []
+      - eval_time: 90m
+        alertname: HullaMoveLatencyHigh
+        exp_alerts: []
+
+  # The healthcheck fails from minute 30: unreachable after two minutes, fast burn soon after.
+  - interval: 1m
+    input_series:
+      - series: 'probe_success{job="nakama_health",instance="http://nakama:7350/healthcheck"}'
+        values: "1x30 0x30"
+      - series: 'up{job="nakama_health",instance="http://nakama:7350/healthcheck"}'
+        values: "1x60"
+    alert_rule_test:
+      - eval_time: 31m
+        alertname: NakamaUnreachable
+        exp_alerts: []
+      - eval_time: 34m
+        alertname: NakamaUnreachable
+        exp_alerts:
+          - exp_labels:
+              severity: page
+              job: nakama_health
+              instance: "http://nakama:7350/healthcheck"
+            exp_annotations:
+              summary: "Nakama's healthcheck does not answer"
+              description: "Players cannot sign in or play. Start with incident-triage.md, step 1."
+      - eval_time: 40m
+        alertname: HullaAvailabilityBurnFast
+        exp_alerts:
+          - exp_labels:
+              severity: page
+            exp_annotations:
+              summary: "Availability is burning the month's error budget fast"
+              description: "More than 7% of healthchecks failed in the last hour and they are still failing."
+
+  # Moves slow inside the server for a quarter of an hour.
+  - interval: 1m
+    input_series:
+      - series: 'nakama_custom_hulla_move_latency{game="thulla",node_name="n1",quantile="0.95"}'
+        values: "0.12x5 0.35x20"
+    alert_rule_test:
+      - eval_time: 10m
+        alertname: HullaMoveLatencyHigh
+        exp_alerts: []
+      - eval_time: 20m
+        alertname: HullaMoveLatencyHigh
+        exp_alerts:
+          - exp_labels:
+              severity: warn
+            exp_annotations:
+              summary: "p95 of a move inside the server is above 200 ms"
+              description: "The 250 ms round-trip SLO cannot hold. Check CPU, the database panels and recent deploys."
+
+  # Ninety of a hundred database connections busy.
+  - interval: 1m
+    input_series:
+      - series: 'nakama_db_in_use_conns{node_name="n1"}'
+        values: "90x10"
+      - series: 'nakama_db_max_open_conns{node_name="n1"}'
+        values: "100x10"
+    alert_rule_test:
+      - eval_time: 8m
+        alertname: HullaDatabaseSaturated
+        exp_alerts:
+          - exp_labels:
+              severity: warn
+            exp_annotations:
+              summary: "More than 80% of Nakama's database connections are in use"

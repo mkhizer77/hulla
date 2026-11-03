@@ -1,5 +1,84 @@
-# Alert rules for the SLOs of GDD 20.13. Delivery (Grafana Cloud or a phone) is the owner's setup.
+# Alert rules for the SLOs of GDD 20.13: 99.5% monthly availability, p95 move round trip under
+# 250 ms in region, under 1% of rounds with a server-side error. Alertmanager sends them to the
+# owner's phone (alertmanager.yml); what each one means is in docs/runbooks/observability.md.
+# Unit tests with induced errors: alerts.test.yml (pnpm observability:check).
 groups:
+  # Availability from the healthcheck probe, as ratios over the burn-rate windows.
+  - name: hulla_availability
+    interval: 1m
+    rules:
+      - record: hulla:availability:ratio_5m
+        expr: avg(avg_over_time(probe_success{job="nakama_health"}[5m]))
+      - record: hulla:availability:ratio_30m
+        expr: avg(avg_over_time(probe_success{job="nakama_health"}[30m]))
+      - record: hulla:availability:ratio_1h
+        expr: avg(avg_over_time(probe_success{job="nakama_health"}[1h]))
+      - record: hulla:availability:ratio_6h
+        expr: avg(avg_over_time(probe_success{job="nakama_health"}[6h]))
+  - name: hulla_availability_month
+    interval: 5m
+    rules:
+      - record: hulla:availability:ratio_30d
+        expr: avg(avg_over_time(probe_success{job="nakama_health"}[30d]))
+  - name: hulla_slo
+    rules:
+      - alert: NakamaUnreachable
+        expr: probe_success{job="nakama_health"} == 0 or up{job="nakama_health"} == 0
+        for: 2m
+        labels:
+          severity: page
+        annotations:
+          summary: "Nakama's healthcheck does not answer"
+          description: "Players cannot sign in or play. Start with incident-triage.md, step 1."
+      # The 0.5% monthly budget: 14.4 times the allowed rate spends 2% of it in an hour.
+      - alert: HullaAvailabilityBurnFast
+        expr: hulla:availability:ratio_1h < 0.928 and hulla:availability:ratio_5m < 0.928
+        for: 2m
+        labels:
+          severity: page
+        annotations:
+          summary: "Availability is burning the month's error budget fast"
+          description: "More than 7% of healthchecks failed in the last hour and they are still failing."
+      # Six times the allowed rate spends 5% of the budget in six hours.
+      - alert: HullaAvailabilityBurnSlow
+        expr: hulla:availability:ratio_6h < 0.97 and hulla:availability:ratio_30m < 0.97
+        for: 15m
+        labels:
+          severity: warn
+        annotations:
+          summary: "Availability is slowly eating the month's error budget"
+      - alert: HullaAvailabilityBelowSlo
+        expr: hulla:availability:ratio_30d < 0.995
+        for: 1h
+        labels:
+          severity: warn
+        annotations:
+          summary: "Availability over the last 30 days is below 99.5%"
+      # The server's share of a move's round trip. At five ticks a second the wait for the tick
+      # alone is up to 200 ms, so above that the handler itself is slow (OQ-047).
+      - alert: HullaMoveLatencyHigh
+        expr: max(nakama_custom_hulla_move_latency{quantile="0.95"}) > 0.2
+        for: 10m
+        labels:
+          severity: warn
+        annotations:
+          summary: "p95 of a move inside the server is above 200 ms"
+          description: "The 250 ms round-trip SLO cannot hold. Check CPU, the database panels and recent deploys."
+      - alert: HullaDatabaseSaturated
+        expr: max(nakama_db_in_use_conns / (nakama_db_max_open_conns > 0)) > 0.8
+        for: 5m
+        labels:
+          severity: warn
+        annotations:
+          summary: "More than 80% of Nakama's database connections are in use"
+      - alert: HullaDatabaseWaits
+        expr: sum(rate(nakama_db_total_wait_time_nanos[5m])) / 1e9 > 0.5
+        for: 5m
+        labels:
+          severity: warn
+        annotations:
+          summary: "Calls wait for a database connection"
+          description: "Half a second of waiting every second. Postgres is slow or the pool is too small."
   - name: hulla
     rules:
       - alert: HullaMessagesDropped

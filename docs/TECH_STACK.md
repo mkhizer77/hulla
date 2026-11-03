@@ -50,7 +50,7 @@
 | Scheduled jobs | A cron sidecar container in the compose stack calling admin RPCs with the runtime HTTP key | Nakama has no scheduler |
 | Push | FCM HTTP v1 called from the runtime (`nk.jwtGenerate`, `nk.httpRequest`) | Nakama notifications are in-app only |
 | Fairness | Seed from four `nk.uuidv4()` values, xoshiro128** implemented identically in TS and C# (parity rules in ARCHITECTURE §7.5), `nk.sha256Hash` commitment | ADR-0009 |
-| Metrics and logs | Nakama Prometheus endpoint, structured JSON logs, Grafana Cloud free tier | |
+| Metrics and logs | Nakama Prometheus endpoint, structured JSON logs; Prometheus, Alertmanager, blackbox probe and Grafana self-hosted next to Nakama (`infra/observability`) | Grafana Cloud free tier is the fallback |
 | Admin | Nakama console plus admin RPCs | |
 
 ## 4. Multiplayer, in one paragraph
@@ -71,7 +71,7 @@ Every table is one authoritative Nakama match. Clients send intents (`play_card`
 | Content and backups storage | Cloudflare R2 | 10 GB free, free egress | n/a | n/a | Low (S3 API) |
 | Container images | GitHub Container Registry | Free for public repos | n/a | n/a | Low |
 | CI | GitHub Actions with GameCI images | Free for public repos, including macOS runners | n/a | n/a | Medium |
-| Monitoring | Grafana Cloud free tier, UptimeRobot free | Free | n/a | n/a | Low |
+| Monitoring | Self-hosted Prometheus and Grafana on the box, alerts by ntfy push; Grafana Cloud free tier as fallback | Free | n/a | n/a | Low |
 | Domains | `hulla.gg` (links), `hulla.games` (site) | About $30–60 a year | n/a | n/a | n/a |
 | Store accounts | Apple Developer Program $99 a year; Google Play $25 once | | | | |
 

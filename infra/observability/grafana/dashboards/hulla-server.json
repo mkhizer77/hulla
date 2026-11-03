@@ -9,12 +9,347 @@
   "refresh": "30s",
   "panels": [
     {
+      "id": 15,
+      "type": "stat",
+      "title": "Availability, 30 days (SLO 99.5%)",
+      "gridPos": {
+        "x": 0,
+        "y": 0,
+        "w": 6,
+        "h": 4
+      },
+      "datasource": {
+        "type": "prometheus"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percentunit",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "red",
+                "value": null
+              },
+              {
+                "color": "green",
+                "value": 0.995
+              }
+            ]
+          },
+          "decimals": 2
+        }
+      },
+      "options": {
+        "colorMode": "background",
+        "reduceOptions": {
+          "calcs": ["lastNotNull"]
+        }
+      },
+      "targets": [
+        {
+          "expr": "hulla:availability:ratio_30d",
+          "refId": "A",
+          "instant": true
+        }
+      ]
+    },
+    {
+      "id": 16,
+      "type": "stat",
+      "title": "Rounds with a server error, 24 h (SLO under 1%)",
+      "gridPos": {
+        "x": 6,
+        "y": 0,
+        "w": 6,
+        "h": 4
+      },
+      "datasource": {
+        "type": "prometheus"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percentunit",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 0.01
+              }
+            ]
+          },
+          "decimals": 2
+        }
+      },
+      "options": {
+        "colorMode": "background",
+        "reduceOptions": {
+          "calcs": ["lastNotNull"]
+        }
+      },
+      "targets": [
+        {
+          "expr": "sum(increase(nakama_custom_hulla_messages_dropped[1d])) / clamp_min(sum(increase(nakama_custom_hulla_rounds_started[1d])), 1) or vector(0)",
+          "refId": "A",
+          "instant": true
+        }
+      ]
+    },
+    {
+      "id": 17,
+      "type": "stat",
+      "title": "Move inside the server, p95 (budget 200 ms)",
+      "gridPos": {
+        "x": 12,
+        "y": 0,
+        "w": 6,
+        "h": 4
+      },
+      "datasource": {
+        "type": "prometheus"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "s",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 0.2
+              }
+            ]
+          }
+        }
+      },
+      "options": {
+        "colorMode": "background",
+        "reduceOptions": {
+          "calcs": ["lastNotNull"]
+        }
+      },
+      "targets": [
+        {
+          "expr": "max(nakama_custom_hulla_move_latency{quantile=\"0.95\"})",
+          "refId": "A",
+          "instant": true
+        }
+      ]
+    },
+    {
+      "id": 18,
+      "type": "stat",
+      "title": "Alerts firing",
+      "gridPos": {
+        "x": 18,
+        "y": 0,
+        "w": 6,
+        "h": 4
+      },
+      "datasource": {
+        "type": "prometheus"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "none",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 1
+              }
+            ]
+          }
+        }
+      },
+      "options": {
+        "colorMode": "background",
+        "reduceOptions": {
+          "calcs": ["lastNotNull"]
+        }
+      },
+      "targets": [
+        {
+          "expr": "count(ALERTS{alertstate=\"firing\"}) or vector(0)",
+          "refId": "A",
+          "instant": true
+        }
+      ]
+    },
+    {
+      "id": 19,
+      "type": "timeseries",
+      "title": "Move inside the server (s)",
+      "gridPos": {
+        "x": 0,
+        "y": 4,
+        "w": 8,
+        "h": 8
+      },
+      "datasource": {
+        "type": "prometheus"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "s",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 0.2
+              }
+            ]
+          },
+          "custom": {
+            "thresholdsStyle": {
+              "mode": "line"
+            }
+          }
+        }
+      },
+      "targets": [
+        {
+          "expr": "max by (game) (nakama_custom_hulla_move_latency{quantile=\"0.5\"})",
+          "legendFormat": "p50 {{game}}",
+          "refId": "A"
+        },
+        {
+          "expr": "max by (game) (nakama_custom_hulla_move_latency{quantile=\"0.95\"})",
+          "legendFormat": "p95 {{game}}",
+          "refId": "B"
+        },
+        {
+          "expr": "max by (game) (nakama_custom_hulla_move_latency{quantile=\"0.99\"})",
+          "legendFormat": "p99 {{game}}",
+          "refId": "C"
+        }
+      ]
+    },
+    {
+      "id": 20,
+      "type": "timeseries",
+      "title": "Live tables, sessions and healthcheck",
+      "gridPos": {
+        "x": 8,
+        "y": 4,
+        "w": 8,
+        "h": 8
+      },
+      "datasource": {
+        "type": "prometheus"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "none"
+        }
+      },
+      "targets": [
+        {
+          "expr": "sum(nakama_authoritative_matches)",
+          "legendFormat": "tables",
+          "refId": "A"
+        },
+        {
+          "expr": "sum(nakama_sessions)",
+          "legendFormat": "sessions",
+          "refId": "B"
+        },
+        {
+          "expr": "min(probe_success{job=\"nakama_health\"})",
+          "legendFormat": "healthcheck up",
+          "refId": "C"
+        }
+      ]
+    },
+    {
+      "id": 21,
+      "type": "timeseries",
+      "title": "Database connections in use",
+      "gridPos": {
+        "x": 16,
+        "y": 4,
+        "w": 8,
+        "h": 8
+      },
+      "datasource": {
+        "type": "prometheus"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percentunit",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 0.8
+              }
+            ]
+          },
+          "custom": {
+            "thresholdsStyle": {
+              "mode": "line"
+            }
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "waiting (s per s)"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "s"
+              }
+            ]
+          }
+        ]
+      },
+      "targets": [
+        {
+          "expr": "max(nakama_db_in_use_conns / (nakama_db_max_open_conns > 0))",
+          "legendFormat": "in use",
+          "refId": "A"
+        },
+        {
+          "expr": "sum(rate(nakama_db_total_wait_time_nanos[5m])) / 1e9",
+          "legendFormat": "waiting (s per s)",
+          "refId": "B"
+        }
+      ]
+    },
+    {
       "id": 1,
       "type": "timeseries",
       "title": "Rounds started per minute",
       "gridPos": {
         "x": 0,
-        "y": 0,
+        "y": 12,
         "w": 12,
         "h": 8
       },
@@ -40,7 +375,7 @@
       "title": "Moves per minute (human and auto)",
       "gridPos": {
         "x": 12,
-        "y": 0,
+        "y": 12,
         "w": 12,
         "h": 8
       },
@@ -66,7 +401,7 @@
       "title": "Timeouts per minute",
       "gridPos": {
         "x": 0,
-        "y": 8,
+        "y": 20,
         "w": 12,
         "h": 8
       },
@@ -92,7 +427,7 @@
       "title": "Thullas per minute",
       "gridPos": {
         "x": 12,
-        "y": 8,
+        "y": 20,
         "w": 12,
         "h": 8
       },
@@ -118,7 +453,7 @@
       "title": "Disconnects and reconnects per minute",
       "gridPos": {
         "x": 0,
-        "y": 16,
+        "y": 28,
         "w": 12,
         "h": 8
       },
@@ -144,7 +479,7 @@
       "title": "Round duration p95 (s)",
       "gridPos": {
         "x": 12,
-        "y": 16,
+        "y": 28,
         "w": 12,
         "h": 8
       },
@@ -170,7 +505,7 @@
       "title": "Messages dropped (errors) per hour",
       "gridPos": {
         "x": 0,
-        "y": 24,
+        "y": 36,
         "w": 12,
         "h": 8
       },
@@ -196,7 +531,7 @@
       "title": "Tables created per hour",
       "gridPos": {
         "x": 12,
-        "y": 24,
+        "y": 36,
         "w": 12,
         "h": 8
       },
@@ -222,7 +557,7 @@
       "title": "RPC latency p95 (ms)",
       "gridPos": {
         "x": 0,
-        "y": 32,
+        "y": 44,
         "w": 12,
         "h": 8
       },
@@ -248,7 +583,7 @@
       "title": "Sessions",
       "gridPos": {
         "x": 12,
-        "y": 32,
+        "y": 44,
         "w": 12,
         "h": 8
       },
@@ -274,7 +609,7 @@
       "title": "Phone codes sent per hour, by country",
       "gridPos": {
         "x": 0,
-        "y": 40,
+        "y": 52,
         "w": 12,
         "h": 8
       },
@@ -300,7 +635,7 @@
       "title": "Phone code spend, estimated US$ per day",
       "gridPos": {
         "x": 12,
-        "y": 40,
+        "y": 52,
         "w": 12,
         "h": 8
       },
@@ -331,7 +666,7 @@
       "title": "Phone codes refused per hour, by reason",
       "gridPos": {
         "x": 0,
-        "y": 48,
+        "y": 60,
         "w": 12,
         "h": 8
       },
@@ -357,7 +692,7 @@
       "title": "Phone sign-ins and links per hour",
       "gridPos": {
         "x": 12,
-        "y": 48,
+        "y": 60,
         "w": 12,
         "h": 8
       },
