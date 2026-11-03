@@ -1889,7 +1889,10 @@ namespace Hulla.Composition
                 code => _ = phone.VerifyAsync(code, lifetime),
                 () => _ = phone.RemoveAsync(lifetime),
                 () => _ = phone.SwitchAsync(lifetime),
-                phone.StartOver));
+                phone.StartOver)
+            {
+                SendBySms = () => _ = phone.SendBySmsAsync(lifetime),
+            });
             _ = phone.RefreshAsync(lifetime);
         }
 

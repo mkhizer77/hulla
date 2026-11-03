@@ -306,7 +306,7 @@
     "name.place.7": "Jaipuri",
     "nav.home": "Home",
     "nav.trophies": "Trophies",
-    "phone.code_label": "The code from the text",
+    "phone.code_label": "The code we sent",
     "phone.intro": "Add your number to sign in with it on any phone. Nobody else sees it.",
     "phone.linked": "Your number is linked. Sign in with it on any phone.",
     "phone.number_label": "Your number, with the country code",
@@ -1071,7 +1071,10 @@
     "ui.double_for_ad": "Watch an ad · 2× coins",
     "ui.coins_doubled": "Coins doubled: +{0}",
     "ui.trial_started": "{0} is yours for 24 hours",
-    "ui.ad_no_reward": "The ad didn't finish, so there's no reward this time."
+    "ui.ad_no_reward": "The ad didn't finish, so there's no reward this time.",
+    "phone.sent_whatsapp": "We sent a code on WhatsApp to {0}.",
+    "phone.sent_fallback": "WhatsApp didn't work, so we sent a code by SMS to {0}.",
+    "phone.sms_instead": "Send by SMS instead"
   },
   "notes": {
     "achievement.goal.bhabhis": "{0} the target count.",
@@ -1139,6 +1142,8 @@
     "ui.title_reward": "{0} the title's name.",
     "ui.you_are": "{0} the player's own name on a board.",
     "welcome.first_round_bonus": "{0} coins, paid once with the first live round.",
-    "welcome.tutorial_bonus": "{0} coins, paid once for finishing the tutorial."
+    "welcome.tutorial_bonus": "{0} coins, paid once for finishing the tutorial.",
+    "phone.sent_whatsapp": "{0} the number with its middle hidden, such as +92 ••• 67.",
+    "phone.sent_fallback": "{0} the number with its middle hidden, such as +92 ••• 67."
   }
 }

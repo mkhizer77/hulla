@@ -1724,7 +1724,7 @@
   },
   {
    "key": "phone.code_label",
-   "text": "[Thé çödé fröm thé téxt · · · ·]",
+   "text": "[Thé çödé wé séñt · · ·]",
    "smart": false
   },
   {
@@ -1773,8 +1773,23 @@
    "smart": true
   },
   {
+   "key": "phone.sent_fallback",
+   "text": "[WhåtsÅpp dîdñ't wörk, sö wé séñt å çödé bý SMS tö {0}. · · · · · · · · ·]",
+   "smart": true
+  },
+  {
+   "key": "phone.sent_whatsapp",
+   "text": "[Wé séñt å çödé öñ WhåtsÅpp tö {0}. · · · · · ·]",
+   "smart": true
+  },
+  {
    "key": "phone.settings_action",
    "text": "[Phöñé ñûmbér · ·]",
+   "smart": false
+  },
+  {
+   "key": "phone.sms_instead",
+   "text": "[Séñd bý SMS îñstéåd · · ·]",
    "smart": false
   },
   {

@@ -25,15 +25,36 @@ namespace Hulla.Infrastructure.Nakama
             return body.IsOk ? Result<bool>.Ok((bool?)body.Value["linked"] == true) : Result<bool>.Fail(body.Error.Code);
         }
 
-        public async Awaitable<Result<PhoneCodeSent>> StartAsync(string phone, CancellationToken cancellation)
+        public async Awaitable<Result<PhoneCodeSent>> StartAsync(string phone, string? channel, CancellationToken cancellation)
         {
-            var body = await CallAsync("phone_start", new JObject { ["phone"] = phone }, cancellation);
+            var input = new JObject { ["phone"] = phone };
+            if (channel != null)
+            {
+                input["channel"] = channel;
+            }
+
+            var body = await CallAsync("phone_start", input, cancellation);
             if (!body.IsOk)
             {
                 return Result<PhoneCodeSent>.Fail(body.Error.Code);
             }
 
-            return Result<PhoneCodeSent>.Ok(new PhoneCodeSent((string?)body.Value["phone"] ?? "", (long?)body.Value["expiresTs"] ?? 0, (long?)body.Value["resendAfterTs"] ?? 0));
+            var channels = new System.Collections.Generic.List<string>();
+            if (body.Value["channels"] is JArray list)
+            {
+                foreach (var c in list)
+                {
+                    channels.Add((string?)c ?? "");
+                }
+            }
+
+            return Result<PhoneCodeSent>.Ok(new PhoneCodeSent(
+                (string?)body.Value["phone"] ?? "",
+                (long?)body.Value["expiresTs"] ?? 0,
+                (long?)body.Value["resendAfterTs"] ?? 0,
+                (string?)body.Value["channel"] ?? PhoneChannels.Sms,
+                channels.Count > 0 ? channels : null,
+                (bool?)body.Value["fallback"] == true));
         }
 
         public async Awaitable<Result<PhoneVerified>> VerifyAsync(string phone, string code, CancellationToken cancellation)

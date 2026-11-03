@@ -321,8 +321,13 @@ namespace Hulla.Screens.Tests
 
             public Awaitable<Result<bool>> StatusAsync(CancellationToken c) => Done(Result<bool>.Ok(Linked));
 
-            public Awaitable<Result<PhoneCodeSent>> StartAsync(string phone, CancellationToken c) =>
-                Done(Result<PhoneCodeSent>.Ok(new PhoneCodeSent("+92 ••• 67", 1, 1)));
+            public Awaitable<Result<PhoneCodeSent>> StartAsync(string phone, string? channel, CancellationToken c) =>
+                Done(Result<PhoneCodeSent>.Ok(WhatsApp
+                    ? new PhoneCodeSent("+92 ••• 67", 1, 1, channel ?? PhoneChannels.WhatsApp, new[] { PhoneChannels.WhatsApp, PhoneChannels.Sms })
+                    : new PhoneCodeSent("+92 ••• 67", 1, 1)));
+
+            /// <summary>Codes go on WhatsApp first, with SMS offered instead.</summary>
+            public bool WhatsApp;
 
             public Awaitable<Result<PhoneVerified>> VerifyAsync(string phone, string code, CancellationToken c) =>
                 Done(Result<PhoneVerified>.Ok(new PhoneVerified(false, "+92 ••• 67", "otp:t")));

@@ -17,6 +17,7 @@
                 <ui:Label name="sent" class="caption phone__text" />
                 <ui:TextField name="code" class="field" />
                 <ui:Button name="verify" class="button button--primary" />
+                <ui:Button name="sms-instead" class="button button--quiet" />
                 <ui:Button name="other-number" class="button button--quiet" />
             </ui:VisualElement>
             <ui:VisualElement name="linked-step">
