@@ -1505,7 +1505,7 @@ namespace Hulla.Composition
             var profile = await LookUpProfileAsync(userId);
             return profile == null
                 ? null
-                : new ProfileCard(profile.DisplayName, profile.Handle, profile.Bio ?? "", profile.FriendCode ?? "", profile.Stats?.Rounds ?? 0, profile.Stats?.Escapes ?? 0, profile.Stats?.Bhabhis ?? 0, profile.Stats?.ThullasGiven ?? 0, profile.Avatar, profile.Title);
+                : new ProfileCard(profile.DisplayName, profile.Handle, profile.Bio ?? "", profile.FriendCode ?? "", profile.Stats?.Rounds ?? 0, profile.Stats?.Escapes ?? 0, profile.Stats?.Bhabhis ?? 0, profile.Stats?.ThullasGiven ?? 0, profile.Avatar, profile.Title, profile.Level);
         }
 
         /// <summary>The fair deal in plain words (ADR-0009): the commitment, the seed, and a copy of the seed to check elsewhere.</summary>

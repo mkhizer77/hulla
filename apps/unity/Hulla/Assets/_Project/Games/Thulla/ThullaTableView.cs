@@ -517,6 +517,14 @@ namespace Hulla.Games.Thulla
             {
                 stats.text = Strings.Format(UiText.PlayerStats, Strings.Get("ui.rounds_count", profile.Stats.Rounds), Strings.Get("ui.times_bhabhi", profile.Stats.Bhabhis));
             }
+
+            // The level leads the line (design: Player sheet), when the server sent it.
+            if (profile.Level is long level)
+            {
+                stats.text = stats.text.Length == 0
+                    ? Strings.Format(UiText.LevelN, level)
+                    : Strings.Format(UiText.PlayerStats, Strings.Format(UiText.LevelN, level), stats.text);
+            }
         }
 
         private static Label Line(string text, string cls)

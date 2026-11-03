@@ -3,8 +3,9 @@ namespace Hulla.Application.Social
     /// <summary>The parts of a profile the screens show, so views never touch wire types.</summary>
     public sealed class ProfileCard
     {
-        public ProfileCard(string displayName, string handle, string bio, string friendCode, long rounds, long escapes, long bhabhis, long thullasGiven, string? avatar = null, string? title = null)
+        public ProfileCard(string displayName, string handle, string bio, string friendCode, long rounds, long escapes, long bhabhis, long thullasGiven, string? avatar = null, string? title = null, long? level = null)
         {
+            Level = level;
             DisplayName = displayName;
             Handle = handle;
             Bio = bio;
@@ -20,6 +21,9 @@ namespace Hulla.Application.Social
         public string? Avatar { get; }
 
         public string? Title { get; }
+
+        /// <summary>The player's level (GDD 12.2), when the server sent it.</summary>
+        public long? Level { get; }
 
         public string DisplayName { get; }
 
