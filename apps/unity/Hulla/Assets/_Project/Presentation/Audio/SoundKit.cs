@@ -32,6 +32,29 @@ namespace Hulla.Presentation.Audio
             return steps[Math.Clamp(cardIndex, 0, steps.Length - 1)];
         }
 
+        /// <summary>The Dhaba sound set (catalog sounds_dhaba): wood, tabla, a steel cup and harmonium.</summary>
+        public const string Dhaba = "sounds_dhaba";
+
+        /// <summary>The clip for a sound in the player's equipped set; an unknown or null set is the classic one.</summary>
+        public static float[] Samples(Sound sound, string? set)
+        {
+            if (set != Dhaba)
+            {
+                return Samples(sound);
+            }
+
+            switch (sound)
+            {
+                case Sound.CardTap: return Tone(0.09f, 140f, 30f, noise: 0.5f, noiseDecay: 90f);
+                case Sound.Slam: return Tabla();
+                case Sound.Stamp: return Cup();
+                case Sound.Escape: return Harmonium(new[] { 392f, 494f, 587f }, 0.45f, 0f);
+                case Sound.Sting: return Harmonium(new[] { 349f, 294f }, 0.5f, 0.22f);
+                case Sound.Tick: return Tone(0.035f, 820f, 90f, noise: 0.15f, noiseDecay: 200f);
+                default: return Samples(sound);
+            }
+        }
+
         public static float[] Samples(Sound sound)
         {
             switch (sound)
@@ -137,6 +160,74 @@ namespace Hulla.Presentation.Audio
                 var sine = (float)Math.Sin(2 * Math.PI * hertz * t);
                 var envelope = (float)Math.Min(1.0, local * 40.0) * (float)Math.Exp(-local * 6f);
                 samples[i] = Soften((0.45f * sine + 0.25f * saw) * envelope);
+            }
+
+            return samples;
+        }
+
+        /// <summary>A tabla "dha": a low drum whose pitch falls as it rings, with a slap on top.</summary>
+        private static float[] Tabla()
+        {
+            var samples = new float[(int)(0.3f * SampleRate)];
+            var random = new Random(5);
+            var phase = 0.0;
+            for (var i = 0; i < samples.Length; i++)
+            {
+                var t = i / (float)SampleRate;
+                var hertz = 70f + 90f * (float)Math.Exp(-t * 18f);
+                phase += 2 * Math.PI * hertz / SampleRate;
+                var body = (float)Math.Sin(phase) * (float)Math.Exp(-t * 9f);
+                var slap = 0.4f * ((float)random.NextDouble() * 2f - 1f) * (float)Math.Exp(-t * 120f);
+                samples[i] = Soften((body + slap) * 0.9f);
+            }
+
+            return samples;
+        }
+
+        /// <summary>A steel chai cup struck once: bright, uneven partials that ring a little.</summary>
+        private static float[] Cup()
+        {
+            var samples = new float[(int)(0.35f * SampleRate)];
+            for (var i = 0; i < samples.Length; i++)
+            {
+                var t = i / (float)SampleRate;
+                var value = 0.4f * (float)Math.Sin(2 * Math.PI * 1870f * t) * (float)Math.Exp(-t * 11f)
+                    + 0.25f * (float)Math.Sin(2 * Math.PI * 2740f * t) * (float)Math.Exp(-t * 16f)
+                    + 0.15f * (float)Math.Sin(2 * Math.PI * 4310f * t) * (float)Math.Exp(-t * 25f);
+                samples[i] = Soften(value);
+            }
+
+            return samples;
+        }
+
+        /// <summary>Harmonium notes, reedy and slightly detuned; with a step the notes follow each other.</summary>
+        private static float[] Harmonium(float[] notes, float seconds, float step)
+        {
+            var samples = new float[(int)(seconds * SampleRate)];
+            for (var i = 0; i < samples.Length; i++)
+            {
+                var t = i / (float)SampleRate;
+                var value = 0f;
+                for (var n = 0; n < notes.Length; n++)
+                {
+                    var start = n * step;
+                    if (t < start || (step > 0f && n < notes.Length - 1 && t >= start + step))
+                    {
+                        continue;
+                    }
+
+                    var local = t - start;
+                    var envelope = (float)Math.Min(1.0, local * 25.0) * (float)Math.Exp(-local * 3.5f);
+                    for (var d = -1; d <= 1; d += 2)
+                    {
+                        var hertz = notes[n] * (1f + d * 0.003f);
+                        var cycle = hertz * t;
+                        var reed = (float)(2.0 * Math.Abs(2.0 * (cycle - Math.Floor(cycle + 0.5))) - 1.0);
+                        value += 0.5f * (0.6f * reed + 0.4f * (float)Math.Sin(2 * Math.PI * hertz * t)) * envelope;
+                    }
+                }
+
+                samples[i] = Soften(value * (step > 0f ? 0.55f : 0.3f));
             }
 
             return samples;

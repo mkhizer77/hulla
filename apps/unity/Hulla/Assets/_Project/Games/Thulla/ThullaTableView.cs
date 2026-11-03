@@ -1826,6 +1826,10 @@ namespace Hulla.Games.Thulla
             var me = _client.Model.MySeat is long mine && mine < _client.Model.Seats.Count ? _client.Model.Seats[(int)mine] : default;
             CosmeticArt.Apply(_rail, me.TableSurface);
             _discard.SetBack(me.CardBack);
+            if (_sounds != null)
+            {
+                _sounds.Set = me.SoundSet;
+            }
             CosmeticArt.ApplyFace(_root, me.CardFace);
             if (Skinned(_felt))
             {
