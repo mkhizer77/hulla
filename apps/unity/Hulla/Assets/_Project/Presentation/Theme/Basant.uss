@@ -10538,11 +10538,11 @@
 }
 
 .skin--basant .suggestion-chip--contacts {
-    background-color: rgb(40, 160, 166);
+    background-color: rgb(18, 112, 118);
 }
 
 .skin--basant .suggestion-chip--facebook {
-    background-color: rgb(24, 119, 242);
+    background-color: rgb(20, 96, 200);
 }
 
 .skin--basant .account-row__link,
@@ -10559,4 +10559,54 @@
     -unity-slice-left: 100;
     -unity-slice-right: 100;
     -unity-slice-scale: 0.53px;
+}
+
+/* ==================== Store products and the premium pass (GDD 13.4) ==================== */
+
+.skin--basant .store__art {
+    width: 176px;
+    height: 176px;
+    rotate: 0;
+}
+
+.skin--basant .shop__art--sheet.store__art {
+    width: 360px;
+    height: 360px;
+}
+
+.skin--basant .store__art--gems_120 { background-image: url("/Assets/_Project/Presentation/Theme/Art/Basant/Shop/product_gems_120.png"); }
+.skin--basant .store__art--gems_650 { background-image: url("/Assets/_Project/Presentation/Theme/Art/Basant/Shop/product_gems_650.png"); }
+.skin--basant .store__art--gems_1400 { background-image: url("/Assets/_Project/Presentation/Theme/Art/Basant/Shop/product_gems_1400.png"); }
+.skin--basant .store__art--gems_3000 { background-image: url("/Assets/_Project/Presentation/Theme/Art/Basant/Shop/product_gems_3000.png"); }
+.skin--basant .store__art--gems_8000 { background-image: url("/Assets/_Project/Presentation/Theme/Art/Basant/Shop/product_gems_8000.png"); }
+.skin--basant .store__art--remove_ads { background-image: url("/Assets/_Project/Presentation/Theme/Art/Basant/Shop/product_remove_ads.png"); }
+.skin--basant .store__art--starter_bundle { background-image: url("/Assets/_Project/Presentation/Theme/Art/Basant/Shop/product_starter_bundle.png"); }
+
+.skin--basant .pass__unlock,
+.skin--basant .pass__unlock:hover,
+.skin--basant .pass__unlock:active {
+    align-self: center;
+    width: 70%;
+    min-height: 150px;
+    margin: 10px 0 24px 0;
+    font-size: 56px;
+    -unity-font-definition: url("/Assets/_Project/Presentation/Theme/Fonts/LilitaOne.ttf");
+    -unity-font-style: normal;
+}
+
+.skin--basant .store__option {
+    padding: 24px 28px;
+    margin: 0 0 22px 0;
+    border-top-left-radius: 26px;
+    border-top-right-radius: 26px;
+    border-bottom-left-radius: 26px;
+    border-bottom-right-radius: 26px;
+    background-color: rgba(214, 178, 140, 0.45);
+}
+
+.skin--basant .store__option-name {
+    font-size: 50px;
+    -unity-font-definition: url("/Assets/_Project/Presentation/Theme/Fonts/LilitaOne.ttf");
+    -unity-font-style: normal;
+    color: rgb(74, 30, 14);
 }

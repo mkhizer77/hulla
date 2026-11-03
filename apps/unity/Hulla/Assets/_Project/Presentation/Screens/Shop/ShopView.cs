@@ -22,10 +22,13 @@ namespace Hulla.Presentation.Screens.Shop
         private readonly Label _balances;
 
         private readonly VisualElement _root;
+        private readonly PurchasesViewModel? _purchases;
 
-        public ShopView(VisualElement root, ShopViewModel model, Action back, Action<ShopItem> buy, Action<ShopItem> equip)
+        /// <param name="purchases">Store purchases for the Gems tab; null leaves the tab out.</param>
+        public ShopView(VisualElement root, ShopViewModel model, Action back, Action<ShopItem> buy, Action<ShopItem> equip, PurchasesViewModel? purchases = null)
         {
             _model = model;
+            _purchases = purchases;
             _buy = buy;
             _equip = equip;
             _root = root;
@@ -37,6 +40,16 @@ namespace Hulla.Presentation.Screens.Shop
             _categories = root.Q<VisualElement>("categories");
             _status = root.Q<Label>("status");
             _balances = root.Q<Label>("balances");
+            // Gems first: the one tab that sells for money, so it is never scrolled out of sight.
+            if (_purchases != null)
+            {
+                var gems = new Button(() => _model.Show(StoreView.Category)) { text = UiText.StoreTab, name = "cat-" + StoreView.Category };
+                gems.AddToClassList("chip");
+                gems.AddToClassList("shop__chip");
+                _categories.Add(gems);
+                _purchases.Changed += Refresh;
+            }
+
             foreach (var category in ShopViewModel.Categories)
             {
                 var chip = new Button(() => _model.Show(category)) { text = ItemText.Category(category), name = "cat-" + category };
@@ -49,7 +62,14 @@ namespace Hulla.Presentation.Screens.Shop
             Refresh();
         }
 
-        public void Dispose() => _model.Changed -= Refresh;
+        public void Dispose()
+        {
+            _model.Changed -= Refresh;
+            if (_purchases != null)
+            {
+                _purchases.Changed -= Refresh;
+            }
+        }
 
         /// <summary>
         /// The shop (design: Shop): the balance on the top's coin pill, the spotlight card with its days,
@@ -68,6 +88,13 @@ namespace Hulla.Presentation.Screens.Shop
             }
 
             _list.Clear();
+            if (_purchases != null && _model.Category == StoreView.Category)
+            {
+                _status.text = _purchases.ErrorCode != null ? UiText.Error(_purchases.ErrorCode) : "";
+                StoreView.Fill(_list, _root, _purchases);
+                return;
+            }
+
             if (_model.ErrorCode != null && _model.Shown.Count == 0 && _model.Spotlight.Count == 0)
             {
                 ListState.Error(_list, _model.ErrorCode, Retry);
@@ -218,6 +245,15 @@ namespace Hulla.Presentation.Screens.Shop
                 {
                     Navigation.Sheet.Close(panel);
                     _buy(item);
+                }, "yes");
+            }
+            else if (item.Gems > 0 && _purchases != null && _purchases.Ready)
+            {
+                // Short of gems: the button leads to the gem packs instead of a dead end.
+                action = Navigation.Sheet.Button(UiText.GetGems, () =>
+                {
+                    Navigation.Sheet.Close(panel);
+                    _model.Show(StoreView.Category);
                 }, "yes");
             }
             else

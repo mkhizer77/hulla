@@ -19,10 +19,15 @@ namespace Hulla.Presentation.Screens.Pass
         private readonly Action<long, bool> _claim;
         private readonly VisualElement _list;
         private readonly Label _status;
+        private readonly VisualElement _root;
+        private readonly PurchasesViewModel? _purchases;
 
-        public PassView(VisualElement root, PassViewModel model, Func<long> nowMs, Action back, Action<long, bool> claim)
+        /// <param name="purchases">Store purchases for Unlock Premium; null keeps the quiet note.</param>
+        public PassView(VisualElement root, PassViewModel model, Func<long> nowMs, Action back, Action<long, bool> claim, PurchasesViewModel? purchases = null)
         {
             _model = model;
+            _root = root;
+            _purchases = purchases;
             _nowMs = nowMs;
             _claim = claim;
             root.Q<Label>("title").text = UiText.SeasonPass;
@@ -32,10 +37,22 @@ namespace Hulla.Presentation.Screens.Pass
             _list = root.Q<VisualElement>("list");
             _status = root.Q<Label>("status");
             _model.Changed += Refresh;
+            if (_purchases != null)
+            {
+                _purchases.Changed += Refresh;
+            }
+
             Refresh();
         }
 
-        public void Dispose() => _model.Changed -= Refresh;
+        public void Dispose()
+        {
+            _model.Changed -= Refresh;
+            if (_purchases != null)
+            {
+                _purchases.Changed -= Refresh;
+            }
+        }
 
         /// <summary>
         /// The pass (design: Pass): the top plate with the season, days left and the bar to the next
@@ -118,9 +135,21 @@ namespace Hulla.Presentation.Screens.Pass
             _list.Add(card);
             if (!info.Premium)
             {
-                var note = new Label(UiText.PremiumStore);
-                note.AddToClassList("pass__note");
-                _list.Add(note);
+                if (_purchases != null && Shop.StoreView.PremiumOnSale(_purchases))
+                {
+                    var unlock = new Button(() => Shop.StoreView.OpenPremium(_root, _purchases)) { text = UiText.UnlockPremium, name = "unlock-premium" };
+                    unlock.AddToClassList("button");
+                    unlock.AddToClassList("button--primary");
+                    unlock.AddToClassList("pass__unlock");
+                    unlock.SetEnabled(_purchases.Busy == null);
+                    _list.Add(unlock);
+                }
+                else
+                {
+                    var note = new Label(_purchases?.Entitlements.PendingPass != null ? UiText.PassWaiting : UiText.PremiumStore);
+                    note.AddToClassList("pass__note");
+                    _list.Add(note);
+                }
             }
 
             if (current != null)

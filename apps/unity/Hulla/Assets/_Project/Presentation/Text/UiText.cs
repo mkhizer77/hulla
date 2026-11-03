@@ -159,6 +159,44 @@ namespace Hulla.Presentation.Text
 
         public static string PremiumStore => Strings.Text("ui.premium_store");
 
+        public static string RestorePurchases => Strings.Text("ui.restore_purchases");
+
+        public static string PurchasesRestored => Strings.Text("ui.purchases_restored");
+
+        public static string StoreTab => Strings.Text("ui.store_tab");
+
+        public static string BuyPrice => Strings.Text("ui.buy_price");
+
+        public static string GetGems => Strings.Text("ui.get_gems");
+
+        public static string Owned => Strings.Text("ui.owned");
+
+        public static string UnlockPremium => Strings.Text("ui.unlock_premium");
+
+        public static string PremiumLine => Strings.Text("ui.premium_line");
+
+        public static string PremiumPlusLine => Strings.Text("ui.premium_plus_line");
+
+        public static string PassWaiting => Strings.Text("ui.pass_waiting");
+
+        public static string StorePhoneOnly => Strings.Text("ui.store_phone_only");
+
+        public static string StoreOffline => Strings.Text("ui.store_offline");
+
+        public static string GemsAdded => Strings.Text("ui.gems_added");
+
+        public static string AdsRemoved => Strings.Text("ui.ads_removed");
+
+        public static string PassUnlocked => Strings.Text("ui.pass_unlocked");
+
+        public static string BundleAdded => Strings.Text("ui.bundle_added");
+
+        public static string RemoveAdsLine => Strings.Text("ui.remove_ads_line");
+
+        public static string ProductGems => Strings.Text("ui.product_gems");
+
+        public static string ProductFrame => Strings.Text("ui.product_frame");
+
         public static string SettingsMore => Strings.Text("ui.settings_more");
 
         public static string PrivacyBlocked => Strings.Text("ui.privacy_blocked");
