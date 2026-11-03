@@ -12,6 +12,7 @@ import {
   type ProfileStore,
   type Relation,
 } from "../services/profiles";
+import { nkProgressStore } from "../services/progression";
 import { nkEntitlementStore } from "../services/purchases";
 
 import type { Profile as ProfileView, ProfileUpdate } from "@hulla/protocol/generated";
@@ -27,6 +28,8 @@ export interface ProfileDeps {
   setAccountNames(userId: string, handle: string | null, displayName: string | null): boolean;
   /** Frames the player owns (rewards and purchases); absent, only the open frames can be chosen. */
   ownedFrames?(userId: string): readonly string[];
+  /** The player's level for the card (GDD 12.2); absent or null leaves it off. */
+  level?(userId: string): number | null;
 }
 
 export type ProfileResponse =
@@ -63,7 +66,8 @@ export function profileGet(deps: ProfileDeps, payload: string): ProfileResponse 
   const relation = target === deps.userId ? "self" : deps.relation(deps.userId, target);
   const view = profileView(target, profile, relation, deps.isOnline(target));
   if (view === null) return { ok: false, error: ruleError(ErrorCodes.profile.notVisible) };
-  return { ok: true, profile: view };
+  const level = deps.level?.(target) ?? null;
+  return { ok: true, profile: level === null ? view : { ...view, level } };
 }
 
 /** Edits the caller's profile; the handle must be unique across accounts. */
@@ -117,6 +121,7 @@ function nkDeps(
     store: nkProfileStore(nk, logger),
     relation: (viewerId, userId) => (nkAreFriends(nk, viewerId, userId) ? "friend" : "other"),
     isOnline: (userId) => isUserOnline(nk, userId),
+    level: (userId) => nkProgressStore(nk).read(userId).level,
     userIdForHandle(handle) {
       try {
         return nk.usersGetUsername([handle])[0]?.userId ?? null;

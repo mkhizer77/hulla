@@ -696,6 +696,13 @@ namespace Hulla.Protocol
         public string Handle { get; set; }
 
         /// <summary>
+        /// The player's level (GDD 12.2), shown on player sheets; absent when their progress has not
+        /// been read
+        /// </summary>
+        [JsonProperty("level", Required = Required.DisallowNull, NullValueHandling = NullValueHandling.Ignore)]
+        public long? Level { get; set; }
+
+        /// <summary>
         /// Owner only
         /// </summary>
         [JsonProperty("nameChanges", Required = Required.DisallowNull, NullValueHandling = NullValueHandling.Ignore)]
