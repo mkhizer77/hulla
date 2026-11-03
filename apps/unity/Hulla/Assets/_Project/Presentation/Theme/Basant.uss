@@ -10610,3 +10610,43 @@
     -unity-font-style: normal;
     color: rgb(74, 30, 14);
 }
+
+/* ==================== Rewarded ads (GDD 13.6) ==================== */
+
+.skin--basant .results__double,
+.skin--basant .results__double:hover,
+.skin--basant .results__double:focus {
+    align-self: center;
+    min-height: 132px;
+    margin: 0 0 12px 0;
+    padding: 0 48px;
+    font-size: 40px;
+    -unity-font-definition: url("/Assets/_Project/Presentation/Theme/Fonts/Baloo2.ttf");
+    -unity-font-style: bold;
+    color: rgb(255, 255, 255);
+    -unity-text-outline-width: 3px;
+    -unity-text-outline-color: rgb(16, 92, 96);
+    background-color: rgba(0, 0, 0, 0);
+    border-width: 0;
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Basant/Kit/btn-teal-normal.png");
+    -unity-slice-left: 100;
+    -unity-slice-right: 100;
+    -unity-slice-top: 0;
+    -unity-slice-bottom: 0;
+    -unity-slice-scale: 0.6px;
+}
+
+.skin--basant .results__double:active {
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Basant/Kit/btn-teal-pressed.png");
+}
+
+.skin--basant .results__double:disabled {
+    opacity: 1;
+    color: rgb(74, 30, 14);
+    -unity-text-outline-width: 0;
+    background-image: none;
+}
+
+.skin--basant .missions__swap--ad {
+    color: rgb(16, 92, 96);
+}

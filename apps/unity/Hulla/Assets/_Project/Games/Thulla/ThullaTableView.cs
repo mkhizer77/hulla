@@ -2183,6 +2183,8 @@ namespace Hulla.Games.Thulla
 
         public void ShowReward(string? text) => _results.ShowReward(text);
 
+        public void OfferDouble(string? text, Action? onTap) => _results.OfferDouble(text, onTap);
+
         public void ShowLevel(long level, float fraction) => _results.ShowLevel(level, fraction);
 
         /// <summary>Shows Share on the results.</summary>

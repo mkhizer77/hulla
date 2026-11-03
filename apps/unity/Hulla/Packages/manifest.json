@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "com.applovin.mediation.ads": "8.6.6",
     "com.google.external-dependency-manager": "file:firebase/com.google.external-dependency-manager-1.2.190.tgz",
     "com.google.firebase.analytics": "file:firebase/com.google.firebase.analytics-14.1.0.tgz",
     "com.google.firebase.app": "file:firebase/com.google.firebase.app-14.1.0.tgz",
@@ -57,6 +58,13 @@
       "url": "https://package.openupm.com",
       "scopes": [
         "io.livekit"
+      ]
+    },
+    {
+      "name": "AppLovin MAX Unity",
+      "url": "https://unity.packages.applovin.com/",
+      "scopes": [
+        "com.applovin.mediation.ads"
       ]
     }
   ]

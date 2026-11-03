@@ -69,6 +69,11 @@ namespace Hulla.Composition
             Achievements = new AchievementsViewModel(new NakamaAchievementsService(_connection));
             Shop = new ShopViewModel(new NakamaShopService(_connection));
             Purchases = new PurchasesViewModel(CreateStore(), new NakamaPurchaseService(_connection));
+            Ads = new AdsViewModel(
+                CreateAds(),
+                new NakamaAdsService(_connection),
+                () => UnityEngine.Time.realtimeSinceStartupAsDouble,
+                cancellation => UnityEngine.Awaitable.WaitForSecondsAsync(1f, cancellation));
             var notifications = new NakamaNotificationsService(_connection);
             NotificationsService = notifications;
             NotificationSettings = new NotificationSettingsViewModel(notifications);
@@ -116,6 +121,17 @@ namespace Hulla.Composition
             return new Hulla.Infrastructure.Purchasing.UnityIapStore();
 #else
             return new Hulla.Application.Economy.NoAppStore();
+#endif
+        }
+
+        /// <summary>AppLovin MAX on phones once the build carries ad unit ids; none in the editor and on desktop.</summary>
+        private static Hulla.Application.Ads.IAdNetwork CreateAds()
+        {
+#if (UNITY_ANDROID || UNITY_IOS) && !UNITY_EDITOR
+            var config = Hulla.Infrastructure.Ads.AdsConfig.Load();
+            return config.Any ? new Hulla.Infrastructure.Ads.MaxAdNetwork(config) : new Hulla.Application.Ads.NoAdNetwork();
+#else
+            return new Hulla.Application.Ads.NoAdNetwork();
 #endif
         }
 
@@ -186,6 +202,9 @@ namespace Hulla.Composition
 
         /// <summary>Store purchases, validated and granted by the server (GDD 13.4, #58).</summary>
         public PurchasesViewModel Purchases { get; }
+
+        /// <summary>Rewarded ads and interstitials, paid by the server (GDD 13.6, #60).</summary>
+        public AdsViewModel Ads { get; }
 
         public INotificationsService NotificationsService { get; }
 

@@ -612,6 +612,7 @@ namespace Hulla.Composition
             var shopView = new ShopView(shopRoot, shop, ShowHome, item => BuyAndEquip(shop, item.Id),
                 item => _ = shop.EquipAsync(item.Id, _app.Lifetime), _app.Purchases);
             shopView.Retry = () => _ = shop.RefreshAsync(_app.Lifetime);
+            WireAds(shopView);
             Hulla.Presentation.Navigation.SegmentBar.Mount(shopRoot, ShopSegments(name, server), "shop");
             TabTop(shopRoot, Hulla.Presentation.Navigation.NavTab.Shop);
             _view = shopView;
@@ -728,6 +729,7 @@ namespace Hulla.Composition
                 id => _ = missions.ClaimAsync(id, tz, _app.Lifetime),
                 id => _ = missions.RerollAsync(id, tz, _app.Lifetime));
             missionsView.Retry = () => _ = missions.RefreshAsync(tz, _app.Lifetime);
+            WireAds(missionsView, tz);
             Hulla.Presentation.Navigation.SegmentBar.Mount(missionsRoot, TrophiesSegments(name, server), "missions");
             TabTop(missionsRoot, Hulla.Presentation.Navigation.NavTab.Trophies);
             _view = missionsView;
@@ -827,6 +829,7 @@ namespace Hulla.Composition
                 SyncContent();
                 RegisterPush();
                 StartPurchases();
+                StartAds();
             }
 
             return ok;
@@ -1083,7 +1086,7 @@ namespace Hulla.Composition
         private async void OnQuickPlayFound(TableTicket ticket)
         {
             _app.Analytics.Track(AnalyticsEvents.MatchSearch(_app.QuickPlay.Seats, _app.QuickPlay.Elapsed, _app.QuickPlay.WithBots ? "backfilled" : "humans"));
-            await EnterAsync(Result<TableTicket>.Ok(ticket));
+            await EnterAsync(Result<TableTicket>.Ok(ticket), quickPlay: !_app.QuickPlay.Ranked);
         }
 
         private void ApplyServer(string? server)
@@ -1099,8 +1102,9 @@ namespace Hulla.Composition
             _app.UseServer(config);
         }
 
-        private async Awaitable EnterAsync(Result<TableTicket> ticket)
+        private async Awaitable EnterAsync(Result<TableTicket> ticket, bool quickPlay = false)
         {
+            _quickPlayTable = quickPlay;
             var invitedAt = _inviteLinkAt;
             _inviteLinkAt = null;
             if (ticket.IsOk)
@@ -1157,8 +1161,14 @@ namespace Hulla.Composition
 
             await _app.TableChat.LeaveAsync();
             await _app.Tables.LeaveAsync();
+            var betweenRounds = _app.Session?.Table?.Client.Model.InRound != true;
             _app.Session?.EndTable();
             ShowHome();
+            if (betweenRounds && InterstitialAfterLeaving())
+            {
+                return;
+            }
+
             if (!AskForPushIfDue())
             {
                 OfferWelcomePrompt();
@@ -1688,6 +1698,7 @@ namespace Hulla.Composition
                     }
 
                     _app.WelcomePrompts.FirstRoundFinished();
+                    RoundFinishedForAds(roundId, reward.Coins);
                     if (reward.LevelTo > reward.LevelFrom)
                     {
                         text += "\n" + Strings.Format(UiText.LevelUp, reward.LevelFrom, reward.LevelTo);

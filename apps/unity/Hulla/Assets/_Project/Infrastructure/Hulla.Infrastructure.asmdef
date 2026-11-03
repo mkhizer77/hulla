@@ -6,6 +6,7 @@
         "Hulla.Domain",
         "Hulla.Protocol",
         "LiveKit",
+        "MaxSdk.Scripts",
         "NakamaRuntime",
         "Unity.Addressables",
         "Unity.Purchasing",
