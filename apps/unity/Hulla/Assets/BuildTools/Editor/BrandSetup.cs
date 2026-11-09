@@ -45,8 +45,8 @@ namespace Hulla.BuildTools
                 }
 
                 SetDefaultIcon(icon);
-                SetAndroidIcons(icon, foreground, background);
-                SetIosIcons(icon);
+                SetPlatformIcons(NamedBuildTarget.Android, icon, background, foreground);
+                SetPlatformIcons(NamedBuildTarget.iOS, icon, background, foreground);
                 SetSplash(wordmark);
 
                 AssetDatabase.SaveAssets();
@@ -66,46 +66,38 @@ namespace Hulla.BuildTools
             PlayerSettings.SetIcons(NamedBuildTarget.Unknown, new[] { icon }, IconKind.Any);
         }
 
-        private static void SetAndroidIcons(Texture2D icon, Texture2D foreground, Texture2D background)
+        /// <summary>
+        /// Every icon kind the platform supports: single-layer kinds (legacy, round, the iOS set) get
+        /// the icon; the two-layer kind (Android adaptive) gets the background and the foreground.
+        /// The kinds come from the editor, so this compiles without the Android and iOS modules,
+        /// which the CI test image does not have; there it simply finds no kinds.
+        /// </summary>
+        private static void SetPlatformIcons(NamedBuildTarget target, Texture2D icon, Texture2D background, Texture2D foreground)
         {
-            var target = NamedBuildTarget.Android;
-            var adaptive = PlayerSettings.GetPlatformIcons(target, UnityEditor.Android.AndroidPlatformIconKind.Adaptive);
-            foreach (var entry in adaptive)
+            PlatformIconKind[] kinds;
+            try
             {
-                // layer 0 is the background, layer 1 the foreground
-                entry.SetTextures(background, foreground);
+                kinds = PlayerSettings.GetSupportedIconKinds(target);
+            }
+            catch (System.Exception e)
+            {
+                Debug.LogWarning($"brand: {target.TargetName} icons skipped, module not installed ({e.Message})");
+                return;
             }
 
-            PlayerSettings.SetPlatformIcons(target, UnityEditor.Android.AndroidPlatformIconKind.Adaptive, adaptive);
-
-            foreach (var kind in new[] { UnityEditor.Android.AndroidPlatformIconKind.Round, UnityEditor.Android.AndroidPlatformIconKind.Legacy })
+            foreach (var kind in kinds)
             {
                 var icons = PlayerSettings.GetPlatformIcons(target, kind);
                 foreach (var entry in icons)
                 {
-                    entry.SetTexture(icon);
-                }
-
-                PlayerSettings.SetPlatformIcons(target, kind, icons);
-            }
-        }
-
-        private static void SetIosIcons(Texture2D icon)
-        {
-            var target = NamedBuildTarget.iOS;
-            foreach (var kind in new[]
-                     {
-                         UnityEditor.iOS.iOSPlatformIconKind.Application,
-                         UnityEditor.iOS.iOSPlatformIconKind.Spotlight,
-                         UnityEditor.iOS.iOSPlatformIconKind.Settings,
-                         UnityEditor.iOS.iOSPlatformIconKind.Notification,
-                         UnityEditor.iOS.iOSPlatformIconKind.Marketing,
-                     })
-            {
-                var icons = PlayerSettings.GetPlatformIcons(target, kind);
-                foreach (var entry in icons)
-                {
-                    entry.SetTexture(icon);
+                    if (entry.maxLayerCount >= 2)
+                    {
+                        entry.SetTextures(background, foreground);   // layer 0 under layer 1
+                    }
+                    else
+                    {
+                        entry.SetTexture(icon);
+                    }
                 }
 
                 PlayerSettings.SetPlatformIcons(target, kind, icons);

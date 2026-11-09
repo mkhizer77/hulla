@@ -24,29 +24,63 @@ namespace Hulla.Architecture.Tests
         }
 
         [Test]
-        public void AndroidAdaptiveIconsHaveBothLayers()
+        public void AndroidIconsAreSetWithBothAdaptiveLayers()
         {
-            var adaptive = PlayerSettings.GetPlatformIcons(NamedBuildTarget.Android, UnityEditor.Android.AndroidPlatformIconKind.Adaptive);
-            Assert.That(adaptive, Is.Not.Empty);
-            foreach (var icon in adaptive)
+            var kinds = SupportedKinds(NamedBuildTarget.Android);
+            var adaptiveSeen = false;
+            foreach (var kind in kinds)
             {
-                var layers = icon.GetTextures();
-                Assert.That(layers.Length, Is.EqualTo(2), "two layers at " + icon.width);
-                Assert.IsNotNull(layers[0], "background at " + icon.width);
-                Assert.IsNotNull(layers[1], "foreground at " + icon.width);
+                foreach (var icon in PlayerSettings.GetPlatformIcons(NamedBuildTarget.Android, kind))
+                {
+                    var layers = icon.GetTextures();
+                    if (icon.maxLayerCount >= 2)
+                    {
+                        adaptiveSeen = true;
+                        Assert.That(layers.Length, Is.EqualTo(2), "two layers at " + icon.width);
+                        Assert.IsNotNull(layers[0], "background at " + icon.width);
+                        Assert.IsNotNull(layers[1], "foreground at " + icon.width);
+                    }
+                    else
+                    {
+                        Assert.IsNotNull(icon.GetTexture(), kind + " at " + icon.width);
+                    }
+                }
             }
+
+            Assert.IsTrue(adaptiveSeen, "the adaptive kind is set");
         }
 
         [Test]
         public void IosIconsAreSet()
         {
-            foreach (var kind in new[] { UnityEditor.iOS.iOSPlatformIconKind.Application, UnityEditor.iOS.iOSPlatformIconKind.Marketing })
+            foreach (var kind in SupportedKinds(NamedBuildTarget.iOS))
             {
                 foreach (var icon in PlayerSettings.GetPlatformIcons(NamedBuildTarget.iOS, kind))
                 {
                     Assert.IsNotNull(icon.GetTexture(), kind + " at " + icon.width);
                 }
             }
+        }
+
+        /// <summary>The platform's icon kinds; the test is skipped where the platform module is not installed (CI's test image).</summary>
+        private static PlatformIconKind[] SupportedKinds(NamedBuildTarget target)
+        {
+            PlatformIconKind[] kinds;
+            try
+            {
+                kinds = PlayerSettings.GetSupportedIconKinds(target);
+            }
+            catch (System.Exception)
+            {
+                kinds = new PlatformIconKind[0];
+            }
+
+            if (kinds.Length == 0)
+            {
+                Assert.Ignore(target.TargetName + " module is not installed in this editor");
+            }
+
+            return kinds;
         }
 
         [Test]
