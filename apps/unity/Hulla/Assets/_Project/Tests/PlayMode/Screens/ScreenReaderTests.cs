@@ -63,7 +63,7 @@ namespace Hulla.Screens.Tests
         public IEnumerator EveryVisibleButtonHasWordsOnEveryScreen()
         {
             var problems = new List<string>();
-            foreach (var screen in ScreenCases.All())
+            foreach (var screen in ScreenCases.All().Concat(ScreenCases.States()))
             {
                 yield return Open(screen, root =>
                 {

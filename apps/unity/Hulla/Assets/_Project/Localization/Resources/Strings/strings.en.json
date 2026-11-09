@@ -703,6 +703,11 @@
    "smart": false
   },
   {
+   "key": "config.maintenance_until",
+   "text": "Hulla is having a short break until {0}. The rulebook and your friends still work.",
+   "smart": true
+  },
+  {
    "key": "config.quick_play_off",
    "text": "Play now is resting for a bit. Create a room for friends instead.",
    "smart": false
@@ -853,6 +858,16 @@
    "smart": false
   },
   {
+   "key": "error.auth.merge_code_invalid",
+   "text": "That code didn't work. Make a new one on your other phone.",
+   "smart": false
+  },
+  {
+   "key": "error.auth.not_linked",
+   "text": "That account isn't linked to Hulla yet.",
+   "smart": false
+  },
+  {
    "key": "error.auth.otp_country",
    "text": "Phone sign-in isn't available for that country yet.",
    "smart": false
@@ -879,12 +894,17 @@
   },
   {
    "key": "error.auth.otp_wrong_code",
-   "text": "That code isn't right. Check the text and try again.",
+   "text": "That code isn't right. Check the code and try again.",
    "smart": false
   },
   {
    "key": "error.auth.provider_unavailable",
    "text": "That sign-in isn't available right now. Try again later.",
+   "smart": false
+  },
+  {
+   "key": "error.auth.session_expired",
+   "text": "Your sign-in has run out. Open Hulla again to carry on.",
    "smart": false
   },
   {
@@ -905,6 +925,16 @@
   {
    "key": "error.content.filtered",
    "text": "That message wasn't sent.",
+   "smart": false
+  },
+  {
+   "key": "error.economy.ads_unavailable",
+   "text": "No video to watch right now. Try again later.",
+   "smart": false
+  },
+  {
+   "key": "error.economy.already_granted",
+   "text": "That's already been added.",
    "smart": false
   },
   {
@@ -954,12 +984,27 @@
   },
   {
    "key": "error.economy.store_unavailable",
-   "text": "The shop is closed right now. Try later.",
+   "text": "The shop is closed right now. Try again later.",
+   "smart": false
+  },
+  {
+   "key": "error.network.disconnected",
+   "text": "Can't connect right now. Check your internet and try again.",
    "smart": false
   },
   {
    "key": "error.network.rate_limited",
    "text": "Easy, too many taps. Try again in a moment.",
+   "smart": false
+  },
+  {
+   "key": "error.network.timeout",
+   "text": "That took too long. Check your internet and try again.",
+   "smart": false
+  },
+  {
+   "key": "error.offline",
+   "text": "Can't connect right now. Check your internet and try again.",
    "smart": false
   },
   {
@@ -998,6 +1043,16 @@
    "smart": false
   },
   {
+   "key": "error.profile.unknown_avatar",
+   "text": "That picture isn't available.",
+   "smart": false
+  },
+  {
+   "key": "error.rules.card_not_in_hand",
+   "text": "That card isn't in your hand any more.",
+   "smart": false
+  },
+  {
    "key": "error.rules.hand_ask_none",
    "text": "Nothing to answer.",
    "smart": false
@@ -1018,6 +1073,16 @@
    "smart": false
   },
   {
+   "key": "error.rules.hand_take_disabled_endgame",
+   "text": "Asking for a hand is off with two players left.",
+   "smart": false
+  },
+  {
+   "key": "error.rules.hand_take_not_leader",
+   "text": "Only the leader can ask for a hand.",
+   "smart": false
+  },
+  {
    "key": "error.rules.hand_take_window_closed",
    "text": "Too late to ask for a hand this trick.",
    "smart": false
@@ -1028,13 +1093,53 @@
    "smart": false
   },
   {
+   "key": "error.rules.invalid_rules",
+   "text": "Those rules don't fit together. Check the table settings.",
+   "smart": false
+  },
+  {
+   "key": "error.rules.invalid_seat",
+   "text": "That seat isn't at this table.",
+   "smart": false
+  },
+  {
+   "key": "error.rules.invalid_seat_count",
+   "text": "That many players doesn't fit these rules.",
+   "smart": false
+  },
+  {
+   "key": "error.rules.must_follow_suit",
+   "text": "Follow the suit that was led.",
+   "smart": false
+  },
+  {
+   "key": "error.rules.must_lead_ace_of_spades",
+   "text": "The Ace of Spades leads the first trick.",
+   "smart": false
+  },
+  {
+   "key": "error.rules.not_your_turn",
+   "text": "Wait for your turn.",
+   "smart": false
+  },
+  {
    "key": "error.rules.round_over",
    "text": "The round has already ended.",
    "smart": false
   },
   {
+   "key": "error.rules.seat_not_active",
+   "text": "You're out of this round.",
+   "smart": false
+  },
+  {
+   "key": "error.rules.wrong_phase",
+   "text": "That can't be done right now.",
+   "smart": false
+  },
+  {
    "key": "error.session.unavailable",
-   "text": "Can't reach the server. Check the connection and try again.",
+   "text": "Can't connect right now. Check your internet and try again.",
    "smart": false
   },
   {
@@ -1049,7 +1154,7 @@
   },
   {
    "key": "error.social.friend_cap",
-   "text": "You have the most friends allowed (500).",
+   "text": "You've reached the limit of 500 friends.",
    "smart": false
   },
   {
@@ -1069,7 +1174,7 @@
   },
   {
    "key": "error.social.unavailable",
-   "text": "Facebook isn't available right now. Try again later.",
+   "text": "Can't connect right now. Check your internet and try again.",
    "smart": false
   },
   {
@@ -1084,7 +1189,12 @@
   },
   {
    "key": "error.table.draining",
-   "text": "The server is restarting. Tables open again in a minute.",
+   "text": "Hulla is restarting. Tables open again in a minute.",
+   "smart": false
+  },
+  {
+   "key": "error.table.duplicate_move",
+   "text": "That move was already sent.",
    "smart": false
   },
   {
@@ -1128,13 +1238,23 @@
    "smart": false
   },
   {
+   "key": "error.table.not_seated",
+   "text": "Take a seat first.",
+   "smart": false
+  },
+  {
    "key": "error.table.ranked_solo_only",
    "text": "Ranked is solo only. Leave the party to queue.",
    "smart": false
   },
   {
+   "key": "error.table.stale_sequence",
+   "text": "Catching up with the table. Try again.",
+   "smart": false
+  },
+  {
    "key": "error.table.unavailable",
-   "text": "Can't reach the server. Check the connection and try again.",
+   "text": "Can't connect right now. Check your internet and try again.",
    "smart": false
   },
   {
@@ -1144,8 +1264,23 @@
   },
   {
    "key": "error.unknown",
-   "text": "Something went wrong ({0})",
-   "smart": true
+   "text": "Something went wrong. Try again in a moment.",
+   "smart": false
+  },
+  {
+   "key": "error.voice.not_at_table",
+   "text": "Voice works once you're at a table.",
+   "smart": false
+  },
+  {
+   "key": "error.voice.suspended",
+   "text": "Your voice chat is paused for now.",
+   "smart": false
+  },
+  {
+   "key": "error.voice.unavailable",
+   "text": "Voice isn't working right now. The game carries on.",
+   "smart": false
   },
   {
    "key": "format.date_long",
@@ -1584,7 +1719,7 @@
   },
   {
    "key": "mission.d_low_pickup.name",
-   "text": "Low pickup",
+   "text": "Low pick-up",
    "smart": false
   },
   {
@@ -1614,7 +1749,7 @@
   },
   {
    "key": "mission.d_voice_private.name",
-   "text": "Voice private",
+   "text": "Private voice chat",
    "smart": false
   },
   {
@@ -2114,7 +2249,7 @@
   },
   {
    "key": "ranked.placement_note",
-   "text": "Play {0} more to get your league.",
+   "text": "{0:plural:Play {} more round to get your league.|Play {} more rounds to get your league.}",
    "smart": true
   },
   {
@@ -2124,7 +2259,7 @@
   },
   {
    "key": "ranked.protected",
-   "text": "Promotion protected for {0} more",
+   "text": "{0:plural:Safe from demotion for {} more round|Safe from demotion for {} more rounds}",
    "smart": true
   },
   {
@@ -2309,7 +2444,7 @@
   },
   {
    "key": "rulebook.endgame_draw_opponent",
-   "text": "With two players left, a leader who wins with their last card draws a random card from the opponent.",
+   "text": "With two players left, a leader who wins with their last card draws a random card from the opponent's hand.",
    "smart": false
   },
   {
@@ -2334,12 +2469,12 @@
   },
   {
    "key": "rulebook.hand_taking_anyone",
-   "text": "Before the lead, anyone may ask for the hand of the next active player; the first accepted request wins. That player escapes.",
+   "text": "Before the lead, anyone may ask the next active player for their hand; the first accepted request wins, and the player who hands over escapes.",
    "smart": false
   },
   {
    "key": "rulebook.hand_taking_leader",
-   "text": "From the second trick, the leader may take the whole hand of the next active player before leading by tapping Ask for hand. If they accept, they escape.",
+   "text": "From the second trick, the leader may tap Ask for hand before leading. If the next active player accepts, the leader takes their whole hand and they escape.",
    "smart": false
   },
   {
@@ -2444,7 +2579,7 @@
   },
   {
    "key": "rulebook.tip3",
-   "text": "Leading your highest card can leave you with the hand and no cards; keep a low card for later.",
+   "text": "Win a trick with your last card and you draw again; keep a low card for the end.",
    "smart": false
   },
   {
@@ -2479,7 +2614,7 @@
   },
   {
    "key": "rulebook.why_server",
-   "text": "The server checks every card. A card it refuses goes back to your hand with no penalty.",
+   "text": "Hulla checks every card. A card it refuses goes back to your hand with no penalty.",
    "smart": false
   },
   {
@@ -2519,7 +2654,7 @@
   },
   {
    "key": "rulebook.word_thulla",
-   "text": "Thulla: the off-suit card that stops a trick (literally slang for a police officer).",
+   "text": "Thulla: the off-suit card that stops a trick (also slang for a police officer).",
    "smart": false
   },
   {
@@ -2719,7 +2854,7 @@
   },
   {
    "key": "title.kabhi_bhabhi_nahi",
-   "text": "Kabhi bhabhi nahi",
+   "text": "Kabhi Bhabhi nahi",
    "smart": false
   },
   {
@@ -2784,7 +2919,7 @@
   },
   {
    "key": "title.ustad_e_farar",
-   "text": "Ustad e farar",
+   "text": "Ustad-e-farar",
    "smart": false
   },
   {
@@ -2819,7 +2954,7 @@
   },
   {
    "key": "tutorial.hint_leader",
-   "text": "The crown marks who led this trick. The highest card of that suit takes the hand.",
+   "text": "The crown marks who led this trick. The highest card of that suit leads next.",
    "smart": false
   },
   {
@@ -2879,7 +3014,7 @@
   },
   {
    "key": "tutorial.step1",
-   "text": "You have the Ace of Spades. Everyone throws a spade. No punishment on the first trick.",
+   "text": "You have the Ace of Spades. Everyone throws a spade. Nobody picks up on the first trick.",
    "smart": false
   },
   {
@@ -2929,12 +3064,12 @@
   },
   {
    "key": "tutorial.step4",
-   "text": "Two low clubs left. Play low and let someone else take the hand.",
+   "text": "Two low clubs left. Play low and let someone else win the trick.",
    "smart": false
   },
   {
    "key": "tutorial.step4_done",
-   "text": "Play your last card low and let someone else take the hand. You're out, you're safe.",
+   "text": "You played your last card low and someone else won the trick. You're out and safe.",
    "smart": false
   },
   {
@@ -2944,7 +3079,7 @@
   },
   {
    "key": "tutorial.step5",
-   "text": "Two left and the leader has no cards? They draw from the other player. Play until it's confirmed.",
+   "text": "Two left and the leader has no cards? They draw from the other player. Play on until the round is decided.",
    "smart": false
   },
   {
@@ -3149,7 +3284,7 @@
   },
   {
    "key": "ui.bio_label",
-   "text": "About you (60 characters)",
+   "text": "About you (up to 60 characters)",
    "smart": false
   },
   {
@@ -3264,7 +3399,7 @@
   },
   {
    "key": "ui.chat_refused",
-   "text": "Not sent. Messages can't have links or phone numbers, up to 140 characters.",
+   "text": "Not sent. Messages can be up to 140 characters, with no links or phone numbers.",
    "smart": false
   },
   {
@@ -3354,7 +3489,7 @@
   },
   {
    "key": "ui.copy_commitment",
-   "text": "Copy the code",
+   "text": "Copy the fingerprint",
    "smart": false
   },
   {
@@ -3364,7 +3499,7 @@
   },
   {
    "key": "ui.create_room",
-   "text": "Create Room",
+   "text": "Create a room",
    "smart": false
   },
   {
@@ -3399,7 +3534,7 @@
   },
   {
    "key": "ui.daily_reward",
-   "text": "Daily Reward",
+   "text": "Daily reward",
    "smart": false
   },
   {
@@ -3679,7 +3814,7 @@
   },
   {
    "key": "ui.friends_empty",
-   "text": "Nobody here yet. Share your code and they land in your table.",
+   "text": "Nobody here yet. Share your code to add friends.",
    "smart": false
   },
   {
@@ -3874,7 +4009,7 @@
   },
   {
    "key": "ui.join_by_code",
-   "text": "Join by Code",
+   "text": "Join by code",
    "smart": false
   },
   {
@@ -4114,7 +4249,7 @@
   },
   {
    "key": "ui.no_friends_to_invite",
-   "text": "No friends yet. Share the code, or add friends from Home.",
+   "text": "No friends yet. Share your code, or add friends from Home.",
    "smart": false
   },
   {
@@ -4554,7 +4689,7 @@
   },
   {
    "key": "ui.rejoin_game",
-   "text": "Rejoin your game",
+   "text": "Rejoin your table",
    "smart": false
   },
   {
@@ -4858,6 +4993,11 @@
    "smart": false
   },
   {
+   "key": "ui.see_other_items",
+   "text": "See other items",
+   "smart": false
+  },
+  {
    "key": "ui.seed_later",
    "text": "Before the deal, the server committed to the shuffle. The seed is revealed when the round ends.",
    "smart": false
@@ -4939,7 +5079,7 @@
   },
   {
    "key": "ui.settings_seeing",
-   "text": "Seeing and moving",
+   "text": "Display and motion",
    "smart": false
   },
   {
@@ -5444,7 +5584,7 @@
   },
   {
    "key": "ui.watching_full",
-   "text": "No free seats · the host can grow the table in the rules",
+   "text": "No free seats · the host can add seats in the rules",
    "smart": false
   },
   {
@@ -5459,7 +5599,7 @@
   },
   {
    "key": "ui.watching_pill",
-   "text": "You're watching. {0} can give you a seat at the round end.",
+   "text": "You're watching. {0} can give you a seat when the round ends.",
    "smart": true
   },
   {
@@ -5529,7 +5669,7 @@
   },
   {
    "key": "welcome.invite",
-   "text": "Thulla is better with your group. Make a room and send your friends the code.",
+   "text": "Thulla is better with your group. Create a room and send your friends the code.",
    "smart": false
   },
   {

@@ -678,7 +678,7 @@ namespace Hulla.Screens.Tests
             });
             Assert.AreEqual("Gold", root.Q<Label>("league").text);
             Assert.AreEqual("Rating 1287 · #14 this season", root.Q<Label>("rating").text);
-            Assert.AreEqual("Promotion protected for 2 more", root.Q<Label>("progress").text);
+            Assert.AreEqual("Safe from demotion for 2 more rounds", root.Q<Label>("progress").text);
             Assert.AreEqual("Season 2 ends in 9d 0h", root.Q<Label>("season").text);
             Shown(root.Q<Label>("banner"), "the season-end banner");
             StringAssert.Contains("Silver", root.Q<Label>("banner").text);
@@ -707,7 +707,7 @@ namespace Hulla.Screens.Tests
                 _ = model.RefreshAsync(default);
             });
             Assert.AreEqual("Unranked", root.Q<Label>("league").text);
-            Assert.AreEqual("Placement 3 of 10. Play 7 more to get your league.", root.Q<Label>("progress").text);
+            Assert.AreEqual("Placement 3 of 10. Play 7 more rounds to get your league.", root.Q<Label>("progress").text);
             Shown(root.Q<VisualElement>("bar"), "the placement bar");
         }
 

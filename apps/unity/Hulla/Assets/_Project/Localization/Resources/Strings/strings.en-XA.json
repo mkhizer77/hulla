@@ -703,6 +703,11 @@
    "smart": false
   },
   {
+   "key": "config.maintenance_until",
+   "text": "[Hûllå îs håvîñg å shört bréåk ûñtîl {0}. Thé rûléböök åñd ýöûr frîéñds stîll wörk. · · · · · · · · · · · · ·]",
+   "smart": true
+  },
+  {
    "key": "config.quick_play_off",
    "text": "[Plåý ñöw îs réstîñg för å bît. Çréåté å rööm för frîéñds îñstéåd. · · · · · · · · · ·]",
    "smart": false
@@ -853,6 +858,16 @@
    "smart": false
   },
   {
+   "key": "error.auth.merge_code_invalid",
+   "text": "[Thåt çödé dîdñ't wörk. Måké å ñéw öñé öñ ýöûr öthér phöñé. · · · · · · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "error.auth.not_linked",
+   "text": "[Thåt åççöûñt îsñ't lîñkéd tö Hûllå ýét. · · · · · ·]",
+   "smart": false
+  },
+  {
    "key": "error.auth.otp_country",
    "text": "[Phöñé sîgñ-îñ îsñ't åvåîlåblé för thåt çöûñtrý ýét. · · · · · · · ·]",
    "smart": false
@@ -879,12 +894,17 @@
   },
   {
    "key": "error.auth.otp_wrong_code",
-   "text": "[Thåt çödé îsñ't rîght. Çhéçk thé téxt åñd trý ågåîñ. · · · · · · · ·]",
+   "text": "[Thåt çödé îsñ't rîght. Çhéçk thé çödé åñd trý ågåîñ. · · · · · · · ·]",
    "smart": false
   },
   {
    "key": "error.auth.provider_unavailable",
    "text": "[Thåt sîgñ-îñ îsñ't åvåîlåblé rîght ñöw. Trý ågåîñ låtér. · · · · · · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "error.auth.session_expired",
+   "text": "[Ýöûr sîgñ-îñ hås rûñ öût. Öpéñ Hûllå ågåîñ tö çårrý öñ. · · · · · · · · ·]",
    "smart": false
   },
   {
@@ -905,6 +925,16 @@
   {
    "key": "error.content.filtered",
    "text": "[Thåt méssågé wåsñ't séñt. · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "error.economy.ads_unavailable",
+   "text": "[Ñö vîdéö tö wåtçh rîght ñöw. Trý ågåîñ låtér. · · · · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "error.economy.already_granted",
+   "text": "[Thåt's ålréådý bééñ åddéd. · · · ·]",
    "smart": false
   },
   {
@@ -954,12 +984,27 @@
   },
   {
    "key": "error.economy.store_unavailable",
-   "text": "[Thé shöp îs çlöséd rîght ñöw. Trý låtér. · · · · · ·]",
+   "text": "[Thé shöp îs çlöséd rîght ñöw. Trý ågåîñ låtér. · · · · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "error.network.disconnected",
+   "text": "[Çåñ't çöññéçt rîght ñöw. Çhéçk ýöûr îñtérñét åñd trý ågåîñ. · · · · · · · · ·]",
    "smart": false
   },
   {
    "key": "error.network.rate_limited",
    "text": "[Éåsý, töö måñý tåps. Trý ågåîñ îñ å möméñt. · · · · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "error.network.timeout",
+   "text": "[Thåt töök töö löñg. Çhéçk ýöûr îñtérñét åñd trý ågåîñ. · · · · · · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "error.offline",
+   "text": "[Çåñ't çöññéçt rîght ñöw. Çhéçk ýöûr îñtérñét åñd trý ågåîñ. · · · · · · · · ·]",
    "smart": false
   },
   {
@@ -998,6 +1043,16 @@
    "smart": false
   },
   {
+   "key": "error.profile.unknown_avatar",
+   "text": "[Thåt pîçtûré îsñ't åvåîlåblé. · · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "error.rules.card_not_in_hand",
+   "text": "[Thåt çård îsñ't îñ ýöûr håñd åñý möré. · · · · · ·]",
+   "smart": false
+  },
+  {
    "key": "error.rules.hand_ask_none",
    "text": "[Ñöthîñg tö åñswér. · · ·]",
    "smart": false
@@ -1018,6 +1073,16 @@
    "smart": false
   },
   {
+   "key": "error.rules.hand_take_disabled_endgame",
+   "text": "[Åskîñg för å håñd îs öff wîth twö plåýérs léft. · · · · · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "error.rules.hand_take_not_leader",
+   "text": "[Öñlý thé léådér çåñ åsk för å håñd. · · · · · ·]",
+   "smart": false
+  },
+  {
    "key": "error.rules.hand_take_window_closed",
    "text": "[Töö låté tö åsk för å håñd thîs trîçk. · · · · · ·]",
    "smart": false
@@ -1028,13 +1093,53 @@
    "smart": false
   },
   {
+   "key": "error.rules.invalid_rules",
+   "text": "[Thösé rûlés döñ't fît tögéthér. Çhéçk thé tåblé séttîñgs. · · · · · · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "error.rules.invalid_seat",
+   "text": "[Thåt séåt îsñ't åt thîs tåblé. · · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "error.rules.invalid_seat_count",
+   "text": "[Thåt måñý plåýérs döésñ't fît thésé rûlés. · · · · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "error.rules.must_follow_suit",
+   "text": "[Föllöw thé sûît thåt wås léd. · · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "error.rules.must_lead_ace_of_spades",
+   "text": "[Thé Åçé öf Spådés léåds thé fîrst trîçk. · · · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "error.rules.not_your_turn",
+   "text": "[Wåît för ýöûr tûrñ. · · ·]",
+   "smart": false
+  },
+  {
    "key": "error.rules.round_over",
    "text": "[Thé röûñd hås ålréådý éñdéd. · · · · ·]",
    "smart": false
   },
   {
+   "key": "error.rules.seat_not_active",
+   "text": "[Ýöû'ré öût öf thîs röûñd. · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "error.rules.wrong_phase",
+   "text": "[Thåt çåñ't bé döñé rîght ñöw. · · · · ·]",
+   "smart": false
+  },
+  {
    "key": "error.session.unavailable",
-   "text": "[Çåñ't réåçh thé sérvér. Çhéçk thé çöññéçtîöñ åñd trý ågåîñ. · · · · · · · · ·]",
+   "text": "[Çåñ't çöññéçt rîght ñöw. Çhéçk ýöûr îñtérñét åñd trý ågåîñ. · · · · · · · · ·]",
    "smart": false
   },
   {
@@ -1049,7 +1154,7 @@
   },
   {
    "key": "error.social.friend_cap",
-   "text": "[Ýöû håvé thé möst frîéñds ållöwéd (500). · · · · · ·]",
+   "text": "[Ýöû'vé réåçhéd thé lîmît öf 500 frîéñds. · · · · · ·]",
    "smart": false
   },
   {
@@ -1069,7 +1174,7 @@
   },
   {
    "key": "error.social.unavailable",
-   "text": "[Fåçéböök îsñ't åvåîlåblé rîght ñöw. Trý ågåîñ låtér. · · · · · · · ·]",
+   "text": "[Çåñ't çöññéçt rîght ñöw. Çhéçk ýöûr îñtérñét åñd trý ågåîñ. · · · · · · · · ·]",
    "smart": false
   },
   {
@@ -1084,7 +1189,12 @@
   },
   {
    "key": "error.table.draining",
-   "text": "[Thé sérvér îs réstårtîñg. Tåblés öpéñ ågåîñ îñ å mîñûté. · · · · · · · · ·]",
+   "text": "[Hûllå îs réstårtîñg. Tåblés öpéñ ågåîñ îñ å mîñûté. · · · · · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "error.table.duplicate_move",
+   "text": "[Thåt mövé wås ålréådý séñt. · · · · ·]",
    "smart": false
   },
   {
@@ -1128,13 +1238,23 @@
    "smart": false
   },
   {
+   "key": "error.table.not_seated",
+   "text": "[Tåké å séåt fîrst. · · ·]",
+   "smart": false
+  },
+  {
    "key": "error.table.ranked_solo_only",
    "text": "[Råñkéd îs sölö öñlý. Léåvé thé pårtý tö qûéûé. · · · · · · ·]",
    "smart": false
   },
   {
+   "key": "error.table.stale_sequence",
+   "text": "[Çåtçhîñg ûp wîth thé tåblé. Trý ågåîñ. · · · · · ·]",
+   "smart": false
+  },
+  {
    "key": "error.table.unavailable",
-   "text": "[Çåñ't réåçh thé sérvér. Çhéçk thé çöññéçtîöñ åñd trý ågåîñ. · · · · · · · · ·]",
+   "text": "[Çåñ't çöññéçt rîght ñöw. Çhéçk ýöûr îñtérñét åñd trý ågåîñ. · · · · · · · · ·]",
    "smart": false
   },
   {
@@ -1144,8 +1264,23 @@
   },
   {
    "key": "error.unknown",
-   "text": "[Söméthîñg wéñt wröñg ({0}) · · · ·]",
-   "smart": true
+   "text": "[Söméthîñg wéñt wröñg. Trý ågåîñ îñ å möméñt. · · · · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "error.voice.not_at_table",
+   "text": "[Vöîçé wörks öñçé ýöû'ré åt å tåblé. · · · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "error.voice.suspended",
+   "text": "[Ýöûr vöîçé çhåt îs påûséd för ñöw. · · · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "error.voice.unavailable",
+   "text": "[Vöîçé îsñ't wörkîñg rîght ñöw. Thé gåmé çårrîés öñ. · · · · · · · ·]",
+   "smart": false
   },
   {
    "key": "format.date_long",
@@ -1584,7 +1719,7 @@
   },
   {
    "key": "mission.d_low_pickup.name",
-   "text": "[Löw pîçkûp · ·]",
+   "text": "[Löw pîçk-ûp · ·]",
    "smart": false
   },
   {
@@ -1614,7 +1749,7 @@
   },
   {
    "key": "mission.d_voice_private.name",
-   "text": "[Vöîçé prîvåté · ·]",
+   "text": "[Prîvåté vöîçé çhåt · · ·]",
    "smart": false
   },
   {
@@ -2114,7 +2249,7 @@
   },
   {
    "key": "ranked.placement_note",
-   "text": "[Plåý {0} möré tö gét ýöûr léågûé. · · · · ·]",
+   "text": "[{0:plural:Plåý {} möré röûñd tö gét ýöûr léågûé.|Plåý {} möré röûñds tö gét ýöûr léågûé.} · · · · · ·]",
    "smart": true
   },
   {
@@ -2124,7 +2259,7 @@
   },
   {
    "key": "ranked.protected",
-   "text": "[Prömötîöñ prötéçtéd för {0} möré · · · · ·]",
+   "text": "[{0:plural:Såfé fröm démötîöñ för {} möré röûñd|Såfé fröm démötîöñ för {} möré röûñds} · · · · · ·]",
    "smart": true
   },
   {
@@ -2309,7 +2444,7 @@
   },
   {
    "key": "rulebook.endgame_draw_opponent",
-   "text": "[Wîth twö plåýérs léft, å léådér whö wîñs wîth théîr låst çård dråws å råñdöm çård fröm thé öppöñéñt. · · · · · · · · · · · · · · ·]",
+   "text": "[Wîth twö plåýérs léft, å léådér whö wîñs wîth théîr låst çård dråws å råñdöm çård fröm thé öppöñéñt's håñd. · · · · · · · · · · · · · · · · ·]",
    "smart": false
   },
   {
@@ -2334,12 +2469,12 @@
   },
   {
    "key": "rulebook.hand_taking_anyone",
-   "text": "[Béföré thé léåd, åñýöñé måý åsk för thé håñd öf thé ñéxt åçtîvé plåýér; thé fîrst åççéptéd réqûést wîñs. Thåt plåýér ésçåpés. · · · · · · · · · · · · · · · · · · ·]",
+   "text": "[Béföré thé léåd, åñýöñé måý åsk thé ñéxt åçtîvé plåýér för théîr håñd; thé fîrst åççéptéd réqûést wîñs, åñd thé plåýér whö håñds övér ésçåpés. · · · · · · · · · · · · · · · · · · · · · ·]",
    "smart": false
   },
   {
    "key": "rulebook.hand_taking_leader",
-   "text": "[Fröm thé séçöñd trîçk, thé léådér måý tåké thé whölé håñd öf thé ñéxt åçtîvé plåýér béföré léådîñg bý tåppîñg Åsk för håñd. Îf théý åççépt, théý ésçåpé. · · · · · · · · · · · · · · · · · · · · · · ·]",
+   "text": "[Fröm thé séçöñd trîçk, thé léådér måý tåp Åsk för håñd béföré léådîñg. Îf thé ñéxt åçtîvé plåýér åççépts, thé léådér tåkés théîr whölé håñd åñd théý ésçåpé. · · · · · · · · · · · · · · · · · · · · · · · ·]",
    "smart": false
   },
   {
@@ -2444,7 +2579,7 @@
   },
   {
    "key": "rulebook.tip3",
-   "text": "[Léådîñg ýöûr hîghést çård çåñ léåvé ýöû wîth thé håñd åñd ñö çårds; kéép å löw çård för låtér. · · · · · · · · · · · · · · ·]",
+   "text": "[Wîñ å trîçk wîth ýöûr låst çård åñd ýöû dråw ågåîñ; kéép å löw çård för thé éñd. · · · · · · · · · · · ·]",
    "smart": false
   },
   {
@@ -2479,7 +2614,7 @@
   },
   {
    "key": "rulebook.why_server",
-   "text": "[Thé sérvér çhéçks évérý çård. Å çård ît réfûsés göés båçk tö ýöûr håñd wîth ñö péñåltý. · · · · · · · · · · · · · ·]",
+   "text": "[Hûllå çhéçks évérý çård. Å çård ît réfûsés göés båçk tö ýöûr håñd wîth ñö péñåltý. · · · · · · · · · · · · ·]",
    "smart": false
   },
   {
@@ -2519,7 +2654,7 @@
   },
   {
    "key": "rulebook.word_thulla",
-   "text": "[Thûllå: thé öff-sûît çård thåt stöps å trîçk (lîtérållý slåñg för å pölîçé öffîçér). · · · · · · · · · · · · ·]",
+   "text": "[Thûllå: thé öff-sûît çård thåt stöps å trîçk (ålsö slåñg för å pölîçé öffîçér). · · · · · · · · · · · ·]",
    "smart": false
   },
   {
@@ -2719,7 +2854,7 @@
   },
   {
    "key": "title.kabhi_bhabhi_nahi",
-   "text": "[Kåbhî bhåbhî ñåhî · · ·]",
+   "text": "[Kåbhî Bhåbhî ñåhî · · ·]",
    "smart": false
   },
   {
@@ -2784,7 +2919,7 @@
   },
   {
    "key": "title.ustad_e_farar",
-   "text": "[Ûståd é fårår · ·]",
+   "text": "[Ûståd-é-fårår · ·]",
    "smart": false
   },
   {
@@ -2819,7 +2954,7 @@
   },
   {
    "key": "tutorial.hint_leader",
-   "text": "[Thé çröwñ mårks whö léd thîs trîçk. Thé hîghést çård öf thåt sûît tåkés thé håñd. · · · · · · · · · · · · ·]",
+   "text": "[Thé çröwñ mårks whö léd thîs trîçk. Thé hîghést çård öf thåt sûît léåds ñéxt. · · · · · · · · · · · ·]",
    "smart": false
   },
   {
@@ -2879,7 +3014,7 @@
   },
   {
    "key": "tutorial.step1",
-   "text": "[Ýöû håvé thé Åçé öf Spådés. Évérýöñé thröws å spådé. Ñö pûñîshméñt öñ thé fîrst trîçk. · · · · · · · · · · · · ·]",
+   "text": "[Ýöû håvé thé Åçé öf Spådés. Évérýöñé thröws å spådé. Ñöbödý pîçks ûp öñ thé fîrst trîçk. · · · · · · · · · · · · · ·]",
    "smart": false
   },
   {
@@ -2929,12 +3064,12 @@
   },
   {
    "key": "tutorial.step4",
-   "text": "[Twö löw çlûbs léft. Plåý löw åñd lét söméöñé élsé tåké thé håñd. · · · · · · · · · ·]",
+   "text": "[Twö löw çlûbs léft. Plåý löw åñd lét söméöñé élsé wîñ thé trîçk. · · · · · · · · · ·]",
    "smart": false
   },
   {
    "key": "tutorial.step4_done",
-   "text": "[Plåý ýöûr låst çård löw åñd lét söméöñé élsé tåké thé håñd. Ýöû'ré öût, ýöû'ré såfé. · · · · · · · · · · · · ·]",
+   "text": "[Ýöû plåýéd ýöûr låst çård löw åñd söméöñé élsé wöñ thé trîçk. Ýöû'ré öût åñd såfé. · · · · · · · · · · · · ·]",
    "smart": false
   },
   {
@@ -2944,7 +3079,7 @@
   },
   {
    "key": "tutorial.step5",
-   "text": "[Twö léft åñd thé léådér hås ñö çårds? Théý dråw fröm thé öthér plåýér. Plåý ûñtîl ît's çöñfîrméd. · · · · · · · · · · · · · · ·]",
+   "text": "[Twö léft åñd thé léådér hås ñö çårds? Théý dråw fröm thé öthér plåýér. Plåý öñ ûñtîl thé röûñd îs déçîdéd. · · · · · · · · · · · · · · · ·]",
    "smart": false
   },
   {
@@ -3149,7 +3284,7 @@
   },
   {
    "key": "ui.bio_label",
-   "text": "[Åböût ýöû (60 çhåråçtérs) · · · ·]",
+   "text": "[Åböût ýöû (ûp tö 60 çhåråçtérs) · · · · ·]",
    "smart": false
   },
   {
@@ -3264,7 +3399,7 @@
   },
   {
    "key": "ui.chat_refused",
-   "text": "[Ñöt séñt. Méssågés çåñ't håvé lîñks ör phöñé ñûmbérs, ûp tö 140 çhåråçtérs. · · · · · · · · · · · ·]",
+   "text": "[Ñöt séñt. Méssågés çåñ bé ûp tö 140 çhåråçtérs, wîth ñö lîñks ör phöñé ñûmbérs. · · · · · · · · · · · ·]",
    "smart": false
   },
   {
@@ -3354,7 +3489,7 @@
   },
   {
    "key": "ui.copy_commitment",
-   "text": "[Çöpý thé çödé · ·]",
+   "text": "[Çöpý thé fîñgérprîñt · · ·]",
    "smart": false
   },
   {
@@ -3364,7 +3499,7 @@
   },
   {
    "key": "ui.create_room",
-   "text": "[Çréåté Rööm · ·]",
+   "text": "[Çréåté å rööm · ·]",
    "smart": false
   },
   {
@@ -3399,7 +3534,7 @@
   },
   {
    "key": "ui.daily_reward",
-   "text": "[Dåîlý Réwård · ·]",
+   "text": "[Dåîlý réwård · ·]",
    "smart": false
   },
   {
@@ -3679,7 +3814,7 @@
   },
   {
    "key": "ui.friends_empty",
-   "text": "[Ñöbödý héré ýét. Shåré ýöûr çödé åñd théý låñd îñ ýöûr tåblé. · · · · · · · · · ·]",
+   "text": "[Ñöbödý héré ýét. Shåré ýöûr çödé tö ådd frîéñds. · · · · · · · ·]",
    "smart": false
   },
   {
@@ -3874,7 +4009,7 @@
   },
   {
    "key": "ui.join_by_code",
-   "text": "[Jöîñ bý Çödé · ·]",
+   "text": "[Jöîñ bý çödé · ·]",
    "smart": false
   },
   {
@@ -4114,7 +4249,7 @@
   },
   {
    "key": "ui.no_friends_to_invite",
-   "text": "[Ñö frîéñds ýét. Shåré thé çödé, ör ådd frîéñds fröm Hömé. · · · · · · · · ·]",
+   "text": "[Ñö frîéñds ýét. Shåré ýöûr çödé, ör ådd frîéñds fröm Hömé. · · · · · · · · ·]",
    "smart": false
   },
   {
@@ -4554,7 +4689,7 @@
   },
   {
    "key": "ui.rejoin_game",
-   "text": "[Réjöîñ ýöûr gåmé · · ·]",
+   "text": "[Réjöîñ ýöûr tåblé · · ·]",
    "smart": false
   },
   {
@@ -4858,6 +4993,11 @@
    "smart": false
   },
   {
+   "key": "ui.see_other_items",
+   "text": "[Séé öthér îtéms · · ·]",
+   "smart": false
+  },
+  {
    "key": "ui.seed_later",
    "text": "[Béföré thé déål, thé sérvér çömmîttéd tö thé shûfflé. Thé sééd îs révéåléd whéñ thé röûñd éñds. · · · · · · · · · · · · · · ·]",
    "smart": false
@@ -4939,7 +5079,7 @@
   },
   {
    "key": "ui.settings_seeing",
-   "text": "[Sééîñg åñd mövîñg · · ·]",
+   "text": "[Dîsplåý åñd mötîöñ · · ·]",
    "smart": false
   },
   {
@@ -5444,7 +5584,7 @@
   },
   {
    "key": "ui.watching_full",
-   "text": "[Ñö fréé séåts · thé höst çåñ gröw thé tåblé îñ thé rûlés · · · · · · · · ·]",
+   "text": "[Ñö fréé séåts · thé höst çåñ ådd séåts îñ thé rûlés · · · · · · · ·]",
    "smart": false
   },
   {
@@ -5459,7 +5599,7 @@
   },
   {
    "key": "ui.watching_pill",
-   "text": "[Ýöû'ré wåtçhîñg. {0} çåñ gîvé ýöû å séåt åt thé röûñd éñd. · · · · · · · · ·]",
+   "text": "[Ýöû'ré wåtçhîñg. {0} çåñ gîvé ýöû å séåt whéñ thé röûñd éñds. · · · · · · · · · ·]",
    "smart": true
   },
   {
@@ -5529,7 +5669,7 @@
   },
   {
    "key": "welcome.invite",
-   "text": "[Thûllå îs béttér wîth ýöûr gröûp. Måké å rööm åñd séñd ýöûr frîéñds thé çödé. · · · · · · · · · · · ·]",
+   "text": "[Thûllå îs béttér wîth ýöûr gröûp. Çréåté å rööm åñd séñd ýöûr frîéñds thé çödé. · · · · · · · · · · · ·]",
    "smart": false
   },
   {

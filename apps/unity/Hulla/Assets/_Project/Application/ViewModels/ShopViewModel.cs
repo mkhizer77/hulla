@@ -80,6 +80,36 @@ namespace Hulla.Application.ViewModels
             }
         }
 
+        /// <summary>The first category that has something in it, other than the one shown; null when none.</summary>
+        public string? OtherStocked
+        {
+            get
+            {
+                if (Catalog == null)
+                {
+                    return null;
+                }
+
+                foreach (var category in Categories)
+                {
+                    if (category == Category)
+                    {
+                        continue;
+                    }
+
+                    foreach (var item in Catalog.Items)
+                    {
+                        if (item.Category == category)
+                        {
+                            return category;
+                        }
+                    }
+                }
+
+                return null;
+            }
+        }
+
         public void Show(string category)
         {
             Category = category;
