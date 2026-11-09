@@ -361,7 +361,7 @@ export interface SetRules {
 }
 export interface RulesSelection {
   gameId: "thulla" | "rung";
-  preset?: "standard" | "family" | "hardcore" | "classicPagat";
+  preset?: "standard" | "family" | "hardcore" | "classicPagat" | "relaxed";
   /**
    * Validated against the game's rules schema
    */

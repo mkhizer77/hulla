@@ -1621,7 +1621,7 @@ namespace Hulla.Protocol
 
     public enum GameId { Rung, Thulla };
 
-    public enum Preset { ClassicPagat, Family, Hardcore, Standard };
+    public enum Preset { ClassicPagat, Family, Hardcore, Relaxed, Standard };
 
     public enum Direction { Ccw, Cw };
 
@@ -2499,6 +2499,8 @@ namespace Hulla.Protocol
                     return Preset.Family;
                 case "hardcore":
                     return Preset.Hardcore;
+                case "relaxed":
+                    return Preset.Relaxed;
                 case "standard":
                     return Preset.Standard;
             }
@@ -2523,6 +2525,9 @@ namespace Hulla.Protocol
                     return;
                 case Preset.Hardcore:
                     serializer.Serialize(writer, "hardcore");
+                    return;
+                case Preset.Relaxed:
+                    serializer.Serialize(writer, "relaxed");
                     return;
                 case Preset.Standard:
                     serializer.Serialize(writer, "standard");

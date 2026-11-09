@@ -471,7 +471,15 @@ namespace Hulla.Presentation.Navigation
             overlay.style.paddingRight = insets.Right;
         }
 
-        private void Update() => Ticked?.Invoke(Time.deltaTime);
+        private Accessibility.ScreenReader? _reader;
+
+        private void Update()
+        {
+            Ticked?.Invoke(Time.deltaTime);
+            // TalkBack and VoiceOver read the panel through Unity's accessibility hierarchy (GDD 27).
+            _reader ??= new Accessibility.ScreenReader(Root);
+            _reader.Tick(Time.unscaledDeltaTime, _current);
+        }
 
         private void LateUpdate()
         {

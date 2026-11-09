@@ -19,7 +19,7 @@ namespace Hulla.Games.Thulla
     /// </summary>
     public sealed class ThullaRulesEditor
     {
-        private static readonly Preset[] Presets = { Preset.Standard, Preset.Family, Preset.Hardcore, Preset.ClassicPagat };
+        private static readonly Preset[] Presets = { Preset.Standard, Preset.Family, Preset.Hardcore, Preset.ClassicPagat, Preset.Relaxed };
         private static readonly long?[] Timers = { 10, 15, 20, 30, 60, null };
         private static readonly LoserTitle[] Titles = { LoserTitle.Bhabhi, LoserTitle.Donkey, LoserTitle.Thullad };
         private static readonly EmptyHandLeader[] EmptyHands = { EmptyHandLeader.DrawDiscard, EmptyHandLeader.DrawNextPlayer, EmptyHandLeader.InstantExit };
@@ -194,6 +194,7 @@ namespace Hulla.Games.Thulla
             Preset.Family => RulebookText.PresetFamily,
             Preset.Hardcore => RulebookText.PresetHardcore,
             Preset.ClassicPagat => RulebookText.PresetClassicPagat,
+            Preset.Relaxed => RulebookText.PresetRelaxed,
             _ => RulebookText.PresetStandard,
         };
 

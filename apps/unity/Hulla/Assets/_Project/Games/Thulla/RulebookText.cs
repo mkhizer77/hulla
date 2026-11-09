@@ -21,6 +21,8 @@ namespace Hulla.Games.Thulla
         public static string PresetFamily => Strings.Text("rulebook.preset_family");
         public static string PresetHardcore => Strings.Text("rulebook.preset_hardcore");
         public static string PresetClassicPagat => Strings.Text("rulebook.preset_classic_pagat");
+
+        public static string PresetRelaxed => Strings.Text("rulebook.preset_relaxed");
         public static string PresetCustom => Strings.Text("rulebook.preset_custom");
 
         public static string OpeningSimultaneousOn => Strings.Text("rulebook.opening_simultaneous_on");

@@ -1,0 +1,13 @@
+{
+  "schema": "../../../tools/content-schemas/preset.schema.json",
+  "id": "relaxed",
+  "version": 1,
+  "gameId": "thulla",
+  "name": "preset.relaxed.name",
+  "description": "preset.relaxed.description",
+  "order": 4,
+  "overrides": {},
+  "settings": {
+    "turnTimerSeconds": 60
+  }
+}

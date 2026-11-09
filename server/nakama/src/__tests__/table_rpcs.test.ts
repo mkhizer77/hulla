@@ -129,6 +129,7 @@ describe("presets_get", () => {
       "family",
       "hardcore",
       "classicPagat",
+      "relaxed",
     ]);
     expect(response.presets[1]).toMatchObject({
       overrides: { handTaking: "leaderOnly" },

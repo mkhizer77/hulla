@@ -603,6 +603,96 @@
    "smart": false
   },
   {
+   "key": "card.name",
+   "text": "[{0} öf {1} · ·]",
+   "smart": true
+  },
+  {
+   "key": "card.rank.2",
+   "text": "[Twö ·]",
+   "smart": false
+  },
+  {
+   "key": "card.rank.3",
+   "text": "[Thréé ·]",
+   "smart": false
+  },
+  {
+   "key": "card.rank.4",
+   "text": "[Föûr ·]",
+   "smart": false
+  },
+  {
+   "key": "card.rank.5",
+   "text": "[Fîvé ·]",
+   "smart": false
+  },
+  {
+   "key": "card.rank.6",
+   "text": "[Sîx ·]",
+   "smart": false
+  },
+  {
+   "key": "card.rank.7",
+   "text": "[Sévéñ ·]",
+   "smart": false
+  },
+  {
+   "key": "card.rank.8",
+   "text": "[Éîght ·]",
+   "smart": false
+  },
+  {
+   "key": "card.rank.9",
+   "text": "[Ñîñé ·]",
+   "smart": false
+  },
+  {
+   "key": "card.rank.A",
+   "text": "[Åçé ·]",
+   "smart": false
+  },
+  {
+   "key": "card.rank.J",
+   "text": "[Jåçk ·]",
+   "smart": false
+  },
+  {
+   "key": "card.rank.K",
+   "text": "[Kîñg ·]",
+   "smart": false
+  },
+  {
+   "key": "card.rank.Q",
+   "text": "[Qûééñ ·]",
+   "smart": false
+  },
+  {
+   "key": "card.rank.T",
+   "text": "[Téñ ·]",
+   "smart": false
+  },
+  {
+   "key": "card.suit.C",
+   "text": "[Çlûbs ·]",
+   "smart": false
+  },
+  {
+   "key": "card.suit.D",
+   "text": "[Dîåmöñds · ·]",
+   "smart": false
+  },
+  {
+   "key": "card.suit.H",
+   "text": "[Héårts ·]",
+   "smart": false
+  },
+  {
+   "key": "card.suit.S",
+   "text": "[Spådés ·]",
+   "smart": false
+  },
+  {
    "key": "chat.problem.social_muted",
    "text": "[Ýöû'ré mûtéd för å whîlé åftér répörts fröm öthér plåýérs. · · · · · · · · ·]",
    "smart": false
@@ -1863,6 +1953,16 @@
    "smart": false
   },
   {
+   "key": "preset.relaxed.description",
+   "text": "[Thé ståñdård rûlés wîth å mîñûté för évérý tûrñ. · · · · · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "preset.relaxed.name",
+   "text": "[Rélåxéd · ·]",
+   "smart": false
+  },
+  {
    "key": "preset.standard.description",
    "text": "[Thé Pûñjåb rûlés möst péöplé gréw ûp wîth. · · · · · · ·]",
    "smart": false
@@ -2303,6 +2403,11 @@
    "smart": false
   },
   {
+   "key": "rulebook.preset_relaxed",
+   "text": "[Rélåxéd · ·]",
+   "smart": false
+  },
+  {
    "key": "rulebook.preset_standard",
    "text": "[Ståñdård · ·]",
    "smart": false
@@ -2495,6 +2600,41 @@
   {
    "key": "social.switch",
    "text": "[Swîtçh ·]",
+   "smart": false
+  },
+  {
+   "key": "speech.bhabhi",
+   "text": "[{0} îs thé Bhåbhî · · ·]",
+   "smart": true
+  },
+  {
+   "key": "speech.cannot_play",
+   "text": "[{0}, çåñ't bé plåýéd ñöw · · · ·]",
+   "smart": true
+  },
+  {
+   "key": "speech.escaped",
+   "text": "[{0} îs öût åñd såfé · · ·]",
+   "smart": true
+  },
+  {
+   "key": "speech.picked_up",
+   "text": "[{0} pîçks ûp {1:plural:{} çård|{} çårds} · · · ·]",
+   "smart": true
+  },
+  {
+   "key": "speech.played",
+   "text": "[{0} plåýéd {1} · · ·]",
+   "smart": true
+  },
+  {
+   "key": "speech.thulla",
+   "text": "[{0} plåýéd {1}. Thûllå! · · · ·]",
+   "smart": true
+  },
+  {
+   "key": "speech.your_turn",
+   "text": "[Ýöûr tûrñ · ·]",
    "smart": false
   },
   {

@@ -79,6 +79,7 @@ namespace Hulla.Games.Thulla
             Preset.Family => "family",
             Preset.Hardcore => "hardcore",
             Preset.ClassicPagat => "classicPagat",
+            Preset.Relaxed => "relaxed",
             _ => "standard",
         };
 
@@ -87,6 +88,7 @@ namespace Hulla.Games.Thulla
             Preset.Family => RulebookText.PresetFamily,
             Preset.Hardcore => RulebookText.PresetHardcore,
             Preset.ClassicPagat => RulebookText.PresetClassicPagat,
+            Preset.Relaxed => RulebookText.PresetRelaxed,
             null => RulebookText.PresetStandard,
             _ => RulebookText.PresetStandard,
         };

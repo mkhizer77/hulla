@@ -68,7 +68,7 @@ export function defaultRules(mode: RulesMode): ThullaRules {
   };
 }
 
-export type ThullaPreset = "standard" | "family" | "hardcore" | "classicPagat";
+export type ThullaPreset = "standard" | "family" | "hardcore" | "classicPagat" | "relaxed";
 
 /** Engine-side overrides of the GDD presets; their table settings live in content/presets. */
 export const THULLA_PRESETS: Readonly<Record<ThullaPreset, Partial<ThullaRules>>> = {
@@ -80,6 +80,8 @@ export const THULLA_PRESETS: Readonly<Record<ThullaPreset, Partial<ThullaRules>>
     emptyHandLeader: "drawNextPlayer",
   },
   classicPagat: { twoPlayerEndgame: "drawDiscard" },
+  // The standard rules with a minute a turn for players who need longer (GDD 27).
+  relaxed: {},
 };
 
 /** JSON Schema draft-07 (ADR-0021) for the toggles, served to clients and used by content validation. */

@@ -1,6 +1,7 @@
 import classicPagat from "../../../../content/presets/thulla/classicPagat.json";
 import family from "../../../../content/presets/thulla/family.json";
 import hardcore from "../../../../content/presets/thulla/hardcore.json";
+import relaxed from "../../../../content/presets/thulla/relaxed.json";
 import standard from "../../../../content/presets/thulla/standard.json";
 
 import type { RulesSelection } from "@hulla/protocol/generated";
@@ -16,7 +17,7 @@ export interface Preset {
   readonly settings: NonNullable<RulesSelection["settings"]>;
 }
 
-const files = [standard, family, hardcore, classicPagat] as const;
+const files = [standard, family, hardcore, classicPagat, relaxed] as const;
 
 /** Bundled from `content/presets` at build time; `pnpm content:validate` keeps them honest. */
 export const PRESETS: readonly Preset[] = [...files]

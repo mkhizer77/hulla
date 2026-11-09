@@ -258,6 +258,9 @@ namespace Hulla.Presentation.TableKit
                     Touched?.Invoke();
                 });
                 element.RegisterCallback<PointerUpEvent>(evt => OnUp(element, evt.position.y));
+                // The screen reader names the card and a double tap plays it, or says why not (GDD 27).
+                var spoken = _myTurn && !legal ? Accessibility.Speech.CannotPlay(card) : Accessibility.Speech.Card(card);
+                Accessibility.Accessible.Set(element, spoken, UnityEngine.Accessibility.AccessibilityRole.Button, () => Activate(card));
                 element.RegisterCallback<PointerLeaveEvent>(_ => element.RemoveFromClassList("card--pressed"));
                 _cards.Add(element);
                 row!.Add(element);
@@ -293,7 +296,20 @@ namespace Hulla.Presentation.TableKit
             }
         }
 
-        private void OnMove(PointerMoveEvent evt)
+        /// <summary>A screen reader's double tap: plays the card at once when it is legal, else the refusal says why.</summary>
+        private void Activate(string card)
+        {
+            if (!_myTurn || !_legal(card))
+            {
+                Refused?.Invoke(card);
+                return;
+            }
+
+            _raised = null;
+            Played?.Invoke(card);
+        }
+
+                private void OnMove(PointerMoveEvent evt)
         {
             if (_pressed == null)
             {

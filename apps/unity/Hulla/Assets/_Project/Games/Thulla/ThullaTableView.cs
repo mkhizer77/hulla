@@ -4,6 +4,7 @@ using Hulla.Application.Services;
 using Hulla.Application.Table;
 using Hulla.Application.Voice;
 using Hulla.Presentation.Audio;
+using Hulla.Presentation.Accessibility;
 using Hulla.Presentation.TableKit;
 using Hulla.Presentation.Text;
 using Hulla.Presentation.Theme;
@@ -664,6 +665,7 @@ namespace Hulla.Games.Thulla
             {
                 case MoveApplied applied when applied.Thulla == true:
                     // The slam (GDD 14.6): the shake and the slap now, the stamp 120 ms behind.
+                    Speak(applied, true);
                     _sounds?.Play(Sound.Slam);
                     ShowStamp(model.Trick.Count >= BigPickup ? UiText.ThullaBig : UiText.Thulla, applied.Seat);
                     if (applied.Seat == model.MySeat)
@@ -680,6 +682,7 @@ namespace Hulla.Games.Thulla
                     ShowDueHint();
                     return ThullaMomentSeconds;
                 case MoveApplied applied:
+                    Speak(applied, false);
                     _sounds?.Play(Sound.CardTap, SoundKit.TrickPitch(Math.Max(0, model.Trick.Count - 1)));
                     if (applied.Seat == model.MySeat)
                     {
@@ -692,6 +695,7 @@ namespace Hulla.Games.Thulla
                     // when the picker is me each card glides into the slot the hand made for it.
                     var picker = resolved.Picker.Value;
                     var mine = picker == model.MySeat;
+                    ScreenReader.Say(Speech.PickedUp(NameOf(picker), resolved.Cards.Count));
                     var landing = mine ? HandTarget() : _ring.BadgeFor(picker)?.worldBound;
                     if (landing != null)
                     {
@@ -736,6 +740,7 @@ namespace Hulla.Games.Thulla
 
                     return 0.4f;
                 case RoundEnd end:
+                    ScreenReader.Say(Speech.Bhabhi(NameOf(end.BhabhiSeat)));
                     if (end.BhabhiSeat == model.MySeat)
                     {
                         Buzz(Haptic.Bhabhi);
@@ -1900,6 +1905,15 @@ namespace Hulla.Games.Thulla
         }
 
         /// <summary>The seat's display name; the player's own seat is named too, tagged "You" where it is drawn.</summary>
+        /// <summary>Speaks a played card for the screen reader (GDD 27: "Sara played King of Hearts").</summary>
+        private void Speak(MoveApplied applied, bool thulla)
+        {
+            if (applied.Move?.Card != null)
+            {
+                ScreenReader.Say(Speech.Played(NameOf(applied.Seat), applied.Move.Card, thulla));
+            }
+        }
+
         private string NameOf(long seat)
         {
             var model = _client.Model;
@@ -2013,6 +2027,7 @@ namespace Hulla.Games.Thulla
             for (var i = _escapes; i < model.EscapeOrder.Count; i++)
             {
                 mine |= model.EscapeOrder[i] == model.MySeat;
+                ScreenReader.Say(Speech.Escaped(NameOf(model.EscapeOrder[i])));
             }
 
             _escapes = model.EscapeOrder.Count;
@@ -2196,6 +2211,7 @@ namespace Hulla.Games.Thulla
                     _turnLengthMs = Math.Max(0, _turnDeadlineMs - _turnStartMs);
                     _tickedAt = -1;
                     Buzz(Haptic.TurnStart);
+                    ScreenReader.Say(Speech.YourTurn);
                 }
             }
             else

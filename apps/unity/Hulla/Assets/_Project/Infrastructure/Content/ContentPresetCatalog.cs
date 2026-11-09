@@ -12,7 +12,7 @@ namespace Hulla.Infrastructure.Content
     /// <summary>Reads content/presets/thulla through the content store (ADR-0011).</summary>
     public sealed class ContentPresetCatalog : IPresetCatalog
     {
-        public static readonly string[] Ids = { "standard", "family", "hardcore", "classicPagat" };
+        public static readonly string[] Ids = { "standard", "family", "hardcore", "classicPagat", "relaxed" };
 
         private readonly Dictionary<string, (ThullaRules Rules, TableSettings Settings)> _presets =
             new Dictionary<string, (ThullaRules Rules, TableSettings Settings)>();
