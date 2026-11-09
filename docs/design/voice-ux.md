@@ -26,7 +26,7 @@ The lobby and the table work the same way: the mic sits next to chat, the voice 
 5. Tapping the mic again turns it off.
 6. The speaker chip, shown whenever voice is available, turns voices off on this phone. With the mic off too, the phone leaves the room.
 7. Tapping a player opens their sheet, with their voice level and Mute.
-8. A quiet table keeps its voice. Voice leaves only while the app is in the background, and comes back by itself when you return.
+8. A quiet table keeps its voice. On phones, voice leaves only while the app is in the background, and comes back by itself when you return. A desktop window keeps its voice when it loses focus.
 
 ### Public tables and Quick Play (push-to-talk)
 
@@ -56,4 +56,4 @@ The mic only does hold-to-talk: "Hold to talk" shows over it for the first few s
 
 ## Checking audio on a device
 
-Development builds log when the app's own output starts and stops sounding ("audio: sounding", "audio: quiet"), for table sounds and voices alike. Read these lines with `adb logcat -s Unity` on Android, or in `~/Library/Logs/Hulla/Hulla/Player.log` on the Mac. If they appear and you still hear nothing, the cause is outside the app: the phone's media volume, Do Not Disturb, or a Bluetooth headset.
+Development builds also trace each voice step (`voice: joining`, `subscribe`, `playing`, `microphone started`, `sending`, `holding`, `leaving`). They log when the app's own output starts and stops sounding ("audio: sounding", "audio: quiet"), for table sounds and voices alike. Read these lines with `adb logcat -s Unity` on Android, or in `~/Library/Logs/Hulla/Hulla/Player.log` on the Mac. If they appear and you still hear nothing, the cause is outside the app: the phone's media volume, Do Not Disturb, or a Bluetooth headset.

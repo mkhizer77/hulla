@@ -104,6 +104,7 @@ namespace Hulla.Infrastructure.Voice
             _account = ticket.Account;
             _transmitting = false;
 
+            Trace($"joining, mic {withMic}");
             var options = new RoomOptions { AutoSubscribe = false, Dynacast = false, AdaptiveStream = false };
             var connect = room.Connect(ticket.Url, ticket.Token, options);
             if (!await Finished(connect, cancellation) || _room != room)
@@ -117,6 +118,7 @@ namespace Hulla.Infrastructure.Voice
                 return Result<bool>.Fail("voice.unavailable", "connect");
             }
 
+            Trace($"joined with {room.RemoteParticipants.Count} others");
             foreach (var participant in room.RemoteParticipants.Values)
             {
                 foreach (var publication in participant.Tracks.Values)
@@ -168,6 +170,7 @@ namespace Hulla.Infrastructure.Voice
             if (on && !_recording && _mic != null && _track != null)
             {
                 _recording = MicrophoneAllowed() && StartRecording(_mic);
+                Trace($"microphone started {_recording}");
                 if (!_recording)
                 {
                     // Once, not on every change: the controller turns the mic off and says why.
@@ -176,6 +179,11 @@ namespace Hulla.Infrastructure.Voice
                     MicrophoneFailed?.Invoke();
                     return;
                 }
+            }
+
+            if (_track != null)
+            {
+                Trace(on ? "sending" : "holding");
             }
 
             (_track as ILocalTrack)?.SetMute(!on);
@@ -254,6 +262,15 @@ namespace Hulla.Infrastructure.Voice
             {
                 Object.Destroy(_micHost);
                 _micHost = null;
+            }
+        }
+
+        /// <summary>Development builds trace each voice step to the log (docs/design/voice-ux.md).</summary>
+        private static void Trace(string line)
+        {
+            if (Debug.isDebugBuild)
+            {
+                Debug.Log("voice: " + line);
             }
         }
 
@@ -348,11 +365,13 @@ namespace Hulla.Infrastructure.Voice
             }
 
             _subscribed[remote.Sid] = want;
+            Trace($"{(want ? "subscribe" : "unsubscribe")} {Short(account)} {remote.Sid}");
             remote.SetSubscribed(want);
         }
 
         private void Drop(Room room)
         {
+            Trace("leaving");
             room.TrackPublished -= OnTrackPublished;
             room.TrackSubscribed -= OnTrackSubscribed;
             room.TrackUnsubscribed -= OnTrackUnsubscribed;
@@ -404,6 +423,7 @@ namespace Hulla.Infrastructure.Voice
                 var listener = new Listener(audio, participant.Identity);
                 _listeners[publication.Sid] = listener;
                 listener.Volume = LevelOf(participant.Identity);
+                Trace($"playing {Short(participant.Identity)} at {LevelOf(participant.Identity):0.00}");
             }
             catch (Exception error)
             {
@@ -413,6 +433,7 @@ namespace Hulla.Infrastructure.Voice
 
         private void OnTrackUnsubscribed(IRemoteTrack track, RemoteTrackPublication publication, RemoteParticipant participant)
         {
+            Trace($"stopped {Short(participant.Identity)}");
             if (_listeners.Remove(publication.Sid, out var listener))
             {
                 listener.Dispose();
@@ -463,6 +484,8 @@ namespace Hulla.Infrastructure.Voice
                 }
             }
         }
+
+        private static string Short(string account) => account.Length > 8 ? account.Substring(0, 8) : account;
 
         private float LevelOf(string account) =>
             _outputVolume * (_peerVolume.TryGetValue(account, out var level) ? level : 1f);

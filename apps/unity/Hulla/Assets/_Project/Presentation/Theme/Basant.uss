@@ -10740,9 +10740,9 @@
 .skin--basant .lobby .lobby__voice {
     position: absolute;
     left: 40px;
-    top: 414px;
+    top: 410px;
     width: 1000px;
-    height: 60px;
+    height: 68px;
     flex-direction: row;
     justify-content: center;
     align-items: center;
@@ -10753,10 +10753,12 @@
 }
 
 .skin--basant .lobby .lobby__voice-pill {
-    max-width: 760px;
-    height: 54px;
-    padding: 0 26px;
-    font-size: 30px;
+    max-width: 740px;
+    min-height: 48px;
+    padding: 4px 24px;
+    font-size: 26px;
+    white-space: normal;
+    text-overflow: clip;
     color: rgb(255, 243, 218);
     background-color: rgb(74, 30, 14);
     border-top-left-radius: 27px;
