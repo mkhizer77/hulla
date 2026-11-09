@@ -21,7 +21,7 @@ namespace Hulla.Integration.Tests
         {
             public Person(string name, string host, int port, string stamp)
             {
-                Connection = NakamaConnection.Create("http", host, port, "local-only-server-key");
+                Connection = NakamaConnection.Create(IntegrationServer.Scheme, host, port, IntegrationServer.ServerKey);
                 Session = new NakamaSessionService(Connection, "hulla-social-" + name + "-" + stamp);
                 var social = new NakamaSocialService(Connection);
                 Social = social;

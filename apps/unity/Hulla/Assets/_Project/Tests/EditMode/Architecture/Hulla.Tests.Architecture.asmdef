@@ -2,6 +2,7 @@
     "name": "Hulla.Tests.Architecture",
     "rootNamespace": "Hulla.Architecture.Tests",
     "references": [
+        "Hulla.Composition",
         "UnityEngine.TestRunner",
         "UnityEditor.TestRunner",
         "Unity.Addressables",

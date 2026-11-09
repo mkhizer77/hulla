@@ -21,8 +21,8 @@ namespace Hulla.BuildTools
         };
 
         /// <summary>
-        /// The development APK. It starts pointed at this Mac (HULLA_DEV_SERVER, else the Mac's first
-        /// private IPv4 address, port 7350) so a fresh install reaches the local server without typing.
+        /// The development APK. It starts pointed at the server from <see cref="DevServer"/>, by default
+        /// this Mac's first private IPv4 address on port 7350, so a fresh install connects without typing.
         /// </summary>
         public static void AndroidDevelopment() =>
             ExitIfBatch(WithDevServer(() => Build(BuildTarget.Android, Path.Combine("Builds", "Android", "hulla-dev.apk"))));
@@ -43,11 +43,40 @@ namespace Hulla.BuildTools
             ExitIfBatch(WithDevServer(() => Build(BuildTarget.iOS, Path.Combine("Builds", "iOS", "Xcode"))));
         }
 
+        /// <summary>
+        /// The server a development build starts at: HULLA_DEV_SERVER (with HULLA_DEV_SERVER_KEY), else
+        /// the git-ignored HullaServer.local.json (<c>{"server": "https://api…", "serverKey": "…"}</c>,
+        /// for the phase 0 box), else this Mac's LAN address with the local key.
+        /// </summary>
+        private static (string Server, string Key) DevServer()
+        {
+            var server = Environment.GetEnvironmentVariable("HULLA_DEV_SERVER");
+            var key = Environment.GetEnvironmentVariable("HULLA_DEV_SERVER_KEY");
+            if (string.IsNullOrEmpty(server) && File.Exists(DevServerLocalFile))
+            {
+                var local = JsonUtility.FromJson<DevServerFile>(File.ReadAllText(DevServerLocalFile));
+                server = local.server;
+                key = string.IsNullOrEmpty(key) ? local.serverKey : key;
+            }
+
+            return string.IsNullOrEmpty(server) ? (LanAddress() + ":7350", "") : (server!, key ?? "");
+        }
+
+        [Serializable]
+        private sealed class DevServerFile
+        {
+            public string server = "";
+            public string serverKey = "";
+        }
+
+        private const string DevServerLocalFile = "HullaServer.local.json";
+
         private static bool WithDevServer(Func<bool> build)
         {
-            var server = Environment.GetEnvironmentVariable("HULLA_DEV_SERVER") ?? LanAddress() + ":7350";
+            var (server, key) = DevServer();
+            Debug.Log($"development build for {server}");
             Directory.CreateDirectory(Path.GetDirectoryName(DevServerAsset)!);
-            File.WriteAllText(DevServerAsset, server);
+            File.WriteAllText(DevServerAsset, key.Length > 0 ? server + "\n" + key : server);
             AssetDatabase.ImportAsset(DevServerAsset);
             var succeeded = false;
             try

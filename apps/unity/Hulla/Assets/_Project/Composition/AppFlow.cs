@@ -1170,7 +1170,8 @@ namespace Hulla.Composition
             }
 
             var config = AppConfig.WithServer(server);
-            PlayerPrefs.SetString(AppConfig.ServerPrefKey, config.HostAndPort);
+            PlayerPrefs.SetString(AppConfig.ServerPrefKey, config.Address);
+            PlayerPrefs.SetString(AppConfig.ServerKeyPrefKey, config.ServerKey);
             PlayerPrefs.Save();
             _app.UseServer(config);
         }
@@ -1840,10 +1841,10 @@ namespace Hulla.Composition
             _settingsView = new SettingsView(_shell.ShowOverlay(_shell.Catalog.Settings), _app.Settings, CloseSettings, account,
                 signedIn ? _app.NotificationSettings : null,
                 change => _ = _app.NotificationSettings.ChangeAsync(change, _app.Lifetime),
-                Debug.isDebugBuild ? _app.Config.HostAndPort : null,
+                Debug.isDebugBuild ? _app.Config.Address : null,
                 server =>
                 {
-                    if (server.Length > 0 && server != _app.Config.HostAndPort)
+                    if (server.Length > 0 && server != _app.Config.Address)
                     {
                         ApplyServer(server);
                     }

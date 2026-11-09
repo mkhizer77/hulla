@@ -247,7 +247,7 @@ namespace Hulla.Composition
 
         public void UseServer(AppConfig config)
         {
-            if (config.HostAndPort == Config.HostAndPort)
+            if (config.Address == Config.Address && config.ServerKey == Config.ServerKey)
             {
                 return;
             }

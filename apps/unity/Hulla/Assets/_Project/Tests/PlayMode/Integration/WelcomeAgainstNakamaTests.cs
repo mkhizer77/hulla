@@ -32,7 +32,7 @@ namespace Hulla.Integration.Tests
 
         private static async Awaitable RunAsync(string host, int port)
         {
-            var connection = NakamaConnection.Create("http", host, port, "local-only-server-key");
+            var connection = NakamaConnection.Create(IntegrationServer.Scheme, host, port, IntegrationServer.ServerKey);
             var sessions = new NakamaSessionService(connection, "hulla-welcome-" + DateTimeOffset.UtcNow.ToUnixTimeMilliseconds());
             Assert.IsTrue((await sessions.SignInAsync("Newcomer", default)).IsOk);
             var welcome = new NakamaWelcomeService(connection);

@@ -71,7 +71,7 @@ namespace Hulla.Integration.Tests
             var accounts = new List<string>();
             foreach (var name in new[] { "vana", "vbilal" })
             {
-                var connection = NakamaConnection.Create("http", host, port, "local-only-server-key");
+                var connection = NakamaConnection.Create(IntegrationServer.Scheme, host, port, IntegrationServer.ServerKey);
                 _connections.Add(connection);
                 var session = new NakamaSessionService(connection, "hulla-it-" + name + "-" + stamp);
                 var signedIn = await session.SignInAsync(name, default);
