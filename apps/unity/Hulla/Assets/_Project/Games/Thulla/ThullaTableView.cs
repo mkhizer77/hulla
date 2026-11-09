@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Hulla.Application.Services;
 using Hulla.Application.Table;
 using Hulla.Application.Voice;
+using Hulla.Presentation.Voice;
 using Hulla.Presentation.Audio;
 using Hulla.Presentation.Accessibility;
 using Hulla.Presentation.TableKit;
@@ -141,16 +142,13 @@ namespace Hulla.Games.Thulla
         private TextField _chatInput = null!;
         private Label _chatStatus = null!;
         private readonly Button _mic;
-        private readonly Button _talk;
         private readonly Label _voicePill;
         private readonly Button _speaker;
         private Func<string, int>? _peerVolume;
         private Action<string, int>? _setPeerVolume;
         private VoiceController? _voice;
-        private float _voiceWhyLeft;
 
         /// <summary>How long the line beside the microphone prompt stays.</summary>
-        private const float VoiceWhySeconds = 4f;
 
         /// <summary>The chat log keeps the latest lines only.</summary>
         private const int ChatLogLines = 30;
@@ -306,13 +304,6 @@ namespace Hulla.Games.Thulla
             compose.style.display = sendText == null ? DisplayStyle.None : DisplayStyle.Flex;
             _mic = root.Q<Button>("mic");
             _mic.style.display = DisplayStyle.None;
-            _talk = root.Q<Button>("talk");
-            _talk.style.display = DisplayStyle.None;
-            _talk.text = UiText.HoldToTalk;
-            _talk.RegisterCallback<PointerDownEvent>(_ => _voice?.SetTalking(true), TrickleDown.TrickleDown);
-            _talk.RegisterCallback<PointerUpEvent>(_ => _voice?.SetTalking(false), TrickleDown.TrickleDown);
-            _talk.RegisterCallback<PointerLeaveEvent>(_ => _voice?.SetTalking(false));
-            _talk.RegisterCallback<PointerCancelEvent>(_ => _voice?.SetTalking(false));
             _voicePill = root.Q<Label>("voice-pill");
             _speaker = root.Q<Button>("voice-speaker");
             _speaker.clicked += () => _voice?.ToggleSpeaker();
@@ -933,22 +924,9 @@ namespace Hulla.Games.Thulla
                 badge.Tick(deltaSeconds);
             }
 
-            if (_micTipLeft > 0f)
+            if (_micControl is { Stale: true })
             {
-                _micTipLeft -= deltaSeconds;
-                if (_micTipLeft <= 0f)
-                {
-                    ShowVoice();
-                }
-            }
-
-            if (_voiceWhyLeft > 0f)
-            {
-                _voiceWhyLeft -= deltaSeconds;
-                if (_voiceWhyLeft <= 0f)
-                {
-                    ShowVoice();
-                }
+                ShowVoice();
             }
 
             Countdown(ref _recapLeft, deltaSeconds, _recap);
@@ -1066,6 +1044,7 @@ namespace Hulla.Games.Thulla
             if (_voice != null)
             {
                 _voice.Changed -= ShowVoice;
+                _micControl?.Dispose();
                 _voice.SetTalking(false);
             }
         }
@@ -1077,15 +1056,8 @@ namespace Hulla.Games.Thulla
         public void UseVoice(VoiceController voice)
         {
             _voice = voice;
-            _mic.clicked += OnMicTapped;
-            // Push-to-talk lives on the mic itself (owner, 28 Oct): hold it to talk, a tip says so.
-            _micTip = new Label { pickingMode = PickingMode.Ignore };
-            _micTip.AddToClassList("table__mic-tip");
-            _mic.Add(_micTip);
-            _mic.RegisterCallback<PointerDownEvent>(_ => OnMicDown(), TrickleDown.TrickleDown);
-            _mic.RegisterCallback<PointerUpEvent>(_ => OnMicUp(), TrickleDown.TrickleDown);
-            _mic.RegisterCallback<PointerLeaveEvent>(_ => OnMicUp());
-            _mic.RegisterCallback<PointerCancelEvent>(_ => OnMicUp());
+            // One control for the table and the lobby: tap on open mic, hold on push-to-talk tables.
+            _micControl = new MicControl(_mic, voice, ShowVoice, "table__mic-tip");
             voice.Changed += ShowVoice;
             ShowVoice();
         }
@@ -1105,69 +1077,15 @@ namespace Hulla.Games.Thulla
 
         public bool ShowsMic => _mic.style.display == DisplayStyle.Flex;
 
-        /// <summary>True while the mic offers hold-to-talk (its tip is armed). Read by tests.</summary>
-        public bool ShowsTalk => _micTip != null && _micTip.ClassListContains("table__mic-tip--ready");
+        /// <summary>True while the mic works by holding (push-to-talk tables). Read by tests.</summary>
+        public bool ShowsTalk => _micControl != null && _voice != null && _micControl.HoldMode && _voice.CanSpeak && _voice.State != VoiceState.Hidden;
 
-        private Label? _micTip;
-        private bool _micHeld;
-        private bool _micTalked;
-        private float _micTipLeft;
-        private const float MicTipSeconds = 4f;
-
-        private bool PushReady => _voice is { } v && v.CanSpeak && v.MicOn && v.Mode == VoiceMode.PushToTalk && v.State == VoiceState.Live;
-
-        private void OnMicDown()
-        {
-            if (!PushReady)
-            {
-                return;
-            }
-
-            _micHeld = true;
-            _micTalked = true;
-            _voice!.SetTalking(true);
-            ShowVoice();
-        }
-
-        private void OnMicUp()
-        {
-            if (!_micHeld)
-            {
-                return;
-            }
-
-            _micHeld = false;
-            _voice?.SetTalking(false);
-            ShowVoice();
-        }
-
-        private void OnMicTapped()
-        {
-            if (_voice == null)
-            {
-                return;
-            }
-
-            // A hold that talked is not a tap: the mic stays on.
-            if (_micTalked)
-            {
-                _micTalked = false;
-                return;
-            }
-
-            if (!_voice.MicOn)
-            {
-                _voiceWhyLeft = VoiceWhySeconds;
-            }
-
-            _voice.ToggleMic();
-            ShowVoice();
-        }
+        private MicControl? _micControl;
 
         private void ShowVoice()
         {
             var voice = _voice;
-            if (voice == null)
+            if (voice == null || _micControl == null)
             {
                 return;
             }
@@ -1177,34 +1095,18 @@ namespace Hulla.Games.Thulla
             // A watcher sees the mic too, off and inert (design: Watching a table): only seats speak.
             _mic.style.display = hidden ? DisplayStyle.None : DisplayStyle.Flex;
             _mic.SetEnabled(voice.CanSpeak);
-            _mic.EnableInClassList("table__mic--off", !voice.CanSpeak || !voice.MicOn);
-            var retry = state == VoiceState.Failed || state == VoiceState.Paused;
-            _mic.text = retry && voice.MicOn ? UiText.VoiceRetry : voice.MicOn ? UiText.MicOn : UiText.MicOff;
-            _mic.EnableInClassList("table__mic--on", voice.MicOn && !retry);
-            _mic.EnableInClassList("table__mic--retry", retry && voice.MicOn);
-            var push = !hidden && voice.CanSpeak && voice.MicOn && voice.Mode == VoiceMode.PushToTalk && state == VoiceState.Live;
-            _talk.style.display = DisplayStyle.None;
-            if (_micTip != null)
-            {
-                if (push && !_micTip.ClassListContains("table__mic-tip--ready"))
-                {
-                    _micTipLeft = MicTipSeconds;
-                }
-
-                _micTip.EnableInClassList("table__mic-tip--ready", push);
-                _micTip.text = voice.Talking ? UiText.Talking : UiText.HoldToTalk;
-                _micTip.style.display = push && (voice.Talking || _micTipLeft > 0f) ? DisplayStyle.Flex : DisplayStyle.None;
-            }
-
+            var retry = state == VoiceState.Failed && voice.MicOn;
+            var live = voice.MicOn && !retry && (!_micControl.HoldMode || voice.Talking);
+            _mic.text = _micControl.Label();
+            _mic.EnableInClassList("table__mic--off", !voice.CanSpeak || !live);
+            _mic.EnableInClassList("table__mic--on", live);
+            _mic.EnableInClassList("table__mic--retry", retry);
             _mic.EnableInClassList("table__mic--held", voice.Talking);
-            _talk.text = voice.Talking ? UiText.Talking : UiText.HoldToTalk;
-            _talk.EnableInClassList("table__talk--held", voice.Talking);
-            var asking = _voiceWhyLeft > 0f && (state == VoiceState.Idle || state == VoiceState.Waiting || state == VoiceState.Joining);
-            var note = hidden ? "" : asking ? UiText.VoiceWhy : VoiceText(voice);
+            var note = MicControl.Line(voice, _micControl.Render());
             _voicePill.text = note;
             _voicePill.style.display = note.Length == 0 ? DisplayStyle.None : DisplayStyle.Flex;
-            // The speaker: hear the table or not; with it off and the mic off, voice is left altogether.
-            var speakerShown = !hidden && state != VoiceState.Suspended && (state == VoiceState.Live || !voice.SpeakerOn);
+            // The speaker: hear the table or not, whenever voice exists here.
+            var speakerShown = !hidden && state != VoiceState.Suspended;
             _speaker.style.display = speakerShown ? DisplayStyle.Flex : DisplayStyle.None;
             _speaker.text = voice.SpeakerOn ? UiText.VoicesOn : UiText.VoicesOff;
             _speaker.EnableInClassList("voice-speaker--off", !voice.SpeakerOn);
@@ -1215,18 +1117,6 @@ namespace Hulla.Games.Thulla
                 _ring.BadgeFor(seat.Seat)?.SetSpeaking(!hidden && voice.IsSpeaking(seat.PlayerId));
             }
         }
-
-        private static string VoiceText(VoiceController voice) => voice.MicRefused && voice.State != VoiceState.Suspended ? UiText.VoiceNoPermission : voice.State switch
-        {
-            VoiceState.Waiting => UiText.VoiceWaiting,
-            VoiceState.Joining => UiText.VoiceJoining,
-            VoiceState.Paused => UiText.VoicePaused,
-            VoiceState.Failed => UiText.VoiceFailed,
-            VoiceState.Suspended => UiText.VoiceSuspended,
-            VoiceState.NoPermission => UiText.VoiceNoPermission,
-            VoiceState.Live when !voice.CanSpeak => UiText.VoiceListening,
-            _ => "",
-        };
 
         private void Buzz(Haptic kind)
         {

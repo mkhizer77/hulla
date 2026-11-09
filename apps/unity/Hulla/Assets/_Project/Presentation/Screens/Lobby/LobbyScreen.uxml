@@ -29,6 +29,10 @@
                         </ui:VisualElement>
                     </ui:Button>
                 </ui:VisualElement>
+                <ui:VisualElement name="voice-row" class="lobby__voice" picking-mode="Ignore">
+                    <ui:Label name="voice-pill" class="lobby__voice-pill" picking-mode="Ignore" />
+                    <ui:Button name="voice-speaker" class="lobby__voice-speaker" />
+                </ui:VisualElement>
                 <ui:VisualElement name="rug" class="lobby__rug" picking-mode="Ignore" />
                 <ui:VisualElement name="seats" class="lobby__seats" picking-mode="Ignore" />
                 <ui:Label name="rules" class="lobby__rules" />

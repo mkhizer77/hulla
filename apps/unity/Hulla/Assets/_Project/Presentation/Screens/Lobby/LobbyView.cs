@@ -3,9 +3,11 @@ using System.Collections.Generic;
 using Hulla.Application.Services;
 using Hulla.Application.Social;
 using Hulla.Application.Table;
+using Hulla.Application.Voice;
 using UnityEngine;
 using Hulla.Presentation.Text;
 using Hulla.Presentation.Theme;
+using Hulla.Presentation.Voice;
 using UnityEngine.UIElements;
 
 namespace Hulla.Presentation.Screens.Lobby
@@ -54,6 +56,8 @@ namespace Hulla.Presentation.Screens.Lobby
         private readonly VisualElement _root;
         private readonly Button _copyButton;
         private readonly Button _mic;
+        private readonly Label _voicePill;
+        private readonly Button _speaker;
         private readonly VisualElement _micIcon;
         private readonly VisualElement _watchers;
         private readonly HashSet<string> _seen = new HashSet<string>();
@@ -113,6 +117,10 @@ namespace Hulla.Presentation.Screens.Lobby
             _chatLast.text = UiText.ChatPlaceholder;
             _chatLast.AddToClassList("lobby__strip-text--empty");
             root.Q<VisualElement>("chat").style.display = sendText == null ? DisplayStyle.None : DisplayStyle.Flex;
+            _voicePill = root.Q<Label>("voice-pill");
+            _voicePill.style.display = DisplayStyle.None;
+            _speaker = root.Q<Button>("voice-speaker");
+            _speaker.style.display = DisplayStyle.None;
             _mic = root.Q<Button>("mic");
             _mic.text = "";
             _micIcon = root.Q<VisualElement>("mic-icon");
@@ -180,6 +188,12 @@ namespace Hulla.Presentation.Screens.Lobby
         {
             _client.Model.Changed -= Refresh;
             _client.Model.Chat -= OnChatLine;
+            if (_voice != null)
+            {
+                _voice.Changed -= ShowVoice;
+                _micControl?.Dispose();
+                _voice.SetTalking(false);
+            }
         }
 
         private IChatCatalog? _catalog;
@@ -220,13 +234,59 @@ namespace Hulla.Presentation.Screens.Lobby
         public Func<string?, bool>? IsMuted { get; set; }
 
         private Action? _toggleMic;
+        private VoiceController? _voice;
+        private MicControl? _micControl;
 
-        /// <summary>Voice for the table: the bar's mic toggles it.</summary>
-        public void UseMic(Action toggle, bool on)
+        /// <summary>
+        /// Voice in the lobby, as at the table (docs/design/voice-ux.md): the mic in the chat bar, the voice
+        /// line and the speaker chip under the room code, and a ring round whoever is talking.
+        /// </summary>
+        public void UseVoice(VoiceController voice)
         {
-            _toggleMic = toggle;
-            _mic.SetEnabled(true);
-            SetMic(on);
+            _voice = voice;
+            _toggleMic = null;
+            _micControl = new MicControl(_mic, voice, ShowVoice, "lobby__mic-tip");
+            _speaker.clicked += voice.ToggleSpeaker;
+            voice.Changed += ShowVoice;
+            ShowVoice();
+        }
+
+        /// <summary>The voice line's text; empty when it is hidden. Read by tests.</summary>
+        public string VoiceNote => _voicePill.style.display == DisplayStyle.Flex ? _voicePill.text : "";
+
+        private void ShowVoice()
+        {
+            var voice = _voice;
+            if (voice == null || _micControl == null)
+            {
+                return;
+            }
+
+            var state = voice.State;
+            var hidden = state == VoiceState.Hidden;
+            _mic.SetEnabled(!hidden && voice.CanSpeak);
+            var sending = voice.MicOn && state != VoiceState.Failed && (!_micControl.HoldMode || voice.Talking);
+            SetMic(sending);
+            _mic.EnableInClassList("lobby__mic--held", voice.Talking);
+            _mic.tooltip = _micControl.Label();
+            var note = MicControl.Line(voice, _micControl.Render());
+            _voicePill.text = note;
+            _voicePill.style.display = note.Length == 0 ? DisplayStyle.None : DisplayStyle.Flex;
+            _speaker.style.display = hidden || state == VoiceState.Suspended ? DisplayStyle.None : DisplayStyle.Flex;
+            _speaker.text = voice.SpeakerOn ? UiText.VoicesOn : UiText.VoicesOff;
+            _speaker.EnableInClassList("lobby__voice-speaker--off", !voice.SpeakerOn);
+            ShowSpeaking();
+        }
+
+        private void ShowSpeaking()
+        {
+            var model = _client.Model;
+            for (var i = 0; i < _slots.Count; i++)
+            {
+                var seat = SeatAt(i, model);
+                var id = seat < model.Seats.Count ? model.Seats[(int)seat].PlayerId : null;
+                _slots[i].SetSpeaking(_voice != null && _voice.State != VoiceState.Hidden && _voice.IsSpeaking(id));
+            }
         }
 
         /// <summary>The mic icon follows the voice state.</summary>
@@ -511,6 +571,11 @@ namespace Hulla.Presentation.Screens.Lobby
         /// <summary>Per frame: the auto-start countdown of a public table, redrawn when the second changes.</summary>
         public void Tick()
         {
+            if (_micControl is { Stale: true })
+            {
+                ShowVoice();
+            }
+
             var startsAt = _client.Model.AutoStartAtTs;
             if (startsAt == null)
             {
@@ -606,6 +671,7 @@ namespace Hulla.Presentation.Screens.Lobby
             }
 
             _firstRefresh = false;
+            ShowSpeaking();
         }
 
         /// <summary>Slot 0 is the player's own seat (or seat 0 while watching); the rest follow in table order.</summary>

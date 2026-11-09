@@ -286,7 +286,7 @@ namespace Hulla.Screens.Tests
         }
 
         [UnityTest]
-        public IEnumerator TheMicWaitsForASecondMicThenTheSpeakerGetsARing()
+        public IEnumerator TheMicIsHeardAtOnceAndTheSpeakerGetsARing()
         {
             VisualElement root = null!;
             var gateway = new Fakes.Gateway();
@@ -342,6 +342,90 @@ namespace Hulla.Screens.Tests
             Assert.AreEqual("Voices off", view.SpeakerNote);
             controller.Dispose();
             view.Dispose();
+        }
+
+        [UnityTest]
+        public IEnumerator OnAPushToTalkTableTheMicIsHeldNotTapped()
+        {
+            VisualElement root = null!;
+            var gateway = new Fakes.Gateway();
+            var client = new TableClient(gateway, new TableTicket("m", "K7Q2MX", "t_K7Q2MX"), "me", 1);
+            var controller = new Hulla.Application.Voice.VoiceController(new Fakes.Voice(), new Fakes.VoiceTokens(), client, _ => false, true);
+            ThullaTableView view = null!;
+            yield return Open(Catalog.Table, r =>
+            {
+                root = r;
+                view = new ThullaTableView(r, client, new Fakes.Chat(), () => 0, () => { });
+                var state = Fakes.InRound(5);
+                state.Mode = TableMode.Public;
+                gateway.Deliver(MessageTypes.TableState, 5, state);
+                view.UseVoice(controller);
+            });
+            var mic = root.Q<Button>("mic");
+            Assert.IsTrue(view.ShowsTalk);
+            Assert.AreEqual("Hold to talk", mic.text);
+            Shown(mic.Q<Label>(className: "table__mic-tip"), "the hold tip over the mic");
+            using (var click = NavigationSubmitEvent.GetPooled())
+            {
+                click.target = mic;
+                mic.SendEvent(click);
+            }
+
+            yield return null;
+            Assert.IsFalse(controller.MicOn, "a tap does nothing on a push-to-talk table");
+            controller.HoldToTalk(true);
+            yield return null;
+            Assert.IsTrue(controller.MicOn, "the first hold turns the mic on");
+            Assert.AreEqual("Talking", mic.text);
+            controller.HoldToTalk(false);
+            yield return null;
+            Assert.AreEqual("Hold to talk", mic.text);
+            controller.Dispose();
+            view.Dispose();
+        }
+
+        [UnityTest]
+        public IEnumerator TheLobbyShowsVoiceLikeTheTable()
+        {
+            VisualElement root = null!;
+            var gateway = new Fakes.Gateway();
+            var client = new TableClient(gateway, new TableTicket("m", "K7Q2MX", "t_K7Q2MX"), "me", 1);
+            var voice = new Fakes.Voice();
+            var controller = new Hulla.Application.Voice.VoiceController(voice, new Fakes.VoiceTokens(), client, _ => false, true);
+            LobbyView lobby = null!;
+            yield return Open(Catalog.Lobby, r =>
+            {
+                root = r;
+                lobby = new LobbyView(r, client, () => 0, () => { }, _ => true, _ => Fakes.Done(Hulla.Domain.Result<bool>.Ok(true)));
+                var state = Fakes.InRound(5);
+                state.Status = TableStatus.Open;
+                state.Round = null;
+                gateway.Deliver(MessageTypes.TableState, 5, state);
+                lobby.UseVoice(controller);
+            });
+            Shown(root.Q<Button>("voice-speaker"), "the speaker chip whenever voice exists");
+            var mic = root.Q<Button>("mic");
+            using (var click = NavigationSubmitEvent.GetPooled())
+            {
+                click.target = mic;
+                mic.SendEvent(click);
+            }
+
+            yield return null;
+            Assert.IsTrue(controller.MicOn);
+            StringAssert.Contains("only at this table", lobby.VoiceNote, "the first tap explains the mic");
+            var state2 = Fakes.InRound(6);
+            state2.Status = TableStatus.Open;
+            state2.Round = null;
+            state2.Seats[0].Mic = true;
+            gateway.Deliver(MessageTypes.TableState, 6, state2);
+            yield return null;
+            Assert.AreEqual(Hulla.Application.Voice.VoiceState.Live, controller.State);
+            voice.Speak("u2", true);
+            yield return null;
+            Assert.AreEqual(1, root.Query(className: "lobby__seat--speaking").ToList().Count, "a ring round the speaker");
+            controller.Dispose();
+            lobby.Dispose();
         }
 
         [UnityTest]

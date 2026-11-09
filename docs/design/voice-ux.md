@@ -17,17 +17,20 @@ Causes 1 to 3 are fixed in this change. Table sounds were never the problem: the
 
 ### Private room (open mic)
 
+The lobby and the table work the same way: the mic sits next to chat, the voice line and the speaker chip sit at the top (under the room code in the lobby), and a green ring shows who is talking.
+
 1. Every seat sees the mic button, off, next to chat. Voices are on by default.
 2. The first tap shows one line ("Your mic is used only at this table, and only while it's on.") followed by the system prompt.
 3. Once allowed, the mic is live straight away whenever anyone else is at the table. Nobody else needs their mic on to hear you.
 4. Your ring glows while you speak, and so does each speaker's ring.
 5. Tapping the mic again turns it off.
-6. The speaker chip turns voices off on this phone. With the mic off too, the phone leaves the room.
+6. The speaker chip, shown whenever voice is available, turns voices off on this phone. With the mic off too, the phone leaves the room.
 7. Tapping a player opens their sheet, with their voice level and Mute.
+8. A quiet table keeps its voice. On phones, voice leaves only while the app is in the background, and comes back by itself when you return. A desktop window keeps its voice when it loses focus.
 
 ### Public tables and Quick Play (push-to-talk)
 
-Hold the mic to talk and release to stop. The first hold asks for permission.
+The mic only does hold-to-talk: "Hold to talk" shows over it for the first few seconds, and "Talking" while you hold. The first hold asks for permission and turns the mic on, so there is no separate "on" step. Releasing stops sending. A tap only retries when voice has failed.
 
 ### When something fails
 
@@ -41,16 +44,16 @@ Hold the mic to talk and release to stop. The first hold asks for permission.
 | 1 | Mac never asked for the microphone | Ask like iOS does | Done |
 | 2 | A failed mic still read "Mic on" | Turn it off and say how to allow it | Done |
 | 3 | One mic alone was never heard | Open the room when any mic is on and someone else is there | Done |
-| 4 | Push-to-talk needs two gestures: a tap to arm the mic, then a hold to talk. A first-timer taps, sees "Mic on", and isn't heard. | On push-to-talk tables the button only does hold-to-talk; the first hold asks for permission | Proposed |
+| 4 | Push-to-talk needs two gestures: a tap to arm the mic, then a hold to talk. A first-timer taps, sees "Mic on", and isn't heard. | On push-to-talk tables the button only does hold-to-talk; the first hold asks for permission | Done |
 | 5 | "Mic on" / "Mic off" as button text reads as both a state and an action | An icon-only mic: slashed when off, accent fill when live, a level ring while you speak; the screen reader says "Microphone, on" | Proposed |
 | 6 | Nothing confirms you are heard | Show your input level on the button, and "Nobody is listening" when every other player has voices off | Proposed |
-| 7 | After two quiet minutes voice pauses and needs a tap ("Voice paused after a quiet spell"). Card tables often go quiet for that long. | Drop the silence leave for seated players and leave only when the app goes to the background. Self-hosted voice makes this cheap (OQ-044). | Proposed |
-| 8 | The voices chip only shows while voice is live, so you can't silence voices before they start | Keep a speaker button next to the mic whenever voice exists | Proposed |
+| 7 | After two quiet minutes voice pauses and needs a tap ("Voice paused after a quiet spell"). Card tables often go quiet for that long. | Drop the silence leave for seated players and leave only when the app goes to the background. Self-hosted voice makes this cheap (OQ-044). | Done |
+| 8 | The voices chip only shows while voice is live, so you can't silence voices before they start | Keep a speaker chip whenever voice exists | Done (beside the voice line) |
 | 9 | When someone turns their mic on, nothing invites the others to join in | Show a one-time pill: "Ali turned their mic on · tap the mic to talk" | Proposed |
 | 10 | After "don't ask again" on Android, tapping the mic does nothing | When the permission is blocked, tapping the mic opens the app's settings page | Proposed |
 | 11 | No way to check the mic before a round | A short mic test in Settings → Voice that plays back two seconds of your voice | Proposed |
-| 12 | The lobby has a mic button but no voice pill, no speaking rings and no first-tap explanation, so it isn't clear whether voice is on before the round starts. The lobby is when friends talk most. | Give the lobby the table's voice row: the pill, rings on the seat ring, and the speaker chip | Proposed |
+| 12 | The lobby has a mic button but no voice pill, no speaking rings and no first-tap explanation, so it isn't clear whether voice is on before the round starts. The lobby is when friends talk most. | Give the lobby the table's voice row: the pill, rings on the seat ring, and the speaker chip | Done |
 
 ## Checking audio on a device
 
-Development builds log when the app's own output starts and stops sounding ("audio: sounding", "audio: quiet"), for table sounds and voices alike. Read these lines with `adb logcat -s Unity` on Android, or in `~/Library/Logs/Hulla/Hulla/Player.log` on the Mac. If they appear and you still hear nothing, the cause is outside the app: the phone's media volume, Do Not Disturb, or a Bluetooth headset.
+Development builds also trace each voice step (`voice: joining`, `subscribe`, `playing`, `microphone started`, `sending`, `holding`, `leaving`). They log when the app's own output starts and stops sounding ("audio: sounding", "audio: quiet"), for table sounds and voices alike. Read these lines with `adb logcat -s Unity` on Android, or in `~/Library/Logs/Hulla/Hulla/Player.log` on the Mac. If they appear and you still hear nothing, the cause is outside the app: the phone's media volume, Do Not Disturb, or a Bluetooth headset.

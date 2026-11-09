@@ -1141,6 +1141,12 @@ namespace Hulla.Composition
                 OpenFromPush();
             }
 
+            // Voice leaves while a phone app is in the background and comes back by itself (docs/design/voice-ux.md).
+            // A desktop window reports a pause whenever it loses focus, so it keeps its voice.
+            if (UnityEngine.Application.isMobilePlatform)
+            {
+                _app.Session?.Table?.Voice.SetBackground(away);
+            }
             if (_app.Sessions.Current != null)
             {
                 _ = _app.Social.SetAwayAsync(away, _app.Lifetime);
@@ -1510,12 +1516,7 @@ namespace Hulla.Composition
                 _lobbyView.UseChat(_app.Chat);
                 if (_app.Session?.Table is { } lobbyTable)
                 {
-                    var voice = lobbyTable.Voice;
-                    _lobbyView.UseMic(() =>
-                    {
-                        voice.ToggleMic();
-                        _lobbyView?.SetMic(voice.MicOn);
-                    }, voice.MicOn);
+                    _lobbyView.UseVoice(lobbyTable.Voice);
                 }
 
                 if (client.Model.IsPrivate)

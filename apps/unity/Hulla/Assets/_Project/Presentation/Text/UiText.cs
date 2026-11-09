@@ -464,8 +464,6 @@ namespace Hulla.Presentation.Text
 
         public static string VoiceJoining => Strings.Text("ui.voice.joining");
 
-        public static string VoicePaused => Strings.Text("ui.voice.paused");
-
         public static string VoiceFailed => Strings.Text("ui.voice.failed");
 
         public static string VoiceSuspended => Strings.Text("ui.voice.suspended");

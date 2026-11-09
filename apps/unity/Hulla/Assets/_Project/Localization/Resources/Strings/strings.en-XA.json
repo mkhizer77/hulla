@@ -5538,11 +5538,6 @@
    "smart": false
   },
   {
-   "key": "ui.voice.paused",
-   "text": "[Vöîçé påûséd åftér å qûîét spéll · tåp thé mîç · · · · · · ·]",
-   "smart": false
-  },
-  {
    "key": "ui.voice.retry",
    "text": "[Rétrý vöîçé · ·]",
    "smart": false
