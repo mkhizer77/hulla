@@ -569,6 +569,8 @@ namespace Hulla.Presentation.Text
         public static string NoMissionsYet => Strings.Text("ui.no_missions_yet");
         public static string NoAchievementsYet => Strings.Text("ui.no_achievements_yet");
         public static string NothingThisWeek => Strings.Text("ui.nothing_this_week");
+
+        public static string SeeOtherItems => Strings.Text("ui.see_other_items");
         public static string ShowMyCode => Strings.Text("ui.show_my_code");
         public static string InviteYourGroup => Strings.Text("ui.invite_your_group");
         public static string PartyEmpty => Strings.Text("ui.party_empty");
@@ -901,8 +903,38 @@ namespace Hulla.Presentation.Text
         public static string RoundsTogether => Strings.Text("ui.rounds_together");
         public static string NoFriendsYet => Strings.Text("ui.no_friends_yet");
 
-        /// <summary>Plain words for the server's error codes; anything else falls back to the code.</summary>
-        public static string Error(string code) =>
-            Strings.Has("error." + code) ? Strings.Text("error." + code) : Strings.Get("error.unknown", code);
+        /// <summary>
+        /// Plain words for an error code (GDD 14.13): its own line when it has one; a service that could
+        /// not be reached says to check the connection; anything else is a calm "try again" with the code
+        /// in the log only, never on screen.
+        /// </summary>
+        public static string Error(string code)
+        {
+            if (Strings.Has("error." + code))
+            {
+                return Strings.Text("error." + code);
+            }
+
+            if (IsOffline(code))
+            {
+                return Strings.Text("error.offline");
+            }
+
+            UnityEngine.Debug.LogWarning("error without its own words: " + code);
+            return Strings.Text("error.unknown");
+        }
+
+        /// <summary>
+        /// The dated maintenance notice (GDD 14.13): until when, in the phone's own time, while that
+        /// time is ahead; the undated line when the owner gave none or it has passed.
+        /// </summary>
+        public static string MaintenanceNote(long untilMs, long nowMs) =>
+            untilMs > nowMs
+                ? Strings.Format(Strings.Text("config.maintenance_until"), System.DateTimeOffset.FromUnixTimeMilliseconds(untilMs).ToLocalTime().ToString("t", Strings.Culture))
+                : Strings.Text("config.maintenance");
+
+        /// <summary>The codes the client makes up when the server cannot be reached or the player is not signed in yet.</summary>
+        public static bool IsOffline(string code) =>
+            code.EndsWith(".unavailable", System.StringComparison.Ordinal) || code == "session.not_signed_in";
     }
 }

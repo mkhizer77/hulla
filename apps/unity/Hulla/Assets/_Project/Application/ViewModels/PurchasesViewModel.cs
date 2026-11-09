@@ -45,6 +45,9 @@ namespace Hulla.Application.ViewModels
         /// <summary>True once the store is connected and priced; purchases are offered only then.</summary>
         public bool Ready { get; private set; }
 
+        /// <summary>True while the store connection is being made, so the Gems tab can wait instead of saying it is away.</summary>
+        public bool Connecting => _connecting;
+
         /// <summary>The product being bought, or <see cref="RestoreBusy"/>, so its button can wait.</summary>
         public string? Busy { get; private set; }
 

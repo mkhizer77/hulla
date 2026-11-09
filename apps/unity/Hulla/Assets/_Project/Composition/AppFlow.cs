@@ -614,8 +614,10 @@ namespace Hulla.Composition
             _screen = Screen.Home;
             var pass = _app.Pass;
             var passRoot = _shell.Show(_shell.Catalog.Pass);
-            _view = new PassView(passRoot, pass, () => DateTimeOffset.UtcNow.ToUnixTimeMilliseconds(), ShowHome,
+            var passView = new PassView(passRoot, pass, () => DateTimeOffset.UtcNow.ToUnixTimeMilliseconds(), ShowHome,
                 (tier, premium) => _ = pass.ClaimAsync(tier, premium, _app.Lifetime), _app.Purchases);
+            passView.Retry = () => _ = pass.RefreshAsync(_app.Lifetime);
+            _view = passView;
             Hulla.Presentation.Navigation.SegmentBar.Mount(passRoot, ShopSegments(name, server), "pass");
             TabTop(passRoot, Hulla.Presentation.Navigation.NavTab.Shop);
             Hulla.Presentation.Navigation.TopBar.Coins(passRoot, _app.Progress.Coins);
@@ -638,6 +640,7 @@ namespace Hulla.Composition
             var shopView = new ShopView(shopRoot, shop, ShowHome, item => BuyAndEquip(shop, item.Id),
                 item => _ = shop.EquipAsync(item.Id, _app.Lifetime), _app.Purchases);
             shopView.Retry = () => _ = shop.RefreshAsync(_app.Lifetime);
+            shopView.StoreRetry = () => _ = _app.Purchases.StartAsync(_app.Lifetime);
             WireAds(shopView);
             Hulla.Presentation.Navigation.SegmentBar.Mount(shopRoot, ShopSegments(name, server), "shop");
             TabTop(shopRoot, Hulla.Presentation.Navigation.NavTab.Shop);
@@ -676,6 +679,7 @@ namespace Hulla.Composition
                 (period, friends) => _ = board.ShowAsync(period, friends, _app.Lifetime),
                 () => OnRanked(name, server));
             boardView.Retry = () => _ = board.RefreshAsync(_app.Lifetime);
+            boardView.PlayNow = PlayNowFrom(name, server);
             Hulla.Presentation.Navigation.SegmentBar.Mount(boardRoot, TrophiesSegments(name, server), "leaderboard");
             TabTop(boardRoot, Hulla.Presentation.Navigation.NavTab.Trophies);
             _view = boardView;
@@ -755,6 +759,7 @@ namespace Hulla.Composition
                 id => _ = missions.ClaimAsync(id, tz, _app.Lifetime),
                 id => _ = missions.RerollAsync(id, tz, _app.Lifetime));
             missionsView.Retry = () => _ = missions.RefreshAsync(tz, _app.Lifetime);
+            missionsView.PlayNow = PlayNowFrom(name, server);
             WireAds(missionsView, tz);
             Hulla.Presentation.Navigation.SegmentBar.Mount(missionsRoot, TrophiesSegments(name, server), "missions");
             TabTop(missionsRoot, Hulla.Presentation.Navigation.NavTab.Trophies);
@@ -776,6 +781,7 @@ namespace Hulla.Composition
             var profileView = new ProfileView(_shell.Show(_shell.Catalog.Profile), profile, ShowHome, (display, handle, bio) => SaveProfile(display, handle, bio), () => OpenAchievements(name, server));
             _view = profileView;
             profileView.ShareCode = () => InviteFriend(name, server);
+            profileView.Retry = () => _ = profile.RefreshAsync(_app.Lifetime);
             profileView.FallbackAvatar = MyAvatar();
             profileView.Level = () => _app.Progress.Info?.Level;
             profileView.Medals = () =>
@@ -947,11 +953,17 @@ namespace Hulla.Composition
             }
         }
 
+        /// <summary>An empty list's one action (GDD 14.13): four-seat Quick Play, unless the server has rested it.</summary>
+        private Action? PlayNowFrom(string name, string? server) =>
+            _app.RemoteConfig.QuickPlay ? () => OnQuickPlay(name, 4, server) : null;
+
         private string? QuickPlayNote()
         {
             var config = _app.RemoteConfig;
-            return config.Maintenance ? Strings.Text("config.maintenance") : config.QuickPlay ? null : Strings.Text("config.quick_play_off");
+            return config.Maintenance ? UiText.MaintenanceNote(config.MaintenanceUntilMs, DateTimeOffset.UtcNow.ToUnixTimeMilliseconds())
+                : config.QuickPlay ? null : Strings.Text("config.quick_play_off");
         }
+
 
         /// <summary>The store page: the config's update_url, else this app on Google Play.</summary>
         private void OpenStore() =>

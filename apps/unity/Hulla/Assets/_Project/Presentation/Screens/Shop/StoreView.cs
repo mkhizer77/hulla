@@ -17,11 +17,26 @@ namespace Hulla.Presentation.Screens.Shop
         public const string Category = "store";
 
         /// <summary>The Gems tab: one tile per product that is not a pass, or a line when the store is away.</summary>
-        public static void Fill(VisualElement list, VisualElement root, PurchasesViewModel model)
+        /// <param name="retry">Connects to the store again when it was away; null hides Retry.</param>
+        public static void Fill(VisualElement list, VisualElement root, PurchasesViewModel model, Action? retry = null)
         {
-            if (!model.Supported || !model.Ready)
+            if (!model.Supported)
             {
-                ListState.Empty(list, model.Supported ? UiText.StoreOffline : UiText.StorePhoneOnly);
+                ListState.Empty(list, UiText.StorePhoneOnly);
+                return;
+            }
+
+            if (!model.Ready)
+            {
+                if (model.Connecting)
+                {
+                    ListState.Loading(list);
+                }
+                else
+                {
+                    ListState.Empty(list, UiText.StoreOffline, retry == null ? null : UiText.Retry, retry);
+                }
+
                 return;
             }
 

@@ -51,6 +51,9 @@ namespace Hulla.Presentation.Screens.Leaderboard
         /// <summary>Loads the board again after an error; null hides Retry.</summary>
         public Action? Retry { get; set; }
 
+        /// <summary>The empty board's one action (GDD 14.13): a round of Quick Play; null hides it.</summary>
+        public Action? PlayNow { get; set; }
+
         private static Button Chip(VisualElement root, string name, string text, Action clicked)
         {
             var chip = root.Q<Button>(name);
@@ -90,7 +93,7 @@ namespace Hulla.Presentation.Screens.Leaderboard
 
             if (page.Rows.Count == 0 && !_model.Loading)
             {
-                ListState.Empty(_list, UiText.BoardEmpty);
+                ListState.Empty(_list, UiText.BoardEmpty, PlayNow == null ? null : UiText.PlayNow, PlayNow);
             }
 
             LeaderboardRow? above = null;

@@ -45,7 +45,7 @@ namespace Hulla.Presentation.Screens.Missions
 
             if (_model.Daily.Count + _model.Weekly.Count == 0)
             {
-                ListState.Empty(_list, UiText.NoMissionsYet);
+                ListState.Empty(_list, UiText.NoMissionsYet, PlayNow == null ? null : UiText.PlayNow, PlayNow);
                 return;
             }
 
@@ -58,6 +58,9 @@ namespace Hulla.Presentation.Screens.Missions
 
         /// <summary>Loads the missions again after an error; null hides Retry.</summary>
         public Action? Retry { get; set; }
+
+        /// <summary>The empty list's one action (GDD 14.13): a round of Quick Play; null hides it.</summary>
+        public Action? PlayNow { get; set; }
 
         /// <summary>Re-rolls earned from ads today (GDD 13.6); null counts none.</summary>
         public Func<int>? ExtraSwaps { get; set; }
