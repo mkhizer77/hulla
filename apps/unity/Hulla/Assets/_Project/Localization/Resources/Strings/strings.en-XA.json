@@ -5534,7 +5534,7 @@
   },
   {
    "key": "ui.voice.no_permission",
-   "text": "[Ñö mîçröphöñé · ållöw ît îñ ýöûr phöñé's séttîñgs tö tålk · · · · · · · · ·]",
+   "text": "[Mîç ñöt ållöwéd · tûrñ öñ Hûllå's mîçröphöñé îñ Séttîñgs tö tålk · · · · · · · · · ·]",
    "smart": false
   },
   {
@@ -5569,7 +5569,7 @@
   },
   {
    "key": "ui.voice.waiting",
-   "text": "[Mîç öñ · vöîçé stårts whéñ åñöthér mîç îs öñ · · · · · · ·]",
+   "text": "[Mîç öñ · vöîçé stårts whéñ å frîéñd îs åt thé tåblé · · · · · · · ·]",
    "smart": false
   },
   {

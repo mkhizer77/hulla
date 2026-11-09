@@ -24,6 +24,8 @@ namespace Hulla.Infrastructure.Voice
 
         public event Action? TokenExpiring;
 
+        public event Action? MicrophoneFailed { add { } remove { } }
+
         public bool InChannel => _account != null;
 
         public async Awaitable<bool> AskMicrophoneAsync()

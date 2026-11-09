@@ -9,8 +9,9 @@ namespace Hulla.Application.Voice
 {
     /// <summary>
     /// Voice for one table (GDD 11.4). Each seat shares its mic through the server; this client is in the
-    /// channel only while two mics at the table are on and leaves after two minutes in which nobody spoke
-    /// (GDD 20.14, OQ-044). A failure never blocks play (E25): the mic shows a retry instead. Muted players
+    /// channel while any mic at the table is on and someone else is there to hear it, and leaves after two
+    /// minutes in which nobody spoke (GDD 20.14, OQ-044; one mic is enough since voice is self-hosted,
+    /// docs/design/voice-ux.md). A failure never blocks play (E25): the mic shows a retry instead. Muted players
     /// stay silent here, and the mute list lives on the server, so it survives a reconnect. The player's
     /// voice settings (on or off, the level of every voice and of each player) and the table's speaker
     /// toggle apply live.
@@ -59,6 +60,7 @@ namespace Hulla.Application.Voice
             _voice.Speaking += OnSpeaking;
             _voice.Dropped += OnDropped;
             _voice.TokenExpiring += OnTokenExpiring;
+            _voice.MicrophoneFailed += OnMicrophoneFailed;
             _client.Model.Changed += Evaluate;
             if (_settings != null)
             {
@@ -96,6 +98,9 @@ namespace Hulla.Application.Voice
         public bool Transmitting => _inChannel && _micOn && CanSpeak && (Mode == VoiceMode.OpenMic || _talking);
 
         public bool IsSpeaking(string? playerId) => playerId != null && _speaking.Contains(playerId);
+
+        /// <summary>The microphone was refused or failed: the mic is off and the pill says how to allow it.</summary>
+        public bool MicRefused => _noPermission && !_micOn;
 
         /// <summary>Voices are heard at this table (the speaker toggle on the voice pill).</summary>
         public bool SpeakerOn => _speakerOn;
@@ -242,6 +247,7 @@ namespace Hulla.Application.Voice
             _voice.Speaking -= OnSpeaking;
             _voice.Dropped -= OnDropped;
             _voice.TokenExpiring -= OnTokenExpiring;
+            _voice.MicrophoneFailed -= OnMicrophoneFailed;
             _client.Model.Changed -= Evaluate;
             if (_settings != null)
             {
@@ -344,7 +350,24 @@ namespace Hulla.Application.Voice
                 return false;
             }
 
-            return MicsOn() >= 2;
+            // One mic is enough: a player who turns theirs on is heard at once, and everyone with voices on
+            // listens. Alone at the table there is nobody to hear it.
+            return MicsOn() >= 1 && OthersConnected() >= 1;
+        }
+
+        /// <summary>Other seated players who are online.</summary>
+        private int OthersConnected()
+        {
+            var count = 0;
+            foreach (var seat in _client.Model.Seats)
+            {
+                if (seat.Seat != _client.Model.MySeat && seat.Occupied && seat.Connected)
+                {
+                    count++;
+                }
+            }
+
+            return count;
         }
 
         private bool Available() => _enabled && _voice.Supported && Mode != VoiceMode.Off && (_settings?.VoiceChat ?? true);
@@ -526,6 +549,18 @@ namespace Hulla.Application.Voice
         }
 
         private void ApplyTransmit() => _voice.SetTransmit(Transmitting);
+
+        /// <summary>The microphone would not open (permission withdrawn, or none): mic off, and the pill says why.</summary>
+        private void OnMicrophoneFailed()
+        {
+            if (_disposed || !_micOn)
+            {
+                return;
+            }
+
+            _noPermission = true;
+            SetMic(false);
+        }
 
         private void ApplyMutes()
         {

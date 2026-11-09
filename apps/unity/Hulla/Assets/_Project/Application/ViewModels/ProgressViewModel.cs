@@ -19,6 +19,9 @@ namespace Hulla.Application.ViewModels
 
         public ProgressInfo? Info { get; private set; }
 
+        /// <summary>True once the server has sent the balances; until then the coin count is unknown, not zero.</summary>
+        public bool BalancesKnown { get; private set; }
+
         public long Coins { get; private set; }
 
         public long Gems { get; private set; }
@@ -34,6 +37,7 @@ namespace Hulla.Application.ViewModels
 
             if (balances.IsOk)
             {
+                BalancesKnown = true;
                 Coins = balances.Value.Coins;
                 Gems = balances.Value.Gems;
             }
