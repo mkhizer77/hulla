@@ -1,0 +1,82 @@
+# The phase 0 box on Google Cloud (docs/runbooks/gcp-phase0.md). It lives at /opt/hulla next to .env,
+# nakama.yml, livekit.yaml and secrets.env, which setup.sh renders on the box; none of them is in git.
+services:
+  postgres:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: nakama
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    command: ["postgres", "-c", "shared_buffers=256MB", "-c", "max_connections=60"]
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d nakama"]
+      interval: 5s
+      timeout: 3s
+      retries: 30
+
+  nakama:
+    image: ${NAKAMA_IMAGE}
+    restart: unless-stopped
+    entrypoint:
+      - /bin/sh
+      - -ec
+      - >
+        /nakama/nakama migrate up --database.address "postgres:$${POSTGRES_PASSWORD}@postgres:5432/nakama" &&
+        exec /nakama/nakama --config /nakama/data/box/nakama.yml
+    environment:
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    depends_on:
+      postgres:
+        condition: service_healthy
+    volumes:
+      - ./nakama.yml:/nakama/data/box/nakama.yml:ro
+    # The console and metrics stay on loopback; reach them through an IAP tunnel.
+    ports:
+      - "127.0.0.1:7351:7351"
+      - "127.0.0.1:9100:9100"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    healthcheck:
+      test: ["CMD", "/nakama/nakama", "healthcheck"]
+      interval: 10s
+      timeout: 5s
+      retries: 30
+
+  # Media needs the host's network: UDP 7882, TCP 7881, TURN on UDP 3478 and TLS 5349 (ADR-0024).
+  livekit:
+    image: livekit/livekit-server:v1.13.9
+    restart: unless-stopped
+    network_mode: host
+    command: ["--config", "/etc/livekit.yaml"]
+    volumes:
+      - ./livekit.yaml:/etc/livekit.yaml:ro
+      - caddy-data:/caddy:ro
+    depends_on:
+      - caddy
+
+  # TLS for the socket and voice signalling, with certificates from Let's Encrypt.
+  caddy:
+    image: caddy:2.10-alpine
+    restart: unless-stopped
+    environment:
+      API_HOST: ${API_HOST}
+      VOICE_HOST: ${VOICE_HOST}
+      TURN_HOST: ${TURN_HOST}
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy-data:/data
+      - caddy-config:/config
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    depends_on:
+      - nakama
+
+volumes:
+  pgdata:
+  caddy-data:
+  caddy-config:

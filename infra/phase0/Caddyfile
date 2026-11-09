@@ -1,0 +1,13 @@
+# Clients reach Nakama at https://API_HOST (port 443) and LiveKit signalling at wss://VOICE_HOST.
+# TURN_HOST only gets a certificate here; LiveKit reads it from Caddy's data volume for TURN over TLS (5349).
+{$API_HOST} {
+	reverse_proxy nakama:7350
+}
+
+{$VOICE_HOST} {
+	reverse_proxy host.docker.internal:7880
+}
+
+{$TURN_HOST} {
+	respond "turn" 200
+}
