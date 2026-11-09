@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" package="gg.hulla.brand">
+  <application>
+    <!-- The status-bar icon and accent for pushes delivered while the app is in the background (GDD 10.10). -->
+    <meta-data android:name="com.google.firebase.messaging.default_notification_icon" android:resource="@drawable/ic_stat_hulla" />
+    <meta-data android:name="com.google.firebase.messaging.default_notification_color" android:resource="@color/hulla_notification" />
+  </application>
+</manifest>
