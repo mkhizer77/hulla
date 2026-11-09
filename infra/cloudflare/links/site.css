@@ -137,3 +137,76 @@ footer {
   color: #fff;
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.35);
 }
+
+/* Privacy, terms, deletion and support pages: long text, left-aligned, wider card. */
+body.legal {
+  align-items: flex-start;
+}
+
+.legal main {
+  max-width: 760px;
+}
+
+.legal .card {
+  text-align: left;
+  padding: 34px 24px 26px;
+}
+
+.legal h1 {
+  font-size: 28px;
+}
+
+.legal h2 {
+  margin: 26px 0 0;
+  font-size: 21px;
+  line-height: 1.2;
+}
+
+.legal p,
+.legal li {
+  font-size: 16px;
+  line-height: 1.5;
+  color: var(--ink-soft);
+}
+
+.legal ul,
+.legal ol {
+  margin: 8px 0 0;
+  padding-left: 22px;
+}
+
+.legal a {
+  color: var(--ink);
+}
+
+.legal table {
+  width: 100%;
+  margin-top: 10px;
+  border-collapse: collapse;
+  font-size: 14px;
+  line-height: 1.4;
+  color: var(--ink-soft);
+}
+
+.legal th,
+.legal td {
+  padding: 8px 6px;
+  border-bottom: 2px solid var(--line);
+  text-align: left;
+  vertical-align: top;
+}
+
+.legal th {
+  color: var(--ink);
+}
+
+.legal footer a {
+  color: #fff;
+}
+
+@media (max-width: 520px) {
+  .legal table {
+    display: block;
+    overflow-x: auto;
+  }
+}

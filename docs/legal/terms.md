@@ -1,10 +1,10 @@
 # Hulla terms of service
 
-> Draft for legal review (#87). Square brackets mark facts only the owner can fill in. Not published yet.
+> Source of https://hulla.khizerkhalid.de/terms/. Published on 9 November 2026 at the owner's choice, before the legal review (#87, OQ-053). Edit this file, then rebuild the pages with `python3 tools/legal-pages/build.py`.
 
-Last updated: [date of publication]
+Last updated: 9 November 2026
 
-These terms are an agreement between you and [operator's legal name] ("we", "us"), who runs Hulla, the app and its services. By creating an account or playing, you agree to them. If you don't agree, please don't use Hulla.
+These terms are an agreement between you and Muhammad Khizer Khalid ("we", "us"), who runs Hulla, the app and its services. By creating an account or playing, you agree to them. If you don't agree, please don't use Hulla.
 
 ## 1. Who can play
 
@@ -42,7 +42,7 @@ When you play, chat or talk, don't:
 - Voice chat is live. It isn't recorded. Voice runs only while you're at a table and is limited to your table.
 - When you report a player, the report includes the table, the round and the last seven days of that table's text chat so we can review it.
 - We review reports and may warn, mute, suspend or ban an account or a device. How long a ban lasts depends on what happened and on past warnings. Serious harm, such as threats or content involving children, is removed at once and may be reported to the authorities.
-- If you think we got a moderation decision wrong, or you want to complain about content or about us, write to [support address] with your friend code. We reply within [number] days.
+- If you think we got a moderation decision wrong, or you want to complain about content or about us, write to hulla.games1@gmail.com with your friend code. We reply within 14 days.
 
 ## 6. What you post
 
@@ -70,8 +70,8 @@ You can stop playing and delete your account at any time. We may suspend or clos
 
 ## 12. Law
 
-These terms are governed by the law of [country], and disputes go to its courts, unless the law where you live gives you the right to bring them there.
+These terms are governed by the law of Pakistan, and disputes go to its courts, unless the law where you live gives you the right to bring them there.
 
 ## 13. Contact
 
-[operator's legal name], [postal address], [support address].
+Muhammad Khizer Khalid, 207 J1 Block, Johar Town, Lahore 54400, Pakistan, hulla.games1@gmail.com.
