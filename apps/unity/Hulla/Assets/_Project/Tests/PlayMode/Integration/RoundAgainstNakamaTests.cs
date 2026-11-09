@@ -25,7 +25,7 @@ namespace Hulla.Integration.Tests
             public Player(string name, string host, int port, string stamp)
             {
                 Name = name;
-                Connection = NakamaConnection.Create("http", host, port, "local-only-server-key");
+                Connection = NakamaConnection.Create(IntegrationServer.Scheme, host, port, IntegrationServer.ServerKey);
                 Session = new NakamaSessionService(Connection, "hulla-it-" + name + "-" + stamp);
                 Gateway = new NakamaTableGateway(Connection);
             }
@@ -322,7 +322,7 @@ namespace Hulla.Integration.Tests
             var host = System.Environment.GetEnvironmentVariable("HULLA_NAKAMA_HOST") ?? "127.0.0.1";
             var port = System.Environment.GetEnvironmentVariable("HULLA_NAKAMA_PORT") ?? "7350";
             var body = $"{{\"userId\":\"{userId}\",\"coins\":{coins},\"gems\":0,\"reason\":\"test\",\"sourceId\":\"it-{userId}\"}}";
-            using var request = new UnityEngine.Networking.UnityWebRequest($"http://{host}:{port}/v2/rpc/admin_grant?http_key=local-only-http-key&unwrap", "POST");
+            using var request = new UnityEngine.Networking.UnityWebRequest($"{IntegrationServer.Scheme}://{host}:{port}/v2/rpc/admin_grant?http_key={IntegrationServer.HttpKey}&unwrap", "POST");
             request.uploadHandler = new UnityEngine.Networking.UploadHandlerRaw(System.Text.Encoding.UTF8.GetBytes(body));
             request.downloadHandler = new UnityEngine.Networking.DownloadHandlerBuffer();
             request.SetRequestHeader("Content-Type", "application/json");

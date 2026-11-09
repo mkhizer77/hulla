@@ -5,14 +5,20 @@ namespace Hulla.Composition
 {
     /// <summary>
     /// Where the client connects. The local defaults match server/nakama/compose.yml. A development
-    /// build can point at another machine with <c>-hulla-server host[:port]</c> or the server field on
-    /// the home screen, remembered in player prefs; a development APK starts at the machine that built it.
+    /// build can point at another server with <c>-hulla-server address</c> (and <c>-hulla-server-key</c>)
+    /// or the server field in Settings, remembered in player prefs; a development build starts at the
+    /// server it was built for (BuildCommands: HULLA_DEV_SERVER or HullaServer.local.json, else this Mac).
+    /// An address is <c>host[:port]</c> for plain http on 7350, or <c>https://host[:port]</c> on 443,
+    /// as for the phase 0 box (docs/runbooks/gcp-phase0.md).
     /// </summary>
     public sealed class AppConfig
     {
         public const string ServerPrefKey = "hulla.server";
+        public const string ServerKeyPrefKey = "hulla.server.key";
+        public const string LocalServerKey = "local-only-server-key";
         private const string DevServerResource = "hulla-dev-server";
         private const int DefaultPort = 7350;
+        private const int HttpsPort = 443;
 
         public AppConfig(string scheme, string host, int port, string serverKey)
         {
@@ -30,44 +36,122 @@ namespace Hulla.Composition
 
         public string ServerKey { get; }
 
-        /// <summary>Always with the port, so the server field shows exactly where the client connects.</summary>
+        /// <summary>Always with the port, so logs show exactly where the client connects.</summary>
         public string HostAndPort => Host + ":" + Port;
 
-        public static AppConfig Local() => new AppConfig("http", "127.0.0.1", DefaultPort, "local-only-server-key");
+        /// <summary>The address as the server field shows it and <see cref="WithServer"/> reads it back.</summary>
+        public string Address => Scheme == "https"
+            ? "https://" + Host + (Port == HttpsPort ? "" : ":" + Port)
+            : HostAndPort;
+
+        public static AppConfig Local() => new AppConfig("http", "127.0.0.1", DefaultPort, LocalServerKey);
 
         public static AppConfig FromEnvironment()
         {
             var args = Environment.GetCommandLineArgs();
+            string? server = null;
+            string? key = null;
             for (var i = 0; i < args.Length - 1; i++)
             {
                 if (args[i] == "-hulla-server")
                 {
-                    return WithServer(args[i + 1]);
+                    server = args[i + 1];
                 }
+                else if (args[i] == "-hulla-server-key")
+                {
+                    key = args[i + 1];
+                }
+            }
+
+            if (server != null)
+            {
+                return WithServer(server, key);
             }
 
             var stored = PlayerPrefs.GetString(ServerPrefKey, "");
             if (stored.Length > 0)
             {
-                return WithServer(stored);
+                var storedKey = PlayerPrefs.GetString(ServerKeyPrefKey, "");
+                return WithServer(stored, storedKey.Length > 0 ? storedKey : null);
             }
 
-            // A development APK carries the address of the machine that built it.
-            var built = Debug.isDebugBuild ? Resources.Load<TextAsset>(DevServerResource)?.text.Trim() : null;
-            return string.IsNullOrEmpty(built) ? Local() : WithServer(built!);
+            var built = Built();
+            return built == null ? Local() : WithServer(built.Value.Address, built.Value.Key);
         }
 
-        public static AppConfig WithServer(string hostAndPort)
+        /// <summary>
+        /// Reads an address. Without a key, the key the build carries for that server is used when the
+        /// address matches it, else the local development key.
+        /// </summary>
+        public static AppConfig WithServer(string address, string? serverKey = null)
         {
-            var local = Local();
-            var text = hostAndPort.Trim();
-            var colon = text.LastIndexOf(':');
-            if (colon > 0 && int.TryParse(text.Substring(colon + 1), out var port))
+            var text = address.Trim();
+            var scheme = "http";
+            if (text.StartsWith("https://", StringComparison.OrdinalIgnoreCase))
             {
-                return new AppConfig(local.Scheme, text.Substring(0, colon), port, local.ServerKey);
+                scheme = "https";
+                text = text.Substring("https://".Length);
+            }
+            else if (text.StartsWith("http://", StringComparison.OrdinalIgnoreCase))
+            {
+                text = text.Substring("http://".Length);
             }
 
-            return new AppConfig(local.Scheme, text.Length > 0 ? text : local.Host, DefaultPort, local.ServerKey);
+            text = text.TrimEnd('/');
+            var host = text;
+            var port = scheme == "https" ? HttpsPort : DefaultPort;
+            var colon = text.LastIndexOf(':');
+            if (colon > 0 && int.TryParse(text.Substring(colon + 1), out var parsed))
+            {
+                host = text.Substring(0, colon);
+                port = parsed;
+            }
+
+            if (host.Length == 0)
+            {
+                host = Local().Host;
+            }
+
+            var key = string.IsNullOrEmpty(serverKey) ? KnownKey(scheme, host, port) : serverKey!;
+            return new AppConfig(scheme, host, port, key);
+        }
+
+        /// <summary>The build's own server key when the address is the build's server.</summary>
+        private static string KnownKey(string scheme, string host, int port)
+        {
+            var built = Built();
+            if (built?.Key == null)
+            {
+                return LocalServerKey;
+            }
+
+            var target = WithServer(built.Value.Address, built.Value.Key);
+            return target.Scheme == scheme && target.Port == port && string.Equals(target.Host, host, StringComparison.OrdinalIgnoreCase)
+                ? built.Value.Key
+                : LocalServerKey;
+        }
+
+        /// <summary>
+        /// The server a development build was made for: the address on the first line of the resource
+        /// and, for a deployed server, its key on the second.
+        /// </summary>
+        private static (string Address, string? Key)? Built()
+        {
+            if (!Debug.isDebugBuild)
+            {
+                return null;
+            }
+
+            var text = Resources.Load<TextAsset>(DevServerResource)?.text;
+            if (string.IsNullOrWhiteSpace(text))
+            {
+                return null;
+            }
+
+            var lines = text!.Split('\n');
+            var address = lines[0].Trim();
+            var key = lines.Length > 1 ? lines[1].Trim() : "";
+            return address.Length == 0 ? null : (address, key.Length > 0 ? key : null);
         }
     }
 }

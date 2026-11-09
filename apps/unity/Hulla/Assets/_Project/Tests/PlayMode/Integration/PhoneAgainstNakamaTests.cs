@@ -42,7 +42,7 @@ namespace Hulla.Integration.Tests
             var phone = "+92300" + stamp.Substring(stamp.Length - 7);
             var code = phone.Substring(phone.Length - 6);
 
-            var firstConnection = NakamaConnection.Create("http", host, port, "local-only-server-key");
+            var firstConnection = NakamaConnection.Create(IntegrationServer.Scheme, host, port, IntegrationServer.ServerKey);
             var firstSessions = new NakamaSessionService(firstConnection, "hulla-phone-a-" + stamp);
             var first = await firstSessions.SignInAsync("Ayesha", default);
             Assert.IsTrue(first.IsOk, "first phone signs in");
@@ -55,7 +55,7 @@ namespace Hulla.Integration.Tests
             // The same number waits a minute before another code.
             await Awaitable.WaitForSecondsAsync(61f);
             var secondDevice = "hulla-phone-b-" + stamp;
-            var secondConnection = NakamaConnection.Create("http", host, port, "local-only-server-key");
+            var secondConnection = NakamaConnection.Create(IntegrationServer.Scheme, host, port, IntegrationServer.ServerKey);
             var secondSessions = new NakamaSessionService(secondConnection, secondDevice);
             Assert.IsTrue((await secondSessions.SignInAsync("Guest", default)).IsOk, "second phone signs in as a guest");
             var secondPhone = new PhoneViewModel(new NakamaPhoneService(secondConnection, secondSessions));
@@ -68,7 +68,7 @@ namespace Hulla.Integration.Tests
             Assert.AreEqual("Ayesha", secondSessions.Current.DisplayName, "the account keeps its own name");
 
             // The next start of the second phone signs in by device id and lands on the same account.
-            var restart = new NakamaSessionService(NakamaConnection.Create("http", host, port, "local-only-server-key"), secondDevice);
+            var restart = new NakamaSessionService(NakamaConnection.Create(IntegrationServer.Scheme, host, port, IntegrationServer.ServerKey), secondDevice);
             var again = await restart.SignInAsync("", default);
             Assert.IsTrue(again.IsOk);
             Assert.AreEqual(first.Value.UserId, again.Value.UserId);

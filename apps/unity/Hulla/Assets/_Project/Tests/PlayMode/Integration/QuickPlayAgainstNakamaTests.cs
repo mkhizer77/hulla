@@ -22,7 +22,7 @@ namespace Hulla.Integration.Tests
             public Searcher(string name, string host, int port, string stamp)
             {
                 Name = name;
-                Connection = NakamaConnection.Create("http", host, port, "local-only-server-key");
+                Connection = NakamaConnection.Create(IntegrationServer.Scheme, host, port, IntegrationServer.ServerKey);
                 Session = new NakamaSessionService(Connection, "hulla-qp-" + name + "-" + stamp);
                 Gateway = new NakamaTableGateway(Connection);
                 Matchmaker = new NakamaMatchmaker(Connection);

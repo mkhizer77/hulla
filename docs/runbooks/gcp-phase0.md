@@ -32,6 +32,12 @@ cd /opt/hulla && sudo docker compose ps && sudo docker compose logs --tail 50 na
 - Deploy a new server build: set `NAKAMA_IMAGE=ghcr.io/mkhizer77/hulla/nakama:<sha>` in `/opt/hulla/box.env`, then `sudo bash /opt/hulla/setup.sh`. Rollback is the previous SHA. The `server-image` workflow's SSH deploy does not reach an IAP-only box yet.
 - Change the stack: edit `infra/phase0/`, copy the changed files to `/opt/hulla` with `gcloud compute scp --tunnel-through-iap`, run `setup.sh` again. It keeps the secrets and re-renders the configs.
 
+## Clients on the box
+- Development builds: put `{"server": "https://api.hulla.khizerkhalid.de", "serverKey": "<NAKAMA_SERVER_KEY>"}` in the git-ignored `apps/unity/Hulla/HullaServer.local.json` (or set `HULLA_DEV_SERVER` and `HULLA_DEV_SERVER_KEY`), then build as usual; the APK and the iOS export start at the box. Without the file they start at the building Mac as before.
+- Mac windows: `open -n Builds/macOS/Hulla.app --args -hulla-server https://api.hulla.khizerkhalid.de -hulla-server-key <key> -hulla-device <name>`.
+- The Settings server field takes `host[:port]` (local, http) or `https://host` (the box); a build remembers the key for its own server.
+- Integration tests against the box: `HULLA_NAKAMA_HOST=api.hulla.khizerkhalid.de HULLA_NAKAMA_PORT=443 HULLA_NAKAMA_SCHEME=https HULLA_NAKAMA_SERVER_KEY=<key> HULLA_NAKAMA_HTTP_KEY=<http key>`, play mode, filter `Hulla.Integration`. On 9 November 2026 nine of ten passed; phone sign-in needs the WhatsApp or SMS accounts first.
+
 ## Building it again
 1. `gcloud projects create`, link the billing account, enable Compute, Storage, Billing Budgets, Pub/Sub, Cloud Functions, Cloud Run, Cloud Build, Artifact Registry, Eventarc, Monitoring and IAP.
 2. Topic `budget-alerts`; the budget with `--credit-types-treatment=exclude-all-credits` and that topic; service account `budget-guard` with Compute Instance Admin and Run Invoker on its own service; deploy `infra/phase0/budget-guard` (gen2, Python 3.12, 512 MiB, internal ingress). Test it on an empty VM by publishing `{"costAmount":281,"budgetAmount":280}` to the topic: the VM must stop within a minute.

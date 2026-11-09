@@ -33,7 +33,7 @@ namespace Hulla.Integration.Tests
 
         private static async Awaitable RunAsync(string host, int port)
         {
-            var connection = NakamaConnection.Create("http", host, port, "local-only-server-key");
+            var connection = NakamaConnection.Create(IntegrationServer.Scheme, host, port, IntegrationServer.ServerKey);
             var sessions = new NakamaSessionService(connection, "hulla-config-" + DateTimeOffset.UtcNow.ToUnixTimeMilliseconds());
             Assert.IsTrue((await sessions.SignInAsync("Config", default)).IsOk);
             var model = new RemoteConfigModel(new NakamaRemoteConfigService(connection));
