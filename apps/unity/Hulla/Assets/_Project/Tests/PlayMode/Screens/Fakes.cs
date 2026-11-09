@@ -479,6 +479,8 @@ namespace Hulla.Screens.Tests
 
             public event System.Action? TokenExpiring { add { } remove { } }
 
+            public event System.Action? MicrophoneFailed { add { } remove { } }
+
             public Awaitable<bool> AskMicrophoneAsync() => Done(true);
 
             public Awaitable<Hulla.Domain.Result<bool>> JoinAsync(Hulla.Application.Voice.VoiceTicket ticket, bool publish, CancellationToken cancellation) =>

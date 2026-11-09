@@ -57,6 +57,8 @@ namespace Hulla.Infrastructure.Voice
         public event Action? TokenExpiring;
 #pragma warning restore CS0067
 
+        public event Action? MicrophoneFailed;
+
         public async Awaitable<bool> AskMicrophoneAsync()
         {
 #if UNITY_ANDROID && !UNITY_EDITOR
@@ -71,7 +73,8 @@ namespace Hulla.Infrastructure.Voice
             callbacks.PermissionDenied += _ => answer.TrySetResult(false);
             UnityEngine.Android.Permission.RequestUserPermission(UnityEngine.Android.Permission.Microphone, callbacks);
             return await answer.Awaitable;
-#elif UNITY_IOS && !UNITY_EDITOR
+#elif (UNITY_IOS || UNITY_STANDALONE_OSX) && !UNITY_EDITOR
+            // A Mac asks like an iPhone: without it the system refuses the microphone and nothing is sent.
             if (!MicrophoneAllowed())
             {
                 await UnityEngine.Application.RequestUserAuthorization(UserAuthorization.Microphone);
@@ -89,6 +92,7 @@ namespace Hulla.Infrastructure.Voice
         {
             await LeaveAsync();
             var withMic = publish && MicrophoneAllowed() && Microphone.devices.Length > 0;
+            var micLost = publish && !withMic;
             var room = new Room();
             room.TrackPublished += OnTrackPublished;
             room.TrackSubscribed += OnTrackSubscribed;
@@ -127,6 +131,12 @@ namespace Hulla.Infrastructure.Voice
                 return Result<bool>.Fail("voice.unavailable", "publish");
             }
 
+            if (micLost)
+            {
+                // Asked to send, but the permission went away in the settings (or there is no mic): listen, and say so.
+                MicrophoneFailed?.Invoke();
+            }
+
             return Result<bool>.Ok(true);
         }
 
@@ -155,9 +165,17 @@ namespace Hulla.Infrastructure.Voice
         public void SetTransmit(bool on)
         {
             _transmitting = on;
-            if (on && !_recording && _mic != null && _track != null && MicrophoneAllowed())
+            if (on && !_recording && _mic != null && _track != null)
             {
-                _recording = StartRecording(_mic);
+                _recording = MicrophoneAllowed() && StartRecording(_mic);
+                if (!_recording)
+                {
+                    // Once, not on every change: the controller turns the mic off and says why.
+                    _transmitting = false;
+                    (_track as ILocalTrack)?.SetMute(true);
+                    MicrophoneFailed?.Invoke();
+                    return;
+                }
             }
 
             (_track as ILocalTrack)?.SetMute(!on);
@@ -243,7 +261,7 @@ namespace Hulla.Infrastructure.Voice
         {
 #if UNITY_ANDROID && !UNITY_EDITOR
             return UnityEngine.Android.Permission.HasUserAuthorizedPermission(UnityEngine.Android.Permission.Microphone);
-#elif UNITY_IOS && !UNITY_EDITOR
+#elif (UNITY_IOS || UNITY_STANDALONE_OSX) && !UNITY_EDITOR
             return UnityEngine.Application.HasUserAuthorization(UserAuthorization.Microphone);
 #else
             return true;

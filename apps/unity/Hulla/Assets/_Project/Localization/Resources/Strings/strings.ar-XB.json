@@ -5534,7 +5534,7 @@
   },
   {
    "key": "ui.voice.no_permission",
-   "text": "No microphone · allow it in your phone's settings to talk",
+   "text": "Mic not allowed · turn on Hulla's microphone in Settings to talk",
    "smart": false
   },
   {
@@ -5569,7 +5569,7 @@
   },
   {
    "key": "ui.voice.waiting",
-   "text": "Mic on · voice starts when another mic is on",
+   "text": "Mic on · voice starts when a friend is at the table",
    "smart": false
   },
   {

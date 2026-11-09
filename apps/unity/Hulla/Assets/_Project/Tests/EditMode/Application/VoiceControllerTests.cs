@@ -112,34 +112,52 @@ namespace Hulla.Application.Tests
         }
 
         [Test]
-        public void MyMicAloneIsSharedButOpensNoChannel()
+        public void MyMicAloneAtTheTableWaitsForSomeoneToHearIt()
         {
+            Deliver(connected: new[] { 0 });
             _controller.ToggleMic();
             Assert.IsTrue(_controller.MicOn);
             Assert.IsTrue(LastMic(), "the seat's mic goes to the server");
             Assert.AreEqual(VoiceState.Waiting, _controller.State);
-            Assert.AreEqual(0, _tokens.Asked, "one mic costs no minutes (GDD 20.14)");
+            Assert.AreEqual(0, _tokens.Asked, "nobody to hear it");
+            Deliver(connected: new[] { 0, 2 });
+            Assert.AreEqual(VoiceState.Live, _controller.State, "a friend sat down");
         }
 
         [Test]
-        public void ASecondMicOpensTheChannelAndOpenMicSends()
+        public void OneMicOpensTheChannelAndOpenMicSends()
         {
             _controller.ToggleMic();
-            Deliver(mics: new[] { 0, 1 });
-            Assert.AreEqual(VoiceState.Live, _controller.State);
+            Assert.AreEqual(VoiceState.Live, _controller.State, "heard at once, no second mic needed");
             Assert.AreEqual("t_ABC123", _voice.Channel);
             Assert.IsTrue(_voice.Published, "a seat may speak");
             Assert.IsTrue(_voice.Transmitting);
         }
 
         [Test]
-        public void AListenerJoinsWhenTwoOthersHaveTheirMicsOn()
+        public void AListenerJoinsWhenAnyoneElseHasTheirMicOn()
         {
-            Deliver(mics: new[] { 1 });
+            Deliver();
             Assert.AreEqual(VoiceState.Idle, _controller.State);
-            Deliver(mics: new[] { 1, 2 });
+            Deliver(mics: new[] { 1 });
             Assert.AreEqual(VoiceState.Live, _controller.State);
             Assert.IsFalse(_voice.Transmitting, "my mic is off");
+            Assert.IsFalse(_voice.Published, "a listener never opens the microphone");
+        }
+
+        [Test]
+        public void AMicThatWillNotOpenTurnsItselfOffAndSaysSoWhileVoicesStayHeard()
+        {
+            _controller.ToggleMic();
+            Deliver(mics: new[] { 0, 1 });
+            _voice.FailMic();
+            Assert.IsFalse(_controller.MicOn);
+            Assert.IsTrue(_controller.MicRefused);
+            Assert.IsFalse(LastMic(), "the table no longer shows my mic on");
+            Deliver(mics: new[] { 1 });
+            Assert.AreEqual(VoiceState.Live, _controller.State, "still hearing the others");
+            _controller.ToggleMic();
+            Assert.IsFalse(_controller.MicRefused, "a granted retry clears it");
         }
 
         [Test]
@@ -297,7 +315,7 @@ namespace Hulla.Application.Tests
 
         private bool LastMic() => ((SetMic)_gateway.Sent.FindLast(s => s.Type == MessageTypes.SetMic).Payload).Mic;
 
-        private void Deliver(int[]? mics = null, TableMode mode = TableMode.Private, VoiceDefault? voice = null)
+        private void Deliver(int[]? mics = null, TableMode mode = TableMode.Private, VoiceDefault? voice = null, int[]? connected = null)
         {
             var message = Messages.TableState(_seq++);
             var state = (TableState)message.Payload;
@@ -310,6 +328,7 @@ namespace Hulla.Application.Tests
             foreach (var seat in state.Seats)
             {
                 seat.Mic = mics != null && Array.IndexOf(mics, (int)seat.SeatSeat) >= 0;
+                seat.Connected = connected == null || Array.IndexOf(connected, (int)seat.SeatSeat) >= 0;
             }
 
             _gateway.Deliver(message);
@@ -358,6 +377,10 @@ namespace Hulla.Application.Tests
             public event Action? Dropped;
 
             public event Action? TokenExpiring;
+
+            public event Action? MicrophoneFailed;
+
+            public void FailMic() => MicrophoneFailed?.Invoke();
 
             public Awaitable<bool> AskMicrophoneAsync() => Done(AllowMic);
 

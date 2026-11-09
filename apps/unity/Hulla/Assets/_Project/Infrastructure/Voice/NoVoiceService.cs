@@ -17,6 +17,8 @@ namespace Hulla.Infrastructure.Voice
 
         public event Action? TokenExpiring { add { } remove { } }
 
+        public event Action? MicrophoneFailed { add { } remove { } }
+
         public async Awaitable<bool> AskMicrophoneAsync()
         {
             await Awaitable.NextFrameAsync();

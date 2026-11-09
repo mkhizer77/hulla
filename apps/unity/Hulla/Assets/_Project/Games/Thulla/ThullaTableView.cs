@@ -1216,7 +1216,7 @@ namespace Hulla.Games.Thulla
             }
         }
 
-        private static string VoiceText(VoiceController voice) => voice.State switch
+        private static string VoiceText(VoiceController voice) => voice.MicRefused && voice.State != VoiceState.Suspended ? UiText.VoiceNoPermission : voice.State switch
         {
             VoiceState.Waiting => UiText.VoiceWaiting,
             VoiceState.Joining => UiText.VoiceJoining,

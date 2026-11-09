@@ -96,6 +96,7 @@ namespace Hulla.Composition
             _app = app;
             _shell = shell;
             Hulla.Presentation.Audio.SoundPlayer.EnsureListener();
+            Hulla.Infrastructure.Platform.AudioMeter.Attach();
             _shell.Ticked += Tick;
             _shell.NavChosen += OnNav;
             _app.Settings.Changed += ApplySettings;
@@ -894,6 +895,8 @@ namespace Hulla.Composition
                 SyncContent();
                 SyncAge();
                 RegisterPush();
+                // A first sign-in (a new player's first room) fills Home's coins and level for the way back.
+                _ = _app.Progress.RefreshAsync(LocalOffsetMinutes(), _app.Lifetime);
                 StartPurchases();
                 StartAds();
             }

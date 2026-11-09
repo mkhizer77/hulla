@@ -24,6 +24,9 @@ namespace Hulla.Application.Voice
         /// <summary>The token runs out soon; renew it with a fresh one.</summary>
         event Action? TokenExpiring;
 
+        /// <summary>The microphone could not be opened (no permission any more, or no device): nothing is sent.</summary>
+        event Action? MicrophoneFailed;
+
         /// <summary>Asks for the microphone just in time (GDD 11.4); true when it may be used.</summary>
         Awaitable<bool> AskMicrophoneAsync();
 

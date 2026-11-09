@@ -48,6 +48,7 @@ namespace Hulla.Presentation.Screens.Home
         private readonly ProgressViewModel? _progress;
         private readonly Label _level;
         private readonly Label _coins;
+        private readonly VisualElement _wallet;
         private readonly Button _hero;
         private readonly Label _heroText;
         private readonly VisualElement _heroJoin;
@@ -72,6 +73,7 @@ namespace Hulla.Presentation.Screens.Home
             Fit(root);
             _level = root.Q<Label>("level");
             _coins = root.Q<Label>("coins");
+            _wallet = root.Q<VisualElement>("wallet");
             _avatar = root.Q<VisualElement>("avatar");
             _avatarInitial = root.Q<Label>("avatar-initial");
             _nameLabel = root.Q<Label>("name-label");
@@ -560,7 +562,10 @@ namespace Hulla.Presentation.Screens.Home
             var info = _progress?.Info;
             _level.text = info == null ? "" : Strings.Format("{0}", info.Level);
             _level.style.display = info == null ? DisplayStyle.None : DisplayStyle.Flex;
-            _coins.text = info == null ? "" : _progress!.Coins.ToString("N0", Strings.Culture);
+            // Before the first sign-in the balance is unknown: no pill rather than an empty one.
+            var known = _progress?.BalancesKnown == true;
+            _coins.text = known ? _progress!.Coins.ToString("N0", Strings.Culture) : "";
+            _wallet.style.visibility = known ? Visibility.Visible : Visibility.Hidden;
         }
 
         /// <summary>Friends online as faces with a green dot, the table banner under them when a friend has seats open.</summary>

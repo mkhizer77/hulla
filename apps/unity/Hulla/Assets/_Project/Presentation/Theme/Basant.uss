@@ -6426,9 +6426,11 @@
 }
 
 .skin--basant .gate__line {
+    align-self: stretch;
     margin: 6px 0 30px 0;
     font-size: 44px;
     -unity-text-align: middle-center;
+    white-space: normal;
     color: rgb(110, 62, 36);
 }
 
@@ -6476,8 +6478,11 @@
 }
 
 .skin--basant .gate__guard {
+    align-self: stretch;
     margin-top: 14px;
     font-size: 38px;
+    -unity-text-align: middle-center;
+    white-space: normal;
     color: rgb(198, 40, 40);
 }
 
