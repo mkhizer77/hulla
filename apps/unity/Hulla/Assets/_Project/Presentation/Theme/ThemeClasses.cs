@@ -23,12 +23,15 @@ namespace Hulla.Presentation.Theme
             root.EnableInClassList("theme--contrast", settings.HighContrast);
             root.EnableInClassList("cards--large", settings.LargeCards);
             root.EnableInClassList("hand--left", settings.LeftHanded);
-            root.EnableInClassList(MotionSheet.ReducedClass, settings.ReduceMotion);
+            root.EnableInClassList(ReducedMotion, settings.ReduceMotion);
             var scale = settings.TextScale;
             root.EnableInClassList("text--125", scale == TextScale.Large);
             root.EnableInClassList("text--150", scale == TextScale.Larger);
             root.EnableInClassList("text--200", scale == TextScale.Largest);
         }
+
+        /// <summary>On the root with the reduce-motion setting; the stylesheets' own movement stops under it (docs/design/motion.md).</summary>
+        public const string ReducedMotion = "motion--reduced";
 
         /// <summary>On the root whenever a theme applies; the rules every theme shares hang off it.</summary>
         public const string Skinned = "skinned";

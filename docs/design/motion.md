@@ -1,6 +1,6 @@
 # Motion and haptics
 
-The motion sheet for the app (GDD 15.7, 27, #81). The source of truth is `Presentation/Theme/MotionSheet.cs`; `MotionSheetTests` fails when a stylesheet animates something the sheet does not list, uses another duration or curve, or has no reduce-motion variant.
+The motion sheet for the app (GDD 15.7, 27, #81). The sheet the tests check against is `Tests/EditMode/Presentation/MotionSheet.cs`; `MotionSheetTests` fails when a stylesheet animates something the sheet does not list, uses another duration or curve, or has no reduce-motion variant.
 
 ## Reduce motion
 

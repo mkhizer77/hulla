@@ -1,16 +1,17 @@
 using System.Collections.Generic;
+using Hulla.Presentation.Theme;
 
-namespace Hulla.Presentation.Theme
+namespace Hulla.Presentation.Tests
 {
     /// <summary>
     /// The motion sheet (GDD 15.7, #81, docs/design/motion.md): every transition in the stylesheets
     /// with its duration, curve and what it does under reduce motion. MotionSheetTests fails when a
     /// stylesheet animates something this list does not name, or names a different duration.
     /// </summary>
-    public static class MotionSheet
+    internal static class MotionSheet
     {
-        /// <summary>The root class for the reduce-motion setting (ThemeClasses.Apply).</summary>
-        public const string ReducedClass = "motion--reduced";
+        /// <summary>The root class for the reduce-motion setting.</summary>
+        public const string ReducedClass = ThemeClasses.ReducedMotion;
 
         public enum Reduced
         {

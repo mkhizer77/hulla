@@ -1,3 +1,4 @@
+using System.Runtime.InteropServices;
 using UnityEngine;
 
 namespace Hulla.Presentation.TableKit
@@ -41,7 +42,7 @@ namespace Hulla.Presentation.TableKit
         }
 
 #if UNITY_IOS && !UNITY_EDITOR
-        [System.Runtime.InteropServices.DllImport("__Internal")]
+        [DllImport("__Internal")]
         private static extern void HullaHaptic(int kind);
 #endif
 
