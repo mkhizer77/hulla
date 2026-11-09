@@ -29,7 +29,9 @@ import { rpcTableCreate } from "../rpc/table_create";
 import { rpcTableJoinByCode } from "../rpc/table_join_by_code";
 import { rpcVoiceToken } from "../rpc/voice_token";
 import { GRACE_PERIOD_MS } from "../services/account_deletion";
+import { nkAgeStore } from "../services/age";
 import { isUserOnline, nkPresenceStore, seatTaken } from "../services/presence";
+import { SYSTEM_USER_ID } from "../services/reports";
 
 import { fakeDispatcher, matchMessage, nkPresence } from "./fake-match";
 import { fakeLogger, memoryNk, type LogLine } from "./fake-nk";
@@ -247,6 +249,8 @@ describe("the RPCs and hooks against an in-memory Nakama", () => {
     const matchId = matchmakerMatched(ctxFor(""), log, m.nk, entries);
     // A linked account: guests may not free-text at a public table (GDD 9.4).
     m.user("a", { googleId: "g-a" });
+    // An adult: under-16s may not free-text strangers either (GDD 24.6).
+    nkAgeStore(m.nk).write("a", { birthYear: 1990, setTs: 0 });
     expect(m.matches.get(matchId)?.params).toMatchObject({
       mode: "public",
       autoStart: { expected: 3 },
@@ -290,6 +294,17 @@ describe("the RPCs and hooks against an in-memory Nakama", () => {
     expect(requested).toMatchObject({ ok: true });
     expect(parse(rpcAccountDeleteCancel(ctxFor("linked"), log, m.nk))).toMatchObject({ ok: true });
     parse(rpcAccountDelete(ctxFor("linked"), log, m.nk));
+    // A system-owned push record keyed by the player goes too (privacy policy, #87).
+    m.nk.storageWrite([
+      {
+        collection: "push",
+        key: "linked",
+        userId: SYSTEM_USER_ID,
+        value: { devices: [] },
+        permissionRead: 0,
+        permissionWrite: 0,
+      },
+    ]);
     const early = parse(rpcAdminPurgeDeleted(ADMIN, log, m.nk, JSON.stringify({ dryRun: true })));
     expect(early).toMatchObject({ ok: true });
     const late = parse(
@@ -302,6 +317,9 @@ describe("the RPCs and hooks against an in-memory Nakama", () => {
     );
     expect(late).toMatchObject({ ok: true, purged: ["linked"] });
     expect(m.loggedOut).toContain("linked");
+    expect(
+      m.nk.storageRead([{ collection: "push", key: "linked", userId: SYSTEM_USER_ID }]),
+    ).toEqual([]);
     expect(parse(rpcAdminPurgeDeleted(ctxFor("linked"), log, m.nk, "{}"))).toMatchObject({
       ok: false,
     });

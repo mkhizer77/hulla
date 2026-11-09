@@ -563,6 +563,31 @@
    "smart": false
   },
   {
+   "key": "age.blocked",
+   "text": "[Hûllå îs för plåýérs 13 åñd övér. · · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "age.blocked_line",
+   "text": "[Thåñks för stöppîñg bý. · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "age.invalid",
+   "text": "[Týpé thé ýéår wîth föûr dîgîts, lîké 2004. · · · · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "age.line",
+   "text": "[Wé åsk évérýöñé öñçé. Ît séts whîçh féåtûrés ýöû çåñ ûsé. · · · · · · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "age.title",
+   "text": "[Whåt ýéår wéré ýöû börñ? · · · ·]",
+   "smart": false
+  },
+  {
    "key": "avatar.a01",
    "text": "[Åvåtår 1 · ·]",
    "smart": false
@@ -1008,6 +1033,11 @@
    "smart": false
   },
   {
+   "key": "error.profile.age_locked",
+   "text": "[Ýöûr bîrth ýéår îs ålréådý sét. Wrîté tö sûppört tö çhåñgé ît. · · · · · · · · · ·]",
+   "smart": false
+  },
+  {
    "key": "error.profile.frame_locked",
    "text": "[Éårñ thåt fråmé fîrst. · · · ·]",
    "smart": false
@@ -1040,6 +1070,11 @@
   {
    "key": "error.profile.not_visible",
    "text": "[Théîr pröfîlé îs prîvåté. · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "error.profile.too_young",
+   "text": "[Hûllå îs för plåýérs 13 åñd övér. · · · · ·]",
    "smart": false
   },
   {
@@ -1140,6 +1175,11 @@
   {
    "key": "error.session.unavailable",
    "text": "[Çåñ't çöññéçt rîght ñöw. Çhéçk ýöûr îñtérñét åñd trý ågåîñ. · · · · · · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "error.social.age_limited",
+   "text": "[Fréé téxt wîth plåýérs ýöû döñ't kñöw öpéñs åt 16. Qûîçk çhåt åñd émötés stîll wörk. · · · · · · · · · · · · ·]",
    "smart": false
   },
   {
@@ -1265,6 +1305,11 @@
   {
    "key": "error.unknown",
    "text": "[Söméthîñg wéñt wröñg. Trý ågåîñ îñ å möméñt. · · · · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "error.voice.age_limited",
+   "text": "[Vöîçé wîth plåýérs ýöû döñ't kñöw öpéñs åt 16. Qûîçk çhåt åñd émötés stîll wörk. · · · · · · · · · · · ·]",
    "smart": false
   },
   {
@@ -3189,7 +3234,7 @@
   },
   {
    "key": "ui.analytics_ask",
-   "text": "[Hélp ûs împrövé Hûllå? Wé'd çöûñt åñöñýmöûs thîñgs lîké röûñd léñgth åñd tåps, ñévér ýöûr çhåt, çårds ör ñåmé. · · · · · · · · · · · · · · · · ·]",
+   "text": "[Hélp ûs împrövé Hûllå? Wé'd çöûñt åñöñýmöûs thîñgs lîké röûñd léñgth åñd tåps, åñd gét çråsh répörts, thröûgh Gööglé Fîrébåsé åñd Métå. Ñévér ýöûr çhåt, çårds ör ñåmé. · · · · · · · · · · · · · · · · · · · · · · · · · ·]",
    "smart": false
   },
   {
@@ -4578,6 +4623,11 @@
    "smart": false
   },
   {
+   "key": "ui.privacy_policy",
+   "text": "[Prîvåçý pölîçý · · ·]",
+   "smart": false
+  },
+  {
    "key": "ui.private_table",
    "text": "[Prîvåté tåblé · ·]",
    "smart": false
@@ -5320,6 +5370,11 @@
   {
    "key": "ui.take_hand",
    "text": "[Åsk för håñd · ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.terms_of_service",
+   "text": "[Térms öf sérvîçé · · ·]",
    "smart": false
   },
   {

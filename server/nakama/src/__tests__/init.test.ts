@@ -58,6 +58,7 @@ describe("InitModule", () => {
       "report_create",
       "reports_list",
       "admin_chat_logs_purge",
+      "admin_retention_purge",
       "admin_table_inspect",
       "admin_round_replay",
       "admin_sanction",
@@ -101,6 +102,8 @@ describe("InitModule", () => {
       "ads_get",
       "look_feedback",
       "admin_look_feedback",
+      "age_set",
+      "age_get",
     ]);
     expect([...matches.keys()]).toEqual(["thulla"]);
     expect(hooks.get("rtBefore:ChannelMessageSend")?.name).toBe("beforeChannelMessageSend");

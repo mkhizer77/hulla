@@ -37,7 +37,13 @@ namespace Hulla.Application.Tests
 
             public bool InterstitialReady => Interstitial;
 
-            public Awaitable<bool> StartAsync(string userId, CancellationToken cancellation) => Done(true);
+            public bool UnderEighteen;
+
+            public Awaitable<bool> StartAsync(string userId, bool underEighteen, CancellationToken cancellation)
+            {
+                UnderEighteen = underEighteen;
+                return Done(true);
+            }
 
             public Awaitable<AdOutcome> ShowRewardedAsync(string placement, string customData, CancellationToken cancellation)
             {
@@ -82,6 +88,18 @@ namespace Hulla.Application.Tests
             var model = new AdsViewModel(network, server, () => clock[0], _ => Now());
             _ = model.StartAsync("me", 0, CancellationToken.None);
             return (model, network, server, clock);
+        }
+
+        [Test]
+        public void AdsStayContextualUnlessThePlayerIsAnAdult()
+        {
+            var (_, network, _, _) = Make();
+            Assert.IsTrue(network.UnderEighteen, "no birth year yet counts as under 18");
+            var server = new FakeServer();
+            var adultNetwork = new FakeNetwork { PaysTo = server };
+            var adult = new AdsViewModel(adultNetwork, server, () => 0, _ => Now()) { UnderEighteen = false };
+            _ = adult.StartAsync("me", 0, CancellationToken.None);
+            Assert.IsFalse(adultNetwork.UnderEighteen);
         }
 
         [Test]

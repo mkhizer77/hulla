@@ -157,7 +157,7 @@ describe.skipIf(NAKAMA_HOST === undefined)(
       });
     }, 90_000);
 
-    it("a guest cannot free-text at a public table, and can once the account is linked", async () => {
+    it("a guest cannot free-text at a public table, and can once the account is linked and has an age", async () => {
       const suffix = `${String(Date.now())}g`;
       const guest = await scriptedClient("guest", suffix);
       const peer = await scriptedClient("peer", suffix);
@@ -177,6 +177,14 @@ describe.skipIf(NAKAMA_HOST === undefined)(
       await api.linkEmail(guest.session, {
         email: `guest-${suffix}@example.com`,
         password: "a-long-test-password",
+      });
+      // Linked, but with no birth year yet the under-16 limit holds (GDD 24.6, #87).
+      await expect(
+        guest.socket.writeChatMessage(channel.id, { text: "hello again" }),
+      ).rejects.toBeDefined();
+      expect(await rpc<{ ok: boolean }>(guest, "age_set", { birthYear: 1990 })).toMatchObject({
+        ok: true,
+        strangersLocked: false,
       });
       await guest.socket.writeChatMessage(channel.id, { text: "hello friends" });
     }, 60_000);

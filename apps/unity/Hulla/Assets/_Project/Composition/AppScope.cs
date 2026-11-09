@@ -57,6 +57,7 @@ namespace Hulla.Composition
             Chat = new ContentChatCatalog(Content);
             Presets = new ContentPresetCatalog(Content);
             Welcome = new NakamaWelcomeService(_connection);
+            Age = new NakamaAgeService(_connection);
             Phone = new PhoneViewModel(new NakamaPhoneService(_connection, _sessionService));
             var signIn = new Hulla.Infrastructure.Social.NativeSocialSignIn(Hulla.Infrastructure.Social.SocialConfig.Load());
             SocialAccounts = new NakamaSocialAccounts(_connection, _sessionService, signIn);
@@ -234,6 +235,8 @@ namespace Hulla.Composition
         public WelcomePrompts WelcomePrompts => _welcomePrompts ??= new WelcomePrompts(Store);
 
         public IWelcomeService Welcome { get; }
+
+        public IAgeService Age { get; }
 
         public SettingsModel Settings { get; }
 

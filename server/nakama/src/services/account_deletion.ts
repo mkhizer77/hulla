@@ -232,6 +232,12 @@ export function nkPurgePorts(nk: nkruntime.Nakama, logger: nkruntime.Logger): Pu
       } catch (error: unknown) {
         log.debug(logger, "no sessions to log out", { error: String(error) });
       }
+      // The push record is system-owned (keyed by the user), so it doesn't go with the account by itself.
+      try {
+        nk.storageDelete([{ collection: "push", key: userId, userId: SYSTEM_USER_ID }]);
+      } catch (error: unknown) {
+        log.warn(logger, "push record not deleted", { error: String(error) });
+      }
       nk.accountDeleteId(userId, true);
     },
   };

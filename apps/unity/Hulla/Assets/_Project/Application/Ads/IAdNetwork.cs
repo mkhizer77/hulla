@@ -23,7 +23,8 @@ namespace Hulla.Application.Ads
         bool Supported { get; }
 
         /// <summary>Starts the SDK for the account; the network's own consent flow runs here (GDPR, UK, ATT on iOS).</summary>
-        Awaitable<bool> StartAsync(string userId, CancellationToken cancellation);
+        /// <param name="underEighteen">No personalised ads and no sale or sharing of data, whatever the consent (GDD 24.6, 25.7).</param>
+        Awaitable<bool> StartAsync(string userId, bool underEighteen, CancellationToken cancellation);
 
         bool RewardedReady { get; }
 
@@ -44,7 +45,7 @@ namespace Hulla.Application.Ads
 
         public bool InterstitialReady => false;
 
-        public Awaitable<bool> StartAsync(string userId, CancellationToken cancellation) => Done(false);
+        public Awaitable<bool> StartAsync(string userId, bool underEighteen, CancellationToken cancellation) => Done(false);
 
         public Awaitable<AdOutcome> ShowRewardedAsync(string placement, string customData, CancellationToken cancellation) => Done(AdOutcome.Failed);
 

@@ -72,7 +72,7 @@ namespace Hulla.Infrastructure.Ads
 
         public bool InterstitialReady => _config.Interstitial.Length > 0 && MaxSdk.IsInitialized() && MaxSdk.IsInterstitialReady(_config.Interstitial);
 
-        public async Awaitable<bool> StartAsync(string userId, CancellationToken cancellation)
+        public async Awaitable<bool> StartAsync(string userId, bool underEighteen, CancellationToken cancellation)
         {
             _lifetime = cancellation;
             if (!Supported)
@@ -83,6 +83,13 @@ namespace Hulla.Infrastructure.Ads
             var started = new AwaitableCompletionSource<bool>();
             MaxSdkCallbacks.OnSdkInitializedEvent += _ => started.TrySetResult(true);
             MaxSdk.SetUserId(userId);
+            if (underEighteen)
+            {
+                // AppLovin's way to keep a minor's ads contextual: no consent to personalise, no sale or sharing.
+                MaxSdk.SetHasUserConsent(false);
+                MaxSdk.SetDoNotSell(true);
+            }
+
             MaxSdk.InitializeSdk();
             await started.Awaitable;
             if (_config.Rewarded.Length > 0)

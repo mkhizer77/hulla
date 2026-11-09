@@ -123,6 +123,20 @@ namespace Hulla.Composition
         /// <c>-hulla-name &lt;name&gt;</c> on the command line, so several local instances (each with its own
         /// <c>-hulla-device</c>) sit down under different names; null without it.
         /// </summary>
+        private static int? BirthYearFromCommandLine()
+        {
+            var args = Environment.GetCommandLineArgs();
+            for (var i = 0; i < args.Length - 1; i++)
+            {
+                if (args[i] == "-hulla-birth-year" && int.TryParse(args[i + 1], out var year))
+                {
+                    return year;
+                }
+            }
+
+            return null;
+        }
+
         private static string? NameFromCommandLine()
         {
             var args = Environment.GetCommandLineArgs();
@@ -326,6 +340,25 @@ namespace Hulla.Composition
         public async void Start()
         {
             ApplySettings();
+            // The age question comes before anything else, even a held invite (GDD 24.6, #87).
+            if (_app.Settings.AgeBlocked)
+            {
+                ShowAgeBlocked();
+                return;
+            }
+
+            if (_app.Settings.BirthYear == null && UnityEngine.Debug.isDebugBuild && BirthYearFromCommandLine() is int given)
+            {
+                // Development windows on the Mac QA rig skip the question (`-hulla-birth-year 1990`).
+                _app.Settings.BirthYear = given;
+            }
+
+            if (_app.Settings.BirthYear == null && !await AskAgeAsync())
+            {
+                ShowAgeBlocked();
+                return;
+            }
+
             // A held invite or referral link opens its own dialog once the flow is ready.
             var invited = _app.Links.HasPending;
             _app.Analytics.Track(AnalyticsEvents.AppOpen(true, _app.Links.PendingType));
@@ -859,6 +892,7 @@ namespace Hulla.Composition
             {
                 RememberName(name);
                 SyncContent();
+                SyncAge();
                 RegisterPush();
                 StartPurchases();
                 StartAds();
@@ -914,6 +948,7 @@ namespace Hulla.Composition
             if (signedIn.IsOk)
             {
                 SyncContent();
+                SyncAge();
                 RegisterPush();
                 await _app.RemoteConfig.RefreshAsync(UnityEngine.Application.version, "*", _app.Lifetime);
                 ApplyRemoteConfig();
@@ -1821,6 +1856,11 @@ namespace Hulla.Composition
                 StartTutorial(false);
             };
             _settingsView.Rulebook = () => OpenRules(null);
+            // The legal pages appear once the owner publishes them and sets their URLs in remote config (#87).
+            var privacyUrl = _app.RemoteConfig.Current.Text("privacy_url", "");
+            var termsUrl = _app.RemoteConfig.Current.Text("terms_url", "");
+            _settingsView.PrivacyPolicy = privacyUrl.Length == 0 ? null : () => UnityEngine.Application.OpenURL(privacyUrl);
+            _settingsView.Terms = termsUrl.Length == 0 ? null : () => UnityEngine.Application.OpenURL(termsUrl);
             if (signedIn)
             {
                 _settingsView.Blocked = () => _app.Friends.Blocked;

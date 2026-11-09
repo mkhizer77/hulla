@@ -570,6 +570,20 @@ namespace Hulla.Presentation.Text
         public static string NoAchievementsYet => Strings.Text("ui.no_achievements_yet");
         public static string NothingThisWeek => Strings.Text("ui.nothing_this_week");
 
+        public static string PrivacyPolicy => Strings.Text("ui.privacy_policy");
+
+        public static string TermsOfService => Strings.Text("ui.terms_of_service");
+
+        public static string AgeTitle => Strings.Text("age.title");
+
+        public static string AgeLine => Strings.Text("age.line");
+
+        public static string AgeInvalid => Strings.Text("age.invalid");
+
+        public static string AgeBlocked => Strings.Text("age.blocked");
+
+        public static string AgeBlockedLine => Strings.Text("age.blocked_line");
+
         public static string SeeOtherItems => Strings.Text("ui.see_other_items");
         public static string ShowMyCode => Strings.Text("ui.show_my_code");
         public static string InviteYourGroup => Strings.Text("ui.invite_your_group");

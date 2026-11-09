@@ -50,6 +50,9 @@ namespace Hulla.Application.ViewModels
         /// <summary>A player who has bought anything sees no interstitials (GDD 13.6: non-payers only).</summary>
         public bool Paid { get; set; }
 
+        /// <summary>Under 18, or no birth year: ads stay contextual (GDD 24.6, 25.7).</summary>
+        public bool UnderEighteen { get; set; } = true;
+
         public bool Supported => _network.Supported;
 
         /// <summary>After the first round (GDD 13.6: ATT and consent come then): the network, then today's caps.</summary>
@@ -61,7 +64,7 @@ namespace Hulla.Application.ViewModels
                 return;
             }
 
-            Started = await _network.StartAsync(userId, cancellation);
+            Started = await _network.StartAsync(userId, UnderEighteen, cancellation);
             if (Started)
             {
                 await RefreshAsync(cancellation);
