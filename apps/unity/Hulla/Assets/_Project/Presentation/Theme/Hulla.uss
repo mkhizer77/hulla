@@ -2820,3 +2820,26 @@
 .face--desi .card--court .card__court-art {
     display: flex;
 }
+
+/* Reduce motion (GDD 15.7, 27, docs/design/motion.md): nothing travels, grows or pops; a state
+   change snaps or fades. Flights the code runs (cards, tricks, screens, the stamp) pick their fade
+   in code; these rules cover the stylesheet's own transitions. */
+.motion--reduced .hand .card {
+    transition-duration: 0ms;
+}
+
+.motion--reduced .seat__avatar {
+    transition-duration: 0ms;
+}
+
+.motion--reduced .seat--enter .seat__avatar {
+    scale: 1 1;
+}
+
+.motion--reduced .discard__count--bump {
+    scale: 1 1;
+}
+
+.motion--reduced.skin--basant .home .daily-pop--up {
+    translate: 0 0;
+}
