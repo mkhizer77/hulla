@@ -1,10 +1,10 @@
 # Hulla privacy policy
 
-> Draft for legal review (#87). Square brackets mark facts only the owner can fill in. Not published yet. Every statement here is checked against the code; `docs/legal/data-inventory.md` names the file behind each one.
+> Source of https://hulla.khizerkhalid.de/privacy/. Published on 9 November 2026 at the owner's choice, before the legal review (#87, OQ-053). Every statement here is checked against the code; `docs/legal/data-inventory.md` names the file behind each one. Edit this file, then rebuild the pages with `python3 tools/legal-pages/build.py`.
 
-Last updated: [date of publication]
+Last updated: 9 November 2026
 
-Hulla is a card game app for playing with friends. This policy says what we collect, why, who we share it with, how long we keep it and what you can do about it. [Operator's legal name] ("we") is the controller of your data. Contact: [support address], [postal address].
+Hulla is a card game app for playing with friends. This policy says what we collect, why, who we share it with, how long we keep it and what you can do about it. Muhammad Khizer Khalid ("we") is the controller of your data. Contact: hulla.games1@gmail.com, 207 J1 Block, Johar Town, Lahore 54400, Pakistan.
 
 ## The short version
 
@@ -43,7 +43,7 @@ We share data only with the services that run parts of Hulla for us, under contr
 
 | Service | What it does | What it gets |
 |---|---|---|
-| [Hosting provider and region] | Runs our servers and database | Everything above that we store |
+| Google Cloud (Frankfurt, Germany) | Runs our servers and database | Everything above that we store |
 | Cloudflare | Protects the servers and hosts our link pages | Connection data such as your IP address |
 | Google Firebase | Push notifications; usage and crash reports if you said yes | Device token; usage events and crash reports |
 | AppLovin (MAX) and its ad networks | Ads | Advertising id, device data, ad interactions, and your Hulla id so a rewarded ad pays the right account |
@@ -57,7 +57,7 @@ We may disclose data if the law requires it, or to protect someone from serious 
 
 ## International transfers
 
-Our servers are in [region]. Some services above process data in other countries, including the United States. Where the law requires it, transfers use the European Commission's standard contractual clauses or an equivalent safeguard.
+Our servers are in Germany, in the European Union. Some services above process data in other countries, including the United States. Where the law requires it, transfers use the European Commission's standard contractual clauses or an equivalent safeguard.
 
 ## How long we keep it
 
@@ -70,16 +70,16 @@ Our servers are in [region]. Some services above process data in other countries
 | Bans | Until they end |
 | Phone-code counters (with IP addresses) | 1 day |
 | Push tokens | Until you delete your account, or after 60 days unused |
-| Usage and crash reports | As set by Firebase: up to [14 months] |
+| Usage and crash reports | As set by Firebase: up to 14 months |
 | Server logs | 30 days |
 
 ## Children
 
-Hulla is for players 13 and over. When you start, we ask your birth year. If you're under 13 you can't play. If you're under 18, you get no personalised ads; under 16, you can't use voice or free text with players who aren't your friends. If you believe a child under 13 is using Hulla, tell us at [support address] and we'll delete the account.
+Hulla is for players 13 and over. When you start, we ask your birth year. If you're under 13 you can't play. If you're under 18, you get no personalised ads; under 16, you can't use voice or free text with players who aren't your friends. If you believe a child under 13 is using Hulla, tell us at hulla.games1@gmail.com and we'll delete the account.
 
 ## Your rights
 
-You can see, download and delete your data in Settings > Account (Export my data, Delete account). Without the app, request deletion at [link domain]/delete or by writing to [support address] from the phone number or account you used. Depending on where you live you may also have the right to correct your data, object to or restrict processing, withdraw consent at any time (Settings > Privacy) and complain to a data protection authority, such as the ICO in the UK. In California you can ask what we collect and ask us not to sell or share it; we don't sell it, and turning off personalised ads stops sharing for ads.
+You can see, download and delete your data in Settings > Account and data (Export my data, Delete my account). Without the app, request deletion at hulla.khizerkhalid.de/delete or by writing to hulla.games1@gmail.com from the phone number or account you used. Depending on where you live you may also have the right to correct your data, object to or restrict processing, withdraw consent at any time (Settings > Privacy) and complain to a data protection authority, such as the ICO in the UK. In California you can ask what we collect and ask us not to sell or share it; we don't sell it, and turning off personalised ads stops sharing for ads.
 
 ## Security
 
@@ -91,4 +91,4 @@ We'll tell you in the app before an important change to this policy takes effect
 
 ## Contact
 
-[Operator's legal name], [postal address], [support address]. [EU and UK representative, if needed.]
+Muhammad Khizer Khalid, 207 J1 Block, Johar Town, Lahore 54400, Pakistan, hulla.games1@gmail.com.
