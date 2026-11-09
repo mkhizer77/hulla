@@ -24,9 +24,6 @@ namespace Hulla.Application.Voice
 
         Live,
 
-        /// <summary>Left after two minutes of silence; the next mic change brings voice back.</summary>
-        Paused,
-
         /// <summary>The channel failed or dropped (E25); play goes on and a tap retries.</summary>
         Failed,
 

@@ -10733,3 +10733,88 @@
 .skin--basant .watch-sheet .watch-row__tag {
     background-color: rgb(30, 112, 42);
 }
+
+/* ==================== Voice in the lobby (docs/design/voice-ux.md) ==================== */
+
+/* The voice line and the speaker chip in the gap between the room code and the rug. */
+.skin--basant .lobby .lobby__voice {
+    position: absolute;
+    left: 40px;
+    top: 414px;
+    width: 1000px;
+    height: 60px;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+}
+
+.skin--basant .lobby .lobby__voice > * {
+    position: relative;
+}
+
+.skin--basant .lobby .lobby__voice-pill {
+    max-width: 760px;
+    height: 54px;
+    padding: 0 26px;
+    font-size: 30px;
+    color: rgb(255, 243, 218);
+    background-color: rgb(74, 30, 14);
+    border-top-left-radius: 27px;
+    border-top-right-radius: 27px;
+    border-bottom-left-radius: 27px;
+    border-bottom-right-radius: 27px;
+}
+
+.skin--basant .lobby .lobby__voice-speaker,
+.skin--basant .lobby .lobby__voice-speaker:hover,
+.skin--basant .lobby .lobby__voice-speaker:active {
+    height: 54px;
+    margin: 0 0 0 12px;
+    padding: 0 24px;
+    font-size: 30px;
+    -unity-font-definition: url("/Assets/_Project/Presentation/Theme/Fonts/Baloo2.ttf");
+    -unity-font-style: bold;
+    color: rgb(74, 30, 14);
+    background-image: none;
+    background-color: rgb(255, 238, 214);
+    border-width: 3px;
+    border-color: rgb(166, 30, 74);
+    border-top-left-radius: 27px;
+    border-top-right-radius: 27px;
+    border-bottom-left-radius: 27px;
+    border-bottom-right-radius: 27px;
+}
+
+.skin--basant .lobby .lobby__voice-speaker--off {
+    opacity: 0.7;
+}
+
+/* "Hold to talk" / "Talking" over the mic on push-to-talk tables. */
+.skin--basant .lobby .lobby__mic-tip {
+    position: absolute;
+    left: -60px;
+    top: -66px;
+    width: 256px;
+    height: 54px;
+    font-size: 30px;
+    color: rgb(255, 255, 255);
+    background-color: rgb(46, 36, 38);
+    border-top-left-radius: 22px;
+    border-top-right-radius: 22px;
+    border-bottom-left-radius: 22px;
+    border-bottom-right-radius: 22px;
+}
+
+.skin--basant .lobby .lobby__mic.lobby__mic--held .lobby__face {
+    background-color: rgb(120, 210, 110);
+    border-top-left-radius: 50px;
+    border-top-right-radius: 50px;
+    border-bottom-left-radius: 50px;
+    border-bottom-right-radius: 50px;
+}
+
+/* Whoever is talking: a green ring round the face. */
+.skin--basant .lobby .lobby__seat--speaking .lobby__avatar {
+    border-color: rgb(46, 170, 90);
+    border-width: 10px;
+}

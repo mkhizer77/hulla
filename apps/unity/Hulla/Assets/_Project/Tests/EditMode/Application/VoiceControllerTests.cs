@@ -174,35 +174,53 @@ namespace Hulla.Application.Tests
         }
 
         [Test]
-        public void PushToTalkSendsOnlyWhileHeld()
+        public void PushToTalkTheFirstHoldTurnsTheMicOnAndOnlyAHoldSends()
         {
             Deliver(mode: TableMode.Public);
-            _controller.ToggleMic();
-            Deliver(mode: TableMode.Public, mics: new[] { 0, 3 });
+            _controller.HoldToTalk(true);
+            Assert.IsTrue(_controller.MicOn, "no separate on step");
+            Assert.IsTrue(LastMic());
+            Deliver(mode: TableMode.Public, mics: new[] { 0 });
             Assert.AreEqual(VoiceState.Live, _controller.State);
+            Assert.IsTrue(_voice.Transmitting, "still held once the room opened");
+            _controller.HoldToTalk(false);
             Assert.IsFalse(_voice.Transmitting);
-            _controller.SetTalking(true);
+            Assert.IsTrue(_controller.MicOn, "releasing keeps the mic ready");
+            _controller.HoldToTalk(true);
             Assert.IsTrue(_voice.Transmitting);
-            _controller.SetTalking(false);
+            _controller.HoldToTalk(false);
             Assert.IsFalse(_voice.Transmitting);
         }
 
         [Test]
-        public void TwoQuietMinutesLeaveTheChannelUntilAMicChanges()
+        public void AHoldDoesNothingOnAnOpenMicTableOrForAWatcher()
+        {
+            _controller.HoldToTalk(true);
+            Assert.IsFalse(_controller.MicOn, "open mic is a tap");
+            Assert.IsFalse(_controller.Talking);
+        }
+
+        [Test]
+        public void ARefusedFirstHoldStopsAndSaysSo()
+        {
+            Deliver(mode: TableMode.Public);
+            _voice.AllowMic = false;
+            _controller.HoldToTalk(true);
+            Assert.IsFalse(_controller.MicOn);
+            Assert.IsFalse(_controller.Talking);
+            Assert.AreEqual(VoiceState.NoPermission, _controller.State);
+        }
+
+        [Test]
+        public void AQuietTableKeepsVoiceAndTheBackgroundLeavesUntilTheAppReturns()
         {
             Deliver(mics: new[] { 1, 2 });
-            _controller.Tick(60f);
-            _voice.Speak("user-1", true);
-            _controller.Tick(100f);
-            Assert.AreEqual(VoiceState.Live, _controller.State, "speech resets the quiet clock");
-            _voice.Speak("user-1", false);
-            _controller.Tick(VoiceController.SilenceSeconds + 1f);
-            Assert.AreEqual(VoiceState.Paused, _controller.State);
-            Assert.IsNull(_voice.Channel);
-            Deliver(mics: new[] { 1, 2 });
-            Assert.AreEqual(VoiceState.Paused, _controller.State, "nothing changed");
-            Deliver(mics: new[] { 1, 2, 3 });
-            Assert.AreEqual(VoiceState.Live, _controller.State);
+            _controller.Tick(600f);
+            Assert.AreEqual(VoiceState.Live, _controller.State, "ten quiet minutes, still in the room");
+            _controller.SetBackground(true);
+            Assert.IsNull(_voice.Channel, "the app went to the background");
+            _controller.SetBackground(false);
+            Assert.AreEqual(VoiceState.Live, _controller.State, "back by itself, no tap needed");
             Assert.AreEqual(2, _voice.Joins);
         }
 

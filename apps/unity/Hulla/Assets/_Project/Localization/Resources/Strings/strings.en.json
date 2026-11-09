@@ -5538,11 +5538,6 @@
    "smart": false
   },
   {
-   "key": "ui.voice.paused",
-   "text": "Voice paused after a quiet spell · tap the mic",
-   "smart": false
-  },
-  {
    "key": "ui.voice.retry",
    "text": "Retry voice",
    "smart": false

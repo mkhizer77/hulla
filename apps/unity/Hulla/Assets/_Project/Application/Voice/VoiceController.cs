@@ -9,18 +9,15 @@ namespace Hulla.Application.Voice
 {
     /// <summary>
     /// Voice for one table (GDD 11.4). Each seat shares its mic through the server; this client is in the
-    /// channel while any mic at the table is on and someone else is there to hear it, and leaves after two
-    /// minutes in which nobody spoke (GDD 20.14, OQ-044; one mic is enough since voice is self-hosted,
-    /// docs/design/voice-ux.md). A failure never blocks play (E25): the mic shows a retry instead. Muted players
+    /// channel while any mic at the table is on and someone else is there to hear it, and while the app is
+    /// in the foreground; a quiet spell no longer drops it (GDD 20.14, OQ-044; voice is self-hosted, so an
+    /// idle room costs next to nothing, docs/design/voice-ux.md). A failure never blocks play (E25): the mic shows a retry instead. Muted players
     /// stay silent here, and the mute list lives on the server, so it survives a reconnect. The player's
     /// voice settings (on or off, the level of every voice and of each player) and the table's speaker
     /// toggle apply live.
     /// </summary>
     public sealed class VoiceController : IDisposable
     {
-        /// <summary>No speech for this long and the client leaves the channel.</summary>
-        public const float SilenceSeconds = 120f;
-
         /// <summary>A mic the server has not echoed back is sent again after this long (a rejoin forgets it).</summary>
         private const float ResendSeconds = 3f;
 
@@ -41,7 +38,7 @@ namespace Hulla.Application.Voice
         private bool _speakerOn = true;
         private bool _suspended;
         private bool _noPermission;
-        private float _quiet;
+        private bool _background;
         private float _resendIn;
         private string? _heldSignature;
         private bool _disposed;
@@ -157,7 +154,7 @@ namespace Hulla.Application.Voice
                 return;
             }
 
-            if (_micOn && (_state == VoiceState.Failed || _state == VoiceState.Paused))
+            if (_micOn && _state == VoiceState.Failed)
             {
                 // E25: the tap retries rather than turning the mic off.
                 _heldSignature = null;
@@ -171,9 +168,62 @@ namespace Hulla.Application.Voice
                 return;
             }
 
+            await TurnMicOn();
+        }
+
+        /// <summary>
+        /// The mic on a push-to-talk table: holding it talks, and the first hold also turns the mic on (asking
+        /// for the microphone the first time), so there is no separate "on" step. Releasing stops sending.
+        /// </summary>
+        public async void HoldToTalk(bool held)
+        {
+            if (_state == VoiceState.Hidden || _state == VoiceState.Suspended || !CanSpeak || Mode != VoiceMode.PushToTalk)
+            {
+                return;
+            }
+
+            SetTalking(held);
+            if (!held)
+            {
+                return;
+            }
+
+            if (_micOn && _state == VoiceState.Failed)
+            {
+                _heldSignature = null;
+                Evaluate();
+                return;
+            }
+
+            if (!_micOn)
+            {
+                await TurnMicOn();
+            }
+        }
+
+        /// <summary>The app went to the background (true) or came back: voice leaves meanwhile and returns by itself.</summary>
+        public void SetBackground(bool away)
+        {
+            if (_background == away)
+            {
+                return;
+            }
+
+            _background = away;
+            if (away)
+            {
+                SetTalking(false);
+            }
+
+            Evaluate();
+        }
+
+        private async Awaitable TurnMicOn()
+        {
             if (!await _voice.AskMicrophoneAsync())
             {
                 _noPermission = true;
+                SetTalking(false);
                 Evaluate();
                 return;
             }
@@ -219,16 +269,6 @@ namespace Hulla.Application.Voice
             if (_resendIn > 0f)
             {
                 _resendIn -= deltaSeconds;
-            }
-
-            if (_inChannel && _state == VoiceState.Live)
-            {
-                _quiet = _speaking.Count > 0 ? 0f : _quiet + deltaSeconds;
-                if (_quiet >= SilenceSeconds)
-                {
-                    _heldSignature = Signature();
-                    _ = Leave();
-                }
             }
 
             ResendMicIfLost();
@@ -329,7 +369,7 @@ namespace Hulla.Application.Voice
 
         private bool WantChannel()
         {
-            if (!Available() || _suspended)
+            if (!Available() || _suspended || _background)
             {
                 return false;
             }
@@ -391,7 +431,7 @@ namespace Hulla.Application.Voice
 
             if (_heldSignature != null)
             {
-                return _state == VoiceState.Failed ? VoiceState.Failed : VoiceState.Paused;
+                return VoiceState.Failed;
             }
 
             if (_noPermission)
@@ -417,7 +457,7 @@ namespace Hulla.Application.Voice
             return count;
         }
 
-        /// <summary>Who has a mic on; a silence leave or a failure waits until this changes.</summary>
+        /// <summary>Who has a mic on; after a failure voice waits until this changes or the mic is tapped.</summary>
         private string Signature()
         {
             var ids = new List<string>();
@@ -480,7 +520,6 @@ namespace Hulla.Application.Voice
 
             _inChannel = true;
             _joinedSeated = seated;
-            _quiet = 0f;
             SetState(VoiceState.Live);
             Joined?.Invoke(Mode);
             Evaluate();
@@ -537,11 +576,6 @@ namespace Hulla.Application.Voice
         private void OnSpeaking(string account, bool speaking)
         {
             var changed = speaking ? _speaking.Add(account) : _speaking.Remove(account);
-            if (speaking)
-            {
-                _quiet = 0f;
-            }
-
             if (changed)
             {
                 Changed?.Invoke();

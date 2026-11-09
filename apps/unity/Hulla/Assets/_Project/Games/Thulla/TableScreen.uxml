@@ -58,7 +58,6 @@
             <ui:VisualElement name="quick-strip" class="quick-strip" />
             <ui:VisualElement class="table__bar-actions">
                 <ui:Button name="take-hand" class="button button--primary button--small" />
-                <ui:Button name="talk" class="button button--small table__talk" />
             </ui:VisualElement>
         </ui:VisualElement>
         <ui:VisualElement name="hand" class="hand" />

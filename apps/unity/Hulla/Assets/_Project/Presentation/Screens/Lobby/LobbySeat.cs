@@ -50,6 +50,9 @@ namespace Hulla.Presentation.Screens.Lobby
         }
 
         /// <summary>The empty seat: dashed circle, Invite on the plate.</summary>
+        /// <summary>The player in this seat is talking on voice: a green ring round the face.</summary>
+        public void SetSpeaking(bool speaking) => EnableInClassList("lobby__seat--speaking", speaking);
+
         public void ShowEmpty()
         {
             EnableInClassList("lobby__seat--empty", true);

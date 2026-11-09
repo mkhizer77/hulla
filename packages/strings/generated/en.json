@@ -1110,7 +1110,6 @@
   "ui.voice.mic_off": "Mic off",
   "ui.voice.mic_on": "Mic on",
   "ui.voice.no_permission": "Mic not allowed · turn on Hulla's microphone in Settings to talk",
-  "ui.voice.paused": "Voice paused after a quiet spell · tap the mic",
   "ui.voice.retry": "Retry voice",
   "ui.voice.speaker_off": "Voices off",
   "ui.voice.speaker_on": "Voices on",
