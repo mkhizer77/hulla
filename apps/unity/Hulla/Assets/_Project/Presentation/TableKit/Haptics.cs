@@ -26,8 +26,8 @@ namespace Hulla.Presentation.TableKit
 
     /// <summary>
     /// Plays the table's haptics (GDD 16.4). Android gets amplitude and patterns through the Vibrator;
-    /// iOS has only the system buzz without a native plugin, so it plays the heavy events alone until
-    /// the shim lands. Nothing in the editor. Callers check the Haptics setting first.
+    /// iOS gets UIKit's impact and notification feedback through Plugins/iOS/HullaHaptics.mm, keyed by
+    /// the enum's order. Nothing in the editor. Callers check the Haptics setting first.
     /// </summary>
     public static class Haptics
     {
@@ -36,12 +36,14 @@ namespace Hulla.Presentation.TableKit
 #if UNITY_ANDROID && !UNITY_EDITOR
             PlayAndroid(kind);
 #elif UNITY_IOS && !UNITY_EDITOR
-            if (kind == Haptic.ThullaReceived || kind == Haptic.Bhabhi)
-            {
-                Handheld.Vibrate();
-            }
+            HullaHaptic((int)kind);
 #endif
         }
+
+#if UNITY_IOS && !UNITY_EDITOR
+        [System.Runtime.InteropServices.DllImport("__Internal")]
+        private static extern void HullaHaptic(int kind);
+#endif
 
         /// <summary>Duration in ms and amplitude 1–255 for one-shot events; a timing pattern for the two-beat ones.</summary>
         public static (long[] Timings, int[] Amplitudes) Pattern(Haptic kind)

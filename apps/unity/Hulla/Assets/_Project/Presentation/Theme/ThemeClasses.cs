@@ -6,8 +6,8 @@ namespace Hulla.Presentation.Theme
 {
     /// <summary>
     /// Turns the visual settings into USS classes on the shell root, so every screen picks them up
-    /// live: the table theme, the four-colour deck, high contrast, text size, large cards and the
-    /// left-handed layout.
+    /// live: the table theme, the four-colour deck, high contrast, text size, large cards, the
+    /// left-handed layout and reduce motion.
     /// </summary>
     public static class ThemeClasses
     {
@@ -23,6 +23,7 @@ namespace Hulla.Presentation.Theme
             root.EnableInClassList("theme--contrast", settings.HighContrast);
             root.EnableInClassList("cards--large", settings.LargeCards);
             root.EnableInClassList("hand--left", settings.LeftHanded);
+            root.EnableInClassList(MotionSheet.ReducedClass, settings.ReduceMotion);
             var scale = settings.TextScale;
             root.EnableInClassList("text--125", scale == TextScale.Large);
             root.EnableInClassList("text--150", scale == TextScale.Larger);
