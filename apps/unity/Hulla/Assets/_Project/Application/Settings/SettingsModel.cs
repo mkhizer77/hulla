@@ -94,6 +94,27 @@ namespace Hulla.Application.Settings
         public void SetPeerVoiceVolume(string playerId, int volume) => Set("voice_peer." + playerId, Math.Clamp(volume, 0, 100));
 
         /// <summary>Null until the player has been asked (GDD 23.6).</summary>
+        /// <summary>The birth year from the first-launch question (GDD 24.6); null until it is answered.</summary>
+        public int? BirthYear
+        {
+            get => Get("birth_year", 0) is var year && year > 0 ? year : (int?)null;
+            set => Set("birth_year", value ?? 0);
+        }
+
+        /// <summary>The server has the birth year (age_set answered, or it already had one).</summary>
+        public bool BirthYearSent
+        {
+            get => Get("birth_year_sent", 0) == 1;
+            set => Set("birth_year_sent", value ? 1 : 0);
+        }
+
+        /// <summary>The player said they are under 13; the app stays closed on this phone (GDD 24.6).</summary>
+        public bool AgeBlocked
+        {
+            get => Get("age_blocked", 0) == 1;
+            set => Set("age_blocked", value ? 1 : 0);
+        }
+
         public bool? AnalyticsConsent
         {
             get => Get("analytics", 0) switch

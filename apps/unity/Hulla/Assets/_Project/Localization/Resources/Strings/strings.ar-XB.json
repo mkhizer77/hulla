@@ -563,6 +563,31 @@
    "smart": false
   },
   {
+   "key": "age.blocked",
+   "text": "Hulla is for players 13 and over.",
+   "smart": false
+  },
+  {
+   "key": "age.blocked_line",
+   "text": "Thanks for stopping by.",
+   "smart": false
+  },
+  {
+   "key": "age.invalid",
+   "text": "Type the year with four digits, like 2004.",
+   "smart": false
+  },
+  {
+   "key": "age.line",
+   "text": "We ask everyone once. It sets which features you can use.",
+   "smart": false
+  },
+  {
+   "key": "age.title",
+   "text": "What year were you born?",
+   "smart": false
+  },
+  {
    "key": "avatar.a01",
    "text": "Avatar 1",
    "smart": false
@@ -1008,6 +1033,11 @@
    "smart": false
   },
   {
+   "key": "error.profile.age_locked",
+   "text": "Your birth year is already set. Write to support to change it.",
+   "smart": false
+  },
+  {
    "key": "error.profile.frame_locked",
    "text": "Earn that frame first.",
    "smart": false
@@ -1040,6 +1070,11 @@
   {
    "key": "error.profile.not_visible",
    "text": "Their profile is private.",
+   "smart": false
+  },
+  {
+   "key": "error.profile.too_young",
+   "text": "Hulla is for players 13 and over.",
    "smart": false
   },
   {
@@ -1140,6 +1175,11 @@
   {
    "key": "error.session.unavailable",
    "text": "Can't connect right now. Check your internet and try again.",
+   "smart": false
+  },
+  {
+   "key": "error.social.age_limited",
+   "text": "Free text with players you don't know opens at 16. Quick chat and emotes still work.",
    "smart": false
   },
   {
@@ -1265,6 +1305,11 @@
   {
    "key": "error.unknown",
    "text": "Something went wrong. Try again in a moment.",
+   "smart": false
+  },
+  {
+   "key": "error.voice.age_limited",
+   "text": "Voice with players you don't know opens at 16. Quick chat and emotes still work.",
    "smart": false
   },
   {
@@ -3189,7 +3234,7 @@
   },
   {
    "key": "ui.analytics_ask",
-   "text": "Help us improve Hulla? We'd count anonymous things like round length and taps, never your chat, cards or name.",
+   "text": "Help us improve Hulla? We'd count anonymous things like round length and taps, and get crash reports, through Google Firebase and Meta. Never your chat, cards or name.",
    "smart": false
   },
   {
@@ -4578,6 +4623,11 @@
    "smart": false
   },
   {
+   "key": "ui.privacy_policy",
+   "text": "Privacy policy",
+   "smart": false
+  },
+  {
    "key": "ui.private_table",
    "text": "Private table",
    "smart": false
@@ -5320,6 +5370,11 @@
   {
    "key": "ui.take_hand",
    "text": "Ask for hand",
+   "smart": false
+  },
+  {
+   "key": "ui.terms_of_service",
+   "text": "Terms of service",
    "smart": false
   },
   {

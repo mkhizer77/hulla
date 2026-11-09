@@ -1,6 +1,7 @@
 import { ErrorCodes } from "@hulla/shared-ts";
 
 import { log } from "../infra/log";
+import { ageLimitsOf } from "../services/age";
 import { emitAnalyticsSafely } from "../services/analytics";
 import {
   buildMatcher,
@@ -35,6 +36,8 @@ export interface ChatPolicy {
   readonly strictness: Strictness;
   /** A guest at a public table: free text is off until the account is linked. */
   readonly guestLocked: boolean;
+  /** Under 16, or no birth year yet: no free text with strangers (GDD 24.6). */
+  readonly ageLocked?: boolean;
   /** Muted by moderation (GDD 24.3): no text until the mute expires. */
   readonly muted: boolean;
 }
@@ -73,6 +76,7 @@ export function checkChatMessage(
   if (LINK_OR_PHONE.test(text)) return { ok: false, code: ErrorCodes.table.invalidPayload };
   if (policy.muted) return { ok: false, code: ErrorCodes.social.muted };
   if (policy.guestLocked) return { ok: false, code: ErrorCodes.auth.notLinked };
+  if (policy.ageLocked === true) return { ok: false, code: ErrorCodes.social.ageLimited };
   const filtered = policy.matcher === null ? { text, hits: 0 } : filterText(policy.matcher, text);
   if (filtered.hits > 0 && policy.strictness === "family") {
     return { ok: false, code: ErrorCodes.content.filtered };
@@ -140,12 +144,15 @@ function policyFor(
     }
   }
   let guest = false;
+  let ageLocked = false;
   if (publicTable) {
     try {
       guest = isGuestAccount(nk.accountGetId(userId));
     } catch (error: unknown) {
       log.warn(logger, "chat sender not resolved", { error: String(error) });
     }
+    // Under 16 (or not yet answered), no free text with strangers either (GDD 24.6).
+    ageLocked = ageLimitsOf(nk, userId, now).strangersLocked;
   }
   let muted = false;
   try {
@@ -159,6 +166,7 @@ function policyFor(
       matcher: buildMatcher(nkFilterStore(nk).read()),
       strictness,
       guestLocked: guest,
+      ageLocked,
       muted,
     },
   };

@@ -13,6 +13,7 @@ import {
   nkReportStore,
   SYSTEM_USER_ID,
 } from "../services/reports";
+import { purgeExpired } from "../services/retention";
 import { nkSocialStore } from "../services/social";
 
 function parse(payload: string): Record<string, unknown> {
@@ -156,4 +157,24 @@ export function rpcAdminChatLogsPurge(
   }
   log.info(logger, "chat logs purged", { count: stale.length });
   return JSON.stringify({ ok: true, purged: stale.length });
+}
+
+/**
+ * Server key only, from the box's cron sidecar once a day (#76): erases round logs after 180 days,
+ * reports after a year and phone-code records after a day (privacy policy, #87). `{ now? }` for tests.
+ */
+export function rpcAdminRetentionPurge(
+  ctx: nkruntime.Context,
+  logger: nkruntime.Logger,
+  nk: nkruntime.Nakama,
+  payload: string,
+): string {
+  if (ctx.userId !== undefined && ctx.userId !== "") {
+    return JSON.stringify({ ok: false, error: ruleError(ErrorCodes.table.notAuthorised) });
+  }
+  const nowInput = parse(payload)["now"];
+  const now = typeof nowInput === "number" && Number.isFinite(nowInput) ? nowInput : Date.now();
+  const purged = purgeExpired(nk, now);
+  log.info(logger, "retention purge", purged);
+  return JSON.stringify({ ok: true, purged });
 }

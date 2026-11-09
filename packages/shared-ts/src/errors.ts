@@ -84,6 +84,7 @@ export const ErrorCodes = {
     unavailable: "voice.unavailable",
     notAtTable: "voice.not_at_table",
     suspended: "voice.suspended",
+    ageLimited: "voice.age_limited",
   },
   profile: {
     invalidName: "profile.invalid_name",
@@ -94,6 +95,8 @@ export const ErrorCodes = {
     unknownAvatar: "profile.unknown_avatar",
     notFound: "profile.not_found",
     frameLocked: "profile.frame_locked",
+    tooYoung: "profile.too_young",
+    ageLocked: "profile.age_locked",
   },
   social: {
     self: "social.self",
@@ -102,6 +105,7 @@ export const ErrorCodes = {
     notFriends: "social.not_friends",
     blocked: "social.blocked",
     muted: "social.muted",
+    ageLimited: "social.age_limited",
   },
 } as const;
 

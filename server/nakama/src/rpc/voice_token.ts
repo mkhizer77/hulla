@@ -2,6 +2,7 @@ import { ErrorCodes, ruleError, type RuleError } from "@hulla/shared-ts";
 
 import { log } from "../infra/log";
 import { runtimeFrom, type ServerRuntime } from "../infra/nk";
+import { ageLimitsOf } from "../services/age";
 import { buildRoomToken, liveKitConfigFrom, type LiveKitConfig } from "../services/livekit_token";
 import { recordMissionMetrics } from "../services/missions";
 import { isVoiceSuspended, readModeration } from "../services/sanctions";
@@ -24,6 +25,10 @@ export interface VoiceTokenDeps {
   readonly config: LiveKitConfig | null;
   /** A voice suspension from moderation (GDD 24.3). */
   readonly suspended?: boolean;
+  /** Under 16 (or not yet answered): voice only at private tables, with people the player knows (GDD 24.6). */
+  readonly strangersLocked?: boolean;
+  /** Whether the table is a private room. */
+  privateTable?(matchId: string): boolean;
   membership(matchId: string): TableMembership | null;
 }
 
@@ -66,6 +71,9 @@ export function voiceToken(deps: VoiceTokenDeps, payload: string): VoiceTokenRes
   const membership = deps.membership(matchId);
   if (!membership?.present) {
     return { ok: false, error: ruleError(ErrorCodes.voice.notAtTable) };
+  }
+  if (deps.strangersLocked === true && deps.privateTable?.(matchId) !== true) {
+    return { ok: false, error: ruleError(ErrorCodes.voice.ageLimited) };
   }
   const now = deps.runtime.nowMs();
   const token = buildRoomToken(deps.config, {
@@ -130,6 +138,17 @@ function voiceTokenFor(
       userId: ctx.userId ?? null,
       config: liveKitConfigFrom(ctx.env),
       suspended: isVoiceSuspended(readModeration(nk, ctx.userId ?? ""), Date.now()),
+      strangersLocked: ageLimitsOf(nk, ctx.userId ?? "", Date.now()).strangersLocked,
+      privateTable(matchId) {
+        try {
+          const match = nk.matchGet(matchId);
+          const label =
+            match?.label === undefined ? null : (JSON.parse(match.label) as { mode?: unknown });
+          return label?.mode === "private";
+        } catch {
+          return false;
+        }
+      },
       membership(matchId) {
         try {
           const answer = JSON.parse(

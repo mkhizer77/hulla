@@ -41,6 +41,7 @@ import {
   rpcSanctionsGet,
 } from "./rpc/admin";
 import { rpcAdReward, rpcAdsGet } from "./rpc/ads";
+import { rpcAgeGet, rpcAgeSet } from "./rpc/age";
 import { rpcChatFiltersGet, rpcChatFiltersSet } from "./rpc/chat_filters";
 import { rpcConfigGet, rpcConfigSet } from "./rpc/config";
 import { rpcContentGet, rpcContentManifest } from "./rpc/content";
@@ -57,6 +58,7 @@ import {
 } from "./rpc/missions";
 import {
   rpcAdminChatLogsPurge,
+  rpcAdminRetentionPurge,
   rpcBlockSet,
   rpcBlocksGet,
   rpcReportCreate,
@@ -157,6 +159,7 @@ function InitModule(
   initializer.registerRpc("report_create", rpcReportCreate);
   initializer.registerRpc("reports_list", rpcReportsList);
   initializer.registerRpc("admin_chat_logs_purge", rpcAdminChatLogsPurge);
+  initializer.registerRpc("admin_retention_purge", rpcAdminRetentionPurge);
   initializer.registerRpc("admin_table_inspect", rpcAdminTableInspect);
   initializer.registerRpc("admin_round_replay", rpcAdminRoundReplay);
   initializer.registerRpc("admin_sanction", rpcAdminSanction);
@@ -201,6 +204,8 @@ function InitModule(
   initializer.registerRpc("ads_get", rpcAdsGet);
   initializer.registerRpc("look_feedback", rpcLookFeedback);
   initializer.registerRpc("admin_look_feedback", rpcAdminLookFeedback);
+  initializer.registerRpc("age_set", rpcAgeSet);
+  initializer.registerRpc("age_get", rpcAgeGet);
   initializer.registerAfterValidatePurchaseApple(afterValidatePurchaseApple);
   initializer.registerAfterValidatePurchaseGoogle(afterValidatePurchaseGoogle);
   initializer.registerLeaderboardReset(onLeaderboardReset);

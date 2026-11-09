@@ -40,6 +40,12 @@ namespace Hulla.Presentation.Screens.Settings
 
         public Action<string>? Unblock { get; set; }
 
+        /// <summary>Opens the privacy policy on the link domain (GDD 25.2); null hides the row until it is published.</summary>
+        public Action? PrivacyPolicy { get; set; }
+
+        /// <summary>Opens the terms of service; null hides the row until they are published.</summary>
+        public Action? Terms { get; set; }
+
         /// <summary>Shows one page of Settings; the main page has the switches and the rows to the rest.</summary>
         public void ShowPage(Page page)
         {
@@ -304,6 +310,16 @@ namespace Hulla.Presentation.Screens.Settings
         {
             Heading(null);
             Toggle(UiText.AnalyticsLabel, () => _settings.AnalyticsConsent == true, v => _settings.AnalyticsConsent = v);
+            if (PrivacyPolicy != null)
+            {
+                Row(UiText.PrivacyPolicy, "", PrivacyPolicy);
+            }
+
+            if (Terms != null)
+            {
+                Row(UiText.TermsOfService, "", Terms);
+            }
+
             if (Blocked == null)
             {
                 return;

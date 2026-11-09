@@ -4,6 +4,7 @@ import { BUNDLED_FILTERS } from "../content/filters";
 import { beforeChannelMessageSend } from "../hooks/before_channel_message";
 import { rpcChatFiltersGet, rpcChatFiltersSet } from "../rpc/chat_filters";
 import { rpcMuteSet, rpcMutesGet } from "../rpc/social";
+import { nkAgeStore } from "../services/age";
 import { FILTERS_COLLECTION, FILTERS_KEY, SYSTEM_USER_ID } from "../services/chat_filter";
 
 import { fakeLogger, memoryNk } from "./fake-nk";
@@ -55,6 +56,15 @@ describe("the chat hook, the filter lists and mutes against an in-memory Nakama"
       beforeChannelMessageSend(ctxFor("u3"), log, m.nk, message(`2...${publicTable}`, "salaam")),
     ).toThrow("auth.not_linked");
     m.user("u3", { email: "u3@example.com" });
+    // Linked, but no birth year yet: free text with strangers waits for the age (GDD 24.6).
+    expect(() =>
+      beforeChannelMessageSend(ctxFor("u3"), log, m.nk, message(`2...${publicTable}`, "salaam")),
+    ).toThrow("social.age_limited");
+    nkAgeStore(m.nk).write("u3", { birthYear: 2012, setTs: 0 });
+    expect(() =>
+      beforeChannelMessageSend(ctxFor("u3"), log, m.nk, message(`2...${publicTable}`, "salaam")),
+    ).toThrow("social.age_limited");
+    nkAgeStore(m.nk).write("u3", { birthYear: 1990, setTs: 0 });
     expect(
       beforeChannelMessageSend(ctxFor("u3"), log, m.nk, message(`2...${publicTable}`, "salaam")),
     ).toBeDefined();
