@@ -11,6 +11,9 @@ The whole server is one Docker Compose stack (Nakama, Postgres, backup job) so a
 - **Phase 1, soft launch:** a Hetzner CX23 in Nuremberg or Falkenstein for EU and UK testers and one player-region box (DigitalOcean Bangalore or Hetzner Singapore). The first public cohort never runs on a free tier.
 - **Phase 2, growth:** larger nodes, managed Postgres, a second player region; Heroic Cloud only if operations should be bought.
 
+## Update, 9 November 2026: phase 0 runs on Google Cloud credit
+Phase 0 runs on Google Cloud's free-trial credit ($300, ending late January 2027) instead of Oracle, whose free ARM capacity was not reliably available: one e2-medium in Frankfurt (`europe-west3`) with the same compose stack plus Caddy for TLS, Postgres on the box with nightly dumps to Cloud Storage and daily disk snapshots, Google's uptime check, and a budget across the billing account whose function stops the box once the credit is spent. About $40 a month. Google's premium network carries players from their nearest edge to Frankfurt, which helps Pakistan and India before a player region exists. Before the trial ends: upgrade and keep paying, or move the stack to the Phase 1 Hetzner box. Setup in `docs/runbooks/gcp-phase0.md`.
+
 ## Consequences
 Near-zero cost during development; a tested migration path because the stack is identical everywhere; free tiers bring idle-reclamation and capacity risks, which is why they are confined to Phase 0 and backed up nightly to R2.
 

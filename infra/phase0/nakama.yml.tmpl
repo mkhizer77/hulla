@@ -1,0 +1,63 @@
+# Nakama on the phase 0 box. setup.sh fills the ${...} values from secrets.env and box.env into
+# /opt/hulla/nakama.yml; the rendered file never leaves the box. Keep in step with server/nakama/config/local.yml.
+name: hulla-phase0
+data_dir: /nakama/data
+logger:
+  level: INFO
+  stdout: true
+database:
+  address:
+    - postgres:${POSTGRES_PASSWORD}@postgres:5432/nakama
+console:
+  port: 7351
+  username: admin
+  password: ${NAKAMA_CONSOLE_PASSWORD}
+socket:
+  port: 7350
+  server_key: ${NAKAMA_SERVER_KEY}
+  max_message_size_bytes: 32768
+  ping_period_ms: 15000
+  pong_wait_ms: 25000
+session:
+  encryption_key: ${NAKAMA_SESSION_KEY}
+  refresh_encryption_key: ${NAKAMA_REFRESH_KEY}
+  token_expiry_sec: 7200
+  refresh_token_expiry_sec: 2592000
+runtime:
+  http_key: ${NAKAMA_HTTP_KEY}
+  js_entrypoint: index.js
+  env:
+    - "HULLA_ENV=phase0"
+    - "HULLA_REGION=eu"
+    - "HULLA_TURN_SECONDS="
+    - "HULLA_PHONE_PEPPER=${HULLA_PHONE_PEPPER}"
+    - "LIVEKIT_URL=wss://${VOICE_HOST}"
+    - "LIVEKIT_API_URL=http://host.docker.internal:7880"
+    - "LIVEKIT_API_KEY=${LIVEKIT_API_KEY}"
+    - "LIVEKIT_API_SECRET=${LIVEKIT_API_SECRET}"
+    - "HULLA_ADMIN_USER_IDS="
+    - "HULLA_CONTENT_SIGNATURE="
+    - "HULLA_CONTENT_SIGNING_KEY_ID="
+    - "HULLA_FCM_PROJECT_ID="
+    - "HULLA_FCM_CLIENT_EMAIL="
+    - "HULLA_FCM_PRIVATE_KEY="
+    - "HULLA_APPLOVIN_EVENT_KEY="
+iap:
+  apple:
+    shared_password: ""
+  google:
+    client_email: ""
+    private_key: ""
+social:
+  apple:
+    bundle_id: "gg.hulla.app"
+  facebook_limited_login:
+    app_id: "2149156025694624"
+metrics:
+  prometheus_port: 9100
+match:
+  input_queue_size: 128
+  call_queue_size: 128
+matchmaker:
+  interval_sec: 5
+  max_intervals: 3
