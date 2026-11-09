@@ -31,6 +31,8 @@ export const DEFAULT_CONFIG: RemoteConfig = {
   minClientVersion: "0.1.0",
   flags: {
     maintenance: [{ value: false }],
+    // When maintenance ends, Unix milliseconds; the client's notice gives the time (GDD 14.13). 0 leaves it undated.
+    maintenance_until: [{ value: 0 }],
     quick_play: [{ value: true }],
     voice: [{ value: true }],
     // The shop and store purchases; off hides the Shop tab (monetisation on since 30 Oct 2026).

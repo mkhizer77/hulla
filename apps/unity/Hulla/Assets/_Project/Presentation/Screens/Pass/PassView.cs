@@ -45,6 +45,9 @@ namespace Hulla.Presentation.Screens.Pass
             Refresh();
         }
 
+        /// <summary>Loads the pass again after an error; null hides Retry.</summary>
+        public Action? Retry { get; set; }
+
         public void Dispose()
         {
             _model.Changed -= Refresh;
@@ -64,10 +67,18 @@ namespace Hulla.Presentation.Screens.Pass
         {
             _list.Clear();
             var info = _model.Info;
-            _status.text = _model.ErrorCode != null ? UiText.Error(_model.ErrorCode) : "";
+            _status.text = _model.ErrorCode != null && info != null ? UiText.Error(_model.ErrorCode) : "";
             if (info == null)
             {
-                if (_model.NoSeason)
+                if (_model.ErrorCode != null)
+                {
+                    ListState.Error(_list, _model.ErrorCode, Retry);
+                }
+                else if (!_model.NoSeason)
+                {
+                    ListState.Loading(_list);
+                }
+                else
                 {
                     var plate = new VisualElement();
                     plate.AddToClassList("panel");

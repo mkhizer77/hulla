@@ -292,6 +292,88 @@ namespace Hulla.Screens.Tests
             });
         }
 
+        /// <summary>
+        /// Every list screen with the server down and with nothing to show (#82, GDD 14.13): a down list
+        /// says so in plain words with Retry; an empty list has one sentence and one action.
+        /// </summary>
+        public static IEnumerable<Case> States()
+        {
+            var catalog = AssetDatabase.LoadAssetAtPath<ScreenCatalog>("Assets/Settings/UI/ScreenCatalog.asset");
+            yield return new Case("missions-down", catalog.Missions, r =>
+            {
+                var model = new MissionsViewModel(new Fakes.Missions { Down = true });
+                new MissionsView(r, model, () => { }, _ => { }, _ => { }) { Retry = () => { }, PlayNow = () => { } };
+                _ = model.RefreshAsync(0, default);
+            });
+            yield return new Case("missions-empty", catalog.Missions, r =>
+            {
+                var model = new MissionsViewModel(new Fakes.Missions { Empty = true });
+                new MissionsView(r, model, () => { }, _ => { }, _ => { }) { Retry = () => { }, PlayNow = () => { } };
+                _ = model.RefreshAsync(0, default);
+            });
+            yield return new Case("leaderboard-down", catalog.Leaderboard, r =>
+            {
+                var model = new LeaderboardViewModel(new Fakes.Boards { Down = true });
+                new LeaderboardView(r, model, () => 1_000_000_000_000, "me", () => { }, (_, _) => { }, () => { }) { Retry = () => { }, PlayNow = () => { } };
+                _ = model.RefreshAsync(default);
+            });
+            yield return new Case("leaderboard-empty", catalog.Leaderboard, r =>
+            {
+                var model = new LeaderboardViewModel(new Fakes.Boards { Empty = true });
+                new LeaderboardView(r, model, () => 1_000_000_000_000, "me", () => { }, (_, _) => { }, () => { }) { Retry = () => { }, PlayNow = () => { } };
+                _ = model.RefreshAsync(default);
+            });
+            yield return new Case("ranked-down", catalog.Ranked, r =>
+            {
+                var model = new RankedViewModel(new Fakes.Ranked { Down = true });
+                new RankedView(r, model, () => 1_000_000_000_000, "me", () => { }, _ => { }) { Retry = () => { } };
+                _ = model.RefreshAsync(default);
+            });
+            yield return new Case("achievements-down", catalog.Achievements, r =>
+            {
+                var model = new AchievementsViewModel(new Fakes.Achievements { Down = true });
+                new AchievementsView(r, model, () => { }) { Retry = () => { } };
+                _ = model.RefreshAsync(default);
+            });
+            yield return new Case("shop-down", catalog.Shop, r =>
+            {
+                var model = new ShopViewModel(new Fakes.Shop { Down = true });
+                new ShopView(r, model, () => { }, _ => { }, _ => { }) { Retry = () => { } };
+                _ = model.RefreshAsync(default);
+            });
+            yield return new Case("shop-empty", catalog.Shop, r =>
+            {
+                var model = new ShopViewModel(new Fakes.Shop());
+                new ShopView(r, model, () => { }, _ => { }, _ => { }) { Retry = () => { } };
+                _ = model.RefreshAsync(default);
+                model.Show("voPack");
+            });
+            yield return new Case("pass-down", catalog.Pass, r =>
+            {
+                var model = new PassViewModel(new Fakes.Pass { Down = true });
+                new PassView(r, model, () => 1_000_000_000_000, () => { }, (_, _) => { }) { Retry = () => { } };
+                _ = model.RefreshAsync(default);
+            });
+            yield return new Case("friends-down", catalog.Friends, r =>
+            {
+                var model = new FriendsViewModel(new Fakes.Social { Down = true });
+                new FriendsView(r, model, () => { }, new FriendsView.Actions(_ => { }, _ => { }, _ => { }, _ => { }, _ => { }), () => { });
+                _ = model.RefreshAsync(default);
+            });
+            yield return new Case("friends-empty", catalog.Friends, r =>
+            {
+                var model = new FriendsViewModel(new Fakes.Social { NoFriends = true });
+                new FriendsView(r, model, () => { }, new FriendsView.Actions(_ => { }, _ => { }, _ => { }, _ => { }, _ => { }), () => { }, () => { });
+                _ = model.RefreshAsync(default);
+            });
+            yield return new Case("profile-down", catalog.Profile, r =>
+            {
+                var model = new ProfileViewModel(new Fakes.Social { Down = true });
+                new ProfileView(r, model, () => { }, (_, _, _) => { }) { Retry = () => { } };
+                _ = model.RefreshAsync(default);
+            });
+        }
+
         private sealed class MemoryStore : ISettingsStore
         {
             private readonly Dictionary<string, int> _values = new Dictionary<string, int>();

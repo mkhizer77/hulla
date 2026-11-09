@@ -1,3 +1,6 @@
+import { readFileSync } from "node:fs";
+import { join } from "node:path";
+
 import { describe, expect, it } from "vitest";
 
 import { ALL_ERROR_CODES, ErrorCodes, errorArea, localisationKey, ruleError } from "../errors";
@@ -31,5 +34,23 @@ describe("error catalogue", () => {
 
   it("the endgame hand-take rejection from the GDD vectors exists", () => {
     expect(ErrorCodes.rules.handTakeDisabledEndgame).toBe("rules.hand_take_disabled_endgame");
+  });
+
+  it("every code a player can see has plain words in the English string table (GDD 14.13)", () => {
+    // Content-pipeline codes only reach the deploy tooling and the ad network's callback, never a player.
+    const internal = new Set<string>([
+      ErrorCodes.content.manifestUnsigned,
+      ErrorCodes.content.manifestDowngrade,
+      ErrorCodes.content.packUnknown,
+      ErrorCodes.content.schemaInvalid,
+      ErrorCodes.economy.adRewardInvalid,
+    ]);
+    const file = join(import.meta.dirname, "..", "..", "..", "..", "content", "strings", "en.json");
+    const strings = (JSON.parse(readFileSync(file, "utf8")) as { strings: Record<string, string> })
+      .strings;
+    const missing = ALL_ERROR_CODES.filter(
+      (code) => !internal.has(code) && strings[localisationKey(code)] === undefined,
+    );
+    expect(missing).toEqual([]);
   });
 });

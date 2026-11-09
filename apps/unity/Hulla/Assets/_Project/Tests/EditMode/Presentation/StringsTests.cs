@@ -27,6 +27,42 @@ namespace Hulla.Presentation.Tests
         }
 
         [Test]
+        public void ErrorsAreInPlainWordsWithoutTheirCode()
+        {
+            Assert.AreEqual("That table is full.", UiText.Error("table.full"));
+            var offline = Strings.Text("error.offline");
+            Assert.AreEqual(offline, UiText.Error("missions.unavailable"), "a service that could not be reached");
+            Assert.AreEqual(offline, UiText.Error("economy.unavailable"));
+            Assert.AreEqual(offline, UiText.Error("session.not_signed_in"));
+            Assert.AreEqual(offline, UiText.Error("social.unavailable"), "not the Facebook line");
+            UnityEngine.TestTools.LogAssert.Expect(UnityEngine.LogType.Warning, "error without its own words: shop.something_new");
+            var unknown = UiText.Error("shop.something_new");
+            Assert.AreEqual(Strings.Text("error.unknown"), unknown);
+            StringAssert.DoesNotContain("something_new", unknown, "the code stays in the log");
+        }
+
+        [Test]
+        public void MaintenanceSaysUntilWhenWhileThatIsAhead()
+        {
+            var now = 1_800_000_000_000L;
+            var until = now + (90L * 60_000);
+            var expected = System.DateTimeOffset.FromUnixTimeMilliseconds(until).ToLocalTime().ToString("t", Strings.Culture);
+            var dated = UiText.MaintenanceNote(until, now);
+            StringAssert.Contains(expected, dated);
+            StringAssert.Contains("rulebook", dated);
+            Assert.AreEqual(Strings.Text("config.maintenance"), UiText.MaintenanceNote(0, now), "no time given");
+            Assert.AreEqual(Strings.Text("config.maintenance"), UiText.MaintenanceNote(now - 1, now), "the time has passed");
+        }
+
+        [Test]
+        public void RankedCountsReadForOneAndMany()
+        {
+            Assert.AreEqual("Play 1 more round to get your league.", Strings.Format(RankedText.PlacementNote, 1));
+            Assert.AreEqual("Play 3 more rounds to get your league.", Strings.Format(RankedText.PlacementNote, 3));
+            Assert.AreEqual("Safe from demotion for 2 more rounds", Strings.Format(RankedText.Protected, 2));
+        }
+
+        [Test]
         public void NumbersAreGroupedForTheLocale()
         {
             Assert.AreEqual("12,500 coins", Strings.Format(UiText.CoinsOnly, 12500));
@@ -42,7 +78,8 @@ namespace Hulla.Presentation.Tests
         public void UnknownErrorsAndKeysFallBack()
         {
             Assert.AreEqual("That table is full.", UiText.Error("table.full"));
-            Assert.AreEqual("Something went wrong (made.up)", UiText.Error("made.up"));
+            UnityEngine.TestTools.LogAssert.Expect(UnityEngine.LogType.Warning, "error without its own words: made.up");
+            Assert.AreEqual("Something went wrong. Try again in a moment.", UiText.Error("made.up"));
             Assert.AreEqual("no.such.key", Strings.Get("no.such.key"));
             Assert.AreEqual("Truck art", ItemText.Name("table_truck_art"));
             Assert.AreEqual("Brand new", ItemText.Name("back_brand_new"), "an id the tables don't name reads as words");

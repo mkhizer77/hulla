@@ -91,7 +91,7 @@ namespace Hulla.Presentation.Screens.Shop
             if (_purchases != null && _model.Category == StoreView.Category)
             {
                 _status.text = _purchases.ErrorCode != null ? UiText.Error(_purchases.ErrorCode) : "";
-                StoreView.Fill(_list, _root, _purchases);
+                StoreView.Fill(_list, _root, _purchases, StoreRetry);
                 return;
             }
 
@@ -106,6 +106,12 @@ namespace Hulla.Presentation.Screens.Shop
                 _status.text = UiText.Error(_model.ErrorCode);
             }
 
+            if (_model.Catalog == null)
+            {
+                ListState.Loading(_list);
+                return;
+            }
+
             var spotlight = _model.Spotlight;
             if (spotlight.Count > 0)
             {
@@ -114,7 +120,8 @@ namespace Hulla.Presentation.Screens.Shop
 
             if (_model.Shown.Count == 0)
             {
-                ListState.Empty(_list, UiText.NothingThisWeek);
+                var other = _model.OtherStocked;
+                ListState.Empty(_list, UiText.NothingThisWeek, other == null ? null : UiText.SeeOtherItems, other == null ? null : () => _model.Show(other));
                 return;
             }
 
@@ -130,6 +137,9 @@ namespace Hulla.Presentation.Screens.Shop
 
         /// <summary>Loads the catalog again after an error; null hides Retry.</summary>
         public Action? Retry { get; set; }
+
+        /// <summary>Connects to the phone's store again when the Gems tab found it away; null hides Retry.</summary>
+        public Action? StoreRetry { get; set; }
 
         /// <summary>Whether a rewarded ad for a 24-hour table trial can be offered (GDD 13.6); null never offers it.</summary>
         public Func<bool>? TrialOffered { get; set; }

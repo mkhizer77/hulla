@@ -26,6 +26,9 @@ namespace Hulla.Application.ViewModels
         /// <summary>The server is down for maintenance: no new searches or tables (GDD 20.15).</summary>
         public bool Maintenance => Current.Bool("maintenance", false);
 
+        /// <summary>When maintenance ends, Unix milliseconds; 0 when the owner gave no time.</summary>
+        public long MaintenanceUntilMs => (long)Current.Number("maintenance_until", 0);
+
         public bool QuickPlay => Current.Bool("quick_play", true) && !Maintenance;
 
         public bool Voice => Current.Bool("voice", true);

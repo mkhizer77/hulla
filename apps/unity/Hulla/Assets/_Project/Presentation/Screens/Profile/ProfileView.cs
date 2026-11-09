@@ -102,6 +102,9 @@ namespace Hulla.Presentation.Screens.Profile
         /// <summary>Shares the friend code (the share sheet holds Copy); null copies it instead.</summary>
         public Action? ShareCode { get; set; }
 
+        /// <summary>Loads the profile again when it could not be read; null hides Retry.</summary>
+        public Action? Retry { get; set; }
+
         /// <summary>The player's level for the card; null leaves it out.</summary>
         public Func<long?>? Level { get; set; }
 
@@ -187,6 +190,15 @@ namespace Hulla.Presentation.Screens.Profile
             var ranked = RankedText?.Invoke();
             _ranked.text = ranked ?? "";
             _ranked.style.display = string.IsNullOrEmpty(ranked) ? DisplayStyle.None : DisplayStyle.Flex;
+            if (card == null && _model.ErrorCode != null)
+            {
+                // Nothing to show yet: the error sits where the stats go, with Retry (GDD 14.13).
+                _tiles.Clear();
+                ListState.Error(_tiles, _model.ErrorCode, Retry);
+                _status.text = "";
+                return;
+            }
+
             _status.text = _model.ErrorCode != null ? UiText.Error(_model.ErrorCode) : _model.Saved ? UiText.Saved : "";
         }
 

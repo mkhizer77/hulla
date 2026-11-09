@@ -180,19 +180,25 @@ namespace Hulla.Screens.Tests
 
         public sealed class Social : ISocialService
         {
-            public Awaitable<Result<Profile>> MyProfileAsync(CancellationToken c) => Done(Result<Profile>.Ok(new Profile { DisplayName = "Khizer", Handle = "khizer_k", Bio = "", FriendCode = "K7Q2MXRP", Stats = new ProfileStats { Rounds = 3 } }));
+            /// <summary>The server cannot be reached: these calls fail as the real service does.</summary>
+            public bool Down;
+
+            /// <summary>No friends, requests or recent players yet.</summary>
+            public bool NoFriends;
+
+            public Awaitable<Result<Profile>> MyProfileAsync(CancellationToken c) => Down ? Done(Result<Profile>.Fail("social.unavailable")) : Done(Result<Profile>.Ok(new Profile { DisplayName = "Khizer", Handle = "khizer_k", Bio = "", FriendCode = "K7Q2MXRP", Stats = new ProfileStats { Rounds = 3 } }));
 
             public Awaitable<Result<Profile>> UpdateProfileAsync(ProfileUpdate u, CancellationToken c) => MyProfileAsync(c);
 
             public Awaitable<Result<Profile>> ProfileAsync(string userId, CancellationToken c) => MyProfileAsync(c);
 
-            public Awaitable<Result<IReadOnlyList<FriendEntry>>> FriendsAsync(CancellationToken c) => Done(Result<IReadOnlyList<FriendEntry>>.Ok(new List<FriendEntry>
+            public Awaitable<Result<IReadOnlyList<FriendEntry>>> FriendsAsync(CancellationToken c) => Down ? Done(Result<IReadOnlyList<FriendEntry>>.Fail("social.unavailable")) : NoFriends ? Done(Result<IReadOnlyList<FriendEntry>>.Ok(new List<FriendEntry>())) : Done(Result<IReadOnlyList<FriendEntry>>.Ok(new List<FriendEntry>
             {
                 new FriendEntry("1", "Ayesha", "ayesha", true, FriendState.Friend, true),
                 new FriendEntry("2", "Sana", "sana", false, FriendState.Received, false),
             }));
 
-            public Awaitable<Result<IReadOnlyList<FriendEntry>>> RecentAsync(CancellationToken c) => Done(Result<IReadOnlyList<FriendEntry>>.Ok(new List<FriendEntry> { new FriendEntry("5", "Noor", "noor", false, null, false, 3) }));
+            public Awaitable<Result<IReadOnlyList<FriendEntry>>> RecentAsync(CancellationToken c) => Down ? Done(Result<IReadOnlyList<FriendEntry>>.Fail("social.unavailable")) : NoFriends ? Done(Result<IReadOnlyList<FriendEntry>>.Ok(new List<FriendEntry>())) : Done(Result<IReadOnlyList<FriendEntry>>.Ok(new List<FriendEntry> { new FriendEntry("5", "Noor", "noor", false, null, false, 3) }));
 
             public Awaitable<Result<bool>> AddByCodeAsync(string f, CancellationToken c) => Done(Result<bool>.Ok(true));
 
@@ -261,8 +267,15 @@ namespace Hulla.Screens.Tests
 
         public sealed class Boards : Hulla.Application.Progress.ILeaderboardService
         {
+            /// <summary>The server cannot be reached: these calls fail as the real service does.</summary>
+            public bool Down;
+
+            /// <summary>Nobody has points yet.</summary>
+            public bool Empty;
+
             public Awaitable<Result<Hulla.Application.Progress.LeaderboardPage>> BoardAsync(Hulla.Application.Progress.LeaderboardPeriod period, bool friends, CancellationToken c) =>
-                Done(Result<Hulla.Application.Progress.LeaderboardPage>.Ok(new Hulla.Application.Progress.LeaderboardPage(
+                Down ? Done(Result<Hulla.Application.Progress.LeaderboardPage>.Fail("economy.unavailable")) :
+                Empty ? Done(Result<Hulla.Application.Progress.LeaderboardPage>.Ok(new Hulla.Application.Progress.LeaderboardPage(new List<Hulla.Application.Progress.LeaderboardRow>(), null, 1_000_000_000_000 + 3L * 86_400_000))) : Done(Result<Hulla.Application.Progress.LeaderboardPage>.Ok(new Hulla.Application.Progress.LeaderboardPage(
                     new List<Hulla.Application.Progress.LeaderboardRow>
                     {
                         new Hulla.Application.Progress.LeaderboardRow(1, "u1", "ayesha", 120, 9),
@@ -274,10 +287,13 @@ namespace Hulla.Screens.Tests
 
         public sealed class Ranked : Hulla.Application.Progress.IRankedService
         {
+            /// <summary>The server cannot be reached: these calls fail as the real service does.</summary>
+            public bool Down;
+
             public bool Placed = true;
 
             public Awaitable<Result<Hulla.Application.Progress.RankedCard>> CardAsync(CancellationToken c) =>
-                Done(Result<Hulla.Application.Progress.RankedCard>.Ok(new Hulla.Application.Progress.RankedCard(
+                Down ? Done(Result<Hulla.Application.Progress.RankedCard>.Fail("table.unavailable")) : Done(Result<Hulla.Application.Progress.RankedCard>.Ok(new Hulla.Application.Progress.RankedCard(
                     2,
                     1_000_000_000_000 + 9L * 86_400_000,
                     Placed ? 1287 : 1210,
@@ -299,7 +315,7 @@ namespace Hulla.Screens.Tests
                     true)));
 
             public Awaitable<Result<IReadOnlyList<Hulla.Application.Progress.RankedRow>>> BoardAsync(CancellationToken c) =>
-                Done(Result<IReadOnlyList<Hulla.Application.Progress.RankedRow>>.Ok(new List<Hulla.Application.Progress.RankedRow>
+                Down ? Done(Result<IReadOnlyList<Hulla.Application.Progress.RankedRow>>.Fail("table.unavailable")) : Done(Result<IReadOnlyList<Hulla.Application.Progress.RankedRow>>.Ok(new List<Hulla.Application.Progress.RankedRow>
                 {
                     new Hulla.Application.Progress.RankedRow(1, "u1", "ayesha", 1702, "ustad"),
                     new Hulla.Application.Progress.RankedRow(14, "me", "khizer", 1287, "gold"),
@@ -340,8 +356,11 @@ namespace Hulla.Screens.Tests
 
         public sealed class Achievements : Hulla.Application.Progress.IAchievementsService
         {
+            /// <summary>The server cannot be reached: these calls fail as the real service does.</summary>
+            public bool Down;
+
             public Awaitable<Result<(IReadOnlyList<Hulla.Application.Progress.AchievementInfo> Achievements, IReadOnlyList<string> UnlockedNow)>> AchievementsAsync(CancellationToken c) =>
-                Done(Result<(IReadOnlyList<Hulla.Application.Progress.AchievementInfo> Achievements, IReadOnlyList<string> UnlockedNow)>.Ok((new List<Hulla.Application.Progress.AchievementInfo>
+                Down ? Done(Result<(IReadOnlyList<Hulla.Application.Progress.AchievementInfo> Achievements, IReadOnlyList<string> UnlockedNow)>.Fail("economy.unavailable")) : Done(Result<(IReadOnlyList<Hulla.Application.Progress.AchievementInfo> Achievements, IReadOnlyList<string> UnlockedNow)>.Ok((new List<Hulla.Application.Progress.AchievementInfo>
                 {
                     new Hulla.Application.Progress.AchievementInfo("first_thulla", "play", "thullas_given", 1, 1, 1_000, 5, null),
                     new Hulla.Application.Progress.AchievementInfo("thullas_1000", "play", "thullas_given", 1000, 37, null, 60, "thulla_baaz"),
@@ -351,8 +370,11 @@ namespace Hulla.Screens.Tests
 
         public sealed class Shop : Hulla.Application.Economy.IShopService
         {
+            /// <summary>The server cannot be reached: these calls fail as the real service does.</summary>
+            public bool Down;
+
             public Awaitable<Result<Hulla.Application.Economy.ShopCatalog>> CatalogAsync(CancellationToken c) =>
-                Done(Result<Hulla.Application.Economy.ShopCatalog>.Ok(new Hulla.Application.Economy.ShopCatalog(new List<Hulla.Application.Economy.ShopItem>
+                Down ? Done(Result<Hulla.Application.Economy.ShopCatalog>.Fail("economy.unavailable")) : Done(Result<Hulla.Application.Economy.ShopCatalog>.Ok(new Hulla.Application.Economy.ShopCatalog(new List<Hulla.Application.Economy.ShopItem>
                 {
                     new Hulla.Application.Economy.ShopItem("back_classic_blue", "cardBack", "common", 0, 0, true, true, null),
                     new Hulla.Application.Economy.ShopItem("back_truck_art", "cardBack", "rare", 1000, 0, false, false, null),
@@ -367,8 +389,16 @@ namespace Hulla.Screens.Tests
 
         public sealed class Pass : Hulla.Application.Progress.IPassService
         {
+            /// <summary>The server cannot be reached.</summary>
+            public bool Down;
+
             public Awaitable<Result<Hulla.Application.Progress.PassInfo?>> PassAsync(CancellationToken c)
             {
+                if (Down)
+                {
+                    return Done(Result<Hulla.Application.Progress.PassInfo?>.Fail("economy.unavailable"));
+                }
+
                 var tiers = new List<Hulla.Application.Progress.PassTier>();
                 for (var t = 1; t <= 4; t++)
                 {
@@ -397,11 +427,18 @@ namespace Hulla.Screens.Tests
 
         public sealed class Missions : Hulla.Application.Progress.IMissionsService
         {
+            /// <summary>The server cannot be reached: these calls fail as the real service does.</summary>
+            public bool Down;
+
+            /// <summary>No missions drawn yet.</summary>
+            public bool Empty;
+
             /// <summary>Today's free swap is used, as after a re-roll.</summary>
             public bool Swapped;
 
             public Awaitable<Result<(IReadOnlyList<Hulla.Application.Progress.MissionInfo> Missions, bool RerollAvailable)>> MissionsAsync(int tz, CancellationToken c) =>
-                Done(Result<(IReadOnlyList<Hulla.Application.Progress.MissionInfo> Missions, bool RerollAvailable)>.Ok((new List<Hulla.Application.Progress.MissionInfo>
+                Down ? Done(Result<(IReadOnlyList<Hulla.Application.Progress.MissionInfo> Missions, bool RerollAvailable)>.Fail("missions.unavailable")) :
+                Empty ? Done(Result<(IReadOnlyList<Hulla.Application.Progress.MissionInfo> Missions, bool RerollAvailable)>.Ok((new List<Hulla.Application.Progress.MissionInfo>(), false))) : Done(Result<(IReadOnlyList<Hulla.Application.Progress.MissionInfo> Missions, bool RerollAvailable)>.Ok((new List<Hulla.Application.Progress.MissionInfo>
                 {
                     new Hulla.Application.Progress.MissionInfo("d1", "thullas_given", 3, 3, false, true, 60, 0, true),
                     new Hulla.Application.Progress.MissionInfo("d2", "escapes", 2, 0, false, false, 60, 0, true),
