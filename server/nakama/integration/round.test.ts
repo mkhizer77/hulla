@@ -96,6 +96,7 @@ describe.skipIf(NAKAMA_HOST === undefined)(
         "family",
         "hardcore",
         "classicPagat",
+        "relaxed",
       ]);
       expect(await rpc<{ ok: boolean }>(host, "voice_token", { matchId })).toMatchObject({
         ok: false,

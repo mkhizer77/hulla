@@ -9,6 +9,7 @@ import missions from "../../../../content/missions/v1.json?raw";
 import classicPagat from "../../../../content/presets/thulla/classicPagat.json?raw";
 import family from "../../../../content/presets/thulla/family.json?raw";
 import hardcore from "../../../../content/presets/thulla/hardcore.json?raw";
+import relaxed from "../../../../content/presets/thulla/relaxed.json?raw";
 import standard from "../../../../content/presets/thulla/standard.json?raw";
 import products from "../../../../content/products/v1.json?raw";
 import quickChat from "../../../../content/quick-chat/v1.en.json?raw";
@@ -30,6 +31,7 @@ export const CONTENT_TEXT: Readonly<Record<string, string>> = {
   "emotes/v1.json": emotes,
   "missions/v1.json": missions,
   "presets/thulla/classicPagat.json": classicPagat,
+  "presets/thulla/relaxed.json": relaxed,
   "presets/thulla/family.json": family,
   "presets/thulla/hardcore.json": hardcore,
   "presets/thulla/standard.json": standard,

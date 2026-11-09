@@ -603,6 +603,96 @@
    "smart": false
   },
   {
+   "key": "card.name",
+   "text": "{0} of {1}",
+   "smart": true
+  },
+  {
+   "key": "card.rank.2",
+   "text": "Two",
+   "smart": false
+  },
+  {
+   "key": "card.rank.3",
+   "text": "Three",
+   "smart": false
+  },
+  {
+   "key": "card.rank.4",
+   "text": "Four",
+   "smart": false
+  },
+  {
+   "key": "card.rank.5",
+   "text": "Five",
+   "smart": false
+  },
+  {
+   "key": "card.rank.6",
+   "text": "Six",
+   "smart": false
+  },
+  {
+   "key": "card.rank.7",
+   "text": "Seven",
+   "smart": false
+  },
+  {
+   "key": "card.rank.8",
+   "text": "Eight",
+   "smart": false
+  },
+  {
+   "key": "card.rank.9",
+   "text": "Nine",
+   "smart": false
+  },
+  {
+   "key": "card.rank.A",
+   "text": "Ace",
+   "smart": false
+  },
+  {
+   "key": "card.rank.J",
+   "text": "Jack",
+   "smart": false
+  },
+  {
+   "key": "card.rank.K",
+   "text": "King",
+   "smart": false
+  },
+  {
+   "key": "card.rank.Q",
+   "text": "Queen",
+   "smart": false
+  },
+  {
+   "key": "card.rank.T",
+   "text": "Ten",
+   "smart": false
+  },
+  {
+   "key": "card.suit.C",
+   "text": "Clubs",
+   "smart": false
+  },
+  {
+   "key": "card.suit.D",
+   "text": "Diamonds",
+   "smart": false
+  },
+  {
+   "key": "card.suit.H",
+   "text": "Hearts",
+   "smart": false
+  },
+  {
+   "key": "card.suit.S",
+   "text": "Spades",
+   "smart": false
+  },
+  {
    "key": "chat.problem.social_muted",
    "text": "You're muted for a while after reports from other players.",
    "smart": false
@@ -1998,6 +2088,16 @@
    "smart": false
   },
   {
+   "key": "preset.relaxed.description",
+   "text": "The standard rules with a minute for every turn.",
+   "smart": false
+  },
+  {
+   "key": "preset.relaxed.name",
+   "text": "Relaxed",
+   "smart": false
+  },
+  {
    "key": "preset.standard.description",
    "text": "The Punjab rules most people grew up with.",
    "smart": false
@@ -2438,6 +2538,11 @@
    "smart": false
   },
   {
+   "key": "rulebook.preset_relaxed",
+   "text": "Relaxed",
+   "smart": false
+  },
+  {
    "key": "rulebook.preset_standard",
    "text": "Standard",
    "smart": false
@@ -2630,6 +2735,41 @@
   {
    "key": "social.switch",
    "text": "Switch",
+   "smart": false
+  },
+  {
+   "key": "speech.bhabhi",
+   "text": "{0} is the Bhabhi",
+   "smart": true
+  },
+  {
+   "key": "speech.cannot_play",
+   "text": "{0}, can't be played now",
+   "smart": true
+  },
+  {
+   "key": "speech.escaped",
+   "text": "{0} is out and safe",
+   "smart": true
+  },
+  {
+   "key": "speech.picked_up",
+   "text": "{0} picks up {1:plural:{} cards|{} card|{} cards|{} cards|{} cards|{} cards}",
+   "smart": true
+  },
+  {
+   "key": "speech.played",
+   "text": "{0} played {1}",
+   "smart": true
+  },
+  {
+   "key": "speech.thulla",
+   "text": "{0} played {1}. Thulla!",
+   "smart": true
+  },
+  {
+   "key": "speech.your_turn",
+   "text": "Your turn",
    "smart": false
   },
   {

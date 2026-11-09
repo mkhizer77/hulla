@@ -23,7 +23,7 @@
         "seatCount": { "type": "integer", "minimum": 3, "maximum": 6 },
         "dealerSeat": { "type": "integer", "minimum": 0 },
         "mode": { "enum": ["private", "public", "ranked"] },
-        "preset": { "enum": ["standard", "family", "hardcore", "classicPagat"] },
+        "preset": { "enum": ["standard", "family", "hardcore", "classicPagat", "relaxed"] },
         "overrides": { "type": "object" }
       }
     },
@@ -43,7 +43,7 @@
         "trickIndex": { "type": "integer", "minimum": 0 },
         "discard": { "$ref": "#/definitions/cards" },
         "mode": { "enum": ["private", "public", "ranked"] },
-        "preset": { "enum": ["standard", "family", "hardcore", "classicPagat"] },
+        "preset": { "enum": ["standard", "family", "hardcore", "classicPagat", "relaxed"] },
         "rules": { "type": "object" },
         "phase": { "enum": ["opening", "play", "ended"] },
         "plays": { "type": "array", "items": { "$ref": "#/definitions/play" } },

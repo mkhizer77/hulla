@@ -186,7 +186,7 @@ return errors === 0;
 }
 
 const check_rules_selection = validate13;
-const schema17 = {"type":"object","additionalProperties":false,"required":["gameId"],"properties":{"gameId":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/gameId"},"preset":{"type":"string","enum":["standard","family","hardcore","classicPagat"]},"overrides":{"type":"object","description":"Validated against the game's rules schema"},"settings":{"type":"object","additionalProperties":false,"description":"Table settings that are not engine rules (GDD 6.13)","properties":{"turnTimerSeconds":{"type":["integer","null"],"enum":[10,15,20,30,60,null]},"showCardCounts":{"type":"boolean"},"cardMemoryAssist":{"type":"boolean"},"loserTitle":{"type":"string","enum":["bhabhi","donkey","thullad"]},"spectators":{"type":"boolean"},"voiceDefault":{"type":"string","enum":["openMic","pushToTalk","off"]},"direction":{"type":"string","enum":["cw","ccw"]}}}}};
+const schema17 = {"type":"object","additionalProperties":false,"required":["gameId"],"properties":{"gameId":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/gameId"},"preset":{"type":"string","enum":["standard","family","hardcore","classicPagat","relaxed"]},"overrides":{"type":"object","description":"Validated against the game's rules schema"},"settings":{"type":"object","additionalProperties":false,"description":"Table settings that are not engine rules (GDD 6.13)","properties":{"turnTimerSeconds":{"type":["integer","null"],"enum":[10,15,20,30,60,null]},"showCardCounts":{"type":"boolean"},"cardMemoryAssist":{"type":"boolean"},"loserTitle":{"type":"string","enum":["bhabhi","donkey","thullad"]},"spectators":{"type":"boolean"},"voiceDefault":{"type":"string","enum":["openMic","pushToTalk","off"]},"direction":{"type":"string","enum":["cw","ccw"]}}}}};
 const schema18 = {"type":"string","enum":["thulla","rung"]};
 
 function validate13(data, {instancePath="", parentData, parentDataProperty, rootData=data}={}){
@@ -233,7 +233,7 @@ if(typeof data1 !== "string"){
 validate13.errors = [{instancePath:instancePath+"/preset",schemaPath:"#/properties/preset/type",keyword:"type",params:{type: "string"}}];
 return false;
 }
-if(!((((data1 === "standard") || (data1 === "family")) || (data1 === "hardcore")) || (data1 === "classicPagat"))){
+if(!(((((data1 === "standard") || (data1 === "family")) || (data1 === "hardcore")) || (data1 === "classicPagat")) || (data1 === "relaxed"))){
 validate13.errors = [{instancePath:instancePath+"/preset",schemaPath:"#/properties/preset/enum",keyword:"enum",params:{allowedValues: schema17.properties.preset.enum}}];
 return false;
 }

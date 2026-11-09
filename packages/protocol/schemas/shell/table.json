@@ -21,7 +21,7 @@
         },
         "preset": {
           "type": "string",
-          "enum": ["standard", "family", "hardcore", "classicPagat"]
+          "enum": ["standard", "family", "hardcore", "classicPagat", "relaxed"]
         },
         "overrides": {
           "type": "object",

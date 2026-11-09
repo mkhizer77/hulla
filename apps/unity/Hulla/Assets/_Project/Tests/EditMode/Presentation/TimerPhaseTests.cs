@@ -51,5 +51,28 @@ namespace Hulla.Presentation.Tests
             Assert.IsFalse(TimerPhase.TickAt(1));
             Assert.IsFalse(TimerPhase.TickAt(10));
         }
+    
+        [Test]
+        public void NothingPulsesFasterThanThreeTimesASecond()
+        {
+            // GDD 27: no flashing above 3 Hz. Count the peaks of the fastest pulse over one second.
+            var peaks = 0;
+            var before = TimerPhase.Pulse(1f, 0f, false);
+            var now = TimerPhase.Pulse(1f, 0.001f, false);
+            for (var ms = 2; ms <= 1000; ms++)
+            {
+                var next = TimerPhase.Pulse(1f, ms / 1000f, false);
+                if (now > before && now >= next)
+                {
+                    peaks++;
+                }
+
+                before = now;
+                now = next;
+            }
+
+            Assert.LessOrEqual(peaks, 3);
+        }
     }
 }
+

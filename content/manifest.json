@@ -1,8 +1,8 @@
 {
   "schema": "../tools/content-schemas/manifest.schema.json",
   "id": "content-manifest",
-  "version": 48,
-  "digest": "0f7287f3a46e9fda0152351efbb6207f92df006a3d14894d0b9e34556112d8e8",
+  "version": 49,
+  "digest": "d4766aa583571b171c7f722539064cfb361c3ab3c7423f50f161b7a724c009db",
   "files": [
     {
       "path": "achievements/v1.json",
@@ -85,6 +85,14 @@
       "bytes": 396
     },
     {
+      "path": "presets/thulla/relaxed.json",
+      "type": "presets",
+      "id": "relaxed",
+      "version": 1,
+      "sha256": "17dcf82d775449a4382acac430b9e5b933193f1ea395feac3b3c80682ca86d34",
+      "bytes": 286
+    },
+    {
       "path": "presets/thulla/standard.json",
       "type": "presets",
       "id": "standard",
@@ -129,8 +137,8 @@
       "type": "strings",
       "id": "strings-en",
       "version": 1,
-      "sha256": "706b4b71d43845ca8d889eb816f7b9b39b149dc431e952d4baf0729696115d21",
-      "bytes": 69129
+      "sha256": "78ad11faaf80be6d0c131efdb3aec23d60e04c5ac80e103d80df75d222ec5127",
+      "bytes": 70679
     }
   ]
 }

@@ -22,7 +22,7 @@
     },
     "id": {
       "type": "string",
-      "enum": ["standard", "family", "hardcore", "classicPagat"]
+      "enum": ["standard", "family", "hardcore", "classicPagat", "relaxed"]
     },
     "version": {
       "type": "integer",
