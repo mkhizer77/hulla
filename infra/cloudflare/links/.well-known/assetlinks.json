@@ -5,7 +5,9 @@
       "namespace": "android_app",
       "package_name": "gg.hulla.app",
       "sha256_cert_fingerprints": [
-        "52:5D:7B:4E:9E:47:24:2E:5C:4F:E2:1F:B6:F4:31:F4:14:AB:70:CF:F8:9E:CA:54:BB:54:11:88:63:23:C1:31"
+        "52:5D:7B:4E:9E:47:24:2E:5C:4F:E2:1F:B6:F4:31:F4:14:AB:70:CF:F8:9E:CA:54:BB:54:11:88:63:23:C1:31",
+        "9E:F0:7F:CD:FE:7B:55:3B:D8:0A:7D:EF:87:4E:AE:AF:45:8D:14:BD:64:A2:65:1C:A8:9C:0A:74:F2:CA:A6:26",
+        "74:CF:DF:1D:52:A5:A0:3D:C6:E8:71:3D:B8:79:BA:5E:2D:1B:1C:A4:ED:C8:26:64:39:81:FB:C5:42:F0:86:F6"
       ]
     }
   }
