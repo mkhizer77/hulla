@@ -26,7 +26,7 @@ The second line should say `playhulla.pages.dev: verified` after installing a bu
 
 ## Signing keys
 
-`assetlinks.json` holds the fingerprint of this Mac's debug key, which signs development builds. Add the release upload key when the keystore exists, and Google's app signing key from Play Console (Setup → App signing) once the app is on Play. List a key with `keytool -list -v -keystore <file>`.
+`assetlinks.json` holds three fingerprints: this Mac's debug key (development builds), the upload key (`docs/runbooks/play-release.md`) and Google's app signing key from Play Console (Test and release → App integrity → App signing), which signs every install from Play. A new signing or upload key needs its fingerprint added here. List a key with `keytool -list -v -keystore <file>`.
 
 ## iOS
 
