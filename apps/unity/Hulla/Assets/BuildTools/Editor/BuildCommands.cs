@@ -7,9 +7,10 @@ using UnityEngine;
 namespace Hulla.BuildTools
 {
     /// <summary>
-    /// Local builds from the command line. Release builds run in CI from a tag (ADR-0015); these are
-    /// development builds for play-testing, signed with Unity's debug key:
+    /// Local builds from the command line. Development builds for play-testing are signed with Unity's
+    /// debug key:
     /// <c>Unity -batchmode -quit -projectPath apps/unity/Hulla -executeMethod Hulla.BuildTools.BuildCommands.AndroidDevelopment</c>.
+    /// <see cref="AndroidRelease"/> makes the signed Play bundle (docs/runbooks/play-release.md).
     /// </summary>
     public static class BuildCommands
     {
@@ -26,6 +27,80 @@ namespace Hulla.BuildTools
         /// </summary>
         public static void AndroidDevelopment() =>
             ExitIfBatch(WithDevServer(() => Build(BuildTarget.Android, Path.Combine("Builds", "Android", "hulla-dev.apk"))));
+
+        /// <summary>
+        /// The signed Android App Bundle for Google Play. It needs an https server (HULLA_DEV_SERVER or
+        /// HullaServer.local.json), the upload keystore (HULLA_KEYSTORE, default
+        /// ~/Documents/hulla-signing/hulla-upload.keystore; HULLA_KEYSTORE_PASS; HULLA_KEYALIAS, default
+        /// hulla-upload; HULLA_KEYALIAS_PASS, default the store password) and HULLA_VERSION_CODE, with
+        /// HULLA_VERSION for the version name. Project settings are put back after the build.
+        /// </summary>
+        public static void AndroidRelease()
+        {
+            var (server, key) = DevServer();
+            var keystore = Environment.GetEnvironmentVariable("HULLA_KEYSTORE")
+                ?? Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "Documents", "hulla-signing", "hulla-upload.keystore");
+            var storePass = Environment.GetEnvironmentVariable("HULLA_KEYSTORE_PASS") ?? "";
+            var alias = Environment.GetEnvironmentVariable("HULLA_KEYALIAS") ?? "hulla-upload";
+            var aliasPass = Environment.GetEnvironmentVariable("HULLA_KEYALIAS_PASS") ?? storePass;
+            var versionName = Environment.GetEnvironmentVariable("HULLA_VERSION") ?? PlayerSettings.bundleVersion;
+            if (!server.StartsWith("https://", StringComparison.OrdinalIgnoreCase) || key.Length == 0)
+            {
+                Debug.LogError("release build: set an https server and its key (HULLA_DEV_SERVER and HULLA_DEV_SERVER_KEY, or HullaServer.local.json)");
+                ExitIfBatch(false);
+                return;
+            }
+
+            if (!File.Exists(keystore) || storePass.Length == 0)
+            {
+                Debug.LogError("release build: the upload keystore or HULLA_KEYSTORE_PASS is missing");
+                ExitIfBatch(false);
+                return;
+            }
+
+            if (!int.TryParse(Environment.GetEnvironmentVariable("HULLA_VERSION_CODE"), out var versionCode) || versionCode < 1)
+            {
+                Debug.LogError("release build: set HULLA_VERSION_CODE to a number above the last upload");
+                ExitIfBatch(false);
+                return;
+            }
+
+            var saved = (
+                PlayerSettings.Android.useCustomKeystore,
+                PlayerSettings.Android.keystoreName,
+                PlayerSettings.Android.keyaliasName,
+                PlayerSettings.Android.bundleVersionCode,
+                PlayerSettings.bundleVersion,
+                EditorUserBuildSettings.androidCreateSymbols);
+            var succeeded = false;
+            try
+            {
+                PlayerSettings.Android.useCustomKeystore = true;
+                PlayerSettings.Android.keystoreName = keystore;
+                PlayerSettings.Android.keystorePass = storePass;
+                PlayerSettings.Android.keyaliasName = alias;
+                PlayerSettings.Android.keyaliasPass = aliasPass;
+                PlayerSettings.Android.bundleVersionCode = versionCode;
+                PlayerSettings.bundleVersion = versionName;
+                // Play shows native crashes with function names only when the bundle carries symbols.
+                EditorUserBuildSettings.androidCreateSymbols = AndroidCreateSymbols.Public;
+                var path = Path.Combine("Builds", "Android", $"hulla-{versionName}-{versionCode}.aab");
+                succeeded = WithServer(server, key, () => Build(BuildTarget.Android, path, BuildOptions.None, appBundle: true));
+            }
+            finally
+            {
+                PlayerSettings.Android.useCustomKeystore = saved.useCustomKeystore;
+                PlayerSettings.Android.keystoreName = saved.keystoreName;
+                PlayerSettings.Android.keystorePass = "";
+                PlayerSettings.Android.keyaliasName = saved.keyaliasName;
+                PlayerSettings.Android.keyaliasPass = "";
+                PlayerSettings.Android.bundleVersionCode = saved.bundleVersionCode;
+                PlayerSettings.bundleVersion = saved.bundleVersion;
+                EditorUserBuildSettings.androidCreateSymbols = saved.androidCreateSymbols;
+            }
+
+            ExitIfBatch(succeeded);
+        }
 
         /// <summary>
         /// The development Xcode project, pointed at this Mac like the APK. Signing uses
@@ -74,7 +149,12 @@ namespace Hulla.BuildTools
         private static bool WithDevServer(Func<bool> build)
         {
             var (server, key) = DevServer();
-            Debug.Log($"development build for {server}");
+            return WithServer(server, key, build);
+        }
+
+        private static bool WithServer(string server, string key, Func<bool> build)
+        {
+            Debug.Log($"build for {server}");
             Directory.CreateDirectory(Path.GetDirectoryName(DevServerAsset)!);
             File.WriteAllText(DevServerAsset, key.Length > 0 ? server + "\n" + key : server);
             AssetDatabase.ImportAsset(DevServerAsset);
@@ -96,7 +176,7 @@ namespace Hulla.BuildTools
             return succeeded;
         }
 
-        /// <summary>Read by AppConfig in development builds; written only for the build, never committed.</summary>
+        /// <summary>Read by AppConfig; written only for the build, never committed.</summary>
         private const string DevServerAsset = "Assets/Resources/hulla-dev-server.txt";
 
         private static string LanAddress()
@@ -147,11 +227,11 @@ namespace Hulla.BuildTools
             }
         }
 
-        private static bool Build(BuildTarget target, string defaultPath)
+        private static bool Build(BuildTarget target, string defaultPath, BuildOptions options = BuildOptions.Development, bool appBundle = false)
         {
             var path = Environment.GetEnvironmentVariable("HULLA_BUILD_OUT") ?? defaultPath;
             Directory.CreateDirectory(Path.GetDirectoryName(Path.GetFullPath(path))!);
-            EditorUserBuildSettings.buildAppBundle = false;
+            EditorUserBuildSettings.buildAppBundle = appBundle;
             // Addressables builds its bundles for the active platform. Switching here reloads the
             // scripts mid-build and the content build fails, so the editor must start on the target
             // (-buildTarget Android or -buildTarget OSXUniversal).
@@ -169,13 +249,14 @@ namespace Hulla.BuildTools
                     scenes = Scenes,
                     locationPathName = path,
                     target = target,
-                    options = BuildOptions.Development,
+                    options = options,
                 });
             }
             finally
             {
                 SocialSetup.ClearToken();
                 AdsSetup.ClearKey();
+                EditorUserBuildSettings.buildAppBundle = false;
             }
 
             Debug.Log($"build {target}: {report.summary.result}, {report.summary.totalErrors} errors, {path}");

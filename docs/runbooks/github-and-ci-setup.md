@@ -35,7 +35,7 @@ The phase 0 box keeps `/opt/hulla/.env` with `NAKAMA_IMAGE=ghcr.io/mkhizer77/hul
 Replace Nakama's default `socket.server_key`, `runtime.http_key` and console username and password before the first start; bind the console (port 7351) to localhost or put it behind Cloudflare Access; expose only the socket port through Cloudflare; keep Postgres on the compose network with no published port; raise `socket.max_message_size_bytes` to fit the largest table snapshot.
 
 ## Keystore and Play App Signing
-Enrol the app in Play App Signing at first upload so Google holds the signing key and a lost upload keystore can be reset; keep the upload keystore offline as well.
+Enrol the app in Play App Signing at first upload so Google holds the signing key and a lost upload keystore can be reset; keep the upload keystore offline as well. The upload keystore, its Keychain entry and the local release build are in `docs/runbooks/play-release.md`.
 
 ## Git LFS
 CI caches `.git/lfs` keyed on the LFS object list, so a run only downloads objects that changed. Keep large art out of the repository where possible (Addressables built from the asset source) and watch the LFS bandwidth quota on the billing page.

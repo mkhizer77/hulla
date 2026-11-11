@@ -8,6 +8,7 @@ namespace Hulla.Composition
     /// build can point at another server with <c>-hulla-server address</c> (and <c>-hulla-server-key</c>)
     /// or the server field in Settings, remembered in player prefs; a development build starts at the
     /// server it was built for (BuildCommands: HULLA_DEV_SERVER or HullaServer.local.json, else this Mac).
+    /// A release build always uses the server it was built for and takes no overrides.
     /// An address is <c>host[:port]</c> for plain http on 7350, or <c>https://host[:port]</c> on 443,
     /// as for the phase 0 box (docs/runbooks/gcp-phase0.md).
     /// </summary>
@@ -48,6 +49,12 @@ namespace Hulla.Composition
 
         public static AppConfig FromEnvironment()
         {
+            if (!Debug.isDebugBuild)
+            {
+                var release = Built();
+                return release == null ? Local() : WithServer(release.Value.Address, release.Value.Key);
+            }
+
             var args = Environment.GetCommandLineArgs();
             string? server = null;
             string? key = null;
@@ -132,16 +139,11 @@ namespace Hulla.Composition
         }
 
         /// <summary>
-        /// The server a development build was made for: the address on the first line of the resource
-        /// and, for a deployed server, its key on the second.
+        /// The server the build was made for: the address on the first line of the resource and, for a
+        /// deployed server, its key on the second. Written by BuildCommands for the build only.
         /// </summary>
         private static (string Address, string? Key)? Built()
         {
-            if (!Debug.isDebugBuild)
-            {
-                return null;
-            }
-
             var text = Resources.Load<TextAsset>(DevServerResource)?.text;
             if (string.IsNullOrWhiteSpace(text))
             {
