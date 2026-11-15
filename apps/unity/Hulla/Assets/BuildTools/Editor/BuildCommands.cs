@@ -10,7 +10,8 @@ namespace Hulla.BuildTools
     /// Local builds from the command line. Development builds for play-testing are signed with Unity's
     /// debug key:
     /// <c>Unity -batchmode -quit -projectPath apps/unity/Hulla -executeMethod Hulla.BuildTools.BuildCommands.AndroidDevelopment</c>.
-    /// <see cref="AndroidRelease"/> makes the signed Play bundle (docs/runbooks/play-release.md).
+    /// <see cref="AndroidRelease"/> makes the signed Play bundle (docs/runbooks/play-release.md) and
+    /// <see cref="IOSRelease"/> the TestFlight project (docs/runbooks/ios-release.md).
     /// </summary>
     public static class BuildCommands
     {
@@ -116,6 +117,63 @@ namespace Hulla.BuildTools
             }
 
             ExitIfBatch(WithDevServer(() => Build(BuildTarget.iOS, Path.Combine("Builds", "iOS", "Xcode"))));
+        }
+
+        /// <summary>
+        /// The release Xcode project for TestFlight and the App Store (docs/runbooks/ios-release.md),
+        /// signed automatically by HULLA_IOS_TEAM. HULLA_BUILD_NUMBER must rise with every upload;
+        /// tools/ios-release.sh archives the project and uploads it.
+        /// </summary>
+        public static void IOSRelease()
+        {
+            var (server, key) = DevServer();
+            var team = Environment.GetEnvironmentVariable("HULLA_IOS_TEAM") ?? "";
+            var versionName = Environment.GetEnvironmentVariable("HULLA_VERSION") ?? PlayerSettings.bundleVersion;
+            if (!server.StartsWith("https://", StringComparison.OrdinalIgnoreCase) || key.Length == 0)
+            {
+                Debug.LogError("release build: set an https server and its key (HULLA_DEV_SERVER and HULLA_DEV_SERVER_KEY, or HullaServer.local.json)");
+                ExitIfBatch(false);
+                return;
+            }
+
+            if (team.Length == 0)
+            {
+                Debug.LogError("release build: set HULLA_IOS_TEAM to the Apple Developer team id");
+                ExitIfBatch(false);
+                return;
+            }
+
+            if (!int.TryParse(Environment.GetEnvironmentVariable("HULLA_BUILD_NUMBER"), out var buildNumber) || buildNumber < 1)
+            {
+                Debug.LogError("release build: set HULLA_BUILD_NUMBER to a number above the last upload");
+                ExitIfBatch(false);
+                return;
+            }
+
+            var saved = (
+                PlayerSettings.iOS.appleDeveloperTeamID,
+                PlayerSettings.iOS.appleEnableAutomaticSigning,
+                PlayerSettings.iOS.buildNumber,
+                PlayerSettings.bundleVersion);
+            var succeeded = false;
+            try
+            {
+                PlayerSettings.iOS.appleDeveloperTeamID = team;
+                PlayerSettings.iOS.appleEnableAutomaticSigning = true;
+                PlayerSettings.iOS.buildNumber = buildNumber.ToString(System.Globalization.CultureInfo.InvariantCulture);
+                PlayerSettings.bundleVersion = versionName;
+                var path = Path.Combine("Builds", "iOS", "Release");
+                succeeded = WithServer(server, key, () => Build(BuildTarget.iOS, path, BuildOptions.None));
+            }
+            finally
+            {
+                PlayerSettings.iOS.appleDeveloperTeamID = saved.appleDeveloperTeamID;
+                PlayerSettings.iOS.appleEnableAutomaticSigning = saved.appleEnableAutomaticSigning;
+                PlayerSettings.iOS.buildNumber = saved.buildNumber;
+                PlayerSettings.bundleVersion = saved.bundleVersion;
+            }
+
+            ExitIfBatch(succeeded);
         }
 
         /// <summary>
