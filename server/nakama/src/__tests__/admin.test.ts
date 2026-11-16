@@ -193,7 +193,7 @@ describe("the admin RPCs against an in-memory Nakama", () => {
   it("inspects a table and replays a round, writing audit rows", () => {
     const m = memoryNk();
     const log = fakeLogger();
-    const matchId = m.nk.matchCreate("table", {
+    const matchId = m.nk.matchCreate("hulla_table", {
       code: "ABCDEF",
       mode: "private",
       gameId: "thulla",

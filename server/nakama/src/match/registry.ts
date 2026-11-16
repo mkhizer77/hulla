@@ -6,8 +6,10 @@ import type { GameId } from "@hulla/rules-engine";
 /**
  * The one Nakama match module every table runs under. A room outlives the game it plays, so the
  * match is not named after a game: the callbacks look the host up from the table's `gameId`.
+ * The name must not be a Lua module: Nakama asks its Lua runtime first, and a plain `table` finds
+ * Lua's own library there and fails with "match_init not found".
  */
-export const TABLE_MATCH = "table";
+export const TABLE_MATCH = "hulla_table";
 
 /** A registered game: its host for the table core and the Nakama match module name. */
 export interface GameEntry {

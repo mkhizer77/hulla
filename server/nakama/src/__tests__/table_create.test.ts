@@ -46,7 +46,7 @@ describe("table_create", () => {
     expect(response.code).toMatch(/^[ABCDEFGHJKLMNPQRSTUVWXYZ23456789]{6}$/);
     expect(response.tableId).toBe(`t_${response.code}`);
     expect(d.created[0]).toEqual({
-      module: "table",
+      module: "hulla_table",
       params: {
         code: response.code,
         gameId: "thulla",

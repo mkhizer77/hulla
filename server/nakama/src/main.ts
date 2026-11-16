@@ -218,7 +218,7 @@ function InitModule(
   initializer.registerBeforeAuthenticateCustom(beforeAuthenticateCustom);
   initializer.registerAfterAuthenticateCustom(afterAuthenticateCustom);
   // The name is a literal for Nakama's reader of this call; it equals TABLE_MATCH (init test).
-  initializer.registerMatch("table", {
+  initializer.registerMatch("hulla_table", {
     matchInit: tableMatchInit,
     matchJoinAttempt: tableMatchJoinAttempt,
     matchJoin: tableMatchJoin,

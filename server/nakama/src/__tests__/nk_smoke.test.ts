@@ -110,7 +110,7 @@ describe("the RPCs and hooks against an in-memory Nakama", () => {
     m.online.add("sara");
     expect(isUserOnline(m.nk, "sara")).toBe(true);
     expect(isUserOnline(m.nk, "noor")).toBe(false);
-    const matchId = m.nk.matchCreate("table", {
+    const matchId = m.nk.matchCreate("hulla_table", {
       code: "ABCDEF",
       mode: "private",
       gameId: "thulla",
