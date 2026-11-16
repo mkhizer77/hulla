@@ -340,6 +340,8 @@ flowchart TB
 | `matchSignal` | Admin actions (inspect, force end, mute) and server-side notices |
 | `matchTerminate` | Persist final results and logs; refund nothing (no stakes exist); close voice channel token |
 
+One match module, `table`, runs every game: a room outlives the game it plays. Each callback looks the game's host up from the table's `gameId`, and the host's `change_game` message swaps the game between rounds (asked for during a round, it waits for the round's end). The match id does not change, so the room code, the chat channel and the voice room carry over, and each game's rules and score are kept for when the room returns to it. A game with fewer seats leaves the extra players in the room as spectators first in line for a seat.
+
 Open-source Nakama cannot move a running match between nodes, so a restart ends every table. Deploys happen in a quiet window after a `matchSignal` notice to open tables (§15); a table whose node went away can be recreated with the same code from its last snapshot [LATER].
 
 ### 8.4 Message pipeline

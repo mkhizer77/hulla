@@ -26,7 +26,7 @@ describe("the matchmaker hook", () => {
       [entry("u1", "party-a"), entry("u2", "party-a"), entry("u3"), entry("u4", "party-solo")],
     );
     expect(matchId).toBe("m_quick");
-    expect(created[0]?.module).toBe("thulla");
+    expect(created[0]?.module).toBe("table");
     expect(created[0]?.params).toMatchObject({
       gameId: "thulla",
       mode: "public",

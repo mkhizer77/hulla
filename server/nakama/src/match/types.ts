@@ -279,7 +279,8 @@ export interface RoundRuntime<S, M> {
 export interface TableState<S, M> {
   readonly tableId: string;
   readonly code: string;
-  readonly gameId: GameId;
+  /** The game the room plays now; the host may switch it between rounds (`change_game`). */
+  gameId: GameId;
   readonly mode: TableMode;
   phase: TablePhase;
   lockedByHost: boolean;
@@ -291,6 +292,11 @@ export interface TableState<S, M> {
   /** User ids that may not rejoin: kicked players and removed watchers (GDD 9.9, OQ-050). */
   kicked: string[];
   series: SeriesState | null;
+  /** The rules and the score each game was left with, so switching back resumes the evening. */
+  rulesByGame?: Partial<Record<GameId, RulesSelection>>;
+  seriesByGame?: Partial<Record<GameId, SeriesState>>;
+  /** A switch the host asked for during a round; it happens when the round ends. */
+  queuedGame?: QueuedGame | null;
   round: RoundRuntime<S, M> | null;
   roundsStarted: number;
   /** The last server sequence number; only public messages advance it. */
@@ -302,6 +308,15 @@ export interface TableState<S, M> {
   emptySinceTs: number | null;
   closeReason: TableCloseReason | null;
 }
+
+export interface QueuedGame {
+  readonly gameId: GameId;
+  readonly rules: RulesSelection;
+  readonly by: SeatIndex;
+}
+
+/** A host whose state, move, view, event and rules types the caller does not know. */
+export type AnyGameHost = GameHost<unknown, unknown, unknown, unknown, unknown>;
 
 /** A matchmade public table: deals itself once everyone is seated or the join window closes. */
 export interface AutoStart {

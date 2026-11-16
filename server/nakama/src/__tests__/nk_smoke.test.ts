@@ -2,14 +2,14 @@ import { OPCODES } from "@hulla/protocol/generated";
 import { describe, expect, it } from "vitest";
 
 import {
-  thullaMatchInit,
-  thullaMatchJoin,
-  thullaMatchJoinAttempt,
-  thullaMatchLeave,
-  thullaMatchLoop,
-  thullaMatchSignal,
-  thullaMatchTerminate,
-} from "../games/thulla/match";
+  tableMatchInit,
+  tableMatchJoin,
+  tableMatchJoinAttempt,
+  tableMatchLeave,
+  tableMatchLoop,
+  tableMatchSignal,
+  tableMatchTerminate,
+} from "../games/table_match";
 import { afterAuthenticateDevice, afterAuthenticateGoogle } from "../hooks/after_authenticate";
 import { beforeChannelMessageSend } from "../hooks/before_channel_message";
 import { matchmakerMatched } from "../hooks/matchmaker_matched";
@@ -110,7 +110,7 @@ describe("the RPCs and hooks against an in-memory Nakama", () => {
     m.online.add("sara");
     expect(isUserOnline(m.nk, "sara")).toBe(true);
     expect(isUserOnline(m.nk, "noor")).toBe(false);
-    const matchId = m.nk.matchCreate("thulla", {
+    const matchId = m.nk.matchCreate("table", {
       code: "ABCDEF",
       mode: "private",
       gameId: "thulla",
@@ -186,7 +186,7 @@ describe("the RPCs and hooks against an in-memory Nakama", () => {
 
     const ctx = { matchId: "m1.n1", env: {} } as unknown as nkruntime.Context;
     const d = fakeDispatcher();
-    const init = thullaMatchInit(ctx, log, m.nk, {
+    const init = tableMatchInit(ctx, log, m.nk, {
       code,
       gameId: "thulla",
       mode: "private",
@@ -201,12 +201,12 @@ describe("the RPCs and hooks against an in-memory Nakama", () => {
       nkPresence(2),
     ];
     for (const p of presences) {
-      const attempt = thullaMatchJoinAttempt(ctx, log, m.nk, d.dispatcher, 1, state, p, {});
+      const attempt = tableMatchJoinAttempt(ctx, log, m.nk, d.dispatcher, 1, state, p, {});
       expect(attempt?.accept).toBe(true);
       state = rebuilt(attempt?.state ?? state);
     }
     state = rebuilt(
-      thullaMatchJoin(ctx, log, m.nk, d.dispatcher, 1, state, presences)?.state ?? state,
+      tableMatchJoin(ctx, log, m.nk, d.dispatcher, 1, state, presences)?.state ?? state,
     );
     expect(m.object("presence", "state", "u0")).toMatchObject({ table: { matchId: "m1.n1" } });
     const ping = matchMessage(presences[0], OPCODES.ping.opcode, {
@@ -217,10 +217,8 @@ describe("the RPCs and hooks against an in-memory Nakama", () => {
       ts: 0,
       payload: {},
     });
-    state = rebuilt(
-      thullaMatchLoop(ctx, log, m.nk, d.dispatcher, 2, state, [ping])?.state ?? state,
-    );
-    const inspected = thullaMatchSignal(
+    state = rebuilt(tableMatchLoop(ctx, log, m.nk, d.dispatcher, 2, state, [ping])?.state ?? state);
+    const inspected = tableMatchSignal(
       ctx,
       log,
       m.nk,
@@ -231,10 +229,10 @@ describe("the RPCs and hooks against an in-memory Nakama", () => {
     );
     expect(JSON.parse(inspected?.data ?? "{}")).toMatchObject({ ok: true });
     state = rebuilt(
-      thullaMatchLeave(ctx, log, m.nk, d.dispatcher, 4, state, [presences[2]])?.state ?? state,
+      tableMatchLeave(ctx, log, m.nk, d.dispatcher, 4, state, [presences[2]])?.state ?? state,
     );
     expect(m.object("presence", "state", "u2")).toMatchObject({ table: null });
-    thullaMatchTerminate(ctx, log, m.nk, d.dispatcher, 5, state, 0);
+    tableMatchTerminate(ctx, log, m.nk, d.dispatcher, 5, state, 0);
     expect(m.object("presence", "state", "u0")).toMatchObject({ table: null });
   });
 

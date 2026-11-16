@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 
 import { BUNDLED_CATALOG } from "../content/catalog";
-import { thullaMatchInit, thullaMatchJoin, thullaMatchJoinAttempt } from "../games/thulla/match";
+import { tableMatchInit, tableMatchJoin, tableMatchJoinAttempt } from "../games/table_match";
 import { rpcAdminGrant } from "../rpc/admin";
 import {
   rpcCatalogSet,
@@ -221,7 +221,7 @@ describe("the cosmetic catalog (GDD 12.11, 13.4)", () => {
 
     const ctx = { matchId: "m1.n1", env: {} } as unknown as nkruntime.Context;
     const d = fakeDispatcher();
-    const init = thullaMatchInit(ctx, log, m.nk, {
+    const init = tableMatchInit(ctx, log, m.nk, {
       code: "ABCDEF",
       gameId: "thulla",
       mode: "private",
@@ -229,8 +229,8 @@ describe("the cosmetic catalog (GDD 12.11, 13.4)", () => {
     let state = init.state;
     const presence = { ...nkPresence(0), userId: "u1" };
     state =
-      thullaMatchJoinAttempt(ctx, log, m.nk, d.dispatcher, 1, state, presence, {})?.state ?? state;
-    state = thullaMatchJoin(ctx, log, m.nk, d.dispatcher, 1, state, [presence])?.state ?? state;
+      tableMatchJoinAttempt(ctx, log, m.nk, d.dispatcher, 1, state, presence, {})?.state ?? state;
+    state = tableMatchJoin(ctx, log, m.nk, d.dispatcher, 1, state, [presence])?.state ?? state;
     expect(state.seats[0]?.cosmetics).toMatchObject({
       cardBack: "back_jaali",
       table: "table_charpai",

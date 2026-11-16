@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { thullaMatchInit, thullaMatchJoinAttempt } from "../games/thulla/match";
+import { tableMatchInit, tableMatchJoinAttempt } from "../games/table_match";
 import { rpcConfigGet, rpcConfigSet } from "../rpc/config";
 import { rpcHello } from "../rpc/hello";
 import {
@@ -133,12 +133,12 @@ describe("remote configuration and the minimum client version (GDD 22.5, 20.15)"
 
     // An old client cannot join a table; a current one can.
     const ctx = { matchId: "m1.n1", env: {} } as unknown as nkruntime.Context;
-    const init = thullaMatchInit(ctx, log, m.nk, {
+    const init = tableMatchInit(ctx, log, m.nk, {
       code: "ABCDEF",
       gameId: "thulla",
       mode: "private",
     });
-    const old = thullaMatchJoinAttempt(
+    const old = tableMatchJoinAttempt(
       ctx,
       log,
       m.nk,
@@ -149,7 +149,7 @@ describe("remote configuration and the minimum client version (GDD 22.5, 20.15)"
       { clientVersion: "0.1.5" },
     );
     expect(old).toMatchObject({ accept: false, rejectMessage: "auth.update_required" });
-    const fresh = thullaMatchJoinAttempt(
+    const fresh = tableMatchJoinAttempt(
       ctx,
       log,
       m.nk,

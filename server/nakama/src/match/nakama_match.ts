@@ -35,6 +35,7 @@ import { DEFAULT_TABLE_CONFIG } from "./types";
 import { freeSeat, occupiedSeats, spectatorCount, tableStatus } from "./view";
 
 import type {
+  AnyGameHost,
   Batch,
   CreateTableParams,
   GameHost,
@@ -451,24 +452,42 @@ function parseSignal(data: string): { readonly kind?: string } | null {
   }
 }
 
+/** A resolver for a server that runs one game only (tests). */
+export function onlyGame<S, M, V, E, R>(
+  host: GameHost<S, M, V, E, R>,
+): (gameId: string) => AnyGameHost | null {
+  // Hosts differ only in types the binding never looks inside.
+  return () => host;
+}
+
+/** A table whose game the binding does not know; the core reads it through the game's host. */
+export type AnyTableState = TableState<unknown, unknown>;
+
 export interface MatchHandlerOptions {
   readonly config?: Partial<TableConfig>;
 }
 
 /**
- * Nakama match callbacks for one game. Nakama looks each callback up by its global name, so the
- * game file wraps these in named top-level functions and registers those (see `main.ts`).
+ * Nakama match callbacks for every game. A room outlives the game it plays, so each callback
+ * looks the host up from the table's `gameId`. Nakama finds callbacks by their global names, so
+ * `games/table_match.ts` wraps these in named top-level functions and `main.ts` registers those.
  */
-export function tableMatchHandler<S, M, V, E, R>(
-  host: GameHost<S, M, V, E, R>,
+export function tableMatchHandler(
+  hostFor: (gameId: string) => AnyGameHost | null,
   options: MatchHandlerOptions = {},
-): nkruntime.MatchHandler<TableState<S, M>> {
+): nkruntime.MatchHandler<AnyTableState> {
+  type S = unknown;
+  type M = unknown;
   const coreFor = (
     ctx: nkruntime.Context,
     nk: nkruntime.Nakama,
     logger: nkruntime.Logger,
-  ): TableCore<S, M> =>
-    tableCore(host, {
+    gameId: string,
+  ): TableCore<S, M> => {
+    const host = hostFor(gameId);
+    if (host === null) throw new Error(`no game registered as ${gameId}`);
+    return tableCore(host, {
+      games: hostFor,
       ids: { uuid: () => nk.uuidv4() },
       persist: storagePersistence(nk, logger),
       social: {
@@ -493,6 +512,7 @@ export function tableMatchHandler<S, M, V, E, R>(
       },
       config: { ...turnSecondsFrom(ctx.env), ...options.config },
     });
+  };
 
   const relabel = (
     dispatcher: nkruntime.MatchDispatcher,
@@ -568,8 +588,9 @@ export function tableMatchHandler<S, M, V, E, R>(
 
   return {
     matchInit(ctx, logger, nk, params) {
-      const core = coreFor(ctx, nk, logger);
-      const state = core.create(parseParams(params), Date.now());
+      const parsed = parseParams(params);
+      const core = coreFor(ctx, nk, logger, parsed.gameId);
+      const state = core.create(parsed, Date.now());
       log.info(logger, "table created", {
         tableId: state.tableId,
         gameId: state.gameId,
@@ -595,7 +616,12 @@ export function tableMatchHandler<S, M, V, E, R>(
       } catch (error: unknown) {
         log.warn(logger, "remote config not read", { error: String(error) });
       }
-      const decision = coreFor(ctx, nk, logger).joinAttempt(state, info(presence), metadata, now);
+      const decision = coreFor(ctx, nk, logger, state.gameId).joinAttempt(
+        state,
+        info(presence),
+        metadata,
+        now,
+      );
       return decision.accept
         ? { state, accept: true }
         : { state, accept: false, rejectMessage: decision.code };
@@ -627,7 +653,7 @@ export function tableMatchHandler<S, M, V, E, R>(
           );
         }
       }
-      const batch = coreFor(ctx, nk, logger).join(state, presences.map(info), now);
+      const batch = coreFor(ctx, nk, logger, state.gameId).join(state, presences.map(info), now);
       presenceSync(
         ctx,
         logger,
@@ -645,7 +671,7 @@ export function tableMatchHandler<S, M, V, E, R>(
     matchLeave(ctx, logger, nk, dispatcher, _tick, state, presences) {
       const before = labelFor(state);
       const now = Date.now();
-      const batch = coreFor(ctx, nk, logger).leave(state, presences.map(info), now);
+      const batch = coreFor(ctx, nk, logger, state.gameId).leave(state, presences.map(info), now);
       presenceSync(
         ctx,
         logger,
@@ -663,7 +689,8 @@ export function tableMatchHandler<S, M, V, E, R>(
 
     matchLoop(ctx, logger, nk, dispatcher, _tick, state, messages) {
       const seatedBefore = seatedUserIds(state);
-      const core = coreFor(ctx, nk, logger);
+      let core = coreFor(ctx, nk, logger, state.gameId);
+      let coreGame = state.gameId;
       const before = labelFor(state);
       const now = Date.now();
       const senders = messages.map((m) => m.sender);
@@ -689,6 +716,11 @@ export function tableMatchHandler<S, M, V, E, R>(
           leaveVoice(ctx, logger, nk, batch, now);
           recordMoveLatency(nk, state.gameId, message, logAnalytics(logger, nk, state, batch, now));
           end = end || batch.end;
+          // The host switched the room's game: the rest of this loop runs the new one.
+          if (state.gameId !== coreGame) {
+            core = coreFor(ctx, nk, logger, state.gameId);
+            coreGame = state.gameId;
+          }
         } catch (error: unknown) {
           metrics.count(nk, METRICS.messagesDropped, { game: state.gameId });
           log.error(logger, "message dropped", { tableId: state.tableId, error: String(error) });
@@ -706,7 +738,7 @@ export function tableMatchHandler<S, M, V, E, R>(
     matchTerminate(ctx, logger, nk, dispatcher, _tick, state) {
       const now = Date.now();
       const seated = seatedUserIds(state);
-      const batch = coreFor(ctx, nk, logger).close(state, "server", now);
+      const batch = coreFor(ctx, nk, logger, state.gameId).close(state, "server", now);
       send(dispatcher, state, batch, []);
       presenceSync(ctx, logger, nk, { ...state, phase: "closing" }, seated, now);
       return { state };
@@ -734,7 +766,11 @@ export function tableMatchHandler<S, M, V, E, R>(
         };
       }
       if (signal.kind === "close") {
-        const batch = coreFor(ctx, nk, logger).close(state, "host_closed", Date.now());
+        const batch = coreFor(ctx, nk, logger, state.gameId).close(
+          state,
+          "host_closed",
+          Date.now(),
+        );
         send(dispatcher, state, batch, []);
         return { state, data: JSON.stringify({ ok: true }) };
       }

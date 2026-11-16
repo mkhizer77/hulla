@@ -38,6 +38,7 @@ import {
   DEFAULT_TABLE_CONFIG,
   newBatch,
   without,
+  type AnyGameHost,
   type Batch,
   type CreateTableParams,
   type GameHost,
@@ -92,6 +93,8 @@ export interface TableCoreDeps {
   readonly social?: SocialGate;
   /** The names players chose (profile, account); absent, the Nakama username shows (tests). */
   readonly names?: NameSource;
+  /** The other games a room may switch to (`change_game`); absent, a table keeps its game. */
+  readonly games?: (gameId: string) => AnyGameHost | null;
 }
 
 export interface NameSource {
@@ -309,6 +312,91 @@ export function tableCore<S, M, V, E, R>(
     }
   };
 
+  /**
+   * Another registered game's host. The core is generic over one game's types; a switch replaces
+   * the game and with it what those types stand for, so the host is taken as this core's own.
+   */
+  const otherGame = (gameId: string): GameHost<S, M, V, E, R> | null =>
+    (deps.games?.(gameId) ?? null) as GameHost<S, M, V, E, R> | null;
+
+  /**
+   * Fits the seated players into `max` seats, keeping seat order and never unseating the host.
+   * Players without a seat stay in the room as spectators first in line for the next free seat;
+   * bots without a seat go.
+   */
+  const resizeSeats = (state: TableState<S, M>, max: number, emit: Emitter): void => {
+    const occupied = state.seats.flatMap((slot, index) => (slot.playerId === null ? [] : [index]));
+    const keep = occupied.slice(0, max);
+    const hostSeat = state.hostSeat;
+    if (hostSeat !== null && occupied.includes(hostSeat) && !keep.includes(hostSeat)) {
+      keep[keep.length - 1] = hostSeat;
+      keep.sort((a, b) => a - b);
+    }
+    for (const index of occupied) {
+      if (keep.includes(index)) continue;
+      const slot = state.seats[index];
+      const sessionId = slot?.sessionId ?? null;
+      const presence = sessionId === null ? undefined : state.presences[sessionId];
+      if (presence === undefined) continue;
+      presence.seat = null;
+      presence.seatNext = true;
+      presence.friendOf = friendsAmong(presence.userId, seatedPlayerIds(state, presence.userId));
+      emit.public("presence", presencePayload(presence, null, "spectating"));
+    }
+    const kept = keep.map((index) => state.seats[index]).filter((slot) => slot !== undefined);
+    state.seats = [...kept, ...Array.from({ length: max - kept.length }, emptySlot)];
+    for (const presence of Object.values(state.presences)) {
+      if (presence.seat === null) continue;
+      const seat = keep.indexOf(presence.seat);
+      presence.seat = seat === -1 ? null : seat;
+    }
+    const newHost = hostSeat === null ? -1 : keep.indexOf(hostSeat);
+    state.hostSeat = newHost === -1 ? (kept.length > 0 ? 0 : null) : newHost;
+  };
+
+  /**
+   * The room starts playing another game. The match, and so the room code, the chat channel and
+   * the voice room, stay; each game's rules and score are kept for when the room comes back.
+   */
+  const switchGame = (
+    state: TableState<S, M>,
+    target: GameHost<S, M, V, E, R>,
+    rules: RulesSelection,
+    by: SeatIndex,
+    emit: Emitter,
+    now: number,
+  ): void => {
+    const hostPlayer = state.seats[by]?.playerId ?? null;
+    state.rulesByGame = { ...(state.rulesByGame ?? {}), [state.gameId]: state.rules };
+    if (state.series !== null) {
+      state.seriesByGame = { ...(state.seriesByGame ?? {}), [state.gameId]: state.series };
+    }
+    state.gameId = target.module.id;
+    state.rules = rules;
+    state.series = state.seriesByGame?.[state.gameId] ?? null;
+    state.queuedGame = null;
+    state.phase = "lobby";
+    state.round = null;
+    state.rematchDeadlineTs = null;
+    resizeSeats(state, target.module.seats.max, emit);
+    seatWaitingSpectators(state, emit, now);
+    for (const slot of state.seats) {
+      slot.ready = slot.bot;
+      slot.rematch = slot.bot ? true : null;
+    }
+    const changedBy = state.seats.findIndex(
+      (s) => s.playerId !== null && s.playerId === hostPlayer,
+    );
+    emit.public("game_changed", {
+      gameId: state.gameId,
+      rules,
+      changedBy: changedBy === -1 ? (state.hostSeat ?? 0) : changedBy,
+    });
+    for (const presence of Object.values(state.presences)) {
+      emit.session(presence.sessionId, "table_state", tableStateFor(state, target, presence));
+    }
+  };
+
   const closeTable = (
     state: TableState<S, M>,
     emit: Emitter,
@@ -382,6 +470,13 @@ export function tableCore<S, M, V, E, R>(
       closeTable(state, emit, "dissolved", now);
       return;
     }
+    const queued = state.queuedGame ?? null;
+    const target = queued === null ? null : otherGame(queued.gameId);
+    if (queued !== null && target !== null) {
+      switchGame(state, target, queued.rules, queued.by, emit, now);
+      return;
+    }
+    state.queuedGame = null;
     broadcastTableState(state, emit);
   };
 
@@ -669,6 +764,52 @@ export function tableCore<S, M, V, E, R>(
         state.rules = rules;
         emit.public("rules_changed", { rules, changedBy: seat, changedKeys });
         broadcastTableState(state, emit);
+        return;
+      }
+      case "change_game": {
+        if (seat === null || !isHost(state, seat)) {
+          reject(ruleError(ErrorCodes.table.notHost));
+          return;
+        }
+        // A matched table was matched for one game; only a private room switches.
+        if (state.mode !== "private") {
+          reject(ruleError(ErrorCodes.table.locked, { reason: "mode" }));
+          return;
+        }
+        const gameId = String(payload["gameId"]);
+        if (gameId === state.gameId) {
+          // Naming the game already played takes back a queued switch.
+          if ((state.queuedGame ?? null) === null) {
+            reject(ruleError(ErrorCodes.table.invalidPayload, { reason: "same_game" }));
+            return;
+          }
+          state.queuedGame = null;
+          broadcastTableState(state, emit);
+          return;
+        }
+        const target = otherGame(gameId);
+        if (target === null) {
+          reject(ruleError(ErrorCodes.table.invalidPayload, { reason: "game_id" }));
+          return;
+        }
+        const input = (payload["rules"] as RulesSelection | undefined) ??
+          state.rulesByGame?.[target.module.id] ?? { gameId: target.module.id };
+        if (input.gameId !== target.module.id) {
+          reject(ruleError(ErrorCodes.table.invalidPayload, { reason: "game_id" }));
+          return;
+        }
+        const rules = target.normaliseRules?.(input) ?? input;
+        const resolved = target.resolveRules(rules, state.mode);
+        if (!resolved.ok) {
+          reject(resolved.error);
+          return;
+        }
+        if (state.phase === "inRound") {
+          state.queuedGame = { gameId: target.module.id, rules, by: seat };
+          broadcastTableState(state, emit);
+          return;
+        }
+        switchGame(state, target, rules, seat, emit, now);
         return;
       }
       case "seat_spectator": {

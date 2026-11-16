@@ -93,15 +93,11 @@
           "description": "The auto-play policy holds this seat (R45, R46)"
         },
         "bot": {
-          "type": "boolean",
-          "description": "A bot holds this seat (a lone Quick Play player's table); absent for people"
+          "type": "boolean"
         },
         "mic": {
           "type": "boolean",
           "description": "The seat's microphone is on (GDD 11.4); off while disconnected"
-        },
-        "bot": {
-          "type": "boolean"
         },
         "party": {
           "type": ["string", "null"],
@@ -205,6 +201,21 @@
         }
       }
     },
+    "change_game": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "The host switches the room to another game between rounds; sent during a round it is queued for the round's end. Naming the game already played clears a queued switch.",
+      "required": ["gameId"],
+      "properties": {
+        "gameId": {
+          "$ref": "../common.json#/definitions/gameId"
+        },
+        "rules": {
+          "$ref": "#/definitions/rulesSelection",
+          "description": "Absent: the rules this room last used for that game, else its defaults"
+        }
+      }
+    },
     "add_bot": {
       "type": "object",
       "additionalProperties": false,
@@ -255,8 +266,12 @@
       "description": "The asked player's answer to a hand request (R33, R34); on accept the table core applies the take for the asker",
       "required": ["roundId", "accept"],
       "properties": {
-        "roundId": { "$ref": "../common.json#/definitions/roundId" },
-        "accept": { "type": "boolean" }
+        "roundId": {
+          "$ref": "../common.json#/definitions/roundId"
+        },
+        "accept": {
+          "type": "boolean"
+        }
       }
     },
     "set_mic": {
@@ -265,7 +280,9 @@
       "description": "A seat turns its microphone on or off (GDD 11.4); clients join the voice channel only while two mics are on (GDD 20.14)",
       "required": ["mic"],
       "properties": {
-        "mic": { "type": "boolean" }
+        "mic": {
+          "type": "boolean"
+        }
       }
     },
     "seat_spectator": {
@@ -454,6 +471,20 @@
               "$ref": "../common.json#/definitions/timestamp"
             }
           }
+        },
+        "queuedGame": {
+          "type": "object",
+          "additionalProperties": false,
+          "description": "The game the host chose for after this round",
+          "required": ["gameId", "rules"],
+          "properties": {
+            "gameId": {
+              "$ref": "../common.json#/definitions/gameId"
+            },
+            "rules": {
+              "$ref": "#/definitions/rulesSelection"
+            }
+          }
         }
       }
     },
@@ -491,6 +522,23 @@
             "type": "string"
           },
           "description": "For the diff banner (E19)"
+        }
+      }
+    },
+    "game_changed": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "The room now plays another game; a table_state follows for everyone",
+      "required": ["gameId", "rules", "changedBy"],
+      "properties": {
+        "gameId": {
+          "$ref": "../common.json#/definitions/gameId"
+        },
+        "rules": {
+          "$ref": "#/definitions/rulesSelection"
+        },
+        "changedBy": {
+          "$ref": "../common.json#/definitions/seatIndex"
         }
       }
     },

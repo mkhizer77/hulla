@@ -55,6 +55,7 @@ export interface Protocol {
   seatSpectatorPayload?: SeatSpectator;
   setMicPayload?: SetMic;
   removeSpectatorPayload?: RemoveSpectator;
+  changeGamePayload?: ChangeGame;
   chatTextPayload?: ChatText;
   quickChatPayload?: QuickChat;
   emotePayload?: Emote;
@@ -70,6 +71,7 @@ export interface Protocol {
   errorPayload?: Error;
   snapshotPayload?: Snapshot;
   pongPayload?: Pong;
+  gameChangedPayload?: GameChanged;
   chatPayload?: Chat;
   quickChatSentPayload?: QuickChatSent;
   emoteSentPayload?: EmoteSent;
@@ -432,6 +434,36 @@ export interface RemoveSpectator {
    */
   userId: string;
 }
+/**
+ * The host switches the room to another game between rounds; sent during a round it is queued for the round's end. Naming the game already played clears a queued switch.
+ */
+export interface ChangeGame {
+  gameId: "thulla" | "rung";
+  rules?: RulesSelection1;
+}
+/**
+ * Absent: the rules this room last used for that game, else its defaults
+ */
+export interface RulesSelection1 {
+  gameId: "thulla" | "rung";
+  preset?: "standard" | "family" | "hardcore" | "classicPagat" | "relaxed";
+  /**
+   * Validated against the game's rules schema
+   */
+  overrides?: {};
+  /**
+   * Table settings that are not engine rules (GDD 6.13)
+   */
+  settings?: {
+    turnTimerSeconds?: 10 | 15 | 20 | 30 | 60 | null;
+    showCardCounts?: boolean;
+    cardMemoryAssist?: boolean;
+    loserTitle?: "bhabhi" | "donkey" | "thullad";
+    spectators?: boolean;
+    voiceDefault?: "openMic" | "pushToTalk" | "off";
+    direction?: "cw" | "ccw";
+  };
+}
 export interface ChatText {
   text: string;
 }
@@ -516,6 +548,13 @@ export interface TableState {
      * Unix milliseconds from the server clock
      */
     deadlineTs: number;
+  };
+  /**
+   * The game the host chose for after this round
+   */
+  queuedGame?: {
+    gameId: "thulla" | "rung";
+    rules: RulesSelection;
   };
 }
 export interface Seat {
@@ -634,6 +673,14 @@ export interface Pong {
    * Unix milliseconds from the server clock
    */
   serverTs: number;
+}
+/**
+ * The room now plays another game; a table_state follows for everyone
+ */
+export interface GameChanged {
+  gameId: "thulla" | "rung";
+  rules: RulesSelection;
+  changedBy: number;
 }
 export interface Chat {
   seat: number | null;
