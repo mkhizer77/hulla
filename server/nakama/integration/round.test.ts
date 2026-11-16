@@ -296,12 +296,24 @@ describe.skipIf(NAKAMA_HOST === undefined)(
       }
 
       // Missions moved with the round (GDD 12.5): the weekly round count shows one.
-      const missions = await rpc<{ ok: boolean; weekly: { id: string; progress: number }[] }>(
+      // The week's five are drawn from a pool that also holds Rung's, so the round count may not be
+      // among them: whichever round counters were drawn show one, and nothing of Rung's moved.
+      interface Drawn {
+        id: string;
+        metric: string;
+        progress: number;
+      }
+      const missions = await rpc<{ ok: boolean; daily: Drawn[]; weekly: Drawn[] }>(
         host,
         "missions_get",
         { tzOffsetMinutes: 300 },
       );
-      expect(missions.weekly.find((w) => w.id === "w_rounds_15")?.progress).toBe(1);
+      const drawn = [...missions.daily, ...missions.weekly];
+      expect(missions.weekly).toHaveLength(5);
+      for (const mission of drawn) {
+        if (mission.metric === "rounds_played") expect(mission.progress).toBe(1);
+        if (mission.metric.startsWith("rung_")) expect(mission.progress).toBe(0);
+      }
 
       // Baithak points reached the weekly board (GDD 12.8): the first escape holds three or more.
       const board = await rpc<{
