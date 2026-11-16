@@ -1,0 +1,96 @@
+{
+  "id": "V-R057-double-sar-choice-after-a-take",
+  "version": "1.0.0",
+  "title": "seven by a take against zero opens the choice",
+  "rules": [
+    "RGE4",
+    "RG26"
+  ],
+  "setup": {
+    "hands": [
+      [
+        "AH",
+        "2C",
+        "2D"
+      ],
+      [
+        "2H",
+        "AC",
+        "AD"
+      ],
+      [
+        "3H",
+        "3C",
+        "3D"
+      ],
+      [
+        "4H",
+        "4C",
+        "4D"
+      ]
+    ],
+    "trump": "S",
+    "dealer": 3,
+    "trickIndex": 6,
+    "counts": [
+      5,
+      0
+    ],
+    "pile": 1,
+    "lastWinner": 0,
+    "run": 1
+  },
+  "moves": [
+    {
+      "seat": 0,
+      "move": {
+        "type": "play_card",
+        "card": "AH"
+      }
+    },
+    {
+      "seat": 1,
+      "move": {
+        "type": "play_card",
+        "card": "2H"
+      }
+    },
+    {
+      "seat": 2,
+      "move": {
+        "type": "play_card",
+        "card": "3H"
+      }
+    },
+    {
+      "seat": 3,
+      "move": {
+        "type": "play_card",
+        "card": "4H"
+      }
+    },
+    {
+      "seat": 0,
+      "move": {
+        "type": "court_choice",
+        "playOn": false
+      }
+    }
+  ],
+  "assert": {
+    "counts": [
+      7,
+      0
+    ],
+    "pile": 0,
+    "outcome": {
+      "team": 0,
+      "kind": "win"
+    },
+    "eventsInclude": [
+      "pile_taken",
+      "court_choice_opened"
+    ],
+    "stateHash": "de294be535c2430f5764fdf923f2d8e6420e16ca0d11ca4a35a59d19e4c7a8df"
+  }
+}

@@ -1,0 +1,31 @@
+{
+  "id": "V-R075-goon-court-ten",
+  "version": "1.0.0",
+  "title": "a goon court can be set to count ten",
+  "rules": [
+    "RG33"
+  ],
+  "bazi": {
+    "firstDealer": 3,
+    "deals": [
+      {
+        "team": 1,
+        "kind": "court"
+      }
+    ],
+    "overrides": {
+      "scoring": "courts",
+      "goonCourt": 10
+    }
+  },
+  "moves": [],
+  "assert": {
+    "series": {
+      "courts": [
+        0,
+        10
+      ]
+    },
+    "seriesHash": "a3012186788ef2221dbb9a2f48f16b70e01bdc47cb7df536d63f0d8e28938800"
+  }
+}

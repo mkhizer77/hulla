@@ -1,0 +1,76 @@
+{
+  "id": "V-R056-single-sar-52-court",
+  "version": "1.0.0",
+  "title": "all thirteen by playing on are a 52-court",
+  "rules": [
+    "RG31"
+  ],
+  "setup": {
+    "hands": [
+      [
+        "AH"
+      ],
+      [
+        "2H"
+      ],
+      [
+        "3H"
+      ],
+      [
+        "4H"
+      ]
+    ],
+    "trump": "S",
+    "dealer": 3,
+    "trickIndex": 12,
+    "rules": {
+      "collect": "single"
+    },
+    "counts": [
+      12,
+      0
+    ],
+    "chasing": 0
+  },
+  "moves": [
+    {
+      "seat": 0,
+      "move": {
+        "type": "play_card",
+        "card": "AH"
+      }
+    },
+    {
+      "seat": 1,
+      "move": {
+        "type": "play_card",
+        "card": "2H"
+      }
+    },
+    {
+      "seat": 2,
+      "move": {
+        "type": "play_card",
+        "card": "3H"
+      }
+    },
+    {
+      "seat": 3,
+      "move": {
+        "type": "play_card",
+        "card": "4H"
+      }
+    }
+  ],
+  "assert": {
+    "counts": [
+      13,
+      0
+    ],
+    "outcome": {
+      "team": 0,
+      "kind": "court52"
+    },
+    "stateHash": "81612ab07f05aa9e0dce9f95aadb597f89f781c4e6e49dba139ca94cb79205c8"
+  }
+}

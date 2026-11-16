@@ -1,0 +1,95 @@
+{
+  "id": "V-R052-single-sar-court",
+  "version": "1.0.0",
+  "title": "the first seven tricks are a court when nobody may chase",
+  "rules": [
+    "RG31",
+    "RG30",
+    "RG32",
+    "RG37"
+  ],
+  "setup": {
+    "hands": [
+      [
+        "AH",
+        "2C",
+        "2D"
+      ],
+      [
+        "2H",
+        "AC",
+        "AD"
+      ],
+      [
+        "3H",
+        "3C",
+        "3D"
+      ],
+      [
+        "4H",
+        "4C",
+        "4D"
+      ]
+    ],
+    "trump": "S",
+    "dealer": 3,
+    "rules": {
+      "collect": "single",
+      "chase": false
+    },
+    "trickIndex": 6,
+    "counts": [
+      6,
+      0
+    ]
+  },
+  "moves": [
+    {
+      "seat": 0,
+      "move": {
+        "type": "play_card",
+        "card": "AH"
+      }
+    },
+    {
+      "seat": 1,
+      "move": {
+        "type": "play_card",
+        "card": "2H"
+      }
+    },
+    {
+      "seat": 2,
+      "move": {
+        "type": "play_card",
+        "card": "3H"
+      }
+    },
+    {
+      "seat": 3,
+      "move": {
+        "type": "play_card",
+        "card": "4H"
+      }
+    }
+  ],
+  "assert": {
+    "outcome": {
+      "team": 0,
+      "kind": "court"
+    },
+    "results": {
+      "kind": "court",
+      "byCaller": true,
+      "dealPoints": 3,
+      "points": [
+        3,
+        0,
+        3,
+        0
+      ]
+    },
+    "nextDealer": 1,
+    "stateHash": "429ebd4ec89662280e34524bee582c06e6002c93b54a2ff40558ff71c3aacc18"
+  }
+}

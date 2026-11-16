@@ -1,0 +1,79 @@
+{
+  "id": "V-R022-highest-of-led-suit",
+  "version": "1.0.0",
+  "title": "without a rung the highest card of the led suit wins and leads",
+  "rules": [
+    "RG12",
+    "RG13",
+    "RG15"
+  ],
+  "setup": {
+    "hands": [
+      [
+        "9H",
+        "2C"
+      ],
+      [
+        "KH",
+        "3C"
+      ],
+      [
+        "AC",
+        "4D"
+      ],
+      [
+        "TH",
+        "5C"
+      ]
+    ],
+    "trump": "S",
+    "dealer": 3,
+    "rules": {
+      "collect": "single"
+    }
+  },
+  "moves": [
+    {
+      "seat": 0,
+      "move": {
+        "type": "play_card",
+        "card": "9H"
+      }
+    },
+    {
+      "seat": 1,
+      "move": {
+        "type": "play_card",
+        "card": "KH"
+      }
+    },
+    {
+      "seat": 2,
+      "move": {
+        "type": "play_card",
+        "card": "AC"
+      }
+    },
+    {
+      "seat": 3,
+      "move": {
+        "type": "play_card",
+        "card": "TH"
+      }
+    }
+  ],
+  "assert": {
+    "counts": [
+      0,
+      1
+    ],
+    "pile": 0,
+    "turnSeat": 1,
+    "trickIndex": 1,
+    "lastEvents": [
+      "card_played",
+      "trick_won"
+    ],
+    "stateHash": "6e9b65075695f656750d8130332ed73677af32e16d4cc742c8346897b3f8b220"
+  }
+}

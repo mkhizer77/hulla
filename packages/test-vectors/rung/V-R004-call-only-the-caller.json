@@ -1,0 +1,63 @@
+{
+  "id": "V-R004-call-only-the-caller",
+  "version": "1.0.0",
+  "title": "only the caller may act, and only with a call",
+  "rules": [
+    "RG6"
+  ],
+  "deal": {
+    "seedHex": "0707070707070707070707070707070707070707070707070707070707070707",
+    "dealerSeat": 3,
+    "preset": "hokm"
+  },
+  "moves": [
+    {
+      "seat": 1,
+      "move": {
+        "type": "call_trump",
+        "suit": "H"
+      },
+      "expect": {
+        "error": "rules.not_your_turn"
+      }
+    },
+    {
+      "seat": 0,
+      "move": {
+        "type": "play_card",
+        "card": "AS"
+      },
+      "expect": {
+        "error": "rules.wrong_phase"
+      }
+    }
+  ],
+  "assert": {
+    "phase": "call",
+    "legal": {
+      "0": [
+        {
+          "type": "call_trump",
+          "suit": "S"
+        },
+        {
+          "type": "call_trump",
+          "suit": "H"
+        },
+        {
+          "type": "call_trump",
+          "suit": "C"
+        },
+        {
+          "type": "call_trump",
+          "suit": "D"
+        }
+      ],
+      "1": [],
+      "2": [],
+      "3": []
+    },
+    "commitment": "4bf7597e522ad1a1d9a97d3b097a6228f59ff8c18c4daeab7f7e6ee3244047cd",
+    "stateHash": "f9181947355a1b97331b8ecda84d17f57504e053774a82400fc7564bad9efd2b"
+  }
+}

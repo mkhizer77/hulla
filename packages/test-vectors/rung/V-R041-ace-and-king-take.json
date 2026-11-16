@@ -1,0 +1,103 @@
+{
+  "id": "V-R041-ace-and-king-take",
+  "version": "1.0.0",
+  "title": "an ace and another card take the pile as usual",
+  "rules": [
+    "RG22"
+  ],
+  "setup": {
+    "hands": [
+      [
+        "AH",
+        "KC",
+        "QD"
+      ],
+      [
+        "2H",
+        "2C",
+        "2D"
+      ],
+      [
+        "3H",
+        "3C",
+        "3D"
+      ],
+      [
+        "4H",
+        "4C",
+        "4D"
+      ]
+    ],
+    "trump": "S",
+    "dealer": 3,
+    "rules": {
+      "aceRule": true
+    }
+  },
+  "moves": [
+    {
+      "seat": 0,
+      "move": {
+        "type": "play_card",
+        "card": "AH"
+      }
+    },
+    {
+      "seat": 1,
+      "move": {
+        "type": "play_card",
+        "card": "2H"
+      }
+    },
+    {
+      "seat": 2,
+      "move": {
+        "type": "play_card",
+        "card": "3H"
+      }
+    },
+    {
+      "seat": 3,
+      "move": {
+        "type": "play_card",
+        "card": "4H"
+      }
+    },
+    {
+      "seat": 0,
+      "move": {
+        "type": "play_card",
+        "card": "KC"
+      }
+    },
+    {
+      "seat": 1,
+      "move": {
+        "type": "play_card",
+        "card": "2C"
+      }
+    },
+    {
+      "seat": 2,
+      "move": {
+        "type": "play_card",
+        "card": "3C"
+      }
+    },
+    {
+      "seat": 3,
+      "move": {
+        "type": "play_card",
+        "card": "4C"
+      }
+    }
+  ],
+  "assert": {
+    "counts": [
+      2,
+      0
+    ],
+    "pile": 0,
+    "stateHash": "bb8520dbcec4e044301d46159205ae6bd3125f25de45169522cf70807bb833fd"
+  }
+}

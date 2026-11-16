@@ -1,0 +1,42 @@
+{
+  "id": "V-R080-auto-follow-lowest",
+  "version": "1.0.0",
+  "title": "a timed-out seat follows with its lowest card",
+  "rules": [
+    "RG42"
+  ],
+  "setup": {
+    "hands": [
+      [],
+      [
+        "KH",
+        "4H",
+        "2C"
+      ],
+      [
+        "6H"
+      ],
+      [
+        "7H"
+      ]
+    ],
+    "trump": "S",
+    "dealer": 3,
+    "plays": [
+      {
+        "seat": 0,
+        "card": "9H"
+      }
+    ]
+  },
+  "moves": [],
+  "assert": {
+    "autoPlay": {
+      "1": {
+        "type": "play_card",
+        "card": "4H"
+      }
+    },
+    "stateHash": "03d7da9d410a20439e25e84b978da5484020f8b592cd3c4160a50365bcb26473"
+  }
+}

@@ -1,0 +1,79 @@
+{
+  "id": "V-R009-redeal-off",
+  "version": "1.0.0",
+  "title": "with the option off a weak hand must be called",
+  "rules": [
+    "RG7"
+  ],
+  "setup": {
+    "hands": [
+      [
+        "2S",
+        "5S",
+        "7H",
+        "9C",
+        "TD"
+      ],
+      [
+        "AS",
+        "KS",
+        "QS",
+        "JS",
+        "TS"
+      ],
+      [
+        "AH",
+        "KH",
+        "QH",
+        "JH",
+        "TH"
+      ],
+      [
+        "AC",
+        "KC",
+        "QC",
+        "JC",
+        "TC"
+      ]
+    ],
+    "trump": null,
+    "dealer": 3,
+    "rules": {
+      "redeal": "off"
+    }
+  },
+  "moves": [
+    {
+      "seat": 0,
+      "move": {
+        "type": "redeal"
+      },
+      "expect": {
+        "error": "rules.illegal_move"
+      }
+    }
+  ],
+  "assert": {
+    "legal": {
+      "0": [
+        {
+          "type": "call_trump",
+          "suit": "S"
+        },
+        {
+          "type": "call_trump",
+          "suit": "H"
+        },
+        {
+          "type": "call_trump",
+          "suit": "C"
+        },
+        {
+          "type": "call_trump",
+          "suit": "D"
+        }
+      ]
+    },
+    "stateHash": "220e9a7d499290a3ec08eb7f77d189077ec1360d99e652e242a6e16f4a9d118c"
+  }
+}

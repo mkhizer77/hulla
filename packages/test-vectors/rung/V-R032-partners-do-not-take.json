@@ -1,0 +1,102 @@
+{
+  "id": "V-R032-partners-do-not-take",
+  "version": "1.0.0",
+  "title": "one trick each by the two partners leaves the pile",
+  "rules": [
+    "RG18"
+  ],
+  "setup": {
+    "hands": [
+      [
+        "AH",
+        "2C",
+        "6D"
+      ],
+      [
+        "2H",
+        "3C",
+        "5D"
+      ],
+      [
+        "3H",
+        "AC",
+        "KD"
+      ],
+      [
+        "4H",
+        "4C",
+        "7D"
+      ]
+    ],
+    "trump": "S",
+    "dealer": 3
+  },
+  "moves": [
+    {
+      "seat": 0,
+      "move": {
+        "type": "play_card",
+        "card": "AH"
+      }
+    },
+    {
+      "seat": 1,
+      "move": {
+        "type": "play_card",
+        "card": "2H"
+      }
+    },
+    {
+      "seat": 2,
+      "move": {
+        "type": "play_card",
+        "card": "3H"
+      }
+    },
+    {
+      "seat": 3,
+      "move": {
+        "type": "play_card",
+        "card": "4H"
+      }
+    },
+    {
+      "seat": 0,
+      "move": {
+        "type": "play_card",
+        "card": "2C"
+      }
+    },
+    {
+      "seat": 1,
+      "move": {
+        "type": "play_card",
+        "card": "3C"
+      }
+    },
+    {
+      "seat": 2,
+      "move": {
+        "type": "play_card",
+        "card": "AC"
+      }
+    },
+    {
+      "seat": 3,
+      "move": {
+        "type": "play_card",
+        "card": "4C"
+      }
+    }
+  ],
+  "assert": {
+    "counts": [
+      0,
+      0
+    ],
+    "pile": 2,
+    "lastWinner": 2,
+    "run": 1,
+    "stateHash": "f5ff57151787f826a5c8b7de0117cb4ee57869144dca812b1ec1522eea5174b7"
+  }
+}

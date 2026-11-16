@@ -1,0 +1,38 @@
+{
+  "id": "V-R071-bazi-not-yet",
+  "version": "1.0.0",
+  "title": "four points of five do not end the bazi; the call passes after a court",
+  "rules": [
+    "RG34",
+    "RG37"
+  ],
+  "bazi": {
+    "firstDealer": 3,
+    "deals": [
+      {
+        "team": 0,
+        "kind": "win"
+      },
+      {
+        "team": 0,
+        "kind": "court"
+      }
+    ],
+    "overrides": {
+      "target": 5
+    }
+  },
+  "moves": [],
+  "assert": {
+    "series": {
+      "teamPoints": [
+        4,
+        0
+      ],
+      "finished": false,
+      "winnerTeam": null,
+      "nextDealerSeat": 1
+    },
+    "seriesHash": "7a805d983a244226199bcfabfefc0ad9d0af1f88362bf185f17ab47950b6ef7c"
+  }
+}

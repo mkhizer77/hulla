@@ -1,0 +1,76 @@
+{
+  "id": "V-R035-thirteenth-trick-takes-the-pile",
+  "version": "1.0.0",
+  "title": "trick thirteen takes what is left",
+  "rules": [
+    "RG20"
+  ],
+  "setup": {
+    "hands": [
+      [
+        "AH"
+      ],
+      [
+        "2H"
+      ],
+      [
+        "3H"
+      ],
+      [
+        "4H"
+      ]
+    ],
+    "trump": "S",
+    "dealer": 3,
+    "trickIndex": 12,
+    "counts": [
+      5,
+      4
+    ],
+    "pile": 3,
+    "lastWinner": 1,
+    "run": 1
+  },
+  "moves": [
+    {
+      "seat": 0,
+      "move": {
+        "type": "play_card",
+        "card": "AH"
+      }
+    },
+    {
+      "seat": 1,
+      "move": {
+        "type": "play_card",
+        "card": "2H"
+      }
+    },
+    {
+      "seat": 2,
+      "move": {
+        "type": "play_card",
+        "card": "3H"
+      }
+    },
+    {
+      "seat": 3,
+      "move": {
+        "type": "play_card",
+        "card": "4H"
+      }
+    }
+  ],
+  "assert": {
+    "counts": [
+      9,
+      4
+    ],
+    "phase": "ended",
+    "outcome": {
+      "team": 0,
+      "kind": "win"
+    },
+    "stateHash": "e681c6f12744e8fb508bd2415b2aff85252f7093bdb81fbc1bcd7844ad7644bf"
+  }
+}

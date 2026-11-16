@@ -1,0 +1,85 @@
+{
+  "id": "V-R090-view-before-the-call",
+  "version": "1.0.0",
+  "title": "a seat sees its five cards and nothing of the stock",
+  "rules": [
+    "RGE12",
+    "RG5"
+  ],
+  "setup": {
+    "hands": [
+      [
+        "2S",
+        "5S",
+        "7H",
+        "9C",
+        "TD"
+      ],
+      [
+        "AS",
+        "KS",
+        "QS",
+        "JS",
+        "TS"
+      ],
+      [
+        "AH",
+        "KH",
+        "QH",
+        "JH",
+        "TH"
+      ],
+      [
+        "AC",
+        "KC",
+        "QC",
+        "JC",
+        "TC"
+      ]
+    ],
+    "trump": null,
+    "dealer": 3,
+    "stock": [
+      "2D",
+      "3D",
+      "4D",
+      "5D"
+    ]
+  },
+  "moves": [],
+  "assert": {
+    "views": [
+      {
+        "viewer": 0,
+        "hand": [
+          "2S",
+          "5S",
+          "7H",
+          "9C",
+          "TD"
+        ],
+        "handCounts": [
+          5,
+          5,
+          5,
+          5
+        ],
+        "stockCount": 4,
+        "seedHidden": true,
+        "hidesOthers": true
+      },
+      {
+        "viewer": 2,
+        "hand": [
+          "TH",
+          "JH",
+          "QH",
+          "KH",
+          "AH"
+        ],
+        "hidesOthers": true
+      }
+    ],
+    "stateHash": "109b49de740bf93abe7ccad3a1bae982c79e715cf3acdf4521626a7f671f90ef"
+  }
+}

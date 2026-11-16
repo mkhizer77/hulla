@@ -1,0 +1,75 @@
+{
+  "id": "V-R030-pile",
+  "version": "1.0.0",
+  "title": "a won trick goes onto the pile and nobody owns it",
+  "rules": [
+    "RG16"
+  ],
+  "setup": {
+    "hands": [
+      [
+        "AH",
+        "KC",
+        "QD"
+      ],
+      [
+        "2H",
+        "2C",
+        "2D"
+      ],
+      [
+        "3H",
+        "3C",
+        "3D"
+      ],
+      [
+        "4H",
+        "4C",
+        "4D"
+      ]
+    ],
+    "trump": "S",
+    "dealer": 3
+  },
+  "moves": [
+    {
+      "seat": 0,
+      "move": {
+        "type": "play_card",
+        "card": "AH"
+      }
+    },
+    {
+      "seat": 1,
+      "move": {
+        "type": "play_card",
+        "card": "2H"
+      }
+    },
+    {
+      "seat": 2,
+      "move": {
+        "type": "play_card",
+        "card": "3H"
+      }
+    },
+    {
+      "seat": 3,
+      "move": {
+        "type": "play_card",
+        "card": "4H"
+      }
+    }
+  ],
+  "assert": {
+    "pile": 1,
+    "counts": [
+      0,
+      0
+    ],
+    "lastWinner": 0,
+    "run": 1,
+    "turnSeat": 0,
+    "stateHash": "20a74d23de4f996be87c67db00ac717849b933020aea0118ffd40f5ff60c6ea8"
+  }
+}

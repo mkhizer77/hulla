@@ -1,0 +1,42 @@
+{
+  "id": "V-R001-deal-five-each",
+  "version": "1.0.0",
+  "title": "five cards each from the caller, the rest in the stock",
+  "rules": [
+    "RG1",
+    "RG2",
+    "RG4",
+    "RG5"
+  ],
+  "deal": {
+    "seedHex": "0707070707070707070707070707070707070707070707070707070707070707",
+    "dealerSeat": 3
+  },
+  "moves": [],
+  "assert": {
+    "phase": "call",
+    "dealerSeat": 3,
+    "callerSeat": 0,
+    "turnSeat": 0,
+    "trump": null,
+    "handCounts": [
+      5,
+      5,
+      5,
+      5
+    ],
+    "stockCount": 32,
+    "fullDeck": true,
+    "firstFiveFromDeck": true,
+    "views": [
+      {
+        "viewer": 0,
+        "stockCount": 32,
+        "seedHidden": true,
+        "hidesOthers": true
+      }
+    ],
+    "commitment": "4bf7597e522ad1a1d9a97d3b097a6228f59ff8c18c4daeab7f7e6ee3244047cd",
+    "stateHash": "b164072bfa5210988cbccccd6d30538110c099b82042bbfedc58de1e5a336597"
+  }
+}

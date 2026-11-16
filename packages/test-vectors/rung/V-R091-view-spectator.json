@@ -1,0 +1,46 @@
+{
+  "id": "V-R091-view-spectator",
+  "version": "1.0.0",
+  "title": "a spectator sees no hand",
+  "rules": [
+    "RGE13"
+  ],
+  "setup": {
+    "hands": [
+      [
+        "AH",
+        "2C",
+        "2D"
+      ],
+      [
+        "2H",
+        "AC",
+        "AD"
+      ],
+      [
+        "3H",
+        "3C",
+        "3D"
+      ],
+      [
+        "4H",
+        "4C",
+        "4D"
+      ]
+    ],
+    "trump": "S",
+    "dealer": 3
+  },
+  "moves": [],
+  "assert": {
+    "views": [
+      {
+        "viewer": "spectator",
+        "hand": null,
+        "canRedeal": null,
+        "hidesOthers": true
+      }
+    ],
+    "stateHash": "b6eece8519240685d035d96d4358c02b8b36952a49036bb5e264ec8eee856b97"
+  }
+}

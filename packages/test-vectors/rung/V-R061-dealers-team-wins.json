@@ -1,0 +1,104 @@
+{
+  "id": "V-R061-dealers-team-wins",
+  "version": "1.0.0",
+  "title": "the dealer's team scores two and the old caller deals",
+  "rules": [
+    "RG30",
+    "RG32",
+    "RG35"
+  ],
+  "setup": {
+    "hands": [
+      [
+        "AH",
+        "2C",
+        "2D"
+      ],
+      [
+        "2H",
+        "AC",
+        "AD"
+      ],
+      [
+        "3H",
+        "3C",
+        "3D"
+      ],
+      [
+        "4H",
+        "4C",
+        "4D"
+      ]
+    ],
+    "trump": "S",
+    "dealer": 3,
+    "rules": {
+      "collect": "single"
+    },
+    "trickIndex": 9,
+    "counts": [
+      3,
+      6
+    ]
+  },
+  "moves": [
+    {
+      "seat": 0,
+      "move": {
+        "type": "play_card",
+        "card": "2C"
+      }
+    },
+    {
+      "seat": 1,
+      "move": {
+        "type": "play_card",
+        "card": "AC"
+      }
+    },
+    {
+      "seat": 2,
+      "move": {
+        "type": "play_card",
+        "card": "3C"
+      }
+    },
+    {
+      "seat": 3,
+      "move": {
+        "type": "play_card",
+        "card": "4C"
+      }
+    }
+  ],
+  "assert": {
+    "counts": [
+      3,
+      7
+    ],
+    "outcome": {
+      "team": 1,
+      "kind": "win"
+    },
+    "results": {
+      "winnerTeam": 1,
+      "byCaller": false,
+      "dealPoints": 2,
+      "points": [
+        0,
+        2,
+        0,
+        2
+      ],
+      "finishOrder": [
+        1,
+        3,
+        0,
+        2
+      ],
+      "loserSeat": null
+    },
+    "nextDealer": 0,
+    "stateHash": "0904ee2d14dbe1351ccb2a1712b74165940f86833377fbccec884f1e46531295"
+  }
+}

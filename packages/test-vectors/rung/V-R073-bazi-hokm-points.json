@@ -1,0 +1,40 @@
+{
+  "id": "V-R073-bazi-hokm-points",
+  "version": "1.0.0",
+  "title": "Hokm scores one, two and three and the caller keeps the call",
+  "rules": [
+    "RG32",
+    "RG35",
+    "RG37"
+  ],
+  "bazi": {
+    "firstDealer": 3,
+    "deals": [
+      {
+        "team": 0,
+        "kind": "win"
+      },
+      {
+        "team": 0,
+        "kind": "court"
+      },
+      {
+        "team": 1,
+        "kind": "court"
+      }
+    ],
+    "preset": "hokm"
+  },
+  "moves": [],
+  "assert": {
+    "series": {
+      "teamPoints": [
+        3,
+        3
+      ],
+      "finished": false,
+      "nextDealerSeat": 0
+    },
+    "seriesHash": "ae17ca93ad45eb3dc0f551548a32e4ba2ec683e554e4b3de66f5b163c5745db1"
+  }
+}

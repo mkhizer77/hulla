@@ -1,20 +1,18 @@
 import {
   ErrorCodes,
   bytesToHex,
-  canonicalJson,
   err,
   ok,
   ruleError,
-  sha256Hex,
   shuffle,
-  utf8Encode,
   type Result,
   type Rng,
   type RuleError,
   type SeatIndex,
 } from "@hulla/shared-ts";
 
-import { buildDeck, dealClockwise, nextSeat, sortCards, type Card } from "../card-kit";
+import { buildDeck, dealClockwise, nextSeat, sortCards } from "../card-kit";
+import { fairDealCommitment } from "../card-kit/commitment";
 
 import { THULLA_RULES_VERSION, validateRules, type ThullaRules } from "./rules";
 import { EMPTY_STATS, THULLA_SEATS, type SeatState, type ThullaState } from "./state";
@@ -22,18 +20,11 @@ import { EMPTY_STATS, THULLA_SEATS, type SeatState, type ThullaState } from "./s
 import type { CreateRoundInput } from "../contract";
 import type { ThullaEvent } from "./events";
 
+export { fairDealCommitment };
+
 /** The dealer seat rotates clockwise each round (GDD R5). */
 export function nextDealer(dealerSeat: SeatIndex, seatCount: number): SeatIndex {
   return nextSeat(dealerSeat, seatCount);
-}
-
-/** SHA-256 over the raw seed bytes followed by the UTF-8 canonical JSON of the deck order (R6). */
-export function fairDealCommitment(seed: Uint8Array, deckOrder: readonly Card[]): string {
-  const order = utf8Encode(canonicalJson(deckOrder));
-  const message = new Uint8Array(seed.length + order.length);
-  message.set(seed);
-  message.set(order, seed.length);
-  return sha256Hex(message);
 }
 
 /**

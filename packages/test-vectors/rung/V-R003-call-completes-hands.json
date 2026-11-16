@@ -1,0 +1,45 @@
+{
+  "id": "V-R003-call-completes-hands",
+  "version": "1.0.0",
+  "title": "the call deals the stock and the caller leads",
+  "rules": [
+    "RG6",
+    "RG8",
+    "RG10"
+  ],
+  "deal": {
+    "seedHex": "0707070707070707070707070707070707070707070707070707070707070707",
+    "dealerSeat": 3,
+    "preset": "hokm"
+  },
+  "moves": [
+    {
+      "seat": 0,
+      "move": {
+        "type": "call_trump",
+        "suit": "D"
+      }
+    }
+  ],
+  "assert": {
+    "phase": "play",
+    "trump": "D",
+    "turnSeat": 0,
+    "trickIndex": 0,
+    "handCounts": [
+      13,
+      13,
+      13,
+      13
+    ],
+    "stockCount": 0,
+    "fullDeck": true,
+    "firstFiveFromDeck": true,
+    "lastEvents": [
+      "trump_called",
+      "hands_completed"
+    ],
+    "commitment": "4bf7597e522ad1a1d9a97d3b097a6228f59ff8c18c4daeab7f7e6ee3244047cd",
+    "stateHash": "22f975487158a157c7d76f9fb212e023a7ccf0786fe61248ac376ee7598e3e4a"
+  }
+}
