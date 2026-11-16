@@ -56,13 +56,13 @@ describe.skipIf(NAKAMA_HOST === undefined)(
       for (const c of clients)
         await c.send(matchId, "ready", OPCODES.ready.opcode, { ready: true });
       // Four sockets: the host starts only once the table has heard everyone's ready.
-    await host.next(
-      (e) =>
-        e.type === "table_state" &&
-        (e.payload as TableState).gameId === "rung" &&
-        (e.payload as TableState).seats.every((s) => s.ready),
-    );
-    await host.send(matchId, "start_round", OPCODES.start_round.opcode, {});
+      await host.next(
+        (e) =>
+          e.type === "table_state" &&
+          (e.payload as TableState).gameId === "rung" &&
+          (e.payload as TableState).seats.every((s) => s.ready),
+      );
+      await host.send(matchId, "start_round", OPCODES.start_round.opcode, {});
       const opened = await host.next((e) => e.type === "rung_round_start");
       const roundId = (opened.payload as { roundId: string }).roundId;
 

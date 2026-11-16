@@ -6232,7 +6232,7 @@ return errors === 0;
 }
 
 const check_table_state = validate69;
-const schema127 = {"type":"object","additionalProperties":false,"description":"The full table as the recipient may see it; the round view is redacted per recipient","required":["code","gameId","mode","status","hostSeat","rules","seats","spectatorCount","spectators","series","round","lastSeq","resumeToken"],"properties":{"code":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/roomCode"},"gameId":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/gameId"},"mode":{"$ref":"https://hulla.gg/schemas/protocol/shell/table.json#/definitions/tableMode"},"status":{"$ref":"https://hulla.gg/schemas/protocol/shell/table.json#/definitions/tableStatus"},"hostSeat":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndexOrNull"},"rules":{"$ref":"https://hulla.gg/schemas/protocol/shell/table.json#/definitions/rulesSelection"},"seats":{"type":"array","items":{"$ref":"https://hulla.gg/schemas/protocol/shell/table.json#/definitions/seat"}},"spectatorCount":{"type":"integer","minimum":0},"spectators":{"type":"array","items":{"$ref":"https://hulla.gg/schemas/protocol/shell/table.json#/definitions/spectator"}},"series":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/seriesState"},"round":{"oneOf":[{"$ref":"https://hulla.gg/schemas/protocol/games/thulla/views.json#/definitions/view"},{"type":"null"}],"description":"The Thulla round view; null between rounds and while the room plays another game"},"rungRound":{"oneOf":[{"$ref":"https://hulla.gg/schemas/protocol/games/rung/views.json#/definitions/view"},{"type":"null"}],"description":"The Rung deal view while the room plays Rung"},"lastSeq":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/sequence"},"resumeToken":{"type":["string","null"]},"rematch":{"type":"object","additionalProperties":false,"properties":{"deadlineTs":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/timestamp"},"votes":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/seatList"}}},"autoStart":{"type":"object","additionalProperties":false,"required":["startsAtTs"],"description":"A public table counting down to its first deal (GDD 9.5)","properties":{"startsAtTs":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/timestamp"}}},"handAsk":{"type":"object","additionalProperties":false,"description":"A hand request still waiting for its answer (R33), so a rejoining player sees it","required":["asker","target","cardCount","deadlineTs"],"properties":{"asker":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex"},"target":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex"},"cardCount":{"type":"integer","minimum":1},"deadlineTs":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/timestamp"}}},"queuedGame":{"type":"object","additionalProperties":false,"description":"The game the host chose for after this round","required":["gameId","rules"],"properties":{"gameId":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/gameId"},"rules":{"$ref":"https://hulla.gg/schemas/protocol/shell/table.json#/definitions/rulesSelection"}}}}};
+const schema127 = {"type":"object","additionalProperties":false,"description":"The full table as the recipient may see it; the round view is redacted per recipient","required":["code","gameId","mode","status","hostSeat","rules","seats","spectatorCount","spectators","series","round","lastSeq","resumeToken"],"properties":{"code":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/roomCode"},"gameId":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/gameId"},"mode":{"$ref":"https://hulla.gg/schemas/protocol/shell/table.json#/definitions/tableMode"},"status":{"$ref":"https://hulla.gg/schemas/protocol/shell/table.json#/definitions/tableStatus"},"hostSeat":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndexOrNull"},"rules":{"$ref":"https://hulla.gg/schemas/protocol/shell/table.json#/definitions/rulesSelection"},"seats":{"type":"array","items":{"$ref":"https://hulla.gg/schemas/protocol/shell/table.json#/definitions/seat"}},"spectatorCount":{"type":"integer","minimum":0},"spectators":{"type":"array","items":{"$ref":"https://hulla.gg/schemas/protocol/shell/table.json#/definitions/spectator"}},"series":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/seriesState"},"round":{"oneOf":[{"$ref":"https://hulla.gg/schemas/protocol/games/thulla/views.json#/definitions/view"},{"type":"null"}],"description":"The Thulla round view; null between rounds and while the room plays another game"},"rungRound":{"$ref":"https://hulla.gg/schemas/protocol/games/rung/views.json#/definitions/view","description":"The Rung deal view while the room plays a Rung deal; absent otherwise"},"lastSeq":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/sequence"},"resumeToken":{"type":["string","null"]},"rematch":{"type":"object","additionalProperties":false,"properties":{"deadlineTs":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/timestamp"},"votes":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/seatList"}}},"autoStart":{"type":"object","additionalProperties":false,"required":["startsAtTs"],"description":"A public table counting down to its first deal (GDD 9.5)","properties":{"startsAtTs":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/timestamp"}}},"handAsk":{"type":"object","additionalProperties":false,"description":"A hand request still waiting for its answer (R33), so a rejoining player sees it","required":["asker","target","cardCount","deadlineTs"],"properties":{"asker":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex"},"target":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex"},"cardCount":{"type":"integer","minimum":1},"deadlineTs":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/timestamp"}}},"queuedGame":{"type":"object","additionalProperties":false,"description":"The game the host chose for after this round","required":["gameId","rules"],"properties":{"gameId":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/gameId"},"rules":{"$ref":"https://hulla.gg/schemas/protocol/shell/table.json#/definitions/rulesSelection"}}}}};
 const schema130 = {"type":"string","enum":["private","public","ranked"]};
 const schema131 = {"type":"string","enum":["open","locked","inRound","closed"]};
 const schema133 = {"type":"object","additionalProperties":false,"required":["seat","playerId","displayName","ready","connected","autoPlay"],"properties":{"seat":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex"},"playerId":{"oneOf":[{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/playerId"},{"type":"null"}]},"displayName":{"type":["string","null"]},"ready":{"type":"boolean"},"connected":{"type":"boolean"},"autoPlay":{"type":"boolean","description":"The auto-play policy holds this seat (R45, R46)"},"bot":{"type":"boolean"},"mic":{"type":"boolean","description":"The seat's microphone is on (GDD 11.4); off while disconnected"},"party":{"type":["string","null"],"description":"Players who queued together share a party id (GDD 7.2); shown as a link icon"},"avatar":{"type":["string","null"],"pattern":"^[a-z0-9_]{1,32}$","description":"The avatar this seat shows, assigned when the player sits and unique at the table (GDD 15.6)"},"cosmetics":{"type":["object","null"],"description":"What the seat has equipped for this table, by catalog category; null until the inventory is read","additionalProperties":false,"properties":{"cardBack":{"type":"string"},"cardFace":{"type":"string"},"table":{"type":"string"},"emotePack":{"type":"string"},"celebration":{"type":"string"},"soundSet":{"type":"string"}}}}};
@@ -7449,65 +7449,10 @@ var valid0 = true;
 }
 if(valid0){
 if(data.rungRound !== undefined){
-let data13 = data.rungRound;
 const _errs32 = errors;
-const _errs33 = errors;
-let valid9 = false;
-let passing1 = null;
-const _errs34 = errors;
-if(!(validate27(data13, {instancePath:instancePath+"/rungRound",parentData:data,parentDataProperty:"rungRound",rootData}))){
+if(!(validate27(data.rungRound, {instancePath:instancePath+"/rungRound",parentData:data,parentDataProperty:"rungRound",rootData}))){
 vErrors = vErrors === null ? validate27.errors : vErrors.concat(validate27.errors);
 errors = vErrors.length;
-}
-var _valid1 = _errs34 === errors;
-if(_valid1){
-valid9 = true;
-passing1 = 0;
-}
-const _errs35 = errors;
-if(data13 !== null){
-const err2 = {instancePath:instancePath+"/rungRound",schemaPath:"#/properties/rungRound/oneOf/1/type",keyword:"type",params:{type: "null"}};
-if(vErrors === null){
-vErrors = [err2];
-}
-else {
-vErrors.push(err2);
-}
-errors++;
-}
-var _valid1 = _errs35 === errors;
-if(_valid1 && valid9){
-valid9 = false;
-passing1 = [passing1, 1];
-}
-else {
-if(_valid1){
-valid9 = true;
-passing1 = 1;
-}
-}
-if(!valid9){
-const err3 = {instancePath:instancePath+"/rungRound",schemaPath:"#/properties/rungRound/oneOf",keyword:"oneOf",params:{passingSchemas: passing1}};
-if(vErrors === null){
-vErrors = [err3];
-}
-else {
-vErrors.push(err3);
-}
-errors++;
-validate69.errors = vErrors;
-return false;
-}
-else {
-errors = _errs33;
-if(vErrors !== null){
-if(_errs33){
-vErrors.length = _errs33;
-}
-else {
-vErrors = null;
-}
-}
 }
 var valid0 = _errs32 === errors;
 }
@@ -7517,13 +7462,13 @@ var valid0 = true;
 if(valid0){
 if(data.lastSeq !== undefined){
 let data14 = data.lastSeq;
-const _errs37 = errors;
-const _errs38 = errors;
+const _errs33 = errors;
+const _errs34 = errors;
 if(!(((typeof data14 == "number") && (!(data14 % 1) && !isNaN(data14))) && (isFinite(data14)))){
 validate69.errors = [{instancePath:instancePath+"/lastSeq",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/sequence/type",keyword:"type",params:{type: "integer"}}];
 return false;
 }
-if(errors === _errs38){
+if(errors === _errs34){
 if((typeof data14 == "number") && (isFinite(data14))){
 if(data14 < 0 || isNaN(data14)){
 validate69.errors = [{instancePath:instancePath+"/lastSeq",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/sequence/minimum",keyword:"minimum",params:{comparison: ">=", limit: 0}}];
@@ -7531,7 +7476,7 @@ return false;
 }
 }
 }
-var valid0 = _errs37 === errors;
+var valid0 = _errs33 === errors;
 }
 else {
 var valid0 = true;
@@ -7539,12 +7484,12 @@ var valid0 = true;
 if(valid0){
 if(data.resumeToken !== undefined){
 let data15 = data.resumeToken;
-const _errs40 = errors;
+const _errs36 = errors;
 if((typeof data15 !== "string") && (data15 !== null)){
 validate69.errors = [{instancePath:instancePath+"/resumeToken",schemaPath:"#/properties/resumeToken/type",keyword:"type",params:{type: schema127.properties.resumeToken.type}}];
 return false;
 }
-var valid0 = _errs40 === errors;
+var valid0 = _errs36 === errors;
 }
 else {
 var valid0 = true;
@@ -7552,10 +7497,10 @@ var valid0 = true;
 if(valid0){
 if(data.rematch !== undefined){
 let data16 = data.rematch;
-const _errs42 = errors;
-if(errors === _errs42){
+const _errs38 = errors;
+if(errors === _errs38){
 if(data16 && typeof data16 == "object" && !Array.isArray(data16)){
-const _errs44 = errors;
+const _errs40 = errors;
 for(const key1 in data16){
 if(!((key1 === "deadlineTs") || (key1 === "votes"))){
 validate69.errors = [{instancePath:instancePath+"/rematch",schemaPath:"#/properties/rematch/additionalProperties",keyword:"additionalProperties",params:{additionalProperty: key1}}];
@@ -7563,16 +7508,16 @@ return false;
 break;
 }
 }
-if(_errs44 === errors){
+if(_errs40 === errors){
 if(data16.deadlineTs !== undefined){
 let data17 = data16.deadlineTs;
-const _errs45 = errors;
-const _errs46 = errors;
+const _errs41 = errors;
+const _errs42 = errors;
 if(!(((typeof data17 == "number") && (!(data17 % 1) && !isNaN(data17))) && (isFinite(data17)))){
 validate69.errors = [{instancePath:instancePath+"/rematch/deadlineTs",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/timestamp/type",keyword:"type",params:{type: "integer"}}];
 return false;
 }
-if(errors === _errs46){
+if(errors === _errs42){
 if((typeof data17 == "number") && (isFinite(data17))){
 if(data17 < 0 || isNaN(data17)){
 validate69.errors = [{instancePath:instancePath+"/rematch/deadlineTs",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/timestamp/minimum",keyword:"minimum",params:{comparison: ">=", limit: 0}}];
@@ -7580,22 +7525,22 @@ return false;
 }
 }
 }
-var valid11 = _errs45 === errors;
+var valid10 = _errs41 === errors;
 }
 else {
-var valid11 = true;
+var valid10 = true;
 }
-if(valid11){
+if(valid10){
 if(data16.votes !== undefined){
-const _errs48 = errors;
+const _errs44 = errors;
 if(!(validate79(data16.votes, {instancePath:instancePath+"/rematch/votes",parentData:data16,parentDataProperty:"votes",rootData}))){
 vErrors = vErrors === null ? validate79.errors : vErrors.concat(validate79.errors);
 errors = vErrors.length;
 }
-var valid11 = _errs48 === errors;
+var valid10 = _errs44 === errors;
 }
 else {
-var valid11 = true;
+var valid10 = true;
 }
 }
 }
@@ -7605,7 +7550,7 @@ validate69.errors = [{instancePath:instancePath+"/rematch",schemaPath:"#/propert
 return false;
 }
 }
-var valid0 = _errs42 === errors;
+var valid0 = _errs38 === errors;
 }
 else {
 var valid0 = true;
@@ -7613,8 +7558,8 @@ var valid0 = true;
 if(valid0){
 if(data.autoStart !== undefined){
 let data19 = data.autoStart;
-const _errs49 = errors;
-if(errors === _errs49){
+const _errs45 = errors;
+if(errors === _errs45){
 if(data19 && typeof data19 == "object" && !Array.isArray(data19)){
 let missing1;
 if((data19.startsAtTs === undefined) && (missing1 = "startsAtTs")){
@@ -7622,7 +7567,7 @@ validate69.errors = [{instancePath:instancePath+"/autoStart",schemaPath:"#/prope
 return false;
 }
 else {
-const _errs51 = errors;
+const _errs47 = errors;
 for(const key2 in data19){
 if(!(key2 === "startsAtTs")){
 validate69.errors = [{instancePath:instancePath+"/autoStart",schemaPath:"#/properties/autoStart/additionalProperties",keyword:"additionalProperties",params:{additionalProperty: key2}}];
@@ -7630,15 +7575,15 @@ return false;
 break;
 }
 }
-if(_errs51 === errors){
+if(_errs47 === errors){
 if(data19.startsAtTs !== undefined){
 let data20 = data19.startsAtTs;
-const _errs53 = errors;
+const _errs49 = errors;
 if(!(((typeof data20 == "number") && (!(data20 % 1) && !isNaN(data20))) && (isFinite(data20)))){
 validate69.errors = [{instancePath:instancePath+"/autoStart/startsAtTs",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/timestamp/type",keyword:"type",params:{type: "integer"}}];
 return false;
 }
-if(errors === _errs53){
+if(errors === _errs49){
 if((typeof data20 == "number") && (isFinite(data20))){
 if(data20 < 0 || isNaN(data20)){
 validate69.errors = [{instancePath:instancePath+"/autoStart/startsAtTs",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/timestamp/minimum",keyword:"minimum",params:{comparison: ">=", limit: 0}}];
@@ -7655,7 +7600,7 @@ validate69.errors = [{instancePath:instancePath+"/autoStart",schemaPath:"#/prope
 return false;
 }
 }
-var valid0 = _errs49 === errors;
+var valid0 = _errs45 === errors;
 }
 else {
 var valid0 = true;
@@ -7663,8 +7608,8 @@ var valid0 = true;
 if(valid0){
 if(data.handAsk !== undefined){
 let data21 = data.handAsk;
-const _errs55 = errors;
-if(errors === _errs55){
+const _errs51 = errors;
+if(errors === _errs51){
 if(data21 && typeof data21 == "object" && !Array.isArray(data21)){
 let missing2;
 if(((((data21.asker === undefined) && (missing2 = "asker")) || ((data21.target === undefined) && (missing2 = "target"))) || ((data21.cardCount === undefined) && (missing2 = "cardCount"))) || ((data21.deadlineTs === undefined) && (missing2 = "deadlineTs"))){
@@ -7672,7 +7617,7 @@ validate69.errors = [{instancePath:instancePath+"/handAsk",schemaPath:"#/propert
 return false;
 }
 else {
-const _errs57 = errors;
+const _errs53 = errors;
 for(const key3 in data21){
 if(!((((key3 === "asker") || (key3 === "target")) || (key3 === "cardCount")) || (key3 === "deadlineTs"))){
 validate69.errors = [{instancePath:instancePath+"/handAsk",schemaPath:"#/properties/handAsk/additionalProperties",keyword:"additionalProperties",params:{additionalProperty: key3}}];
@@ -7680,16 +7625,16 @@ return false;
 break;
 }
 }
-if(_errs57 === errors){
+if(_errs53 === errors){
 if(data21.asker !== undefined){
 let data22 = data21.asker;
-const _errs58 = errors;
-const _errs59 = errors;
+const _errs54 = errors;
+const _errs55 = errors;
 if(!(((typeof data22 == "number") && (!(data22 % 1) && !isNaN(data22))) && (isFinite(data22)))){
 validate69.errors = [{instancePath:instancePath+"/handAsk/asker",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex/type",keyword:"type",params:{type: "integer"}}];
 return false;
 }
-if(errors === _errs59){
+if(errors === _errs55){
 if((typeof data22 == "number") && (isFinite(data22))){
 if(data22 > 7 || isNaN(data22)){
 validate69.errors = [{instancePath:instancePath+"/handAsk/asker",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex/maximum",keyword:"maximum",params:{comparison: "<=", limit: 7}}];
@@ -7703,21 +7648,21 @@ return false;
 }
 }
 }
-var valid15 = _errs58 === errors;
+var valid14 = _errs54 === errors;
 }
 else {
-var valid15 = true;
+var valid14 = true;
 }
-if(valid15){
+if(valid14){
 if(data21.target !== undefined){
 let data23 = data21.target;
-const _errs61 = errors;
-const _errs62 = errors;
+const _errs57 = errors;
+const _errs58 = errors;
 if(!(((typeof data23 == "number") && (!(data23 % 1) && !isNaN(data23))) && (isFinite(data23)))){
 validate69.errors = [{instancePath:instancePath+"/handAsk/target",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex/type",keyword:"type",params:{type: "integer"}}];
 return false;
 }
-if(errors === _errs62){
+if(errors === _errs58){
 if((typeof data23 == "number") && (isFinite(data23))){
 if(data23 > 7 || isNaN(data23)){
 validate69.errors = [{instancePath:instancePath+"/handAsk/target",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex/maximum",keyword:"maximum",params:{comparison: "<=", limit: 7}}];
@@ -7731,20 +7676,20 @@ return false;
 }
 }
 }
-var valid15 = _errs61 === errors;
+var valid14 = _errs57 === errors;
 }
 else {
-var valid15 = true;
+var valid14 = true;
 }
-if(valid15){
+if(valid14){
 if(data21.cardCount !== undefined){
 let data24 = data21.cardCount;
-const _errs64 = errors;
+const _errs60 = errors;
 if(!(((typeof data24 == "number") && (!(data24 % 1) && !isNaN(data24))) && (isFinite(data24)))){
 validate69.errors = [{instancePath:instancePath+"/handAsk/cardCount",schemaPath:"#/properties/handAsk/properties/cardCount/type",keyword:"type",params:{type: "integer"}}];
 return false;
 }
-if(errors === _errs64){
+if(errors === _errs60){
 if((typeof data24 == "number") && (isFinite(data24))){
 if(data24 < 1 || isNaN(data24)){
 validate69.errors = [{instancePath:instancePath+"/handAsk/cardCount",schemaPath:"#/properties/handAsk/properties/cardCount/minimum",keyword:"minimum",params:{comparison: ">=", limit: 1}}];
@@ -7752,21 +7697,21 @@ return false;
 }
 }
 }
-var valid15 = _errs64 === errors;
+var valid14 = _errs60 === errors;
 }
 else {
-var valid15 = true;
+var valid14 = true;
 }
-if(valid15){
+if(valid14){
 if(data21.deadlineTs !== undefined){
 let data25 = data21.deadlineTs;
-const _errs66 = errors;
-const _errs67 = errors;
+const _errs62 = errors;
+const _errs63 = errors;
 if(!(((typeof data25 == "number") && (!(data25 % 1) && !isNaN(data25))) && (isFinite(data25)))){
 validate69.errors = [{instancePath:instancePath+"/handAsk/deadlineTs",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/timestamp/type",keyword:"type",params:{type: "integer"}}];
 return false;
 }
-if(errors === _errs67){
+if(errors === _errs63){
 if((typeof data25 == "number") && (isFinite(data25))){
 if(data25 < 0 || isNaN(data25)){
 validate69.errors = [{instancePath:instancePath+"/handAsk/deadlineTs",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/timestamp/minimum",keyword:"minimum",params:{comparison: ">=", limit: 0}}];
@@ -7774,10 +7719,10 @@ return false;
 }
 }
 }
-var valid15 = _errs66 === errors;
+var valid14 = _errs62 === errors;
 }
 else {
-var valid15 = true;
+var valid14 = true;
 }
 }
 }
@@ -7790,7 +7735,7 @@ validate69.errors = [{instancePath:instancePath+"/handAsk",schemaPath:"#/propert
 return false;
 }
 }
-var valid0 = _errs55 === errors;
+var valid0 = _errs51 === errors;
 }
 else {
 var valid0 = true;
@@ -7798,8 +7743,8 @@ var valid0 = true;
 if(valid0){
 if(data.queuedGame !== undefined){
 let data26 = data.queuedGame;
-const _errs69 = errors;
-if(errors === _errs69){
+const _errs65 = errors;
+if(errors === _errs65){
 if(data26 && typeof data26 == "object" && !Array.isArray(data26)){
 let missing3;
 if(((data26.gameId === undefined) && (missing3 = "gameId")) || ((data26.rules === undefined) && (missing3 = "rules"))){
@@ -7807,7 +7752,7 @@ validate69.errors = [{instancePath:instancePath+"/queuedGame",schemaPath:"#/prop
 return false;
 }
 else {
-const _errs71 = errors;
+const _errs67 = errors;
 for(const key4 in data26){
 if(!((key4 === "gameId") || (key4 === "rules"))){
 validate69.errors = [{instancePath:instancePath+"/queuedGame",schemaPath:"#/properties/queuedGame/additionalProperties",keyword:"additionalProperties",params:{additionalProperty: key4}}];
@@ -7815,10 +7760,10 @@ return false;
 break;
 }
 }
-if(_errs71 === errors){
+if(_errs67 === errors){
 if(data26.gameId !== undefined){
 let data27 = data26.gameId;
-const _errs72 = errors;
+const _errs68 = errors;
 if(typeof data27 !== "string"){
 validate69.errors = [{instancePath:instancePath+"/queuedGame/gameId",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/gameId/type",keyword:"type",params:{type: "string"}}];
 return false;
@@ -7827,22 +7772,22 @@ if(!((data27 === "thulla") || (data27 === "rung"))){
 validate69.errors = [{instancePath:instancePath+"/queuedGame/gameId",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/gameId/enum",keyword:"enum",params:{allowedValues: schema18.enum}}];
 return false;
 }
-var valid19 = _errs72 === errors;
+var valid18 = _errs68 === errors;
 }
 else {
-var valid19 = true;
+var valid18 = true;
 }
-if(valid19){
+if(valid18){
 if(data26.rules !== undefined){
-const _errs75 = errors;
+const _errs71 = errors;
 if(!(validate13(data26.rules, {instancePath:instancePath+"/queuedGame/rules",parentData:data26,parentDataProperty:"rules",rootData}))){
 vErrors = vErrors === null ? validate13.errors : vErrors.concat(validate13.errors);
 errors = vErrors.length;
 }
-var valid19 = _errs75 === errors;
+var valid18 = _errs71 === errors;
 }
 else {
-var valid19 = true;
+var valid18 = true;
 }
 }
 }
@@ -7853,7 +7798,7 @@ validate69.errors = [{instancePath:instancePath+"/queuedGame",schemaPath:"#/prop
 return false;
 }
 }
-var valid0 = _errs69 === errors;
+var valid0 = _errs65 === errors;
 }
 else {
 var valid0 = true;
