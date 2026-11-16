@@ -247,8 +247,7 @@ export const tableStatePayloadSchema = z.object({ "code": z.string().regex(new R
         message: "Invalid input: Should pass single schema. Passed " + passed,
       });
     }
-  }).describe("The Thulla round view; null between rounds and while the room plays another game"), "rungRound": z.any().superRefine((x, ctx) => {
-    const schemas = [z.object({ "viewer": z.any().superRefine((x, ctx) => {
+  }).describe("The Thulla round view; null between rounds and while the room plays another game"), "rungRound": z.object({ "viewer": z.any().superRefine((x, ctx) => {
     const schemas = [z.object({ "kind": z.literal("seat"), "seat": z.number().int().gte(0).lte(7) }).strict(), z.object({ "kind": z.literal("spectator") }).strict()];
     const { errors, failed } = schemas.reduce<{
       errors: z.core.$ZodIssue[];
@@ -408,38 +407,7 @@ export const tableStatePayloadSchema = z.object({ "code": z.string().regex(new R
         message: "Invalid input: Should pass single schema. Passed " + passed,
       });
     }
-  }), "canRedeal": z.union([z.boolean(), z.null()]) }).strict().describe("The stock and other hands never appear (RG5)"), z.null()];
-    const { errors, failed } = schemas.reduce<{
-      errors: z.core.$ZodIssue[];
-      failed: number;
-    }>(
-      ({ errors, failed }, schema) =>
-        ((result) =>
-          result.error
-            ? {
-                errors: [...errors, ...result.error.issues],
-                failed: failed + 1,
-              }
-            : { errors, failed })(
-          schema.safeParse(x),
-        ),
-      { errors: [], failed: 0 },
-    );
-    const passed = schemas.length - failed;
-    if (passed !== 1) {
-      ctx.addIssue(errors.length ? {
-        path: [],
-        code: "invalid_union",
-        errors: [errors],
-        message: "Invalid input: Should pass single schema. Passed " + passed,
-      } : {
-        path: [],
-        code: "custom",
-        errors: [errors],
-        message: "Invalid input: Should pass single schema. Passed " + passed,
-      });
-    }
-  }).describe("The Rung deal view while the room plays Rung").optional(), "lastSeq": z.number().int().gte(0), "resumeToken": z.union([z.string(), z.null()]), "rematch": z.object({ "deadlineTs": z.number().int().gte(0).describe("Unix milliseconds from the server clock").optional(), "votes": z.array(z.number().int().gte(0).lte(7)).optional() }).strict().optional(), "autoStart": z.object({ "startsAtTs": z.number().int().gte(0).describe("Unix milliseconds from the server clock") }).strict().describe("A public table counting down to its first deal (GDD 9.5)").optional(), "handAsk": z.object({ "asker": z.number().int().gte(0).lte(7), "target": z.number().int().gte(0).lte(7), "cardCount": z.number().int().gte(1), "deadlineTs": z.number().int().gte(0).describe("Unix milliseconds from the server clock") }).strict().describe("A hand request still waiting for its answer (R33), so a rejoining player sees it").optional(), "queuedGame": z.object({ "gameId": z.enum(["thulla","rung"]), "rules": z.object({ "gameId": z.enum(["thulla","rung"]), "preset": z.enum(["standard","family","hardcore","classicPagat","relaxed","rung","courtPiece","hokm"]).optional(), "overrides": z.record(z.string(), z.any()).describe("Validated against the game's rules schema").optional(), "settings": z.object({ "turnTimerSeconds": z.union([z.literal(10), z.literal(15), z.literal(20), z.literal(30), z.literal(60), z.literal(null)]).optional(), "showCardCounts": z.boolean().optional(), "cardMemoryAssist": z.boolean().optional(), "loserTitle": z.enum(["bhabhi","donkey","thullad"]).optional(), "spectators": z.boolean().optional(), "voiceDefault": z.enum(["openMic","pushToTalk","off"]).optional(), "direction": z.enum(["cw","ccw"]).optional() }).strict().describe("Table settings that are not engine rules (GDD 6.13)").optional() }).strict() }).strict().describe("The game the host chose for after this round").optional() }).strict().describe("The full table as the recipient may see it; the round view is redacted per recipient");
+  }), "canRedeal": z.union([z.boolean(), z.null()]) }).strict().describe("The Rung deal view while the room plays a Rung deal; absent otherwise").optional(), "lastSeq": z.number().int().gte(0), "resumeToken": z.union([z.string(), z.null()]), "rematch": z.object({ "deadlineTs": z.number().int().gte(0).describe("Unix milliseconds from the server clock").optional(), "votes": z.array(z.number().int().gte(0).lte(7)).optional() }).strict().optional(), "autoStart": z.object({ "startsAtTs": z.number().int().gte(0).describe("Unix milliseconds from the server clock") }).strict().describe("A public table counting down to its first deal (GDD 9.5)").optional(), "handAsk": z.object({ "asker": z.number().int().gte(0).lte(7), "target": z.number().int().gte(0).lte(7), "cardCount": z.number().int().gte(1), "deadlineTs": z.number().int().gte(0).describe("Unix milliseconds from the server clock") }).strict().describe("A hand request still waiting for its answer (R33), so a rejoining player sees it").optional(), "queuedGame": z.object({ "gameId": z.enum(["thulla","rung"]), "rules": z.object({ "gameId": z.enum(["thulla","rung"]), "preset": z.enum(["standard","family","hardcore","classicPagat","relaxed","rung","courtPiece","hokm"]).optional(), "overrides": z.record(z.string(), z.any()).describe("Validated against the game's rules schema").optional(), "settings": z.object({ "turnTimerSeconds": z.union([z.literal(10), z.literal(15), z.literal(20), z.literal(30), z.literal(60), z.literal(null)]).optional(), "showCardCounts": z.boolean().optional(), "cardMemoryAssist": z.boolean().optional(), "loserTitle": z.enum(["bhabhi","donkey","thullad"]).optional(), "spectators": z.boolean().optional(), "voiceDefault": z.enum(["openMic","pushToTalk","off"]).optional(), "direction": z.enum(["cw","ccw"]).optional() }).strict().describe("Table settings that are not engine rules (GDD 6.13)").optional() }).strict() }).strict().describe("The game the host chose for after this round").optional() }).strict().describe("The full table as the recipient may see it; the round view is redacted per recipient");
 
 export const rulesChangedPayloadSchema = z.object({ "rules": z.object({ "gameId": z.enum(["thulla","rung"]), "preset": z.enum(["standard","family","hardcore","classicPagat","relaxed","rung","courtPiece","hokm"]).optional(), "overrides": z.record(z.string(), z.any()).describe("Validated against the game's rules schema").optional(), "settings": z.object({ "turnTimerSeconds": z.union([z.literal(10), z.literal(15), z.literal(20), z.literal(30), z.literal(60), z.literal(null)]).optional(), "showCardCounts": z.boolean().optional(), "cardMemoryAssist": z.boolean().optional(), "loserTitle": z.enum(["bhabhi","donkey","thullad"]).optional(), "spectators": z.boolean().optional(), "voiceDefault": z.enum(["openMic","pushToTalk","off"]).optional(), "direction": z.enum(["cw","ccw"]).optional() }).strict().describe("Table settings that are not engine rules (GDD 6.13)").optional() }).strict(), "changedBy": z.number().int().gte(0).lte(7), "changedKeys": z.array(z.string()).describe("For the diff banner (E19)").optional() }).strict();
 
@@ -643,8 +611,7 @@ export const snapshotPayloadSchema = z.object({ "state": z.object({ "code": z.st
         message: "Invalid input: Should pass single schema. Passed " + passed,
       });
     }
-  }).describe("The Thulla round view; null between rounds and while the room plays another game"), "rungRound": z.any().superRefine((x, ctx) => {
-    const schemas = [z.object({ "viewer": z.any().superRefine((x, ctx) => {
+  }).describe("The Thulla round view; null between rounds and while the room plays another game"), "rungRound": z.object({ "viewer": z.any().superRefine((x, ctx) => {
     const schemas = [z.object({ "kind": z.literal("seat"), "seat": z.number().int().gte(0).lte(7) }).strict(), z.object({ "kind": z.literal("spectator") }).strict()];
     const { errors, failed } = schemas.reduce<{
       errors: z.core.$ZodIssue[];
@@ -804,38 +771,7 @@ export const snapshotPayloadSchema = z.object({ "state": z.object({ "code": z.st
         message: "Invalid input: Should pass single schema. Passed " + passed,
       });
     }
-  }), "canRedeal": z.union([z.boolean(), z.null()]) }).strict().describe("The stock and other hands never appear (RG5)"), z.null()];
-    const { errors, failed } = schemas.reduce<{
-      errors: z.core.$ZodIssue[];
-      failed: number;
-    }>(
-      ({ errors, failed }, schema) =>
-        ((result) =>
-          result.error
-            ? {
-                errors: [...errors, ...result.error.issues],
-                failed: failed + 1,
-              }
-            : { errors, failed })(
-          schema.safeParse(x),
-        ),
-      { errors: [], failed: 0 },
-    );
-    const passed = schemas.length - failed;
-    if (passed !== 1) {
-      ctx.addIssue(errors.length ? {
-        path: [],
-        code: "invalid_union",
-        errors: [errors],
-        message: "Invalid input: Should pass single schema. Passed " + passed,
-      } : {
-        path: [],
-        code: "custom",
-        errors: [errors],
-        message: "Invalid input: Should pass single schema. Passed " + passed,
-      });
-    }
-  }).describe("The Rung deal view while the room plays Rung").optional(), "lastSeq": z.number().int().gte(0), "resumeToken": z.union([z.string(), z.null()]), "rematch": z.object({ "deadlineTs": z.number().int().gte(0).describe("Unix milliseconds from the server clock").optional(), "votes": z.array(z.number().int().gte(0).lte(7)).optional() }).strict().optional(), "autoStart": z.object({ "startsAtTs": z.number().int().gte(0).describe("Unix milliseconds from the server clock") }).strict().describe("A public table counting down to its first deal (GDD 9.5)").optional(), "handAsk": z.object({ "asker": z.number().int().gte(0).lte(7), "target": z.number().int().gte(0).lte(7), "cardCount": z.number().int().gte(1), "deadlineTs": z.number().int().gte(0).describe("Unix milliseconds from the server clock") }).strict().describe("A hand request still waiting for its answer (R33), so a rejoining player sees it").optional(), "queuedGame": z.object({ "gameId": z.enum(["thulla","rung"]), "rules": z.object({ "gameId": z.enum(["thulla","rung"]), "preset": z.enum(["standard","family","hardcore","classicPagat","relaxed","rung","courtPiece","hokm"]).optional(), "overrides": z.record(z.string(), z.any()).describe("Validated against the game's rules schema").optional(), "settings": z.object({ "turnTimerSeconds": z.union([z.literal(10), z.literal(15), z.literal(20), z.literal(30), z.literal(60), z.literal(null)]).optional(), "showCardCounts": z.boolean().optional(), "cardMemoryAssist": z.boolean().optional(), "loserTitle": z.enum(["bhabhi","donkey","thullad"]).optional(), "spectators": z.boolean().optional(), "voiceDefault": z.enum(["openMic","pushToTalk","off"]).optional(), "direction": z.enum(["cw","ccw"]).optional() }).strict().describe("Table settings that are not engine rules (GDD 6.13)").optional() }).strict() }).strict().describe("The game the host chose for after this round").optional() }).strict().describe("The full table as the recipient may see it; the round view is redacted per recipient"), "events": z.array(z.object({ "v": z.literal(1), "type": z.string().regex(new RegExp("^[a-z_]+$")), "tableId": z.string().regex(new RegExp("^t_[A-Z2-9]{6}$")), "seq": z.number().int().gte(0), "ts": z.number().int().gte(0).describe("Unix milliseconds from the server clock"), "payload": z.record(z.string(), z.any()) }).strict().describe("Every message on the table socket (GDD 20.6, ARCHITECTURE 8.4). v is the protocol major; within a major, changes are additive only. seq is server-assigned on messages to clients and the client's own counter on messages to the server; a move repeats it as clientSeq for idempotency.")) }).strict().describe("A table_state plus the events after sinceSeq, each a full envelope (ARCHITECTURE 8.6)");
+  }), "canRedeal": z.union([z.boolean(), z.null()]) }).strict().describe("The Rung deal view while the room plays a Rung deal; absent otherwise").optional(), "lastSeq": z.number().int().gte(0), "resumeToken": z.union([z.string(), z.null()]), "rematch": z.object({ "deadlineTs": z.number().int().gte(0).describe("Unix milliseconds from the server clock").optional(), "votes": z.array(z.number().int().gte(0).lte(7)).optional() }).strict().optional(), "autoStart": z.object({ "startsAtTs": z.number().int().gte(0).describe("Unix milliseconds from the server clock") }).strict().describe("A public table counting down to its first deal (GDD 9.5)").optional(), "handAsk": z.object({ "asker": z.number().int().gte(0).lte(7), "target": z.number().int().gte(0).lte(7), "cardCount": z.number().int().gte(1), "deadlineTs": z.number().int().gte(0).describe("Unix milliseconds from the server clock") }).strict().describe("A hand request still waiting for its answer (R33), so a rejoining player sees it").optional(), "queuedGame": z.object({ "gameId": z.enum(["thulla","rung"]), "rules": z.object({ "gameId": z.enum(["thulla","rung"]), "preset": z.enum(["standard","family","hardcore","classicPagat","relaxed","rung","courtPiece","hokm"]).optional(), "overrides": z.record(z.string(), z.any()).describe("Validated against the game's rules schema").optional(), "settings": z.object({ "turnTimerSeconds": z.union([z.literal(10), z.literal(15), z.literal(20), z.literal(30), z.literal(60), z.literal(null)]).optional(), "showCardCounts": z.boolean().optional(), "cardMemoryAssist": z.boolean().optional(), "loserTitle": z.enum(["bhabhi","donkey","thullad"]).optional(), "spectators": z.boolean().optional(), "voiceDefault": z.enum(["openMic","pushToTalk","off"]).optional(), "direction": z.enum(["cw","ccw"]).optional() }).strict().describe("Table settings that are not engine rules (GDD 6.13)").optional() }).strict() }).strict().describe("The game the host chose for after this round").optional() }).strict().describe("The full table as the recipient may see it; the round view is redacted per recipient"), "events": z.array(z.object({ "v": z.literal(1), "type": z.string().regex(new RegExp("^[a-z_]+$")), "tableId": z.string().regex(new RegExp("^t_[A-Z2-9]{6}$")), "seq": z.number().int().gte(0), "ts": z.number().int().gte(0).describe("Unix milliseconds from the server clock"), "payload": z.record(z.string(), z.any()) }).strict().describe("Every message on the table socket (GDD 20.6, ARCHITECTURE 8.4). v is the protocol major; within a major, changes are additive only. seq is server-assigned on messages to clients and the client's own counter on messages to the server; a move repeats it as clientSeq for idempotency.")) }).strict().describe("A table_state plus the events after sinceSeq, each a full envelope (ARCHITECTURE 8.6)");
 
 export const pongPayloadSchema = z.object({ "sentTs": z.number().int().gte(0).describe("Unix milliseconds from the server clock"), "serverTs": z.number().int().gte(0).describe("Unix milliseconds from the server clock") }).strict();
 

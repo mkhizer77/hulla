@@ -433,15 +433,8 @@
           "description": "The Thulla round view; null between rounds and while the room plays another game"
         },
         "rungRound": {
-          "oneOf": [
-            {
-              "$ref": "../games/rung/views.json#/definitions/view"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "description": "The Rung deal view while the room plays Rung"
+          "$ref": "../games/rung/views.json#/definitions/view",
+          "description": "The Rung deal view while the room plays a Rung deal; absent otherwise"
         },
         "lastSeq": {
           "$ref": "../common.json#/definitions/sequence"

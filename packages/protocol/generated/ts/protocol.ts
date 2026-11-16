@@ -702,10 +702,7 @@ export interface TableState {
    * The Thulla round view; null between rounds and while the room plays another game
    */
   round: View | null;
-  /**
-   * The Rung deal view while the room plays Rung
-   */
-  rungRound?: RungView | null;
+  rungRound?: RungView1;
   lastSeq: number;
   resumeToken: string | null;
   rematch?: {
@@ -793,6 +790,46 @@ export interface Spectator {
    * The lowest seat whose player the watcher is a friend of (GDD 7.7); null when none is seated now
    */
   friendOfSeat?: number | null;
+}
+/**
+ * The stock and other hands never appear (RG5)
+ */
+export interface RungView1 {
+  viewer: RungViewer;
+  rulesVersion: string;
+  rules: RungRules;
+  seatCount: 4;
+  dealerSeat: number;
+  callerSeat: number;
+  phase: RungPhase;
+  turnSeat: number | null;
+  handCounts: HandCounts;
+  /**
+   * The viewer's own cards; null for spectators
+   */
+  hand: Cards | null;
+  stockCount: number;
+  trump: ("S" | "H" | "C" | "D") | null;
+  redeals: number;
+  trickIndex: number;
+  trick: RungTrick;
+  lastWinner: number | null;
+  run: number;
+  pile: number;
+  /**
+   * Tricks per team
+   *
+   * @minItems 2
+   * @maxItems 2
+   */
+  counts: [number, number];
+  chasing: 0 | 1 | null;
+  outcome: RungOutcome | null;
+  stats: RungSeatStats[];
+  commitment: string;
+  seedHex: string | null;
+  deckOrder: Cards | null;
+  canRedeal: boolean | null;
 }
 export interface RulesChanged {
   rules: RulesSelection;

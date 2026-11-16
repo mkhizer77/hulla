@@ -1592,6 +1592,8 @@ namespace Hulla.Protocol
 
     /// <summary>
     /// The stock and other hands never appear (RG5)
+    ///
+    /// The Rung deal view while the room plays a Rung deal; absent otherwise
     /// </summary>
     public partial class RungView
     {
@@ -1808,9 +1810,9 @@ namespace Hulla.Protocol
         public RulesSelection Rules { get; set; }
 
         /// <summary>
-        /// The Rung deal view while the room plays Rung
+        /// The Rung deal view while the room plays a Rung deal; absent otherwise
         /// </summary>
-        [JsonProperty("rungRound")]
+        [JsonProperty("rungRound", Required = Required.DisallowNull, NullValueHandling = NullValueHandling.Ignore)]
         public RungView? RungRound { get; set; }
 
         [JsonProperty("seats", Required = Required.Always)]

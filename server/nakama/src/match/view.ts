@@ -147,7 +147,7 @@ export function tableStateFor<S, M, V, E, R>(
     lastSeq: state.seq,
     resumeToken: slot?.resumeToken ?? null,
   };
-  if (host.viewField !== undefined) base[host.viewField] = view;
+  if (host.viewField !== undefined && view !== null) base[host.viewField] = view;
   const ask = state.round?.handAsk ?? null;
   if (ask !== null) {
     base.handAsk = {
