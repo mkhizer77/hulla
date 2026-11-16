@@ -36,6 +36,9 @@ namespace Hulla.Application.ViewModels
         /// <summary>The Shop tab and store purchases (GDD 22.5); off hides them.</summary>
         public bool Shop => Current.Bool("shop", true);
 
+        /// <summary>Rung on the Home shelf and in the room's game switch; off until the server says so.</summary>
+        public bool Rung => Current.Bool("rung", false);
+
         public bool UpdateRequired => Current.UpdateRequired;
 
         public async Awaitable RefreshAsync(string clientVersion, string cohort, CancellationToken cancellation)

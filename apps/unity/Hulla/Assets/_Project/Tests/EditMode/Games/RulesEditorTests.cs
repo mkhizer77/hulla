@@ -38,6 +38,7 @@ namespace Hulla.Games.Thulla.Tests
             var model = new TableModel("me");
             model.Apply(new ServerMessage(MessageTypes.TableState, 1, new TableState
             {
+                GameId = GameId.Thulla,
                 Code = "ABC123",
                 Mode = TableMode.Private,
                 Status = TableStatus.Open,

@@ -534,6 +534,18 @@ namespace Hulla.Presentation.Text
         public static string GameThulla => Strings.Text("ui.game_thulla");
         public static string GameThullaLine => Strings.Text("ui.game_thulla_line");
         public static string GameRung => Strings.Text("ui.game_rung");
+
+        public static string SwitchGameTo => Strings.Text("rung.switch_to");
+
+        public static string GameQueued => Strings.Text("rung.switch_queued");
+
+        public static string GameSwitched => Strings.Text("rung.switched");
+
+        public static string AddBot => Strings.Text("rung.add_bot");
+
+        public static string NeedFour => Strings.Text("rung.need_four");
+
+        public static string PlayRung => Strings.Text("rung.play_rung");
         public static string GameRungLine => Strings.Text("ui.game_rung_line");
         public static string Trophies => Strings.Text("nav.trophies");
         public static string ComingSoon => Strings.Text("ui.coming_soon");

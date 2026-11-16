@@ -27,6 +27,7 @@ namespace Hulla.Games.Thulla.Tests
             var model = new TableModel("me");
             model.Apply(new ServerMessage(MessageTypes.TableState, 1, new TableState
             {
+                GameId = GameId.Thulla,
                 Code = "ABC123",
                 Mode = mode,
                 Status = resolved == null ? TableStatus.Open : TableStatus.InRound,

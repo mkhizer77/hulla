@@ -21,6 +21,7 @@ namespace Hulla.Application.Tests
 
             var state = new TableState
             {
+                GameId = GameId.Thulla,
                 Code = "ABC123",
                 Status = myHand == null ? TableStatus.Open : TableStatus.InRound,
                 HostSeat = 0,

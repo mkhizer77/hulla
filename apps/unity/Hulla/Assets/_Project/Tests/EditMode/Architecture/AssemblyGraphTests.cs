@@ -16,17 +16,18 @@ namespace Hulla.Architecture.Tests
             ["Hulla.Infrastructure"] = new[] { "Hulla.Application", "Hulla.Domain", "Hulla.Protocol" },
             ["Hulla.Presentation"] = new[] { "Hulla.Application", "Hulla.Domain" },
             ["Hulla.Games.Thulla"] = new[] { "Hulla.Application", "Hulla.Domain", "Hulla.Presentation", "Hulla.Protocol" },
+            ["Hulla.Games.Rung"] = new[] { "Hulla.Application", "Hulla.Domain", "Hulla.Presentation", "Hulla.Protocol" },
             ["Hulla.Composition"] = new[]
             {
                 "Hulla.Application", "Hulla.Domain", "Hulla.Protocol", "Hulla.Infrastructure",
-                "Hulla.Presentation", "Hulla.Games.Thulla",
+                "Hulla.Presentation", "Hulla.Games.Thulla", "Hulla.Games.Rung",
             },
         };
 
         /// <summary>Only the adapter and view layers may reference SDKs; Domain and Application stay plain.</summary>
         private static readonly HashSet<string> ThirdPartyAllowed = new HashSet<string>
         {
-            "Hulla.Infrastructure", "Hulla.Presentation", "Hulla.Games.Thulla", "Hulla.Composition",
+            "Hulla.Infrastructure", "Hulla.Presentation", "Hulla.Games.Thulla", "Hulla.Games.Rung", "Hulla.Composition",
         };
 
         private static Dictionary<string, AsmDef> LoadProjectAssemblies()

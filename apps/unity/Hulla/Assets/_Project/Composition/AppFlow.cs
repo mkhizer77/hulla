@@ -68,6 +68,7 @@ namespace Hulla.Composition
         private IDisposable? _view;
         private AnimationScheduler? _scheduler;
         private ThullaTableView? _tableView;
+        private Hulla.Games.Rung.RungTableView? _rungView;
         private bool _reconnecting;
         private SettingsView? _settingsView;
         private bool _updateAsked;
@@ -1497,8 +1498,10 @@ namespace Hulla.Composition
                 OfferBigThulla(client);
             }
 
-            var wanted = model.InRound || model.LastResult != null ? Screen.Table : Screen.Lobby;
-            if (wanted == _screen)
+            var wanted = model.ShowsTable ? Screen.Table : Screen.Lobby;
+            // The table on screen must be the one for the game the room plays now.
+            var rightTable = wanted != Screen.Table || model.IsRung == (_rungView != null);
+            if (wanted == _screen && rightTable)
             {
                 return;
             }
@@ -1508,7 +1511,15 @@ namespace Hulla.Composition
             _shell.HideNav();
             if (wanted == Screen.Lobby)
             {
-                _lobbyView = new LobbyView(_shell.Show(_shell.Catalog.Lobby), client, () => DateTimeOffset.UtcNow.ToUnixTimeMilliseconds(), Leave, code => ShareCode(code), text => _app.TableChat.SendAsync(text, _app.Lifetime), () => ThullaRulesEditor.Summary(client.Model, _app.Presets), () => OpenRulesEditor(client), () => OpenRules(null));
+                _lobbyView = new LobbyView(_shell.Show(_shell.Catalog.Lobby), client, () => DateTimeOffset.UtcNow.ToUnixTimeMilliseconds(), Leave, code => ShareCode(code), text => _app.TableChat.SendAsync(text, _app.Lifetime), () => client.Model.IsRung ? Hulla.Games.Rung.RungText.Summary(client.Model.Selection?.Preset) : ThullaRulesEditor.Summary(client.Model, _app.Presets), () =>
+                {
+                    // Rung's toggles have no editor yet; its rule set shows on the lobby's line.
+                    if (!client.Model.IsRung)
+                    {
+                        OpenRulesEditor(client);
+                    }
+                }, () => OpenRules(null));
+                _lobbyView.RungOffered = _app.RemoteConfig.Rung || client.Model.IsRung;
                 _lobbyView.IsMuted = _app.Mutes.IsMuted;
                 _lobbyView.OwnsEmotePack = OwnsEmotePack;
                 LoadEmotePacks();
@@ -1528,6 +1539,22 @@ namespace Hulla.Composition
             }
 
             client.Events.Clear();
+            if (model.IsRung)
+            {
+                var settings = _app.Settings;
+                _rungView = new Hulla.Games.Rung.RungTableView(_shell.Show(_shell.Catalog.Table), client, () => DateTimeOffset.UtcNow.ToUnixTimeMilliseconds(), Leave, _sounds, settings.ReduceMotion, settings.OneTapPlay);
+                _rungView.ApplySettings(settings.OneTapPlay, settings.ReduceMotion, settings.LargeCards);
+                if (_app.Session?.Table is { } rungTable)
+                {
+                    // The same voice room as the lobby and as Thulla before it: the match never changed.
+                    _rungView.UseVoice(rungTable.Voice);
+                }
+
+                _scheduler = new AnimationScheduler(client.Events, _rungView);
+                _view = _rungView;
+                return;
+            }
+
             _tableView = new ThullaTableView(_shell.Show(_shell.Catalog.Table), client, _app.Chat, () => DateTimeOffset.UtcNow.ToUnixTimeMilliseconds(), Leave, openSettings: OpenSettings, openRules: OpenRules, sendText: text => _app.TableChat.SendAsync(text, _app.Lifetime), sounds: _sounds);
             _tableView.Invite = () => ShareCode(client.Model.Code);
             _tableView.UseEmotePacks(OwnsEmotePack);
@@ -2105,6 +2132,7 @@ namespace Hulla.Composition
             _shell.ApplySkin(settings.Skin, settings.ReduceMotion);
             _sounds.Volume = settings.SfxVolume / 100f;
             _tableView?.ApplySettings(settings.OneTapPlay, settings.ReduceMotion, settings.LargeCards, settings.Haptics, settings.ShowRulesRecap ? HideRecap : null);
+            _rungView?.ApplySettings(settings.OneTapPlay, settings.ReduceMotion, settings.LargeCards);
             _app.Session?.Table?.Client.Model.SetSort(settings.HandSort == HandSort.RankThenSuit ? CardOrder.CompareByRank : CardOrder.Compare);
         }
 
@@ -2118,6 +2146,7 @@ namespace Hulla.Composition
             _scheduler?.Tick(deltaSeconds);
             _app.Session?.Table?.Voice.Tick(deltaSeconds);
             _tableView?.Tick(deltaSeconds);
+            _rungView?.Tick(deltaSeconds);
         }
 
         /// <summary>"Yes" to the gate skips to Home with a short refresher offer (GDD 17.2).</summary>
@@ -2220,6 +2249,7 @@ namespace Hulla.Composition
             _view?.Dispose();
             _view = null;
             _tableView = null;
+            _rungView = null;
             _sounds.Ducked = false;
             _lobbyView = null;
             _scheduler = null;

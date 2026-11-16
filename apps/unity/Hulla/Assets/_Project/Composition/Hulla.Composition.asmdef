@@ -7,6 +7,7 @@
         "Hulla.Protocol",
         "Hulla.Infrastructure",
         "Hulla.Presentation",
+        "Hulla.Games.Rung",
         "Hulla.Games.Thulla"
     ],
     "includePlatforms": [],

@@ -2733,6 +2733,181 @@
    "smart": false
   },
   {
+   "key": "rung.add_bot",
+   "text": "[Ådd böt · ·]",
+   "smart": false
+  },
+  {
+   "key": "rung.bazi",
+   "text": "[Båzî {0} – {1} · · ·]",
+   "smart": true
+  },
+  {
+   "key": "rung.bazi_lost",
+   "text": "[Théý wöñ thé båzî · · ·]",
+   "smart": false
+  },
+  {
+   "key": "rung.bazi_won",
+   "text": "[Ýöû wöñ thé båzî · · ·]",
+   "smart": false
+  },
+  {
+   "key": "rung.chasing",
+   "text": "[Plåýîñg öñ för thé çöûrt · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "rung.choose",
+   "text": "[Çhöösé thé rûñg · · ·]",
+   "smart": false
+  },
+  {
+   "key": "rung.choosing",
+   "text": "[{0} îs çhöösîñg thé rûñg · · · ·]",
+   "smart": true
+  },
+  {
+   "key": "rung.court",
+   "text": "[Çöûrt! ·]",
+   "smart": false
+  },
+  {
+   "key": "rung.court52",
+   "text": "[52-çöûrt! · ·]",
+   "smart": false
+  },
+  {
+   "key": "rung.court_play_on",
+   "text": "[Plåý öñ · ·]",
+   "smart": false
+  },
+  {
+   "key": "rung.court_stop",
+   "text": "[Tåké thé wîñ · ·]",
+   "smart": false
+  },
+  {
+   "key": "rung.court_title",
+   "text": "[Sévéñ tö ñöthîñg · · ·]",
+   "smart": false
+  },
+  {
+   "key": "rung.deal_lost",
+   "text": "[Théý wöñ thé déål · · ·]",
+   "smart": false
+  },
+  {
+   "key": "rung.deal_seen",
+   "text": "[{0} åñd {1} wöñ thé déål · · · ·]",
+   "smart": true
+  },
+  {
+   "key": "rung.deal_won",
+   "text": "[Ýöû wöñ thé déål · · ·]",
+   "smart": false
+  },
+  {
+   "key": "rung.need_four",
+   "text": "[Rûñg ñééds föûr plåýérs · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "rung.new_bazi",
+   "text": "[Ñéw båzî · ·]",
+   "smart": false
+  },
+  {
+   "key": "rung.next_deal",
+   "text": "[Ñéxt déål · ·]",
+   "smart": false
+  },
+  {
+   "key": "rung.next_deal_votes",
+   "text": "[Ñéxt déål · {0} öf {1} · · · ·]",
+   "smart": true
+  },
+  {
+   "key": "rung.one_more",
+   "text": "[Öñé möré tåkés thé pîlé · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "rung.partner",
+   "text": "[Pårtñér · ·]",
+   "smart": false
+  },
+  {
+   "key": "rung.pile",
+   "text": "[Pîlé {0} · ·]",
+   "smart": true
+  },
+  {
+   "key": "rung.pile_taken",
+   "text": "[{0} tåkés thé pîlé · · ·]",
+   "smart": true
+  },
+  {
+   "key": "rung.play_rung",
+   "text": "[Plåý Rûñg · ·]",
+   "smart": false
+  },
+  {
+   "key": "rung.redeal",
+   "text": "[Ñéw çårds · ·]",
+   "smart": false
+  },
+  {
+   "key": "rung.redealt",
+   "text": "[{0} åskéd för ñéw çårds · · · ·]",
+   "smart": true
+  },
+  {
+   "key": "rung.remove_bot",
+   "text": "[Rémövé böt · ·]",
+   "smart": false
+  },
+  {
+   "key": "rung.switch_queued",
+   "text": "[{0} åftér thîs röûñd · · ·]",
+   "smart": true
+  },
+  {
+   "key": "rung.switch_to",
+   "text": "[Swîtçh tö {0} · ·]",
+   "smart": true
+  },
+  {
+   "key": "rung.switched",
+   "text": "[Thé rööm ñöw plåýs {0} · · · ·]",
+   "smart": true
+  },
+  {
+   "key": "rung.them",
+   "text": "[Thém ·]",
+   "smart": false
+  },
+  {
+   "key": "rung.tricks",
+   "text": "[{0} – {1} · ·]",
+   "smart": true
+  },
+  {
+   "key": "rung.turn_of",
+   "text": "[{0}'s tûrñ · ·]",
+   "smart": true
+  },
+  {
+   "key": "rung.us",
+   "text": "[Ûs ·]",
+   "smart": false
+  },
+  {
+   "key": "rung.your_turn",
+   "text": "[Ýöûr tûrñ · ·]",
+   "smart": false
+  },
+  {
    "key": "season.basant_2026",
    "text": "[Båsåñt 2026 · ·]",
    "smart": false

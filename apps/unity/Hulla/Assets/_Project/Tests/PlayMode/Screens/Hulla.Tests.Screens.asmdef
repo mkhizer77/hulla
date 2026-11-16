@@ -6,6 +6,7 @@
         "Hulla.Domain",
         "Hulla.Protocol",
         "Hulla.Presentation",
+        "Hulla.Games.Rung",
         "Hulla.Games.Thulla",
         "UnityEngine.TestRunner",
         "UnityEditor.TestRunner"

@@ -2830,3 +2830,114 @@
 .motion--reduced.skin--basant .home .daily-pop--up {
     translate: 0 0;
 }
+
+/* Rung (Rung design 9): the bar on the felt, the call and court panel, the deal result. */
+.rung-bar {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 24%;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+}
+
+.rung-bar > Label {
+    margin: 0 10px;
+    padding: 6px 22px;
+    border-radius: 999px;
+    background-color: rgba(0, 0, 0, 0.45);
+    color: var(--ink-ivory);
+    font-size: var(--font-small);
+    -unity-font-style: bold;
+}
+
+.rung-bar__trump {
+    font-size: 56px;
+    background-color: var(--card-face);
+    color: var(--suit-black);
+}
+
+.rung-bar__trump--red {
+    color: var(--suit-red);
+}
+
+.rung-bar__pile {
+    color: var(--gold);
+}
+
+.rung-ask {
+    position: absolute;
+    left: 8%;
+    right: 8%;
+    top: 30%;
+    align-items: center;
+    background-color: rgba(20, 21, 24, 0.92);
+}
+
+.rung-ask__title {
+    color: var(--ink-ivory);
+    font-size: var(--font-body);
+    -unity-font-style: bold;
+    -unity-text-align: middle-center;
+    white-space: normal;
+    margin-bottom: var(--space-2);
+}
+
+.rung-ask__buttons {
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.rung-ask__buttons > .button {
+    margin: 8px;
+    min-width: 132px;
+}
+
+.rung-ask__suit {
+    font-size: 84px;
+    background-color: var(--card-face);
+    color: var(--suit-black);
+}
+
+.rung-ask__suit--red {
+    color: var(--suit-red);
+}
+
+.rung-result {
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.7);
+    justify-content: center;
+    padding: var(--space-3);
+}
+
+.rung-result__panel {
+    align-items: center;
+    background-color: var(--surface-panel);
+}
+
+.rung-result__panel > Label {
+    -unity-text-align: middle-center;
+    white-space: normal;
+    color: var(--ink-ivory);
+}
+
+.rung-result__bazi {
+    font-size: var(--font-body);
+    color: var(--gold);
+    margin: var(--space-2) 0;
+}
+
+.rung-result__panel > .button {
+    margin-top: var(--space-2);
+    min-width: 520px;
+}
+
+.seat--partner .seat__name {
+    color: var(--gold);
+}

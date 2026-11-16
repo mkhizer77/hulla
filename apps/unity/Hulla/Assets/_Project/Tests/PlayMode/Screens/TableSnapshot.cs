@@ -40,6 +40,7 @@ namespace Hulla.Screens.Tests
 
             var state = new TableState
             {
+                GameId = GameId.Thulla,
                 Code = "K7Q2MX", Mode = TableMode.Private, Status = TableStatus.InRound, HostSeat = 0, LastSeq = 5,
                 Seats = seats, Spectators = new List<Spectator>(), Rules = new RulesSelection { GameId = GameId.Thulla },
                 Round = new View { Phase = Phase.Play, SeatCount = 5, Seats = views, EscapeOrder = new List<long>(), LeaderSeat = 2, DiscardCount = 11,
@@ -81,6 +82,7 @@ namespace Hulla.Screens.Tests
 
             var state = new TableState
             {
+                GameId = GameId.Thulla,
                 Code = "K7Q2MX", Mode = TableMode.Private, Status = TableStatus.Open, HostSeat = 0, LastSeq = 3,
                 Seats = seats, Spectators = new List<Spectator>(), Rules = new RulesSelection { GameId = GameId.Thulla },
             };

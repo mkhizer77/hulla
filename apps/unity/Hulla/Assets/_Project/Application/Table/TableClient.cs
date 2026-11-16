@@ -122,6 +122,20 @@ namespace Hulla.Application.Table
         /// <summary>Plays a card the server marked legal; returns false when it is not playable now.</summary>
         public bool PlayCard(string card)
         {
+            if (Model.IsRung)
+            {
+                if (!Model.MyTurn || !Model.Rung.IsLegal(card))
+                {
+                    return false;
+                }
+
+                Model.Rung.MarkPending(card);
+                LastPlayLegalCount = Model.Rung.LegalCount;
+                _clientSeq++;
+                Send(MessageTypes.PlayCard, new PlayCard { RoundId = Model.RoundId, ClientSeq = _clientSeq, Card = card });
+                return true;
+            }
+
             if (!Model.IsLegal(card))
             {
                 return false;
@@ -133,6 +147,56 @@ namespace Hulla.Application.Table
             Send(MessageTypes.PlayCard, new PlayCard { RoundId = Model.RoundId, ClientSeq = _clientSeq, Card = card });
             return true;
         }
+
+        /// <summary>Names the rung from my first five cards (RG6); false when it is not my call.</summary>
+        public bool CallTrump(char suit)
+        {
+            if (!Model.IsRung || !Model.MyTurn || Model.Rung.Phase != RungPhase.Call || !Enum.TryParse<Suit>(suit.ToString(), out var named))
+            {
+                return false;
+            }
+
+            _clientSeq++;
+            Send(MessageTypes.CallTrump, new CallTrump { RoundId = Model.RoundId, ClientSeq = _clientSeq, Suit = named });
+            return true;
+        }
+
+        /// <summary>Asks for a new deal instead of calling (RG7); false when the server did not offer it.</summary>
+        public bool Redeal()
+        {
+            if (!Model.IsRung || !Model.MyTurn || !Model.Rung.CanRedeal)
+            {
+                return false;
+            }
+
+            _clientSeq++;
+            Send(MessageTypes.Redeal, new RungRedeal { RoundId = Model.RoundId, ClientSeq = _clientSeq });
+            return true;
+        }
+
+        /// <summary>Stops with the court or plays on for the bigger prize (RG26).</summary>
+        public bool CourtChoice(bool playOn)
+        {
+            if (!Model.IsRung || !Model.MyTurn || Model.Rung.Phase != RungPhase.CourtChoice)
+            {
+                return false;
+            }
+
+            _clientSeq++;
+            Send(MessageTypes.CourtChoice, new CourtChoice { RoundId = Model.RoundId, ClientSeq = _clientSeq, PlayOn = playOn });
+            return true;
+        }
+
+        /// <summary>The host moves the room to another game; mid-round it happens when the round ends.</summary>
+        public void ChangeGame(GameId game) => Send(MessageTypes.ChangeGame, new ChangeGame { GameId = game });
+
+        /// <summary>The host moves the room to the other of the two games.</summary>
+        public void SwitchGame() => ChangeGame(Model.IsRung ? GameId.Thulla : GameId.Rung);
+
+        /// <summary>The host puts a bot in an empty seat of a private room (Rung).</summary>
+        public void AddBot(long? seat = null) => Send(MessageTypes.AddBot, new AddBot { Seat = seat });
+
+        public void RemoveBot(long seat) => Send(MessageTypes.RemoveBot, new RemoveBot { Seat = seat });
 
         /// <summary>Asks the next player for their whole hand (R32); the table applies the take if they accept.</summary>
         public bool TakeHand()
