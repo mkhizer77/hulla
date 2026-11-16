@@ -1,4 +1,5 @@
 import {
+  THULLA_PRESETS,
   canTakeHand,
   legalMoves,
   nextActiveSeat,
@@ -10,15 +11,16 @@ import {
 } from "@hulla/rules-engine";
 import { ErrorCodes, err, ok, ruleError, stateHash } from "@hulla/shared-ts";
 
-import { presetsFor } from "../../content/presets";
+import { withPresetSettings } from "../../content/presets";
 import { seriesPayload } from "../../match/view";
 
 import type { EncodeContext, GameHost, GameMessage, LoggedMessage } from "../../match/types";
-import type { Check, RulesSelection } from "@hulla/protocol/generated";
+import type { Check } from "@hulla/protocol/generated";
 import type {
   Card,
   ThullaEvent,
   ThullaMove,
+  ThullaPreset,
   ThullaRules,
   ThullaState,
   ThullaView,
@@ -28,16 +30,9 @@ import type { Result, RuleError, SeatIndex } from "@hulla/shared-ts";
 /** The thulla moment never delays the next turn by more than this (GDD 14.6). */
 export const THULLA_MOMENT_MS = 1_200;
 
-export type ThullaHost = GameHost<ThullaState, ThullaMove, ThullaView, ThullaEvent, ThullaRules>;
+export { withPresetSettings };
 
-/** The preset's table settings from content sit under the selection's own (explicit wins). */
-export function withPresetSettings(selection: RulesSelection): RulesSelection {
-  const preset = presetsFor(selection.gameId).find(
-    (p) => p.id === (selection.preset ?? "standard"),
-  );
-  const merged = { ...(preset?.settings ?? {}), ...(selection.settings ?? {}) };
-  return Object.keys(merged).length === 0 ? selection : { ...selection, settings: merged };
-}
+export type ThullaHost = GameHost<ThullaState, ThullaMove, ThullaView, ThullaEvent, ThullaRules>;
 
 function isThulla(event: ThullaEvent): boolean {
   return (
@@ -229,9 +224,13 @@ export function decodeThullaMove(
 export const thullaHost: ThullaHost = {
   module: thullaModule,
   resolveRules(selection, mode) {
-    return resolveRules(mode, selection.preset ?? "standard", selection.overrides ?? {});
+    const preset = selection.preset ?? "standard";
+    if (!Object.keys(THULLA_PRESETS).includes(preset)) {
+      return err(ruleError(ErrorCodes.rules.invalidRules, { reason: "unknown_preset", preset }));
+    }
+    return resolveRules(mode, preset as ThullaPreset, selection.overrides ?? {});
   },
-  normaliseRules: withPresetSettings,
+  normaliseRules: (selection) => withPresetSettings(selection, "standard"),
   isMoveType: (type) => type === "play_card" || type === "take_hand",
   decodeMove: decodeThullaMove,
   roundStartEvents: (state) => [roundStartedEvent(state)],

@@ -141,6 +141,11 @@ export interface GameHost<S, M, V, E, R> {
     RuleError
   >;
   stateHash(state: S): string;
+  /**
+   * The `table_state` property that carries this game's round view. Absent means `round`, which
+   * is Thulla's; every later game names its own so clients decode each view by its own type.
+   */
+  readonly viewField?: string;
   /** Per-seat numbers for the stats card, read from the round's logged messages (GDD 10.1). */
   /**
    * A selection as the table keeps it: a preset's table settings merged under the explicit ones,

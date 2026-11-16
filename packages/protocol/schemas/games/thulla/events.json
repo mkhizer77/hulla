@@ -32,14 +32,24 @@
     "turn_start": {
       "type": "object",
       "additionalProperties": false,
-      "description": "Sent to the acting seat only: the legal mask reveals suit holdings",
+      "description": "Sent to the acting seat only: the legal mask reveals suit holdings. Every card game uses it and adds its own optional fields",
       "required": ["roundId", "seat", "legal", "canTakeHand", "deadlineTs"],
       "properties": {
         "roundId": { "$ref": "../../common.json#/definitions/roundId" },
         "seat": { "$ref": "../../common.json#/definitions/seatIndex" },
         "legal": { "$ref": "../../common.json#/definitions/cards" },
-        "canTakeHand": { "type": "boolean" },
+        "canTakeHand": { "type": "boolean", "description": "Always false outside Thulla" },
         "deadlineTs": { "$ref": "../../common.json#/definitions/timestamp" },
+        "phase": { "type": "string", "description": "Rung: call, play or courtChoice" },
+        "suits": {
+          "type": "array",
+          "items": { "$ref": "../../common.json#/definitions/suit" },
+          "description": "Rung, the call: the suits the caller may name"
+        },
+        "canRedeal": {
+          "type": "boolean",
+          "description": "Rung, the call: the caller may ask for a redeal (RG7)"
+        },
         "simultaneous": {
           "type": "boolean",
           "description": "The opening window: every pending seat acts at once (R13)"

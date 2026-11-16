@@ -1,8 +1,8 @@
 {
   "schema": "../tools/content-schemas/manifest.schema.json",
   "id": "content-manifest",
-  "version": 54,
-  "digest": "49c0c64e5b0ee21c5c7d3ec4211baa529f663ae20464cba843a4b541ab7ca81d",
+  "version": 55,
+  "digest": "587df7bf1a73ed59e0bfde148456070071571d22077f8f4741621fa022899557",
   "files": [
     {
       "path": "achievements/v1.json",
@@ -59,6 +59,30 @@
       "version": 1,
       "sha256": "85982a3c3a58bb6c13cf0693cabd0f25c6f380d8910eeb448945b7bd61d2d2a1",
       "bytes": 3398
+    },
+    {
+      "path": "presets/rung/courtPiece.json",
+      "type": "presets",
+      "id": "courtPiece",
+      "version": 1,
+      "sha256": "c2f0c9dbff5ba5b81baf82a15a03e9b87474b9342c39d8d6e968fb9573a79c10",
+      "bytes": 316
+    },
+    {
+      "path": "presets/rung/hokm.json",
+      "type": "presets",
+      "id": "hokm",
+      "version": 1,
+      "sha256": "8259ab31fc13744a2b2ba80b3a9ddac703ade86bd222cebdef7109a6e34c4488",
+      "bytes": 413
+    },
+    {
+      "path": "presets/rung/rung.json",
+      "type": "presets",
+      "id": "rung",
+      "version": 1,
+      "sha256": "745df40338a050fff29416ff1e27cf7b01f15231168f30ee9fa1b1a00f695626",
+      "bytes": 271
     },
     {
       "path": "presets/thulla/classicPagat.json",
@@ -137,8 +161,8 @@
       "type": "strings",
       "id": "strings-en",
       "version": 1,
-      "sha256": "dce52c497bded203ad4a961c7671cebb6ebc4153df2485e2f8f25d6266775b29",
-      "bytes": 71461
+      "sha256": "b666b13dae42eaaacb7dd3da532f0a2330aed3e5c6aa0eb2b774ac7c95a528d5",
+      "bytes": 71819
     }
   ]
 }

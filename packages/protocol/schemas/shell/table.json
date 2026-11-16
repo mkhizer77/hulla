@@ -21,7 +21,16 @@
         },
         "preset": {
           "type": "string",
-          "enum": ["standard", "family", "hardcore", "classicPagat", "relaxed"]
+          "enum": [
+            "standard",
+            "family",
+            "hardcore",
+            "classicPagat",
+            "relaxed",
+            "rung",
+            "courtPiece",
+            "hokm"
+          ]
         },
         "overrides": {
           "type": "object",
@@ -420,7 +429,19 @@
             {
               "type": "null"
             }
-          ]
+          ],
+          "description": "The Thulla round view; null between rounds and while the room plays another game"
+        },
+        "rungRound": {
+          "oneOf": [
+            {
+              "$ref": "../games/rung/views.json#/definitions/view"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "The Rung deal view while the room plays Rung"
         },
         "lastSeq": {
           "$ref": "../common.json#/definitions/sequence"

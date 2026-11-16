@@ -1,0 +1,13 @@
+{
+  "schema": "../../../tools/content-schemas/preset.schema.json",
+  "id": "rung",
+  "version": 1,
+  "gameId": "rung",
+  "name": "preset.rung.name",
+  "description": "preset.rung.description",
+  "order": 0,
+  "overrides": {},
+  "settings": {
+    "direction": "ccw"
+  }
+}

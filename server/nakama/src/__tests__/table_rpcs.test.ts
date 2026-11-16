@@ -137,7 +137,7 @@ describe("presets_get", () => {
       name: "preset.family.name",
     });
     expect(presetsGet(JSON.stringify({ gameId: "thulla" }))).toMatchObject({ ok: true });
-    expect(presetsGet(JSON.stringify({ gameId: "rung" }))).toMatchObject({
+    expect(presetsGet(JSON.stringify({ gameId: "ludo" }))).toMatchObject({
       error: { detail: { reason: "game_id" } },
     });
     expect(presetsGet("{")).toMatchObject({ error: { detail: { reason: "json" } } });

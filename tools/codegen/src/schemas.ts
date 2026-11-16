@@ -84,6 +84,8 @@ export function buildRoot(opcodes: readonly OpcodeEntry[]): JsonSchema {
     thullaView: { $ref: `${PROTOCOL_BASE}games/thulla/views.json#/definitions/view` },
     thullaRules: { $ref: "https://hulla.gg/schemas/games/thulla/rules.json" },
     thullaMove: { $ref: `${PROTOCOL_BASE}games/thulla/moves.json#/definitions/move` },
+    rungView: { $ref: `${PROTOCOL_BASE}games/rung/views.json#/definitions/view` },
+    rungRules: { $ref: "https://hulla.gg/schemas/games/rung/rules.json" },
     seriesState: { $ref: `${PROTOCOL_BASE}common.json#/definitions/seriesState` },
     seatStats: { $ref: `${PROTOCOL_BASE}common.json#/definitions/seatStats` },
     ruleError: { $ref: `${PROTOCOL_BASE}shell/errors.json#/definitions/ruleError` },

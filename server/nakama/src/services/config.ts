@@ -58,6 +58,8 @@ export const DEFAULT_CONFIG: RemoteConfig = {
     terms_url: [{ value: "" }],
     // The feedback prompt on the test looks during the playtest (`look_feedback`).
     looks_test: [{ value: true }],
+    // Rung on the Home shelf and in the room's game switch; off until the client has its table.
+    rung: [{ value: false }],
   },
   updatedTs: 0,
 };

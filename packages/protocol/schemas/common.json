@@ -140,6 +140,9 @@
         },
         "finished": {
           "type": "boolean"
+        },
+        "teams": {
+          "$ref": "games/rung/events.json#/definitions/teams"
         }
       }
     }

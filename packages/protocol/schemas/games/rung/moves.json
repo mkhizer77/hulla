@@ -1,0 +1,59 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://hulla.gg/schemas/protocol/games/rung/moves.json",
+  "title": "Rung moves (client to server); play_card is shared with Thulla",
+  "definitions": {
+    "call_trump": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "The caller names the rung from their first five cards (RG6)",
+      "required": ["roundId", "clientSeq", "suit"],
+      "properties": {
+        "roundId": {
+          "$ref": "../../common.json#/definitions/roundId"
+        },
+        "clientSeq": {
+          "$ref": "../../common.json#/definitions/sequence",
+          "description": "Idempotency key with the seat (ARCHITECTURE 8.4)"
+        },
+        "suit": {
+          "$ref": "../../common.json#/definitions/suit"
+        }
+      }
+    },
+    "redeal": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "The caller asks for a new deal instead of calling (RG7)",
+      "required": ["roundId", "clientSeq"],
+      "properties": {
+        "roundId": {
+          "$ref": "../../common.json#/definitions/roundId"
+        },
+        "clientSeq": {
+          "$ref": "../../common.json#/definitions/sequence",
+          "description": "Idempotency key with the seat (ARCHITECTURE 8.4)"
+        }
+      },
+      "title": "RungRedeal"
+    },
+    "court_choice": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Stop with the court or play on for the bigger prize (RG26)",
+      "required": ["roundId", "clientSeq", "playOn"],
+      "properties": {
+        "roundId": {
+          "$ref": "../../common.json#/definitions/roundId"
+        },
+        "clientSeq": {
+          "$ref": "../../common.json#/definitions/sequence",
+          "description": "Idempotency key with the seat (ARCHITECTURE 8.4)"
+        },
+        "playOn": {
+          "type": "boolean"
+        }
+      }
+    }
+  }
+}

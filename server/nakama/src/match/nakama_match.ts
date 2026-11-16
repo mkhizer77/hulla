@@ -106,13 +106,17 @@ export function storagePersistence(nk: nkruntime.Nakama, logger: nkruntime.Logge
           const profile = store.read(playerId);
           // The first live round ever pays the one-time welcome reward (GDD 17.2).
           const firstRound = profile !== null && profile.stats.rounds === 0;
-          if (profile !== null) {
-            store.write(playerId, {
-              ...profile,
-              stats: applyRoundToStats(profile.stats, seat, record),
-            });
+          // Stats, XP, coins, missions and achievements are Thulla's own tables. Rung pays by
+          // the bazi from its own (Rung design 10), so a Rung deal is recorded and nothing more.
+          if (record.gameId === "thulla") {
+            if (profile !== null) {
+              store.write(playerId, {
+                ...profile,
+                stats: applyRoundToStats(profile.stats, seat, record),
+              });
+            }
+            rewardPlayer(nk, logger, record, playerId, seat, humans, firstRound);
           }
-          rewardPlayer(nk, logger, record, playerId, seat, humans, firstRound);
           nk.storageWrite([
             {
               collection: ROUND_RESULTS_COLLECTION,

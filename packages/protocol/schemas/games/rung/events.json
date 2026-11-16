@@ -1,0 +1,431 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://hulla.gg/schemas/protocol/games/rung/events.json",
+  "title": "Rung events (server to client)",
+  "definitions": {
+    "team": {
+      "type": "integer",
+      "enum": [0, 1],
+      "description": "Seats 0 and 2 are team 0, seats 1 and 3 team 1"
+    },
+    "seatStats": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["tricksWon", "cuts", "pilesTaken"],
+      "properties": {
+        "tricksWon": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "cuts": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "pilesTaken": {
+          "type": "integer",
+          "minimum": 0
+        }
+      },
+      "title": "RungSeatStats"
+    },
+    "teams": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "The bazi score by team",
+      "required": ["points", "courts", "dealsWon", "streakTeam", "streakDeals", "winnerTeam"],
+      "properties": {
+        "points": {
+          "type": "array",
+          "items": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "minItems": 2,
+          "maxItems": 2,
+          "description": "Bazi points per team (RG32)"
+        },
+        "courts": {
+          "type": "array",
+          "items": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "minItems": 2,
+          "maxItems": 2,
+          "description": "Courts per team (RG33)"
+        },
+        "dealsWon": {
+          "type": "array",
+          "items": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "minItems": 2,
+          "maxItems": 2,
+          "description": "Deals won per team"
+        },
+        "streakTeam": {
+          "type": ["integer", "null"],
+          "enum": [0, 1, null]
+        },
+        "streakDeals": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "winnerTeam": {
+          "type": ["integer", "null"],
+          "enum": [0, 1, null]
+        }
+      },
+      "title": "RungTeams"
+    },
+    "rung_round_start": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "A deal begins: five cards each, the caller to name the rung (RG4, RG5)",
+      "required": [
+        "roundId",
+        "commitment",
+        "dealerSeat",
+        "callerSeat",
+        "handCounts",
+        "rulesVersion"
+      ],
+      "properties": {
+        "roundId": {
+          "$ref": "../../common.json#/definitions/roundId"
+        },
+        "commitment": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "dealerSeat": {
+          "$ref": "../../common.json#/definitions/seatIndex"
+        },
+        "callerSeat": {
+          "$ref": "../../common.json#/definitions/seatIndex"
+        },
+        "handCounts": {
+          "$ref": "../../common.json#/definitions/handCounts"
+        },
+        "rulesVersion": {
+          "type": "string"
+        }
+      }
+    },
+    "rung_hand": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Sent to one seat only: its own cards after a deal, a redeal or the rest of the deal",
+      "required": ["roundId", "cards"],
+      "properties": {
+        "roundId": {
+          "$ref": "../../common.json#/definitions/roundId"
+        },
+        "cards": {
+          "$ref": "../../common.json#/definitions/cards"
+        }
+      }
+    },
+    "rung_redealt": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "The caller asked for a new deal; a new commitment replaces the old (RG7)",
+      "required": ["roundId", "seat", "commitment", "redeals", "handCounts", "auto"],
+      "properties": {
+        "roundId": {
+          "$ref": "../../common.json#/definitions/roundId"
+        },
+        "seat": {
+          "$ref": "../../common.json#/definitions/seatIndex"
+        },
+        "commitment": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "redeals": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "handCounts": {
+          "$ref": "../../common.json#/definitions/handCounts"
+        },
+        "clientSeq": {
+          "$ref": "../../common.json#/definitions/sequence"
+        },
+        "auto": {
+          "type": "boolean",
+          "description": "Played by the timeout policy or a bot, not by the seat's player"
+        }
+      }
+    },
+    "rung_trump_called": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "The rung is named (RG6)",
+      "required": ["roundId", "seat", "suit", "auto"],
+      "properties": {
+        "roundId": {
+          "$ref": "../../common.json#/definitions/roundId"
+        },
+        "seat": {
+          "$ref": "../../common.json#/definitions/seatIndex"
+        },
+        "suit": {
+          "$ref": "../../common.json#/definitions/suit"
+        },
+        "clientSeq": {
+          "$ref": "../../common.json#/definitions/sequence"
+        },
+        "auto": {
+          "type": "boolean",
+          "description": "Played by the timeout policy or a bot, not by the seat's player"
+        }
+      }
+    },
+    "rung_hands_completed": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "The rest of the deck is dealt (RG8); each seat gets its rung_hand",
+      "required": ["roundId", "handCounts"],
+      "properties": {
+        "roundId": {
+          "$ref": "../../common.json#/definitions/roundId"
+        },
+        "handCounts": {
+          "$ref": "../../common.json#/definitions/handCounts"
+        }
+      }
+    },
+    "rung_card_played": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["roundId", "seat", "card", "trickIndex", "cut", "auto"],
+      "properties": {
+        "roundId": {
+          "$ref": "../../common.json#/definitions/roundId"
+        },
+        "seat": {
+          "$ref": "../../common.json#/definitions/seatIndex"
+        },
+        "card": {
+          "$ref": "../../common.json#/definitions/card"
+        },
+        "trickIndex": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "cut": {
+          "type": "boolean",
+          "description": "A kaat: a rung on a led suit the seat was void in"
+        },
+        "clientSeq": {
+          "$ref": "../../common.json#/definitions/sequence"
+        },
+        "auto": {
+          "type": "boolean",
+          "description": "Played by the timeout policy or a bot, not by the seat's player"
+        }
+      }
+    },
+    "rung_trick_won": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["roundId", "trickIndex", "winner", "cards", "pile", "counts"],
+      "properties": {
+        "roundId": {
+          "$ref": "../../common.json#/definitions/roundId"
+        },
+        "trickIndex": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "winner": {
+          "$ref": "../../common.json#/definitions/seatIndex"
+        },
+        "cards": {
+          "$ref": "../../common.json#/definitions/cards"
+        },
+        "pile": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Tricks lying in the centre after this one, before any take (Double Sar)"
+        },
+        "counts": {
+          "type": "array",
+          "items": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "minItems": 2,
+          "maxItems": 2,
+          "description": "Tricks per team"
+        }
+      }
+    },
+    "rung_pile_taken": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "A seat won two in a row and takes the pile for its team (RG17)",
+      "required": ["roundId", "seat", "team", "tricks", "counts"],
+      "properties": {
+        "roundId": {
+          "$ref": "../../common.json#/definitions/roundId"
+        },
+        "seat": {
+          "$ref": "../../common.json#/definitions/seatIndex"
+        },
+        "team": {
+          "$ref": "#/definitions/team"
+        },
+        "tricks": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "counts": {
+          "type": "array",
+          "items": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "minItems": 2,
+          "maxItems": 2,
+          "description": "Tricks per team"
+        }
+      }
+    },
+    "rung_court_choice_opened": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "A court is won; this seat chooses to stop or play on (RG26)",
+      "required": ["roundId", "seat", "team"],
+      "properties": {
+        "roundId": {
+          "$ref": "../../common.json#/definitions/roundId"
+        },
+        "seat": {
+          "$ref": "../../common.json#/definitions/seatIndex"
+        },
+        "team": {
+          "$ref": "#/definitions/team"
+        }
+      }
+    },
+    "rung_court_choice_made": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["roundId", "seat", "playOn", "auto"],
+      "properties": {
+        "roundId": {
+          "$ref": "../../common.json#/definitions/roundId"
+        },
+        "seat": {
+          "$ref": "../../common.json#/definitions/seatIndex"
+        },
+        "playOn": {
+          "type": "boolean"
+        },
+        "clientSeq": {
+          "$ref": "../../common.json#/definitions/sequence"
+        },
+        "auto": {
+          "type": "boolean",
+          "description": "Played by the timeout policy or a bot, not by the seat's player"
+        }
+      }
+    },
+    "rung_round_end": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "A deal ends (RG30); the series carries the bazi score",
+      "required": [
+        "roundId",
+        "winnerTeam",
+        "kind",
+        "byCaller",
+        "counts",
+        "dealPoints",
+        "points",
+        "stats",
+        "trump",
+        "fairness"
+      ],
+      "properties": {
+        "roundId": {
+          "$ref": "../../common.json#/definitions/roundId"
+        },
+        "winnerTeam": {
+          "$ref": "#/definitions/team"
+        },
+        "kind": {
+          "$ref": "#/definitions/outcomeKind"
+        },
+        "byCaller": {
+          "type": "boolean",
+          "description": "The winners are the caller's team; false is the dealer's team"
+        },
+        "counts": {
+          "type": "array",
+          "items": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "minItems": 2,
+          "maxItems": 2,
+          "description": "Tricks per team"
+        },
+        "dealPoints": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "points": {
+          "$ref": "../../common.json#/definitions/points"
+        },
+        "stats": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/seatStats"
+          }
+        },
+        "trump": {
+          "oneOf": [
+            {
+              "$ref": "../../common.json#/definitions/suit"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "fairness": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["commitment", "seed", "deckOrder"],
+          "properties": {
+            "commitment": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            },
+            "seed": {
+              "type": "string",
+              "pattern": "^[0-9a-f]+$",
+              "description": "Revealed so any client can recompute the commitment"
+            },
+            "deckOrder": {
+              "$ref": "../../common.json#/definitions/cards"
+            }
+          },
+          "title": "RungFairness"
+        },
+        "series": {
+          "$ref": "../../common.json#/definitions/seriesState"
+        }
+      }
+    },
+    "outcomeKind": {
+      "type": "string",
+      "enum": ["win", "court", "court52"],
+      "title": "RungOutcomeKind"
+    }
+  }
+}

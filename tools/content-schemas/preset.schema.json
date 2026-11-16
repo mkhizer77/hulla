@@ -22,7 +22,16 @@
     },
     "id": {
       "type": "string",
-      "enum": ["standard", "family", "hardcore", "classicPagat", "relaxed"]
+      "enum": [
+        "standard",
+        "family",
+        "hardcore",
+        "classicPagat",
+        "relaxed",
+        "rung",
+        "courtPiece",
+        "hokm"
+      ]
     },
     "version": {
       "type": "integer",

@@ -2113,6 +2113,16 @@
    "smart": false
   },
   {
+   "key": "preset.courtPiece.description",
+   "text": "Single Sar. Every trick counts. First to seven.",
+   "smart": false
+  },
+  {
+   "key": "preset.courtPiece.name",
+   "text": "Court Piece",
+   "smart": false
+  },
+  {
    "key": "preset.family.description",
    "text": "Gentler: the leader may take a hand.",
    "smart": false
@@ -2133,6 +2143,16 @@
    "smart": false
   },
   {
+   "key": "preset.hokm.description",
+   "text": "First to seven tricks, first to seven points.",
+   "smart": false
+  },
+  {
+   "key": "preset.hokm.name",
+   "text": "Hokm",
+   "smart": false
+  },
+  {
    "key": "preset.relaxed.description",
    "text": "The standard rules with a minute for every turn.",
    "smart": false
@@ -2140,6 +2160,16 @@
   {
    "key": "preset.relaxed.name",
    "text": "Relaxed",
+   "smart": false
+  },
+  {
+   "key": "preset.rung.description",
+   "text": "Double Sar. Win two in a row to take the pile.",
+   "smart": false
+  },
+  {
+   "key": "preset.rung.name",
+   "text": "Rung",
    "smart": false
   },
   {

@@ -24,6 +24,9 @@ export const OPCODES = {
   take_hand: { opcode: 41, direction: "c2s", visibility: "public", game: "thulla" },
   cancel_take: { opcode: 42, direction: "c2s", visibility: "public", game: "thulla" },
   answer_hand: { opcode: 43, direction: "c2s", visibility: "public" },
+  call_trump: { opcode: 44, direction: "c2s", visibility: "public", game: "rung" },
+  redeal: { opcode: 45, direction: "c2s", visibility: "public", game: "rung" },
+  court_choice: { opcode: 46, direction: "c2s", visibility: "public", game: "rung" },
   table_state: { opcode: 100, direction: "s2c", visibility: "recipient" },
   rules_changed: { opcode: 101, direction: "s2c", visibility: "public" },
   presence: { opcode: 102, direction: "s2c", visibility: "public" },
@@ -50,6 +53,17 @@ export const OPCODES = {
   round_end: { opcode: 151, direction: "s2c", visibility: "public", game: "thulla" },
   hand_asked: { opcode: 152, direction: "s2c", visibility: "public", game: "thulla" },
   hand_answered: { opcode: 153, direction: "s2c", visibility: "public", game: "thulla" },
+  rung_round_start: { opcode: 160, direction: "s2c", visibility: "public", game: "rung" },
+  rung_hand: { opcode: 161, direction: "s2c", visibility: "seat", game: "rung" },
+  rung_redealt: { opcode: 162, direction: "s2c", visibility: "public", game: "rung" },
+  rung_trump_called: { opcode: 163, direction: "s2c", visibility: "public", game: "rung" },
+  rung_hands_completed: { opcode: 164, direction: "s2c", visibility: "public", game: "rung" },
+  rung_card_played: { opcode: 165, direction: "s2c", visibility: "public", game: "rung" },
+  rung_trick_won: { opcode: 166, direction: "s2c", visibility: "public", game: "rung" },
+  rung_pile_taken: { opcode: 167, direction: "s2c", visibility: "public", game: "rung" },
+  rung_court_choice_opened: { opcode: 168, direction: "s2c", visibility: "public", game: "rung" },
+  rung_court_choice_made: { opcode: 169, direction: "s2c", visibility: "public", game: "rung" },
+  rung_round_end: { opcode: 170, direction: "s2c", visibility: "public", game: "rung" },
 } as const;
 
 export type OpcodeTable = typeof OPCODES;

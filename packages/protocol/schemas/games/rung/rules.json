@@ -1,0 +1,59 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://hulla.gg/schemas/games/rung/rules.json",
+  "title": "Rung rules",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "collect": {
+      "type": "string",
+      "enum": ["double", "single"],
+      "default": "double"
+    },
+    "firstTwo": {
+      "type": "boolean",
+      "default": false
+    },
+    "aceRule": {
+      "type": "boolean",
+      "default": false
+    },
+    "lastTwo": {
+      "type": "boolean",
+      "default": false
+    },
+    "redeal": {
+      "type": "string",
+      "enum": ["off", "noHonours"],
+      "default": "noHonours"
+    },
+    "chase": {
+      "type": "boolean",
+      "default": true
+    },
+    "scoring": {
+      "type": "string",
+      "enum": ["points", "courts"],
+      "default": "points"
+    },
+    "pointsTable": {
+      "type": "string",
+      "enum": ["rung", "hokm"],
+      "default": "rung"
+    },
+    "target": {
+      "type": "integer",
+      "enum": [5, 7, 10],
+      "default": 7
+    },
+    "goonCourt": {
+      "type": "integer",
+      "enum": [3, 10],
+      "default": 3
+    },
+    "courtPassesCall": {
+      "type": "boolean",
+      "default": true
+    }
+  }
+}

@@ -64,9 +64,10 @@ export function analyticsFromBatch<S, M>(
     const type = o.envelope.type;
     const p = o.envelope.payload as Payload;
     switch (type) {
-      case "round_start": {
+      case "round_start":
+      case "rung_round_start": {
         if (o.to.kind !== "all") break;
-        const seats = num(p["seatCount"]) ?? 0;
+        const seats = num(p["seatCount"]) ?? count(p["handCounts"]);
         const bots = state.seats.slice(0, seats).filter((s) => s.bot).length;
         push(
           "round_start",
@@ -81,6 +82,11 @@ export function analyticsFromBatch<S, M>(
         );
         break;
       }
+      // Rung's moves each have their own message; all count as a move played.
+      case "rung_card_played":
+      case "rung_trump_called":
+      case "rung_redealt":
+      case "rung_court_choice_made":
       case "move_applied": {
         const seat = num(p["seat"]);
         if (seat === undefined) break;
@@ -140,7 +146,8 @@ export function analyticsFromBatch<S, M>(
       case "escape":
         push("escape", { rank: num(p["rank"]) ?? 0 }, num(p["seat"]) ?? null);
         break;
-      case "round_end": {
+      case "round_end":
+      case "rung_round_end": {
         const started = state.round?.startedTs ?? now;
         push(
           "round_end",
