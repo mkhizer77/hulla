@@ -1,0 +1,80 @@
+{
+  "id": "V-R044-eleven-and-twelve-wait",
+  "version": "1.0.0",
+  "title": "tricks eleven and twelve do not take the pile",
+  "rules": [
+    "RG23"
+  ],
+  "setup": {
+    "hands": [
+      [
+        "AH",
+        "2C"
+      ],
+      [
+        "2H",
+        "AC"
+      ],
+      [
+        "3H",
+        "3C"
+      ],
+      [
+        "4H",
+        "4C"
+      ]
+    ],
+    "trump": "S",
+    "dealer": 3,
+    "rules": {
+      "lastTwo": true
+    },
+    "trickIndex": 11,
+    "counts": [
+      5,
+      4
+    ],
+    "pile": 2,
+    "lastWinner": 0,
+    "run": 1
+  },
+  "moves": [
+    {
+      "seat": 0,
+      "move": {
+        "type": "play_card",
+        "card": "AH"
+      }
+    },
+    {
+      "seat": 1,
+      "move": {
+        "type": "play_card",
+        "card": "2H"
+      }
+    },
+    {
+      "seat": 2,
+      "move": {
+        "type": "play_card",
+        "card": "3H"
+      }
+    },
+    {
+      "seat": 3,
+      "move": {
+        "type": "play_card",
+        "card": "4H"
+      }
+    }
+  ],
+  "assert": {
+    "counts": [
+      5,
+      4
+    ],
+    "pile": 3,
+    "phase": "play",
+    "stateHash": "a90e7281a43e4aea089cb478c30920274876c969766bb11241fb3f5e4d1131c3"
+  }
+}

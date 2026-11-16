@@ -1,0 +1,79 @@
+{
+  "id": "V-R005-redeal-offered",
+  "version": "1.0.0",
+  "title": "five cards without an honour may be dealt again",
+  "rules": [
+    "RG7"
+  ],
+  "setup": {
+    "hands": [
+      [
+        "2S",
+        "5S",
+        "7H",
+        "9C",
+        "TD"
+      ],
+      [
+        "AS",
+        "KS",
+        "QS",
+        "JS",
+        "TS"
+      ],
+      [
+        "AH",
+        "KH",
+        "QH",
+        "JH",
+        "TH"
+      ],
+      [
+        "AC",
+        "KC",
+        "QC",
+        "JC",
+        "TC"
+      ]
+    ],
+    "trump": null,
+    "dealer": 3
+  },
+  "moves": [],
+  "assert": {
+    "legal": {
+      "0": [
+        {
+          "type": "call_trump",
+          "suit": "S"
+        },
+        {
+          "type": "call_trump",
+          "suit": "H"
+        },
+        {
+          "type": "call_trump",
+          "suit": "C"
+        },
+        {
+          "type": "call_trump",
+          "suit": "D"
+        },
+        {
+          "type": "redeal"
+        }
+      ]
+    },
+    "views": [
+      {
+        "viewer": 0,
+        "canRedeal": true
+      },
+      {
+        "viewer": 1,
+        "canRedeal": false
+      }
+    ],
+    "stateHash": "5f4483fe6679e456a44f06ba3c3b195b963fe3d131a96ecf63f3c09fe5a4ffb0"
+  }
+}

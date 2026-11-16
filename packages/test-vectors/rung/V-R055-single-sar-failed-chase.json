@@ -1,0 +1,119 @@
+{
+  "id": "V-R055-single-sar-failed-chase",
+  "version": "1.0.0",
+  "title": "a failed chase keeps the court",
+  "rules": [
+    "RG27"
+  ],
+  "setup": {
+    "hands": [
+      [
+        "AH",
+        "2C",
+        "2D"
+      ],
+      [
+        "2H",
+        "AC",
+        "AD"
+      ],
+      [
+        "3H",
+        "3C",
+        "3D"
+      ],
+      [
+        "4H",
+        "4C",
+        "4D"
+      ]
+    ],
+    "trump": "S",
+    "dealer": 3,
+    "rules": {
+      "collect": "single"
+    },
+    "trickIndex": 6,
+    "counts": [
+      6,
+      0
+    ]
+  },
+  "moves": [
+    {
+      "seat": 0,
+      "move": {
+        "type": "play_card",
+        "card": "AH"
+      }
+    },
+    {
+      "seat": 1,
+      "move": {
+        "type": "play_card",
+        "card": "2H"
+      }
+    },
+    {
+      "seat": 2,
+      "move": {
+        "type": "play_card",
+        "card": "3H"
+      }
+    },
+    {
+      "seat": 3,
+      "move": {
+        "type": "play_card",
+        "card": "4H"
+      }
+    },
+    {
+      "seat": 0,
+      "move": {
+        "type": "court_choice",
+        "playOn": true
+      }
+    },
+    {
+      "seat": 0,
+      "move": {
+        "type": "play_card",
+        "card": "2C"
+      }
+    },
+    {
+      "seat": 1,
+      "move": {
+        "type": "play_card",
+        "card": "AC"
+      }
+    },
+    {
+      "seat": 2,
+      "move": {
+        "type": "play_card",
+        "card": "3C"
+      }
+    },
+    {
+      "seat": 3,
+      "move": {
+        "type": "play_card",
+        "card": "4C"
+      }
+    }
+  ],
+  "assert": {
+    "counts": [
+      7,
+      1
+    ],
+    "chasing": 0,
+    "outcome": {
+      "team": 0,
+      "kind": "court"
+    },
+    "stateHash": "a1691d1b874b0f0d4e0bc65d82dbd51f25b8f381797e5e6b5dd5c108ab41a1af"
+  }
+}

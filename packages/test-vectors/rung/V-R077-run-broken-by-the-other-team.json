@@ -1,0 +1,40 @@
+{
+  "id": "V-R077-run-broken-by-the-other-team",
+  "version": "1.0.0",
+  "title": "the other team's win starts its own run",
+  "rules": [
+    "RGE14"
+  ],
+  "bazi": {
+    "firstDealer": 3,
+    "deals": [
+      {
+        "team": 0,
+        "kind": "win"
+      },
+      {
+        "team": 0,
+        "kind": "win"
+      },
+      {
+        "team": 1,
+        "kind": "win"
+      }
+    ],
+    "overrides": {
+      "scoring": "courts"
+    }
+  },
+  "moves": [],
+  "assert": {
+    "series": {
+      "courts": [
+        0,
+        0
+      ],
+      "streakTeam": 1,
+      "streakDeals": 1
+    },
+    "seriesHash": "f9009f835602d0e5dce06c7879d4205f298eb2cf6b619c38f680635c5b45a23f"
+  }
+}

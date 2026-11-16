@@ -1,0 +1,60 @@
+{
+  "id": "V-R070-bazi-to-five",
+  "version": "1.0.0",
+  "title": "points add up to the target and the dealer follows the results",
+  "rules": [
+    "RG32",
+    "RG34",
+    "RG35",
+    "RG36",
+    "RG37"
+  ],
+  "bazi": {
+    "firstDealer": 3,
+    "deals": [
+      {
+        "team": 0,
+        "kind": "win"
+      },
+      {
+        "team": 0,
+        "kind": "court"
+      },
+      {
+        "team": 1,
+        "kind": "win"
+      },
+      {
+        "team": 0,
+        "kind": "win"
+      }
+    ],
+    "overrides": {
+      "target": 5
+    }
+  },
+  "moves": [],
+  "assert": {
+    "series": {
+      "roundsPlayed": 4,
+      "teamPoints": [
+        6,
+        2
+      ],
+      "points": [
+        6,
+        2,
+        6,
+        2
+      ],
+      "dealsWon": [
+        3,
+        1
+      ],
+      "finished": true,
+      "winnerTeam": 0,
+      "nextDealerSeat": 3
+    },
+    "seriesHash": "9f587ec0205831947a3e8fb6c4e2a33fa59d408e2539eaccd02d9e0df9590833"
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "id": "V-R002-deal-caller-follows-dealer",
+  "version": "1.0.0",
+  "title": "the caller is the seat after the dealer",
+  "rules": [
+    "RG4"
+  ],
+  "deal": {
+    "seedHex": "0909090909090909090909090909090909090909090909090909090909090909",
+    "dealerSeat": 1
+  },
+  "moves": [],
+  "assert": {
+    "phase": "call",
+    "dealerSeat": 1,
+    "callerSeat": 2,
+    "turnSeat": 2,
+    "commitment": "77758ecbb09afd34e2cb87b01953708d5b8762afb624a43075de2192ca5e6a02",
+    "stateHash": "6293d760d148fb36356964646358e064cb6f25db6e5ec28a97d7a2690c2fbfc5"
+  }
+}

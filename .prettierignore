@@ -10,3 +10,5 @@ apps/unity
 LICENSE
 packages/test-vectors/thulla/V-*.json
 packages/test-vectors/thulla/traceability.md
+packages/test-vectors/rung/V-*.json
+packages/test-vectors/rung/traceability.md

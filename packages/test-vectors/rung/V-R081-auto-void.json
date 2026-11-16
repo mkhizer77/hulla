@@ -1,0 +1,43 @@
+{
+  "id": "V-R081-auto-void",
+  "version": "1.0.0",
+  "title": "a void seat throws the lowest card of its longest plain suit",
+  "rules": [
+    "RG42"
+  ],
+  "setup": {
+    "hands": [
+      [],
+      [
+        "2S",
+        "KC",
+        "5C",
+        "3D"
+      ],
+      [
+        "6H"
+      ],
+      [
+        "7H"
+      ]
+    ],
+    "trump": "S",
+    "dealer": 3,
+    "plays": [
+      {
+        "seat": 0,
+        "card": "9H"
+      }
+    ]
+  },
+  "moves": [],
+  "assert": {
+    "autoPlay": {
+      "1": {
+        "type": "play_card",
+        "card": "5C"
+      }
+    },
+    "stateHash": "888c1f82e173c61de653f752c0d8e280dabee23406f20dc2f3a00d849f5c9dc5"
+  }
+}

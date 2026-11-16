@@ -1,0 +1,67 @@
+{
+  "id": "V-R020-must-follow-suit",
+  "version": "1.0.0",
+  "title": "a player holding the led suit must follow it",
+  "rules": [
+    "RG11",
+    "RG14"
+  ],
+  "setup": {
+    "hands": [
+      [],
+      [
+        "4H",
+        "5C",
+        "AS"
+      ],
+      [
+        "6H"
+      ],
+      [
+        "7H"
+      ]
+    ],
+    "trump": "S",
+    "dealer": 3,
+    "plays": [
+      {
+        "seat": 0,
+        "card": "2H"
+      }
+    ]
+  },
+  "moves": [
+    {
+      "seat": 1,
+      "move": {
+        "type": "play_card",
+        "card": "5C"
+      },
+      "expect": {
+        "error": "rules.must_follow_suit"
+      }
+    },
+    {
+      "seat": 1,
+      "move": {
+        "type": "play_card",
+        "card": "AS"
+      },
+      "expect": {
+        "error": "rules.must_follow_suit"
+      }
+    }
+  ],
+  "assert": {
+    "turnSeat": 1,
+    "legal": {
+      "1": [
+        {
+          "type": "play_card",
+          "card": "4H"
+        }
+      ]
+    },
+    "stateHash": "f2e32df6f0969ba2d2c1a3810f86bc948ffd5a92dd3482fc1e93c02d8b54c8aa"
+  }
+}

@@ -1,0 +1,44 @@
+{
+  "id": "V-R078-run-broken-by-a-court",
+  "version": "1.0.0",
+  "title": "a court starts the run of seven again",
+  "rules": [
+    "RGE14"
+  ],
+  "bazi": {
+    "firstDealer": 3,
+    "deals": [
+      {
+        "team": 0,
+        "kind": "win"
+      },
+      {
+        "team": 0,
+        "kind": "win"
+      },
+      {
+        "team": 0,
+        "kind": "court"
+      },
+      {
+        "team": 0,
+        "kind": "win"
+      }
+    ],
+    "overrides": {
+      "scoring": "courts"
+    }
+  },
+  "moves": [],
+  "assert": {
+    "series": {
+      "courts": [
+        1,
+        0
+      ],
+      "streakTeam": 0,
+      "streakDeals": 1
+    },
+    "seriesHash": "41a270e96d53556cd74bbde1a4a1bd05e7c3ac5e06fcb3e64b0073a56312bd33"
+  }
+}

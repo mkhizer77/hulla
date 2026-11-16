@@ -1,0 +1,130 @@
+{
+  "id": "V-R034-run-starts-again",
+  "version": "1.0.0",
+  "title": "after a take the next trick starts a new pile",
+  "rules": [
+    "RG19"
+  ],
+  "setup": {
+    "hands": [
+      [
+        "AH",
+        "KC",
+        "QD"
+      ],
+      [
+        "2H",
+        "2C",
+        "2D"
+      ],
+      [
+        "3H",
+        "3C",
+        "3D"
+      ],
+      [
+        "4H",
+        "4C",
+        "4D"
+      ]
+    ],
+    "trump": "S",
+    "dealer": 3
+  },
+  "moves": [
+    {
+      "seat": 0,
+      "move": {
+        "type": "play_card",
+        "card": "AH"
+      }
+    },
+    {
+      "seat": 1,
+      "move": {
+        "type": "play_card",
+        "card": "2H"
+      }
+    },
+    {
+      "seat": 2,
+      "move": {
+        "type": "play_card",
+        "card": "3H"
+      }
+    },
+    {
+      "seat": 3,
+      "move": {
+        "type": "play_card",
+        "card": "4H"
+      }
+    },
+    {
+      "seat": 0,
+      "move": {
+        "type": "play_card",
+        "card": "KC"
+      }
+    },
+    {
+      "seat": 1,
+      "move": {
+        "type": "play_card",
+        "card": "2C"
+      }
+    },
+    {
+      "seat": 2,
+      "move": {
+        "type": "play_card",
+        "card": "3C"
+      }
+    },
+    {
+      "seat": 3,
+      "move": {
+        "type": "play_card",
+        "card": "4C"
+      }
+    },
+    {
+      "seat": 0,
+      "move": {
+        "type": "play_card",
+        "card": "QD"
+      }
+    },
+    {
+      "seat": 1,
+      "move": {
+        "type": "play_card",
+        "card": "2D"
+      }
+    },
+    {
+      "seat": 2,
+      "move": {
+        "type": "play_card",
+        "card": "3D"
+      }
+    },
+    {
+      "seat": 3,
+      "move": {
+        "type": "play_card",
+        "card": "4D"
+      }
+    }
+  ],
+  "assert": {
+    "counts": [
+      2,
+      0
+    ],
+    "pile": 1,
+    "lastWinner": 0,
+    "run": 1,
+    "stateHash": "b05c8b0d813e43c164ce75087daa6ad93da698f96cfb507e290cb46e00aa837f"
+  }
+}

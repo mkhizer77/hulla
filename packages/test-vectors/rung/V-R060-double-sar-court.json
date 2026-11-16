@@ -1,0 +1,82 @@
+{
+  "id": "V-R060-double-sar-court",
+  "version": "1.0.0",
+  "title": "all thirteen by playing on are a court",
+  "rules": [
+    "RG31",
+    "RG32"
+  ],
+  "setup": {
+    "hands": [
+      [
+        "AH"
+      ],
+      [
+        "2H"
+      ],
+      [
+        "3H"
+      ],
+      [
+        "4H"
+      ]
+    ],
+    "trump": "S",
+    "dealer": 3,
+    "trickIndex": 12,
+    "counts": [
+      11,
+      0
+    ],
+    "pile": 1,
+    "lastWinner": 0,
+    "run": 1,
+    "chasing": 0
+  },
+  "moves": [
+    {
+      "seat": 0,
+      "move": {
+        "type": "play_card",
+        "card": "AH"
+      }
+    },
+    {
+      "seat": 1,
+      "move": {
+        "type": "play_card",
+        "card": "2H"
+      }
+    },
+    {
+      "seat": 2,
+      "move": {
+        "type": "play_card",
+        "card": "3H"
+      }
+    },
+    {
+      "seat": 3,
+      "move": {
+        "type": "play_card",
+        "card": "4H"
+      }
+    }
+  ],
+  "assert": {
+    "counts": [
+      13,
+      0
+    ],
+    "outcome": {
+      "team": 0,
+      "kind": "court"
+    },
+    "results": {
+      "kind": "court",
+      "byCaller": true,
+      "dealPoints": 3
+    },
+    "stateHash": "07607d6dea7193d3be396b1529c1c4593d93a7fb254a14e13c4f71ba6a1a62b1"
+  }
+}

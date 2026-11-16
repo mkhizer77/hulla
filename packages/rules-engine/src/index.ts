@@ -14,3 +14,4 @@ export type {
 export * from "./card-kit";
 export * from "./rating";
 export * from "./thulla";
+export * from "./rung";

@@ -1,0 +1,40 @@
+{
+  "id": "V-R082-auto-lead",
+  "version": "1.0.0",
+  "title": "a timed-out leader keeps the rung and leads low from length",
+  "rules": [
+    "RG42"
+  ],
+  "setup": {
+    "hands": [
+      [
+        "AS",
+        "KD",
+        "3D",
+        "2H"
+      ],
+      [
+        "3H"
+      ],
+      [
+        "4H"
+      ],
+      [
+        "5H"
+      ]
+    ],
+    "trump": "S",
+    "dealer": 3
+  },
+  "moves": [],
+  "assert": {
+    "autoPlay": {
+      "0": {
+        "type": "play_card",
+        "card": "3D"
+      },
+      "1": null
+    },
+    "stateHash": "56cf310bc2e89b64479771570939f0979ebc42c8cd9be353dce82e1ee38aa680"
+  }
+}

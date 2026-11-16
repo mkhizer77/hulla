@@ -1,0 +1,111 @@
+{
+  "id": "V-R045-thirteen-decides",
+  "version": "1.0.0",
+  "title": "after the wait trick thirteen decides the pile",
+  "rules": [
+    "RG23",
+    "RG20"
+  ],
+  "setup": {
+    "hands": [
+      [
+        "AH",
+        "2C"
+      ],
+      [
+        "2H",
+        "AC"
+      ],
+      [
+        "3H",
+        "3C"
+      ],
+      [
+        "4H",
+        "4C"
+      ]
+    ],
+    "trump": "S",
+    "dealer": 3,
+    "rules": {
+      "lastTwo": true
+    },
+    "trickIndex": 11,
+    "counts": [
+      5,
+      4
+    ],
+    "pile": 2,
+    "lastWinner": 0,
+    "run": 1
+  },
+  "moves": [
+    {
+      "seat": 0,
+      "move": {
+        "type": "play_card",
+        "card": "AH"
+      }
+    },
+    {
+      "seat": 1,
+      "move": {
+        "type": "play_card",
+        "card": "2H"
+      }
+    },
+    {
+      "seat": 2,
+      "move": {
+        "type": "play_card",
+        "card": "3H"
+      }
+    },
+    {
+      "seat": 3,
+      "move": {
+        "type": "play_card",
+        "card": "4H"
+      }
+    },
+    {
+      "seat": 0,
+      "move": {
+        "type": "play_card",
+        "card": "2C"
+      }
+    },
+    {
+      "seat": 1,
+      "move": {
+        "type": "play_card",
+        "card": "AC"
+      }
+    },
+    {
+      "seat": 2,
+      "move": {
+        "type": "play_card",
+        "card": "3C"
+      }
+    },
+    {
+      "seat": 3,
+      "move": {
+        "type": "play_card",
+        "card": "4C"
+      }
+    }
+  ],
+  "assert": {
+    "counts": [
+      5,
+      8
+    ],
+    "outcome": {
+      "team": 1,
+      "kind": "win"
+    },
+    "stateHash": "aca607670931fd36993703e6e3973a58b63f92b2fe76df6894be8111ae87a260"
+  }
+}

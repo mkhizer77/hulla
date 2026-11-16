@@ -1,0 +1,54 @@
+{
+  "id": "V-R010-auto-call-longest-then-ranks",
+  "version": "1.0.0",
+  "title": "a silent caller gets the stronger of two long suits",
+  "rules": [
+    "RG9",
+    "RGE1"
+  ],
+  "setup": {
+    "hands": [
+      [
+        "2H",
+        "3H",
+        "8C",
+        "9C",
+        "9D"
+      ],
+      [
+        "AS",
+        "KS",
+        "QS",
+        "JS",
+        "TS"
+      ],
+      [
+        "AH",
+        "KH",
+        "QH",
+        "JH",
+        "TH"
+      ],
+      [
+        "AC",
+        "KC",
+        "QC",
+        "JC",
+        "TC"
+      ]
+    ],
+    "trump": null,
+    "dealer": 3
+  },
+  "moves": [],
+  "assert": {
+    "autoPlay": {
+      "0": {
+        "type": "call_trump",
+        "suit": "C"
+      },
+      "1": null
+    },
+    "stateHash": "dba909fb0f21aec873e07a58abe33372bd8893cb6918320341bb77ed53c607c2"
+  }
+}
