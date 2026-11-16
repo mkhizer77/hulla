@@ -334,6 +334,22 @@
     -unity-text-align: middle-center;
 }
 
+.rtl .rung-bar {
+    flex-direction: row-reverse;
+}
+
+.rtl .rung-ask__title {
+    -unity-text-align: middle-center;
+}
+
+.rtl .rung-ask__buttons {
+    flex-direction: row-reverse;
+}
+
+.rtl .rung-result__panel > Label {
+    -unity-text-align: middle-center;
+}
+
 /* Theme/Skins.uss */
 .rtl .skinned .seat__count {
     -unity-text-align: middle-center;

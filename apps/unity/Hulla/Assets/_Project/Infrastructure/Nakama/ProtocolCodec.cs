@@ -38,6 +38,18 @@ namespace Hulla.Infrastructure.Nakama
             [MessageTypes.EndgameStarted] = typeof(EndgameStarted),
             [MessageTypes.Confirmed] = typeof(Confirmed),
             [MessageTypes.RoundEnd] = typeof(RoundEnd),
+            [MessageTypes.GameChanged] = typeof(GameChanged),
+            [MessageTypes.RungRoundStart] = typeof(RungRoundStart),
+            [MessageTypes.RungHand] = typeof(RungHand),
+            [MessageTypes.RungRedealt] = typeof(RungRedealt),
+            [MessageTypes.RungTrumpCalled] = typeof(RungTrumpCalled),
+            [MessageTypes.RungHandsCompleted] = typeof(RungHandsCompleted),
+            [MessageTypes.RungCardPlayed] = typeof(RungCardPlayed),
+            [MessageTypes.RungTrickWon] = typeof(RungTrickWon),
+            [MessageTypes.RungPileTaken] = typeof(RungPileTaken),
+            [MessageTypes.RungCourtChoiceOpened] = typeof(RungCourtChoiceOpened),
+            [MessageTypes.RungCourtChoiceMade] = typeof(RungCourtChoiceMade),
+            [MessageTypes.RungRoundEnd] = typeof(RungRoundEnd),
         };
 
         private readonly JsonSerializer _serializer = ProtocolJson.CreateSerializer();

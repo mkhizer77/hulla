@@ -74,6 +74,7 @@ namespace Hulla.Presentation.Screens.Lobby
             _rulesSummary = rulesSummary;
             _openEditor = editRules;
             _root = root;
+            BuildGameRow(root.Q<VisualElement>("stage"));
             Stage.Fit(root.Q<VisualElement>("stage-holder"), root.Q<VisualElement>("stage"), Stage.Width, StageHeight);
             root.Q<Label>("title").text = UiText.PrivateTable;
             var rulebook = root.Q<Button>("rulebook");
@@ -606,12 +607,79 @@ namespace Hulla.Presentation.Screens.Lobby
 
         private void ToggleReady() => _client.SetReady(!MeReady());
 
+        private readonly VisualElement _games = new VisualElement { name = "games" };
+        private readonly Button _switchGame = new Button { name = "switch-game" };
+        private readonly Button _addBot = new Button { name = "add-bot" };
+
+        /// <summary>Whether the host's switch-game chip shows; read by tests.</summary>
+        public bool ShowsSwitchGame => _switchGame.style.display == DisplayStyle.Flex;
+
+        public bool ShowsAddBot => _addBot.style.display == DisplayStyle.Flex;
+
+        public string SwitchGameText => _switchGame.text;
+
+        /// <summary>
+        /// The host's row under the rules: move the room to the other game, and in Rung fill an empty
+        /// seat with a bot. The room, its code, the chat and the voice stay as they are (Rung design 8).
+        /// </summary>
+        private void BuildGameRow(VisualElement? stage)
+        {
+            _games.style.position = Position.Absolute;
+            _games.style.left = 60;
+            _games.style.top = 1452;
+            _games.style.width = 960;
+            _games.style.height = 76;
+            _games.style.flexDirection = FlexDirection.Row;
+            _games.style.justifyContent = Justify.Center;
+            _games.style.alignItems = Align.Center;
+            foreach (var chip in new[] { _switchGame, _addBot })
+            {
+                chip.AddToClassList("chip");
+                chip.AddToClassList("lobby__game-chip");
+                chip.style.height = 72;
+                chip.style.minHeight = 0;
+                chip.style.fontSize = 28;
+                chip.style.paddingLeft = 28;
+                chip.style.paddingRight = 28;
+                chip.style.paddingTop = 0;
+                chip.style.paddingBottom = 0;
+                chip.style.marginTop = 0;
+                chip.style.marginBottom = 0;
+                chip.style.flexShrink = 0;
+                chip.style.display = DisplayStyle.None;
+                _games.Add(chip);
+            }
+
+            _switchGame.clicked += () => _client.SwitchGame();
+            _addBot.text = UiText.AddBot;
+            _addBot.clicked += () => _client.AddBot();
+            stage?.Add(_games);
+        }
+
+        private void RefreshGameRow(TableModel model, int seated)
+        {
+            var host = model.IsHost && model.IsPrivate && !model.Spectating;
+            var other = model.IsRung ? UiText.GameThulla : UiText.GameRung;
+            _switchGame.style.display = host && RungOffered ? DisplayStyle.Flex : DisplayStyle.None;
+            _switchGame.text = Strings.Format(UiText.SwitchGameTo, other);
+            _addBot.style.display = host && model.IsRung && seated < model.Seats.Count ? DisplayStyle.Flex : DisplayStyle.None;
+        }
+
+        /// <summary>The `rung` remote flag: the switch to Rung shows only when the server offers it.</summary>
+        public bool RungOffered { get; set; }
+
         /// <summary>An empty seat invites; a taken seat does nothing here (the player sheet is the table's).</summary>
         private void OnSeatTapped(long seat)
         {
             var model = _client.Model;
             if (seat < model.Seats.Count && model.Seats[(int)seat].Occupied)
             {
+                // The host sends a bot home by tapping its seat.
+                if (model.Seats[(int)seat].Bot && model.IsHost && model.IsPrivate)
+                {
+                    _client.RemoveBot(seat);
+                }
+
                 return;
             }
 
@@ -712,9 +780,12 @@ namespace Hulla.Presentation.Screens.Lobby
                 }
             }
 
-            var canStart = seated >= 3 && unready == 0;
+            // Rung is four in pairs (RG1); Thulla deals to three or more.
+            var need = model.IsRung ? 4 : 3;
+            var canStart = seated >= need && unready == 0;
             _start.SetEnabled(canStart);
-            _startLabel.text = Upper(seated < 3 ? Strings.Format(UiText.SeatedOfThree, seated) : unready > 0 ? Strings.Format(UiText.WaitingReady, unready) : UiText.Start);
+            _startLabel.text = Upper(seated < need ? (model.IsRung ? UiText.NeedFour : Strings.Format(UiText.SeatedOfThree, seated)) : unready > 0 ? Strings.Format(UiText.WaitingReady, unready) : UiText.Start);
+            RefreshGameRow(model, seated);
             _startLabel.EnableInClassList("lobby__play-label--small", !canStart);
             _rules.text = _rulesSummary?.Invoke() ?? "";
             _watchers.Clear();
@@ -757,6 +828,7 @@ namespace Hulla.Presentation.Screens.Lobby
             _status.text = model.LastErrorCode != null ? UiText.Error(model.LastErrorCode)
                 : model.Spectating ? UiText.WatchingLobby
                 : matchmade ? (seated < 3 ? UiText.Waiting : "")
+                : model.IsHost && model.IsRung ? ""
                 : model.IsHost ? (ready ? UiText.LobbyHintHost : UiText.LobbyHintHostReady)
                 : Strings.Format(UiText.LobbyHint, host);
         }

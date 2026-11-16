@@ -391,6 +391,7 @@ namespace Hulla.Application.Tutorial
 
             return new TableState
             {
+                GameId = GameId.Thulla,
                 Code = _label,
                 Mode = TableMode.Private,
                 Status = TableStatus.InRound,
