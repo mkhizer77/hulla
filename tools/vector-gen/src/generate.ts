@@ -1,11 +1,18 @@
 import { mkdirSync, readdirSync, unlinkSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 
-import { THULLA_RULES_VERSION } from "@hulla/rules-engine";
-import { runVector, stateHash, type Vector } from "@hulla/test-vectors";
+import { RUNG_RULES_VERSION, THULLA_RULES_VERSION } from "@hulla/rules-engine";
+import {
+  runRungVector,
+  runVector,
+  stateHash,
+  type RungVector,
+  type Vector,
+} from "@hulla/test-vectors";
 
 import { authored } from "./authored";
 import { endgameVectors } from "./endgames";
+import { rungAuthored } from "./rung-authored";
 
 const outDir = join(import.meta.dirname, "..", "..", "..", "packages", "test-vectors", "thulla");
 mkdirSync(outDir, { recursive: true });
@@ -56,6 +63,43 @@ for (const stale of readdirSync(outDir).filter(
 console.log(
   `wrote ${written.length} vectors (${authored(THULLA_RULES_VERSION).length} authored, ${vectors.length - authored(THULLA_RULES_VERSION).length} endgames)`,
 );
+
+// Rung: authored scenarios only. The engine fills in the commitment and the hashes.
+const rungDir = join(outDir, "..", "rung");
+mkdirSync(rungDir, { recursive: true });
+const rungWritten: string[] = [];
+const rungIds = new Set<string>();
+for (const vector of rungAuthored(RUNG_RULES_VERSION)) {
+  if (rungIds.has(vector.id)) throw new Error(`duplicate id ${vector.id}`);
+  rungIds.add(vector.id);
+  const outcome = runRungVector(vector);
+  if (outcome.failures.length > 0 || (outcome.state === null && outcome.series === null)) {
+    failed += 1;
+    console.error(`${vector.id}:\n  ${outcome.failures.join("\n  ")}`);
+    continue;
+  }
+  const file: RungVector = {
+    ...vector,
+    assert: {
+      ...vector.assert,
+      ...(vector.deal !== undefined && outcome.state !== null
+        ? { commitment: outcome.state.commitment }
+        : {}),
+      ...(outcome.state !== null ? { stateHash: stateHash(outcome.state) } : {}),
+      ...(outcome.series !== null ? { seriesHash: stateHash(outcome.series) } : {}),
+    },
+  };
+  const name = `${vector.id}.json`;
+  writeFileSync(join(rungDir, name), `${JSON.stringify(file, null, 2)}\n`);
+  rungWritten.push(name);
+}
+for (const stale of readdirSync(rungDir).filter(
+  (n) => n.startsWith("V-") && n.endsWith(".json") && !rungWritten.includes(n),
+)) {
+  unlinkSync(join(rungDir, stale));
+  console.log(`removed stale rung/${stale}`);
+}
+console.log(`wrote ${rungWritten.length} Rung vectors`);
 if (failed > 0) {
   console.error(`${failed} vectors failed against the engine; nothing was written for them`);
   process.exit(1);

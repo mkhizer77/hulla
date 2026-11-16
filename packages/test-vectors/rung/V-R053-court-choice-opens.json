@@ -1,0 +1,113 @@
+{
+  "id": "V-R053-court-choice-opens",
+  "version": "1.0.0",
+  "title": "at seven against zero the trick winner chooses",
+  "rules": [
+    "RG26"
+  ],
+  "setup": {
+    "hands": [
+      [
+        "AH",
+        "2C",
+        "2D"
+      ],
+      [
+        "2H",
+        "AC",
+        "AD"
+      ],
+      [
+        "3H",
+        "3C",
+        "3D"
+      ],
+      [
+        "4H",
+        "4C",
+        "4D"
+      ]
+    ],
+    "trump": "S",
+    "dealer": 3,
+    "rules": {
+      "collect": "single"
+    },
+    "trickIndex": 6,
+    "counts": [
+      6,
+      0
+    ]
+  },
+  "moves": [
+    {
+      "seat": 0,
+      "move": {
+        "type": "play_card",
+        "card": "AH"
+      }
+    },
+    {
+      "seat": 1,
+      "move": {
+        "type": "play_card",
+        "card": "2H"
+      }
+    },
+    {
+      "seat": 2,
+      "move": {
+        "type": "play_card",
+        "card": "3H"
+      }
+    },
+    {
+      "seat": 3,
+      "move": {
+        "type": "play_card",
+        "card": "4H"
+      }
+    },
+    {
+      "seat": 2,
+      "move": {
+        "type": "court_choice",
+        "playOn": true
+      },
+      "expect": {
+        "error": "rules.not_your_turn"
+      }
+    }
+  ],
+  "assert": {
+    "phase": "courtChoice",
+    "turnSeat": 0,
+    "counts": [
+      7,
+      0
+    ],
+    "legal": {
+      "0": [
+        {
+          "type": "court_choice",
+          "playOn": false
+        },
+        {
+          "type": "court_choice",
+          "playOn": true
+        }
+      ],
+      "2": []
+    },
+    "autoPlay": {
+      "0": {
+        "type": "court_choice",
+        "playOn": false
+      }
+    },
+    "eventsInclude": [
+      "court_choice_opened"
+    ],
+    "stateHash": "915a079bf2a0a61007b5f6b9a86e0cdd20a8cf0e317ec50514221175d5e22816"
+  }
+}

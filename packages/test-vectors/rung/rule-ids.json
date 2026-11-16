@@ -1,0 +1,273 @@
+{
+  "game": "rung",
+  "source": "The Rung module design (private), rule ids RG1 to RG43 and edge cases RGE1 to RGE14",
+  "ids": [
+    {
+      "id": "RG1",
+      "title": "Exactly four seats; seats 0 and 2 against seats 1 and 3",
+      "scope": "engine"
+    },
+    {
+      "id": "RG2",
+      "title": "One 52-card deck, Ace high",
+      "scope": "engine"
+    },
+    {
+      "id": "RG3",
+      "title": "Play passes to the next seat; the direction is drawn by the table",
+      "scope": "engine"
+    },
+    {
+      "id": "RG4",
+      "title": "The caller is the seat after the dealer",
+      "scope": "engine"
+    },
+    {
+      "id": "RG5",
+      "title": "Five cards each from the caller; the rest wait hidden in the stock",
+      "scope": "engine"
+    },
+    {
+      "id": "RG6",
+      "title": "The caller names one of four suits and may not pass",
+      "scope": "engine"
+    },
+    {
+      "id": "RG7",
+      "title": "Optional redeal for five cards without an honour, at most twice in a row",
+      "scope": "engine"
+    },
+    {
+      "id": "RG8",
+      "title": "After the call the stock is dealt in fours",
+      "scope": "engine"
+    },
+    {
+      "id": "RG9",
+      "title": "A silent caller gets the longest suit, then the higher ranks, then suit order",
+      "scope": "engine"
+    },
+    {
+      "id": "RG10",
+      "title": "The caller leads the first trick",
+      "scope": "engine"
+    },
+    {
+      "id": "RG11",
+      "title": "Follow suit if able, otherwise any card including a rung",
+      "scope": "engine"
+    },
+    {
+      "id": "RG12",
+      "title": "The highest rung wins, else the highest card of the led suit",
+      "scope": "engine"
+    },
+    {
+      "id": "RG13",
+      "title": "The winner of a trick leads the next",
+      "scope": "engine"
+    },
+    {
+      "id": "RG14",
+      "title": "Only legal cards are accepted, so a revoke cannot happen",
+      "scope": "engine"
+    },
+    {
+      "id": "RG15",
+      "title": "Single Sar: a trick belongs to the winner's team at once",
+      "scope": "engine"
+    },
+    {
+      "id": "RG16",
+      "title": "Double Sar: a won trick goes onto the pile",
+      "scope": "engine"
+    },
+    {
+      "id": "RG17",
+      "title": "Two tricks in a row by one player take the pile",
+      "scope": "engine"
+    },
+    {
+      "id": "RG18",
+      "title": "Two tricks in a row by the two partners do not take the pile",
+      "scope": "engine"
+    },
+    {
+      "id": "RG19",
+      "title": "After a take the run starts again",
+      "scope": "engine"
+    },
+    {
+      "id": "RG20",
+      "title": "The winner of the thirteenth trick takes the pile",
+      "scope": "engine"
+    },
+    {
+      "id": "RG21",
+      "title": "Option: the winner of tricks one and two waits for trick three",
+      "scope": "engine"
+    },
+    {
+      "id": "RG22",
+      "title": "Option: two aces in a row do not take the pile",
+      "scope": "engine"
+    },
+    {
+      "id": "RG23",
+      "title": "Option: tricks eleven and twelve do not take the pile",
+      "scope": "engine"
+    },
+    {
+      "id": "RG24",
+      "title": "Seven tricks win the deal",
+      "scope": "engine"
+    },
+    {
+      "id": "RG25",
+      "title": "The deal ends at seven against at least one, or after trick thirteen",
+      "scope": "engine"
+    },
+    {
+      "id": "RG26",
+      "title": "At seven against zero the trick winner chooses to stop or play on",
+      "scope": "engine"
+    },
+    {
+      "id": "RG27",
+      "title": "A failed chase keeps what was won at seven",
+      "scope": "engine"
+    },
+    {
+      "id": "RG30",
+      "title": "A deal has one outcome for one team",
+      "scope": "engine"
+    },
+    {
+      "id": "RG31",
+      "title": "What a court and a 52-court are in each rule family",
+      "scope": "engine"
+    },
+    {
+      "id": "RG32",
+      "title": "Points per outcome and the target",
+      "scope": "engine"
+    },
+    {
+      "id": "RG33",
+      "title": "The courts tally, goon courts and seven deals in a row",
+      "scope": "engine"
+    },
+    {
+      "id": "RG34",
+      "title": "The first team to the target wins the bazi",
+      "scope": "engine"
+    },
+    {
+      "id": "RG35",
+      "title": "The dealer's team won: the old caller deals",
+      "scope": "engine"
+    },
+    {
+      "id": "RG36",
+      "title": "The caller's team won without a court: the same dealer deals",
+      "scope": "engine"
+    },
+    {
+      "id": "RG37",
+      "title": "The caller's team scored a court: the dealer's partner deals",
+      "scope": "engine"
+    },
+    {
+      "id": "RG38",
+      "title": "A new bazi starts level with a new dealer",
+      "scope": "engine",
+      "vectorable": false
+    },
+    {
+      "id": "RG41",
+      "title": "Turn, call and court-choice timers",
+      "scope": "table-core"
+    },
+    {
+      "id": "RG42",
+      "title": "Deterministic auto-play on a timeout",
+      "scope": "engine"
+    },
+    {
+      "id": "RG43",
+      "title": "A bot covers an absent seat",
+      "scope": "table-core"
+    },
+    {
+      "id": "RGE1",
+      "title": "The deadline calls for an absent caller",
+      "scope": "engine"
+    },
+    {
+      "id": "RGE2",
+      "title": "A third redeal in a row is refused",
+      "scope": "engine"
+    },
+    {
+      "id": "RGE3",
+      "title": "Winning tricks twelve and thirteen is one take",
+      "scope": "engine"
+    },
+    {
+      "id": "RGE4",
+      "title": "Reaching seven by a take against zero opens the choice",
+      "scope": "engine"
+    },
+    {
+      "id": "RGE5",
+      "title": "Double Sar without the chase ends at seven",
+      "scope": "engine"
+    },
+    {
+      "id": "RGE6",
+      "title": "Aces on four and five, then a king, take the pile on six",
+      "scope": "engine"
+    },
+    {
+      "id": "RGE7",
+      "title": "First two and the ace rule together take on trick three",
+      "scope": "engine"
+    },
+    {
+      "id": "RGE8",
+      "title": "A court choice after the deal ended is refused",
+      "scope": "engine"
+    },
+    {
+      "id": "RGE9",
+      "title": "A bot covering the seat makes the court choice",
+      "scope": "later"
+    },
+    {
+      "id": "RGE10",
+      "title": "The score changes only when a deal has ended",
+      "scope": "engine",
+      "vectorable": false
+    },
+    {
+      "id": "RGE11",
+      "title": "A seat left for good stays with the bot to the end of the bazi",
+      "scope": "table-core"
+    },
+    {
+      "id": "RGE12",
+      "title": "Before the call a view holds five cards and nothing of the stock",
+      "scope": "engine"
+    },
+    {
+      "id": "RGE13",
+      "title": "Spectators see no hands",
+      "scope": "engine"
+    },
+    {
+      "id": "RGE14",
+      "title": "The run of seven deals is broken by the other team and by a court",
+      "scope": "engine"
+    }
+  ]
+}

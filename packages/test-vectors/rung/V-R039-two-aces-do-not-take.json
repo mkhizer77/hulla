@@ -1,0 +1,104 @@
+{
+  "id": "V-R039-two-aces-do-not-take",
+  "version": "1.0.0",
+  "title": "two aces in a row leave the pile",
+  "rules": [
+    "RG22"
+  ],
+  "setup": {
+    "hands": [
+      [
+        "AH",
+        "AC",
+        "KD"
+      ],
+      [
+        "2H",
+        "2C",
+        "2D"
+      ],
+      [
+        "3H",
+        "3C",
+        "3D"
+      ],
+      [
+        "4H",
+        "4C",
+        "4D"
+      ]
+    ],
+    "trump": "S",
+    "dealer": 3,
+    "rules": {
+      "aceRule": true
+    }
+  },
+  "moves": [
+    {
+      "seat": 0,
+      "move": {
+        "type": "play_card",
+        "card": "AH"
+      }
+    },
+    {
+      "seat": 1,
+      "move": {
+        "type": "play_card",
+        "card": "2H"
+      }
+    },
+    {
+      "seat": 2,
+      "move": {
+        "type": "play_card",
+        "card": "3H"
+      }
+    },
+    {
+      "seat": 3,
+      "move": {
+        "type": "play_card",
+        "card": "4H"
+      }
+    },
+    {
+      "seat": 0,
+      "move": {
+        "type": "play_card",
+        "card": "AC"
+      }
+    },
+    {
+      "seat": 1,
+      "move": {
+        "type": "play_card",
+        "card": "2C"
+      }
+    },
+    {
+      "seat": 2,
+      "move": {
+        "type": "play_card",
+        "card": "3C"
+      }
+    },
+    {
+      "seat": 3,
+      "move": {
+        "type": "play_card",
+        "card": "4C"
+      }
+    }
+  ],
+  "assert": {
+    "counts": [
+      0,
+      0
+    ],
+    "pile": 2,
+    "run": 2,
+    "stateHash": "88b7ce0bcf32a9736c68a8719a7ada1adcdcb934251ad26504485d35b2037012"
+  }
+}

@@ -1,0 +1,69 @@
+{
+  "id": "V-R007-redeal-deals-again",
+  "version": "1.0.0",
+  "title": "a redeal gives everyone five new cards, same dealer",
+  "rules": [
+    "RG7"
+  ],
+  "setup": {
+    "hands": [
+      [
+        "2S",
+        "5S",
+        "7H",
+        "9C",
+        "TD"
+      ],
+      [
+        "AS",
+        "KS",
+        "QS",
+        "JS",
+        "TS"
+      ],
+      [
+        "AH",
+        "KH",
+        "QH",
+        "JH",
+        "TH"
+      ],
+      [
+        "AC",
+        "KC",
+        "QC",
+        "JC",
+        "TC"
+      ]
+    ],
+    "trump": null,
+    "dealer": 3
+  },
+  "moves": [
+    {
+      "seat": 0,
+      "move": {
+        "type": "redeal"
+      }
+    }
+  ],
+  "assert": {
+    "phase": "call",
+    "redeals": 1,
+    "dealerSeat": 3,
+    "callerSeat": 0,
+    "turnSeat": 0,
+    "handCounts": [
+      5,
+      5,
+      5,
+      5
+    ],
+    "stockCount": 32,
+    "fullDeck": true,
+    "lastEvents": [
+      "redealt"
+    ],
+    "stateHash": "1f952d394090dfcf7b8136c6a72e270eaa7409fcf22ae7e1395a19dd2dc185a8"
+  }
+}

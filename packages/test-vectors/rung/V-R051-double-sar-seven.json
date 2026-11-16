@@ -1,0 +1,83 @@
+{
+  "id": "V-R051-double-sar-seven",
+  "version": "1.0.0",
+  "title": "seven taken against one end the deal",
+  "rules": [
+    "RG25"
+  ],
+  "setup": {
+    "hands": [
+      [
+        "AH",
+        "2C",
+        "2D"
+      ],
+      [
+        "2H",
+        "AC",
+        "AD"
+      ],
+      [
+        "3H",
+        "3C",
+        "3D"
+      ],
+      [
+        "4H",
+        "4C",
+        "4D"
+      ]
+    ],
+    "trump": "S",
+    "dealer": 3,
+    "trickIndex": 7,
+    "counts": [
+      5,
+      1
+    ],
+    "pile": 1,
+    "lastWinner": 0,
+    "run": 1
+  },
+  "moves": [
+    {
+      "seat": 0,
+      "move": {
+        "type": "play_card",
+        "card": "AH"
+      }
+    },
+    {
+      "seat": 1,
+      "move": {
+        "type": "play_card",
+        "card": "2H"
+      }
+    },
+    {
+      "seat": 2,
+      "move": {
+        "type": "play_card",
+        "card": "3H"
+      }
+    },
+    {
+      "seat": 3,
+      "move": {
+        "type": "play_card",
+        "card": "4H"
+      }
+    }
+  ],
+  "assert": {
+    "counts": [
+      7,
+      1
+    ],
+    "outcome": {
+      "team": 0,
+      "kind": "win"
+    },
+    "stateHash": "8d3c6027228dd3ba608afdaf9f2b82c8dc53b53ac9dcaaf922bef84b5266e405"
+  }
+}

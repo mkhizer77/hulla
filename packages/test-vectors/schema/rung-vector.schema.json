@@ -1,0 +1,206 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://hulla.gg/schemas/test-vectors/rung-vector.json",
+  "title": "Shared Rung rules test vector",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["id", "version", "rules", "moves", "assert"],
+  "properties": {
+    "id": { "type": "string", "pattern": "^V-R[A-Za-z0-9-]+$" },
+    "version": { "type": "string" },
+    "title": { "type": "string" },
+    "rules": {
+      "type": "array",
+      "items": { "type": "string", "pattern": "^RGE?[0-9]+$" },
+      "minItems": 1
+    },
+    "deal": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["seedHex", "dealerSeat"],
+      "properties": {
+        "seedHex": { "type": "string", "pattern": "^[0-9a-f]+$" },
+        "dealerSeat": { "$ref": "#/definitions/seat" },
+        "mode": { "$ref": "#/definitions/mode" },
+        "preset": { "$ref": "#/definitions/preset" },
+        "overrides": { "type": "object" }
+      }
+    },
+    "setup": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["hands", "trump"],
+      "properties": {
+        "rules": { "type": "object" },
+        "hands": {
+          "type": "array",
+          "items": { "$ref": "#/definitions/cards" },
+          "minItems": 4,
+          "maxItems": 4
+        },
+        "trump": { "$ref": "#/definitions/suitOrNull" },
+        "stock": { "$ref": "#/definitions/cards" },
+        "redeals": { "type": "integer", "minimum": 0 },
+        "dealer": { "$ref": "#/definitions/seat" },
+        "leader": { "$ref": "#/definitions/seat" },
+        "plays": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["seat", "card"],
+            "properties": {
+              "seat": { "$ref": "#/definitions/seat" },
+              "card": { "$ref": "#/definitions/card" }
+            }
+          }
+        },
+        "trickIndex": { "type": "integer", "minimum": 0, "maximum": 12 },
+        "counts": { "$ref": "#/definitions/pair" },
+        "pile": { "type": "integer", "minimum": 0 },
+        "lastWinner": { "$ref": "#/definitions/seatOrNull" },
+        "run": { "type": "integer", "minimum": 0 },
+        "lastWinAce": { "type": "boolean" },
+        "runAceBlocked": { "type": "boolean" },
+        "chasing": { "$ref": "#/definitions/teamOrNull" }
+      }
+    },
+    "bazi": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["firstDealer", "deals"],
+      "properties": {
+        "firstDealer": { "$ref": "#/definitions/seat" },
+        "mode": { "$ref": "#/definitions/mode" },
+        "preset": { "$ref": "#/definitions/preset" },
+        "overrides": { "type": "object" },
+        "deals": { "type": "array", "items": { "$ref": "#/definitions/outcome" }, "minItems": 1 }
+      }
+    },
+    "moves": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["seat", "move"],
+        "properties": {
+          "seat": { "type": "integer", "minimum": 0 },
+          "move": { "$ref": "#/definitions/move" },
+          "expect": {
+            "oneOf": [
+              { "const": "ok" },
+              {
+                "type": "object",
+                "additionalProperties": false,
+                "required": ["error"],
+                "properties": { "error": { "type": "string" } }
+              }
+            ]
+          }
+        }
+      }
+    },
+    "assert": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "phase": { "enum": ["call", "play", "courtChoice", "ended"] },
+        "dealerSeat": { "$ref": "#/definitions/seat" },
+        "callerSeat": { "$ref": "#/definitions/seat" },
+        "turnSeat": { "$ref": "#/definitions/seatOrNull" },
+        "trickIndex": { "type": "integer", "minimum": 0 },
+        "trump": { "$ref": "#/definitions/suitOrNull" },
+        "redeals": { "type": "integer", "minimum": 0 },
+        "counts": { "$ref": "#/definitions/pair" },
+        "pile": { "type": "integer", "minimum": 0 },
+        "lastWinner": { "$ref": "#/definitions/seatOrNull" },
+        "run": { "type": "integer", "minimum": 0 },
+        "chasing": { "$ref": "#/definitions/teamOrNull" },
+        "outcome": { "oneOf": [{ "type": "null" }, { "$ref": "#/definitions/outcome" }] },
+        "handCounts": { "type": "array", "items": { "type": "integer", "minimum": 0 } },
+        "stockCount": { "type": "integer", "minimum": 0 },
+        "hands": { "type": "object", "additionalProperties": { "$ref": "#/definitions/cards" } },
+        "fullDeck": { "type": "boolean" },
+        "firstFiveFromDeck": { "type": "boolean" },
+        "lastEvents": { "type": "array", "items": { "type": "string" } },
+        "eventsInclude": { "type": "array", "items": { "type": "string" } },
+        "legal": {
+          "type": "object",
+          "additionalProperties": { "type": "array", "items": { "$ref": "#/definitions/move" } }
+        },
+        "autoPlay": {
+          "type": "object",
+          "additionalProperties": {
+            "oneOf": [{ "type": "null" }, { "$ref": "#/definitions/move" }]
+          }
+        },
+        "stats": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "object",
+            "additionalProperties": { "type": "integer" }
+          }
+        },
+        "results": { "type": "object" },
+        "nextDealer": { "$ref": "#/definitions/seat" },
+        "series": { "type": "object" },
+        "views": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["viewer"],
+            "properties": {
+              "viewer": { "oneOf": [{ "const": "spectator" }, { "$ref": "#/definitions/seat" }] },
+              "hand": { "oneOf": [{ "type": "null" }, { "$ref": "#/definitions/cards" }] },
+              "handCounts": { "type": "array", "items": { "type": "integer", "minimum": 0 } },
+              "stockCount": { "type": "integer", "minimum": 0 },
+              "seedHidden": { "type": "boolean" },
+              "canRedeal": { "type": ["boolean", "null"] },
+              "hidesOthers": { "type": "boolean" }
+            }
+          }
+        },
+        "commitment": { "type": "string" },
+        "stateHash": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+        "seriesHash": { "type": "string", "pattern": "^[0-9a-f]{64}$" }
+      }
+    }
+  },
+  "definitions": {
+    "card": { "type": "string", "pattern": "^[2-9TJQKA][SHCD]$" },
+    "cards": { "type": "array", "items": { "$ref": "#/definitions/card" } },
+    "seat": { "type": "integer", "minimum": 0, "maximum": 3 },
+    "seatOrNull": { "oneOf": [{ "type": "null" }, { "$ref": "#/definitions/seat" }] },
+    "teamOrNull": { "enum": [0, 1, null] },
+    "suitOrNull": { "enum": ["S", "H", "C", "D", null] },
+    "pair": {
+      "type": "array",
+      "items": { "type": "integer", "minimum": 0 },
+      "minItems": 2,
+      "maxItems": 2
+    },
+    "mode": { "enum": ["private", "public", "ranked"] },
+    "preset": { "enum": ["rung", "courtPiece", "hokm"] },
+    "outcome": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["team", "kind"],
+      "properties": {
+        "team": { "enum": [0, 1] },
+        "kind": { "enum": ["win", "court", "court52"] }
+      }
+    },
+    "move": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type"],
+      "properties": {
+        "type": { "enum": ["call_trump", "redeal", "play_card", "court_choice"] },
+        "suit": { "type": "string" },
+        "card": { "type": "string" },
+        "playOn": { "type": "boolean" }
+      }
+    }
+  }
+}

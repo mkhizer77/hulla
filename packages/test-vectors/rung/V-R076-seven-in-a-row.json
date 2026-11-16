@@ -1,0 +1,56 @@
+{
+  "id": "V-R076-seven-in-a-row",
+  "version": "1.0.0",
+  "title": "seven deals won in a row are a court",
+  "rules": [
+    "RG33"
+  ],
+  "bazi": {
+    "firstDealer": 3,
+    "deals": [
+      {
+        "team": 0,
+        "kind": "win"
+      },
+      {
+        "team": 0,
+        "kind": "win"
+      },
+      {
+        "team": 0,
+        "kind": "win"
+      },
+      {
+        "team": 0,
+        "kind": "win"
+      },
+      {
+        "team": 0,
+        "kind": "win"
+      },
+      {
+        "team": 0,
+        "kind": "win"
+      },
+      {
+        "team": 0,
+        "kind": "win"
+      }
+    ],
+    "overrides": {
+      "scoring": "courts"
+    }
+  },
+  "moves": [],
+  "assert": {
+    "series": {
+      "courts": [
+        1,
+        0
+      ],
+      "streakDeals": 0,
+      "streakTeam": null
+    },
+    "seriesHash": "108b71b5501a4d252869b729534206c7aa677e0581d9dfba81864037f5a7b1de"
+  }
+}

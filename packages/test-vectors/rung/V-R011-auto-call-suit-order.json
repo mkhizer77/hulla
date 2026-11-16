@@ -1,0 +1,52 @@
+{
+  "id": "V-R011-auto-call-suit-order",
+  "version": "1.0.0",
+  "title": "equal suits fall back to spades first",
+  "rules": [
+    "RG9"
+  ],
+  "setup": {
+    "hands": [
+      [
+        "2H",
+        "3H",
+        "2S",
+        "3S",
+        "9D"
+      ],
+      [
+        "AS",
+        "KS",
+        "QS",
+        "JS",
+        "TS"
+      ],
+      [
+        "AH",
+        "KH",
+        "QH",
+        "JH",
+        "TH"
+      ],
+      [
+        "AC",
+        "KC",
+        "QC",
+        "JC",
+        "TC"
+      ]
+    ],
+    "trump": null,
+    "dealer": 3
+  },
+  "moves": [],
+  "assert": {
+    "autoPlay": {
+      "0": {
+        "type": "call_trump",
+        "suit": "S"
+      }
+    },
+    "stateHash": "0cb01b90302863915e71e8959209517ed97beb549dc2eb4b26479f27c8966433"
+  }
+}

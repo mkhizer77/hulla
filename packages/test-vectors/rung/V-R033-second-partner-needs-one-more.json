@@ -1,0 +1,129 @@
+{
+  "id": "V-R033-second-partner-needs-one-more",
+  "version": "1.0.0",
+  "title": "the second partner wins again and takes all three",
+  "rules": [
+    "RG18",
+    "RG17"
+  ],
+  "setup": {
+    "hands": [
+      [
+        "AH",
+        "2C",
+        "6D"
+      ],
+      [
+        "2H",
+        "3C",
+        "5D"
+      ],
+      [
+        "3H",
+        "AC",
+        "KD"
+      ],
+      [
+        "4H",
+        "4C",
+        "7D"
+      ]
+    ],
+    "trump": "S",
+    "dealer": 3
+  },
+  "moves": [
+    {
+      "seat": 0,
+      "move": {
+        "type": "play_card",
+        "card": "AH"
+      }
+    },
+    {
+      "seat": 1,
+      "move": {
+        "type": "play_card",
+        "card": "2H"
+      }
+    },
+    {
+      "seat": 2,
+      "move": {
+        "type": "play_card",
+        "card": "3H"
+      }
+    },
+    {
+      "seat": 3,
+      "move": {
+        "type": "play_card",
+        "card": "4H"
+      }
+    },
+    {
+      "seat": 0,
+      "move": {
+        "type": "play_card",
+        "card": "2C"
+      }
+    },
+    {
+      "seat": 1,
+      "move": {
+        "type": "play_card",
+        "card": "3C"
+      }
+    },
+    {
+      "seat": 2,
+      "move": {
+        "type": "play_card",
+        "card": "AC"
+      }
+    },
+    {
+      "seat": 3,
+      "move": {
+        "type": "play_card",
+        "card": "4C"
+      }
+    },
+    {
+      "seat": 2,
+      "move": {
+        "type": "play_card",
+        "card": "KD"
+      }
+    },
+    {
+      "seat": 3,
+      "move": {
+        "type": "play_card",
+        "card": "7D"
+      }
+    },
+    {
+      "seat": 0,
+      "move": {
+        "type": "play_card",
+        "card": "6D"
+      }
+    },
+    {
+      "seat": 1,
+      "move": {
+        "type": "play_card",
+        "card": "5D"
+      }
+    }
+  ],
+  "assert": {
+    "counts": [
+      3,
+      0
+    ],
+    "pile": 0,
+    "stateHash": "a353e764f9fd5e813f9d29291db6feae2f3f710d13070d296ddd30d59c928ea0"
+  }
+}

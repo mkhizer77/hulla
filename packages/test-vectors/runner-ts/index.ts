@@ -334,3 +334,13 @@ function checkAssertions(
 }
 
 export { stateHash };
+export type {
+  RungRunOutcome,
+  RungVector,
+  RungVectorAssert,
+  RungVectorBazi,
+  RungVectorDeal,
+  RungVectorMove,
+  RungVectorView,
+} from "./rung";
+export { runRungVector } from "./rung";

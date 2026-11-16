@@ -1,0 +1,33 @@
+{
+  "id": "V-R072-bazi-52-court",
+  "version": "1.0.0",
+  "title": "a 52-court wins the bazi outright",
+  "rules": [
+    "RG32"
+  ],
+  "bazi": {
+    "firstDealer": 3,
+    "deals": [
+      {
+        "team": 0,
+        "kind": "court52"
+      }
+    ],
+    "preset": "courtPiece",
+    "overrides": {
+      "target": 10
+    }
+  },
+  "moves": [],
+  "assert": {
+    "series": {
+      "teamPoints": [
+        3,
+        0
+      ],
+      "finished": true,
+      "winnerTeam": 0
+    },
+    "seriesHash": "5e9d9ed8b5fe198a2126c08281ee4560a091984cc7c1aa89142616f165b48244"
+  }
+}

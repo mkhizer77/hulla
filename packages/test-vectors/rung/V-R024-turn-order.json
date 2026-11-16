@@ -1,0 +1,47 @@
+{
+  "id": "V-R024-turn-order",
+  "version": "1.0.0",
+  "title": "play passes to the next seat from the leader",
+  "rules": [
+    "RG3"
+  ],
+  "setup": {
+    "hands": [
+      [
+        "2H"
+      ],
+      [
+        "3H"
+      ],
+      [
+        "4H"
+      ],
+      [
+        "5H"
+      ]
+    ],
+    "trump": "S",
+    "dealer": 3,
+    "leader": 2
+  },
+  "moves": [
+    {
+      "seat": 2,
+      "move": {
+        "type": "play_card",
+        "card": "4H"
+      }
+    },
+    {
+      "seat": 3,
+      "move": {
+        "type": "play_card",
+        "card": "5H"
+      }
+    }
+  ],
+  "assert": {
+    "turnSeat": 0,
+    "stateHash": "99b39c698def1d0bce1a5e471e3f5f5faf95931e18803b76fe63d6a3ac2e342e"
+  }
+}

@@ -1,0 +1,81 @@
+{
+  "id": "V-R036-twelve-and-thirteen-one-take",
+  "version": "1.0.0",
+  "title": "winning tricks twelve and thirteen is one take",
+  "rules": [
+    "RGE3"
+  ],
+  "setup": {
+    "hands": [
+      [
+        "AH"
+      ],
+      [
+        "2H"
+      ],
+      [
+        "3H"
+      ],
+      [
+        "4H"
+      ]
+    ],
+    "trump": "S",
+    "dealer": 3,
+    "trickIndex": 12,
+    "counts": [
+      5,
+      5
+    ],
+    "pile": 2,
+    "lastWinner": 0,
+    "run": 1
+  },
+  "moves": [
+    {
+      "seat": 0,
+      "move": {
+        "type": "play_card",
+        "card": "AH"
+      }
+    },
+    {
+      "seat": 1,
+      "move": {
+        "type": "play_card",
+        "card": "2H"
+      }
+    },
+    {
+      "seat": 2,
+      "move": {
+        "type": "play_card",
+        "card": "3H"
+      }
+    },
+    {
+      "seat": 3,
+      "move": {
+        "type": "play_card",
+        "card": "4H"
+      }
+    }
+  ],
+  "assert": {
+    "counts": [
+      8,
+      5
+    ],
+    "outcome": {
+      "team": 0,
+      "kind": "win"
+    },
+    "lastEvents": [
+      "card_played",
+      "trick_won",
+      "pile_taken",
+      "round_ended"
+    ],
+    "stateHash": "75680a802b9f334174996791a4fe7ea351665be4489b1a580b2b476b58aff9d0"
+  }
+}

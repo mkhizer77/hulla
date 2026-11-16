@@ -1,0 +1,112 @@
+{
+  "id": "V-R050-single-sar-seven",
+  "version": "1.0.0",
+  "title": "seven tricks against three win the deal at once",
+  "rules": [
+    "RG24",
+    "RG25",
+    "RG30",
+    "RG32",
+    "RG36"
+  ],
+  "setup": {
+    "hands": [
+      [
+        "AH",
+        "2C",
+        "2D"
+      ],
+      [
+        "2H",
+        "AC",
+        "AD"
+      ],
+      [
+        "3H",
+        "3C",
+        "3D"
+      ],
+      [
+        "4H",
+        "4C",
+        "4D"
+      ]
+    ],
+    "trump": "S",
+    "dealer": 3,
+    "rules": {
+      "collect": "single"
+    },
+    "trickIndex": 9,
+    "counts": [
+      6,
+      3
+    ]
+  },
+  "moves": [
+    {
+      "seat": 0,
+      "move": {
+        "type": "play_card",
+        "card": "AH"
+      }
+    },
+    {
+      "seat": 1,
+      "move": {
+        "type": "play_card",
+        "card": "2H"
+      }
+    },
+    {
+      "seat": 2,
+      "move": {
+        "type": "play_card",
+        "card": "3H"
+      }
+    },
+    {
+      "seat": 3,
+      "move": {
+        "type": "play_card",
+        "card": "4H"
+      }
+    },
+    {
+      "seat": 0,
+      "move": {
+        "type": "play_card",
+        "card": "2C"
+      },
+      "expect": {
+        "error": "rules.round_over"
+      }
+    }
+  ],
+  "assert": {
+    "phase": "ended",
+    "turnSeat": null,
+    "counts": [
+      7,
+      3
+    ],
+    "outcome": {
+      "team": 0,
+      "kind": "win"
+    },
+    "results": {
+      "winnerTeam": 0,
+      "kind": "win",
+      "byCaller": true,
+      "dealPoints": 1,
+      "points": [
+        1,
+        0,
+        1,
+        0
+      ]
+    },
+    "nextDealer": 3,
+    "stateHash": "4af7aae1e0fcd00bdb1c5b14ad8a0635b9f3452b23b900f2ce2e3c080a520c51"
+  }
+}

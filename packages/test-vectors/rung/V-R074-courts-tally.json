@@ -1,0 +1,51 @@
+{
+  "id": "V-R074-courts-tally",
+  "version": "1.0.0",
+  "title": "a court counts one and a goon court three",
+  "rules": [
+    "RG33"
+  ],
+  "bazi": {
+    "firstDealer": 3,
+    "deals": [
+      {
+        "team": 0,
+        "kind": "court"
+      },
+      {
+        "team": 1,
+        "kind": "court"
+      },
+      {
+        "team": 0,
+        "kind": "win"
+      }
+    ],
+    "overrides": {
+      "scoring": "courts"
+    }
+  },
+  "moves": [],
+  "assert": {
+    "series": {
+      "courts": [
+        1,
+        3
+      ],
+      "points": [
+        1,
+        3,
+        1,
+        3
+      ],
+      "teamPoints": [
+        0,
+        0
+      ],
+      "finished": false,
+      "streakTeam": 0,
+      "streakDeals": 1
+    },
+    "seriesHash": "df6e7f3cf77ca1dbbffd05e79d2862acd8a68a61b98045e9d86a89a1ca232568"
+  }
+}

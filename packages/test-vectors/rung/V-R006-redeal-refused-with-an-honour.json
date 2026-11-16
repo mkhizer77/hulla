@@ -1,0 +1,77 @@
+{
+  "id": "V-R006-redeal-refused-with-an-honour",
+  "version": "1.0.0",
+  "title": "a jack among the five rules a redeal out",
+  "rules": [
+    "RG7"
+  ],
+  "setup": {
+    "hands": [
+      [
+        "2S",
+        "5S",
+        "7H",
+        "9C",
+        "JD"
+      ],
+      [
+        "AS",
+        "KS",
+        "QS",
+        "JS",
+        "TS"
+      ],
+      [
+        "AH",
+        "KH",
+        "QH",
+        "JH",
+        "TH"
+      ],
+      [
+        "AC",
+        "KC",
+        "QC",
+        "JC",
+        "TC"
+      ]
+    ],
+    "trump": null,
+    "dealer": 3
+  },
+  "moves": [
+    {
+      "seat": 0,
+      "move": {
+        "type": "redeal"
+      },
+      "expect": {
+        "error": "rules.illegal_move"
+      }
+    }
+  ],
+  "assert": {
+    "redeals": 0,
+    "legal": {
+      "0": [
+        {
+          "type": "call_trump",
+          "suit": "S"
+        },
+        {
+          "type": "call_trump",
+          "suit": "H"
+        },
+        {
+          "type": "call_trump",
+          "suit": "C"
+        },
+        {
+          "type": "call_trump",
+          "suit": "D"
+        }
+      ]
+    },
+    "stateHash": "e302419e3f7207379ed1d078ab96839eaf9712d8a3106935d3d35aaacb9c4fdc"
+  }
+}

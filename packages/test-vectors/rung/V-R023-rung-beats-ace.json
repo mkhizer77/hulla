@@ -1,0 +1,81 @@
+{
+  "id": "V-R023-rung-beats-ace",
+  "version": "1.0.0",
+  "title": "the highest rung wins over the ace of the led suit",
+  "rules": [
+    "RG12"
+  ],
+  "setup": {
+    "hands": [
+      [
+        "AH",
+        "2C"
+      ],
+      [
+        "2S",
+        "3C"
+      ],
+      [
+        "KH",
+        "4C"
+      ],
+      [
+        "5S",
+        "5C"
+      ]
+    ],
+    "trump": "S",
+    "dealer": 3,
+    "rules": {
+      "collect": "single"
+    }
+  },
+  "moves": [
+    {
+      "seat": 0,
+      "move": {
+        "type": "play_card",
+        "card": "AH"
+      }
+    },
+    {
+      "seat": 1,
+      "move": {
+        "type": "play_card",
+        "card": "2S"
+      }
+    },
+    {
+      "seat": 2,
+      "move": {
+        "type": "play_card",
+        "card": "KH"
+      }
+    },
+    {
+      "seat": 3,
+      "move": {
+        "type": "play_card",
+        "card": "5S"
+      }
+    }
+  ],
+  "assert": {
+    "counts": [
+      0,
+      1
+    ],
+    "turnSeat": 3,
+    "stats": {
+      "1": {
+        "cuts": 1,
+        "tricksWon": 0
+      },
+      "3": {
+        "cuts": 1,
+        "tricksWon": 1
+      }
+    },
+    "stateHash": "c2fb4f0f37e8bdded564622219063d7e91128cd874302b76cc9ab74aa9d19622"
+  }
+}

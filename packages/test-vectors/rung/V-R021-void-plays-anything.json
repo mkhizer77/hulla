@@ -1,0 +1,52 @@
+{
+  "id": "V-R021-void-plays-anything",
+  "version": "1.0.0",
+  "title": "a void player may play any card, a rung included",
+  "rules": [
+    "RG11"
+  ],
+  "setup": {
+    "hands": [
+      [],
+      [
+        "5C",
+        "AS",
+        "3D"
+      ],
+      [
+        "6H"
+      ],
+      [
+        "7H"
+      ]
+    ],
+    "trump": "S",
+    "dealer": 3,
+    "plays": [
+      {
+        "seat": 0,
+        "card": "2H"
+      }
+    ]
+  },
+  "moves": [],
+  "assert": {
+    "legal": {
+      "1": [
+        {
+          "type": "play_card",
+          "card": "AS"
+        },
+        {
+          "type": "play_card",
+          "card": "5C"
+        },
+        {
+          "type": "play_card",
+          "card": "3D"
+        }
+      ]
+    },
+    "stateHash": "ca52060674981a949d0aa7046590791933e259fc91ae5f7bd7da1ba3297668fe"
+  }
+}

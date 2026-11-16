@@ -20,13 +20,17 @@ import {
 } from "./state";
 
 /**
- * A deal already in the play phase, written out in full: the shape the shared vectors and the
- * tests build positions from. Anything left out is the start of a deal.
+ * A deal written out in full: the shape the shared vectors and the tests build positions from.
+ * With a rung it is in the play phase; with `trump: null` the caller has yet to name it.
+ * Anything left out is the start of a deal.
  */
 export interface RungSetup {
   readonly rules?: Partial<RungRules>;
   readonly hands: readonly (readonly Card[])[];
-  readonly trump: Suit;
+  readonly trump: Suit | null;
+  /** The cards nobody holds yet, for a position before the call. */
+  readonly stock?: readonly Card[];
+  readonly redeals?: number;
   readonly dealer?: SeatIndex;
   /** The seat that led the open trick; defaults to the caller. */
   readonly leader?: SeatIndex;
@@ -55,7 +59,8 @@ export function rungStateFromSetup(setup: RungSetup): Result<RungState, RuleErro
     return err(ruleError(ErrorCodes.rules.invalidSeatCount, { seatCount: setup.hands.length }));
   }
   const plays = setup.plays ?? [];
-  const cards = [...setup.hands.flat(), ...plays.map((play) => play.card)];
+  const stock = setup.stock ?? [];
+  const cards = [...setup.hands.flat(), ...plays.map((play) => play.card), ...stock];
   if (!cards.every(isCard) || new Set(cards).size !== cards.length) {
     return invalid("invalid_cards");
   }
@@ -68,18 +73,22 @@ export function rungStateFromSetup(setup: RungSetup): Result<RungState, RuleErro
   if (plays.length >= RUNG_SEAT_COUNT) {
     return invalid("trick_already_complete");
   }
+  const calling = setup.trump === null;
+  if (calling && plays.length > 0) {
+    return invalid("plays_before_the_call");
+  }
   return ok({
     rulesVersion: RUNG_RULES_VERSION,
     rules: rules.value,
     seatCount: RUNG_SEAT_COUNT,
     dealerSeat,
     callerSeat,
-    phase: "play",
-    turnSeat: (leaderSeat + plays.length) % RUNG_SEAT_COUNT,
+    phase: calling ? "call" : "play",
+    turnSeat: calling ? callerSeat : (leaderSeat + plays.length) % RUNG_SEAT_COUNT,
     hands: setup.hands.map(sortCards),
-    stock: [],
+    stock,
     trump: setup.trump,
-    redeals: 0,
+    redeals: setup.redeals ?? 0,
     trickIndex: setup.trickIndex ?? 0,
     trick: { leaderSeat, plays },
     lastWinner: setup.lastWinner ?? null,
