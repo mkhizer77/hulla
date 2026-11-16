@@ -56,7 +56,13 @@ namespace Hulla.Games.Rung
         public static string ScoreTitle => Strings.Text("rung.score_title");
         public static string ScoreLine => Strings.Text("rung.score_line");
 
-        public static string SuitName(char suit) => Strings.Text("rung.suit_" + suit);
+        public static string SuitName(char suit) => suit switch
+        {
+            'H' => Strings.Text("rung.suit_H"),
+            'C' => Strings.Text("rung.suit_C"),
+            'D' => Strings.Text("rung.suit_D"),
+            _ => Strings.Text("rung.suit_S"),
+        };
 
         public static string PlayRung => Strings.Text("rung.play_rung");
     }
