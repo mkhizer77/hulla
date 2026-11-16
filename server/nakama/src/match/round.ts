@@ -100,7 +100,8 @@ export function startRound<S, M, V, E, R>(
   const rules = deps.host.resolveRules(state.rules, state.mode);
   if (!rules.ok) return rules;
   const seatCount = activeSeats(state.seats).length;
-  if (state.series?.points.length !== seatCount) {
+  // A new score for a new set of seats, and after a series a game called finished.
+  if (state.series?.points.length !== seatCount || state.series.finished) {
     state.series = emptySeries(seatCount, state.hostSeat ?? 0);
   }
   const seed = roundSeed(uuids);

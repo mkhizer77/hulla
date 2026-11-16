@@ -128,6 +128,8 @@ export function tableStateFor<S, M, V, E, R>(
       deadlineTs: ask.deadlineTs,
     };
   }
+  const queued = state.queuedGame ?? null;
+  if (queued !== null) base.queuedGame = { gameId: queued.gameId, rules: queued.rules };
   const starting = state.autoStart?.startsAtTs ?? null;
   const withStart = starting === null ? base : { ...base, autoStart: { startsAtTs: starting } };
   if (state.phase !== "roundEnded" || state.rematchDeadlineTs === null) return withStart;

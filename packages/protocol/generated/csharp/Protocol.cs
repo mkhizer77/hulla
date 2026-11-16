@@ -36,6 +36,9 @@ namespace Hulla.Protocol
         [JsonProperty("cancelTakePayload", Required = Required.DisallowNull, NullValueHandling = NullValueHandling.Ignore)]
         public CancelTake? CancelTakePayload { get; set; }
 
+        [JsonProperty("changeGamePayload", Required = Required.DisallowNull, NullValueHandling = NullValueHandling.Ignore)]
+        public ChangeGame? ChangeGamePayload { get; set; }
+
         [JsonProperty("chatPayload", Required = Required.DisallowNull, NullValueHandling = NullValueHandling.Ignore)]
         public Chat? ChatPayload { get; set; }
 
@@ -62,6 +65,9 @@ namespace Hulla.Protocol
 
         [JsonProperty("escapePayload", Required = Required.DisallowNull, NullValueHandling = NullValueHandling.Ignore)]
         public Escape? EscapePayload { get; set; }
+
+        [JsonProperty("gameChangedPayload", Required = Required.DisallowNull, NullValueHandling = NullValueHandling.Ignore)]
+        public GameChanged? GameChangedPayload { get; set; }
 
         [JsonProperty("handAnsweredPayload", Required = Required.DisallowNull, NullValueHandling = NullValueHandling.Ignore)]
         public HandAnswered? HandAnsweredPayload { get; set; }
@@ -251,6 +257,73 @@ namespace Hulla.Protocol
         public string RoundId { get; set; }
     }
 
+    /// <summary>
+    /// The host switches the room to another game between rounds; sent during a round it is
+    /// queued for the round's end. Naming the game already played clears a queued switch.
+    /// </summary>
+    public partial class ChangeGame
+    {
+        [JsonProperty("gameId", Required = Required.Always)]
+        public GameId GameId { get; set; }
+
+        /// <summary>
+        /// Absent: the rules this room last used for that game, else its defaults
+        /// </summary>
+        [JsonProperty("rules", Required = Required.DisallowNull, NullValueHandling = NullValueHandling.Ignore)]
+        public RulesSelection? Rules { get; set; }
+    }
+
+    /// <summary>
+    /// Absent: the rules this room last used for that game, else its defaults
+    /// </summary>
+    public partial class RulesSelection
+    {
+        [JsonProperty("gameId", Required = Required.Always)]
+        public GameId GameId { get; set; }
+
+        /// <summary>
+        /// Validated against the game's rules schema
+        /// </summary>
+        [JsonProperty("overrides", Required = Required.DisallowNull, NullValueHandling = NullValueHandling.Ignore)]
+        public Dictionary<string, object>? Overrides { get; set; }
+
+        [JsonProperty("preset", Required = Required.DisallowNull, NullValueHandling = NullValueHandling.Ignore)]
+        public Preset? Preset { get; set; }
+
+        /// <summary>
+        /// Table settings that are not engine rules (GDD 6.13)
+        /// </summary>
+        [JsonProperty("settings", Required = Required.DisallowNull, NullValueHandling = NullValueHandling.Ignore)]
+        public Settings? Settings { get; set; }
+    }
+
+    /// <summary>
+    /// Table settings that are not engine rules (GDD 6.13)
+    /// </summary>
+    public partial class Settings
+    {
+        [JsonProperty("cardMemoryAssist", Required = Required.DisallowNull, NullValueHandling = NullValueHandling.Ignore)]
+        public bool? CardMemoryAssist { get; set; }
+
+        [JsonProperty("direction", Required = Required.DisallowNull, NullValueHandling = NullValueHandling.Ignore)]
+        public Direction? Direction { get; set; }
+
+        [JsonProperty("loserTitle", Required = Required.DisallowNull, NullValueHandling = NullValueHandling.Ignore)]
+        public LoserTitle? LoserTitle { get; set; }
+
+        [JsonProperty("showCardCounts", Required = Required.DisallowNull, NullValueHandling = NullValueHandling.Ignore)]
+        public bool? ShowCardCounts { get; set; }
+
+        [JsonProperty("spectators", Required = Required.DisallowNull, NullValueHandling = NullValueHandling.Ignore)]
+        public bool? Spectators { get; set; }
+
+        [JsonProperty("turnTimerSeconds")]
+        public long? TurnTimerSeconds { get; set; }
+
+        [JsonProperty("voiceDefault", Required = Required.DisallowNull, NullValueHandling = NullValueHandling.Ignore)]
+        public VoiceDefault? VoiceDefault { get; set; }
+    }
+
     public partial class Chat
     {
         [JsonProperty("filtered", Required = Required.DisallowNull, NullValueHandling = NullValueHandling.Ignore)]
@@ -369,6 +442,21 @@ namespace Hulla.Protocol
 
         [JsonProperty("seat", Required = Required.Always)]
         public long Seat { get; set; }
+    }
+
+    /// <summary>
+    /// The room now plays another game; a table_state follows for everyone
+    /// </summary>
+    public partial class GameChanged
+    {
+        [JsonProperty("changedBy", Required = Required.Always)]
+        public long ChangedBy { get; set; }
+
+        [JsonProperty("gameId", Required = Required.Always)]
+        public GameId GameId { get; set; }
+
+        [JsonProperty("rules", Required = Required.Always)]
+        public RulesSelection Rules { get; set; }
     }
 
     /// <summary>
@@ -1040,54 +1128,6 @@ namespace Hulla.Protocol
         public RulesSelection Rules { get; set; }
     }
 
-    public partial class RulesSelection
-    {
-        [JsonProperty("gameId", Required = Required.Always)]
-        public GameId GameId { get; set; }
-
-        /// <summary>
-        /// Validated against the game's rules schema
-        /// </summary>
-        [JsonProperty("overrides", Required = Required.DisallowNull, NullValueHandling = NullValueHandling.Ignore)]
-        public Dictionary<string, object>? Overrides { get; set; }
-
-        [JsonProperty("preset", Required = Required.DisallowNull, NullValueHandling = NullValueHandling.Ignore)]
-        public Preset? Preset { get; set; }
-
-        /// <summary>
-        /// Table settings that are not engine rules (GDD 6.13)
-        /// </summary>
-        [JsonProperty("settings", Required = Required.DisallowNull, NullValueHandling = NullValueHandling.Ignore)]
-        public Settings? Settings { get; set; }
-    }
-
-    /// <summary>
-    /// Table settings that are not engine rules (GDD 6.13)
-    /// </summary>
-    public partial class Settings
-    {
-        [JsonProperty("cardMemoryAssist", Required = Required.DisallowNull, NullValueHandling = NullValueHandling.Ignore)]
-        public bool? CardMemoryAssist { get; set; }
-
-        [JsonProperty("direction", Required = Required.DisallowNull, NullValueHandling = NullValueHandling.Ignore)]
-        public Direction? Direction { get; set; }
-
-        [JsonProperty("loserTitle", Required = Required.DisallowNull, NullValueHandling = NullValueHandling.Ignore)]
-        public LoserTitle? LoserTitle { get; set; }
-
-        [JsonProperty("showCardCounts", Required = Required.DisallowNull, NullValueHandling = NullValueHandling.Ignore)]
-        public bool? ShowCardCounts { get; set; }
-
-        [JsonProperty("spectators", Required = Required.DisallowNull, NullValueHandling = NullValueHandling.Ignore)]
-        public bool? Spectators { get; set; }
-
-        [JsonProperty("turnTimerSeconds")]
-        public long? TurnTimerSeconds { get; set; }
-
-        [JsonProperty("voiceDefault", Required = Required.DisallowNull, NullValueHandling = NullValueHandling.Ignore)]
-        public VoiceDefault? VoiceDefault { get; set; }
-    }
-
     /// <summary>
     /// Host only: seats a spectator now, or for the next round while one is in progress (GDD
     /// 9.10)
@@ -1158,6 +1198,12 @@ namespace Hulla.Protocol
         [JsonProperty("mode", Required = Required.Always)]
         public TableMode Mode { get; set; }
 
+        /// <summary>
+        /// The game the host chose for after this round
+        /// </summary>
+        [JsonProperty("queuedGame", Required = Required.DisallowNull, NullValueHandling = NullValueHandling.Ignore)]
+        public QueuedGame? QueuedGame { get; set; }
+
         [JsonProperty("rematch", Required = Required.DisallowNull, NullValueHandling = NullValueHandling.Ignore)]
         public Rematch? Rematch { get; set; }
 
@@ -1211,6 +1257,18 @@ namespace Hulla.Protocol
 
         [JsonProperty("target", Required = Required.Always)]
         public long Target { get; set; }
+    }
+
+    /// <summary>
+    /// The game the host chose for after this round
+    /// </summary>
+    public partial class QueuedGame
+    {
+        [JsonProperty("gameId", Required = Required.Always)]
+        public GameId GameId { get; set; }
+
+        [JsonProperty("rules", Required = Required.Always)]
+        public RulesSelection Rules { get; set; }
     }
 
     public partial class Rematch
@@ -1592,6 +1650,16 @@ namespace Hulla.Protocol
 
     public enum Tier { Learner, Regular, Ustad };
 
+    public enum GameId { Rung, Thulla };
+
+    public enum Preset { ClassicPagat, Family, Hardcore, Relaxed, Standard };
+
+    public enum Direction { Ccw, Cw };
+
+    public enum LoserTitle { Bhabhi, Donkey, Thullad };
+
+    public enum VoiceDefault { Off, OpenMic, PushToTalk };
+
     public enum HandAnsweredPayloadReason { Accepted, Declined, Lead, Left, Timeout };
 
     public enum HostChangedPayloadReason { HostLeft, Transfer };
@@ -1618,16 +1686,6 @@ namespace Hulla.Protocol
     public enum PushRoute { Friends, Home, Lobby, Pass };
 
     public enum PushType { DailyReward, FriendOnline, FriendRequest, SeasonEnd, TableInvite };
-
-    public enum GameId { Rung, Thulla };
-
-    public enum Preset { ClassicPagat, Family, Hardcore, Relaxed, Standard };
-
-    public enum Direction { Ccw, Cw };
-
-    public enum LoserTitle { Bhabhi, Donkey, Thullad };
-
-    public enum VoiceDefault { Off, OpenMic, PushToTalk };
 
     public enum TableMode { Private, Public, Ranked };
 
@@ -1679,6 +1737,11 @@ namespace Hulla.Protocol
             Converters =
             {
                 TierConverter.Singleton,
+                GameIdConverter.Singleton,
+                PresetConverter.Singleton,
+                DirectionConverter.Singleton,
+                LoserTitleConverter.Singleton,
+                VoiceDefaultConverter.Singleton,
                 ErrorDetailConverter.Singleton,
                 HandAnsweredPayloadReasonConverter.Singleton,
                 HostChangedPayloadReasonConverter.Singleton,
@@ -1689,11 +1752,6 @@ namespace Hulla.Protocol
                 VisibilityConverter.Singleton,
                 PushRouteConverter.Singleton,
                 PushTypeConverter.Singleton,
-                GameIdConverter.Singleton,
-                PresetConverter.Singleton,
-                DirectionConverter.Singleton,
-                LoserTitleConverter.Singleton,
-                VoiceDefaultConverter.Singleton,
                 TableModeConverter.Singleton,
                 PhaseConverter.Singleton,
                 EmptyHandLeaderConverter.Singleton,
@@ -1753,6 +1811,236 @@ namespace Hulla.Protocol
         }
 
         public static readonly TierConverter Singleton = new TierConverter();
+    }
+
+    internal class GameIdConverter : JsonConverter
+    {
+        public override bool CanConvert(Type t) => t == typeof(GameId) || t == typeof(GameId?);
+
+        public override object ReadJson(JsonReader reader, Type t, object existingValue, JsonSerializer serializer)
+        {
+            if (reader.TokenType == JsonToken.Null) return null;
+            var value = serializer.Deserialize<string>(reader);
+            switch (value)
+            {
+                case "rung":
+                    return GameId.Rung;
+                case "thulla":
+                    return GameId.Thulla;
+            }
+            throw new Exception("Cannot unmarshal type GameId");
+        }
+
+        public override void WriteJson(JsonWriter writer, object untypedValue, JsonSerializer serializer)
+        {
+            if (untypedValue == null)
+            {
+                serializer.Serialize(writer, null);
+                return;
+            }
+            var value = (GameId)untypedValue;
+            switch (value)
+            {
+                case GameId.Rung:
+                    serializer.Serialize(writer, "rung");
+                    return;
+                case GameId.Thulla:
+                    serializer.Serialize(writer, "thulla");
+                    return;
+            }
+            throw new Exception("Cannot marshal type GameId");
+        }
+
+        public static readonly GameIdConverter Singleton = new GameIdConverter();
+    }
+
+    internal class PresetConverter : JsonConverter
+    {
+        public override bool CanConvert(Type t) => t == typeof(Preset) || t == typeof(Preset?);
+
+        public override object ReadJson(JsonReader reader, Type t, object existingValue, JsonSerializer serializer)
+        {
+            if (reader.TokenType == JsonToken.Null) return null;
+            var value = serializer.Deserialize<string>(reader);
+            switch (value)
+            {
+                case "classicPagat":
+                    return Preset.ClassicPagat;
+                case "family":
+                    return Preset.Family;
+                case "hardcore":
+                    return Preset.Hardcore;
+                case "relaxed":
+                    return Preset.Relaxed;
+                case "standard":
+                    return Preset.Standard;
+            }
+            throw new Exception("Cannot unmarshal type Preset");
+        }
+
+        public override void WriteJson(JsonWriter writer, object untypedValue, JsonSerializer serializer)
+        {
+            if (untypedValue == null)
+            {
+                serializer.Serialize(writer, null);
+                return;
+            }
+            var value = (Preset)untypedValue;
+            switch (value)
+            {
+                case Preset.ClassicPagat:
+                    serializer.Serialize(writer, "classicPagat");
+                    return;
+                case Preset.Family:
+                    serializer.Serialize(writer, "family");
+                    return;
+                case Preset.Hardcore:
+                    serializer.Serialize(writer, "hardcore");
+                    return;
+                case Preset.Relaxed:
+                    serializer.Serialize(writer, "relaxed");
+                    return;
+                case Preset.Standard:
+                    serializer.Serialize(writer, "standard");
+                    return;
+            }
+            throw new Exception("Cannot marshal type Preset");
+        }
+
+        public static readonly PresetConverter Singleton = new PresetConverter();
+    }
+
+    internal class DirectionConverter : JsonConverter
+    {
+        public override bool CanConvert(Type t) => t == typeof(Direction) || t == typeof(Direction?);
+
+        public override object ReadJson(JsonReader reader, Type t, object existingValue, JsonSerializer serializer)
+        {
+            if (reader.TokenType == JsonToken.Null) return null;
+            var value = serializer.Deserialize<string>(reader);
+            switch (value)
+            {
+                case "ccw":
+                    return Direction.Ccw;
+                case "cw":
+                    return Direction.Cw;
+            }
+            throw new Exception("Cannot unmarshal type Direction");
+        }
+
+        public override void WriteJson(JsonWriter writer, object untypedValue, JsonSerializer serializer)
+        {
+            if (untypedValue == null)
+            {
+                serializer.Serialize(writer, null);
+                return;
+            }
+            var value = (Direction)untypedValue;
+            switch (value)
+            {
+                case Direction.Ccw:
+                    serializer.Serialize(writer, "ccw");
+                    return;
+                case Direction.Cw:
+                    serializer.Serialize(writer, "cw");
+                    return;
+            }
+            throw new Exception("Cannot marshal type Direction");
+        }
+
+        public static readonly DirectionConverter Singleton = new DirectionConverter();
+    }
+
+    internal class LoserTitleConverter : JsonConverter
+    {
+        public override bool CanConvert(Type t) => t == typeof(LoserTitle) || t == typeof(LoserTitle?);
+
+        public override object ReadJson(JsonReader reader, Type t, object existingValue, JsonSerializer serializer)
+        {
+            if (reader.TokenType == JsonToken.Null) return null;
+            var value = serializer.Deserialize<string>(reader);
+            switch (value)
+            {
+                case "bhabhi":
+                    return LoserTitle.Bhabhi;
+                case "donkey":
+                    return LoserTitle.Donkey;
+                case "thullad":
+                    return LoserTitle.Thullad;
+            }
+            throw new Exception("Cannot unmarshal type LoserTitle");
+        }
+
+        public override void WriteJson(JsonWriter writer, object untypedValue, JsonSerializer serializer)
+        {
+            if (untypedValue == null)
+            {
+                serializer.Serialize(writer, null);
+                return;
+            }
+            var value = (LoserTitle)untypedValue;
+            switch (value)
+            {
+                case LoserTitle.Bhabhi:
+                    serializer.Serialize(writer, "bhabhi");
+                    return;
+                case LoserTitle.Donkey:
+                    serializer.Serialize(writer, "donkey");
+                    return;
+                case LoserTitle.Thullad:
+                    serializer.Serialize(writer, "thullad");
+                    return;
+            }
+            throw new Exception("Cannot marshal type LoserTitle");
+        }
+
+        public static readonly LoserTitleConverter Singleton = new LoserTitleConverter();
+    }
+
+    internal class VoiceDefaultConverter : JsonConverter
+    {
+        public override bool CanConvert(Type t) => t == typeof(VoiceDefault) || t == typeof(VoiceDefault?);
+
+        public override object ReadJson(JsonReader reader, Type t, object existingValue, JsonSerializer serializer)
+        {
+            if (reader.TokenType == JsonToken.Null) return null;
+            var value = serializer.Deserialize<string>(reader);
+            switch (value)
+            {
+                case "off":
+                    return VoiceDefault.Off;
+                case "openMic":
+                    return VoiceDefault.OpenMic;
+                case "pushToTalk":
+                    return VoiceDefault.PushToTalk;
+            }
+            throw new Exception("Cannot unmarshal type VoiceDefault");
+        }
+
+        public override void WriteJson(JsonWriter writer, object untypedValue, JsonSerializer serializer)
+        {
+            if (untypedValue == null)
+            {
+                serializer.Serialize(writer, null);
+                return;
+            }
+            var value = (VoiceDefault)untypedValue;
+            switch (value)
+            {
+                case VoiceDefault.Off:
+                    serializer.Serialize(writer, "off");
+                    return;
+                case VoiceDefault.OpenMic:
+                    serializer.Serialize(writer, "openMic");
+                    return;
+                case VoiceDefault.PushToTalk:
+                    serializer.Serialize(writer, "pushToTalk");
+                    return;
+            }
+            throw new Exception("Cannot marshal type VoiceDefault");
+        }
+
+        public static readonly VoiceDefaultConverter Singleton = new VoiceDefaultConverter();
     }
 
     internal class PurpleMinMaxLengthCheckConverter : JsonConverter
@@ -2440,236 +2728,6 @@ namespace Hulla.Protocol
         }
 
         public static readonly PushTypeConverter Singleton = new PushTypeConverter();
-    }
-
-    internal class GameIdConverter : JsonConverter
-    {
-        public override bool CanConvert(Type t) => t == typeof(GameId) || t == typeof(GameId?);
-
-        public override object ReadJson(JsonReader reader, Type t, object existingValue, JsonSerializer serializer)
-        {
-            if (reader.TokenType == JsonToken.Null) return null;
-            var value = serializer.Deserialize<string>(reader);
-            switch (value)
-            {
-                case "rung":
-                    return GameId.Rung;
-                case "thulla":
-                    return GameId.Thulla;
-            }
-            throw new Exception("Cannot unmarshal type GameId");
-        }
-
-        public override void WriteJson(JsonWriter writer, object untypedValue, JsonSerializer serializer)
-        {
-            if (untypedValue == null)
-            {
-                serializer.Serialize(writer, null);
-                return;
-            }
-            var value = (GameId)untypedValue;
-            switch (value)
-            {
-                case GameId.Rung:
-                    serializer.Serialize(writer, "rung");
-                    return;
-                case GameId.Thulla:
-                    serializer.Serialize(writer, "thulla");
-                    return;
-            }
-            throw new Exception("Cannot marshal type GameId");
-        }
-
-        public static readonly GameIdConverter Singleton = new GameIdConverter();
-    }
-
-    internal class PresetConverter : JsonConverter
-    {
-        public override bool CanConvert(Type t) => t == typeof(Preset) || t == typeof(Preset?);
-
-        public override object ReadJson(JsonReader reader, Type t, object existingValue, JsonSerializer serializer)
-        {
-            if (reader.TokenType == JsonToken.Null) return null;
-            var value = serializer.Deserialize<string>(reader);
-            switch (value)
-            {
-                case "classicPagat":
-                    return Preset.ClassicPagat;
-                case "family":
-                    return Preset.Family;
-                case "hardcore":
-                    return Preset.Hardcore;
-                case "relaxed":
-                    return Preset.Relaxed;
-                case "standard":
-                    return Preset.Standard;
-            }
-            throw new Exception("Cannot unmarshal type Preset");
-        }
-
-        public override void WriteJson(JsonWriter writer, object untypedValue, JsonSerializer serializer)
-        {
-            if (untypedValue == null)
-            {
-                serializer.Serialize(writer, null);
-                return;
-            }
-            var value = (Preset)untypedValue;
-            switch (value)
-            {
-                case Preset.ClassicPagat:
-                    serializer.Serialize(writer, "classicPagat");
-                    return;
-                case Preset.Family:
-                    serializer.Serialize(writer, "family");
-                    return;
-                case Preset.Hardcore:
-                    serializer.Serialize(writer, "hardcore");
-                    return;
-                case Preset.Relaxed:
-                    serializer.Serialize(writer, "relaxed");
-                    return;
-                case Preset.Standard:
-                    serializer.Serialize(writer, "standard");
-                    return;
-            }
-            throw new Exception("Cannot marshal type Preset");
-        }
-
-        public static readonly PresetConverter Singleton = new PresetConverter();
-    }
-
-    internal class DirectionConverter : JsonConverter
-    {
-        public override bool CanConvert(Type t) => t == typeof(Direction) || t == typeof(Direction?);
-
-        public override object ReadJson(JsonReader reader, Type t, object existingValue, JsonSerializer serializer)
-        {
-            if (reader.TokenType == JsonToken.Null) return null;
-            var value = serializer.Deserialize<string>(reader);
-            switch (value)
-            {
-                case "ccw":
-                    return Direction.Ccw;
-                case "cw":
-                    return Direction.Cw;
-            }
-            throw new Exception("Cannot unmarshal type Direction");
-        }
-
-        public override void WriteJson(JsonWriter writer, object untypedValue, JsonSerializer serializer)
-        {
-            if (untypedValue == null)
-            {
-                serializer.Serialize(writer, null);
-                return;
-            }
-            var value = (Direction)untypedValue;
-            switch (value)
-            {
-                case Direction.Ccw:
-                    serializer.Serialize(writer, "ccw");
-                    return;
-                case Direction.Cw:
-                    serializer.Serialize(writer, "cw");
-                    return;
-            }
-            throw new Exception("Cannot marshal type Direction");
-        }
-
-        public static readonly DirectionConverter Singleton = new DirectionConverter();
-    }
-
-    internal class LoserTitleConverter : JsonConverter
-    {
-        public override bool CanConvert(Type t) => t == typeof(LoserTitle) || t == typeof(LoserTitle?);
-
-        public override object ReadJson(JsonReader reader, Type t, object existingValue, JsonSerializer serializer)
-        {
-            if (reader.TokenType == JsonToken.Null) return null;
-            var value = serializer.Deserialize<string>(reader);
-            switch (value)
-            {
-                case "bhabhi":
-                    return LoserTitle.Bhabhi;
-                case "donkey":
-                    return LoserTitle.Donkey;
-                case "thullad":
-                    return LoserTitle.Thullad;
-            }
-            throw new Exception("Cannot unmarshal type LoserTitle");
-        }
-
-        public override void WriteJson(JsonWriter writer, object untypedValue, JsonSerializer serializer)
-        {
-            if (untypedValue == null)
-            {
-                serializer.Serialize(writer, null);
-                return;
-            }
-            var value = (LoserTitle)untypedValue;
-            switch (value)
-            {
-                case LoserTitle.Bhabhi:
-                    serializer.Serialize(writer, "bhabhi");
-                    return;
-                case LoserTitle.Donkey:
-                    serializer.Serialize(writer, "donkey");
-                    return;
-                case LoserTitle.Thullad:
-                    serializer.Serialize(writer, "thullad");
-                    return;
-            }
-            throw new Exception("Cannot marshal type LoserTitle");
-        }
-
-        public static readonly LoserTitleConverter Singleton = new LoserTitleConverter();
-    }
-
-    internal class VoiceDefaultConverter : JsonConverter
-    {
-        public override bool CanConvert(Type t) => t == typeof(VoiceDefault) || t == typeof(VoiceDefault?);
-
-        public override object ReadJson(JsonReader reader, Type t, object existingValue, JsonSerializer serializer)
-        {
-            if (reader.TokenType == JsonToken.Null) return null;
-            var value = serializer.Deserialize<string>(reader);
-            switch (value)
-            {
-                case "off":
-                    return VoiceDefault.Off;
-                case "openMic":
-                    return VoiceDefault.OpenMic;
-                case "pushToTalk":
-                    return VoiceDefault.PushToTalk;
-            }
-            throw new Exception("Cannot unmarshal type VoiceDefault");
-        }
-
-        public override void WriteJson(JsonWriter writer, object untypedValue, JsonSerializer serializer)
-        {
-            if (untypedValue == null)
-            {
-                serializer.Serialize(writer, null);
-                return;
-            }
-            var value = (VoiceDefault)untypedValue;
-            switch (value)
-            {
-                case VoiceDefault.Off:
-                    serializer.Serialize(writer, "off");
-                    return;
-                case VoiceDefault.OpenMic:
-                    serializer.Serialize(writer, "openMic");
-                    return;
-                case VoiceDefault.PushToTalk:
-                    serializer.Serialize(writer, "pushToTalk");
-                    return;
-            }
-            throw new Exception("Cannot marshal type VoiceDefault");
-        }
-
-        public static readonly VoiceDefaultConverter Singleton = new VoiceDefaultConverter();
     }
 
     internal class TableModeConverter : JsonConverter

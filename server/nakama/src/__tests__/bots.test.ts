@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { thullaMatchInit } from "../games/thulla/match";
+import { tableMatchInit } from "../games/table_match";
 import { botsFor, MAX_BOTS } from "../match/bots";
 import { DEFAULT_TABLE_CONFIG } from "../match/types";
 import { quickPlayBots } from "../rpc/quick_play_bots";
@@ -67,7 +67,7 @@ describe("Quick Play with bots for a lone player (owner decision, 29 Oct)", () =
 
   it("Nakama's match init keeps the bot count from the create params", () => {
     const ctx = { matchId: "m1.n1", env: {} } as unknown as nkruntime.Context;
-    const init = thullaMatchInit(ctx, fakeLogger(), memoryNk().nk, {
+    const init = tableMatchInit(ctx, fakeLogger(), memoryNk().nk, {
       code: "ABCDEF",
       gameId: "thulla",
       mode: "public",

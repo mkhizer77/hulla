@@ -107,6 +107,13 @@
       "schema": "shell/table.json#/definitions/remove_spectator"
     },
     {
+      "type": "change_game",
+      "opcode": 16,
+      "direction": "c2s",
+      "visibility": "public",
+      "schema": "shell/table.json#/definitions/change_game"
+    },
+    {
       "type": "chat_text",
       "opcode": 20,
       "direction": "c2s",
@@ -213,6 +220,13 @@
       "direction": "s2c",
       "visibility": "seat",
       "schema": "shell/table.json#/definitions/pong"
+    },
+    {
+      "type": "game_changed",
+      "opcode": 108,
+      "direction": "s2c",
+      "visibility": "public",
+      "schema": "shell/table.json#/definitions/game_changed"
     },
     {
       "type": "chat",

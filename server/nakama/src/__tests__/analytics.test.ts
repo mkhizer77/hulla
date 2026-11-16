@@ -2,7 +2,7 @@ import { OPCODES } from "@hulla/protocol/generated";
 import { describe, expect, it } from "vitest";
 
 import { analyticsFromBatch } from "../match/analytics";
-import { tableMatchHandler } from "../match/nakama_match";
+import { onlyGame, tableMatchHandler } from "../match/nakama_match";
 import {
   ANALYTICS_LOG,
   emitAnalytics,
@@ -243,7 +243,7 @@ describe("server analytics emitters (GDD 23.3, ARCHITECTURE 12.4)", () => {
   });
 
   it("logs one analytics line per event from the Nakama binding", () => {
-    const handler = tableMatchHandler(toyHost(), { config: { autoPlayDelayMs: 0 } });
+    const handler = tableMatchHandler(onlyGame(toyHost()), { config: { autoPlayDelayMs: 0 } });
     const { nk } = fakeMatchNk();
     const { lines, logger } = sink();
     const d = fakeDispatcher();

@@ -1,12 +1,12 @@
 import {
-  thullaMatchInit,
-  thullaMatchJoin,
-  thullaMatchJoinAttempt,
-  thullaMatchLeave,
-  thullaMatchLoop,
-  thullaMatchSignal,
-  thullaMatchTerminate,
-} from "./games/thulla/match";
+  tableMatchInit,
+  tableMatchJoin,
+  tableMatchJoinAttempt,
+  tableMatchLeave,
+  tableMatchLoop,
+  tableMatchSignal,
+  tableMatchTerminate,
+} from "./games/table_match";
 import { afterAddFriends } from "./hooks/after_add_friends";
 import {
   afterAuthenticateApple,
@@ -217,14 +217,15 @@ function InitModule(
   initializer.registerAfterAuthenticateFacebook(afterAuthenticateFacebook);
   initializer.registerBeforeAuthenticateCustom(beforeAuthenticateCustom);
   initializer.registerAfterAuthenticateCustom(afterAuthenticateCustom);
-  initializer.registerMatch("thulla", {
-    matchInit: thullaMatchInit,
-    matchJoinAttempt: thullaMatchJoinAttempt,
-    matchJoin: thullaMatchJoin,
-    matchLeave: thullaMatchLeave,
-    matchLoop: thullaMatchLoop,
-    matchTerminate: thullaMatchTerminate,
-    matchSignal: thullaMatchSignal,
+  // The name is a literal for Nakama's reader of this call; it equals TABLE_MATCH (init test).
+  initializer.registerMatch("hulla_table", {
+    matchInit: tableMatchInit,
+    matchJoinAttempt: tableMatchJoinAttempt,
+    matchJoin: tableMatchJoin,
+    matchLeave: tableMatchLeave,
+    matchLoop: tableMatchLoop,
+    matchTerminate: tableMatchTerminate,
+    matchSignal: tableMatchSignal,
   });
   log.info(logger, "Hulla runtime loaded", { env: ctx.env["HULLA_ENV"] ?? "local" });
 }

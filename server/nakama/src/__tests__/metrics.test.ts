@@ -2,7 +2,7 @@ import { OPCODES } from "@hulla/protocol/generated";
 import { describe, expect, it } from "vitest";
 
 import { METRICS, metrics } from "../infra/metrics";
-import { tableMatchHandler } from "../match/nakama_match";
+import { onlyGame, tableMatchHandler } from "../match/nakama_match";
 
 import { fakeDispatcher, fakeMatchNk, matchMessage, nkPresence } from "./fake-match";
 import { fakeLogger } from "./fake-nk";
@@ -52,7 +52,7 @@ describe("game metrics on the Prometheus endpoint (GDD 20.13)", () => {
     sink["metricsTimerRecord"] = (name: string, tags: Record<string, string>, ns: number) => {
       timed.push({ name, tags, ns });
     };
-    const handler = tableMatchHandler(toyHost(), { config: { autoPlayDelayMs: 0 } });
+    const handler = tableMatchHandler(onlyGame(toyHost()), { config: { autoPlayDelayMs: 0 } });
     const logger = fakeLogger();
     const d = fakeDispatcher();
     const ctx = {} as nkruntime.Context;
@@ -122,7 +122,7 @@ describe("game metrics on the Prometheus endpoint (GDD 20.13)", () => {
     const sink = nk as unknown as Record<string, unknown>;
     sink["metricsCounterAdd"] = () => undefined;
     sink["metricsTimerRecord"] = (name: string) => void timed.push(name);
-    const handler = tableMatchHandler(toyHost(), { config: { autoPlayDelayMs: 0 } });
+    const handler = tableMatchHandler(onlyGame(toyHost()), { config: { autoPlayDelayMs: 0 } });
     const logger = fakeLogger();
     const d = fakeDispatcher();
     const ctx = {} as nkruntime.Context;

@@ -1,5 +1,7 @@
 import { describe, expect, it } from "vitest";
 
+import { TABLE_MATCH } from "../match/registry";
+
 import { fakeInitializer, fakeLogger, fakeNk, type LogLine } from "./fake-nk";
 
 // main.ts defines InitModule as a script-level global for Nakama; the test loads it the same way.
@@ -105,7 +107,7 @@ describe("InitModule", () => {
       "age_set",
       "age_get",
     ]);
-    expect([...matches.keys()]).toEqual(["thulla"]);
+    expect([...matches.keys()]).toEqual([TABLE_MATCH]);
     expect(hooks.get("rtBefore:ChannelMessageSend")?.name).toBe("beforeChannelMessageSend");
     expect(hooks.get("rtBefore:MatchmakerAdd")?.name).toBe("beforeMatchmakerAdd");
     expect(hooks.get("matchmakerMatched")?.name).toBe("matchmakerMatched");
@@ -113,7 +115,7 @@ describe("InitModule", () => {
     expect(hooks.get("beforeAuthenticateDevice")?.name).toBe("beforeAuthenticateDevice");
     expect(hooks.get("leaderboardReset")?.name).toBe("onLeaderboardReset");
     expect(hooks.get("afterAuthenticateFacebook")?.name).toBe("afterAuthenticateFacebook");
-    const handler = matches.get("thulla");
+    const handler = matches.get(TABLE_MATCH);
     expect(Object.keys(handler ?? {}).sort()).toEqual([
       "matchInit",
       "matchJoin",
@@ -133,7 +135,7 @@ describe("InitModule", () => {
       handler.matchTerminate,
       handler.matchSignal,
     ];
-    expect(callbacks.every((fn) => fn.name.startsWith("thullaMatch"))).toBe(true);
+    expect(callbacks.every((fn) => fn.name.startsWith("tableMatch"))).toBe(true);
     const rpc = rpcs.get("hello");
     const body = rpc?.({} as nkruntime.Context, fakeLogger(), fakeNk(), "");
     expect(JSON.parse(String(body))).toMatchObject({

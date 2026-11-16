@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 
 import { AVATAR_IDS, avatarForAccount } from "../content/avatars";
-import { thullaMatchInit, thullaMatchJoin, thullaMatchJoinAttempt } from "../games/thulla/match";
+import { tableMatchInit, tableMatchJoin, tableMatchJoinAttempt } from "../games/table_match";
 import { fillSeatAvatars, pickSeatAvatar } from "../match/avatars";
 import { emptySlot } from "../match/lobby";
 import { bootstrapProfile, nkProfileStore } from "../services/profiles";
@@ -51,7 +51,7 @@ describe("seat avatars (GDD 15.6)", () => {
       store.write(userId, { ...profile, avatar: userId === "u3" ? "a05" : "a01" });
     }
     const d = fakeDispatcher();
-    let state = thullaMatchInit(ctx, log, m, {
+    let state = tableMatchInit(ctx, log, m, {
       code: "ABCDEF",
       gameId: "thulla",
       mode: "private",
@@ -59,8 +59,8 @@ describe("seat avatars (GDD 15.6)", () => {
     const presences = ["u1", "u2", "u3"].map((userId, i) => ({ ...nkPresence(i), userId }));
     for (const presence of presences) {
       state =
-        thullaMatchJoinAttempt(ctx, log, m, d.dispatcher, 1, state, presence, {})?.state ?? state;
-      state = thullaMatchJoin(ctx, log, m, d.dispatcher, 1, state, [presence])?.state ?? state;
+        tableMatchJoinAttempt(ctx, log, m, d.dispatcher, 1, state, presence, {})?.state ?? state;
+      state = tableMatchJoin(ctx, log, m, d.dispatcher, 1, state, [presence])?.state ?? state;
     }
     expect(state.seats.slice(0, 3).map((s) => s.avatar)).toEqual(["a01", "a02", "a05"]);
 
@@ -72,8 +72,8 @@ describe("seat avatars (GDD 15.6)", () => {
     const again = { ...presences[1]!, sessionId: "s-again" };
     const resume = { resumeToken: state.seats[1]?.resumeToken ?? "" };
     state =
-      thullaMatchJoinAttempt(ctx, log, m, d.dispatcher, 2, state, again, resume)?.state ?? state;
-    state = thullaMatchJoin(ctx, log, m, d.dispatcher, 2, state, [again])?.state ?? state;
+      tableMatchJoinAttempt(ctx, log, m, d.dispatcher, 2, state, again, resume)?.state ?? state;
+    state = tableMatchJoin(ctx, log, m, d.dispatcher, 2, state, [again])?.state ?? state;
     expect(state.seats[1]?.avatar).toBe("a02");
   });
 });

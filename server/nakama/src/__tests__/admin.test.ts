@@ -1,8 +1,8 @@
 import { hexToBytes, stateFromSeed, Xoshiro128StarStar } from "@hulla/shared-ts";
 import { describe, expect, it } from "vitest";
 
+import { tableMatchInit, tableMatchJoinAttempt } from "../games/table_match";
 import { thullaHost } from "../games/thulla/host";
-import { thullaMatchInit, thullaMatchJoinAttempt } from "../games/thulla/match";
 import { beforeAuthenticateDevice } from "../hooks/before_authenticate";
 import { ROUND_LOG_COLLECTION } from "../match/nakama_match";
 import { replayRound } from "../match/replay";
@@ -193,7 +193,7 @@ describe("the admin RPCs against an in-memory Nakama", () => {
   it("inspects a table and replays a round, writing audit rows", () => {
     const m = memoryNk();
     const log = fakeLogger();
-    const matchId = m.nk.matchCreate("thulla", {
+    const matchId = m.nk.matchCreate("hulla_table", {
       code: "ABCDEF",
       mode: "private",
       gameId: "thulla",
@@ -287,13 +287,13 @@ describe("the admin RPCs against an in-memory Nakama", () => {
     });
 
     const ctx = { matchId: "m1.n1", env: {} } as unknown as nkruntime.Context;
-    const init = thullaMatchInit(ctx, log, m.nk, {
+    const init = tableMatchInit(ctx, log, m.nk, {
       code: "ABCDEF",
       gameId: "thulla",
       mode: "private",
     });
     const presence = { ...nkPresence(0), userId: "bad" };
-    const attempt = thullaMatchJoinAttempt(
+    const attempt = tableMatchJoinAttempt(
       ctx,
       log,
       m.nk,
@@ -324,7 +324,7 @@ describe("the admin RPCs against an in-memory Nakama", () => {
       sanctions: { bannedUntilTs: null, voiceSuspendedUntilTs: null },
     });
     expect(beforeAuthenticateDevice(ctx, log, m.nk, { account: { id: "device-1" } })).toBeDefined();
-    const again = thullaMatchJoinAttempt(
+    const again = tableMatchJoinAttempt(
       ctx,
       log,
       m.nk,

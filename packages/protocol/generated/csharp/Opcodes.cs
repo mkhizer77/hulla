@@ -20,6 +20,7 @@ namespace Hulla.Protocol
         public const long SeatSpectator = 13;
         public const long SetMic = 14;
         public const long RemoveSpectator = 15;
+        public const long ChangeGame = 16;
         public const long ChatText = 20;
         public const long QuickChat = 21;
         public const long Emote = 22;
@@ -35,6 +36,7 @@ namespace Hulla.Protocol
         public const long Error = 105;
         public const long Snapshot = 106;
         public const long Pong = 107;
+        public const long GameChanged = 108;
         public const long Chat = 120;
         public const long QuickChatSent = 121;
         public const long EmoteSent = 122;
@@ -71,6 +73,7 @@ namespace Hulla.Protocol
         public const string SeatSpectator = "seat_spectator";
         public const string SetMic = "set_mic";
         public const string RemoveSpectator = "remove_spectator";
+        public const string ChangeGame = "change_game";
         public const string ChatText = "chat_text";
         public const string QuickChat = "quick_chat";
         public const string Emote = "emote";
@@ -86,6 +89,7 @@ namespace Hulla.Protocol
         public const string Error = "error";
         public const string Snapshot = "snapshot";
         public const string Pong = "pong";
+        public const string GameChanged = "game_changed";
         public const string Chat = "chat";
         public const string QuickChatSent = "quick_chat_sent";
         public const string EmoteSent = "emote_sent";
@@ -124,6 +128,7 @@ namespace Hulla.Protocol
                 case 13: return SeatSpectator;
                 case 14: return SetMic;
                 case 15: return RemoveSpectator;
+                case 16: return ChangeGame;
                 case 20: return ChatText;
                 case 21: return QuickChat;
                 case 22: return Emote;
@@ -139,6 +144,7 @@ namespace Hulla.Protocol
                 case 105: return Error;
                 case 106: return Snapshot;
                 case 107: return Pong;
+                case 108: return GameChanged;
                 case 120: return Chat;
                 case 121: return QuickChatSent;
                 case 122: return EmoteSent;
@@ -180,6 +186,7 @@ namespace Hulla.Protocol
                 case SeatSpectator:
                 case SetMic:
                 case RemoveSpectator:
+                case ChangeGame:
                 case ChatText:
                 case QuickChat:
                 case Emote:
@@ -191,6 +198,7 @@ namespace Hulla.Protocol
                 case Presence:
                 case HostChanged:
                 case TableClosed:
+                case GameChanged:
                 case Chat:
                 case QuickChatSent:
                 case EmoteSent:
@@ -231,6 +239,7 @@ namespace Hulla.Protocol
                 case SeatSpectator: return Opcodes.SeatSpectator;
                 case SetMic: return Opcodes.SetMic;
                 case RemoveSpectator: return Opcodes.RemoveSpectator;
+                case ChangeGame: return Opcodes.ChangeGame;
                 case ChatText: return Opcodes.ChatText;
                 case QuickChat: return Opcodes.QuickChat;
                 case Emote: return Opcodes.Emote;
@@ -246,6 +255,7 @@ namespace Hulla.Protocol
                 case Error: return Opcodes.Error;
                 case Snapshot: return Opcodes.Snapshot;
                 case Pong: return Opcodes.Pong;
+                case GameChanged: return Opcodes.GameChanged;
                 case Chat: return Opcodes.Chat;
                 case QuickChatSent: return Opcodes.QuickChatSent;
                 case EmoteSent: return Opcodes.EmoteSent;

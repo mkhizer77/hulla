@@ -4,18 +4,21 @@ import { describe, expect, it } from "vitest";
 import {
   labelFor,
   ROUND_LOG_COLLECTION,
+  onlyGame,
   tableMatchHandler,
   turnSecondsFrom,
 } from "../match/nakama_match";
 
 import { fakeDispatcher, fakeMatchNk, matchMessage, nkPresence } from "./fake-match";
 import { fakeLogger } from "./fake-nk";
-import { toyHost } from "./toy-game";
+import { toyHost, toyModule, type ToyState } from "./toy-game";
+
+import type { AnyGameHost } from "../match/types";
 
 const ctx = {} as nkruntime.Context;
 
 function booted() {
-  const handler = tableMatchHandler(toyHost(), { config: { autoPlayDelayMs: 0 } });
+  const handler = tableMatchHandler(onlyGame(toyHost()), { config: { autoPlayDelayMs: 0 } });
   const { nk, writes } = fakeMatchNk();
   const logger = fakeLogger();
   const d = fakeDispatcher();
@@ -223,9 +226,10 @@ describe("the Nakama binding", () => {
     const roundId = b.state.round?.roundId ?? "";
     let seq = 1;
     for (let guard = 0; guard < 40 && b.state.phase === "inRound"; guard += 1) {
-      const opening = b.state.round?.state.phase === "opening";
+      const toy = b.state.round?.state as ToyState | undefined;
+      const opening = toy?.phase === "opening";
       const messages = [p0, p1]
-        .filter((_p, i) => opening || b.state.round?.state.turnSeat === i)
+        .filter((_p, i) => opening || toy?.turnSeat === i)
         .map((p) =>
           matchMessage(
             p,
@@ -328,5 +332,51 @@ describe("turnSecondsFrom", () => {
       expect(turnSecondsFrom({ HULLA_TURN_SECONDS: value })).toEqual({});
     }
     expect(turnSecondsFrom({})).toEqual({});
+  });
+  it("switches the room's game inside one loop and carries on under the new game", () => {
+    const three = { ...toyHost(), module: { ...toyModule, id: "rung", seats: { min: 3, max: 3 } } };
+    const games: Record<string, AnyGameHost> = {
+      thulla: toyHost(),
+      rung: three as unknown as AnyGameHost,
+    };
+    const handler = tableMatchHandler((gameId) => games[gameId] ?? null);
+    const { nk } = fakeMatchNk();
+    const logger = fakeLogger();
+    const d = fakeDispatcher();
+    let state = handler.matchInit(ctx, logger, nk, {
+      code: "ABCDEF",
+      gameId: "thulla",
+      mode: "private",
+    }).state;
+    const presences = [0, 1, 2].map(nkPresence);
+    for (const p of presences) {
+      state =
+        handler.matchJoinAttempt(ctx, logger, nk, d.dispatcher, 1, state, p, {})?.state ?? state;
+    }
+    state = handler.matchJoin(ctx, logger, nk, d.dispatcher, 1, state, presences)?.state ?? state;
+    const [p0, p1] = presences;
+    if (p0 === undefined || p1 === undefined) throw new Error("presences");
+    const message = (p: nkruntime.Presence, type: keyof typeof OPCODES, payload: object) =>
+      matchMessage(p, OPCODES[type].opcode, {
+        v: 1,
+        type,
+        tableId: state.tableId,
+        seq: 1,
+        ts: 0,
+        payload,
+      });
+    const result = handler.matchLoop(ctx, logger, nk, d.dispatcher, 2, state, [
+      message(p0, "change_game", { gameId: "rung" }),
+      message(p1, "ready", { ready: true }),
+    ]);
+    const after = JSON.parse(JSON.stringify(result?.state)) as typeof state;
+    expect(after.gameId).toBe("rung");
+    expect(after.seats).toHaveLength(3);
+    expect(after.seats[1]?.ready).toBe(true);
+    expect(JSON.parse(labelFor(after))).toMatchObject({ gameId: "rung" });
+    expect(d.labels.at(-1)).toBe(labelFor(after));
+    expect(() =>
+      handler.matchInit(ctx, logger, nk, { code: "ABCDEF", gameId: "ludo", mode: "private" }),
+    ).toThrow("no game registered as ludo");
   });
 });
