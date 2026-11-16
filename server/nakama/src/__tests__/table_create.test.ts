@@ -73,7 +73,7 @@ describe("table_create", () => {
     });
     expect(tableCreate(deps(), "{")).toMatchObject({ error: { detail: { reason: "json" } } });
     expect(tableCreate(deps(), "[]")).toMatchObject({ error: { detail: { reason: "json" } } });
-    expect(tableCreate(deps(), JSON.stringify({ gameId: "rung" }))).toMatchObject({
+    expect(tableCreate(deps(), JSON.stringify({ gameId: "ludo" }))).toMatchObject({
       error: { detail: { reason: "game_id" } },
     });
     expect(tableCreate(deps(), JSON.stringify({ mode: "casual" }))).toMatchObject({

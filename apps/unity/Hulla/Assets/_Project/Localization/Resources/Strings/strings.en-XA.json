@@ -2113,6 +2113,16 @@
    "smart": false
   },
   {
+   "key": "preset.courtPiece.description",
+   "text": "[Sîñglé Sår. Évérý trîçk çöûñts. Fîrst tö sévéñ. · · · · · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "preset.courtPiece.name",
+   "text": "[Çöûrt Pîéçé · ·]",
+   "smart": false
+  },
+  {
    "key": "preset.family.description",
    "text": "[Géñtlér: thé léådér måý tåké å håñd. · · · · · ·]",
    "smart": false
@@ -2133,6 +2143,16 @@
    "smart": false
   },
   {
+   "key": "preset.hokm.description",
+   "text": "[Fîrst tö sévéñ trîçks, fîrst tö sévéñ pöîñts. · · · · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "preset.hokm.name",
+   "text": "[Hökm ·]",
+   "smart": false
+  },
+  {
    "key": "preset.relaxed.description",
    "text": "[Thé ståñdård rûlés wîth å mîñûté för évérý tûrñ. · · · · · · · ·]",
    "smart": false
@@ -2140,6 +2160,16 @@
   {
    "key": "preset.relaxed.name",
    "text": "[Rélåxéd · ·]",
+   "smart": false
+  },
+  {
+   "key": "preset.rung.description",
+   "text": "[Döûblé Sår. Wîñ twö îñ å röw tö tåké thé pîlé. · · · · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "preset.rung.name",
+   "text": "[Rûñg ·]",
    "smart": false
   },
   {

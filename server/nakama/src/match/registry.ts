@@ -1,3 +1,4 @@
+import { rungHost } from "../games/rung/host";
 import { thullaHost } from "../games/thulla/host";
 
 import type { AnyGameHost } from "./types";
@@ -23,9 +24,14 @@ const GAMES: Readonly<Partial<Record<GameId, GameEntry>>> = {
     matchName: TABLE_MATCH,
     host: thullaHost,
   },
+  rung: {
+    matchName: TABLE_MATCH,
+    // The registry holds hosts of different games in one map; the core never mixes their types.
+    host: rungHost,
+  },
 };
 
-/** Maps a game id to its registration; null for games that are not on the server yet (Rung). */
+/** Maps a game id to its registration; null for a game the server does not have. */
 export function gameEntry(gameId: string): GameEntry | null {
   return (GAMES as Readonly<Record<string, GameEntry | undefined>>)[gameId] ?? null;
 }

@@ -176,7 +176,7 @@ Tooling: Node 26 (24 or later), pnpm 12 workspaces pinned through `packageManage
 | **Table** | A room: settings, seats, spectators, chat, voice channel, scoreboard, series state. Hosts rounds. | Shell (`TableCore`) |
 | **Seat** | A position at the table with `seatIndex`, `teamId`, occupant (player, empty, auto-play) | Shell |
 | **Round** | One play of a game from deal to result; owns the event log and snapshots | Shell lifecycle, module content |
-| **Phase** | A stage within a round with its own legal action kinds and deadline policy (Thulla: opening, play; Rung: deal5, call, deal8, play) | Module |
+| **Phase** | A stage within a round with its own legal action kinds and deadline policy (Thulla: opening, play; Rung: call, play, courtChoice) | Module |
 | **Move** | A player action the module validates and applies (play card, take hand, call trump, submit hidden, vote, text) | Module |
 | **Event** | A fact emitted by applying a move (card played, thulla, pickup, escape, round ended), the only thing clients render | Module emits, shell logs |
 | **Rules / Preset** | The toggle set for a round, validated against the module's schema | Module schema, shell storage |

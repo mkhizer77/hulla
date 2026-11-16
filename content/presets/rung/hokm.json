@@ -1,0 +1,20 @@
+{
+  "schema": "../../../tools/content-schemas/preset.schema.json",
+  "id": "hokm",
+  "version": 1,
+  "gameId": "rung",
+  "name": "preset.hokm.name",
+  "description": "preset.hokm.description",
+  "order": 2,
+  "overrides": {
+    "collect": "single",
+    "chase": false,
+    "redeal": "off",
+    "pointsTable": "hokm",
+    "target": 7,
+    "courtPassesCall": false
+  },
+  "settings": {
+    "direction": "ccw"
+  }
+}

@@ -1,0 +1,232 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://hulla.gg/schemas/protocol/games/rung/views.json",
+  "title": "Rung view: what one seat or a spectator may know",
+  "definitions": {
+    "view": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "The stock and other hands never appear (RG5)",
+      "required": [
+        "viewer",
+        "rulesVersion",
+        "rules",
+        "seatCount",
+        "dealerSeat",
+        "callerSeat",
+        "phase",
+        "turnSeat",
+        "handCounts",
+        "hand",
+        "stockCount",
+        "trump",
+        "redeals",
+        "trickIndex",
+        "trick",
+        "lastWinner",
+        "run",
+        "pile",
+        "counts",
+        "chasing",
+        "outcome",
+        "stats",
+        "commitment",
+        "seedHex",
+        "deckOrder",
+        "canRedeal"
+      ],
+      "properties": {
+        "viewer": {
+          "oneOf": [
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["kind", "seat"],
+              "properties": {
+                "kind": {
+                  "const": "seat"
+                },
+                "seat": {
+                  "$ref": "../../common.json#/definitions/seatIndex"
+                }
+              },
+              "title": "RungSeatViewer"
+            },
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["kind"],
+              "properties": {
+                "kind": {
+                  "const": "spectator"
+                }
+              },
+              "title": "RungSpectatorViewer"
+            }
+          ],
+          "title": "RungViewer"
+        },
+        "rulesVersion": {
+          "type": "string"
+        },
+        "rules": {
+          "$ref": "https://hulla.gg/schemas/games/rung/rules.json"
+        },
+        "seatCount": {
+          "type": "integer",
+          "enum": [4]
+        },
+        "dealerSeat": {
+          "$ref": "../../common.json#/definitions/seatIndex"
+        },
+        "callerSeat": {
+          "$ref": "../../common.json#/definitions/seatIndex"
+        },
+        "phase": {
+          "type": "string",
+          "enum": ["call", "play", "courtChoice", "ended"],
+          "title": "RungPhase"
+        },
+        "turnSeat": {
+          "$ref": "../../common.json#/definitions/seatIndexOrNull"
+        },
+        "handCounts": {
+          "$ref": "../../common.json#/definitions/handCounts"
+        },
+        "hand": {
+          "oneOf": [
+            {
+              "$ref": "../../common.json#/definitions/cards"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "The viewer's own cards; null for spectators"
+        },
+        "stockCount": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "trump": {
+          "oneOf": [
+            {
+              "$ref": "../../common.json#/definitions/suit"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "redeals": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "trickIndex": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "trick": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["leaderSeat", "plays"],
+          "properties": {
+            "leaderSeat": {
+              "$ref": "../../common.json#/definitions/seatIndex"
+            },
+            "plays": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": ["seat", "card"],
+                "properties": {
+                  "seat": {
+                    "$ref": "../../common.json#/definitions/seatIndex"
+                  },
+                  "card": {
+                    "$ref": "../../common.json#/definitions/card"
+                  }
+                },
+                "title": "RungPlay"
+              }
+            }
+          },
+          "title": "RungTrick"
+        },
+        "lastWinner": {
+          "$ref": "../../common.json#/definitions/seatIndexOrNull"
+        },
+        "run": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "pile": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "counts": {
+          "type": "array",
+          "items": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "minItems": 2,
+          "maxItems": 2,
+          "description": "Tricks per team"
+        },
+        "chasing": {
+          "type": ["integer", "null"],
+          "enum": [0, 1, null]
+        },
+        "outcome": {
+          "oneOf": [
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["team", "kind"],
+              "properties": {
+                "team": {
+                  "$ref": "events.json#/definitions/team"
+                },
+                "kind": {
+                  "$ref": "events.json#/definitions/outcomeKind"
+                }
+              },
+              "title": "RungOutcome"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "stats": {
+          "type": "array",
+          "items": {
+            "$ref": "events.json#/definitions/seatStats"
+          }
+        },
+        "commitment": {
+          "type": "string"
+        },
+        "seedHex": {
+          "type": ["string", "null"]
+        },
+        "deckOrder": {
+          "oneOf": [
+            {
+              "$ref": "../../common.json#/definitions/cards"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "canRedeal": {
+          "type": ["boolean", "null"]
+        }
+      },
+      "title": "RungView"
+    }
+  }
+}

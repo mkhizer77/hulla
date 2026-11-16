@@ -14,7 +14,7 @@ export interface OpcodeEntry {
   readonly visibility: Visibility;
   /** `<file>#/definitions/<name>` relative to `schemas/`. */
   readonly schema: string;
-  readonly game?: "thulla";
+  readonly game?: "thulla" | "rung";
 }
 
 const schemasDir = join(import.meta.dirname, "..", "schemas");

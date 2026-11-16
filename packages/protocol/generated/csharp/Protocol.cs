@@ -33,6 +33,9 @@ namespace Hulla.Protocol
         [JsonProperty("answerHandPayload", Required = Required.DisallowNull, NullValueHandling = NullValueHandling.Ignore)]
         public AnswerHand? AnswerHandPayload { get; set; }
 
+        [JsonProperty("callTrumpPayload", Required = Required.DisallowNull, NullValueHandling = NullValueHandling.Ignore)]
+        public CallTrump? CallTrumpPayload { get; set; }
+
         [JsonProperty("cancelTakePayload", Required = Required.DisallowNull, NullValueHandling = NullValueHandling.Ignore)]
         public CancelTake? CancelTakePayload { get; set; }
 
@@ -47,6 +50,9 @@ namespace Hulla.Protocol
 
         [JsonProperty("confirmedPayload", Required = Required.DisallowNull, NullValueHandling = NullValueHandling.Ignore)]
         public Confirmed? ConfirmedPayload { get; set; }
+
+        [JsonProperty("courtChoicePayload", Required = Required.DisallowNull, NullValueHandling = NullValueHandling.Ignore)]
+        public CourtChoice? CourtChoicePayload { get; set; }
 
         [JsonProperty("emotePayload", Required = Required.DisallowNull, NullValueHandling = NullValueHandling.Ignore)]
         public Emote? EmotePayload { get; set; }
@@ -144,6 +150,9 @@ namespace Hulla.Protocol
         [JsonProperty("readyPayload", Required = Required.DisallowNull, NullValueHandling = NullValueHandling.Ignore)]
         public Ready? ReadyPayload { get; set; }
 
+        [JsonProperty("redealPayload", Required = Required.DisallowNull, NullValueHandling = NullValueHandling.Ignore)]
+        public RungRedeal? RedealPayload { get; set; }
+
         [JsonProperty("removeBotPayload", Required = Required.DisallowNull, NullValueHandling = NullValueHandling.Ignore)]
         public RemoveBot? RemoveBotPayload { get; set; }
 
@@ -164,6 +173,45 @@ namespace Hulla.Protocol
 
         [JsonProperty("rulesChangedPayload", Required = Required.DisallowNull, NullValueHandling = NullValueHandling.Ignore)]
         public RulesChanged? RulesChangedPayload { get; set; }
+
+        [JsonProperty("rungCardPlayedPayload", Required = Required.DisallowNull, NullValueHandling = NullValueHandling.Ignore)]
+        public RungCardPlayed? RungCardPlayedPayload { get; set; }
+
+        [JsonProperty("rungCourtChoiceMadePayload", Required = Required.DisallowNull, NullValueHandling = NullValueHandling.Ignore)]
+        public RungCourtChoiceMade? RungCourtChoiceMadePayload { get; set; }
+
+        [JsonProperty("rungCourtChoiceOpenedPayload", Required = Required.DisallowNull, NullValueHandling = NullValueHandling.Ignore)]
+        public RungCourtChoiceOpened? RungCourtChoiceOpenedPayload { get; set; }
+
+        [JsonProperty("rungHandPayload", Required = Required.DisallowNull, NullValueHandling = NullValueHandling.Ignore)]
+        public RungHand? RungHandPayload { get; set; }
+
+        [JsonProperty("rungHandsCompletedPayload", Required = Required.DisallowNull, NullValueHandling = NullValueHandling.Ignore)]
+        public RungHandsCompleted? RungHandsCompletedPayload { get; set; }
+
+        [JsonProperty("rungPileTakenPayload", Required = Required.DisallowNull, NullValueHandling = NullValueHandling.Ignore)]
+        public RungPileTaken? RungPileTakenPayload { get; set; }
+
+        [JsonProperty("rungRedealtPayload", Required = Required.DisallowNull, NullValueHandling = NullValueHandling.Ignore)]
+        public RungRedealt? RungRedealtPayload { get; set; }
+
+        [JsonProperty("rungRoundEndPayload", Required = Required.DisallowNull, NullValueHandling = NullValueHandling.Ignore)]
+        public RungRoundEnd? RungRoundEndPayload { get; set; }
+
+        [JsonProperty("rungRoundStartPayload", Required = Required.DisallowNull, NullValueHandling = NullValueHandling.Ignore)]
+        public RungRoundStart? RungRoundStartPayload { get; set; }
+
+        [JsonProperty("rungRules", Required = Required.DisallowNull, NullValueHandling = NullValueHandling.Ignore)]
+        public RungRules? RungRules { get; set; }
+
+        [JsonProperty("rungTrickWonPayload", Required = Required.DisallowNull, NullValueHandling = NullValueHandling.Ignore)]
+        public RungTrickWon? RungTrickWonPayload { get; set; }
+
+        [JsonProperty("rungTrumpCalledPayload", Required = Required.DisallowNull, NullValueHandling = NullValueHandling.Ignore)]
+        public RungTrumpCalled? RungTrumpCalledPayload { get; set; }
+
+        [JsonProperty("rungView", Required = Required.DisallowNull, NullValueHandling = NullValueHandling.Ignore)]
+        public RungView? RungView { get; set; }
 
         [JsonProperty("seatSpectatorPayload", Required = Required.DisallowNull, NullValueHandling = NullValueHandling.Ignore)]
         public SeatSpectator? SeatSpectatorPayload { get; set; }
@@ -243,6 +291,24 @@ namespace Hulla.Protocol
 
         [JsonProperty("roundId", Required = Required.Always)]
         public string RoundId { get; set; }
+    }
+
+    /// <summary>
+    /// The caller names the rung from their first five cards (RG6)
+    /// </summary>
+    public partial class CallTrump
+    {
+        /// <summary>
+        /// Idempotency key with the seat (ARCHITECTURE 8.4)
+        /// </summary>
+        [JsonProperty("clientSeq", Required = Required.Always)]
+        public long ClientSeq { get; set; }
+
+        [JsonProperty("roundId", Required = Required.Always)]
+        public string RoundId { get; set; }
+
+        [JsonProperty("suit", Required = Required.Always)]
+        public Suit Suit { get; set; }
     }
 
     /// <summary>
@@ -354,6 +420,24 @@ namespace Hulla.Protocol
 
         [JsonProperty("fastForward", Required = Required.Always)]
         public bool FastForward { get; set; }
+
+        [JsonProperty("roundId", Required = Required.Always)]
+        public string RoundId { get; set; }
+    }
+
+    /// <summary>
+    /// Stop with the court or play on for the bigger prize (RG26)
+    /// </summary>
+    public partial class CourtChoice
+    {
+        /// <summary>
+        /// Idempotency key with the seat (ARCHITECTURE 8.4)
+        /// </summary>
+        [JsonProperty("clientSeq", Required = Required.Always)]
+        public long ClientSeq { get; set; }
+
+        [JsonProperty("playOn", Required = Required.Always)]
+        public bool PlayOn { get; set; }
 
         [JsonProperty("roundId", Required = Required.Always)]
         public string RoundId { get; set; }
@@ -990,6 +1074,21 @@ namespace Hulla.Protocol
         public bool ReadyReady { get; set; }
     }
 
+    /// <summary>
+    /// The caller asks for a new deal instead of calling (RG7)
+    /// </summary>
+    public partial class RungRedeal
+    {
+        /// <summary>
+        /// Idempotency key with the seat (ARCHITECTURE 8.4)
+        /// </summary>
+        [JsonProperty("clientSeq", Required = Required.Always)]
+        public long ClientSeq { get; set; }
+
+        [JsonProperty("roundId", Required = Required.Always)]
+        public string RoundId { get; set; }
+    }
+
     public partial class RemoveBot
     {
         [JsonProperty("seat", Required = Required.Always)]
@@ -1069,6 +1168,42 @@ namespace Hulla.Protocol
 
         [JsonProperty("roundsPlayed", Required = Required.Always)]
         public long RoundsPlayed { get; set; }
+
+        [JsonProperty("teams", Required = Required.DisallowNull, NullValueHandling = NullValueHandling.Ignore)]
+        public RungTeams? Teams { get; set; }
+    }
+
+    /// <summary>
+    /// The bazi score by team
+    /// </summary>
+    public partial class RungTeams
+    {
+        /// <summary>
+        /// Courts per team (RG33)
+        /// </summary>
+        [JsonProperty("courts", Required = Required.Always)]
+        public List<long> Courts { get; set; }
+
+        /// <summary>
+        /// Deals won per team
+        /// </summary>
+        [JsonProperty("dealsWon", Required = Required.Always)]
+        public List<long> DealsWon { get; set; }
+
+        /// <summary>
+        /// Bazi points per team (RG32)
+        /// </summary>
+        [JsonProperty("points", Required = Required.Always)]
+        public List<long> Points { get; set; }
+
+        [JsonProperty("streakDeals", Required = Required.Always)]
+        public long StreakDeals { get; set; }
+
+        [JsonProperty("streakTeam", Required = Required.AllowNull)]
+        public long? StreakTeam { get; set; }
+
+        [JsonProperty("winnerTeam", Required = Required.AllowNull)]
+        public long? WinnerTeam { get; set; }
     }
 
     public partial class SeatStats
@@ -1126,6 +1261,461 @@ namespace Hulla.Protocol
 
         [JsonProperty("rules", Required = Required.Always)]
         public RulesSelection Rules { get; set; }
+    }
+
+    public partial class RungCardPlayed
+    {
+        /// <summary>
+        /// Played by the timeout policy or a bot, not by the seat's player
+        /// </summary>
+        [JsonProperty("auto", Required = Required.Always)]
+        public bool Auto { get; set; }
+
+        [JsonProperty("card", Required = Required.Always)]
+        public string Card { get; set; }
+
+        [JsonProperty("clientSeq", Required = Required.DisallowNull, NullValueHandling = NullValueHandling.Ignore)]
+        public long? ClientSeq { get; set; }
+
+        /// <summary>
+        /// A kaat: a rung on a led suit the seat was void in
+        /// </summary>
+        [JsonProperty("cut", Required = Required.Always)]
+        public bool Cut { get; set; }
+
+        [JsonProperty("roundId", Required = Required.Always)]
+        public string RoundId { get; set; }
+
+        [JsonProperty("seat", Required = Required.Always)]
+        public long Seat { get; set; }
+
+        [JsonProperty("trickIndex", Required = Required.Always)]
+        public long TrickIndex { get; set; }
+    }
+
+    public partial class RungCourtChoiceMade
+    {
+        /// <summary>
+        /// Played by the timeout policy or a bot, not by the seat's player
+        /// </summary>
+        [JsonProperty("auto", Required = Required.Always)]
+        public bool Auto { get; set; }
+
+        [JsonProperty("clientSeq", Required = Required.DisallowNull, NullValueHandling = NullValueHandling.Ignore)]
+        public long? ClientSeq { get; set; }
+
+        [JsonProperty("playOn", Required = Required.Always)]
+        public bool PlayOn { get; set; }
+
+        [JsonProperty("roundId", Required = Required.Always)]
+        public string RoundId { get; set; }
+
+        [JsonProperty("seat", Required = Required.Always)]
+        public long Seat { get; set; }
+    }
+
+    /// <summary>
+    /// A court is won; this seat chooses to stop or play on (RG26)
+    /// </summary>
+    public partial class RungCourtChoiceOpened
+    {
+        [JsonProperty("roundId", Required = Required.Always)]
+        public string RoundId { get; set; }
+
+        [JsonProperty("seat", Required = Required.Always)]
+        public long Seat { get; set; }
+
+        [JsonProperty("team", Required = Required.Always)]
+        public long Team { get; set; }
+    }
+
+    /// <summary>
+    /// Sent to one seat only: its own cards after a deal, a redeal or the rest of the deal
+    /// </summary>
+    public partial class RungHand
+    {
+        [JsonProperty("cards", Required = Required.Always)]
+        public List<string> Cards { get; set; }
+
+        [JsonProperty("roundId", Required = Required.Always)]
+        public string RoundId { get; set; }
+    }
+
+    /// <summary>
+    /// The rest of the deck is dealt (RG8); each seat gets its rung_hand
+    /// </summary>
+    public partial class RungHandsCompleted
+    {
+        [JsonProperty("handCounts", Required = Required.Always)]
+        public List<long> HandCounts { get; set; }
+
+        [JsonProperty("roundId", Required = Required.Always)]
+        public string RoundId { get; set; }
+    }
+
+    /// <summary>
+    /// A seat won two in a row and takes the pile for its team (RG17)
+    /// </summary>
+    public partial class RungPileTaken
+    {
+        /// <summary>
+        /// Tricks per team
+        /// </summary>
+        [JsonProperty("counts", Required = Required.Always)]
+        public List<long> Counts { get; set; }
+
+        [JsonProperty("roundId", Required = Required.Always)]
+        public string RoundId { get; set; }
+
+        [JsonProperty("seat", Required = Required.Always)]
+        public long Seat { get; set; }
+
+        [JsonProperty("team", Required = Required.Always)]
+        public long Team { get; set; }
+
+        [JsonProperty("tricks", Required = Required.Always)]
+        public long Tricks { get; set; }
+    }
+
+    /// <summary>
+    /// The caller asked for a new deal; a new commitment replaces the old (RG7)
+    /// </summary>
+    public partial class RungRedealt
+    {
+        /// <summary>
+        /// Played by the timeout policy or a bot, not by the seat's player
+        /// </summary>
+        [JsonProperty("auto", Required = Required.Always)]
+        public bool Auto { get; set; }
+
+        [JsonProperty("clientSeq", Required = Required.DisallowNull, NullValueHandling = NullValueHandling.Ignore)]
+        public long? ClientSeq { get; set; }
+
+        [JsonProperty("commitment", Required = Required.Always)]
+        public string Commitment { get; set; }
+
+        [JsonProperty("handCounts", Required = Required.Always)]
+        public List<long> HandCounts { get; set; }
+
+        [JsonProperty("redeals", Required = Required.Always)]
+        public long Redeals { get; set; }
+
+        [JsonProperty("roundId", Required = Required.Always)]
+        public string RoundId { get; set; }
+
+        [JsonProperty("seat", Required = Required.Always)]
+        public long Seat { get; set; }
+    }
+
+    /// <summary>
+    /// A deal ends (RG30); the series carries the bazi score
+    /// </summary>
+    public partial class RungRoundEnd
+    {
+        /// <summary>
+        /// The winners are the caller's team; false is the dealer's team
+        /// </summary>
+        [JsonProperty("byCaller", Required = Required.Always)]
+        public bool ByCaller { get; set; }
+
+        /// <summary>
+        /// Tricks per team
+        /// </summary>
+        [JsonProperty("counts", Required = Required.Always)]
+        public List<long> Counts { get; set; }
+
+        [JsonProperty("dealPoints", Required = Required.Always)]
+        public long DealPoints { get; set; }
+
+        [JsonProperty("fairness", Required = Required.Always)]
+        public RungFairness Fairness { get; set; }
+
+        [JsonProperty("kind", Required = Required.Always)]
+        public RungOutcomeKind Kind { get; set; }
+
+        [JsonProperty("points", Required = Required.Always)]
+        public List<long> Points { get; set; }
+
+        [JsonProperty("roundId", Required = Required.Always)]
+        public string RoundId { get; set; }
+
+        [JsonProperty("series", Required = Required.DisallowNull, NullValueHandling = NullValueHandling.Ignore)]
+        public SeriesState? Series { get; set; }
+
+        [JsonProperty("stats", Required = Required.Always)]
+        public List<RungSeatStats> Stats { get; set; }
+
+        [JsonProperty("trump", Required = Required.AllowNull)]
+        public Suit? Trump { get; set; }
+
+        [JsonProperty("winnerTeam", Required = Required.Always)]
+        public long WinnerTeam { get; set; }
+    }
+
+    public partial class RungFairness
+    {
+        [JsonProperty("commitment", Required = Required.Always)]
+        public string Commitment { get; set; }
+
+        [JsonProperty("deckOrder", Required = Required.Always)]
+        public List<string> DeckOrder { get; set; }
+
+        /// <summary>
+        /// Revealed so any client can recompute the commitment
+        /// </summary>
+        [JsonProperty("seed", Required = Required.Always)]
+        public string Seed { get; set; }
+    }
+
+    public partial class RungSeatStats
+    {
+        [JsonProperty("cuts", Required = Required.Always)]
+        public long Cuts { get; set; }
+
+        [JsonProperty("pilesTaken", Required = Required.Always)]
+        public long PilesTaken { get; set; }
+
+        [JsonProperty("tricksWon", Required = Required.Always)]
+        public long TricksWon { get; set; }
+    }
+
+    /// <summary>
+    /// A deal begins: five cards each, the caller to name the rung (RG4, RG5)
+    /// </summary>
+    public partial class RungRoundStart
+    {
+        [JsonProperty("callerSeat", Required = Required.Always)]
+        public long CallerSeat { get; set; }
+
+        [JsonProperty("commitment", Required = Required.Always)]
+        public string Commitment { get; set; }
+
+        [JsonProperty("dealerSeat", Required = Required.Always)]
+        public long DealerSeat { get; set; }
+
+        [JsonProperty("handCounts", Required = Required.Always)]
+        public List<long> HandCounts { get; set; }
+
+        [JsonProperty("roundId", Required = Required.Always)]
+        public string RoundId { get; set; }
+
+        [JsonProperty("rulesVersion", Required = Required.Always)]
+        public string RulesVersion { get; set; }
+    }
+
+    public partial class RungRules
+    {
+        [JsonProperty("aceRule", Required = Required.DisallowNull, NullValueHandling = NullValueHandling.Ignore)]
+        public bool? AceRule { get; set; }
+
+        [JsonProperty("chase", Required = Required.DisallowNull, NullValueHandling = NullValueHandling.Ignore)]
+        public bool? Chase { get; set; }
+
+        [JsonProperty("collect", Required = Required.DisallowNull, NullValueHandling = NullValueHandling.Ignore)]
+        public Collect? Collect { get; set; }
+
+        [JsonProperty("courtPassesCall", Required = Required.DisallowNull, NullValueHandling = NullValueHandling.Ignore)]
+        public bool? CourtPassesCall { get; set; }
+
+        [JsonProperty("firstTwo", Required = Required.DisallowNull, NullValueHandling = NullValueHandling.Ignore)]
+        public bool? FirstTwo { get; set; }
+
+        [JsonProperty("goonCourt", Required = Required.DisallowNull, NullValueHandling = NullValueHandling.Ignore)]
+        public long? GoonCourt { get; set; }
+
+        [JsonProperty("lastTwo", Required = Required.DisallowNull, NullValueHandling = NullValueHandling.Ignore)]
+        public bool? LastTwo { get; set; }
+
+        [JsonProperty("pointsTable", Required = Required.DisallowNull, NullValueHandling = NullValueHandling.Ignore)]
+        public PointsTable? PointsTable { get; set; }
+
+        [JsonProperty("redeal", Required = Required.DisallowNull, NullValueHandling = NullValueHandling.Ignore)]
+        public Redeal? Redeal { get; set; }
+
+        [JsonProperty("scoring", Required = Required.DisallowNull, NullValueHandling = NullValueHandling.Ignore)]
+        public Scoring? Scoring { get; set; }
+
+        [JsonProperty("target", Required = Required.DisallowNull, NullValueHandling = NullValueHandling.Ignore)]
+        public long? Target { get; set; }
+    }
+
+    public partial class RungTrickWon
+    {
+        [JsonProperty("cards", Required = Required.Always)]
+        public List<string> Cards { get; set; }
+
+        /// <summary>
+        /// Tricks per team
+        /// </summary>
+        [JsonProperty("counts", Required = Required.Always)]
+        public List<long> Counts { get; set; }
+
+        /// <summary>
+        /// Tricks lying in the centre after this one, before any take (Double Sar)
+        /// </summary>
+        [JsonProperty("pile", Required = Required.Always)]
+        public long Pile { get; set; }
+
+        [JsonProperty("roundId", Required = Required.Always)]
+        public string RoundId { get; set; }
+
+        [JsonProperty("trickIndex", Required = Required.Always)]
+        public long TrickIndex { get; set; }
+
+        [JsonProperty("winner", Required = Required.Always)]
+        public long Winner { get; set; }
+    }
+
+    /// <summary>
+    /// The rung is named (RG6)
+    /// </summary>
+    public partial class RungTrumpCalled
+    {
+        /// <summary>
+        /// Played by the timeout policy or a bot, not by the seat's player
+        /// </summary>
+        [JsonProperty("auto", Required = Required.Always)]
+        public bool Auto { get; set; }
+
+        [JsonProperty("clientSeq", Required = Required.DisallowNull, NullValueHandling = NullValueHandling.Ignore)]
+        public long? ClientSeq { get; set; }
+
+        [JsonProperty("roundId", Required = Required.Always)]
+        public string RoundId { get; set; }
+
+        [JsonProperty("seat", Required = Required.Always)]
+        public long Seat { get; set; }
+
+        [JsonProperty("suit", Required = Required.Always)]
+        public Suit Suit { get; set; }
+    }
+
+    /// <summary>
+    /// The stock and other hands never appear (RG5)
+    ///
+    /// The Rung deal view while the room plays a Rung deal; absent otherwise
+    /// </summary>
+    public partial class RungView
+    {
+        [JsonProperty("callerSeat", Required = Required.Always)]
+        public long CallerSeat { get; set; }
+
+        [JsonProperty("canRedeal", Required = Required.AllowNull)]
+        public bool? CanRedeal { get; set; }
+
+        [JsonProperty("chasing", Required = Required.AllowNull)]
+        public long? Chasing { get; set; }
+
+        [JsonProperty("commitment", Required = Required.Always)]
+        public string Commitment { get; set; }
+
+        /// <summary>
+        /// Tricks per team
+        /// </summary>
+        [JsonProperty("counts", Required = Required.Always)]
+        public List<long> Counts { get; set; }
+
+        [JsonProperty("dealerSeat", Required = Required.Always)]
+        public long DealerSeat { get; set; }
+
+        [JsonProperty("deckOrder", Required = Required.AllowNull)]
+        public List<string>? DeckOrder { get; set; }
+
+        /// <summary>
+        /// The viewer's own cards; null for spectators
+        /// </summary>
+        [JsonProperty("hand", Required = Required.AllowNull)]
+        public List<string>? Hand { get; set; }
+
+        [JsonProperty("handCounts", Required = Required.Always)]
+        public List<long> HandCounts { get; set; }
+
+        [JsonProperty("lastWinner", Required = Required.AllowNull)]
+        public long? LastWinner { get; set; }
+
+        [JsonProperty("outcome", Required = Required.AllowNull)]
+        public RungOutcome? Outcome { get; set; }
+
+        [JsonProperty("phase", Required = Required.Always)]
+        public RungPhase Phase { get; set; }
+
+        [JsonProperty("pile", Required = Required.Always)]
+        public long Pile { get; set; }
+
+        [JsonProperty("redeals", Required = Required.Always)]
+        public long Redeals { get; set; }
+
+        [JsonProperty("rules", Required = Required.Always)]
+        public RungRules Rules { get; set; }
+
+        [JsonProperty("rulesVersion", Required = Required.Always)]
+        public string RulesVersion { get; set; }
+
+        [JsonProperty("run", Required = Required.Always)]
+        public long Run { get; set; }
+
+        [JsonProperty("seatCount", Required = Required.Always)]
+        public long SeatCount { get; set; }
+
+        [JsonProperty("seedHex", Required = Required.AllowNull)]
+        public string? SeedHex { get; set; }
+
+        [JsonProperty("stats", Required = Required.Always)]
+        public List<RungSeatStats> Stats { get; set; }
+
+        [JsonProperty("stockCount", Required = Required.Always)]
+        public long StockCount { get; set; }
+
+        [JsonProperty("trick", Required = Required.Always)]
+        public RungTrick Trick { get; set; }
+
+        [JsonProperty("trickIndex", Required = Required.Always)]
+        public long TrickIndex { get; set; }
+
+        [JsonProperty("trump", Required = Required.AllowNull)]
+        public Suit? Trump { get; set; }
+
+        [JsonProperty("turnSeat", Required = Required.AllowNull)]
+        public long? TurnSeat { get; set; }
+
+        [JsonProperty("viewer", Required = Required.Always)]
+        public RungViewer Viewer { get; set; }
+    }
+
+    public partial class RungOutcome
+    {
+        [JsonProperty("kind", Required = Required.Always)]
+        public RungOutcomeKind Kind { get; set; }
+
+        [JsonProperty("team", Required = Required.Always)]
+        public long Team { get; set; }
+    }
+
+    public partial class RungTrick
+    {
+        [JsonProperty("leaderSeat", Required = Required.Always)]
+        public long LeaderSeat { get; set; }
+
+        [JsonProperty("plays", Required = Required.Always)]
+        public List<RungPlay> Plays { get; set; }
+    }
+
+    public partial class RungPlay
+    {
+        [JsonProperty("card", Required = Required.Always)]
+        public string Card { get; set; }
+
+        [JsonProperty("seat", Required = Required.Always)]
+        public long Seat { get; set; }
+    }
+
+    public partial class RungViewer
+    {
+        [JsonProperty("kind", Required = Required.Always)]
+        public Kind Kind { get; set; }
+
+        [JsonProperty("seat", Required = Required.DisallowNull, NullValueHandling = NullValueHandling.Ignore)]
+        public long? Seat { get; set; }
     }
 
     /// <summary>
@@ -1210,11 +1800,20 @@ namespace Hulla.Protocol
         [JsonProperty("resumeToken", Required = Required.AllowNull)]
         public string? ResumeToken { get; set; }
 
+        /// <summary>
+        /// The Thulla round view; null between rounds and while the room plays another game
+        /// </summary>
         [JsonProperty("round", Required = Required.AllowNull)]
         public View? Round { get; set; }
 
         [JsonProperty("rules", Required = Required.Always)]
         public RulesSelection Rules { get; set; }
+
+        /// <summary>
+        /// The Rung deal view while the room plays a Rung deal; absent otherwise
+        /// </summary>
+        [JsonProperty("rungRound", Required = Required.DisallowNull, NullValueHandling = NullValueHandling.Ignore)]
+        public RungView? RungRound { get; set; }
 
         [JsonProperty("seats", Required = Required.Always)]
         public List<Seat> Seats { get; set; }
@@ -1616,10 +2215,20 @@ namespace Hulla.Protocol
     }
 
     /// <summary>
-    /// Sent to the acting seat only: the legal mask reveals suit holdings
+    /// Sent to the acting seat only: the legal mask reveals suit holdings. Every card game uses
+    /// it and adds its own optional fields
     /// </summary>
     public partial class TurnStart
     {
+        /// <summary>
+        /// Rung, the call: the caller may ask for a redeal (RG7)
+        /// </summary>
+        [JsonProperty("canRedeal", Required = Required.DisallowNull, NullValueHandling = NullValueHandling.Ignore)]
+        public bool? CanRedeal { get; set; }
+
+        /// <summary>
+        /// Always false outside Thulla
+        /// </summary>
         [JsonProperty("canTakeHand", Required = Required.Always)]
         public bool CanTakeHand { get; set; }
 
@@ -1628,6 +2237,12 @@ namespace Hulla.Protocol
 
         [JsonProperty("legal", Required = Required.Always)]
         public List<string> Legal { get; set; }
+
+        /// <summary>
+        /// Rung: call, play or courtChoice
+        /// </summary>
+        [JsonProperty("phase", Required = Required.DisallowNull, NullValueHandling = NullValueHandling.Ignore)]
+        public string? Phase { get; set; }
 
         [JsonProperty("roundId", Required = Required.Always)]
         public string RoundId { get; set; }
@@ -1640,6 +2255,12 @@ namespace Hulla.Protocol
         /// </summary>
         [JsonProperty("simultaneous", Required = Required.DisallowNull, NullValueHandling = NullValueHandling.Ignore)]
         public bool? Simultaneous { get; set; }
+
+        /// <summary>
+        /// Rung, the call: the suits the caller may name
+        /// </summary>
+        [JsonProperty("suits", Required = Required.DisallowNull, NullValueHandling = NullValueHandling.Ignore)]
+        public List<Suit>? Suits { get; set; }
     }
 
     public partial class VoteRematch
@@ -1650,9 +2271,11 @@ namespace Hulla.Protocol
 
     public enum Tier { Learner, Regular, Ustad };
 
+    public enum Suit { C, D, H, S };
+
     public enum GameId { Rung, Thulla };
 
-    public enum Preset { ClassicPagat, Family, Hardcore, Relaxed, Standard };
+    public enum Preset { ClassicPagat, CourtPiece, Family, Hardcore, Hokm, Relaxed, Rung, Standard };
 
     public enum Direction { Ccw, Cw };
 
@@ -1687,6 +2310,20 @@ namespace Hulla.Protocol
 
     public enum PushType { DailyReward, FriendOnline, FriendRequest, SeasonEnd, TableInvite };
 
+    public enum RungOutcomeKind { Court, Court52, Win };
+
+    public enum Collect { Double, Single };
+
+    public enum PointsTable { Hokm, Rung };
+
+    public enum Redeal { NoHonours, Off };
+
+    public enum Scoring { Courts, Points };
+
+    public enum RungPhase { Call, CourtChoice, Ended, Play };
+
+    public enum Kind { Seat, Spectator };
+
     public enum TableMode { Private, Public, Ranked };
 
     public enum Phase { Ended, Opening, Play };
@@ -1698,10 +2335,6 @@ namespace Hulla.Protocol
     public enum HandTaking { Anyone, LeaderOnly, Off };
 
     public enum TwoPlayerEndgame { DrawDiscard, DrawOpponent, ThullaEndsRound };
-
-    public enum Suit { C, D, H, S };
-
-    public enum Kind { Seat, Spectator };
 
     public enum TableStatus { Closed, InRound, Locked, Open };
 
@@ -1737,6 +2370,7 @@ namespace Hulla.Protocol
             Converters =
             {
                 TierConverter.Singleton,
+                SuitConverter.Singleton,
                 GameIdConverter.Singleton,
                 PresetConverter.Singleton,
                 DirectionConverter.Singleton,
@@ -1752,14 +2386,19 @@ namespace Hulla.Protocol
                 VisibilityConverter.Singleton,
                 PushRouteConverter.Singleton,
                 PushTypeConverter.Singleton,
+                RungOutcomeKindConverter.Singleton,
+                CollectConverter.Singleton,
+                PointsTableConverter.Singleton,
+                RedealConverter.Singleton,
+                ScoringConverter.Singleton,
+                RungPhaseConverter.Singleton,
+                KindConverter.Singleton,
                 TableModeConverter.Singleton,
                 PhaseConverter.Singleton,
                 EmptyHandLeaderConverter.Singleton,
                 FormatConverter.Singleton,
                 HandTakingConverter.Singleton,
                 TwoPlayerEndgameConverter.Singleton,
-                SuitConverter.Singleton,
-                KindConverter.Singleton,
                 TableStatusConverter.Singleton,
                 TableClosedPayloadReasonConverter.Singleton,
                 new IsoDateTimeConverter { DateTimeStyles = DateTimeStyles.AssumeUniversal }
@@ -1811,6 +2450,57 @@ namespace Hulla.Protocol
         }
 
         public static readonly TierConverter Singleton = new TierConverter();
+    }
+
+    internal class SuitConverter : JsonConverter
+    {
+        public override bool CanConvert(Type t) => t == typeof(Suit) || t == typeof(Suit?);
+
+        public override object ReadJson(JsonReader reader, Type t, object existingValue, JsonSerializer serializer)
+        {
+            if (reader.TokenType == JsonToken.Null) return null;
+            var value = serializer.Deserialize<string>(reader);
+            switch (value)
+            {
+                case "C":
+                    return Suit.C;
+                case "D":
+                    return Suit.D;
+                case "H":
+                    return Suit.H;
+                case "S":
+                    return Suit.S;
+            }
+            throw new Exception("Cannot unmarshal type Suit");
+        }
+
+        public override void WriteJson(JsonWriter writer, object untypedValue, JsonSerializer serializer)
+        {
+            if (untypedValue == null)
+            {
+                serializer.Serialize(writer, null);
+                return;
+            }
+            var value = (Suit)untypedValue;
+            switch (value)
+            {
+                case Suit.C:
+                    serializer.Serialize(writer, "C");
+                    return;
+                case Suit.D:
+                    serializer.Serialize(writer, "D");
+                    return;
+                case Suit.H:
+                    serializer.Serialize(writer, "H");
+                    return;
+                case Suit.S:
+                    serializer.Serialize(writer, "S");
+                    return;
+            }
+            throw new Exception("Cannot marshal type Suit");
+        }
+
+        public static readonly SuitConverter Singleton = new SuitConverter();
     }
 
     internal class GameIdConverter : JsonConverter
@@ -1866,12 +2556,18 @@ namespace Hulla.Protocol
             {
                 case "classicPagat":
                     return Preset.ClassicPagat;
+                case "courtPiece":
+                    return Preset.CourtPiece;
                 case "family":
                     return Preset.Family;
                 case "hardcore":
                     return Preset.Hardcore;
+                case "hokm":
+                    return Preset.Hokm;
                 case "relaxed":
                     return Preset.Relaxed;
+                case "rung":
+                    return Preset.Rung;
                 case "standard":
                     return Preset.Standard;
             }
@@ -1891,14 +2587,23 @@ namespace Hulla.Protocol
                 case Preset.ClassicPagat:
                     serializer.Serialize(writer, "classicPagat");
                     return;
+                case Preset.CourtPiece:
+                    serializer.Serialize(writer, "courtPiece");
+                    return;
                 case Preset.Family:
                     serializer.Serialize(writer, "family");
                     return;
                 case Preset.Hardcore:
                     serializer.Serialize(writer, "hardcore");
                     return;
+                case Preset.Hokm:
+                    serializer.Serialize(writer, "hokm");
+                    return;
                 case Preset.Relaxed:
                     serializer.Serialize(writer, "relaxed");
+                    return;
+                case Preset.Rung:
+                    serializer.Serialize(writer, "rung");
                     return;
                 case Preset.Standard:
                     serializer.Serialize(writer, "standard");
@@ -2730,6 +3435,308 @@ namespace Hulla.Protocol
         public static readonly PushTypeConverter Singleton = new PushTypeConverter();
     }
 
+    internal class RungOutcomeKindConverter : JsonConverter
+    {
+        public override bool CanConvert(Type t) => t == typeof(RungOutcomeKind) || t == typeof(RungOutcomeKind?);
+
+        public override object ReadJson(JsonReader reader, Type t, object existingValue, JsonSerializer serializer)
+        {
+            if (reader.TokenType == JsonToken.Null) return null;
+            var value = serializer.Deserialize<string>(reader);
+            switch (value)
+            {
+                case "court":
+                    return RungOutcomeKind.Court;
+                case "court52":
+                    return RungOutcomeKind.Court52;
+                case "win":
+                    return RungOutcomeKind.Win;
+            }
+            throw new Exception("Cannot unmarshal type RungOutcomeKind");
+        }
+
+        public override void WriteJson(JsonWriter writer, object untypedValue, JsonSerializer serializer)
+        {
+            if (untypedValue == null)
+            {
+                serializer.Serialize(writer, null);
+                return;
+            }
+            var value = (RungOutcomeKind)untypedValue;
+            switch (value)
+            {
+                case RungOutcomeKind.Court:
+                    serializer.Serialize(writer, "court");
+                    return;
+                case RungOutcomeKind.Court52:
+                    serializer.Serialize(writer, "court52");
+                    return;
+                case RungOutcomeKind.Win:
+                    serializer.Serialize(writer, "win");
+                    return;
+            }
+            throw new Exception("Cannot marshal type RungOutcomeKind");
+        }
+
+        public static readonly RungOutcomeKindConverter Singleton = new RungOutcomeKindConverter();
+    }
+
+    internal class CollectConverter : JsonConverter
+    {
+        public override bool CanConvert(Type t) => t == typeof(Collect) || t == typeof(Collect?);
+
+        public override object ReadJson(JsonReader reader, Type t, object existingValue, JsonSerializer serializer)
+        {
+            if (reader.TokenType == JsonToken.Null) return null;
+            var value = serializer.Deserialize<string>(reader);
+            switch (value)
+            {
+                case "double":
+                    return Collect.Double;
+                case "single":
+                    return Collect.Single;
+            }
+            throw new Exception("Cannot unmarshal type Collect");
+        }
+
+        public override void WriteJson(JsonWriter writer, object untypedValue, JsonSerializer serializer)
+        {
+            if (untypedValue == null)
+            {
+                serializer.Serialize(writer, null);
+                return;
+            }
+            var value = (Collect)untypedValue;
+            switch (value)
+            {
+                case Collect.Double:
+                    serializer.Serialize(writer, "double");
+                    return;
+                case Collect.Single:
+                    serializer.Serialize(writer, "single");
+                    return;
+            }
+            throw new Exception("Cannot marshal type Collect");
+        }
+
+        public static readonly CollectConverter Singleton = new CollectConverter();
+    }
+
+    internal class PointsTableConverter : JsonConverter
+    {
+        public override bool CanConvert(Type t) => t == typeof(PointsTable) || t == typeof(PointsTable?);
+
+        public override object ReadJson(JsonReader reader, Type t, object existingValue, JsonSerializer serializer)
+        {
+            if (reader.TokenType == JsonToken.Null) return null;
+            var value = serializer.Deserialize<string>(reader);
+            switch (value)
+            {
+                case "hokm":
+                    return PointsTable.Hokm;
+                case "rung":
+                    return PointsTable.Rung;
+            }
+            throw new Exception("Cannot unmarshal type PointsTable");
+        }
+
+        public override void WriteJson(JsonWriter writer, object untypedValue, JsonSerializer serializer)
+        {
+            if (untypedValue == null)
+            {
+                serializer.Serialize(writer, null);
+                return;
+            }
+            var value = (PointsTable)untypedValue;
+            switch (value)
+            {
+                case PointsTable.Hokm:
+                    serializer.Serialize(writer, "hokm");
+                    return;
+                case PointsTable.Rung:
+                    serializer.Serialize(writer, "rung");
+                    return;
+            }
+            throw new Exception("Cannot marshal type PointsTable");
+        }
+
+        public static readonly PointsTableConverter Singleton = new PointsTableConverter();
+    }
+
+    internal class RedealConverter : JsonConverter
+    {
+        public override bool CanConvert(Type t) => t == typeof(Redeal) || t == typeof(Redeal?);
+
+        public override object ReadJson(JsonReader reader, Type t, object existingValue, JsonSerializer serializer)
+        {
+            if (reader.TokenType == JsonToken.Null) return null;
+            var value = serializer.Deserialize<string>(reader);
+            switch (value)
+            {
+                case "noHonours":
+                    return Redeal.NoHonours;
+                case "off":
+                    return Redeal.Off;
+            }
+            throw new Exception("Cannot unmarshal type Redeal");
+        }
+
+        public override void WriteJson(JsonWriter writer, object untypedValue, JsonSerializer serializer)
+        {
+            if (untypedValue == null)
+            {
+                serializer.Serialize(writer, null);
+                return;
+            }
+            var value = (Redeal)untypedValue;
+            switch (value)
+            {
+                case Redeal.NoHonours:
+                    serializer.Serialize(writer, "noHonours");
+                    return;
+                case Redeal.Off:
+                    serializer.Serialize(writer, "off");
+                    return;
+            }
+            throw new Exception("Cannot marshal type Redeal");
+        }
+
+        public static readonly RedealConverter Singleton = new RedealConverter();
+    }
+
+    internal class ScoringConverter : JsonConverter
+    {
+        public override bool CanConvert(Type t) => t == typeof(Scoring) || t == typeof(Scoring?);
+
+        public override object ReadJson(JsonReader reader, Type t, object existingValue, JsonSerializer serializer)
+        {
+            if (reader.TokenType == JsonToken.Null) return null;
+            var value = serializer.Deserialize<string>(reader);
+            switch (value)
+            {
+                case "courts":
+                    return Scoring.Courts;
+                case "points":
+                    return Scoring.Points;
+            }
+            throw new Exception("Cannot unmarshal type Scoring");
+        }
+
+        public override void WriteJson(JsonWriter writer, object untypedValue, JsonSerializer serializer)
+        {
+            if (untypedValue == null)
+            {
+                serializer.Serialize(writer, null);
+                return;
+            }
+            var value = (Scoring)untypedValue;
+            switch (value)
+            {
+                case Scoring.Courts:
+                    serializer.Serialize(writer, "courts");
+                    return;
+                case Scoring.Points:
+                    serializer.Serialize(writer, "points");
+                    return;
+            }
+            throw new Exception("Cannot marshal type Scoring");
+        }
+
+        public static readonly ScoringConverter Singleton = new ScoringConverter();
+    }
+
+    internal class RungPhaseConverter : JsonConverter
+    {
+        public override bool CanConvert(Type t) => t == typeof(RungPhase) || t == typeof(RungPhase?);
+
+        public override object ReadJson(JsonReader reader, Type t, object existingValue, JsonSerializer serializer)
+        {
+            if (reader.TokenType == JsonToken.Null) return null;
+            var value = serializer.Deserialize<string>(reader);
+            switch (value)
+            {
+                case "call":
+                    return RungPhase.Call;
+                case "courtChoice":
+                    return RungPhase.CourtChoice;
+                case "ended":
+                    return RungPhase.Ended;
+                case "play":
+                    return RungPhase.Play;
+            }
+            throw new Exception("Cannot unmarshal type RungPhase");
+        }
+
+        public override void WriteJson(JsonWriter writer, object untypedValue, JsonSerializer serializer)
+        {
+            if (untypedValue == null)
+            {
+                serializer.Serialize(writer, null);
+                return;
+            }
+            var value = (RungPhase)untypedValue;
+            switch (value)
+            {
+                case RungPhase.Call:
+                    serializer.Serialize(writer, "call");
+                    return;
+                case RungPhase.CourtChoice:
+                    serializer.Serialize(writer, "courtChoice");
+                    return;
+                case RungPhase.Ended:
+                    serializer.Serialize(writer, "ended");
+                    return;
+                case RungPhase.Play:
+                    serializer.Serialize(writer, "play");
+                    return;
+            }
+            throw new Exception("Cannot marshal type RungPhase");
+        }
+
+        public static readonly RungPhaseConverter Singleton = new RungPhaseConverter();
+    }
+
+    internal class KindConverter : JsonConverter
+    {
+        public override bool CanConvert(Type t) => t == typeof(Kind) || t == typeof(Kind?);
+
+        public override object ReadJson(JsonReader reader, Type t, object existingValue, JsonSerializer serializer)
+        {
+            if (reader.TokenType == JsonToken.Null) return null;
+            var value = serializer.Deserialize<string>(reader);
+            switch (value)
+            {
+                case "seat":
+                    return Kind.Seat;
+                case "spectator":
+                    return Kind.Spectator;
+            }
+            throw new Exception("Cannot unmarshal type Kind");
+        }
+
+        public override void WriteJson(JsonWriter writer, object untypedValue, JsonSerializer serializer)
+        {
+            if (untypedValue == null)
+            {
+                serializer.Serialize(writer, null);
+                return;
+            }
+            var value = (Kind)untypedValue;
+            switch (value)
+            {
+                case Kind.Seat:
+                    serializer.Serialize(writer, "seat");
+                    return;
+                case Kind.Spectator:
+                    serializer.Serialize(writer, "spectator");
+                    return;
+            }
+            throw new Exception("Cannot marshal type Kind");
+        }
+
+        public static readonly KindConverter Singleton = new KindConverter();
+    }
+
     internal class TableModeConverter : JsonConverter
     {
         public override bool CanConvert(Type t) => t == typeof(TableMode) || t == typeof(TableMode?);
@@ -3019,98 +4026,6 @@ namespace Hulla.Protocol
         }
 
         public static readonly TwoPlayerEndgameConverter Singleton = new TwoPlayerEndgameConverter();
-    }
-
-    internal class SuitConverter : JsonConverter
-    {
-        public override bool CanConvert(Type t) => t == typeof(Suit) || t == typeof(Suit?);
-
-        public override object ReadJson(JsonReader reader, Type t, object existingValue, JsonSerializer serializer)
-        {
-            if (reader.TokenType == JsonToken.Null) return null;
-            var value = serializer.Deserialize<string>(reader);
-            switch (value)
-            {
-                case "C":
-                    return Suit.C;
-                case "D":
-                    return Suit.D;
-                case "H":
-                    return Suit.H;
-                case "S":
-                    return Suit.S;
-            }
-            throw new Exception("Cannot unmarshal type Suit");
-        }
-
-        public override void WriteJson(JsonWriter writer, object untypedValue, JsonSerializer serializer)
-        {
-            if (untypedValue == null)
-            {
-                serializer.Serialize(writer, null);
-                return;
-            }
-            var value = (Suit)untypedValue;
-            switch (value)
-            {
-                case Suit.C:
-                    serializer.Serialize(writer, "C");
-                    return;
-                case Suit.D:
-                    serializer.Serialize(writer, "D");
-                    return;
-                case Suit.H:
-                    serializer.Serialize(writer, "H");
-                    return;
-                case Suit.S:
-                    serializer.Serialize(writer, "S");
-                    return;
-            }
-            throw new Exception("Cannot marshal type Suit");
-        }
-
-        public static readonly SuitConverter Singleton = new SuitConverter();
-    }
-
-    internal class KindConverter : JsonConverter
-    {
-        public override bool CanConvert(Type t) => t == typeof(Kind) || t == typeof(Kind?);
-
-        public override object ReadJson(JsonReader reader, Type t, object existingValue, JsonSerializer serializer)
-        {
-            if (reader.TokenType == JsonToken.Null) return null;
-            var value = serializer.Deserialize<string>(reader);
-            switch (value)
-            {
-                case "seat":
-                    return Kind.Seat;
-                case "spectator":
-                    return Kind.Spectator;
-            }
-            throw new Exception("Cannot unmarshal type Kind");
-        }
-
-        public override void WriteJson(JsonWriter writer, object untypedValue, JsonSerializer serializer)
-        {
-            if (untypedValue == null)
-            {
-                serializer.Serialize(writer, null);
-                return;
-            }
-            var value = (Kind)untypedValue;
-            switch (value)
-            {
-                case Kind.Seat:
-                    serializer.Serialize(writer, "seat");
-                    return;
-                case Kind.Spectator:
-                    serializer.Serialize(writer, "spectator");
-                    return;
-            }
-            throw new Exception("Cannot marshal type Kind");
-        }
-
-        public static readonly KindConverter Singleton = new KindConverter();
     }
 
     internal class TableStatusConverter : JsonConverter

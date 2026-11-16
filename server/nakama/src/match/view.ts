@@ -7,7 +7,11 @@ import type {
 import type { SeriesState, Viewer } from "@hulla/rules-engine";
 import type { SeatIndex } from "@hulla/shared-ts";
 
-export type TableStateFor<V> = Omit<TableStatePayload, "round"> & { readonly round: V | null };
+export type TableStateFor<V> = Omit<TableStatePayload, "round" | "rungRound"> & {
+  readonly round: V | null;
+  /** A game that names its own view field (`GameHost.viewField`) puts the view there. */
+  [field: string]: unknown;
+};
 
 export function occupiedSeats(seats: readonly SeatSlot[]): SeatIndex[] {
   return seats.flatMap((slot, index) => (slot.playerId === null ? [] : [index]));
@@ -64,6 +68,30 @@ export function seriesPayload(series: SeriesState): SeriesPayload {
     loserTally: [...series.loserTally],
     nextDealerSeat: series.nextDealerSeat,
     finished: series.finished,
+    ...teamsPayload(series),
+  };
+}
+
+/** A team game's score rides on the series as plain extra fields (Rung's bazi); none for Thulla. */
+function teamsPayload(series: SeriesState): Pick<SeriesPayload, "teams"> {
+  const s = series as SeriesState & {
+    readonly teamPoints?: readonly [number, number];
+    readonly courts?: readonly [number, number];
+    readonly dealsWon?: readonly [number, number];
+    readonly streakTeam?: 0 | 1 | null;
+    readonly streakDeals?: number;
+    readonly winnerTeam?: 0 | 1 | null;
+  };
+  if (s.teamPoints === undefined || s.courts === undefined || s.dealsWon === undefined) return {};
+  return {
+    teams: {
+      points: [...s.teamPoints],
+      courts: [...s.courts],
+      dealsWon: [...s.dealsWon],
+      streakTeam: s.streakTeam ?? null,
+      streakDeals: s.streakDeals ?? 0,
+      winnerTeam: s.winnerTeam ?? null,
+    },
   };
 }
 
@@ -95,8 +123,8 @@ export function tableStateFor<S, M, V, E, R>(
 ): TableStateFor<V> {
   const seat = presence.seat;
   const slot = seat === null ? null : (state.seats[seat] ?? null);
-  const round =
-    state.round === null ? null : host.module.redact(state.round.state, viewerFor(seat));
+  const view = state.round === null ? null : host.module.redact(state.round.state, viewerFor(seat));
+  const round = host.viewField === undefined ? view : null;
   const base: TableStateFor<V> = {
     code: state.code,
     gameId: state.gameId,
@@ -119,6 +147,7 @@ export function tableStateFor<S, M, V, E, R>(
     lastSeq: state.seq,
     resumeToken: slot?.resumeToken ?? null,
   };
+  if (host.viewField !== undefined && view !== null) base[host.viewField] = view;
   const ask = state.round?.handAsk ?? null;
   if (ask !== null) {
     base.handAsk = {

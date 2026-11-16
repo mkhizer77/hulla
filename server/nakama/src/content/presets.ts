@@ -1,3 +1,6 @@
+import courtPiece from "../../../../content/presets/rung/courtPiece.json";
+import hokm from "../../../../content/presets/rung/hokm.json";
+import rung from "../../../../content/presets/rung/rung.json";
 import classicPagat from "../../../../content/presets/thulla/classicPagat.json";
 import family from "../../../../content/presets/thulla/family.json";
 import hardcore from "../../../../content/presets/thulla/hardcore.json";
@@ -17,7 +20,7 @@ export interface Preset {
   readonly settings: NonNullable<RulesSelection["settings"]>;
 }
 
-const files = [standard, family, hardcore, classicPagat, relaxed] as const;
+const files = [standard, family, hardcore, classicPagat, relaxed, rung, courtPiece, hokm] as const;
 
 /** Bundled from `content/presets` at build time; `pnpm content:validate` keeps them honest. */
 export const PRESETS: readonly Preset[] = [...files]
@@ -34,4 +37,17 @@ export const PRESETS: readonly Preset[] = [...files]
 
 export function presetsFor(gameId: string): readonly Preset[] {
   return PRESETS.filter((p) => p.gameId === gameId);
+}
+
+/**
+ * The preset's table settings from content sit under the selection's own (explicit wins).
+ * `fallback` is the game's own default preset, for a selection that names none.
+ */
+export function withPresetSettings(
+  selection: RulesSelection,
+  fallback: Preset["id"] = "standard",
+): RulesSelection {
+  const preset = presetsFor(selection.gameId).find((p) => p.id === (selection.preset ?? fallback));
+  const merged = { ...(preset?.settings ?? {}), ...(selection.settings ?? {}) };
+  return Object.keys(merged).length === 0 ? selection : { ...selection, settings: merged };
 }

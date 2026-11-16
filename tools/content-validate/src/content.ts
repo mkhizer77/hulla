@@ -1,7 +1,14 @@
 import { readdirSync, readFileSync, statSync } from "node:fs";
 import { dirname, join, relative, resolve } from "node:path";
 
-import { defaultRules, THULLA_PRESETS, THULLA_RULES_SCHEMA } from "@hulla/rules-engine";
+import {
+  defaultRules,
+  defaultRungRules,
+  RUNG_PRESETS,
+  RUNG_RULES_SCHEMA,
+  THULLA_PRESETS,
+  THULLA_RULES_SCHEMA,
+} from "@hulla/rules-engine";
 import AjvDraft7, { type ValidateFunction } from "ajv";
 
 interface ContentFile {
@@ -38,22 +45,32 @@ function describe(validate: ValidateFunction): string {
     .join("; ");
 }
 
+/** What a game's presets are checked against: its rules schema, defaults and own preset table. */
+interface PresetGame {
+  readonly name: string;
+  /** The engine's preset table, named in the report. */
+  readonly table: string;
+  readonly check: ValidateFunction;
+  readonly defaults: object;
+  readonly presets: Readonly<Record<string, unknown>>;
+}
+
 /** Presets must stay inside the engine's rules schema and equal its own preset table (CODING_RULES 8). */
-function presetProblems(file: ContentFile, rulesCheck: ValidateFunction): string[] {
+function presetProblems(file: ContentFile, game: PresetGame): string[] {
   const problems: string[] = [];
   const id = String(file.document["id"]);
   const overrides = file.document["overrides"];
-  if (!rulesCheck({ ...defaultRules("private"), ...(overrides as object) })) {
+  if (!game.check({ ...game.defaults, ...(overrides as object) })) {
     problems.push(
-      `${file.path}: overrides are outside the Thulla rules schema: ${describe(rulesCheck)}`,
+      `${file.path}: overrides are outside the ${game.name} rules schema: ${describe(game.check)}`,
     );
   }
-  const expected = (THULLA_PRESETS as Record<string, unknown>)[id];
+  const expected = game.presets[id];
   if (expected === undefined) {
     problems.push(`${file.path}: the engine has no preset ${id}`);
   } else if (JSON.stringify(expected) !== JSON.stringify(overrides)) {
     problems.push(
-      `${file.path}: overrides differ from the engine's THULLA_PRESETS.${id}: ${JSON.stringify(expected)}`,
+      `${file.path}: overrides differ from the engine's ${game.table}.${id}: ${JSON.stringify(expected)}`,
     );
   }
   return problems;
@@ -99,9 +116,23 @@ function rankedProblems(file: ContentFile, contentDir: string): string[] {
 /** Every content file names its schema; a preset is also checked against the engine. */
 export function validateContentTree(contentDir: string): string[] {
   const compile = compiler();
-  const ajvRules = new AjvDraft7({ strictRequired: false, allowUnionTypes: true }).compile(
-    THULLA_RULES_SCHEMA,
-  );
+  const rulesAjv = new AjvDraft7({ strictRequired: false, allowUnionTypes: true });
+  const games: Readonly<Record<string, PresetGame>> = {
+    thulla: {
+      name: "Thulla",
+      table: "THULLA_PRESETS",
+      check: rulesAjv.compile(THULLA_RULES_SCHEMA),
+      defaults: defaultRules("private"),
+      presets: THULLA_PRESETS,
+    },
+    rung: {
+      name: "Rung",
+      table: "RUNG_PRESETS",
+      check: rulesAjv.compile(RUNG_RULES_SCHEMA),
+      defaults: defaultRungRules("private"),
+      presets: RUNG_PRESETS,
+    },
+  };
   const problems: string[] = [];
   for (const path of walk(contentDir)) {
     const rel = relative(contentDir, path);
@@ -138,8 +169,9 @@ export function validateContentTree(contentDir: string): string[] {
       continue;
     }
     const file: ContentFile = { path: rel, document };
-    if (schemaPath.endsWith("preset.schema.json") && document["gameId"] === "thulla") {
-      problems.push(...presetProblems(file, ajvRules));
+    const game = games[String(document["gameId"])];
+    if (schemaPath.endsWith("preset.schema.json") && game !== undefined) {
+      problems.push(...presetProblems(file, game));
     }
     if (schemaPath.endsWith("ranked.schema.json")) {
       problems.push(...rankedProblems(file, contentDir));

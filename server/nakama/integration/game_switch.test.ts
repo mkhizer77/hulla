@@ -14,7 +14,7 @@ describe.skipIf(NAKAMA_HOST === undefined)("switching a room's game against Naka
     for (const c of clients) c.close();
   });
 
-  it("the table runs under the one match module and change_game reaches the table core", async () => {
+  it("the table runs under the one match module and the host moves it to Rung", async () => {
     const suffix = String(Date.now());
     const host = await scriptedClient("gh", suffix);
     const guest = await scriptedClient("gg", suffix);
@@ -41,15 +41,22 @@ describe.skipIf(NAKAMA_HOST === undefined)("switching a room's game against Naka
 
     // Only the host may switch.
     expect((await errorAfter(guest, { gameId: "rung" })).code).toBe("table.not_host");
-    // Rung is in the protocol but has no server host yet, so the switch is refused by name.
-    expect(await errorAfter(host, { gameId: "rung" })).toMatchObject({
-      code: "table.invalid_payload",
-      detail: { reason: "game_id" },
-    });
     expect(await errorAfter(host, { gameId: "thulla" })).toMatchObject({
       code: "table.invalid_payload",
       detail: { reason: "same_game" },
     });
+    // The host moves the room to Rung: same match, four seats, everyone told.
+    await host.send(created.matchId, "change_game", OPCODES.change_game.opcode, { gameId: "rung" });
+    const changed = await guest.next((e) => e.type === "game_changed");
+    expect(changed.payload).toMatchObject({ gameId: "rung", changedBy: 0 });
+    const moved = (
+      await guest.next(
+        (e) => e.type === "table_state" && (e.payload as TableState).gameId === "rung",
+      )
+    ).payload as TableState;
+    expect(moved.seats).toHaveLength(4);
+    expect(moved.seats.filter((s) => s.playerId !== null)).toHaveLength(2);
+    expect(moved.rules).toMatchObject({ gameId: "rung", settings: { direction: "ccw" } });
     // A game the protocol does not know fails the generated check inside Nakama.
     expect(await errorAfter(host, { gameId: "ludo" })).toMatchObject({
       code: "table.invalid_payload",

@@ -31,9 +31,8 @@ export interface MatchmakerDeps {
  * requested size is accepted (ARCHITECTURE 8.1, OQ-006); the client widens the query over time.
  */
 export function tableForMatch(deps: MatchmakerDeps, entries: readonly MatchedEntry[]): string {
-  const requested = entries[0]?.properties["game"] ?? "thulla";
-  const gameId: CreateTableParams["gameId"] =
-    gameEntry(requested) === null ? "thulla" : (requested as CreateTableParams["gameId"]);
+  // Only Thulla is matchmade so far: Rung needs exactly four and bots to fill (Rung design 4).
+  const gameId: CreateTableParams["gameId"] = "thulla";
   const entry = gameEntry(gameId);
   if (entry === null) throw new Error("no game is registered");
   const byParty = new Map<string, string[]>();

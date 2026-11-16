@@ -28,6 +28,9 @@ namespace Hulla.Protocol
         public const long TakeHand = 41;
         public const long CancelTake = 42;
         public const long AnswerHand = 43;
+        public const long CallTrump = 44;
+        public const long Redeal = 45;
+        public const long CourtChoice = 46;
         public const long TableState = 100;
         public const long RulesChanged = 101;
         public const long Presence = 102;
@@ -54,6 +57,17 @@ namespace Hulla.Protocol
         public const long RoundEnd = 151;
         public const long HandAsked = 152;
         public const long HandAnswered = 153;
+        public const long RungRoundStart = 160;
+        public const long RungHand = 161;
+        public const long RungRedealt = 162;
+        public const long RungTrumpCalled = 163;
+        public const long RungHandsCompleted = 164;
+        public const long RungCardPlayed = 165;
+        public const long RungTrickWon = 166;
+        public const long RungPileTaken = 167;
+        public const long RungCourtChoiceOpened = 168;
+        public const long RungCourtChoiceMade = 169;
+        public const long RungRoundEnd = 170;
     }
 
     public static class MessageTypes
@@ -81,6 +95,9 @@ namespace Hulla.Protocol
         public const string TakeHand = "take_hand";
         public const string CancelTake = "cancel_take";
         public const string AnswerHand = "answer_hand";
+        public const string CallTrump = "call_trump";
+        public const string Redeal = "redeal";
+        public const string CourtChoice = "court_choice";
         public const string TableState = "table_state";
         public const string RulesChanged = "rules_changed";
         public const string Presence = "presence";
@@ -107,6 +124,17 @@ namespace Hulla.Protocol
         public const string RoundEnd = "round_end";
         public const string HandAsked = "hand_asked";
         public const string HandAnswered = "hand_answered";
+        public const string RungRoundStart = "rung_round_start";
+        public const string RungHand = "rung_hand";
+        public const string RungRedealt = "rung_redealt";
+        public const string RungTrumpCalled = "rung_trump_called";
+        public const string RungHandsCompleted = "rung_hands_completed";
+        public const string RungCardPlayed = "rung_card_played";
+        public const string RungTrickWon = "rung_trick_won";
+        public const string RungPileTaken = "rung_pile_taken";
+        public const string RungCourtChoiceOpened = "rung_court_choice_opened";
+        public const string RungCourtChoiceMade = "rung_court_choice_made";
+        public const string RungRoundEnd = "rung_round_end";
 
         /// <summary>The wire type for an opcode, or null when the opcode is unknown.</summary>
         public static string? ForOpcode(long opcode)
@@ -136,6 +164,9 @@ namespace Hulla.Protocol
                 case 41: return TakeHand;
                 case 42: return CancelTake;
                 case 43: return AnswerHand;
+                case 44: return CallTrump;
+                case 45: return Redeal;
+                case 46: return CourtChoice;
                 case 100: return TableState;
                 case 101: return RulesChanged;
                 case 102: return Presence;
@@ -162,6 +193,17 @@ namespace Hulla.Protocol
                 case 151: return RoundEnd;
                 case 152: return HandAsked;
                 case 153: return HandAnswered;
+                case 160: return RungRoundStart;
+                case 161: return RungHand;
+                case 162: return RungRedealt;
+                case 163: return RungTrumpCalled;
+                case 164: return RungHandsCompleted;
+                case 165: return RungCardPlayed;
+                case 166: return RungTrickWon;
+                case 167: return RungPileTaken;
+                case 168: return RungCourtChoiceOpened;
+                case 169: return RungCourtChoiceMade;
+                case 170: return RungRoundEnd;
                 default: return null;
             }
         }
@@ -194,6 +236,9 @@ namespace Hulla.Protocol
                 case TakeHand:
                 case CancelTake:
                 case AnswerHand:
+                case CallTrump:
+                case Redeal:
+                case CourtChoice:
                 case RulesChanged:
                 case Presence:
                 case HostChanged:
@@ -213,6 +258,16 @@ namespace Hulla.Protocol
                 case RoundEnd:
                 case HandAsked:
                 case HandAnswered:
+                case RungRoundStart:
+                case RungRedealt:
+                case RungTrumpCalled:
+                case RungHandsCompleted:
+                case RungCardPlayed:
+                case RungTrickWon:
+                case RungPileTaken:
+                case RungCourtChoiceOpened:
+                case RungCourtChoiceMade:
+                case RungRoundEnd:
                     return true;
                 default:
                     return false;
@@ -247,6 +302,9 @@ namespace Hulla.Protocol
                 case TakeHand: return Opcodes.TakeHand;
                 case CancelTake: return Opcodes.CancelTake;
                 case AnswerHand: return Opcodes.AnswerHand;
+                case CallTrump: return Opcodes.CallTrump;
+                case Redeal: return Opcodes.Redeal;
+                case CourtChoice: return Opcodes.CourtChoice;
                 case TableState: return Opcodes.TableState;
                 case RulesChanged: return Opcodes.RulesChanged;
                 case Presence: return Opcodes.Presence;
@@ -273,6 +331,17 @@ namespace Hulla.Protocol
                 case RoundEnd: return Opcodes.RoundEnd;
                 case HandAsked: return Opcodes.HandAsked;
                 case HandAnswered: return Opcodes.HandAnswered;
+                case RungRoundStart: return Opcodes.RungRoundStart;
+                case RungHand: return Opcodes.RungHand;
+                case RungRedealt: return Opcodes.RungRedealt;
+                case RungTrumpCalled: return Opcodes.RungTrumpCalled;
+                case RungHandsCompleted: return Opcodes.RungHandsCompleted;
+                case RungCardPlayed: return Opcodes.RungCardPlayed;
+                case RungTrickWon: return Opcodes.RungTrickWon;
+                case RungPileTaken: return Opcodes.RungPileTaken;
+                case RungCourtChoiceOpened: return Opcodes.RungCourtChoiceOpened;
+                case RungCourtChoiceMade: return Opcodes.RungCourtChoiceMade;
+                case RungRoundEnd: return Opcodes.RungRoundEnd;
                 default: return -1;
             }
         }

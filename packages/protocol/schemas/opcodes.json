@@ -166,6 +166,30 @@
       "schema": "shell/table.json#/definitions/answer_hand"
     },
     {
+      "type": "call_trump",
+      "opcode": 44,
+      "direction": "c2s",
+      "visibility": "public",
+      "game": "rung",
+      "schema": "games/rung/moves.json#/definitions/call_trump"
+    },
+    {
+      "type": "redeal",
+      "opcode": 45,
+      "direction": "c2s",
+      "visibility": "public",
+      "game": "rung",
+      "schema": "games/rung/moves.json#/definitions/redeal"
+    },
+    {
+      "type": "court_choice",
+      "opcode": 46,
+      "direction": "c2s",
+      "visibility": "public",
+      "game": "rung",
+      "schema": "games/rung/moves.json#/definitions/court_choice"
+    },
+    {
       "type": "table_state",
       "opcode": 100,
       "direction": "s2c",
@@ -360,6 +384,94 @@
       "visibility": "public",
       "game": "thulla",
       "schema": "games/thulla/events.json#/definitions/hand_answered"
+    },
+    {
+      "type": "rung_round_start",
+      "opcode": 160,
+      "direction": "s2c",
+      "visibility": "public",
+      "game": "rung",
+      "schema": "games/rung/events.json#/definitions/rung_round_start"
+    },
+    {
+      "type": "rung_hand",
+      "opcode": 161,
+      "direction": "s2c",
+      "visibility": "seat",
+      "game": "rung",
+      "schema": "games/rung/events.json#/definitions/rung_hand"
+    },
+    {
+      "type": "rung_redealt",
+      "opcode": 162,
+      "direction": "s2c",
+      "visibility": "public",
+      "game": "rung",
+      "schema": "games/rung/events.json#/definitions/rung_redealt"
+    },
+    {
+      "type": "rung_trump_called",
+      "opcode": 163,
+      "direction": "s2c",
+      "visibility": "public",
+      "game": "rung",
+      "schema": "games/rung/events.json#/definitions/rung_trump_called"
+    },
+    {
+      "type": "rung_hands_completed",
+      "opcode": 164,
+      "direction": "s2c",
+      "visibility": "public",
+      "game": "rung",
+      "schema": "games/rung/events.json#/definitions/rung_hands_completed"
+    },
+    {
+      "type": "rung_card_played",
+      "opcode": 165,
+      "direction": "s2c",
+      "visibility": "public",
+      "game": "rung",
+      "schema": "games/rung/events.json#/definitions/rung_card_played"
+    },
+    {
+      "type": "rung_trick_won",
+      "opcode": 166,
+      "direction": "s2c",
+      "visibility": "public",
+      "game": "rung",
+      "schema": "games/rung/events.json#/definitions/rung_trick_won"
+    },
+    {
+      "type": "rung_pile_taken",
+      "opcode": 167,
+      "direction": "s2c",
+      "visibility": "public",
+      "game": "rung",
+      "schema": "games/rung/events.json#/definitions/rung_pile_taken"
+    },
+    {
+      "type": "rung_court_choice_opened",
+      "opcode": 168,
+      "direction": "s2c",
+      "visibility": "public",
+      "game": "rung",
+      "schema": "games/rung/events.json#/definitions/rung_court_choice_opened"
+    },
+    {
+      "type": "rung_court_choice_made",
+      "opcode": 169,
+      "direction": "s2c",
+      "visibility": "public",
+      "game": "rung",
+      "schema": "games/rung/events.json#/definitions/rung_court_choice_made"
+    },
+    {
+      "type": "rung_round_end",
+      "opcode": 170,
+      "direction": "s2c",
+      "visibility": "public",
+      "game": "rung",
+      "schema": "games/rung/events.json#/definitions/rung_round_end"
     }
   ]
 }

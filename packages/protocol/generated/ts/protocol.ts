@@ -5,14 +5,17 @@
  */
 export type Cards = string[];
 export type SeatList = number[];
-/**
- * Per seat, in seat order
- */
-export type Points = number[];
+export type RungViewer = RungSeatViewer | RungSpectatorViewer;
+export type RungPhase = "call" | "play" | "courtChoice" | "ended";
 /**
  * Per seat, in seat order
  */
 export type HandCounts = number[];
+export type RungOutcomeKind = "win" | "court" | "court52";
+/**
+ * Per seat, in seat order
+ */
+export type Points = number[];
 
 export interface Protocol {
   envelope?: MessageEnvelope;
@@ -29,6 +32,8 @@ export interface Protocol {
     | {
         type: "take_hand";
       };
+  rungView?: RungView;
+  rungRules?: RungRules;
   seriesState?: SeriesState;
   seatStats?: SeatStats;
   ruleError?: RuleError;
@@ -63,6 +68,9 @@ export interface Protocol {
   takeHandPayload?: TakeHand;
   cancelTakePayload?: CancelTake;
   answerHandPayload?: AnswerHand;
+  callTrumpPayload?: CallTrump;
+  redealPayload?: RungRedeal;
+  courtChoicePayload?: CourtChoice;
   tableStatePayload?: TableState;
   rulesChangedPayload?: RulesChanged;
   presencePayload?: Presence;
@@ -89,6 +97,17 @@ export interface Protocol {
   roundEndPayload?: RoundEnd;
   handAskedPayload?: HandAsked;
   handAnsweredPayload?: HandAnswered;
+  rungRoundStartPayload?: RungRoundStart;
+  rungHandPayload?: RungHand;
+  rungRedealtPayload?: RungRedealt;
+  rungTrumpCalledPayload?: RungTrumpCalled;
+  rungHandsCompletedPayload?: RungHandsCompleted;
+  rungCardPlayedPayload?: RungCardPlayed;
+  rungTrickWonPayload?: RungTrickWon;
+  rungPileTakenPayload?: RungPileTaken;
+  rungCourtChoiceOpenedPayload?: RungCourtChoiceOpened;
+  rungCourtChoiceMadePayload?: RungCourtChoiceMade;
+  rungRoundEndPayload?: RungRoundEnd;
 }
 /**
  * Every message on the table socket (GDD 20.6, ARCHITECTURE 8.4). v is the protocol major; within a major, changes are additive only. seq is server-assigned on messages to clients and the client's own counter on messages to the server; a move repeats it as clientSeq for idempotency.
@@ -174,12 +193,125 @@ export interface SeatStats {
   cardsPickedUp: number;
   handsTaken: number;
 }
+/**
+ * The stock and other hands never appear (RG5)
+ */
+export interface RungView {
+  viewer: RungViewer;
+  rulesVersion: string;
+  rules: RungRules;
+  seatCount: 4;
+  dealerSeat: number;
+  callerSeat: number;
+  phase: RungPhase;
+  turnSeat: number | null;
+  handCounts: HandCounts;
+  /**
+   * The viewer's own cards; null for spectators
+   */
+  hand: Cards | null;
+  stockCount: number;
+  trump: ("S" | "H" | "C" | "D") | null;
+  redeals: number;
+  trickIndex: number;
+  trick: RungTrick;
+  lastWinner: number | null;
+  run: number;
+  pile: number;
+  /**
+   * Tricks per team
+   *
+   * @minItems 2
+   * @maxItems 2
+   */
+  counts: [number, number];
+  chasing: 0 | 1 | null;
+  outcome: RungOutcome | null;
+  stats: RungSeatStats[];
+  commitment: string;
+  seedHex: string | null;
+  deckOrder: Cards | null;
+  canRedeal: boolean | null;
+}
+export interface RungSeatViewer {
+  kind: "seat";
+  seat: number;
+}
+export interface RungSpectatorViewer {
+  kind: "spectator";
+}
+export interface RungRules {
+  collect?: "double" | "single";
+  firstTwo?: boolean;
+  aceRule?: boolean;
+  lastTwo?: boolean;
+  redeal?: "off" | "noHonours";
+  chase?: boolean;
+  scoring?: "points" | "courts";
+  pointsTable?: "rung" | "hokm";
+  target?: 5 | 7 | 10;
+  goonCourt?: 3 | 10;
+  courtPassesCall?: boolean;
+}
+export interface RungTrick {
+  leaderSeat: number;
+  plays: RungPlay[];
+}
+export interface RungPlay {
+  seat: number;
+  /**
+   * Rank then suit: AS, TH, 2C
+   */
+  card: string;
+}
+export interface RungOutcome {
+  /**
+   * Seats 0 and 2 are team 0, seats 1 and 3 team 1
+   */
+  team: 0 | 1;
+  kind: RungOutcomeKind;
+}
+export interface RungSeatStats {
+  tricksWon: number;
+  cuts: number;
+  pilesTaken: number;
+}
 export interface SeriesState {
   roundsPlayed: number;
   points: Points;
   loserTally: number[];
   nextDealerSeat: number;
   finished: boolean;
+  teams?: RungTeams;
+}
+/**
+ * The bazi score by team
+ */
+export interface RungTeams {
+  /**
+   * Bazi points per team (RG32)
+   *
+   * @minItems 2
+   * @maxItems 2
+   */
+  points: [number, number];
+  /**
+   * Courts per team (RG33)
+   *
+   * @minItems 2
+   * @maxItems 2
+   */
+  courts: [number, number];
+  /**
+   * Deals won per team
+   *
+   * @minItems 2
+   * @maxItems 2
+   */
+  dealsWon: [number, number];
+  streakTeam: 0 | 1 | null;
+  streakDeals: number;
+  winnerTeam: 0 | 1 | null;
 }
 export interface RuleError {
   code: string;
@@ -363,7 +495,15 @@ export interface SetRules {
 }
 export interface RulesSelection {
   gameId: "thulla" | "rung";
-  preset?: "standard" | "family" | "hardcore" | "classicPagat" | "relaxed";
+  preset?:
+    | "standard"
+    | "family"
+    | "hardcore"
+    | "classicPagat"
+    | "relaxed"
+    | "rung"
+    | "courtPiece"
+    | "hokm";
   /**
    * Validated against the game's rules schema
    */
@@ -446,7 +586,15 @@ export interface ChangeGame {
  */
 export interface RulesSelection1 {
   gameId: "thulla" | "rung";
-  preset?: "standard" | "family" | "hardcore" | "classicPagat" | "relaxed";
+  preset?:
+    | "standard"
+    | "family"
+    | "hardcore"
+    | "classicPagat"
+    | "relaxed"
+    | "rung"
+    | "courtPiece"
+    | "hokm";
   /**
    * Validated against the game's rules schema
    */
@@ -505,6 +653,38 @@ export interface AnswerHand {
   accept: boolean;
 }
 /**
+ * The caller names the rung from their first five cards (RG6)
+ */
+export interface CallTrump {
+  roundId: string;
+  /**
+   * Idempotency key with the seat (ARCHITECTURE 8.4)
+   */
+  clientSeq: number;
+  suit: "S" | "H" | "C" | "D";
+}
+/**
+ * The caller asks for a new deal instead of calling (RG7)
+ */
+export interface RungRedeal {
+  roundId: string;
+  /**
+   * Idempotency key with the seat (ARCHITECTURE 8.4)
+   */
+  clientSeq: number;
+}
+/**
+ * Stop with the court or play on for the bigger prize (RG26)
+ */
+export interface CourtChoice {
+  roundId: string;
+  /**
+   * Idempotency key with the seat (ARCHITECTURE 8.4)
+   */
+  clientSeq: number;
+  playOn: boolean;
+}
+/**
  * The full table as the recipient may see it; the round view is redacted per recipient
  */
 export interface TableState {
@@ -518,7 +698,11 @@ export interface TableState {
   spectatorCount: number;
   spectators: Spectator[];
   series: SeriesState;
+  /**
+   * The Thulla round view; null between rounds and while the room plays another game
+   */
   round: View | null;
+  rungRound?: RungView1;
   lastSeq: number;
   resumeToken: string | null;
   rematch?: {
@@ -606,6 +790,46 @@ export interface Spectator {
    * The lowest seat whose player the watcher is a friend of (GDD 7.7); null when none is seated now
    */
   friendOfSeat?: number | null;
+}
+/**
+ * The stock and other hands never appear (RG5)
+ */
+export interface RungView1 {
+  viewer: RungViewer;
+  rulesVersion: string;
+  rules: RungRules;
+  seatCount: 4;
+  dealerSeat: number;
+  callerSeat: number;
+  phase: RungPhase;
+  turnSeat: number | null;
+  handCounts: HandCounts;
+  /**
+   * The viewer's own cards; null for spectators
+   */
+  hand: Cards | null;
+  stockCount: number;
+  trump: ("S" | "H" | "C" | "D") | null;
+  redeals: number;
+  trickIndex: number;
+  trick: RungTrick;
+  lastWinner: number | null;
+  run: number;
+  pile: number;
+  /**
+   * Tricks per team
+   *
+   * @minItems 2
+   * @maxItems 2
+   */
+  counts: [number, number];
+  chasing: 0 | 1 | null;
+  outcome: RungOutcome | null;
+  stats: RungSeatStats[];
+  commitment: string;
+  seedHex: string | null;
+  deckOrder: Cards | null;
+  canRedeal: boolean | null;
 }
 export interface RulesChanged {
   rules: RulesSelection;
@@ -710,17 +934,32 @@ export interface RoundStart {
   rulesVersion: string;
 }
 /**
- * Sent to the acting seat only: the legal mask reveals suit holdings
+ * Sent to the acting seat only: the legal mask reveals suit holdings. Every card game uses it and adds its own optional fields
  */
 export interface TurnStart {
   roundId: string;
   seat: number;
   legal: Cards;
+  /**
+   * Always false outside Thulla
+   */
   canTakeHand: boolean;
   /**
    * Unix milliseconds from the server clock
    */
   deadlineTs: number;
+  /**
+   * Rung: call, play or courtChoice
+   */
+  phase?: string;
+  /**
+   * Rung, the call: the suits the caller may name
+   */
+  suits?: ("S" | "H" | "C" | "D")[];
+  /**
+   * Rung, the call: the caller may ask for a redeal (RG7)
+   */
+  canRedeal?: boolean;
   /**
    * The opening window: every pending seat acts at once (R13)
    */
@@ -844,4 +1083,168 @@ export interface HandAnswered {
   target: number;
   accepted: boolean;
   reason: "accepted" | "declined" | "lead" | "timeout" | "left";
+}
+/**
+ * A deal begins: five cards each, the caller to name the rung (RG4, RG5)
+ */
+export interface RungRoundStart {
+  roundId: string;
+  commitment: string;
+  dealerSeat: number;
+  callerSeat: number;
+  handCounts: HandCounts;
+  rulesVersion: string;
+}
+/**
+ * Sent to one seat only: its own cards after a deal, a redeal or the rest of the deal
+ */
+export interface RungHand {
+  roundId: string;
+  cards: Cards;
+}
+/**
+ * The caller asked for a new deal; a new commitment replaces the old (RG7)
+ */
+export interface RungRedealt {
+  roundId: string;
+  seat: number;
+  commitment: string;
+  redeals: number;
+  handCounts: HandCounts;
+  clientSeq?: number;
+  /**
+   * Played by the timeout policy or a bot, not by the seat's player
+   */
+  auto: boolean;
+}
+/**
+ * The rung is named (RG6)
+ */
+export interface RungTrumpCalled {
+  roundId: string;
+  seat: number;
+  suit: "S" | "H" | "C" | "D";
+  clientSeq?: number;
+  /**
+   * Played by the timeout policy or a bot, not by the seat's player
+   */
+  auto: boolean;
+}
+/**
+ * The rest of the deck is dealt (RG8); each seat gets its rung_hand
+ */
+export interface RungHandsCompleted {
+  roundId: string;
+  handCounts: HandCounts;
+}
+export interface RungCardPlayed {
+  roundId: string;
+  seat: number;
+  /**
+   * Rank then suit: AS, TH, 2C
+   */
+  card: string;
+  trickIndex: number;
+  /**
+   * A kaat: a rung on a led suit the seat was void in
+   */
+  cut: boolean;
+  clientSeq?: number;
+  /**
+   * Played by the timeout policy or a bot, not by the seat's player
+   */
+  auto: boolean;
+}
+export interface RungTrickWon {
+  roundId: string;
+  trickIndex: number;
+  winner: number;
+  cards: Cards;
+  /**
+   * Tricks lying in the centre after this one, before any take (Double Sar)
+   */
+  pile: number;
+  /**
+   * Tricks per team
+   *
+   * @minItems 2
+   * @maxItems 2
+   */
+  counts: [number, number];
+}
+/**
+ * A seat won two in a row and takes the pile for its team (RG17)
+ */
+export interface RungPileTaken {
+  roundId: string;
+  seat: number;
+  /**
+   * Seats 0 and 2 are team 0, seats 1 and 3 team 1
+   */
+  team: 0 | 1;
+  tricks: number;
+  /**
+   * Tricks per team
+   *
+   * @minItems 2
+   * @maxItems 2
+   */
+  counts: [number, number];
+}
+/**
+ * A court is won; this seat chooses to stop or play on (RG26)
+ */
+export interface RungCourtChoiceOpened {
+  roundId: string;
+  seat: number;
+  /**
+   * Seats 0 and 2 are team 0, seats 1 and 3 team 1
+   */
+  team: 0 | 1;
+}
+export interface RungCourtChoiceMade {
+  roundId: string;
+  seat: number;
+  playOn: boolean;
+  clientSeq?: number;
+  /**
+   * Played by the timeout policy or a bot, not by the seat's player
+   */
+  auto: boolean;
+}
+/**
+ * A deal ends (RG30); the series carries the bazi score
+ */
+export interface RungRoundEnd {
+  roundId: string;
+  /**
+   * Seats 0 and 2 are team 0, seats 1 and 3 team 1
+   */
+  winnerTeam: 0 | 1;
+  kind: RungOutcomeKind;
+  /**
+   * The winners are the caller's team; false is the dealer's team
+   */
+  byCaller: boolean;
+  /**
+   * Tricks per team
+   *
+   * @minItems 2
+   * @maxItems 2
+   */
+  counts: [number, number];
+  dealPoints: number;
+  points: Points;
+  stats: RungSeatStats[];
+  trump: ("S" | "H" | "C" | "D") | null;
+  fairness: RungFairness;
+  series?: SeriesState;
+}
+export interface RungFairness {
+  commitment: string;
+  /**
+   * Revealed so any client can recompute the commitment
+   */
+  seed: string;
+  deckOrder: Cards;
 }

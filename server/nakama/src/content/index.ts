@@ -6,6 +6,9 @@ import dailyRewards from "../../../../content/daily-rewards/v1.json?raw";
 import emotes from "../../../../content/emotes/v1.json?raw";
 import manifest from "../../../../content/manifest.json";
 import missions from "../../../../content/missions/v1.json?raw";
+import courtPiece from "../../../../content/presets/rung/courtPiece.json?raw";
+import hokm from "../../../../content/presets/rung/hokm.json?raw";
+import rung from "../../../../content/presets/rung/rung.json?raw";
 import classicPagat from "../../../../content/presets/thulla/classicPagat.json?raw";
 import family from "../../../../content/presets/thulla/family.json?raw";
 import hardcore from "../../../../content/presets/thulla/hardcore.json?raw";
@@ -30,6 +33,9 @@ export const CONTENT_TEXT: Readonly<Record<string, string>> = {
   "daily-rewards/v1.json": dailyRewards,
   "emotes/v1.json": emotes,
   "missions/v1.json": missions,
+  "presets/rung/courtPiece.json": courtPiece,
+  "presets/rung/hokm.json": hokm,
+  "presets/rung/rung.json": rung,
   "presets/thulla/classicPagat.json": classicPagat,
   "presets/thulla/relaxed.json": relaxed,
   "presets/thulla/family.json": family,
