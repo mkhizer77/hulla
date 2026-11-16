@@ -64,7 +64,7 @@ import {
   rpcReportCreate,
   rpcReportsList,
 } from "./rpc/moderation";
-import { rpcAdminDrain } from "./rpc/ops";
+import { rpcAdminBotBench, rpcAdminDrain } from "./rpc/ops";
 import { rpcPassClaim, rpcPassGet, rpcPassPremiumGrant } from "./rpc/pass";
 import {
   beforeAuthenticateCustom,
@@ -189,6 +189,7 @@ function InitModule(
   initializer.registerRpc("pass_claim", rpcPassClaim);
   initializer.registerRpc("pass_premium_grant", rpcPassPremiumGrant);
   initializer.registerRpc("admin_drain", rpcAdminDrain);
+  initializer.registerRpc("admin_bot_bench", rpcAdminBotBench);
   initializer.registerRpc("push_register", rpcPushRegister);
   initializer.registerRpc("push_unregister", rpcPushUnregister);
   initializer.registerRpc("push_settings_get", rpcPushSettingsGet);

@@ -90,6 +90,7 @@ describe("InitModule", () => {
       "pass_claim",
       "pass_premium_grant",
       "admin_drain",
+      "admin_bot_bench",
       "push_register",
       "push_unregister",
       "push_settings_get",
