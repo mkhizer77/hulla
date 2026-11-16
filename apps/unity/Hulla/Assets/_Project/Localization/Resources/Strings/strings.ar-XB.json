@@ -473,6 +473,106 @@
    "smart": false
   },
   {
+   "key": "achievement.rung_bazis_10.description",
+   "text": "{0:plural:Play {} bazis of Rung|Play a bazi of Rung|Play {} bazis of Rung|Play {} bazis of Rung|Play {} bazis of Rung|Play {} bazis of Rung}",
+   "smart": true
+  },
+  {
+   "key": "achievement.rung_bazis_10.name",
+   "text": "Regular at the table",
+   "smart": false
+  },
+  {
+   "key": "achievement.rung_bazis_100.description",
+   "text": "{0:plural:Play {} bazis of Rung|Play a bazi of Rung|Play {} bazis of Rung|Play {} bazis of Rung|Play {} bazis of Rung|Play {} bazis of Rung}",
+   "smart": true
+  },
+  {
+   "key": "achievement.rung_bazis_100.name",
+   "text": "Rung baaz",
+   "smart": false
+  },
+  {
+   "key": "achievement.rung_bazis_won_25.description",
+   "text": "{0:plural:Win {} bazis of Rung|Win a bazi of Rung|Win {} bazis of Rung|Win {} bazis of Rung|Win {} bazis of Rung|Win {} bazis of Rung}",
+   "smart": true
+  },
+  {
+   "key": "achievement.rung_bazis_won_25.name",
+   "text": "Bazi winner",
+   "smart": false
+  },
+  {
+   "key": "achievement.rung_calls_10.description",
+   "text": "{0:plural:Win {} deals you called in a row|Win a deal you called|Win {} deals you called in a row|Win {} deals you called in a row|Win {} deals you called in a row|Win {} deals you called in a row}",
+   "smart": true
+  },
+  {
+   "key": "achievement.rung_calls_10.name",
+   "text": "Good caller",
+   "smart": false
+  },
+  {
+   "key": "achievement.rung_court52.description",
+   "text": "{0:plural:Win all thirteen tricks {} times|Win all thirteen tricks after playing on|Win all thirteen tricks {} times|Win all thirteen tricks {} times|Win all thirteen tricks {} times|Win all thirteen tricks {} times}",
+   "smart": true
+  },
+  {
+   "key": "achievement.rung_court52.name",
+   "text": "52-court",
+   "smart": false
+  },
+  {
+   "key": "achievement.rung_deals_100.description",
+   "text": "{0:plural:Win {} deals of Rung|Win a deal of Rung|Win {} deals of Rung|Win {} deals of Rung|Win {} deals of Rung|Win {} deals of Rung}",
+   "smart": true
+  },
+  {
+   "key": "achievement.rung_deals_100.name",
+   "text": "Trick taker",
+   "smart": false
+  },
+  {
+   "key": "achievement.rung_first_court.description",
+   "text": "{0:plural:Score {} courts|Score a court|Score {} courts|Score {} courts|Score {} courts|Score {} courts}",
+   "smart": true
+  },
+  {
+   "key": "achievement.rung_first_court.name",
+   "text": "First court",
+   "smart": false
+  },
+  {
+   "key": "achievement.rung_first_deal.description",
+   "text": "{0:plural:Win {} deals of Rung|Win a deal of Rung|Win {} deals of Rung|Win {} deals of Rung|Win {} deals of Rung|Win {} deals of Rung}",
+   "smart": true
+  },
+  {
+   "key": "achievement.rung_first_deal.name",
+   "text": "First deal",
+   "smart": false
+  },
+  {
+   "key": "achievement.rung_friend_bazi.description",
+   "text": "{0:plural:Win {} bazis with a friend at the table|Win a bazi with a friend at the table|Win {} bazis with a friend at the table|Win {} bazis with a friend at the table|Win {} bazis with a friend at the table|Win {} bazis with a friend at the table}",
+   "smart": true
+  },
+  {
+   "key": "achievement.rung_friend_bazi.name",
+   "text": "Partners",
+   "smart": false
+  },
+  {
+   "key": "achievement.rung_goon_court.description",
+   "text": "{0:plural:Score {} courts as the dealer's team|Score a court as the dealer's team|Score {} courts as the dealer's team|Score {} courts as the dealer's team|Score {} courts as the dealer's team|Score {} courts as the dealer's team}",
+   "smart": true
+  },
+  {
+   "key": "achievement.rung_goon_court.name",
+   "text": "Goon court",
+   "smart": false
+  },
+  {
    "key": "achievement.same_group_10.description",
    "text": "{0:plural:Play {} rounds with the same group|Play {} round with the same group|Play {} rounds with the same group|Play {} rounds with the same group|Play {} rounds with the same group|Play {} rounds with the same group}",
    "smart": true
@@ -1778,6 +1878,36 @@
    "smart": false
   },
   {
+   "key": "mission.d_rung_cuts_2.description",
+   "text": "{0:plural:Cut {} tricks with a rung|Cut {} trick with a rung|Cut {} tricks with a rung|Cut {} tricks with a rung|Cut {} tricks with a rung|Cut {} tricks with a rung}",
+   "smart": true
+  },
+  {
+   "key": "mission.d_rung_cuts_2.name",
+   "text": "Kaat",
+   "smart": false
+  },
+  {
+   "key": "mission.d_rung_deals_3.description",
+   "text": "{0:plural:Win {} deals of Rung|Win {} deal of Rung|Win {} deals of Rung|Win {} deals of Rung|Win {} deals of Rung|Win {} deals of Rung}",
+   "smart": true
+  },
+  {
+   "key": "mission.d_rung_deals_3.name",
+   "text": "Rung deals",
+   "smart": false
+  },
+  {
+   "key": "mission.d_rung_piles_3.description",
+   "text": "{0:plural:Take {} piles in Rung|Take {} pile in Rung|Take {} piles in Rung|Take {} piles in Rung|Take {} piles in Rung|Take {} piles in Rung}",
+   "smart": true
+  },
+  {
+   "key": "mission.d_rung_piles_3.name",
+   "text": "Take the pile",
+   "smart": false
+  },
+  {
    "key": "mission.d_thullas_3.description",
    "text": "{0:plural:Give {} thullas|Give {} thulla|Give {} thullas|Give {} thullas|Give {} thullas|Give {} thullas}",
    "smart": true
@@ -1880,6 +2010,26 @@
   {
    "key": "mission.w_rounds_15.name",
    "text": "Rounds 15",
+   "smart": false
+  },
+  {
+   "key": "mission.w_rung_bazi.description",
+   "text": "{0:plural:Win {} bazis of Rung|Win {} bazi of Rung|Win {} bazis of Rung|Win {} bazis of Rung|Win {} bazis of Rung|Win {} bazis of Rung}",
+   "smart": true
+  },
+  {
+   "key": "mission.w_rung_bazi.name",
+   "text": "Win a bazi",
+   "smart": false
+  },
+  {
+   "key": "mission.w_rung_court.description",
+   "text": "{0:plural:Score {} courts in Rung|Score {} court in Rung|Score {} courts in Rung|Score {} courts in Rung|Score {} courts in Rung|Score {} courts in Rung}",
+   "smart": true
+  },
+  {
+   "key": "mission.w_rung_court.name",
+   "text": "Court",
    "smart": false
   },
   {

@@ -18,6 +18,32 @@ export const BOARDS = {
   monthly: { id: "baithak_monthly", reset: "0 0 1 * *" },
 } as const;
 export type BoardKey = keyof typeof BOARDS;
+
+/** Each game has its own pair of boards; "all" ranks by coins earned in either game. */
+export type BoardGame = "thulla" | "rung" | "all";
+const GAME_BOARDS: Readonly<Record<BoardGame, Readonly<Record<BoardKey, string>>>> = {
+  thulla: { weekly: BOARDS.weekly.id, monthly: BOARDS.monthly.id },
+  rung: { weekly: "rung_weekly", monthly: "rung_monthly" },
+  all: { weekly: "all_weekly", monthly: "all_monthly" },
+};
+
+export function isBoardGame(value: unknown): value is BoardGame {
+  return value === "thulla" || value === "rung" || value === "all";
+}
+
+export function boardId(game: BoardGame, board: BoardKey): string {
+  return GAME_BOARDS[game][board];
+}
+
+/** Every board the server keeps, with its reset schedule. */
+export function allBoards(): readonly { readonly id: string; readonly reset: string }[] {
+  return (Object.keys(GAME_BOARDS) as BoardGame[]).flatMap((game) =>
+    (Object.keys(BOARDS) as BoardKey[]).map((key) => ({
+      id: GAME_BOARDS[game][key],
+      reset: BOARDS[key].reset,
+    })),
+  );
+}
 export const PRIVATE_POINTS_DAILY_CAP = 30;
 export const BOARD_PAGE = 50;
 /** Gems for the top brackets at reset, until the cosmetic catalog exists (OQ-024). */
@@ -58,7 +84,7 @@ type LeaderboardCreate = (
 
 export function ensureLeaderboards(nk: nkruntime.Nakama, logger: nkruntime.Logger): void {
   const create = nk.leaderboardCreate.bind(nk) as unknown as LeaderboardCreate;
-  for (const board of Object.values(BOARDS)) {
+  for (const board of allBoards()) {
     try {
       create(board.id, true, "descending", "increment", board.reset, {}, true);
     } catch (error: unknown) {
@@ -89,7 +115,9 @@ export function postRoundPoints(
       updatedTs: record.endedTs,
     });
   }
-  for (const board of Object.values(BOARDS)) {
+  const game: BoardGame = record.gameId === "rung" ? "rung" : "thulla";
+  for (const key of Object.keys(BOARDS) as BoardKey[]) {
+    const board = { id: boardId(game, key) };
     try {
       nk.leaderboardRecordWrite(board.id, userId, undefined, allowed, 0, {
         tableId: record.tableId,
@@ -100,6 +128,28 @@ export function postRoundPoints(
     }
   }
   return allowed;
+}
+
+/** Coins earned in a round or deal count on the boards that span both games. */
+export function postCoinsEarned(
+  nk: nkruntime.Nakama,
+  logger: nkruntime.Logger,
+  record: RoundRecord,
+  userId: string,
+  coins: number,
+): void {
+  if (coins <= 0) return;
+  for (const key of Object.keys(BOARDS) as BoardKey[]) {
+    try {
+      nk.leaderboardRecordWrite(boardId("all", key), userId, undefined, coins, 0, {
+        tableId: record.tableId,
+        roundId: record.roundId,
+        gameId: record.gameId,
+      });
+    } catch (error: unknown) {
+      log.warn(logger, "coins not posted", { board: boardId("all", key), error: String(error) });
+    }
+  }
 }
 
 export interface BoardRow {
@@ -172,8 +222,9 @@ export function boardView(
   friendIds: readonly string[],
   limit: number,
   cursor: string | undefined,
+  game: BoardGame = "thulla",
 ): BoardResponse {
-  const id = BOARDS[board].id;
+  const id = boardId(game, board);
   const owners = scope === "friends" ? [userId, ...friendIds].slice(0, 100) : undefined;
   let list: nkruntime.LeaderboardRecordList;
   try {

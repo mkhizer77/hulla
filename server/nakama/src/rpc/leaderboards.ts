@@ -1,7 +1,13 @@
 import { ErrorCodes, ruleError } from "@hulla/shared-ts";
 
 import { log } from "../infra/log";
-import { boardView, BOARDS, isBoardKey, payTopBrackets } from "../services/leaderboards";
+import {
+  allBoards,
+  boardView,
+  isBoardGame,
+  isBoardKey,
+  payTopBrackets,
+} from "../services/leaderboards";
 import { nkLedgerPorts } from "../services/ledger";
 import { nkFriendIds } from "../services/presence";
 
@@ -16,7 +22,7 @@ function parse(payload: string): Record<string, unknown> {
   }
 }
 
-/** `{ board: weekly|monthly, scope?: global|friends, limit?, cursor? }` (GDD 12.8). */
+/** `{ board: weekly|monthly, game?: thulla|rung|all, scope?: global|friends, limit?, cursor? }` (GDD 12.8). */
 export function rpcLeaderboardGet(
   ctx: nkruntime.Context,
   _logger: nkruntime.Logger,
@@ -40,7 +46,11 @@ export function rpcLeaderboardGet(
   const cursor =
     typeof input["cursor"] === "string" && input["cursor"] !== "" ? input["cursor"] : undefined;
   const friends = scope === "friends" ? nkFriendIds(nk, userId) : [];
-  return JSON.stringify(boardView(nk, userId, board, scope, friends, limit, cursor));
+  const game = isBoardGame(input["game"]) ? input["game"] : "thulla";
+  return JSON.stringify({
+    ...boardView(nk, userId, board, scope, friends, limit, cursor, game),
+    game,
+  });
 }
 
 /** Registered with `registerLeaderboardReset`; a named top-level function for Nakama. */
@@ -51,7 +61,7 @@ export function onLeaderboardReset(
   leaderboard: nkruntime.Leaderboard,
   reset: number,
 ): void {
-  if (!Object.values(BOARDS).some((b) => b.id === leaderboard.id)) return;
+  if (!allBoards().some((b) => b.id === leaderboard.id)) return;
   try {
     const result = payTopBrackets(nk, nkLedgerPorts(nk), leaderboard.id, reset);
     log.info(logger, "leaderboard brackets paid", { id: leaderboard.id, reset, paid: result.paid });

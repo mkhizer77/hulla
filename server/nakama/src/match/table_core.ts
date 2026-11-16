@@ -302,6 +302,59 @@ export function tableCore<S, M, V, E, R>(
     emit.public("presence", presencePayload(seated, slot.displayName, "joined"));
   };
 
+  /**
+   * The seat a matched player takes. In a game of pairs (Rung, RG1) two players who queued together
+   * are partners, so they sit opposite: the second takes the seat across from the first, and a
+   * player whose partner is still on the way takes a seat that leaves the one across free.
+   */
+  const teamSeat = (
+    state: TableState<S, M>,
+    userId: string,
+    open: (index: number) => boolean,
+    teamSize: number,
+  ): number => {
+    const count = state.seats.length;
+    const first = state.seats.findIndex((_, index) => open(index));
+    const party = state.autoStart?.parties[userId];
+    if (teamSize !== 2 || count !== 4 || first === -1) return first;
+    const across = (index: number): number => (index + 2) % count;
+    const partyOf = (id: string | null): string | undefined =>
+      id === null ? undefined : state.autoStart?.parties[id];
+    if (party !== undefined) {
+      const mate = state.seats.findIndex((slot) => partyOf(slot.playerId) === party);
+      if (mate !== -1 && open(across(mate))) return across(mate);
+      const pair = state.seats.findIndex((_, index) => open(index) && open(across(index)));
+      if (pair !== -1) return pair;
+      return first;
+    }
+    // A solo pairs up with another solo when one is seated, and otherwise takes a seat that is not
+    // across from a party member whose partner is still on the way.
+    if (Object.keys(state.autoStart?.parties ?? {}).length === 0) return first;
+    const acrossSolo = state.seats.findIndex((_, index) => {
+      const opposite = state.seats[across(index)]?.playerId ?? null;
+      return open(index) && opposite !== null && partyOf(opposite) === undefined;
+    });
+    if (acrossSolo !== -1) return acrossSolo;
+    const kind = state.seats.findIndex((_, index) => {
+      const opposite = state.seats[across(index)]?.playerId ?? null;
+      return open(index) && !(partyOf(opposite) !== undefined && partnerMissing(state, opposite));
+    });
+    return kind === -1 ? first : kind;
+  };
+
+  /** Whether the party member `userId` still waits for a partner who has not sat down. */
+  const partnerMissing = (state: TableState<S, M>, userId: string | null): boolean => {
+    if (userId === null) return false;
+    const party = state.autoStart?.parties[userId];
+    if (party === undefined) return false;
+    return !state.seats.some(
+      (slot) =>
+        slot.playerId !== null &&
+        slot.playerId !== userId &&
+        state.autoStart?.parties[slot.playerId] === party,
+    );
+  };
+
   /** Spectators who asked for a seat take the free ones in arrival order (GDD 7.6, 9.10). */
   const seatWaitingSpectators = (state: TableState<S, M>, emit: Emitter, now: number): void => {
     for (const record of Object.values(state.presences)) {
@@ -918,6 +971,49 @@ export function tableCore<S, M, V, E, R>(
         broadcastTableState(state, emit);
         return;
       }
+      case "swap_seats": {
+        if (!isHost(state, seat)) {
+          reject(ruleError(ErrorCodes.table.notHost));
+          return;
+        }
+        if (state.mode !== "private") {
+          reject(ruleError(ErrorCodes.table.locked, { reason: "mode" }));
+          return;
+        }
+        const a = payload["a"];
+        const b = payload["b"];
+        const first = typeof a === "number" ? state.seats[a] : undefined;
+        const second = typeof b === "number" ? state.seats[b] : undefined;
+        if (
+          typeof a !== "number" ||
+          typeof b !== "number" ||
+          first === undefined ||
+          second === undefined ||
+          a === b ||
+          !inLobby ||
+          (first.playerId === null && second.playerId === null)
+        ) {
+          reject(
+            ruleError(ErrorCodes.table.invalidPayload, { reason: inLobby ? "seat" : "in_round" }),
+          );
+          return;
+        }
+        state.seats[a] = second;
+        state.seats[b] = first;
+        for (const record of Object.values(state.presences)) {
+          if (record.seat === a) record.seat = b;
+          else if (record.seat === b) record.seat = a;
+        }
+        if (state.hostSeat === a) state.hostSeat = b;
+        else if (state.hostSeat === b) state.hostSeat = a;
+        // A bot's id names its seat; keep it in step so two bots never share one.
+        for (const index of [a, b]) {
+          const slot = state.seats[index];
+          if (slot?.bot === true) slot.playerId = `bot_${String(index)}`;
+        }
+        broadcastTableState(state, emit);
+        return;
+      }
       case "kick": {
         if (!isHost(state, seat)) {
           reject(ruleError(ErrorCodes.table.notHost));
@@ -1172,9 +1268,9 @@ export function tableCore<S, M, V, E, R>(
         const filler = state.seats.map((slot) => slot.bot).lastIndexOf(true);
         if (filler !== -1) freeSlot(state, filler);
       }
-      const free = state.seats.findIndex(
-        (slot, index) => slot.playerId === null && !reserved.has(index),
-      );
+      const open = (index: number): boolean =>
+        state.seats[index]?.playerId === null && !reserved.has(index);
+      const free = teamSeat(state, presence.userId, open, host.module.seats.teams?.size ?? 0);
       const wantsSeat =
         parsed.data.asSpectator !== true && state.phase !== "inRound" && !state.lockedByHost;
       if (wantsSeat && free !== -1) {
@@ -1492,7 +1588,25 @@ export function tableCore<S, M, V, E, R>(
         closeTable(state, emit, "dissolved", now);
       }
       if (auto !== null && state.phase === "lobby") {
-        const seated = activeSeats(state.seats).length;
+        let seated = activeSeats(state.seats).length;
+        if (
+          auto.startsAtTs === null &&
+          now >= auto.joinDeadlineTs &&
+          host.fillWithBots === true &&
+          seated > 0 &&
+          seated < host.module.seats.min
+        ) {
+          // Someone who was matched never arrived: bots take the empty seats so the rest can play.
+          const names = botNames(state.createdTs, BOT_NAMES.length);
+          state.seats.forEach((slot, index) => {
+            const bots = state.seats.filter((s) => s.bot).length;
+            if (slot.playerId !== null || bots >= MAX_BOTS) return;
+            const taken = new Set(state.seats.map((s) => s.displayName?.toLowerCase() ?? ""));
+            const name = names.find((n) => !taken.has(n.toLowerCase())) ?? "Bot";
+            state.seats[index] = botSlot(state.seats, index, name, now);
+          });
+          seated = activeSeats(state.seats).length;
+        }
         if (auto.startsAtTs === null && now >= auto.joinDeadlineTs) {
           if (seated >= host.module.seats.min) {
             auto.startsAtTs = now + config.autoStartCountdownMs;

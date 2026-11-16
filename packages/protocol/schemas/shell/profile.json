@@ -84,6 +84,107 @@
               "minimum": 0
             }
           }
+        },
+        "rung": {
+          "type": "object",
+          "title": "RungStats",
+          "additionalProperties": false,
+          "description": "The Rung half of the stats card; absent until the first deal",
+          "required": [
+            "deals",
+            "dealsWon",
+            "bazis",
+            "bazisWon",
+            "courts",
+            "courtsAgainst",
+            "callerDeals",
+            "callerWins",
+            "defenderDeals",
+            "defenderWins",
+            "tricksWon",
+            "cuts",
+            "pilesTaken",
+            "trumps"
+          ],
+          "properties": {
+            "deals": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "dealsWon": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "bazis": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "bazisWon": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "courts": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "courtsAgainst": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "callerDeals": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "callerWins": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "defenderDeals": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "defenderWins": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "tricksWon": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "cuts": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "pilesTaken": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "trumps": {
+              "type": "object",
+              "title": "RungTrumps",
+              "additionalProperties": false,
+              "required": ["S", "H", "C", "D"],
+              "description": "Rungs the player called per suit; the largest is the favourite",
+              "properties": {
+                "S": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "H": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "C": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "D": {
+                  "type": "integer",
+                  "minimum": 0
+                }
+              }
+            }
+          }
         }
       }
     },

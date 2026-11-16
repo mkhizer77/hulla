@@ -8,6 +8,8 @@ export interface MissionDef {
   readonly metric: MissionMetric;
   readonly target: number;
   readonly reward: { readonly coins?: number; readonly gems?: number };
+  /** The game the mission is played in; absent means either. */
+  readonly gameId?: "thulla" | "rung";
 }
 
 export type MissionMetric =
@@ -20,7 +22,12 @@ export type MissionMetric =
   | "low_pickup_rounds"
   | "hands_taken"
   | "series_won"
-  | "voice_private";
+  | "voice_private"
+  | "rung_deals_won"
+  | "rung_piles"
+  | "rung_cuts"
+  | "rung_courts"
+  | "rung_bazis_won";
 
 export interface MissionPool {
   readonly id: string;

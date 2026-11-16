@@ -3522,7 +3522,7 @@ const check_profile = validate33;
 const schema59 = {"type":"object","additionalProperties":false,"description":"A profile as a viewer may see it; the owner sees everything, others only the public card","required":["userId","displayName","handle","avatar","frame","flag","title","bio","stats"],"properties":{"userId":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/playerId"},"displayName":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/displayName"},"handle":{"type":"string","pattern":"^[A-Za-z0-9_]{3,16}$"},"friendCode":{"type":"string","pattern":"^[ABCDEFGHJKLMNPQRSTUVWXYZ23456789]{8}$","description":"Owner and friends only"},"avatar":{"type":"string","pattern":"^[a-z0-9_]{1,32}$"},"frame":{"type":"string","pattern":"^[a-z0-9_]{1,32}$"},"flag":{"type":["string","null"],"pattern":"^[A-Z]{2}$"},"title":{"type":["string","null"]},"level":{"type":"integer","minimum":1,"description":"The player's level (GDD 12.2), shown on player sheets; absent when their progress has not been read"},"bio":{"type":"string","maxLength":60},"stats":{"$ref":"https://hulla.gg/schemas/protocol/shell/profile.json#/definitions/profileStats"},"online":{"type":"boolean","description":"Present only when the owner shows it"},"privacy":{"$ref":"https://hulla.gg/schemas/protocol/shell/profile.json#/definitions/profilePrivacy","description":"Owner only"},"nameChanges":{"type":"integer","minimum":0,"description":"Owner only"}}};
 const schema60 = {"type":"string","description":"Server-issued; no length constraint because nullable constrained strings crash quicktype's generated converter"};
 const schema61 = {"type":"string","minLength":2,"maxLength":20};
-const schema62 = {"type":"object","additionalProperties":false,"required":["rounds","escapes","bhabhis","thullasGiven","thullasReceived","cardsPickedUp","biggestPickup","handsTaken","currentStreak","bestStreak","suits"],"properties":{"rounds":{"type":"integer","minimum":0},"escapes":{"type":"integer","minimum":0},"bhabhis":{"type":"integer","minimum":0},"thullasGiven":{"type":"integer","minimum":0},"thullasReceived":{"type":"integer","minimum":0},"cardsPickedUp":{"type":"integer","minimum":0},"biggestPickup":{"type":"integer","minimum":0},"handsTaken":{"type":"integer","minimum":0},"currentStreak":{"type":"integer","minimum":0,"description":"Rounds escaped in a row"},"bestStreak":{"type":"integer","minimum":0},"suits":{"type":"object","additionalProperties":false,"required":["S","H","C","D"],"description":"Cards played per suit; the largest is the favourite","properties":{"S":{"type":"integer","minimum":0},"H":{"type":"integer","minimum":0},"C":{"type":"integer","minimum":0},"D":{"type":"integer","minimum":0}}}}};
+const schema62 = {"type":"object","additionalProperties":false,"required":["rounds","escapes","bhabhis","thullasGiven","thullasReceived","cardsPickedUp","biggestPickup","handsTaken","currentStreak","bestStreak","suits"],"properties":{"rounds":{"type":"integer","minimum":0},"escapes":{"type":"integer","minimum":0},"bhabhis":{"type":"integer","minimum":0},"thullasGiven":{"type":"integer","minimum":0},"thullasReceived":{"type":"integer","minimum":0},"cardsPickedUp":{"type":"integer","minimum":0},"biggestPickup":{"type":"integer","minimum":0},"handsTaken":{"type":"integer","minimum":0},"currentStreak":{"type":"integer","minimum":0,"description":"Rounds escaped in a row"},"bestStreak":{"type":"integer","minimum":0},"suits":{"type":"object","additionalProperties":false,"required":["S","H","C","D"],"description":"Cards played per suit; the largest is the favourite","properties":{"S":{"type":"integer","minimum":0},"H":{"type":"integer","minimum":0},"C":{"type":"integer","minimum":0},"D":{"type":"integer","minimum":0}}},"rung":{"type":"object","title":"RungStats","additionalProperties":false,"description":"The Rung half of the stats card; absent until the first deal","required":["deals","dealsWon","bazis","bazisWon","courts","courtsAgainst","callerDeals","callerWins","defenderDeals","defenderWins","tricksWon","cuts","pilesTaken","trumps"],"properties":{"deals":{"type":"integer","minimum":0},"dealsWon":{"type":"integer","minimum":0},"bazis":{"type":"integer","minimum":0},"bazisWon":{"type":"integer","minimum":0},"courts":{"type":"integer","minimum":0},"courtsAgainst":{"type":"integer","minimum":0},"callerDeals":{"type":"integer","minimum":0},"callerWins":{"type":"integer","minimum":0},"defenderDeals":{"type":"integer","minimum":0},"defenderWins":{"type":"integer","minimum":0},"tricksWon":{"type":"integer","minimum":0},"cuts":{"type":"integer","minimum":0},"pilesTaken":{"type":"integer","minimum":0},"trumps":{"type":"object","title":"RungTrumps","additionalProperties":false,"required":["S","H","C","D"],"description":"Rungs the player called per suit; the largest is the favourite","properties":{"S":{"type":"integer","minimum":0},"H":{"type":"integer","minimum":0},"C":{"type":"integer","minimum":0},"D":{"type":"integer","minimum":0}}}}}}};
 const schema63 = {"type":"object","additionalProperties":false,"required":["showOnline","visibility"],"properties":{"showOnline":{"type":"boolean"},"visibility":{"type":"string","enum":["everyone","friends"]}}};
 const pattern6 = new RegExp("^[A-Za-z0-9_]{3,16}$", "");
 const pattern7 = new RegExp("^[ABCDEFGHJKLMNPQRSTUVWXYZ23456789]{8}$", "");
@@ -4099,6 +4099,446 @@ var valid4 = _errs48 === errors;
 else {
 var valid4 = true;
 }
+if(valid4){
+if(data10.rung !== undefined){
+let data26 = data10.rung;
+const _errs59 = errors;
+if(errors === _errs59){
+if(data26 && typeof data26 == "object" && !Array.isArray(data26)){
+let missing3;
+if(((((((((((((((data26.deals === undefined) && (missing3 = "deals")) || ((data26.dealsWon === undefined) && (missing3 = "dealsWon"))) || ((data26.bazis === undefined) && (missing3 = "bazis"))) || ((data26.bazisWon === undefined) && (missing3 = "bazisWon"))) || ((data26.courts === undefined) && (missing3 = "courts"))) || ((data26.courtsAgainst === undefined) && (missing3 = "courtsAgainst"))) || ((data26.callerDeals === undefined) && (missing3 = "callerDeals"))) || ((data26.callerWins === undefined) && (missing3 = "callerWins"))) || ((data26.defenderDeals === undefined) && (missing3 = "defenderDeals"))) || ((data26.defenderWins === undefined) && (missing3 = "defenderWins"))) || ((data26.tricksWon === undefined) && (missing3 = "tricksWon"))) || ((data26.cuts === undefined) && (missing3 = "cuts"))) || ((data26.pilesTaken === undefined) && (missing3 = "pilesTaken"))) || ((data26.trumps === undefined) && (missing3 = "trumps"))){
+validate33.errors = [{instancePath:instancePath+"/stats/rung",schemaPath:"https://hulla.gg/schemas/protocol/shell/profile.json#/definitions/profileStats/properties/rung/required",keyword:"required",params:{missingProperty: missing3}}];
+return false;
+}
+else {
+const _errs61 = errors;
+for(const key3 in data26){
+if(!(func2.call(schema62.properties.rung.properties, key3))){
+validate33.errors = [{instancePath:instancePath+"/stats/rung",schemaPath:"https://hulla.gg/schemas/protocol/shell/profile.json#/definitions/profileStats/properties/rung/additionalProperties",keyword:"additionalProperties",params:{additionalProperty: key3}}];
+return false;
+break;
+}
+}
+if(_errs61 === errors){
+if(data26.deals !== undefined){
+let data27 = data26.deals;
+const _errs62 = errors;
+if(!(((typeof data27 == "number") && (!(data27 % 1) && !isNaN(data27))) && (isFinite(data27)))){
+validate33.errors = [{instancePath:instancePath+"/stats/rung/deals",schemaPath:"https://hulla.gg/schemas/protocol/shell/profile.json#/definitions/profileStats/properties/rung/properties/deals/type",keyword:"type",params:{type: "integer"}}];
+return false;
+}
+if(errors === _errs62){
+if((typeof data27 == "number") && (isFinite(data27))){
+if(data27 < 0 || isNaN(data27)){
+validate33.errors = [{instancePath:instancePath+"/stats/rung/deals",schemaPath:"https://hulla.gg/schemas/protocol/shell/profile.json#/definitions/profileStats/properties/rung/properties/deals/minimum",keyword:"minimum",params:{comparison: ">=", limit: 0}}];
+return false;
+}
+}
+}
+var valid6 = _errs62 === errors;
+}
+else {
+var valid6 = true;
+}
+if(valid6){
+if(data26.dealsWon !== undefined){
+let data28 = data26.dealsWon;
+const _errs64 = errors;
+if(!(((typeof data28 == "number") && (!(data28 % 1) && !isNaN(data28))) && (isFinite(data28)))){
+validate33.errors = [{instancePath:instancePath+"/stats/rung/dealsWon",schemaPath:"https://hulla.gg/schemas/protocol/shell/profile.json#/definitions/profileStats/properties/rung/properties/dealsWon/type",keyword:"type",params:{type: "integer"}}];
+return false;
+}
+if(errors === _errs64){
+if((typeof data28 == "number") && (isFinite(data28))){
+if(data28 < 0 || isNaN(data28)){
+validate33.errors = [{instancePath:instancePath+"/stats/rung/dealsWon",schemaPath:"https://hulla.gg/schemas/protocol/shell/profile.json#/definitions/profileStats/properties/rung/properties/dealsWon/minimum",keyword:"minimum",params:{comparison: ">=", limit: 0}}];
+return false;
+}
+}
+}
+var valid6 = _errs64 === errors;
+}
+else {
+var valid6 = true;
+}
+if(valid6){
+if(data26.bazis !== undefined){
+let data29 = data26.bazis;
+const _errs66 = errors;
+if(!(((typeof data29 == "number") && (!(data29 % 1) && !isNaN(data29))) && (isFinite(data29)))){
+validate33.errors = [{instancePath:instancePath+"/stats/rung/bazis",schemaPath:"https://hulla.gg/schemas/protocol/shell/profile.json#/definitions/profileStats/properties/rung/properties/bazis/type",keyword:"type",params:{type: "integer"}}];
+return false;
+}
+if(errors === _errs66){
+if((typeof data29 == "number") && (isFinite(data29))){
+if(data29 < 0 || isNaN(data29)){
+validate33.errors = [{instancePath:instancePath+"/stats/rung/bazis",schemaPath:"https://hulla.gg/schemas/protocol/shell/profile.json#/definitions/profileStats/properties/rung/properties/bazis/minimum",keyword:"minimum",params:{comparison: ">=", limit: 0}}];
+return false;
+}
+}
+}
+var valid6 = _errs66 === errors;
+}
+else {
+var valid6 = true;
+}
+if(valid6){
+if(data26.bazisWon !== undefined){
+let data30 = data26.bazisWon;
+const _errs68 = errors;
+if(!(((typeof data30 == "number") && (!(data30 % 1) && !isNaN(data30))) && (isFinite(data30)))){
+validate33.errors = [{instancePath:instancePath+"/stats/rung/bazisWon",schemaPath:"https://hulla.gg/schemas/protocol/shell/profile.json#/definitions/profileStats/properties/rung/properties/bazisWon/type",keyword:"type",params:{type: "integer"}}];
+return false;
+}
+if(errors === _errs68){
+if((typeof data30 == "number") && (isFinite(data30))){
+if(data30 < 0 || isNaN(data30)){
+validate33.errors = [{instancePath:instancePath+"/stats/rung/bazisWon",schemaPath:"https://hulla.gg/schemas/protocol/shell/profile.json#/definitions/profileStats/properties/rung/properties/bazisWon/minimum",keyword:"minimum",params:{comparison: ">=", limit: 0}}];
+return false;
+}
+}
+}
+var valid6 = _errs68 === errors;
+}
+else {
+var valid6 = true;
+}
+if(valid6){
+if(data26.courts !== undefined){
+let data31 = data26.courts;
+const _errs70 = errors;
+if(!(((typeof data31 == "number") && (!(data31 % 1) && !isNaN(data31))) && (isFinite(data31)))){
+validate33.errors = [{instancePath:instancePath+"/stats/rung/courts",schemaPath:"https://hulla.gg/schemas/protocol/shell/profile.json#/definitions/profileStats/properties/rung/properties/courts/type",keyword:"type",params:{type: "integer"}}];
+return false;
+}
+if(errors === _errs70){
+if((typeof data31 == "number") && (isFinite(data31))){
+if(data31 < 0 || isNaN(data31)){
+validate33.errors = [{instancePath:instancePath+"/stats/rung/courts",schemaPath:"https://hulla.gg/schemas/protocol/shell/profile.json#/definitions/profileStats/properties/rung/properties/courts/minimum",keyword:"minimum",params:{comparison: ">=", limit: 0}}];
+return false;
+}
+}
+}
+var valid6 = _errs70 === errors;
+}
+else {
+var valid6 = true;
+}
+if(valid6){
+if(data26.courtsAgainst !== undefined){
+let data32 = data26.courtsAgainst;
+const _errs72 = errors;
+if(!(((typeof data32 == "number") && (!(data32 % 1) && !isNaN(data32))) && (isFinite(data32)))){
+validate33.errors = [{instancePath:instancePath+"/stats/rung/courtsAgainst",schemaPath:"https://hulla.gg/schemas/protocol/shell/profile.json#/definitions/profileStats/properties/rung/properties/courtsAgainst/type",keyword:"type",params:{type: "integer"}}];
+return false;
+}
+if(errors === _errs72){
+if((typeof data32 == "number") && (isFinite(data32))){
+if(data32 < 0 || isNaN(data32)){
+validate33.errors = [{instancePath:instancePath+"/stats/rung/courtsAgainst",schemaPath:"https://hulla.gg/schemas/protocol/shell/profile.json#/definitions/profileStats/properties/rung/properties/courtsAgainst/minimum",keyword:"minimum",params:{comparison: ">=", limit: 0}}];
+return false;
+}
+}
+}
+var valid6 = _errs72 === errors;
+}
+else {
+var valid6 = true;
+}
+if(valid6){
+if(data26.callerDeals !== undefined){
+let data33 = data26.callerDeals;
+const _errs74 = errors;
+if(!(((typeof data33 == "number") && (!(data33 % 1) && !isNaN(data33))) && (isFinite(data33)))){
+validate33.errors = [{instancePath:instancePath+"/stats/rung/callerDeals",schemaPath:"https://hulla.gg/schemas/protocol/shell/profile.json#/definitions/profileStats/properties/rung/properties/callerDeals/type",keyword:"type",params:{type: "integer"}}];
+return false;
+}
+if(errors === _errs74){
+if((typeof data33 == "number") && (isFinite(data33))){
+if(data33 < 0 || isNaN(data33)){
+validate33.errors = [{instancePath:instancePath+"/stats/rung/callerDeals",schemaPath:"https://hulla.gg/schemas/protocol/shell/profile.json#/definitions/profileStats/properties/rung/properties/callerDeals/minimum",keyword:"minimum",params:{comparison: ">=", limit: 0}}];
+return false;
+}
+}
+}
+var valid6 = _errs74 === errors;
+}
+else {
+var valid6 = true;
+}
+if(valid6){
+if(data26.callerWins !== undefined){
+let data34 = data26.callerWins;
+const _errs76 = errors;
+if(!(((typeof data34 == "number") && (!(data34 % 1) && !isNaN(data34))) && (isFinite(data34)))){
+validate33.errors = [{instancePath:instancePath+"/stats/rung/callerWins",schemaPath:"https://hulla.gg/schemas/protocol/shell/profile.json#/definitions/profileStats/properties/rung/properties/callerWins/type",keyword:"type",params:{type: "integer"}}];
+return false;
+}
+if(errors === _errs76){
+if((typeof data34 == "number") && (isFinite(data34))){
+if(data34 < 0 || isNaN(data34)){
+validate33.errors = [{instancePath:instancePath+"/stats/rung/callerWins",schemaPath:"https://hulla.gg/schemas/protocol/shell/profile.json#/definitions/profileStats/properties/rung/properties/callerWins/minimum",keyword:"minimum",params:{comparison: ">=", limit: 0}}];
+return false;
+}
+}
+}
+var valid6 = _errs76 === errors;
+}
+else {
+var valid6 = true;
+}
+if(valid6){
+if(data26.defenderDeals !== undefined){
+let data35 = data26.defenderDeals;
+const _errs78 = errors;
+if(!(((typeof data35 == "number") && (!(data35 % 1) && !isNaN(data35))) && (isFinite(data35)))){
+validate33.errors = [{instancePath:instancePath+"/stats/rung/defenderDeals",schemaPath:"https://hulla.gg/schemas/protocol/shell/profile.json#/definitions/profileStats/properties/rung/properties/defenderDeals/type",keyword:"type",params:{type: "integer"}}];
+return false;
+}
+if(errors === _errs78){
+if((typeof data35 == "number") && (isFinite(data35))){
+if(data35 < 0 || isNaN(data35)){
+validate33.errors = [{instancePath:instancePath+"/stats/rung/defenderDeals",schemaPath:"https://hulla.gg/schemas/protocol/shell/profile.json#/definitions/profileStats/properties/rung/properties/defenderDeals/minimum",keyword:"minimum",params:{comparison: ">=", limit: 0}}];
+return false;
+}
+}
+}
+var valid6 = _errs78 === errors;
+}
+else {
+var valid6 = true;
+}
+if(valid6){
+if(data26.defenderWins !== undefined){
+let data36 = data26.defenderWins;
+const _errs80 = errors;
+if(!(((typeof data36 == "number") && (!(data36 % 1) && !isNaN(data36))) && (isFinite(data36)))){
+validate33.errors = [{instancePath:instancePath+"/stats/rung/defenderWins",schemaPath:"https://hulla.gg/schemas/protocol/shell/profile.json#/definitions/profileStats/properties/rung/properties/defenderWins/type",keyword:"type",params:{type: "integer"}}];
+return false;
+}
+if(errors === _errs80){
+if((typeof data36 == "number") && (isFinite(data36))){
+if(data36 < 0 || isNaN(data36)){
+validate33.errors = [{instancePath:instancePath+"/stats/rung/defenderWins",schemaPath:"https://hulla.gg/schemas/protocol/shell/profile.json#/definitions/profileStats/properties/rung/properties/defenderWins/minimum",keyword:"minimum",params:{comparison: ">=", limit: 0}}];
+return false;
+}
+}
+}
+var valid6 = _errs80 === errors;
+}
+else {
+var valid6 = true;
+}
+if(valid6){
+if(data26.tricksWon !== undefined){
+let data37 = data26.tricksWon;
+const _errs82 = errors;
+if(!(((typeof data37 == "number") && (!(data37 % 1) && !isNaN(data37))) && (isFinite(data37)))){
+validate33.errors = [{instancePath:instancePath+"/stats/rung/tricksWon",schemaPath:"https://hulla.gg/schemas/protocol/shell/profile.json#/definitions/profileStats/properties/rung/properties/tricksWon/type",keyword:"type",params:{type: "integer"}}];
+return false;
+}
+if(errors === _errs82){
+if((typeof data37 == "number") && (isFinite(data37))){
+if(data37 < 0 || isNaN(data37)){
+validate33.errors = [{instancePath:instancePath+"/stats/rung/tricksWon",schemaPath:"https://hulla.gg/schemas/protocol/shell/profile.json#/definitions/profileStats/properties/rung/properties/tricksWon/minimum",keyword:"minimum",params:{comparison: ">=", limit: 0}}];
+return false;
+}
+}
+}
+var valid6 = _errs82 === errors;
+}
+else {
+var valid6 = true;
+}
+if(valid6){
+if(data26.cuts !== undefined){
+let data38 = data26.cuts;
+const _errs84 = errors;
+if(!(((typeof data38 == "number") && (!(data38 % 1) && !isNaN(data38))) && (isFinite(data38)))){
+validate33.errors = [{instancePath:instancePath+"/stats/rung/cuts",schemaPath:"https://hulla.gg/schemas/protocol/shell/profile.json#/definitions/profileStats/properties/rung/properties/cuts/type",keyword:"type",params:{type: "integer"}}];
+return false;
+}
+if(errors === _errs84){
+if((typeof data38 == "number") && (isFinite(data38))){
+if(data38 < 0 || isNaN(data38)){
+validate33.errors = [{instancePath:instancePath+"/stats/rung/cuts",schemaPath:"https://hulla.gg/schemas/protocol/shell/profile.json#/definitions/profileStats/properties/rung/properties/cuts/minimum",keyword:"minimum",params:{comparison: ">=", limit: 0}}];
+return false;
+}
+}
+}
+var valid6 = _errs84 === errors;
+}
+else {
+var valid6 = true;
+}
+if(valid6){
+if(data26.pilesTaken !== undefined){
+let data39 = data26.pilesTaken;
+const _errs86 = errors;
+if(!(((typeof data39 == "number") && (!(data39 % 1) && !isNaN(data39))) && (isFinite(data39)))){
+validate33.errors = [{instancePath:instancePath+"/stats/rung/pilesTaken",schemaPath:"https://hulla.gg/schemas/protocol/shell/profile.json#/definitions/profileStats/properties/rung/properties/pilesTaken/type",keyword:"type",params:{type: "integer"}}];
+return false;
+}
+if(errors === _errs86){
+if((typeof data39 == "number") && (isFinite(data39))){
+if(data39 < 0 || isNaN(data39)){
+validate33.errors = [{instancePath:instancePath+"/stats/rung/pilesTaken",schemaPath:"https://hulla.gg/schemas/protocol/shell/profile.json#/definitions/profileStats/properties/rung/properties/pilesTaken/minimum",keyword:"minimum",params:{comparison: ">=", limit: 0}}];
+return false;
+}
+}
+}
+var valid6 = _errs86 === errors;
+}
+else {
+var valid6 = true;
+}
+if(valid6){
+if(data26.trumps !== undefined){
+let data40 = data26.trumps;
+const _errs88 = errors;
+if(errors === _errs88){
+if(data40 && typeof data40 == "object" && !Array.isArray(data40)){
+let missing4;
+if(((((data40.S === undefined) && (missing4 = "S")) || ((data40.H === undefined) && (missing4 = "H"))) || ((data40.C === undefined) && (missing4 = "C"))) || ((data40.D === undefined) && (missing4 = "D"))){
+validate33.errors = [{instancePath:instancePath+"/stats/rung/trumps",schemaPath:"https://hulla.gg/schemas/protocol/shell/profile.json#/definitions/profileStats/properties/rung/properties/trumps/required",keyword:"required",params:{missingProperty: missing4}}];
+return false;
+}
+else {
+const _errs90 = errors;
+for(const key4 in data40){
+if(!((((key4 === "S") || (key4 === "H")) || (key4 === "C")) || (key4 === "D"))){
+validate33.errors = [{instancePath:instancePath+"/stats/rung/trumps",schemaPath:"https://hulla.gg/schemas/protocol/shell/profile.json#/definitions/profileStats/properties/rung/properties/trumps/additionalProperties",keyword:"additionalProperties",params:{additionalProperty: key4}}];
+return false;
+break;
+}
+}
+if(_errs90 === errors){
+if(data40.S !== undefined){
+let data41 = data40.S;
+const _errs91 = errors;
+if(!(((typeof data41 == "number") && (!(data41 % 1) && !isNaN(data41))) && (isFinite(data41)))){
+validate33.errors = [{instancePath:instancePath+"/stats/rung/trumps/S",schemaPath:"https://hulla.gg/schemas/protocol/shell/profile.json#/definitions/profileStats/properties/rung/properties/trumps/properties/S/type",keyword:"type",params:{type: "integer"}}];
+return false;
+}
+if(errors === _errs91){
+if((typeof data41 == "number") && (isFinite(data41))){
+if(data41 < 0 || isNaN(data41)){
+validate33.errors = [{instancePath:instancePath+"/stats/rung/trumps/S",schemaPath:"https://hulla.gg/schemas/protocol/shell/profile.json#/definitions/profileStats/properties/rung/properties/trumps/properties/S/minimum",keyword:"minimum",params:{comparison: ">=", limit: 0}}];
+return false;
+}
+}
+}
+var valid7 = _errs91 === errors;
+}
+else {
+var valid7 = true;
+}
+if(valid7){
+if(data40.H !== undefined){
+let data42 = data40.H;
+const _errs93 = errors;
+if(!(((typeof data42 == "number") && (!(data42 % 1) && !isNaN(data42))) && (isFinite(data42)))){
+validate33.errors = [{instancePath:instancePath+"/stats/rung/trumps/H",schemaPath:"https://hulla.gg/schemas/protocol/shell/profile.json#/definitions/profileStats/properties/rung/properties/trumps/properties/H/type",keyword:"type",params:{type: "integer"}}];
+return false;
+}
+if(errors === _errs93){
+if((typeof data42 == "number") && (isFinite(data42))){
+if(data42 < 0 || isNaN(data42)){
+validate33.errors = [{instancePath:instancePath+"/stats/rung/trumps/H",schemaPath:"https://hulla.gg/schemas/protocol/shell/profile.json#/definitions/profileStats/properties/rung/properties/trumps/properties/H/minimum",keyword:"minimum",params:{comparison: ">=", limit: 0}}];
+return false;
+}
+}
+}
+var valid7 = _errs93 === errors;
+}
+else {
+var valid7 = true;
+}
+if(valid7){
+if(data40.C !== undefined){
+let data43 = data40.C;
+const _errs95 = errors;
+if(!(((typeof data43 == "number") && (!(data43 % 1) && !isNaN(data43))) && (isFinite(data43)))){
+validate33.errors = [{instancePath:instancePath+"/stats/rung/trumps/C",schemaPath:"https://hulla.gg/schemas/protocol/shell/profile.json#/definitions/profileStats/properties/rung/properties/trumps/properties/C/type",keyword:"type",params:{type: "integer"}}];
+return false;
+}
+if(errors === _errs95){
+if((typeof data43 == "number") && (isFinite(data43))){
+if(data43 < 0 || isNaN(data43)){
+validate33.errors = [{instancePath:instancePath+"/stats/rung/trumps/C",schemaPath:"https://hulla.gg/schemas/protocol/shell/profile.json#/definitions/profileStats/properties/rung/properties/trumps/properties/C/minimum",keyword:"minimum",params:{comparison: ">=", limit: 0}}];
+return false;
+}
+}
+}
+var valid7 = _errs95 === errors;
+}
+else {
+var valid7 = true;
+}
+if(valid7){
+if(data40.D !== undefined){
+let data44 = data40.D;
+const _errs97 = errors;
+if(!(((typeof data44 == "number") && (!(data44 % 1) && !isNaN(data44))) && (isFinite(data44)))){
+validate33.errors = [{instancePath:instancePath+"/stats/rung/trumps/D",schemaPath:"https://hulla.gg/schemas/protocol/shell/profile.json#/definitions/profileStats/properties/rung/properties/trumps/properties/D/type",keyword:"type",params:{type: "integer"}}];
+return false;
+}
+if(errors === _errs97){
+if((typeof data44 == "number") && (isFinite(data44))){
+if(data44 < 0 || isNaN(data44)){
+validate33.errors = [{instancePath:instancePath+"/stats/rung/trumps/D",schemaPath:"https://hulla.gg/schemas/protocol/shell/profile.json#/definitions/profileStats/properties/rung/properties/trumps/properties/D/minimum",keyword:"minimum",params:{comparison: ">=", limit: 0}}];
+return false;
+}
+}
+}
+var valid7 = _errs97 === errors;
+}
+else {
+var valid7 = true;
+}
+}
+}
+}
+}
+}
+}
+else {
+validate33.errors = [{instancePath:instancePath+"/stats/rung/trumps",schemaPath:"https://hulla.gg/schemas/protocol/shell/profile.json#/definitions/profileStats/properties/rung/properties/trumps/type",keyword:"type",params:{type: "object"}}];
+return false;
+}
+}
+var valid6 = _errs88 === errors;
+}
+else {
+var valid6 = true;
+}
+}
+}
+}
+}
+}
+}
+}
+}
+}
+}
+}
+}
+}
+}
+}
+}
+else {
+validate33.errors = [{instancePath:instancePath+"/stats/rung",schemaPath:"https://hulla.gg/schemas/protocol/shell/profile.json#/definitions/profileStats/properties/rung/type",keyword:"type",params:{type: "object"}}];
+return false;
+}
+}
+var valid4 = _errs59 === errors;
+}
+else {
+var valid4 = true;
+}
+}
 }
 }
 }
@@ -4124,65 +4564,65 @@ var valid0 = true;
 }
 if(valid0){
 if(data.online !== undefined){
-const _errs59 = errors;
+const _errs99 = errors;
 if(typeof data.online !== "boolean"){
 validate33.errors = [{instancePath:instancePath+"/online",schemaPath:"#/properties/online/type",keyword:"type",params:{type: "boolean"}}];
 return false;
 }
-var valid0 = _errs59 === errors;
+var valid0 = _errs99 === errors;
 }
 else {
 var valid0 = true;
 }
 if(valid0){
 if(data.privacy !== undefined){
-let data27 = data.privacy;
-const _errs61 = errors;
-const _errs62 = errors;
-if(errors === _errs62){
-if(data27 && typeof data27 == "object" && !Array.isArray(data27)){
-let missing3;
-if(((data27.showOnline === undefined) && (missing3 = "showOnline")) || ((data27.visibility === undefined) && (missing3 = "visibility"))){
-validate33.errors = [{instancePath:instancePath+"/privacy",schemaPath:"https://hulla.gg/schemas/protocol/shell/profile.json#/definitions/profilePrivacy/required",keyword:"required",params:{missingProperty: missing3}}];
+let data46 = data.privacy;
+const _errs101 = errors;
+const _errs102 = errors;
+if(errors === _errs102){
+if(data46 && typeof data46 == "object" && !Array.isArray(data46)){
+let missing5;
+if(((data46.showOnline === undefined) && (missing5 = "showOnline")) || ((data46.visibility === undefined) && (missing5 = "visibility"))){
+validate33.errors = [{instancePath:instancePath+"/privacy",schemaPath:"https://hulla.gg/schemas/protocol/shell/profile.json#/definitions/profilePrivacy/required",keyword:"required",params:{missingProperty: missing5}}];
 return false;
 }
 else {
-const _errs64 = errors;
-for(const key3 in data27){
-if(!((key3 === "showOnline") || (key3 === "visibility"))){
-validate33.errors = [{instancePath:instancePath+"/privacy",schemaPath:"https://hulla.gg/schemas/protocol/shell/profile.json#/definitions/profilePrivacy/additionalProperties",keyword:"additionalProperties",params:{additionalProperty: key3}}];
+const _errs104 = errors;
+for(const key5 in data46){
+if(!((key5 === "showOnline") || (key5 === "visibility"))){
+validate33.errors = [{instancePath:instancePath+"/privacy",schemaPath:"https://hulla.gg/schemas/protocol/shell/profile.json#/definitions/profilePrivacy/additionalProperties",keyword:"additionalProperties",params:{additionalProperty: key5}}];
 return false;
 break;
 }
 }
-if(_errs64 === errors){
-if(data27.showOnline !== undefined){
-const _errs65 = errors;
-if(typeof data27.showOnline !== "boolean"){
+if(_errs104 === errors){
+if(data46.showOnline !== undefined){
+const _errs105 = errors;
+if(typeof data46.showOnline !== "boolean"){
 validate33.errors = [{instancePath:instancePath+"/privacy/showOnline",schemaPath:"https://hulla.gg/schemas/protocol/shell/profile.json#/definitions/profilePrivacy/properties/showOnline/type",keyword:"type",params:{type: "boolean"}}];
 return false;
 }
-var valid7 = _errs65 === errors;
+var valid9 = _errs105 === errors;
 }
 else {
-var valid7 = true;
+var valid9 = true;
 }
-if(valid7){
-if(data27.visibility !== undefined){
-let data29 = data27.visibility;
-const _errs67 = errors;
-if(typeof data29 !== "string"){
+if(valid9){
+if(data46.visibility !== undefined){
+let data48 = data46.visibility;
+const _errs107 = errors;
+if(typeof data48 !== "string"){
 validate33.errors = [{instancePath:instancePath+"/privacy/visibility",schemaPath:"https://hulla.gg/schemas/protocol/shell/profile.json#/definitions/profilePrivacy/properties/visibility/type",keyword:"type",params:{type: "string"}}];
 return false;
 }
-if(!((data29 === "everyone") || (data29 === "friends"))){
+if(!((data48 === "everyone") || (data48 === "friends"))){
 validate33.errors = [{instancePath:instancePath+"/privacy/visibility",schemaPath:"https://hulla.gg/schemas/protocol/shell/profile.json#/definitions/profilePrivacy/properties/visibility/enum",keyword:"enum",params:{allowedValues: schema63.properties.visibility.enum}}];
 return false;
 }
-var valid7 = _errs67 === errors;
+var valid9 = _errs107 === errors;
 }
 else {
-var valid7 = true;
+var valid9 = true;
 }
 }
 }
@@ -4193,28 +4633,28 @@ validate33.errors = [{instancePath:instancePath+"/privacy",schemaPath:"https://h
 return false;
 }
 }
-var valid0 = _errs61 === errors;
+var valid0 = _errs101 === errors;
 }
 else {
 var valid0 = true;
 }
 if(valid0){
 if(data.nameChanges !== undefined){
-let data30 = data.nameChanges;
-const _errs69 = errors;
-if(!(((typeof data30 == "number") && (!(data30 % 1) && !isNaN(data30))) && (isFinite(data30)))){
+let data49 = data.nameChanges;
+const _errs109 = errors;
+if(!(((typeof data49 == "number") && (!(data49 % 1) && !isNaN(data49))) && (isFinite(data49)))){
 validate33.errors = [{instancePath:instancePath+"/nameChanges",schemaPath:"#/properties/nameChanges/type",keyword:"type",params:{type: "integer"}}];
 return false;
 }
-if(errors === _errs69){
-if((typeof data30 == "number") && (isFinite(data30))){
-if(data30 < 0 || isNaN(data30)){
+if(errors === _errs109){
+if((typeof data49 == "number") && (isFinite(data49))){
+if(data49 < 0 || isNaN(data49)){
 validate33.errors = [{instancePath:instancePath+"/nameChanges",schemaPath:"#/properties/nameChanges/minimum",keyword:"minimum",params:{comparison: ">=", limit: 0}}];
 return false;
 }
 }
 }
-var valid0 = _errs69 === errors;
+var valid0 = _errs109 === errors;
 }
 else {
 var valid0 = true;
@@ -5416,24 +5856,115 @@ validate54.errors = vErrors;
 return errors === 0;
 }
 
-const check_chat_text = validate57;
-const schema99 = {"type":"object","additionalProperties":false,"required":["text"],"properties":{"text":{"type":"string","minLength":1,"maxLength":140}}};
+const check_swap_seats = validate56;
+const schema98 = {"type":"object","additionalProperties":false,"description":"Host only, in the lobby of a private room: two seats trade places, so the host chooses who partners whom in a game of pairs. One of the two may be empty.","required":["a","b"],"properties":{"a":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex"},"b":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex"}}};
 
-function validate57(data, {instancePath="", parentData, parentDataProperty, rootData=data}={}){
+function validate56(data, {instancePath="", parentData, parentDataProperty, rootData=data}={}){
+let vErrors = null;
+let errors = 0;
+if(errors === 0){
+if(data && typeof data == "object" && !Array.isArray(data)){
+let missing0;
+if(((data.a === undefined) && (missing0 = "a")) || ((data.b === undefined) && (missing0 = "b"))){
+validate56.errors = [{instancePath,schemaPath:"#/required",keyword:"required",params:{missingProperty: missing0}}];
+return false;
+}
+else {
+const _errs1 = errors;
+for(const key0 in data){
+if(!((key0 === "a") || (key0 === "b"))){
+validate56.errors = [{instancePath,schemaPath:"#/additionalProperties",keyword:"additionalProperties",params:{additionalProperty: key0}}];
+return false;
+break;
+}
+}
+if(_errs1 === errors){
+if(data.a !== undefined){
+let data0 = data.a;
+const _errs2 = errors;
+const _errs3 = errors;
+if(!(((typeof data0 == "number") && (!(data0 % 1) && !isNaN(data0))) && (isFinite(data0)))){
+validate56.errors = [{instancePath:instancePath+"/a",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex/type",keyword:"type",params:{type: "integer"}}];
+return false;
+}
+if(errors === _errs3){
+if((typeof data0 == "number") && (isFinite(data0))){
+if(data0 > 7 || isNaN(data0)){
+validate56.errors = [{instancePath:instancePath+"/a",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex/maximum",keyword:"maximum",params:{comparison: "<=", limit: 7}}];
+return false;
+}
+else {
+if(data0 < 0 || isNaN(data0)){
+validate56.errors = [{instancePath:instancePath+"/a",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex/minimum",keyword:"minimum",params:{comparison: ">=", limit: 0}}];
+return false;
+}
+}
+}
+}
+var valid0 = _errs2 === errors;
+}
+else {
+var valid0 = true;
+}
+if(valid0){
+if(data.b !== undefined){
+let data1 = data.b;
+const _errs5 = errors;
+const _errs6 = errors;
+if(!(((typeof data1 == "number") && (!(data1 % 1) && !isNaN(data1))) && (isFinite(data1)))){
+validate56.errors = [{instancePath:instancePath+"/b",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex/type",keyword:"type",params:{type: "integer"}}];
+return false;
+}
+if(errors === _errs6){
+if((typeof data1 == "number") && (isFinite(data1))){
+if(data1 > 7 || isNaN(data1)){
+validate56.errors = [{instancePath:instancePath+"/b",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex/maximum",keyword:"maximum",params:{comparison: "<=", limit: 7}}];
+return false;
+}
+else {
+if(data1 < 0 || isNaN(data1)){
+validate56.errors = [{instancePath:instancePath+"/b",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex/minimum",keyword:"minimum",params:{comparison: ">=", limit: 0}}];
+return false;
+}
+}
+}
+}
+var valid0 = _errs5 === errors;
+}
+else {
+var valid0 = true;
+}
+}
+}
+}
+}
+else {
+validate56.errors = [{instancePath,schemaPath:"#/type",keyword:"type",params:{type: "object"}}];
+return false;
+}
+}
+validate56.errors = vErrors;
+return errors === 0;
+}
+
+const check_chat_text = validate58;
+const schema102 = {"type":"object","additionalProperties":false,"required":["text"],"properties":{"text":{"type":"string","minLength":1,"maxLength":140}}};
+
+function validate58(data, {instancePath="", parentData, parentDataProperty, rootData=data}={}){
 let vErrors = null;
 let errors = 0;
 if(errors === 0){
 if(data && typeof data == "object" && !Array.isArray(data)){
 let missing0;
 if((data.text === undefined) && (missing0 = "text")){
-validate57.errors = [{instancePath,schemaPath:"#/required",keyword:"required",params:{missingProperty: missing0}}];
+validate58.errors = [{instancePath,schemaPath:"#/required",keyword:"required",params:{missingProperty: missing0}}];
 return false;
 }
 else {
 const _errs1 = errors;
 for(const key0 in data){
 if(!(key0 === "text")){
-validate57.errors = [{instancePath,schemaPath:"#/additionalProperties",keyword:"additionalProperties",params:{additionalProperty: key0}}];
+validate58.errors = [{instancePath,schemaPath:"#/additionalProperties",keyword:"additionalProperties",params:{additionalProperty: key0}}];
 return false;
 break;
 }
@@ -5445,89 +5976,20 @@ const _errs2 = errors;
 if(errors === _errs2){
 if(typeof data0 === "string"){
 if(data0.length > 140){
-validate57.errors = [{instancePath:instancePath+"/text",schemaPath:"#/properties/text/maxLength",keyword:"maxLength",params:{limit: 140}}];
+validate58.errors = [{instancePath:instancePath+"/text",schemaPath:"#/properties/text/maxLength",keyword:"maxLength",params:{limit: 140}}];
 return false;
 }
 else {
 if(data0.length < 1){
-validate57.errors = [{instancePath:instancePath+"/text",schemaPath:"#/properties/text/minLength",keyword:"minLength",params:{limit: 1}}];
+validate58.errors = [{instancePath:instancePath+"/text",schemaPath:"#/properties/text/minLength",keyword:"minLength",params:{limit: 1}}];
 return false;
 }
 }
 }
 else {
-validate57.errors = [{instancePath:instancePath+"/text",schemaPath:"#/properties/text/type",keyword:"type",params:{type: "string"}}];
+validate58.errors = [{instancePath:instancePath+"/text",schemaPath:"#/properties/text/type",keyword:"type",params:{type: "string"}}];
 return false;
 }
-}
-}
-}
-}
-}
-else {
-validate57.errors = [{instancePath,schemaPath:"#/type",keyword:"type",params:{type: "object"}}];
-return false;
-}
-}
-validate57.errors = vErrors;
-return errors === 0;
-}
-
-const check_quick_chat = validate58;
-const schema100 = {"type":"object","additionalProperties":false,"required":["phraseId"],"properties":{"phraseId":{"type":"string","pattern":"^[A-Z][0-9]{2}$"},"pack":{"type":"string"}}};
-const pattern17 = new RegExp("^[A-Z][0-9]{2}$", "");
-
-function validate58(data, {instancePath="", parentData, parentDataProperty, rootData=data}={}){
-let vErrors = null;
-let errors = 0;
-if(errors === 0){
-if(data && typeof data == "object" && !Array.isArray(data)){
-let missing0;
-if((data.phraseId === undefined) && (missing0 = "phraseId")){
-validate58.errors = [{instancePath,schemaPath:"#/required",keyword:"required",params:{missingProperty: missing0}}];
-return false;
-}
-else {
-const _errs1 = errors;
-for(const key0 in data){
-if(!((key0 === "phraseId") || (key0 === "pack"))){
-validate58.errors = [{instancePath,schemaPath:"#/additionalProperties",keyword:"additionalProperties",params:{additionalProperty: key0}}];
-return false;
-break;
-}
-}
-if(_errs1 === errors){
-if(data.phraseId !== undefined){
-let data0 = data.phraseId;
-const _errs2 = errors;
-if(errors === _errs2){
-if(typeof data0 === "string"){
-if(!pattern17.test(data0)){
-validate58.errors = [{instancePath:instancePath+"/phraseId",schemaPath:"#/properties/phraseId/pattern",keyword:"pattern",params:{pattern: "^[A-Z][0-9]{2}$"}}];
-return false;
-}
-}
-else {
-validate58.errors = [{instancePath:instancePath+"/phraseId",schemaPath:"#/properties/phraseId/type",keyword:"type",params:{type: "string"}}];
-return false;
-}
-}
-var valid0 = _errs2 === errors;
-}
-else {
-var valid0 = true;
-}
-if(valid0){
-if(data.pack !== undefined){
-const _errs4 = errors;
-if(typeof data.pack !== "string"){
-validate58.errors = [{instancePath:instancePath+"/pack",schemaPath:"#/properties/pack/type",keyword:"type",params:{type: "string"}}];
-return false;
-}
-var valid0 = _errs4 === errors;
-}
-else {
-var valid0 = true;
 }
 }
 }
@@ -5542,8 +6004,9 @@ validate58.errors = vErrors;
 return errors === 0;
 }
 
-const check_emote = validate59;
-const schema101 = {"type":"object","additionalProperties":false,"required":["emoteId"],"properties":{"emoteId":{"type":"string","minLength":1,"maxLength":32},"targetSeat":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex"}}};
+const check_quick_chat = validate59;
+const schema103 = {"type":"object","additionalProperties":false,"required":["phraseId"],"properties":{"phraseId":{"type":"string","pattern":"^[A-Z][0-9]{2}$"},"pack":{"type":"string"}}};
+const pattern17 = new RegExp("^[A-Z][0-9]{2}$", "");
 
 function validate59(data, {instancePath="", parentData, parentDataProperty, rootData=data}={}){
 let vErrors = null;
@@ -5551,38 +6014,32 @@ let errors = 0;
 if(errors === 0){
 if(data && typeof data == "object" && !Array.isArray(data)){
 let missing0;
-if((data.emoteId === undefined) && (missing0 = "emoteId")){
+if((data.phraseId === undefined) && (missing0 = "phraseId")){
 validate59.errors = [{instancePath,schemaPath:"#/required",keyword:"required",params:{missingProperty: missing0}}];
 return false;
 }
 else {
 const _errs1 = errors;
 for(const key0 in data){
-if(!((key0 === "emoteId") || (key0 === "targetSeat"))){
+if(!((key0 === "phraseId") || (key0 === "pack"))){
 validate59.errors = [{instancePath,schemaPath:"#/additionalProperties",keyword:"additionalProperties",params:{additionalProperty: key0}}];
 return false;
 break;
 }
 }
 if(_errs1 === errors){
-if(data.emoteId !== undefined){
-let data0 = data.emoteId;
+if(data.phraseId !== undefined){
+let data0 = data.phraseId;
 const _errs2 = errors;
 if(errors === _errs2){
 if(typeof data0 === "string"){
-if(data0.length > 32){
-validate59.errors = [{instancePath:instancePath+"/emoteId",schemaPath:"#/properties/emoteId/maxLength",keyword:"maxLength",params:{limit: 32}}];
-return false;
-}
-else {
-if(data0.length < 1){
-validate59.errors = [{instancePath:instancePath+"/emoteId",schemaPath:"#/properties/emoteId/minLength",keyword:"minLength",params:{limit: 1}}];
+if(!pattern17.test(data0)){
+validate59.errors = [{instancePath:instancePath+"/phraseId",schemaPath:"#/properties/phraseId/pattern",keyword:"pattern",params:{pattern: "^[A-Z][0-9]{2}$"}}];
 return false;
 }
 }
-}
 else {
-validate59.errors = [{instancePath:instancePath+"/emoteId",schemaPath:"#/properties/emoteId/type",keyword:"type",params:{type: "string"}}];
+validate59.errors = [{instancePath:instancePath+"/phraseId",schemaPath:"#/properties/phraseId/type",keyword:"type",params:{type: "string"}}];
 return false;
 }
 }
@@ -5592,27 +6049,11 @@ else {
 var valid0 = true;
 }
 if(valid0){
-if(data.targetSeat !== undefined){
-let data1 = data.targetSeat;
+if(data.pack !== undefined){
 const _errs4 = errors;
-const _errs5 = errors;
-if(!(((typeof data1 == "number") && (!(data1 % 1) && !isNaN(data1))) && (isFinite(data1)))){
-validate59.errors = [{instancePath:instancePath+"/targetSeat",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex/type",keyword:"type",params:{type: "integer"}}];
+if(typeof data.pack !== "string"){
+validate59.errors = [{instancePath:instancePath+"/pack",schemaPath:"#/properties/pack/type",keyword:"type",params:{type: "string"}}];
 return false;
-}
-if(errors === _errs5){
-if((typeof data1 == "number") && (isFinite(data1))){
-if(data1 > 7 || isNaN(data1)){
-validate59.errors = [{instancePath:instancePath+"/targetSeat",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex/maximum",keyword:"maximum",params:{comparison: "<=", limit: 7}}];
-return false;
-}
-else {
-if(data1 < 0 || isNaN(data1)){
-validate59.errors = [{instancePath:instancePath+"/targetSeat",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex/minimum",keyword:"minimum",params:{comparison: ">=", limit: 0}}];
-return false;
-}
-}
-}
 }
 var valid0 = _errs4 === errors;
 }
@@ -5632,44 +6073,47 @@ validate59.errors = vErrors;
 return errors === 0;
 }
 
-const check_play_card = validate61;
-const schema104 = {"type":"object","additionalProperties":false,"required":["roundId","clientSeq","card"],"properties":{"roundId":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/roundId"},"clientSeq":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/sequence","description":"Idempotency key with the seat (ARCHITECTURE 8.4)"},"card":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/card"}}};
-const schema105 = {"type":"string","pattern":"^r_[0-9]+$"};
-const pattern18 = new RegExp("^r_[0-9]+$", "");
+const check_emote = validate60;
+const schema104 = {"type":"object","additionalProperties":false,"required":["emoteId"],"properties":{"emoteId":{"type":"string","minLength":1,"maxLength":32},"targetSeat":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex"}}};
 
-function validate61(data, {instancePath="", parentData, parentDataProperty, rootData=data}={}){
+function validate60(data, {instancePath="", parentData, parentDataProperty, rootData=data}={}){
 let vErrors = null;
 let errors = 0;
 if(errors === 0){
 if(data && typeof data == "object" && !Array.isArray(data)){
 let missing0;
-if((((data.roundId === undefined) && (missing0 = "roundId")) || ((data.clientSeq === undefined) && (missing0 = "clientSeq"))) || ((data.card === undefined) && (missing0 = "card"))){
-validate61.errors = [{instancePath,schemaPath:"#/required",keyword:"required",params:{missingProperty: missing0}}];
+if((data.emoteId === undefined) && (missing0 = "emoteId")){
+validate60.errors = [{instancePath,schemaPath:"#/required",keyword:"required",params:{missingProperty: missing0}}];
 return false;
 }
 else {
 const _errs1 = errors;
 for(const key0 in data){
-if(!(((key0 === "roundId") || (key0 === "clientSeq")) || (key0 === "card"))){
-validate61.errors = [{instancePath,schemaPath:"#/additionalProperties",keyword:"additionalProperties",params:{additionalProperty: key0}}];
+if(!((key0 === "emoteId") || (key0 === "targetSeat"))){
+validate60.errors = [{instancePath,schemaPath:"#/additionalProperties",keyword:"additionalProperties",params:{additionalProperty: key0}}];
 return false;
 break;
 }
 }
 if(_errs1 === errors){
-if(data.roundId !== undefined){
-let data0 = data.roundId;
+if(data.emoteId !== undefined){
+let data0 = data.emoteId;
 const _errs2 = errors;
-const _errs3 = errors;
-if(errors === _errs3){
+if(errors === _errs2){
 if(typeof data0 === "string"){
-if(!pattern18.test(data0)){
-validate61.errors = [{instancePath:instancePath+"/roundId",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/roundId/pattern",keyword:"pattern",params:{pattern: "^r_[0-9]+$"}}];
+if(data0.length > 32){
+validate60.errors = [{instancePath:instancePath+"/emoteId",schemaPath:"#/properties/emoteId/maxLength",keyword:"maxLength",params:{limit: 32}}];
+return false;
+}
+else {
+if(data0.length < 1){
+validate60.errors = [{instancePath:instancePath+"/emoteId",schemaPath:"#/properties/emoteId/minLength",keyword:"minLength",params:{limit: 1}}];
 return false;
 }
 }
+}
 else {
-validate61.errors = [{instancePath:instancePath+"/roundId",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/roundId/type",keyword:"type",params:{type: "string"}}];
+validate60.errors = [{instancePath:instancePath+"/emoteId",schemaPath:"#/properties/emoteId/type",keyword:"type",params:{type: "string"}}];
 return false;
 }
 }
@@ -5679,45 +6123,29 @@ else {
 var valid0 = true;
 }
 if(valid0){
-if(data.clientSeq !== undefined){
-let data1 = data.clientSeq;
+if(data.targetSeat !== undefined){
+let data1 = data.targetSeat;
+const _errs4 = errors;
 const _errs5 = errors;
-const _errs6 = errors;
 if(!(((typeof data1 == "number") && (!(data1 % 1) && !isNaN(data1))) && (isFinite(data1)))){
-validate61.errors = [{instancePath:instancePath+"/clientSeq",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/sequence/type",keyword:"type",params:{type: "integer"}}];
+validate60.errors = [{instancePath:instancePath+"/targetSeat",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex/type",keyword:"type",params:{type: "integer"}}];
 return false;
 }
-if(errors === _errs6){
+if(errors === _errs5){
 if((typeof data1 == "number") && (isFinite(data1))){
+if(data1 > 7 || isNaN(data1)){
+validate60.errors = [{instancePath:instancePath+"/targetSeat",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex/maximum",keyword:"maximum",params:{comparison: "<=", limit: 7}}];
+return false;
+}
+else {
 if(data1 < 0 || isNaN(data1)){
-validate61.errors = [{instancePath:instancePath+"/clientSeq",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/sequence/minimum",keyword:"minimum",params:{comparison: ">=", limit: 0}}];
+validate60.errors = [{instancePath:instancePath+"/targetSeat",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex/minimum",keyword:"minimum",params:{comparison: ">=", limit: 0}}];
 return false;
 }
 }
 }
-var valid0 = _errs5 === errors;
 }
-else {
-var valid0 = true;
-}
-if(valid0){
-if(data.card !== undefined){
-let data2 = data.card;
-const _errs8 = errors;
-const _errs9 = errors;
-if(errors === _errs9){
-if(typeof data2 === "string"){
-if(!pattern2.test(data2)){
-validate61.errors = [{instancePath:instancePath+"/card",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/card/pattern",keyword:"pattern",params:{pattern: "^[2-9TJQKA][SHCD]$"}}];
-return false;
-}
-}
-else {
-validate61.errors = [{instancePath:instancePath+"/card",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/card/type",keyword:"type",params:{type: "string"}}];
-return false;
-}
-}
-var valid0 = _errs8 === errors;
+var valid0 = _errs4 === errors;
 }
 else {
 var valid0 = true;
@@ -5726,18 +6154,19 @@ var valid0 = true;
 }
 }
 }
-}
 else {
-validate61.errors = [{instancePath,schemaPath:"#/type",keyword:"type",params:{type: "object"}}];
+validate60.errors = [{instancePath,schemaPath:"#/type",keyword:"type",params:{type: "object"}}];
 return false;
 }
 }
-validate61.errors = vErrors;
+validate60.errors = vErrors;
 return errors === 0;
 }
 
-const check_take_hand = validate62;
-const schema108 = {"type":"object","additionalProperties":false,"required":["roundId","clientSeq"],"properties":{"roundId":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/roundId"},"clientSeq":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/sequence"}}};
+const check_play_card = validate62;
+const schema107 = {"type":"object","additionalProperties":false,"required":["roundId","clientSeq","card"],"properties":{"roundId":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/roundId"},"clientSeq":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/sequence","description":"Idempotency key with the seat (ARCHITECTURE 8.4)"},"card":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/card"}}};
+const schema108 = {"type":"string","pattern":"^r_[0-9]+$"};
+const pattern18 = new RegExp("^r_[0-9]+$", "");
 
 function validate62(data, {instancePath="", parentData, parentDataProperty, rootData=data}={}){
 let vErrors = null;
@@ -5745,14 +6174,14 @@ let errors = 0;
 if(errors === 0){
 if(data && typeof data == "object" && !Array.isArray(data)){
 let missing0;
-if(((data.roundId === undefined) && (missing0 = "roundId")) || ((data.clientSeq === undefined) && (missing0 = "clientSeq"))){
+if((((data.roundId === undefined) && (missing0 = "roundId")) || ((data.clientSeq === undefined) && (missing0 = "clientSeq"))) || ((data.card === undefined) && (missing0 = "card"))){
 validate62.errors = [{instancePath,schemaPath:"#/required",keyword:"required",params:{missingProperty: missing0}}];
 return false;
 }
 else {
 const _errs1 = errors;
 for(const key0 in data){
-if(!((key0 === "roundId") || (key0 === "clientSeq"))){
+if(!(((key0 === "roundId") || (key0 === "clientSeq")) || (key0 === "card"))){
 validate62.errors = [{instancePath,schemaPath:"#/additionalProperties",keyword:"additionalProperties",params:{additionalProperty: key0}}];
 return false;
 break;
@@ -5802,6 +6231,29 @@ var valid0 = _errs5 === errors;
 else {
 var valid0 = true;
 }
+if(valid0){
+if(data.card !== undefined){
+let data2 = data.card;
+const _errs8 = errors;
+const _errs9 = errors;
+if(errors === _errs9){
+if(typeof data2 === "string"){
+if(!pattern2.test(data2)){
+validate62.errors = [{instancePath:instancePath+"/card",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/card/pattern",keyword:"pattern",params:{pattern: "^[2-9TJQKA][SHCD]$"}}];
+return false;
+}
+}
+else {
+validate62.errors = [{instancePath:instancePath+"/card",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/card/type",keyword:"type",params:{type: "string"}}];
+return false;
+}
+}
+var valid0 = _errs8 === errors;
+}
+else {
+var valid0 = true;
+}
+}
 }
 }
 }
@@ -5815,8 +6267,8 @@ validate62.errors = vErrors;
 return errors === 0;
 }
 
-const check_cancel_take = validate63;
-const schema111 = {"type":"object","additionalProperties":false,"description":"Cancels a hold before its confirmation lands (R34); the engine never sees it","required":["roundId","clientSeq"],"properties":{"roundId":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/roundId"},"clientSeq":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/sequence"}}};
+const check_take_hand = validate63;
+const schema111 = {"type":"object","additionalProperties":false,"required":["roundId","clientSeq"],"properties":{"roundId":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/roundId"},"clientSeq":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/sequence"}}};
 
 function validate63(data, {instancePath="", parentData, parentDataProperty, rootData=data}={}){
 let vErrors = null;
@@ -5894,8 +6346,8 @@ validate63.errors = vErrors;
 return errors === 0;
 }
 
-const check_answer_hand = validate64;
-const schema114 = {"type":"object","additionalProperties":false,"description":"The asked player's answer to a hand request (R33, R34); on accept the table core applies the take for the asker","required":["roundId","accept"],"properties":{"roundId":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/roundId"},"accept":{"type":"boolean"}}};
+const check_cancel_take = validate64;
+const schema114 = {"type":"object","additionalProperties":false,"description":"Cancels a hold before its confirmation lands (R34); the engine never sees it","required":["roundId","clientSeq"],"properties":{"roundId":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/roundId"},"clientSeq":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/sequence"}}};
 
 function validate64(data, {instancePath="", parentData, parentDataProperty, rootData=data}={}){
 let vErrors = null;
@@ -5903,14 +6355,14 @@ let errors = 0;
 if(errors === 0){
 if(data && typeof data == "object" && !Array.isArray(data)){
 let missing0;
-if(((data.roundId === undefined) && (missing0 = "roundId")) || ((data.accept === undefined) && (missing0 = "accept"))){
+if(((data.roundId === undefined) && (missing0 = "roundId")) || ((data.clientSeq === undefined) && (missing0 = "clientSeq"))){
 validate64.errors = [{instancePath,schemaPath:"#/required",keyword:"required",params:{missingProperty: missing0}}];
 return false;
 }
 else {
 const _errs1 = errors;
 for(const key0 in data){
-if(!((key0 === "roundId") || (key0 === "accept"))){
+if(!((key0 === "roundId") || (key0 === "clientSeq"))){
 validate64.errors = [{instancePath,schemaPath:"#/additionalProperties",keyword:"additionalProperties",params:{additionalProperty: key0}}];
 return false;
 break;
@@ -5939,11 +6391,21 @@ else {
 var valid0 = true;
 }
 if(valid0){
-if(data.accept !== undefined){
+if(data.clientSeq !== undefined){
+let data1 = data.clientSeq;
 const _errs5 = errors;
-if(typeof data.accept !== "boolean"){
-validate64.errors = [{instancePath:instancePath+"/accept",schemaPath:"#/properties/accept/type",keyword:"type",params:{type: "boolean"}}];
+const _errs6 = errors;
+if(!(((typeof data1 == "number") && (!(data1 % 1) && !isNaN(data1))) && (isFinite(data1)))){
+validate64.errors = [{instancePath:instancePath+"/clientSeq",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/sequence/type",keyword:"type",params:{type: "integer"}}];
 return false;
+}
+if(errors === _errs6){
+if((typeof data1 == "number") && (isFinite(data1))){
+if(data1 < 0 || isNaN(data1)){
+validate64.errors = [{instancePath:instancePath+"/clientSeq",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/sequence/minimum",keyword:"minimum",params:{comparison: ">=", limit: 0}}];
+return false;
+}
+}
 }
 var valid0 = _errs5 === errors;
 }
@@ -5963,24 +6425,24 @@ validate64.errors = vErrors;
 return errors === 0;
 }
 
-const check_call_trump = validate66;
-const schema117 = {"type":"object","additionalProperties":false,"description":"The caller names the rung from their first five cards (RG6)","required":["roundId","clientSeq","suit"],"properties":{"roundId":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/roundId"},"clientSeq":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/sequence","description":"Idempotency key with the seat (ARCHITECTURE 8.4)"},"suit":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/suit"}}};
+const check_answer_hand = validate65;
+const schema117 = {"type":"object","additionalProperties":false,"description":"The asked player's answer to a hand request (R33, R34); on accept the table core applies the take for the asker","required":["roundId","accept"],"properties":{"roundId":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/roundId"},"accept":{"type":"boolean"}}};
 
-function validate66(data, {instancePath="", parentData, parentDataProperty, rootData=data}={}){
+function validate65(data, {instancePath="", parentData, parentDataProperty, rootData=data}={}){
 let vErrors = null;
 let errors = 0;
 if(errors === 0){
 if(data && typeof data == "object" && !Array.isArray(data)){
 let missing0;
-if((((data.roundId === undefined) && (missing0 = "roundId")) || ((data.clientSeq === undefined) && (missing0 = "clientSeq"))) || ((data.suit === undefined) && (missing0 = "suit"))){
-validate66.errors = [{instancePath,schemaPath:"#/required",keyword:"required",params:{missingProperty: missing0}}];
+if(((data.roundId === undefined) && (missing0 = "roundId")) || ((data.accept === undefined) && (missing0 = "accept"))){
+validate65.errors = [{instancePath,schemaPath:"#/required",keyword:"required",params:{missingProperty: missing0}}];
 return false;
 }
 else {
 const _errs1 = errors;
 for(const key0 in data){
-if(!(((key0 === "roundId") || (key0 === "clientSeq")) || (key0 === "suit"))){
-validate66.errors = [{instancePath,schemaPath:"#/additionalProperties",keyword:"additionalProperties",params:{additionalProperty: key0}}];
+if(!((key0 === "roundId") || (key0 === "accept"))){
+validate65.errors = [{instancePath,schemaPath:"#/additionalProperties",keyword:"additionalProperties",params:{additionalProperty: key0}}];
 return false;
 break;
 }
@@ -5993,12 +6455,12 @@ const _errs3 = errors;
 if(errors === _errs3){
 if(typeof data0 === "string"){
 if(!pattern18.test(data0)){
-validate66.errors = [{instancePath:instancePath+"/roundId",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/roundId/pattern",keyword:"pattern",params:{pattern: "^r_[0-9]+$"}}];
+validate65.errors = [{instancePath:instancePath+"/roundId",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/roundId/pattern",keyword:"pattern",params:{pattern: "^r_[0-9]+$"}}];
 return false;
 }
 }
 else {
-validate66.errors = [{instancePath:instancePath+"/roundId",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/roundId/type",keyword:"type",params:{type: "string"}}];
+validate65.errors = [{instancePath:instancePath+"/roundId",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/roundId/type",keyword:"type",params:{type: "string"}}];
 return false;
 }
 }
@@ -6008,60 +6470,32 @@ else {
 var valid0 = true;
 }
 if(valid0){
-if(data.clientSeq !== undefined){
-let data1 = data.clientSeq;
+if(data.accept !== undefined){
 const _errs5 = errors;
-const _errs6 = errors;
-if(!(((typeof data1 == "number") && (!(data1 % 1) && !isNaN(data1))) && (isFinite(data1)))){
-validate66.errors = [{instancePath:instancePath+"/clientSeq",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/sequence/type",keyword:"type",params:{type: "integer"}}];
+if(typeof data.accept !== "boolean"){
+validate65.errors = [{instancePath:instancePath+"/accept",schemaPath:"#/properties/accept/type",keyword:"type",params:{type: "boolean"}}];
 return false;
-}
-if(errors === _errs6){
-if((typeof data1 == "number") && (isFinite(data1))){
-if(data1 < 0 || isNaN(data1)){
-validate66.errors = [{instancePath:instancePath+"/clientSeq",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/sequence/minimum",keyword:"minimum",params:{comparison: ">=", limit: 0}}];
-return false;
-}
-}
 }
 var valid0 = _errs5 === errors;
 }
 else {
 var valid0 = true;
 }
-if(valid0){
-if(data.suit !== undefined){
-let data2 = data.suit;
-const _errs8 = errors;
-if(typeof data2 !== "string"){
-validate66.errors = [{instancePath:instancePath+"/suit",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/suit/type",keyword:"type",params:{type: "string"}}];
-return false;
-}
-if(!((((data2 === "S") || (data2 === "H")) || (data2 === "C")) || (data2 === "D"))){
-validate66.errors = [{instancePath:instancePath+"/suit",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/suit/enum",keyword:"enum",params:{allowedValues: schema30.enum}}];
-return false;
-}
-var valid0 = _errs8 === errors;
-}
-else {
-var valid0 = true;
-}
-}
 }
 }
 }
 }
 else {
-validate66.errors = [{instancePath,schemaPath:"#/type",keyword:"type",params:{type: "object"}}];
+validate65.errors = [{instancePath,schemaPath:"#/type",keyword:"type",params:{type: "object"}}];
 return false;
 }
 }
-validate66.errors = vErrors;
+validate65.errors = vErrors;
 return errors === 0;
 }
 
-const check_redeal = validate67;
-const schema121 = {"type":"object","additionalProperties":false,"description":"The caller asks for a new deal instead of calling (RG7)","required":["roundId","clientSeq"],"properties":{"roundId":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/roundId"},"clientSeq":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/sequence","description":"Idempotency key with the seat (ARCHITECTURE 8.4)"}},"title":"RungRedeal"};
+const check_call_trump = validate67;
+const schema120 = {"type":"object","additionalProperties":false,"description":"The caller names the rung from their first five cards (RG6)","required":["roundId","clientSeq","suit"],"properties":{"roundId":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/roundId"},"clientSeq":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/sequence","description":"Idempotency key with the seat (ARCHITECTURE 8.4)"},"suit":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/suit"}}};
 
 function validate67(data, {instancePath="", parentData, parentDataProperty, rootData=data}={}){
 let vErrors = null;
@@ -6069,14 +6503,14 @@ let errors = 0;
 if(errors === 0){
 if(data && typeof data == "object" && !Array.isArray(data)){
 let missing0;
-if(((data.roundId === undefined) && (missing0 = "roundId")) || ((data.clientSeq === undefined) && (missing0 = "clientSeq"))){
+if((((data.roundId === undefined) && (missing0 = "roundId")) || ((data.clientSeq === undefined) && (missing0 = "clientSeq"))) || ((data.suit === undefined) && (missing0 = "suit"))){
 validate67.errors = [{instancePath,schemaPath:"#/required",keyword:"required",params:{missingProperty: missing0}}];
 return false;
 }
 else {
 const _errs1 = errors;
 for(const key0 in data){
-if(!((key0 === "roundId") || (key0 === "clientSeq"))){
+if(!(((key0 === "roundId") || (key0 === "clientSeq")) || (key0 === "suit"))){
 validate67.errors = [{instancePath,schemaPath:"#/additionalProperties",keyword:"additionalProperties",params:{additionalProperty: key0}}];
 return false;
 break;
@@ -6126,6 +6560,24 @@ var valid0 = _errs5 === errors;
 else {
 var valid0 = true;
 }
+if(valid0){
+if(data.suit !== undefined){
+let data2 = data.suit;
+const _errs8 = errors;
+if(typeof data2 !== "string"){
+validate67.errors = [{instancePath:instancePath+"/suit",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/suit/type",keyword:"type",params:{type: "string"}}];
+return false;
+}
+if(!((((data2 === "S") || (data2 === "H")) || (data2 === "C")) || (data2 === "D"))){
+validate67.errors = [{instancePath:instancePath+"/suit",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/suit/enum",keyword:"enum",params:{allowedValues: schema30.enum}}];
+return false;
+}
+var valid0 = _errs8 === errors;
+}
+else {
+var valid0 = true;
+}
+}
 }
 }
 }
@@ -6139,8 +6591,8 @@ validate67.errors = vErrors;
 return errors === 0;
 }
 
-const check_court_choice = validate68;
-const schema124 = {"type":"object","additionalProperties":false,"description":"Stop with the court or play on for the bigger prize (RG26)","required":["roundId","clientSeq","playOn"],"properties":{"roundId":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/roundId"},"clientSeq":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/sequence","description":"Idempotency key with the seat (ARCHITECTURE 8.4)"},"playOn":{"type":"boolean"}}};
+const check_redeal = validate68;
+const schema124 = {"type":"object","additionalProperties":false,"description":"The caller asks for a new deal instead of calling (RG7)","required":["roundId","clientSeq"],"properties":{"roundId":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/roundId"},"clientSeq":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/sequence","description":"Idempotency key with the seat (ARCHITECTURE 8.4)"}},"title":"RungRedeal"};
 
 function validate68(data, {instancePath="", parentData, parentDataProperty, rootData=data}={}){
 let vErrors = null;
@@ -6148,14 +6600,14 @@ let errors = 0;
 if(errors === 0){
 if(data && typeof data == "object" && !Array.isArray(data)){
 let missing0;
-if((((data.roundId === undefined) && (missing0 = "roundId")) || ((data.clientSeq === undefined) && (missing0 = "clientSeq"))) || ((data.playOn === undefined) && (missing0 = "playOn"))){
+if(((data.roundId === undefined) && (missing0 = "roundId")) || ((data.clientSeq === undefined) && (missing0 = "clientSeq"))){
 validate68.errors = [{instancePath,schemaPath:"#/required",keyword:"required",params:{missingProperty: missing0}}];
 return false;
 }
 else {
 const _errs1 = errors;
 for(const key0 in data){
-if(!(((key0 === "roundId") || (key0 === "clientSeq")) || (key0 === "playOn"))){
+if(!((key0 === "roundId") || (key0 === "clientSeq"))){
 validate68.errors = [{instancePath,schemaPath:"#/additionalProperties",keyword:"additionalProperties",params:{additionalProperty: key0}}];
 return false;
 break;
@@ -6205,19 +6657,6 @@ var valid0 = _errs5 === errors;
 else {
 var valid0 = true;
 }
-if(valid0){
-if(data.playOn !== undefined){
-const _errs8 = errors;
-if(typeof data.playOn !== "boolean"){
-validate68.errors = [{instancePath:instancePath+"/playOn",schemaPath:"#/properties/playOn/type",keyword:"type",params:{type: "boolean"}}];
-return false;
-}
-var valid0 = _errs8 === errors;
-}
-else {
-var valid0 = true;
-}
-}
 }
 }
 }
@@ -6231,27 +6670,119 @@ validate68.errors = vErrors;
 return errors === 0;
 }
 
-const check_table_state = validate69;
-const schema127 = {"type":"object","additionalProperties":false,"description":"The full table as the recipient may see it; the round view is redacted per recipient","required":["code","gameId","mode","status","hostSeat","rules","seats","spectatorCount","spectators","series","round","lastSeq","resumeToken"],"properties":{"code":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/roomCode"},"gameId":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/gameId"},"mode":{"$ref":"https://hulla.gg/schemas/protocol/shell/table.json#/definitions/tableMode"},"status":{"$ref":"https://hulla.gg/schemas/protocol/shell/table.json#/definitions/tableStatus"},"hostSeat":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndexOrNull"},"rules":{"$ref":"https://hulla.gg/schemas/protocol/shell/table.json#/definitions/rulesSelection"},"seats":{"type":"array","items":{"$ref":"https://hulla.gg/schemas/protocol/shell/table.json#/definitions/seat"}},"spectatorCount":{"type":"integer","minimum":0},"spectators":{"type":"array","items":{"$ref":"https://hulla.gg/schemas/protocol/shell/table.json#/definitions/spectator"}},"series":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/seriesState"},"round":{"oneOf":[{"$ref":"https://hulla.gg/schemas/protocol/games/thulla/views.json#/definitions/view"},{"type":"null"}],"description":"The Thulla round view; null between rounds and while the room plays another game"},"rungRound":{"$ref":"https://hulla.gg/schemas/protocol/games/rung/views.json#/definitions/view","description":"The Rung deal view while the room plays a Rung deal; absent otherwise"},"lastSeq":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/sequence"},"resumeToken":{"type":["string","null"]},"rematch":{"type":"object","additionalProperties":false,"properties":{"deadlineTs":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/timestamp"},"votes":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/seatList"}}},"autoStart":{"type":"object","additionalProperties":false,"required":["startsAtTs"],"description":"A public table counting down to its first deal (GDD 9.5)","properties":{"startsAtTs":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/timestamp"}}},"handAsk":{"type":"object","additionalProperties":false,"description":"A hand request still waiting for its answer (R33), so a rejoining player sees it","required":["asker","target","cardCount","deadlineTs"],"properties":{"asker":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex"},"target":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex"},"cardCount":{"type":"integer","minimum":1},"deadlineTs":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/timestamp"}}},"queuedGame":{"type":"object","additionalProperties":false,"description":"The game the host chose for after this round","required":["gameId","rules"],"properties":{"gameId":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/gameId"},"rules":{"$ref":"https://hulla.gg/schemas/protocol/shell/table.json#/definitions/rulesSelection"}}}}};
-const schema130 = {"type":"string","enum":["private","public","ranked"]};
-const schema131 = {"type":"string","enum":["open","locked","inRound","closed"]};
-const schema133 = {"type":"object","additionalProperties":false,"required":["seat","playerId","displayName","ready","connected","autoPlay"],"properties":{"seat":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex"},"playerId":{"oneOf":[{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/playerId"},{"type":"null"}]},"displayName":{"type":["string","null"]},"ready":{"type":"boolean"},"connected":{"type":"boolean"},"autoPlay":{"type":"boolean","description":"The auto-play policy holds this seat (R45, R46)"},"bot":{"type":"boolean"},"mic":{"type":"boolean","description":"The seat's microphone is on (GDD 11.4); off while disconnected"},"party":{"type":["string","null"],"description":"Players who queued together share a party id (GDD 7.2); shown as a link icon"},"avatar":{"type":["string","null"],"pattern":"^[a-z0-9_]{1,32}$","description":"The avatar this seat shows, assigned when the player sits and unique at the table (GDD 15.6)"},"cosmetics":{"type":["object","null"],"description":"What the seat has equipped for this table, by catalog category; null until the inventory is read","additionalProperties":false,"properties":{"cardBack":{"type":"string"},"cardFace":{"type":"string"},"table":{"type":"string"},"emotePack":{"type":"string"},"celebration":{"type":"string"},"soundSet":{"type":"string"}}}}};
+const check_court_choice = validate69;
+const schema127 = {"type":"object","additionalProperties":false,"description":"Stop with the court or play on for the bigger prize (RG26)","required":["roundId","clientSeq","playOn"],"properties":{"roundId":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/roundId"},"clientSeq":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/sequence","description":"Idempotency key with the seat (ARCHITECTURE 8.4)"},"playOn":{"type":"boolean"}}};
 
-function validate71(data, {instancePath="", parentData, parentDataProperty, rootData=data}={}){
+function validate69(data, {instancePath="", parentData, parentDataProperty, rootData=data}={}){
+let vErrors = null;
+let errors = 0;
+if(errors === 0){
+if(data && typeof data == "object" && !Array.isArray(data)){
+let missing0;
+if((((data.roundId === undefined) && (missing0 = "roundId")) || ((data.clientSeq === undefined) && (missing0 = "clientSeq"))) || ((data.playOn === undefined) && (missing0 = "playOn"))){
+validate69.errors = [{instancePath,schemaPath:"#/required",keyword:"required",params:{missingProperty: missing0}}];
+return false;
+}
+else {
+const _errs1 = errors;
+for(const key0 in data){
+if(!(((key0 === "roundId") || (key0 === "clientSeq")) || (key0 === "playOn"))){
+validate69.errors = [{instancePath,schemaPath:"#/additionalProperties",keyword:"additionalProperties",params:{additionalProperty: key0}}];
+return false;
+break;
+}
+}
+if(_errs1 === errors){
+if(data.roundId !== undefined){
+let data0 = data.roundId;
+const _errs2 = errors;
+const _errs3 = errors;
+if(errors === _errs3){
+if(typeof data0 === "string"){
+if(!pattern18.test(data0)){
+validate69.errors = [{instancePath:instancePath+"/roundId",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/roundId/pattern",keyword:"pattern",params:{pattern: "^r_[0-9]+$"}}];
+return false;
+}
+}
+else {
+validate69.errors = [{instancePath:instancePath+"/roundId",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/roundId/type",keyword:"type",params:{type: "string"}}];
+return false;
+}
+}
+var valid0 = _errs2 === errors;
+}
+else {
+var valid0 = true;
+}
+if(valid0){
+if(data.clientSeq !== undefined){
+let data1 = data.clientSeq;
+const _errs5 = errors;
+const _errs6 = errors;
+if(!(((typeof data1 == "number") && (!(data1 % 1) && !isNaN(data1))) && (isFinite(data1)))){
+validate69.errors = [{instancePath:instancePath+"/clientSeq",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/sequence/type",keyword:"type",params:{type: "integer"}}];
+return false;
+}
+if(errors === _errs6){
+if((typeof data1 == "number") && (isFinite(data1))){
+if(data1 < 0 || isNaN(data1)){
+validate69.errors = [{instancePath:instancePath+"/clientSeq",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/sequence/minimum",keyword:"minimum",params:{comparison: ">=", limit: 0}}];
+return false;
+}
+}
+}
+var valid0 = _errs5 === errors;
+}
+else {
+var valid0 = true;
+}
+if(valid0){
+if(data.playOn !== undefined){
+const _errs8 = errors;
+if(typeof data.playOn !== "boolean"){
+validate69.errors = [{instancePath:instancePath+"/playOn",schemaPath:"#/properties/playOn/type",keyword:"type",params:{type: "boolean"}}];
+return false;
+}
+var valid0 = _errs8 === errors;
+}
+else {
+var valid0 = true;
+}
+}
+}
+}
+}
+}
+else {
+validate69.errors = [{instancePath,schemaPath:"#/type",keyword:"type",params:{type: "object"}}];
+return false;
+}
+}
+validate69.errors = vErrors;
+return errors === 0;
+}
+
+const check_table_state = validate70;
+const schema130 = {"type":"object","additionalProperties":false,"description":"The full table as the recipient may see it; the round view is redacted per recipient","required":["code","gameId","mode","status","hostSeat","rules","seats","spectatorCount","spectators","series","round","lastSeq","resumeToken"],"properties":{"code":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/roomCode"},"gameId":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/gameId"},"mode":{"$ref":"https://hulla.gg/schemas/protocol/shell/table.json#/definitions/tableMode"},"status":{"$ref":"https://hulla.gg/schemas/protocol/shell/table.json#/definitions/tableStatus"},"hostSeat":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndexOrNull"},"rules":{"$ref":"https://hulla.gg/schemas/protocol/shell/table.json#/definitions/rulesSelection"},"seats":{"type":"array","items":{"$ref":"https://hulla.gg/schemas/protocol/shell/table.json#/definitions/seat"}},"spectatorCount":{"type":"integer","minimum":0},"spectators":{"type":"array","items":{"$ref":"https://hulla.gg/schemas/protocol/shell/table.json#/definitions/spectator"}},"series":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/seriesState"},"round":{"oneOf":[{"$ref":"https://hulla.gg/schemas/protocol/games/thulla/views.json#/definitions/view"},{"type":"null"}],"description":"The Thulla round view; null between rounds and while the room plays another game"},"rungRound":{"$ref":"https://hulla.gg/schemas/protocol/games/rung/views.json#/definitions/view","description":"The Rung deal view while the room plays a Rung deal; absent otherwise"},"lastSeq":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/sequence"},"resumeToken":{"type":["string","null"]},"rematch":{"type":"object","additionalProperties":false,"properties":{"deadlineTs":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/timestamp"},"votes":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/seatList"}}},"autoStart":{"type":"object","additionalProperties":false,"required":["startsAtTs"],"description":"A public table counting down to its first deal (GDD 9.5)","properties":{"startsAtTs":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/timestamp"}}},"handAsk":{"type":"object","additionalProperties":false,"description":"A hand request still waiting for its answer (R33), so a rejoining player sees it","required":["asker","target","cardCount","deadlineTs"],"properties":{"asker":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex"},"target":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex"},"cardCount":{"type":"integer","minimum":1},"deadlineTs":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/timestamp"}}},"queuedGame":{"type":"object","additionalProperties":false,"description":"The game the host chose for after this round","required":["gameId","rules"],"properties":{"gameId":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/gameId"},"rules":{"$ref":"https://hulla.gg/schemas/protocol/shell/table.json#/definitions/rulesSelection"}}}}};
+const schema133 = {"type":"string","enum":["private","public","ranked"]};
+const schema134 = {"type":"string","enum":["open","locked","inRound","closed"]};
+const schema136 = {"type":"object","additionalProperties":false,"required":["seat","playerId","displayName","ready","connected","autoPlay"],"properties":{"seat":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex"},"playerId":{"oneOf":[{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/playerId"},{"type":"null"}]},"displayName":{"type":["string","null"]},"ready":{"type":"boolean"},"connected":{"type":"boolean"},"autoPlay":{"type":"boolean","description":"The auto-play policy holds this seat (R45, R46)"},"bot":{"type":"boolean"},"mic":{"type":"boolean","description":"The seat's microphone is on (GDD 11.4); off while disconnected"},"party":{"type":["string","null"],"description":"Players who queued together share a party id (GDD 7.2); shown as a link icon"},"avatar":{"type":["string","null"],"pattern":"^[a-z0-9_]{1,32}$","description":"The avatar this seat shows, assigned when the player sits and unique at the table (GDD 15.6)"},"cosmetics":{"type":["object","null"],"description":"What the seat has equipped for this table, by catalog category; null until the inventory is read","additionalProperties":false,"properties":{"cardBack":{"type":"string"},"cardFace":{"type":"string"},"table":{"type":"string"},"emotePack":{"type":"string"},"celebration":{"type":"string"},"soundSet":{"type":"string"}}}}};
+
+function validate72(data, {instancePath="", parentData, parentDataProperty, rootData=data}={}){
 let vErrors = null;
 let errors = 0;
 if(errors === 0){
 if(data && typeof data == "object" && !Array.isArray(data)){
 let missing0;
 if(((((((data.seat === undefined) && (missing0 = "seat")) || ((data.playerId === undefined) && (missing0 = "playerId"))) || ((data.displayName === undefined) && (missing0 = "displayName"))) || ((data.ready === undefined) && (missing0 = "ready"))) || ((data.connected === undefined) && (missing0 = "connected"))) || ((data.autoPlay === undefined) && (missing0 = "autoPlay"))){
-validate71.errors = [{instancePath,schemaPath:"#/required",keyword:"required",params:{missingProperty: missing0}}];
+validate72.errors = [{instancePath,schemaPath:"#/required",keyword:"required",params:{missingProperty: missing0}}];
 return false;
 }
 else {
 const _errs1 = errors;
 for(const key0 in data){
-if(!(func2.call(schema133.properties, key0))){
-validate71.errors = [{instancePath,schemaPath:"#/additionalProperties",keyword:"additionalProperties",params:{additionalProperty: key0}}];
+if(!(func2.call(schema136.properties, key0))){
+validate72.errors = [{instancePath,schemaPath:"#/additionalProperties",keyword:"additionalProperties",params:{additionalProperty: key0}}];
 return false;
 break;
 }
@@ -6262,18 +6793,18 @@ let data0 = data.seat;
 const _errs2 = errors;
 const _errs3 = errors;
 if(!(((typeof data0 == "number") && (!(data0 % 1) && !isNaN(data0))) && (isFinite(data0)))){
-validate71.errors = [{instancePath:instancePath+"/seat",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex/type",keyword:"type",params:{type: "integer"}}];
+validate72.errors = [{instancePath:instancePath+"/seat",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex/type",keyword:"type",params:{type: "integer"}}];
 return false;
 }
 if(errors === _errs3){
 if((typeof data0 == "number") && (isFinite(data0))){
 if(data0 > 7 || isNaN(data0)){
-validate71.errors = [{instancePath:instancePath+"/seat",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex/maximum",keyword:"maximum",params:{comparison: "<=", limit: 7}}];
+validate72.errors = [{instancePath:instancePath+"/seat",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex/maximum",keyword:"maximum",params:{comparison: "<=", limit: 7}}];
 return false;
 }
 else {
 if(data0 < 0 || isNaN(data0)){
-validate71.errors = [{instancePath:instancePath+"/seat",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex/minimum",keyword:"minimum",params:{comparison: ">=", limit: 0}}];
+validate72.errors = [{instancePath:instancePath+"/seat",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex/minimum",keyword:"minimum",params:{comparison: ">=", limit: 0}}];
 return false;
 }
 }
@@ -6338,7 +6869,7 @@ else {
 vErrors.push(err2);
 }
 errors++;
-validate71.errors = vErrors;
+validate72.errors = vErrors;
 return false;
 }
 else {
@@ -6362,7 +6893,7 @@ if(data.displayName !== undefined){
 let data2 = data.displayName;
 const _errs12 = errors;
 if((typeof data2 !== "string") && (data2 !== null)){
-validate71.errors = [{instancePath:instancePath+"/displayName",schemaPath:"#/properties/displayName/type",keyword:"type",params:{type: schema133.properties.displayName.type}}];
+validate72.errors = [{instancePath:instancePath+"/displayName",schemaPath:"#/properties/displayName/type",keyword:"type",params:{type: schema136.properties.displayName.type}}];
 return false;
 }
 var valid0 = _errs12 === errors;
@@ -6374,7 +6905,7 @@ if(valid0){
 if(data.ready !== undefined){
 const _errs14 = errors;
 if(typeof data.ready !== "boolean"){
-validate71.errors = [{instancePath:instancePath+"/ready",schemaPath:"#/properties/ready/type",keyword:"type",params:{type: "boolean"}}];
+validate72.errors = [{instancePath:instancePath+"/ready",schemaPath:"#/properties/ready/type",keyword:"type",params:{type: "boolean"}}];
 return false;
 }
 var valid0 = _errs14 === errors;
@@ -6386,7 +6917,7 @@ if(valid0){
 if(data.connected !== undefined){
 const _errs16 = errors;
 if(typeof data.connected !== "boolean"){
-validate71.errors = [{instancePath:instancePath+"/connected",schemaPath:"#/properties/connected/type",keyword:"type",params:{type: "boolean"}}];
+validate72.errors = [{instancePath:instancePath+"/connected",schemaPath:"#/properties/connected/type",keyword:"type",params:{type: "boolean"}}];
 return false;
 }
 var valid0 = _errs16 === errors;
@@ -6398,7 +6929,7 @@ if(valid0){
 if(data.autoPlay !== undefined){
 const _errs18 = errors;
 if(typeof data.autoPlay !== "boolean"){
-validate71.errors = [{instancePath:instancePath+"/autoPlay",schemaPath:"#/properties/autoPlay/type",keyword:"type",params:{type: "boolean"}}];
+validate72.errors = [{instancePath:instancePath+"/autoPlay",schemaPath:"#/properties/autoPlay/type",keyword:"type",params:{type: "boolean"}}];
 return false;
 }
 var valid0 = _errs18 === errors;
@@ -6410,7 +6941,7 @@ if(valid0){
 if(data.bot !== undefined){
 const _errs20 = errors;
 if(typeof data.bot !== "boolean"){
-validate71.errors = [{instancePath:instancePath+"/bot",schemaPath:"#/properties/bot/type",keyword:"type",params:{type: "boolean"}}];
+validate72.errors = [{instancePath:instancePath+"/bot",schemaPath:"#/properties/bot/type",keyword:"type",params:{type: "boolean"}}];
 return false;
 }
 var valid0 = _errs20 === errors;
@@ -6422,7 +6953,7 @@ if(valid0){
 if(data.mic !== undefined){
 const _errs22 = errors;
 if(typeof data.mic !== "boolean"){
-validate71.errors = [{instancePath:instancePath+"/mic",schemaPath:"#/properties/mic/type",keyword:"type",params:{type: "boolean"}}];
+validate72.errors = [{instancePath:instancePath+"/mic",schemaPath:"#/properties/mic/type",keyword:"type",params:{type: "boolean"}}];
 return false;
 }
 var valid0 = _errs22 === errors;
@@ -6435,7 +6966,7 @@ if(data.party !== undefined){
 let data8 = data.party;
 const _errs24 = errors;
 if((typeof data8 !== "string") && (data8 !== null)){
-validate71.errors = [{instancePath:instancePath+"/party",schemaPath:"#/properties/party/type",keyword:"type",params:{type: schema133.properties.party.type}}];
+validate72.errors = [{instancePath:instancePath+"/party",schemaPath:"#/properties/party/type",keyword:"type",params:{type: schema136.properties.party.type}}];
 return false;
 }
 var valid0 = _errs24 === errors;
@@ -6448,13 +6979,13 @@ if(data.avatar !== undefined){
 let data9 = data.avatar;
 const _errs26 = errors;
 if((typeof data9 !== "string") && (data9 !== null)){
-validate71.errors = [{instancePath:instancePath+"/avatar",schemaPath:"#/properties/avatar/type",keyword:"type",params:{type: schema133.properties.avatar.type}}];
+validate72.errors = [{instancePath:instancePath+"/avatar",schemaPath:"#/properties/avatar/type",keyword:"type",params:{type: schema136.properties.avatar.type}}];
 return false;
 }
 if(errors === _errs26){
 if(typeof data9 === "string"){
 if(!pattern8.test(data9)){
-validate71.errors = [{instancePath:instancePath+"/avatar",schemaPath:"#/properties/avatar/pattern",keyword:"pattern",params:{pattern: "^[a-z0-9_]{1,32}$"}}];
+validate72.errors = [{instancePath:instancePath+"/avatar",schemaPath:"#/properties/avatar/pattern",keyword:"pattern",params:{pattern: "^[a-z0-9_]{1,32}$"}}];
 return false;
 }
 }
@@ -6469,7 +7000,7 @@ if(data.cosmetics !== undefined){
 let data10 = data.cosmetics;
 const _errs28 = errors;
 if((!(data10 && typeof data10 == "object" && !Array.isArray(data10))) && (data10 !== null)){
-validate71.errors = [{instancePath:instancePath+"/cosmetics",schemaPath:"#/properties/cosmetics/type",keyword:"type",params:{type: schema133.properties.cosmetics.type}}];
+validate72.errors = [{instancePath:instancePath+"/cosmetics",schemaPath:"#/properties/cosmetics/type",keyword:"type",params:{type: schema136.properties.cosmetics.type}}];
 return false;
 }
 if(errors === _errs28){
@@ -6477,7 +7008,7 @@ if(data10 && typeof data10 == "object" && !Array.isArray(data10)){
 const _errs30 = errors;
 for(const key1 in data10){
 if(!((((((key1 === "cardBack") || (key1 === "cardFace")) || (key1 === "table")) || (key1 === "emotePack")) || (key1 === "celebration")) || (key1 === "soundSet"))){
-validate71.errors = [{instancePath:instancePath+"/cosmetics",schemaPath:"#/properties/cosmetics/additionalProperties",keyword:"additionalProperties",params:{additionalProperty: key1}}];
+validate72.errors = [{instancePath:instancePath+"/cosmetics",schemaPath:"#/properties/cosmetics/additionalProperties",keyword:"additionalProperties",params:{additionalProperty: key1}}];
 return false;
 break;
 }
@@ -6486,7 +7017,7 @@ if(_errs30 === errors){
 if(data10.cardBack !== undefined){
 const _errs31 = errors;
 if(typeof data10.cardBack !== "string"){
-validate71.errors = [{instancePath:instancePath+"/cosmetics/cardBack",schemaPath:"#/properties/cosmetics/properties/cardBack/type",keyword:"type",params:{type: "string"}}];
+validate72.errors = [{instancePath:instancePath+"/cosmetics/cardBack",schemaPath:"#/properties/cosmetics/properties/cardBack/type",keyword:"type",params:{type: "string"}}];
 return false;
 }
 var valid4 = _errs31 === errors;
@@ -6498,7 +7029,7 @@ if(valid4){
 if(data10.cardFace !== undefined){
 const _errs33 = errors;
 if(typeof data10.cardFace !== "string"){
-validate71.errors = [{instancePath:instancePath+"/cosmetics/cardFace",schemaPath:"#/properties/cosmetics/properties/cardFace/type",keyword:"type",params:{type: "string"}}];
+validate72.errors = [{instancePath:instancePath+"/cosmetics/cardFace",schemaPath:"#/properties/cosmetics/properties/cardFace/type",keyword:"type",params:{type: "string"}}];
 return false;
 }
 var valid4 = _errs33 === errors;
@@ -6510,7 +7041,7 @@ if(valid4){
 if(data10.table !== undefined){
 const _errs35 = errors;
 if(typeof data10.table !== "string"){
-validate71.errors = [{instancePath:instancePath+"/cosmetics/table",schemaPath:"#/properties/cosmetics/properties/table/type",keyword:"type",params:{type: "string"}}];
+validate72.errors = [{instancePath:instancePath+"/cosmetics/table",schemaPath:"#/properties/cosmetics/properties/table/type",keyword:"type",params:{type: "string"}}];
 return false;
 }
 var valid4 = _errs35 === errors;
@@ -6522,7 +7053,7 @@ if(valid4){
 if(data10.emotePack !== undefined){
 const _errs37 = errors;
 if(typeof data10.emotePack !== "string"){
-validate71.errors = [{instancePath:instancePath+"/cosmetics/emotePack",schemaPath:"#/properties/cosmetics/properties/emotePack/type",keyword:"type",params:{type: "string"}}];
+validate72.errors = [{instancePath:instancePath+"/cosmetics/emotePack",schemaPath:"#/properties/cosmetics/properties/emotePack/type",keyword:"type",params:{type: "string"}}];
 return false;
 }
 var valid4 = _errs37 === errors;
@@ -6534,7 +7065,7 @@ if(valid4){
 if(data10.celebration !== undefined){
 const _errs39 = errors;
 if(typeof data10.celebration !== "string"){
-validate71.errors = [{instancePath:instancePath+"/cosmetics/celebration",schemaPath:"#/properties/cosmetics/properties/celebration/type",keyword:"type",params:{type: "string"}}];
+validate72.errors = [{instancePath:instancePath+"/cosmetics/celebration",schemaPath:"#/properties/cosmetics/properties/celebration/type",keyword:"type",params:{type: "string"}}];
 return false;
 }
 var valid4 = _errs39 === errors;
@@ -6546,7 +7077,7 @@ if(valid4){
 if(data10.soundSet !== undefined){
 const _errs41 = errors;
 if(typeof data10.soundSet !== "string"){
-validate71.errors = [{instancePath:instancePath+"/cosmetics/soundSet",schemaPath:"#/properties/cosmetics/properties/soundSet/type",keyword:"type",params:{type: "string"}}];
+validate72.errors = [{instancePath:instancePath+"/cosmetics/soundSet",schemaPath:"#/properties/cosmetics/properties/soundSet/type",keyword:"type",params:{type: "string"}}];
 return false;
 }
 var valid4 = _errs41 === errors;
@@ -6581,31 +7112,31 @@ var valid0 = true;
 }
 }
 else {
-validate71.errors = [{instancePath,schemaPath:"#/type",keyword:"type",params:{type: "object"}}];
+validate72.errors = [{instancePath,schemaPath:"#/type",keyword:"type",params:{type: "object"}}];
 return false;
 }
 }
-validate71.errors = vErrors;
+validate72.errors = vErrors;
 return errors === 0;
 }
 
-const schema136 = {"type":"object","additionalProperties":false,"description":"A friend watching the table; seatNext when they take a seat at the next round","required":["userId","displayName","seatNext"],"properties":{"userId":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/playerId"},"displayName":{"type":["string","null"]},"seatNext":{"type":"boolean"},"friendOfSeat":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndexOrNull","description":"The lowest seat whose player the watcher is a friend of (GDD 7.7); null when none is seated now"}}};
+const schema139 = {"type":"object","additionalProperties":false,"description":"A friend watching the table; seatNext when they take a seat at the next round","required":["userId","displayName","seatNext"],"properties":{"userId":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/playerId"},"displayName":{"type":["string","null"]},"seatNext":{"type":"boolean"},"friendOfSeat":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndexOrNull","description":"The lowest seat whose player the watcher is a friend of (GDD 7.7); null when none is seated now"}}};
 
-function validate73(data, {instancePath="", parentData, parentDataProperty, rootData=data}={}){
+function validate74(data, {instancePath="", parentData, parentDataProperty, rootData=data}={}){
 let vErrors = null;
 let errors = 0;
 if(errors === 0){
 if(data && typeof data == "object" && !Array.isArray(data)){
 let missing0;
 if((((data.userId === undefined) && (missing0 = "userId")) || ((data.displayName === undefined) && (missing0 = "displayName"))) || ((data.seatNext === undefined) && (missing0 = "seatNext"))){
-validate73.errors = [{instancePath,schemaPath:"#/required",keyword:"required",params:{missingProperty: missing0}}];
+validate74.errors = [{instancePath,schemaPath:"#/required",keyword:"required",params:{missingProperty: missing0}}];
 return false;
 }
 else {
 const _errs1 = errors;
 for(const key0 in data){
 if(!((((key0 === "userId") || (key0 === "displayName")) || (key0 === "seatNext")) || (key0 === "friendOfSeat"))){
-validate73.errors = [{instancePath,schemaPath:"#/additionalProperties",keyword:"additionalProperties",params:{additionalProperty: key0}}];
+validate74.errors = [{instancePath,schemaPath:"#/additionalProperties",keyword:"additionalProperties",params:{additionalProperty: key0}}];
 return false;
 break;
 }
@@ -6614,7 +7145,7 @@ if(_errs1 === errors){
 if(data.userId !== undefined){
 const _errs2 = errors;
 if(typeof data.userId !== "string"){
-validate73.errors = [{instancePath:instancePath+"/userId",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/playerId/type",keyword:"type",params:{type: "string"}}];
+validate74.errors = [{instancePath:instancePath+"/userId",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/playerId/type",keyword:"type",params:{type: "string"}}];
 return false;
 }
 var valid0 = _errs2 === errors;
@@ -6627,7 +7158,7 @@ if(data.displayName !== undefined){
 let data1 = data.displayName;
 const _errs5 = errors;
 if((typeof data1 !== "string") && (data1 !== null)){
-validate73.errors = [{instancePath:instancePath+"/displayName",schemaPath:"#/properties/displayName/type",keyword:"type",params:{type: schema136.properties.displayName.type}}];
+validate74.errors = [{instancePath:instancePath+"/displayName",schemaPath:"#/properties/displayName/type",keyword:"type",params:{type: schema139.properties.displayName.type}}];
 return false;
 }
 var valid0 = _errs5 === errors;
@@ -6639,7 +7170,7 @@ if(valid0){
 if(data.seatNext !== undefined){
 const _errs7 = errors;
 if(typeof data.seatNext !== "boolean"){
-validate73.errors = [{instancePath:instancePath+"/seatNext",schemaPath:"#/properties/seatNext/type",keyword:"type",params:{type: "boolean"}}];
+validate74.errors = [{instancePath:instancePath+"/seatNext",schemaPath:"#/properties/seatNext/type",keyword:"type",params:{type: "boolean"}}];
 return false;
 }
 var valid0 = _errs7 === errors;
@@ -6653,18 +7184,18 @@ let data3 = data.friendOfSeat;
 const _errs9 = errors;
 const _errs10 = errors;
 if((!(((typeof data3 == "number") && (!(data3 % 1) && !isNaN(data3))) && (isFinite(data3)))) && (data3 !== null)){
-validate73.errors = [{instancePath:instancePath+"/friendOfSeat",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndexOrNull/type",keyword:"type",params:{type: schema25.type}}];
+validate74.errors = [{instancePath:instancePath+"/friendOfSeat",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndexOrNull/type",keyword:"type",params:{type: schema25.type}}];
 return false;
 }
 if(errors === _errs10){
 if((typeof data3 == "number") && (isFinite(data3))){
 if(data3 > 7 || isNaN(data3)){
-validate73.errors = [{instancePath:instancePath+"/friendOfSeat",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndexOrNull/maximum",keyword:"maximum",params:{comparison: "<=", limit: 7}}];
+validate74.errors = [{instancePath:instancePath+"/friendOfSeat",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndexOrNull/maximum",keyword:"maximum",params:{comparison: "<=", limit: 7}}];
 return false;
 }
 else {
 if(data3 < 0 || isNaN(data3)){
-validate73.errors = [{instancePath:instancePath+"/friendOfSeat",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndexOrNull/minimum",keyword:"minimum",params:{comparison: ">=", limit: 0}}];
+validate74.errors = [{instancePath:instancePath+"/friendOfSeat",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndexOrNull/minimum",keyword:"minimum",params:{comparison: ">=", limit: 0}}];
 return false;
 }
 }
@@ -6682,33 +7213,33 @@ var valid0 = true;
 }
 }
 else {
-validate73.errors = [{instancePath,schemaPath:"#/type",keyword:"type",params:{type: "object"}}];
+validate74.errors = [{instancePath,schemaPath:"#/type",keyword:"type",params:{type: "object"}}];
 return false;
 }
 }
-validate73.errors = vErrors;
+validate74.errors = vErrors;
 return errors === 0;
 }
 
-const schema139 = {"type":"object","additionalProperties":false,"required":["roundsPlayed","points","loserTally","nextDealerSeat","finished"],"properties":{"roundsPlayed":{"type":"integer","minimum":0},"points":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/points"},"loserTally":{"type":"array","items":{"type":"integer","minimum":0}},"nextDealerSeat":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex"},"finished":{"type":"boolean"},"teams":{"$ref":"https://hulla.gg/schemas/protocol/games/rung/events.json#/definitions/teams"}}};
-const schema140 = {"type":"array","items":{"type":"integer"},"description":"Per seat, in seat order"};
-const schema142 = {"type":"object","additionalProperties":false,"description":"The bazi score by team","required":["points","courts","dealsWon","streakTeam","streakDeals","winnerTeam"],"properties":{"points":{"type":"array","items":{"type":"integer","minimum":0},"minItems":2,"maxItems":2,"description":"Bazi points per team (RG32)"},"courts":{"type":"array","items":{"type":"integer","minimum":0},"minItems":2,"maxItems":2,"description":"Courts per team (RG33)"},"dealsWon":{"type":"array","items":{"type":"integer","minimum":0},"minItems":2,"maxItems":2,"description":"Deals won per team"},"streakTeam":{"type":["integer","null"],"enum":[0,1,null]},"streakDeals":{"type":"integer","minimum":0},"winnerTeam":{"type":["integer","null"],"enum":[0,1,null]}},"title":"RungTeams"};
+const schema142 = {"type":"object","additionalProperties":false,"required":["roundsPlayed","points","loserTally","nextDealerSeat","finished"],"properties":{"roundsPlayed":{"type":"integer","minimum":0},"points":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/points"},"loserTally":{"type":"array","items":{"type":"integer","minimum":0}},"nextDealerSeat":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex"},"finished":{"type":"boolean"},"teams":{"$ref":"https://hulla.gg/schemas/protocol/games/rung/events.json#/definitions/teams"}}};
+const schema143 = {"type":"array","items":{"type":"integer"},"description":"Per seat, in seat order"};
+const schema145 = {"type":"object","additionalProperties":false,"description":"The bazi score by team","required":["points","courts","dealsWon","streakTeam","streakDeals","winnerTeam"],"properties":{"points":{"type":"array","items":{"type":"integer","minimum":0},"minItems":2,"maxItems":2,"description":"Bazi points per team (RG32)"},"courts":{"type":"array","items":{"type":"integer","minimum":0},"minItems":2,"maxItems":2,"description":"Courts per team (RG33)"},"dealsWon":{"type":"array","items":{"type":"integer","minimum":0},"minItems":2,"maxItems":2,"description":"Deals won per team"},"streakTeam":{"type":["integer","null"],"enum":[0,1,null]},"streakDeals":{"type":"integer","minimum":0},"winnerTeam":{"type":["integer","null"],"enum":[0,1,null]}},"title":"RungTeams"};
 
-function validate75(data, {instancePath="", parentData, parentDataProperty, rootData=data}={}){
+function validate76(data, {instancePath="", parentData, parentDataProperty, rootData=data}={}){
 let vErrors = null;
 let errors = 0;
 if(errors === 0){
 if(data && typeof data == "object" && !Array.isArray(data)){
 let missing0;
 if((((((data.roundsPlayed === undefined) && (missing0 = "roundsPlayed")) || ((data.points === undefined) && (missing0 = "points"))) || ((data.loserTally === undefined) && (missing0 = "loserTally"))) || ((data.nextDealerSeat === undefined) && (missing0 = "nextDealerSeat"))) || ((data.finished === undefined) && (missing0 = "finished"))){
-validate75.errors = [{instancePath,schemaPath:"#/required",keyword:"required",params:{missingProperty: missing0}}];
+validate76.errors = [{instancePath,schemaPath:"#/required",keyword:"required",params:{missingProperty: missing0}}];
 return false;
 }
 else {
 const _errs1 = errors;
 for(const key0 in data){
 if(!((((((key0 === "roundsPlayed") || (key0 === "points")) || (key0 === "loserTally")) || (key0 === "nextDealerSeat")) || (key0 === "finished")) || (key0 === "teams"))){
-validate75.errors = [{instancePath,schemaPath:"#/additionalProperties",keyword:"additionalProperties",params:{additionalProperty: key0}}];
+validate76.errors = [{instancePath,schemaPath:"#/additionalProperties",keyword:"additionalProperties",params:{additionalProperty: key0}}];
 return false;
 break;
 }
@@ -6718,13 +7249,13 @@ if(data.roundsPlayed !== undefined){
 let data0 = data.roundsPlayed;
 const _errs2 = errors;
 if(!(((typeof data0 == "number") && (!(data0 % 1) && !isNaN(data0))) && (isFinite(data0)))){
-validate75.errors = [{instancePath:instancePath+"/roundsPlayed",schemaPath:"#/properties/roundsPlayed/type",keyword:"type",params:{type: "integer"}}];
+validate76.errors = [{instancePath:instancePath+"/roundsPlayed",schemaPath:"#/properties/roundsPlayed/type",keyword:"type",params:{type: "integer"}}];
 return false;
 }
 if(errors === _errs2){
 if((typeof data0 == "number") && (isFinite(data0))){
 if(data0 < 0 || isNaN(data0)){
-validate75.errors = [{instancePath:instancePath+"/roundsPlayed",schemaPath:"#/properties/roundsPlayed/minimum",keyword:"minimum",params:{comparison: ">=", limit: 0}}];
+validate76.errors = [{instancePath:instancePath+"/roundsPlayed",schemaPath:"#/properties/roundsPlayed/minimum",keyword:"minimum",params:{comparison: ">=", limit: 0}}];
 return false;
 }
 }
@@ -6747,7 +7278,7 @@ for(let i0=0; i0<len0; i0++){
 let data2 = data1[i0];
 const _errs7 = errors;
 if(!(((typeof data2 == "number") && (!(data2 % 1) && !isNaN(data2))) && (isFinite(data2)))){
-validate75.errors = [{instancePath:instancePath+"/points/" + i0,schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/points/items/type",keyword:"type",params:{type: "integer"}}];
+validate76.errors = [{instancePath:instancePath+"/points/" + i0,schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/points/items/type",keyword:"type",params:{type: "integer"}}];
 return false;
 }
 var valid2 = _errs7 === errors;
@@ -6757,7 +7288,7 @@ break;
 }
 }
 else {
-validate75.errors = [{instancePath:instancePath+"/points",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/points/type",keyword:"type",params:{type: "array"}}];
+validate76.errors = [{instancePath:instancePath+"/points",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/points/type",keyword:"type",params:{type: "array"}}];
 return false;
 }
 }
@@ -6778,13 +7309,13 @@ for(let i1=0; i1<len1; i1++){
 let data4 = data3[i1];
 const _errs11 = errors;
 if(!(((typeof data4 == "number") && (!(data4 % 1) && !isNaN(data4))) && (isFinite(data4)))){
-validate75.errors = [{instancePath:instancePath+"/loserTally/" + i1,schemaPath:"#/properties/loserTally/items/type",keyword:"type",params:{type: "integer"}}];
+validate76.errors = [{instancePath:instancePath+"/loserTally/" + i1,schemaPath:"#/properties/loserTally/items/type",keyword:"type",params:{type: "integer"}}];
 return false;
 }
 if(errors === _errs11){
 if((typeof data4 == "number") && (isFinite(data4))){
 if(data4 < 0 || isNaN(data4)){
-validate75.errors = [{instancePath:instancePath+"/loserTally/" + i1,schemaPath:"#/properties/loserTally/items/minimum",keyword:"minimum",params:{comparison: ">=", limit: 0}}];
+validate76.errors = [{instancePath:instancePath+"/loserTally/" + i1,schemaPath:"#/properties/loserTally/items/minimum",keyword:"minimum",params:{comparison: ">=", limit: 0}}];
 return false;
 }
 }
@@ -6796,7 +7327,7 @@ break;
 }
 }
 else {
-validate75.errors = [{instancePath:instancePath+"/loserTally",schemaPath:"#/properties/loserTally/type",keyword:"type",params:{type: "array"}}];
+validate76.errors = [{instancePath:instancePath+"/loserTally",schemaPath:"#/properties/loserTally/type",keyword:"type",params:{type: "array"}}];
 return false;
 }
 }
@@ -6811,18 +7342,18 @@ let data5 = data.nextDealerSeat;
 const _errs13 = errors;
 const _errs14 = errors;
 if(!(((typeof data5 == "number") && (!(data5 % 1) && !isNaN(data5))) && (isFinite(data5)))){
-validate75.errors = [{instancePath:instancePath+"/nextDealerSeat",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex/type",keyword:"type",params:{type: "integer"}}];
+validate76.errors = [{instancePath:instancePath+"/nextDealerSeat",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex/type",keyword:"type",params:{type: "integer"}}];
 return false;
 }
 if(errors === _errs14){
 if((typeof data5 == "number") && (isFinite(data5))){
 if(data5 > 7 || isNaN(data5)){
-validate75.errors = [{instancePath:instancePath+"/nextDealerSeat",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex/maximum",keyword:"maximum",params:{comparison: "<=", limit: 7}}];
+validate76.errors = [{instancePath:instancePath+"/nextDealerSeat",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex/maximum",keyword:"maximum",params:{comparison: "<=", limit: 7}}];
 return false;
 }
 else {
 if(data5 < 0 || isNaN(data5)){
-validate75.errors = [{instancePath:instancePath+"/nextDealerSeat",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex/minimum",keyword:"minimum",params:{comparison: ">=", limit: 0}}];
+validate76.errors = [{instancePath:instancePath+"/nextDealerSeat",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex/minimum",keyword:"minimum",params:{comparison: ">=", limit: 0}}];
 return false;
 }
 }
@@ -6837,7 +7368,7 @@ if(valid0){
 if(data.finished !== undefined){
 const _errs16 = errors;
 if(typeof data.finished !== "boolean"){
-validate75.errors = [{instancePath:instancePath+"/finished",schemaPath:"#/properties/finished/type",keyword:"type",params:{type: "boolean"}}];
+validate76.errors = [{instancePath:instancePath+"/finished",schemaPath:"#/properties/finished/type",keyword:"type",params:{type: "boolean"}}];
 return false;
 }
 var valid0 = _errs16 === errors;
@@ -6854,14 +7385,14 @@ if(errors === _errs19){
 if(data7 && typeof data7 == "object" && !Array.isArray(data7)){
 let missing1;
 if(((((((data7.points === undefined) && (missing1 = "points")) || ((data7.courts === undefined) && (missing1 = "courts"))) || ((data7.dealsWon === undefined) && (missing1 = "dealsWon"))) || ((data7.streakTeam === undefined) && (missing1 = "streakTeam"))) || ((data7.streakDeals === undefined) && (missing1 = "streakDeals"))) || ((data7.winnerTeam === undefined) && (missing1 = "winnerTeam"))){
-validate75.errors = [{instancePath:instancePath+"/teams",schemaPath:"https://hulla.gg/schemas/protocol/games/rung/events.json#/definitions/teams/required",keyword:"required",params:{missingProperty: missing1}}];
+validate76.errors = [{instancePath:instancePath+"/teams",schemaPath:"https://hulla.gg/schemas/protocol/games/rung/events.json#/definitions/teams/required",keyword:"required",params:{missingProperty: missing1}}];
 return false;
 }
 else {
 const _errs21 = errors;
 for(const key1 in data7){
 if(!((((((key1 === "points") || (key1 === "courts")) || (key1 === "dealsWon")) || (key1 === "streakTeam")) || (key1 === "streakDeals")) || (key1 === "winnerTeam"))){
-validate75.errors = [{instancePath:instancePath+"/teams",schemaPath:"https://hulla.gg/schemas/protocol/games/rung/events.json#/definitions/teams/additionalProperties",keyword:"additionalProperties",params:{additionalProperty: key1}}];
+validate76.errors = [{instancePath:instancePath+"/teams",schemaPath:"https://hulla.gg/schemas/protocol/games/rung/events.json#/definitions/teams/additionalProperties",keyword:"additionalProperties",params:{additionalProperty: key1}}];
 return false;
 break;
 }
@@ -6873,12 +7404,12 @@ const _errs22 = errors;
 if(errors === _errs22){
 if(Array.isArray(data8)){
 if(data8.length > 2){
-validate75.errors = [{instancePath:instancePath+"/teams/points",schemaPath:"https://hulla.gg/schemas/protocol/games/rung/events.json#/definitions/teams/properties/points/maxItems",keyword:"maxItems",params:{limit: 2}}];
+validate76.errors = [{instancePath:instancePath+"/teams/points",schemaPath:"https://hulla.gg/schemas/protocol/games/rung/events.json#/definitions/teams/properties/points/maxItems",keyword:"maxItems",params:{limit: 2}}];
 return false;
 }
 else {
 if(data8.length < 2){
-validate75.errors = [{instancePath:instancePath+"/teams/points",schemaPath:"https://hulla.gg/schemas/protocol/games/rung/events.json#/definitions/teams/properties/points/minItems",keyword:"minItems",params:{limit: 2}}];
+validate76.errors = [{instancePath:instancePath+"/teams/points",schemaPath:"https://hulla.gg/schemas/protocol/games/rung/events.json#/definitions/teams/properties/points/minItems",keyword:"minItems",params:{limit: 2}}];
 return false;
 }
 else {
@@ -6888,13 +7419,13 @@ for(let i2=0; i2<len2; i2++){
 let data9 = data8[i2];
 const _errs24 = errors;
 if(!(((typeof data9 == "number") && (!(data9 % 1) && !isNaN(data9))) && (isFinite(data9)))){
-validate75.errors = [{instancePath:instancePath+"/teams/points/" + i2,schemaPath:"https://hulla.gg/schemas/protocol/games/rung/events.json#/definitions/teams/properties/points/items/type",keyword:"type",params:{type: "integer"}}];
+validate76.errors = [{instancePath:instancePath+"/teams/points/" + i2,schemaPath:"https://hulla.gg/schemas/protocol/games/rung/events.json#/definitions/teams/properties/points/items/type",keyword:"type",params:{type: "integer"}}];
 return false;
 }
 if(errors === _errs24){
 if((typeof data9 == "number") && (isFinite(data9))){
 if(data9 < 0 || isNaN(data9)){
-validate75.errors = [{instancePath:instancePath+"/teams/points/" + i2,schemaPath:"https://hulla.gg/schemas/protocol/games/rung/events.json#/definitions/teams/properties/points/items/minimum",keyword:"minimum",params:{comparison: ">=", limit: 0}}];
+validate76.errors = [{instancePath:instancePath+"/teams/points/" + i2,schemaPath:"https://hulla.gg/schemas/protocol/games/rung/events.json#/definitions/teams/properties/points/items/minimum",keyword:"minimum",params:{comparison: ">=", limit: 0}}];
 return false;
 }
 }
@@ -6908,7 +7439,7 @@ break;
 }
 }
 else {
-validate75.errors = [{instancePath:instancePath+"/teams/points",schemaPath:"https://hulla.gg/schemas/protocol/games/rung/events.json#/definitions/teams/properties/points/type",keyword:"type",params:{type: "array"}}];
+validate76.errors = [{instancePath:instancePath+"/teams/points",schemaPath:"https://hulla.gg/schemas/protocol/games/rung/events.json#/definitions/teams/properties/points/type",keyword:"type",params:{type: "array"}}];
 return false;
 }
 }
@@ -6924,12 +7455,12 @@ const _errs26 = errors;
 if(errors === _errs26){
 if(Array.isArray(data10)){
 if(data10.length > 2){
-validate75.errors = [{instancePath:instancePath+"/teams/courts",schemaPath:"https://hulla.gg/schemas/protocol/games/rung/events.json#/definitions/teams/properties/courts/maxItems",keyword:"maxItems",params:{limit: 2}}];
+validate76.errors = [{instancePath:instancePath+"/teams/courts",schemaPath:"https://hulla.gg/schemas/protocol/games/rung/events.json#/definitions/teams/properties/courts/maxItems",keyword:"maxItems",params:{limit: 2}}];
 return false;
 }
 else {
 if(data10.length < 2){
-validate75.errors = [{instancePath:instancePath+"/teams/courts",schemaPath:"https://hulla.gg/schemas/protocol/games/rung/events.json#/definitions/teams/properties/courts/minItems",keyword:"minItems",params:{limit: 2}}];
+validate76.errors = [{instancePath:instancePath+"/teams/courts",schemaPath:"https://hulla.gg/schemas/protocol/games/rung/events.json#/definitions/teams/properties/courts/minItems",keyword:"minItems",params:{limit: 2}}];
 return false;
 }
 else {
@@ -6939,13 +7470,13 @@ for(let i3=0; i3<len3; i3++){
 let data11 = data10[i3];
 const _errs28 = errors;
 if(!(((typeof data11 == "number") && (!(data11 % 1) && !isNaN(data11))) && (isFinite(data11)))){
-validate75.errors = [{instancePath:instancePath+"/teams/courts/" + i3,schemaPath:"https://hulla.gg/schemas/protocol/games/rung/events.json#/definitions/teams/properties/courts/items/type",keyword:"type",params:{type: "integer"}}];
+validate76.errors = [{instancePath:instancePath+"/teams/courts/" + i3,schemaPath:"https://hulla.gg/schemas/protocol/games/rung/events.json#/definitions/teams/properties/courts/items/type",keyword:"type",params:{type: "integer"}}];
 return false;
 }
 if(errors === _errs28){
 if((typeof data11 == "number") && (isFinite(data11))){
 if(data11 < 0 || isNaN(data11)){
-validate75.errors = [{instancePath:instancePath+"/teams/courts/" + i3,schemaPath:"https://hulla.gg/schemas/protocol/games/rung/events.json#/definitions/teams/properties/courts/items/minimum",keyword:"minimum",params:{comparison: ">=", limit: 0}}];
+validate76.errors = [{instancePath:instancePath+"/teams/courts/" + i3,schemaPath:"https://hulla.gg/schemas/protocol/games/rung/events.json#/definitions/teams/properties/courts/items/minimum",keyword:"minimum",params:{comparison: ">=", limit: 0}}];
 return false;
 }
 }
@@ -6959,7 +7490,7 @@ break;
 }
 }
 else {
-validate75.errors = [{instancePath:instancePath+"/teams/courts",schemaPath:"https://hulla.gg/schemas/protocol/games/rung/events.json#/definitions/teams/properties/courts/type",keyword:"type",params:{type: "array"}}];
+validate76.errors = [{instancePath:instancePath+"/teams/courts",schemaPath:"https://hulla.gg/schemas/protocol/games/rung/events.json#/definitions/teams/properties/courts/type",keyword:"type",params:{type: "array"}}];
 return false;
 }
 }
@@ -6975,12 +7506,12 @@ const _errs30 = errors;
 if(errors === _errs30){
 if(Array.isArray(data12)){
 if(data12.length > 2){
-validate75.errors = [{instancePath:instancePath+"/teams/dealsWon",schemaPath:"https://hulla.gg/schemas/protocol/games/rung/events.json#/definitions/teams/properties/dealsWon/maxItems",keyword:"maxItems",params:{limit: 2}}];
+validate76.errors = [{instancePath:instancePath+"/teams/dealsWon",schemaPath:"https://hulla.gg/schemas/protocol/games/rung/events.json#/definitions/teams/properties/dealsWon/maxItems",keyword:"maxItems",params:{limit: 2}}];
 return false;
 }
 else {
 if(data12.length < 2){
-validate75.errors = [{instancePath:instancePath+"/teams/dealsWon",schemaPath:"https://hulla.gg/schemas/protocol/games/rung/events.json#/definitions/teams/properties/dealsWon/minItems",keyword:"minItems",params:{limit: 2}}];
+validate76.errors = [{instancePath:instancePath+"/teams/dealsWon",schemaPath:"https://hulla.gg/schemas/protocol/games/rung/events.json#/definitions/teams/properties/dealsWon/minItems",keyword:"minItems",params:{limit: 2}}];
 return false;
 }
 else {
@@ -6990,13 +7521,13 @@ for(let i4=0; i4<len4; i4++){
 let data13 = data12[i4];
 const _errs32 = errors;
 if(!(((typeof data13 == "number") && (!(data13 % 1) && !isNaN(data13))) && (isFinite(data13)))){
-validate75.errors = [{instancePath:instancePath+"/teams/dealsWon/" + i4,schemaPath:"https://hulla.gg/schemas/protocol/games/rung/events.json#/definitions/teams/properties/dealsWon/items/type",keyword:"type",params:{type: "integer"}}];
+validate76.errors = [{instancePath:instancePath+"/teams/dealsWon/" + i4,schemaPath:"https://hulla.gg/schemas/protocol/games/rung/events.json#/definitions/teams/properties/dealsWon/items/type",keyword:"type",params:{type: "integer"}}];
 return false;
 }
 if(errors === _errs32){
 if((typeof data13 == "number") && (isFinite(data13))){
 if(data13 < 0 || isNaN(data13)){
-validate75.errors = [{instancePath:instancePath+"/teams/dealsWon/" + i4,schemaPath:"https://hulla.gg/schemas/protocol/games/rung/events.json#/definitions/teams/properties/dealsWon/items/minimum",keyword:"minimum",params:{comparison: ">=", limit: 0}}];
+validate76.errors = [{instancePath:instancePath+"/teams/dealsWon/" + i4,schemaPath:"https://hulla.gg/schemas/protocol/games/rung/events.json#/definitions/teams/properties/dealsWon/items/minimum",keyword:"minimum",params:{comparison: ">=", limit: 0}}];
 return false;
 }
 }
@@ -7010,7 +7541,7 @@ break;
 }
 }
 else {
-validate75.errors = [{instancePath:instancePath+"/teams/dealsWon",schemaPath:"https://hulla.gg/schemas/protocol/games/rung/events.json#/definitions/teams/properties/dealsWon/type",keyword:"type",params:{type: "array"}}];
+validate76.errors = [{instancePath:instancePath+"/teams/dealsWon",schemaPath:"https://hulla.gg/schemas/protocol/games/rung/events.json#/definitions/teams/properties/dealsWon/type",keyword:"type",params:{type: "array"}}];
 return false;
 }
 }
@@ -7024,11 +7555,11 @@ if(data7.streakTeam !== undefined){
 let data14 = data7.streakTeam;
 const _errs34 = errors;
 if((!(((typeof data14 == "number") && (!(data14 % 1) && !isNaN(data14))) && (isFinite(data14)))) && (data14 !== null)){
-validate75.errors = [{instancePath:instancePath+"/teams/streakTeam",schemaPath:"https://hulla.gg/schemas/protocol/games/rung/events.json#/definitions/teams/properties/streakTeam/type",keyword:"type",params:{type: schema142.properties.streakTeam.type}}];
+validate76.errors = [{instancePath:instancePath+"/teams/streakTeam",schemaPath:"https://hulla.gg/schemas/protocol/games/rung/events.json#/definitions/teams/properties/streakTeam/type",keyword:"type",params:{type: schema145.properties.streakTeam.type}}];
 return false;
 }
 if(!(((data14 === 0) || (data14 === 1)) || (data14 === null))){
-validate75.errors = [{instancePath:instancePath+"/teams/streakTeam",schemaPath:"https://hulla.gg/schemas/protocol/games/rung/events.json#/definitions/teams/properties/streakTeam/enum",keyword:"enum",params:{allowedValues: schema142.properties.streakTeam.enum}}];
+validate76.errors = [{instancePath:instancePath+"/teams/streakTeam",schemaPath:"https://hulla.gg/schemas/protocol/games/rung/events.json#/definitions/teams/properties/streakTeam/enum",keyword:"enum",params:{allowedValues: schema145.properties.streakTeam.enum}}];
 return false;
 }
 var valid6 = _errs34 === errors;
@@ -7041,13 +7572,13 @@ if(data7.streakDeals !== undefined){
 let data15 = data7.streakDeals;
 const _errs36 = errors;
 if(!(((typeof data15 == "number") && (!(data15 % 1) && !isNaN(data15))) && (isFinite(data15)))){
-validate75.errors = [{instancePath:instancePath+"/teams/streakDeals",schemaPath:"https://hulla.gg/schemas/protocol/games/rung/events.json#/definitions/teams/properties/streakDeals/type",keyword:"type",params:{type: "integer"}}];
+validate76.errors = [{instancePath:instancePath+"/teams/streakDeals",schemaPath:"https://hulla.gg/schemas/protocol/games/rung/events.json#/definitions/teams/properties/streakDeals/type",keyword:"type",params:{type: "integer"}}];
 return false;
 }
 if(errors === _errs36){
 if((typeof data15 == "number") && (isFinite(data15))){
 if(data15 < 0 || isNaN(data15)){
-validate75.errors = [{instancePath:instancePath+"/teams/streakDeals",schemaPath:"https://hulla.gg/schemas/protocol/games/rung/events.json#/definitions/teams/properties/streakDeals/minimum",keyword:"minimum",params:{comparison: ">=", limit: 0}}];
+validate76.errors = [{instancePath:instancePath+"/teams/streakDeals",schemaPath:"https://hulla.gg/schemas/protocol/games/rung/events.json#/definitions/teams/properties/streakDeals/minimum",keyword:"minimum",params:{comparison: ">=", limit: 0}}];
 return false;
 }
 }
@@ -7062,11 +7593,11 @@ if(data7.winnerTeam !== undefined){
 let data16 = data7.winnerTeam;
 const _errs38 = errors;
 if((!(((typeof data16 == "number") && (!(data16 % 1) && !isNaN(data16))) && (isFinite(data16)))) && (data16 !== null)){
-validate75.errors = [{instancePath:instancePath+"/teams/winnerTeam",schemaPath:"https://hulla.gg/schemas/protocol/games/rung/events.json#/definitions/teams/properties/winnerTeam/type",keyword:"type",params:{type: schema142.properties.winnerTeam.type}}];
+validate76.errors = [{instancePath:instancePath+"/teams/winnerTeam",schemaPath:"https://hulla.gg/schemas/protocol/games/rung/events.json#/definitions/teams/properties/winnerTeam/type",keyword:"type",params:{type: schema145.properties.winnerTeam.type}}];
 return false;
 }
 if(!(((data16 === 0) || (data16 === 1)) || (data16 === null))){
-validate75.errors = [{instancePath:instancePath+"/teams/winnerTeam",schemaPath:"https://hulla.gg/schemas/protocol/games/rung/events.json#/definitions/teams/properties/winnerTeam/enum",keyword:"enum",params:{allowedValues: schema142.properties.winnerTeam.enum}}];
+validate76.errors = [{instancePath:instancePath+"/teams/winnerTeam",schemaPath:"https://hulla.gg/schemas/protocol/games/rung/events.json#/definitions/teams/properties/winnerTeam/enum",keyword:"enum",params:{allowedValues: schema145.properties.winnerTeam.enum}}];
 return false;
 }
 var valid6 = _errs38 === errors;
@@ -7083,7 +7614,7 @@ var valid6 = true;
 }
 }
 else {
-validate75.errors = [{instancePath:instancePath+"/teams",schemaPath:"https://hulla.gg/schemas/protocol/games/rung/events.json#/definitions/teams/type",keyword:"type",params:{type: "object"}}];
+validate76.errors = [{instancePath:instancePath+"/teams",schemaPath:"https://hulla.gg/schemas/protocol/games/rung/events.json#/definitions/teams/type",keyword:"type",params:{type: "object"}}];
 return false;
 }
 }
@@ -7101,16 +7632,16 @@ var valid0 = true;
 }
 }
 else {
-validate75.errors = [{instancePath,schemaPath:"#/type",keyword:"type",params:{type: "object"}}];
+validate76.errors = [{instancePath,schemaPath:"#/type",keyword:"type",params:{type: "object"}}];
 return false;
 }
 }
-validate75.errors = vErrors;
+validate76.errors = vErrors;
 return errors === 0;
 }
 
 
-function validate79(data, {instancePath="", parentData, parentDataProperty, rootData=data}={}){
+function validate80(data, {instancePath="", parentData, parentDataProperty, rootData=data}={}){
 let vErrors = null;
 let errors = 0;
 if(errors === 0){
@@ -7122,18 +7653,18 @@ let data0 = data[i0];
 const _errs1 = errors;
 const _errs2 = errors;
 if(!(((typeof data0 == "number") && (!(data0 % 1) && !isNaN(data0))) && (isFinite(data0)))){
-validate79.errors = [{instancePath:instancePath+"/" + i0,schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex/type",keyword:"type",params:{type: "integer"}}];
+validate80.errors = [{instancePath:instancePath+"/" + i0,schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex/type",keyword:"type",params:{type: "integer"}}];
 return false;
 }
 if(errors === _errs2){
 if((typeof data0 == "number") && (isFinite(data0))){
 if(data0 > 7 || isNaN(data0)){
-validate79.errors = [{instancePath:instancePath+"/" + i0,schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex/maximum",keyword:"maximum",params:{comparison: "<=", limit: 7}}];
+validate80.errors = [{instancePath:instancePath+"/" + i0,schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex/maximum",keyword:"maximum",params:{comparison: "<=", limit: 7}}];
 return false;
 }
 else {
 if(data0 < 0 || isNaN(data0)){
-validate79.errors = [{instancePath:instancePath+"/" + i0,schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex/minimum",keyword:"minimum",params:{comparison: ">=", limit: 0}}];
+validate80.errors = [{instancePath:instancePath+"/" + i0,schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex/minimum",keyword:"minimum",params:{comparison: ">=", limit: 0}}];
 return false;
 }
 }
@@ -7146,30 +7677,30 @@ break;
 }
 }
 else {
-validate79.errors = [{instancePath,schemaPath:"#/type",keyword:"type",params:{type: "array"}}];
+validate80.errors = [{instancePath,schemaPath:"#/type",keyword:"type",params:{type: "array"}}];
 return false;
 }
 }
-validate79.errors = vErrors;
+validate80.errors = vErrors;
 return errors === 0;
 }
 
 
-function validate69(data, {instancePath="", parentData, parentDataProperty, rootData=data}={}){
+function validate70(data, {instancePath="", parentData, parentDataProperty, rootData=data}={}){
 let vErrors = null;
 let errors = 0;
 if(errors === 0){
 if(data && typeof data == "object" && !Array.isArray(data)){
 let missing0;
 if((((((((((((((data.code === undefined) && (missing0 = "code")) || ((data.gameId === undefined) && (missing0 = "gameId"))) || ((data.mode === undefined) && (missing0 = "mode"))) || ((data.status === undefined) && (missing0 = "status"))) || ((data.hostSeat === undefined) && (missing0 = "hostSeat"))) || ((data.rules === undefined) && (missing0 = "rules"))) || ((data.seats === undefined) && (missing0 = "seats"))) || ((data.spectatorCount === undefined) && (missing0 = "spectatorCount"))) || ((data.spectators === undefined) && (missing0 = "spectators"))) || ((data.series === undefined) && (missing0 = "series"))) || ((data.round === undefined) && (missing0 = "round"))) || ((data.lastSeq === undefined) && (missing0 = "lastSeq"))) || ((data.resumeToken === undefined) && (missing0 = "resumeToken"))){
-validate69.errors = [{instancePath,schemaPath:"#/required",keyword:"required",params:{missingProperty: missing0}}];
+validate70.errors = [{instancePath,schemaPath:"#/required",keyword:"required",params:{missingProperty: missing0}}];
 return false;
 }
 else {
 const _errs1 = errors;
 for(const key0 in data){
-if(!(func2.call(schema127.properties, key0))){
-validate69.errors = [{instancePath,schemaPath:"#/additionalProperties",keyword:"additionalProperties",params:{additionalProperty: key0}}];
+if(!(func2.call(schema130.properties, key0))){
+validate70.errors = [{instancePath,schemaPath:"#/additionalProperties",keyword:"additionalProperties",params:{additionalProperty: key0}}];
 return false;
 break;
 }
@@ -7182,12 +7713,12 @@ const _errs3 = errors;
 if(errors === _errs3){
 if(typeof data0 === "string"){
 if(!pattern16.test(data0)){
-validate69.errors = [{instancePath:instancePath+"/code",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/roomCode/pattern",keyword:"pattern",params:{pattern: "^[ABCDEFGHJKLMNPQRSTUVWXYZ23456789]{6}$"}}];
+validate70.errors = [{instancePath:instancePath+"/code",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/roomCode/pattern",keyword:"pattern",params:{pattern: "^[ABCDEFGHJKLMNPQRSTUVWXYZ23456789]{6}$"}}];
 return false;
 }
 }
 else {
-validate69.errors = [{instancePath:instancePath+"/code",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/roomCode/type",keyword:"type",params:{type: "string"}}];
+validate70.errors = [{instancePath:instancePath+"/code",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/roomCode/type",keyword:"type",params:{type: "string"}}];
 return false;
 }
 }
@@ -7201,11 +7732,11 @@ if(data.gameId !== undefined){
 let data1 = data.gameId;
 const _errs5 = errors;
 if(typeof data1 !== "string"){
-validate69.errors = [{instancePath:instancePath+"/gameId",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/gameId/type",keyword:"type",params:{type: "string"}}];
+validate70.errors = [{instancePath:instancePath+"/gameId",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/gameId/type",keyword:"type",params:{type: "string"}}];
 return false;
 }
 if(!((data1 === "thulla") || (data1 === "rung"))){
-validate69.errors = [{instancePath:instancePath+"/gameId",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/gameId/enum",keyword:"enum",params:{allowedValues: schema18.enum}}];
+validate70.errors = [{instancePath:instancePath+"/gameId",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/gameId/enum",keyword:"enum",params:{allowedValues: schema18.enum}}];
 return false;
 }
 var valid0 = _errs5 === errors;
@@ -7218,11 +7749,11 @@ if(data.mode !== undefined){
 let data2 = data.mode;
 const _errs8 = errors;
 if(typeof data2 !== "string"){
-validate69.errors = [{instancePath:instancePath+"/mode",schemaPath:"https://hulla.gg/schemas/protocol/shell/table.json#/definitions/tableMode/type",keyword:"type",params:{type: "string"}}];
+validate70.errors = [{instancePath:instancePath+"/mode",schemaPath:"https://hulla.gg/schemas/protocol/shell/table.json#/definitions/tableMode/type",keyword:"type",params:{type: "string"}}];
 return false;
 }
 if(!(((data2 === "private") || (data2 === "public")) || (data2 === "ranked"))){
-validate69.errors = [{instancePath:instancePath+"/mode",schemaPath:"https://hulla.gg/schemas/protocol/shell/table.json#/definitions/tableMode/enum",keyword:"enum",params:{allowedValues: schema130.enum}}];
+validate70.errors = [{instancePath:instancePath+"/mode",schemaPath:"https://hulla.gg/schemas/protocol/shell/table.json#/definitions/tableMode/enum",keyword:"enum",params:{allowedValues: schema133.enum}}];
 return false;
 }
 var valid0 = _errs8 === errors;
@@ -7235,11 +7766,11 @@ if(data.status !== undefined){
 let data3 = data.status;
 const _errs11 = errors;
 if(typeof data3 !== "string"){
-validate69.errors = [{instancePath:instancePath+"/status",schemaPath:"https://hulla.gg/schemas/protocol/shell/table.json#/definitions/tableStatus/type",keyword:"type",params:{type: "string"}}];
+validate70.errors = [{instancePath:instancePath+"/status",schemaPath:"https://hulla.gg/schemas/protocol/shell/table.json#/definitions/tableStatus/type",keyword:"type",params:{type: "string"}}];
 return false;
 }
 if(!((((data3 === "open") || (data3 === "locked")) || (data3 === "inRound")) || (data3 === "closed"))){
-validate69.errors = [{instancePath:instancePath+"/status",schemaPath:"https://hulla.gg/schemas/protocol/shell/table.json#/definitions/tableStatus/enum",keyword:"enum",params:{allowedValues: schema131.enum}}];
+validate70.errors = [{instancePath:instancePath+"/status",schemaPath:"https://hulla.gg/schemas/protocol/shell/table.json#/definitions/tableStatus/enum",keyword:"enum",params:{allowedValues: schema134.enum}}];
 return false;
 }
 var valid0 = _errs11 === errors;
@@ -7253,18 +7784,18 @@ let data4 = data.hostSeat;
 const _errs14 = errors;
 const _errs15 = errors;
 if((!(((typeof data4 == "number") && (!(data4 % 1) && !isNaN(data4))) && (isFinite(data4)))) && (data4 !== null)){
-validate69.errors = [{instancePath:instancePath+"/hostSeat",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndexOrNull/type",keyword:"type",params:{type: schema25.type}}];
+validate70.errors = [{instancePath:instancePath+"/hostSeat",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndexOrNull/type",keyword:"type",params:{type: schema25.type}}];
 return false;
 }
 if(errors === _errs15){
 if((typeof data4 == "number") && (isFinite(data4))){
 if(data4 > 7 || isNaN(data4)){
-validate69.errors = [{instancePath:instancePath+"/hostSeat",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndexOrNull/maximum",keyword:"maximum",params:{comparison: "<=", limit: 7}}];
+validate70.errors = [{instancePath:instancePath+"/hostSeat",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndexOrNull/maximum",keyword:"maximum",params:{comparison: "<=", limit: 7}}];
 return false;
 }
 else {
 if(data4 < 0 || isNaN(data4)){
-validate69.errors = [{instancePath:instancePath+"/hostSeat",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndexOrNull/minimum",keyword:"minimum",params:{comparison: ">=", limit: 0}}];
+validate70.errors = [{instancePath:instancePath+"/hostSeat",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndexOrNull/minimum",keyword:"minimum",params:{comparison: ">=", limit: 0}}];
 return false;
 }
 }
@@ -7297,8 +7828,8 @@ var valid6 = true;
 const len0 = data6.length;
 for(let i0=0; i0<len0; i0++){
 const _errs20 = errors;
-if(!(validate71(data6[i0], {instancePath:instancePath+"/seats/" + i0,parentData:data6,parentDataProperty:i0,rootData}))){
-vErrors = vErrors === null ? validate71.errors : vErrors.concat(validate71.errors);
+if(!(validate72(data6[i0], {instancePath:instancePath+"/seats/" + i0,parentData:data6,parentDataProperty:i0,rootData}))){
+vErrors = vErrors === null ? validate72.errors : vErrors.concat(validate72.errors);
 errors = vErrors.length;
 }
 var valid6 = _errs20 === errors;
@@ -7308,7 +7839,7 @@ break;
 }
 }
 else {
-validate69.errors = [{instancePath:instancePath+"/seats",schemaPath:"#/properties/seats/type",keyword:"type",params:{type: "array"}}];
+validate70.errors = [{instancePath:instancePath+"/seats",schemaPath:"#/properties/seats/type",keyword:"type",params:{type: "array"}}];
 return false;
 }
 }
@@ -7322,13 +7853,13 @@ if(data.spectatorCount !== undefined){
 let data8 = data.spectatorCount;
 const _errs21 = errors;
 if(!(((typeof data8 == "number") && (!(data8 % 1) && !isNaN(data8))) && (isFinite(data8)))){
-validate69.errors = [{instancePath:instancePath+"/spectatorCount",schemaPath:"#/properties/spectatorCount/type",keyword:"type",params:{type: "integer"}}];
+validate70.errors = [{instancePath:instancePath+"/spectatorCount",schemaPath:"#/properties/spectatorCount/type",keyword:"type",params:{type: "integer"}}];
 return false;
 }
 if(errors === _errs21){
 if((typeof data8 == "number") && (isFinite(data8))){
 if(data8 < 0 || isNaN(data8)){
-validate69.errors = [{instancePath:instancePath+"/spectatorCount",schemaPath:"#/properties/spectatorCount/minimum",keyword:"minimum",params:{comparison: ">=", limit: 0}}];
+validate70.errors = [{instancePath:instancePath+"/spectatorCount",schemaPath:"#/properties/spectatorCount/minimum",keyword:"minimum",params:{comparison: ">=", limit: 0}}];
 return false;
 }
 }
@@ -7348,8 +7879,8 @@ var valid7 = true;
 const len1 = data9.length;
 for(let i1=0; i1<len1; i1++){
 const _errs25 = errors;
-if(!(validate73(data9[i1], {instancePath:instancePath+"/spectators/" + i1,parentData:data9,parentDataProperty:i1,rootData}))){
-vErrors = vErrors === null ? validate73.errors : vErrors.concat(validate73.errors);
+if(!(validate74(data9[i1], {instancePath:instancePath+"/spectators/" + i1,parentData:data9,parentDataProperty:i1,rootData}))){
+vErrors = vErrors === null ? validate74.errors : vErrors.concat(validate74.errors);
 errors = vErrors.length;
 }
 var valid7 = _errs25 === errors;
@@ -7359,7 +7890,7 @@ break;
 }
 }
 else {
-validate69.errors = [{instancePath:instancePath+"/spectators",schemaPath:"#/properties/spectators/type",keyword:"type",params:{type: "array"}}];
+validate70.errors = [{instancePath:instancePath+"/spectators",schemaPath:"#/properties/spectators/type",keyword:"type",params:{type: "array"}}];
 return false;
 }
 }
@@ -7371,8 +7902,8 @@ var valid0 = true;
 if(valid0){
 if(data.series !== undefined){
 const _errs26 = errors;
-if(!(validate75(data.series, {instancePath:instancePath+"/series",parentData:data,parentDataProperty:"series",rootData}))){
-vErrors = vErrors === null ? validate75.errors : vErrors.concat(validate75.errors);
+if(!(validate76(data.series, {instancePath:instancePath+"/series",parentData:data,parentDataProperty:"series",rootData}))){
+vErrors = vErrors === null ? validate76.errors : vErrors.concat(validate76.errors);
 errors = vErrors.length;
 }
 var valid0 = _errs26 === errors;
@@ -7428,7 +7959,7 @@ else {
 vErrors.push(err1);
 }
 errors++;
-validate69.errors = vErrors;
+validate70.errors = vErrors;
 return false;
 }
 else {
@@ -7465,13 +7996,13 @@ let data14 = data.lastSeq;
 const _errs33 = errors;
 const _errs34 = errors;
 if(!(((typeof data14 == "number") && (!(data14 % 1) && !isNaN(data14))) && (isFinite(data14)))){
-validate69.errors = [{instancePath:instancePath+"/lastSeq",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/sequence/type",keyword:"type",params:{type: "integer"}}];
+validate70.errors = [{instancePath:instancePath+"/lastSeq",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/sequence/type",keyword:"type",params:{type: "integer"}}];
 return false;
 }
 if(errors === _errs34){
 if((typeof data14 == "number") && (isFinite(data14))){
 if(data14 < 0 || isNaN(data14)){
-validate69.errors = [{instancePath:instancePath+"/lastSeq",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/sequence/minimum",keyword:"minimum",params:{comparison: ">=", limit: 0}}];
+validate70.errors = [{instancePath:instancePath+"/lastSeq",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/sequence/minimum",keyword:"minimum",params:{comparison: ">=", limit: 0}}];
 return false;
 }
 }
@@ -7486,7 +8017,7 @@ if(data.resumeToken !== undefined){
 let data15 = data.resumeToken;
 const _errs36 = errors;
 if((typeof data15 !== "string") && (data15 !== null)){
-validate69.errors = [{instancePath:instancePath+"/resumeToken",schemaPath:"#/properties/resumeToken/type",keyword:"type",params:{type: schema127.properties.resumeToken.type}}];
+validate70.errors = [{instancePath:instancePath+"/resumeToken",schemaPath:"#/properties/resumeToken/type",keyword:"type",params:{type: schema130.properties.resumeToken.type}}];
 return false;
 }
 var valid0 = _errs36 === errors;
@@ -7503,7 +8034,7 @@ if(data16 && typeof data16 == "object" && !Array.isArray(data16)){
 const _errs40 = errors;
 for(const key1 in data16){
 if(!((key1 === "deadlineTs") || (key1 === "votes"))){
-validate69.errors = [{instancePath:instancePath+"/rematch",schemaPath:"#/properties/rematch/additionalProperties",keyword:"additionalProperties",params:{additionalProperty: key1}}];
+validate70.errors = [{instancePath:instancePath+"/rematch",schemaPath:"#/properties/rematch/additionalProperties",keyword:"additionalProperties",params:{additionalProperty: key1}}];
 return false;
 break;
 }
@@ -7514,13 +8045,13 @@ let data17 = data16.deadlineTs;
 const _errs41 = errors;
 const _errs42 = errors;
 if(!(((typeof data17 == "number") && (!(data17 % 1) && !isNaN(data17))) && (isFinite(data17)))){
-validate69.errors = [{instancePath:instancePath+"/rematch/deadlineTs",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/timestamp/type",keyword:"type",params:{type: "integer"}}];
+validate70.errors = [{instancePath:instancePath+"/rematch/deadlineTs",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/timestamp/type",keyword:"type",params:{type: "integer"}}];
 return false;
 }
 if(errors === _errs42){
 if((typeof data17 == "number") && (isFinite(data17))){
 if(data17 < 0 || isNaN(data17)){
-validate69.errors = [{instancePath:instancePath+"/rematch/deadlineTs",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/timestamp/minimum",keyword:"minimum",params:{comparison: ">=", limit: 0}}];
+validate70.errors = [{instancePath:instancePath+"/rematch/deadlineTs",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/timestamp/minimum",keyword:"minimum",params:{comparison: ">=", limit: 0}}];
 return false;
 }
 }
@@ -7533,8 +8064,8 @@ var valid10 = true;
 if(valid10){
 if(data16.votes !== undefined){
 const _errs44 = errors;
-if(!(validate79(data16.votes, {instancePath:instancePath+"/rematch/votes",parentData:data16,parentDataProperty:"votes",rootData}))){
-vErrors = vErrors === null ? validate79.errors : vErrors.concat(validate79.errors);
+if(!(validate80(data16.votes, {instancePath:instancePath+"/rematch/votes",parentData:data16,parentDataProperty:"votes",rootData}))){
+vErrors = vErrors === null ? validate80.errors : vErrors.concat(validate80.errors);
 errors = vErrors.length;
 }
 var valid10 = _errs44 === errors;
@@ -7546,7 +8077,7 @@ var valid10 = true;
 }
 }
 else {
-validate69.errors = [{instancePath:instancePath+"/rematch",schemaPath:"#/properties/rematch/type",keyword:"type",params:{type: "object"}}];
+validate70.errors = [{instancePath:instancePath+"/rematch",schemaPath:"#/properties/rematch/type",keyword:"type",params:{type: "object"}}];
 return false;
 }
 }
@@ -7563,14 +8094,14 @@ if(errors === _errs45){
 if(data19 && typeof data19 == "object" && !Array.isArray(data19)){
 let missing1;
 if((data19.startsAtTs === undefined) && (missing1 = "startsAtTs")){
-validate69.errors = [{instancePath:instancePath+"/autoStart",schemaPath:"#/properties/autoStart/required",keyword:"required",params:{missingProperty: missing1}}];
+validate70.errors = [{instancePath:instancePath+"/autoStart",schemaPath:"#/properties/autoStart/required",keyword:"required",params:{missingProperty: missing1}}];
 return false;
 }
 else {
 const _errs47 = errors;
 for(const key2 in data19){
 if(!(key2 === "startsAtTs")){
-validate69.errors = [{instancePath:instancePath+"/autoStart",schemaPath:"#/properties/autoStart/additionalProperties",keyword:"additionalProperties",params:{additionalProperty: key2}}];
+validate70.errors = [{instancePath:instancePath+"/autoStart",schemaPath:"#/properties/autoStart/additionalProperties",keyword:"additionalProperties",params:{additionalProperty: key2}}];
 return false;
 break;
 }
@@ -7580,13 +8111,13 @@ if(data19.startsAtTs !== undefined){
 let data20 = data19.startsAtTs;
 const _errs49 = errors;
 if(!(((typeof data20 == "number") && (!(data20 % 1) && !isNaN(data20))) && (isFinite(data20)))){
-validate69.errors = [{instancePath:instancePath+"/autoStart/startsAtTs",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/timestamp/type",keyword:"type",params:{type: "integer"}}];
+validate70.errors = [{instancePath:instancePath+"/autoStart/startsAtTs",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/timestamp/type",keyword:"type",params:{type: "integer"}}];
 return false;
 }
 if(errors === _errs49){
 if((typeof data20 == "number") && (isFinite(data20))){
 if(data20 < 0 || isNaN(data20)){
-validate69.errors = [{instancePath:instancePath+"/autoStart/startsAtTs",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/timestamp/minimum",keyword:"minimum",params:{comparison: ">=", limit: 0}}];
+validate70.errors = [{instancePath:instancePath+"/autoStart/startsAtTs",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/timestamp/minimum",keyword:"minimum",params:{comparison: ">=", limit: 0}}];
 return false;
 }
 }
@@ -7596,7 +8127,7 @@ return false;
 }
 }
 else {
-validate69.errors = [{instancePath:instancePath+"/autoStart",schemaPath:"#/properties/autoStart/type",keyword:"type",params:{type: "object"}}];
+validate70.errors = [{instancePath:instancePath+"/autoStart",schemaPath:"#/properties/autoStart/type",keyword:"type",params:{type: "object"}}];
 return false;
 }
 }
@@ -7613,14 +8144,14 @@ if(errors === _errs51){
 if(data21 && typeof data21 == "object" && !Array.isArray(data21)){
 let missing2;
 if(((((data21.asker === undefined) && (missing2 = "asker")) || ((data21.target === undefined) && (missing2 = "target"))) || ((data21.cardCount === undefined) && (missing2 = "cardCount"))) || ((data21.deadlineTs === undefined) && (missing2 = "deadlineTs"))){
-validate69.errors = [{instancePath:instancePath+"/handAsk",schemaPath:"#/properties/handAsk/required",keyword:"required",params:{missingProperty: missing2}}];
+validate70.errors = [{instancePath:instancePath+"/handAsk",schemaPath:"#/properties/handAsk/required",keyword:"required",params:{missingProperty: missing2}}];
 return false;
 }
 else {
 const _errs53 = errors;
 for(const key3 in data21){
 if(!((((key3 === "asker") || (key3 === "target")) || (key3 === "cardCount")) || (key3 === "deadlineTs"))){
-validate69.errors = [{instancePath:instancePath+"/handAsk",schemaPath:"#/properties/handAsk/additionalProperties",keyword:"additionalProperties",params:{additionalProperty: key3}}];
+validate70.errors = [{instancePath:instancePath+"/handAsk",schemaPath:"#/properties/handAsk/additionalProperties",keyword:"additionalProperties",params:{additionalProperty: key3}}];
 return false;
 break;
 }
@@ -7631,18 +8162,18 @@ let data22 = data21.asker;
 const _errs54 = errors;
 const _errs55 = errors;
 if(!(((typeof data22 == "number") && (!(data22 % 1) && !isNaN(data22))) && (isFinite(data22)))){
-validate69.errors = [{instancePath:instancePath+"/handAsk/asker",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex/type",keyword:"type",params:{type: "integer"}}];
+validate70.errors = [{instancePath:instancePath+"/handAsk/asker",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex/type",keyword:"type",params:{type: "integer"}}];
 return false;
 }
 if(errors === _errs55){
 if((typeof data22 == "number") && (isFinite(data22))){
 if(data22 > 7 || isNaN(data22)){
-validate69.errors = [{instancePath:instancePath+"/handAsk/asker",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex/maximum",keyword:"maximum",params:{comparison: "<=", limit: 7}}];
+validate70.errors = [{instancePath:instancePath+"/handAsk/asker",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex/maximum",keyword:"maximum",params:{comparison: "<=", limit: 7}}];
 return false;
 }
 else {
 if(data22 < 0 || isNaN(data22)){
-validate69.errors = [{instancePath:instancePath+"/handAsk/asker",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex/minimum",keyword:"minimum",params:{comparison: ">=", limit: 0}}];
+validate70.errors = [{instancePath:instancePath+"/handAsk/asker",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex/minimum",keyword:"minimum",params:{comparison: ">=", limit: 0}}];
 return false;
 }
 }
@@ -7659,18 +8190,18 @@ let data23 = data21.target;
 const _errs57 = errors;
 const _errs58 = errors;
 if(!(((typeof data23 == "number") && (!(data23 % 1) && !isNaN(data23))) && (isFinite(data23)))){
-validate69.errors = [{instancePath:instancePath+"/handAsk/target",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex/type",keyword:"type",params:{type: "integer"}}];
+validate70.errors = [{instancePath:instancePath+"/handAsk/target",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex/type",keyword:"type",params:{type: "integer"}}];
 return false;
 }
 if(errors === _errs58){
 if((typeof data23 == "number") && (isFinite(data23))){
 if(data23 > 7 || isNaN(data23)){
-validate69.errors = [{instancePath:instancePath+"/handAsk/target",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex/maximum",keyword:"maximum",params:{comparison: "<=", limit: 7}}];
+validate70.errors = [{instancePath:instancePath+"/handAsk/target",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex/maximum",keyword:"maximum",params:{comparison: "<=", limit: 7}}];
 return false;
 }
 else {
 if(data23 < 0 || isNaN(data23)){
-validate69.errors = [{instancePath:instancePath+"/handAsk/target",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex/minimum",keyword:"minimum",params:{comparison: ">=", limit: 0}}];
+validate70.errors = [{instancePath:instancePath+"/handAsk/target",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex/minimum",keyword:"minimum",params:{comparison: ">=", limit: 0}}];
 return false;
 }
 }
@@ -7686,13 +8217,13 @@ if(data21.cardCount !== undefined){
 let data24 = data21.cardCount;
 const _errs60 = errors;
 if(!(((typeof data24 == "number") && (!(data24 % 1) && !isNaN(data24))) && (isFinite(data24)))){
-validate69.errors = [{instancePath:instancePath+"/handAsk/cardCount",schemaPath:"#/properties/handAsk/properties/cardCount/type",keyword:"type",params:{type: "integer"}}];
+validate70.errors = [{instancePath:instancePath+"/handAsk/cardCount",schemaPath:"#/properties/handAsk/properties/cardCount/type",keyword:"type",params:{type: "integer"}}];
 return false;
 }
 if(errors === _errs60){
 if((typeof data24 == "number") && (isFinite(data24))){
 if(data24 < 1 || isNaN(data24)){
-validate69.errors = [{instancePath:instancePath+"/handAsk/cardCount",schemaPath:"#/properties/handAsk/properties/cardCount/minimum",keyword:"minimum",params:{comparison: ">=", limit: 1}}];
+validate70.errors = [{instancePath:instancePath+"/handAsk/cardCount",schemaPath:"#/properties/handAsk/properties/cardCount/minimum",keyword:"minimum",params:{comparison: ">=", limit: 1}}];
 return false;
 }
 }
@@ -7708,13 +8239,13 @@ let data25 = data21.deadlineTs;
 const _errs62 = errors;
 const _errs63 = errors;
 if(!(((typeof data25 == "number") && (!(data25 % 1) && !isNaN(data25))) && (isFinite(data25)))){
-validate69.errors = [{instancePath:instancePath+"/handAsk/deadlineTs",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/timestamp/type",keyword:"type",params:{type: "integer"}}];
+validate70.errors = [{instancePath:instancePath+"/handAsk/deadlineTs",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/timestamp/type",keyword:"type",params:{type: "integer"}}];
 return false;
 }
 if(errors === _errs63){
 if((typeof data25 == "number") && (isFinite(data25))){
 if(data25 < 0 || isNaN(data25)){
-validate69.errors = [{instancePath:instancePath+"/handAsk/deadlineTs",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/timestamp/minimum",keyword:"minimum",params:{comparison: ">=", limit: 0}}];
+validate70.errors = [{instancePath:instancePath+"/handAsk/deadlineTs",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/timestamp/minimum",keyword:"minimum",params:{comparison: ">=", limit: 0}}];
 return false;
 }
 }
@@ -7731,7 +8262,7 @@ var valid14 = true;
 }
 }
 else {
-validate69.errors = [{instancePath:instancePath+"/handAsk",schemaPath:"#/properties/handAsk/type",keyword:"type",params:{type: "object"}}];
+validate70.errors = [{instancePath:instancePath+"/handAsk",schemaPath:"#/properties/handAsk/type",keyword:"type",params:{type: "object"}}];
 return false;
 }
 }
@@ -7748,14 +8279,14 @@ if(errors === _errs65){
 if(data26 && typeof data26 == "object" && !Array.isArray(data26)){
 let missing3;
 if(((data26.gameId === undefined) && (missing3 = "gameId")) || ((data26.rules === undefined) && (missing3 = "rules"))){
-validate69.errors = [{instancePath:instancePath+"/queuedGame",schemaPath:"#/properties/queuedGame/required",keyword:"required",params:{missingProperty: missing3}}];
+validate70.errors = [{instancePath:instancePath+"/queuedGame",schemaPath:"#/properties/queuedGame/required",keyword:"required",params:{missingProperty: missing3}}];
 return false;
 }
 else {
 const _errs67 = errors;
 for(const key4 in data26){
 if(!((key4 === "gameId") || (key4 === "rules"))){
-validate69.errors = [{instancePath:instancePath+"/queuedGame",schemaPath:"#/properties/queuedGame/additionalProperties",keyword:"additionalProperties",params:{additionalProperty: key4}}];
+validate70.errors = [{instancePath:instancePath+"/queuedGame",schemaPath:"#/properties/queuedGame/additionalProperties",keyword:"additionalProperties",params:{additionalProperty: key4}}];
 return false;
 break;
 }
@@ -7765,11 +8296,11 @@ if(data26.gameId !== undefined){
 let data27 = data26.gameId;
 const _errs68 = errors;
 if(typeof data27 !== "string"){
-validate69.errors = [{instancePath:instancePath+"/queuedGame/gameId",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/gameId/type",keyword:"type",params:{type: "string"}}];
+validate70.errors = [{instancePath:instancePath+"/queuedGame/gameId",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/gameId/type",keyword:"type",params:{type: "string"}}];
 return false;
 }
 if(!((data27 === "thulla") || (data27 === "rung"))){
-validate69.errors = [{instancePath:instancePath+"/queuedGame/gameId",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/gameId/enum",keyword:"enum",params:{allowedValues: schema18.enum}}];
+validate70.errors = [{instancePath:instancePath+"/queuedGame/gameId",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/gameId/enum",keyword:"enum",params:{allowedValues: schema18.enum}}];
 return false;
 }
 var valid18 = _errs68 === errors;
@@ -7794,7 +8325,7 @@ var valid18 = true;
 }
 }
 else {
-validate69.errors = [{instancePath:instancePath+"/queuedGame",schemaPath:"#/properties/queuedGame/type",keyword:"type",params:{type: "object"}}];
+validate70.errors = [{instancePath:instancePath+"/queuedGame",schemaPath:"#/properties/queuedGame/type",keyword:"type",params:{type: "object"}}];
 return false;
 }
 }
@@ -7824,32 +8355,32 @@ var valid0 = true;
 }
 }
 else {
-validate69.errors = [{instancePath,schemaPath:"#/type",keyword:"type",params:{type: "object"}}];
+validate70.errors = [{instancePath,schemaPath:"#/type",keyword:"type",params:{type: "object"}}];
 return false;
 }
 }
-validate69.errors = vErrors;
+validate70.errors = vErrors;
 return errors === 0;
 }
 
-const check_rules_changed = validate82;
-const schema152 = {"type":"object","additionalProperties":false,"required":["rules","changedBy"],"properties":{"rules":{"$ref":"https://hulla.gg/schemas/protocol/shell/table.json#/definitions/rulesSelection"},"changedBy":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex"},"changedKeys":{"type":"array","items":{"type":"string"},"description":"For the diff banner (E19)"}}};
+const check_rules_changed = validate83;
+const schema155 = {"type":"object","additionalProperties":false,"required":["rules","changedBy"],"properties":{"rules":{"$ref":"https://hulla.gg/schemas/protocol/shell/table.json#/definitions/rulesSelection"},"changedBy":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex"},"changedKeys":{"type":"array","items":{"type":"string"},"description":"For the diff banner (E19)"}}};
 
-function validate82(data, {instancePath="", parentData, parentDataProperty, rootData=data}={}){
+function validate83(data, {instancePath="", parentData, parentDataProperty, rootData=data}={}){
 let vErrors = null;
 let errors = 0;
 if(errors === 0){
 if(data && typeof data == "object" && !Array.isArray(data)){
 let missing0;
 if(((data.rules === undefined) && (missing0 = "rules")) || ((data.changedBy === undefined) && (missing0 = "changedBy"))){
-validate82.errors = [{instancePath,schemaPath:"#/required",keyword:"required",params:{missingProperty: missing0}}];
+validate83.errors = [{instancePath,schemaPath:"#/required",keyword:"required",params:{missingProperty: missing0}}];
 return false;
 }
 else {
 const _errs1 = errors;
 for(const key0 in data){
 if(!(((key0 === "rules") || (key0 === "changedBy")) || (key0 === "changedKeys"))){
-validate82.errors = [{instancePath,schemaPath:"#/additionalProperties",keyword:"additionalProperties",params:{additionalProperty: key0}}];
+validate83.errors = [{instancePath,schemaPath:"#/additionalProperties",keyword:"additionalProperties",params:{additionalProperty: key0}}];
 return false;
 break;
 }
@@ -7872,18 +8403,18 @@ let data1 = data.changedBy;
 const _errs3 = errors;
 const _errs4 = errors;
 if(!(((typeof data1 == "number") && (!(data1 % 1) && !isNaN(data1))) && (isFinite(data1)))){
-validate82.errors = [{instancePath:instancePath+"/changedBy",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex/type",keyword:"type",params:{type: "integer"}}];
+validate83.errors = [{instancePath:instancePath+"/changedBy",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex/type",keyword:"type",params:{type: "integer"}}];
 return false;
 }
 if(errors === _errs4){
 if((typeof data1 == "number") && (isFinite(data1))){
 if(data1 > 7 || isNaN(data1)){
-validate82.errors = [{instancePath:instancePath+"/changedBy",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex/maximum",keyword:"maximum",params:{comparison: "<=", limit: 7}}];
+validate83.errors = [{instancePath:instancePath+"/changedBy",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex/maximum",keyword:"maximum",params:{comparison: "<=", limit: 7}}];
 return false;
 }
 else {
 if(data1 < 0 || isNaN(data1)){
-validate82.errors = [{instancePath:instancePath+"/changedBy",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex/minimum",keyword:"minimum",params:{comparison: ">=", limit: 0}}];
+validate83.errors = [{instancePath:instancePath+"/changedBy",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex/minimum",keyword:"minimum",params:{comparison: ">=", limit: 0}}];
 return false;
 }
 }
@@ -7905,7 +8436,7 @@ const len0 = data2.length;
 for(let i0=0; i0<len0; i0++){
 const _errs8 = errors;
 if(typeof data2[i0] !== "string"){
-validate82.errors = [{instancePath:instancePath+"/changedKeys/" + i0,schemaPath:"#/properties/changedKeys/items/type",keyword:"type",params:{type: "string"}}];
+validate83.errors = [{instancePath:instancePath+"/changedKeys/" + i0,schemaPath:"#/properties/changedKeys/items/type",keyword:"type",params:{type: "string"}}];
 return false;
 }
 var valid2 = _errs8 === errors;
@@ -7915,7 +8446,7 @@ break;
 }
 }
 else {
-validate82.errors = [{instancePath:instancePath+"/changedKeys",schemaPath:"#/properties/changedKeys/type",keyword:"type",params:{type: "array"}}];
+validate83.errors = [{instancePath:instancePath+"/changedKeys",schemaPath:"#/properties/changedKeys/type",keyword:"type",params:{type: "array"}}];
 return false;
 }
 }
@@ -7930,32 +8461,32 @@ var valid0 = true;
 }
 }
 else {
-validate82.errors = [{instancePath,schemaPath:"#/type",keyword:"type",params:{type: "object"}}];
+validate83.errors = [{instancePath,schemaPath:"#/type",keyword:"type",params:{type: "object"}}];
 return false;
 }
 }
-validate82.errors = vErrors;
+validate83.errors = vErrors;
 return errors === 0;
 }
 
-const check_presence = validate85;
-const schema155 = {"type":"object","additionalProperties":false,"required":["seat","playerId","status"],"properties":{"seat":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndexOrNull","description":"null for a spectator"},"playerId":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/playerId"},"displayName":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/displayName"},"status":{"type":"string","enum":["joined","left","disconnected","reconnected","auto_play","kicked","spectating","removed"],"description":"removed: the host removed this watcher from the table"},"deadlineTs":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/timestamp","description":"When a disconnected seat's window closes (R46)"}}};
+const check_presence = validate86;
+const schema158 = {"type":"object","additionalProperties":false,"required":["seat","playerId","status"],"properties":{"seat":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndexOrNull","description":"null for a spectator"},"playerId":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/playerId"},"displayName":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/displayName"},"status":{"type":"string","enum":["joined","left","disconnected","reconnected","auto_play","kicked","spectating","removed"],"description":"removed: the host removed this watcher from the table"},"deadlineTs":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/timestamp","description":"When a disconnected seat's window closes (R46)"}}};
 
-function validate85(data, {instancePath="", parentData, parentDataProperty, rootData=data}={}){
+function validate86(data, {instancePath="", parentData, parentDataProperty, rootData=data}={}){
 let vErrors = null;
 let errors = 0;
 if(errors === 0){
 if(data && typeof data == "object" && !Array.isArray(data)){
 let missing0;
 if((((data.seat === undefined) && (missing0 = "seat")) || ((data.playerId === undefined) && (missing0 = "playerId"))) || ((data.status === undefined) && (missing0 = "status"))){
-validate85.errors = [{instancePath,schemaPath:"#/required",keyword:"required",params:{missingProperty: missing0}}];
+validate86.errors = [{instancePath,schemaPath:"#/required",keyword:"required",params:{missingProperty: missing0}}];
 return false;
 }
 else {
 const _errs1 = errors;
 for(const key0 in data){
 if(!(((((key0 === "seat") || (key0 === "playerId")) || (key0 === "displayName")) || (key0 === "status")) || (key0 === "deadlineTs"))){
-validate85.errors = [{instancePath,schemaPath:"#/additionalProperties",keyword:"additionalProperties",params:{additionalProperty: key0}}];
+validate86.errors = [{instancePath,schemaPath:"#/additionalProperties",keyword:"additionalProperties",params:{additionalProperty: key0}}];
 return false;
 break;
 }
@@ -7966,18 +8497,18 @@ let data0 = data.seat;
 const _errs2 = errors;
 const _errs3 = errors;
 if((!(((typeof data0 == "number") && (!(data0 % 1) && !isNaN(data0))) && (isFinite(data0)))) && (data0 !== null)){
-validate85.errors = [{instancePath:instancePath+"/seat",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndexOrNull/type",keyword:"type",params:{type: schema25.type}}];
+validate86.errors = [{instancePath:instancePath+"/seat",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndexOrNull/type",keyword:"type",params:{type: schema25.type}}];
 return false;
 }
 if(errors === _errs3){
 if((typeof data0 == "number") && (isFinite(data0))){
 if(data0 > 7 || isNaN(data0)){
-validate85.errors = [{instancePath:instancePath+"/seat",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndexOrNull/maximum",keyword:"maximum",params:{comparison: "<=", limit: 7}}];
+validate86.errors = [{instancePath:instancePath+"/seat",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndexOrNull/maximum",keyword:"maximum",params:{comparison: "<=", limit: 7}}];
 return false;
 }
 else {
 if(data0 < 0 || isNaN(data0)){
-validate85.errors = [{instancePath:instancePath+"/seat",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndexOrNull/minimum",keyword:"minimum",params:{comparison: ">=", limit: 0}}];
+validate86.errors = [{instancePath:instancePath+"/seat",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndexOrNull/minimum",keyword:"minimum",params:{comparison: ">=", limit: 0}}];
 return false;
 }
 }
@@ -7992,7 +8523,7 @@ if(valid0){
 if(data.playerId !== undefined){
 const _errs5 = errors;
 if(typeof data.playerId !== "string"){
-validate85.errors = [{instancePath:instancePath+"/playerId",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/playerId/type",keyword:"type",params:{type: "string"}}];
+validate86.errors = [{instancePath:instancePath+"/playerId",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/playerId/type",keyword:"type",params:{type: "string"}}];
 return false;
 }
 var valid0 = _errs5 === errors;
@@ -8008,18 +8539,18 @@ const _errs9 = errors;
 if(errors === _errs9){
 if(typeof data2 === "string"){
 if(data2.length > 20){
-validate85.errors = [{instancePath:instancePath+"/displayName",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/displayName/maxLength",keyword:"maxLength",params:{limit: 20}}];
+validate86.errors = [{instancePath:instancePath+"/displayName",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/displayName/maxLength",keyword:"maxLength",params:{limit: 20}}];
 return false;
 }
 else {
 if(data2.length < 2){
-validate85.errors = [{instancePath:instancePath+"/displayName",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/displayName/minLength",keyword:"minLength",params:{limit: 2}}];
+validate86.errors = [{instancePath:instancePath+"/displayName",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/displayName/minLength",keyword:"minLength",params:{limit: 2}}];
 return false;
 }
 }
 }
 else {
-validate85.errors = [{instancePath:instancePath+"/displayName",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/displayName/type",keyword:"type",params:{type: "string"}}];
+validate86.errors = [{instancePath:instancePath+"/displayName",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/displayName/type",keyword:"type",params:{type: "string"}}];
 return false;
 }
 }
@@ -8033,11 +8564,11 @@ if(data.status !== undefined){
 let data3 = data.status;
 const _errs11 = errors;
 if(typeof data3 !== "string"){
-validate85.errors = [{instancePath:instancePath+"/status",schemaPath:"#/properties/status/type",keyword:"type",params:{type: "string"}}];
+validate86.errors = [{instancePath:instancePath+"/status",schemaPath:"#/properties/status/type",keyword:"type",params:{type: "string"}}];
 return false;
 }
 if(!((((((((data3 === "joined") || (data3 === "left")) || (data3 === "disconnected")) || (data3 === "reconnected")) || (data3 === "auto_play")) || (data3 === "kicked")) || (data3 === "spectating")) || (data3 === "removed"))){
-validate85.errors = [{instancePath:instancePath+"/status",schemaPath:"#/properties/status/enum",keyword:"enum",params:{allowedValues: schema155.properties.status.enum}}];
+validate86.errors = [{instancePath:instancePath+"/status",schemaPath:"#/properties/status/enum",keyword:"enum",params:{allowedValues: schema158.properties.status.enum}}];
 return false;
 }
 var valid0 = _errs11 === errors;
@@ -8051,13 +8582,13 @@ let data4 = data.deadlineTs;
 const _errs13 = errors;
 const _errs14 = errors;
 if(!(((typeof data4 == "number") && (!(data4 % 1) && !isNaN(data4))) && (isFinite(data4)))){
-validate85.errors = [{instancePath:instancePath+"/deadlineTs",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/timestamp/type",keyword:"type",params:{type: "integer"}}];
+validate86.errors = [{instancePath:instancePath+"/deadlineTs",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/timestamp/type",keyword:"type",params:{type: "integer"}}];
 return false;
 }
 if(errors === _errs14){
 if((typeof data4 == "number") && (isFinite(data4))){
 if(data4 < 0 || isNaN(data4)){
-validate85.errors = [{instancePath:instancePath+"/deadlineTs",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/timestamp/minimum",keyword:"minimum",params:{comparison: ">=", limit: 0}}];
+validate86.errors = [{instancePath:instancePath+"/deadlineTs",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/timestamp/minimum",keyword:"minimum",params:{comparison: ">=", limit: 0}}];
 return false;
 }
 }
@@ -8075,32 +8606,32 @@ var valid0 = true;
 }
 }
 else {
-validate85.errors = [{instancePath,schemaPath:"#/type",keyword:"type",params:{type: "object"}}];
+validate86.errors = [{instancePath,schemaPath:"#/type",keyword:"type",params:{type: "object"}}];
 return false;
 }
 }
-validate85.errors = vErrors;
+validate86.errors = vErrors;
 return errors === 0;
 }
 
-const check_host_changed = validate86;
-const schema160 = {"type":"object","additionalProperties":false,"required":["seat"],"properties":{"seat":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex"},"reason":{"type":"string","enum":["transfer","host_left"]}}};
+const check_host_changed = validate87;
+const schema163 = {"type":"object","additionalProperties":false,"required":["seat"],"properties":{"seat":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex"},"reason":{"type":"string","enum":["transfer","host_left"]}}};
 
-function validate86(data, {instancePath="", parentData, parentDataProperty, rootData=data}={}){
+function validate87(data, {instancePath="", parentData, parentDataProperty, rootData=data}={}){
 let vErrors = null;
 let errors = 0;
 if(errors === 0){
 if(data && typeof data == "object" && !Array.isArray(data)){
 let missing0;
 if((data.seat === undefined) && (missing0 = "seat")){
-validate86.errors = [{instancePath,schemaPath:"#/required",keyword:"required",params:{missingProperty: missing0}}];
+validate87.errors = [{instancePath,schemaPath:"#/required",keyword:"required",params:{missingProperty: missing0}}];
 return false;
 }
 else {
 const _errs1 = errors;
 for(const key0 in data){
 if(!((key0 === "seat") || (key0 === "reason"))){
-validate86.errors = [{instancePath,schemaPath:"#/additionalProperties",keyword:"additionalProperties",params:{additionalProperty: key0}}];
+validate87.errors = [{instancePath,schemaPath:"#/additionalProperties",keyword:"additionalProperties",params:{additionalProperty: key0}}];
 return false;
 break;
 }
@@ -8111,18 +8642,18 @@ let data0 = data.seat;
 const _errs2 = errors;
 const _errs3 = errors;
 if(!(((typeof data0 == "number") && (!(data0 % 1) && !isNaN(data0))) && (isFinite(data0)))){
-validate86.errors = [{instancePath:instancePath+"/seat",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex/type",keyword:"type",params:{type: "integer"}}];
+validate87.errors = [{instancePath:instancePath+"/seat",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex/type",keyword:"type",params:{type: "integer"}}];
 return false;
 }
 if(errors === _errs3){
 if((typeof data0 == "number") && (isFinite(data0))){
 if(data0 > 7 || isNaN(data0)){
-validate86.errors = [{instancePath:instancePath+"/seat",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex/maximum",keyword:"maximum",params:{comparison: "<=", limit: 7}}];
+validate87.errors = [{instancePath:instancePath+"/seat",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex/maximum",keyword:"maximum",params:{comparison: "<=", limit: 7}}];
 return false;
 }
 else {
 if(data0 < 0 || isNaN(data0)){
-validate86.errors = [{instancePath:instancePath+"/seat",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex/minimum",keyword:"minimum",params:{comparison: ">=", limit: 0}}];
+validate87.errors = [{instancePath:instancePath+"/seat",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex/minimum",keyword:"minimum",params:{comparison: ">=", limit: 0}}];
 return false;
 }
 }
@@ -8138,63 +8669,17 @@ if(data.reason !== undefined){
 let data1 = data.reason;
 const _errs5 = errors;
 if(typeof data1 !== "string"){
-validate86.errors = [{instancePath:instancePath+"/reason",schemaPath:"#/properties/reason/type",keyword:"type",params:{type: "string"}}];
+validate87.errors = [{instancePath:instancePath+"/reason",schemaPath:"#/properties/reason/type",keyword:"type",params:{type: "string"}}];
 return false;
 }
 if(!((data1 === "transfer") || (data1 === "host_left"))){
-validate86.errors = [{instancePath:instancePath+"/reason",schemaPath:"#/properties/reason/enum",keyword:"enum",params:{allowedValues: schema160.properties.reason.enum}}];
+validate87.errors = [{instancePath:instancePath+"/reason",schemaPath:"#/properties/reason/enum",keyword:"enum",params:{allowedValues: schema163.properties.reason.enum}}];
 return false;
 }
 var valid0 = _errs5 === errors;
 }
 else {
 var valid0 = true;
-}
-}
-}
-}
-}
-else {
-validate86.errors = [{instancePath,schemaPath:"#/type",keyword:"type",params:{type: "object"}}];
-return false;
-}
-}
-validate86.errors = vErrors;
-return errors === 0;
-}
-
-const check_table_closed = validate87;
-const schema162 = {"type":"object","additionalProperties":false,"required":["reason"],"properties":{"reason":{"type":"string","enum":["host_closed","empty","dissolved","server"]}}};
-
-function validate87(data, {instancePath="", parentData, parentDataProperty, rootData=data}={}){
-let vErrors = null;
-let errors = 0;
-if(errors === 0){
-if(data && typeof data == "object" && !Array.isArray(data)){
-let missing0;
-if((data.reason === undefined) && (missing0 = "reason")){
-validate87.errors = [{instancePath,schemaPath:"#/required",keyword:"required",params:{missingProperty: missing0}}];
-return false;
-}
-else {
-const _errs1 = errors;
-for(const key0 in data){
-if(!(key0 === "reason")){
-validate87.errors = [{instancePath,schemaPath:"#/additionalProperties",keyword:"additionalProperties",params:{additionalProperty: key0}}];
-return false;
-break;
-}
-}
-if(_errs1 === errors){
-if(data.reason !== undefined){
-let data0 = data.reason;
-if(typeof data0 !== "string"){
-validate87.errors = [{instancePath:instancePath+"/reason",schemaPath:"#/properties/reason/type",keyword:"type",params:{type: "string"}}];
-return false;
-}
-if(!((((data0 === "host_closed") || (data0 === "empty")) || (data0 === "dissolved")) || (data0 === "server"))){
-validate87.errors = [{instancePath:instancePath+"/reason",schemaPath:"#/properties/reason/enum",keyword:"enum",params:{allowedValues: schema162.properties.reason.enum}}];
-return false;
 }
 }
 }
@@ -8209,27 +8694,73 @@ validate87.errors = vErrors;
 return errors === 0;
 }
 
-const check_error = validate89;
-const schema164 = {"type":"object","additionalProperties":false,"required":["code"],"properties":{"code":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/errorCode"},"detail":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/errorDetail"},"refSeq":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/sequence","description":"The client message this answers"}}};
-const schema165 = {"type":"string","pattern":"^(rules|table|auth|economy|content|network|voice|profile|social)\\.[a-z0-9_]+$"};
-const schema166 = {"type":"object","additionalProperties":{"type":["string","number","boolean"]}};
+const check_table_closed = validate88;
+const schema165 = {"type":"object","additionalProperties":false,"required":["reason"],"properties":{"reason":{"type":"string","enum":["host_closed","empty","dissolved","server"]}}};
+
+function validate88(data, {instancePath="", parentData, parentDataProperty, rootData=data}={}){
+let vErrors = null;
+let errors = 0;
+if(errors === 0){
+if(data && typeof data == "object" && !Array.isArray(data)){
+let missing0;
+if((data.reason === undefined) && (missing0 = "reason")){
+validate88.errors = [{instancePath,schemaPath:"#/required",keyword:"required",params:{missingProperty: missing0}}];
+return false;
+}
+else {
+const _errs1 = errors;
+for(const key0 in data){
+if(!(key0 === "reason")){
+validate88.errors = [{instancePath,schemaPath:"#/additionalProperties",keyword:"additionalProperties",params:{additionalProperty: key0}}];
+return false;
+break;
+}
+}
+if(_errs1 === errors){
+if(data.reason !== undefined){
+let data0 = data.reason;
+if(typeof data0 !== "string"){
+validate88.errors = [{instancePath:instancePath+"/reason",schemaPath:"#/properties/reason/type",keyword:"type",params:{type: "string"}}];
+return false;
+}
+if(!((((data0 === "host_closed") || (data0 === "empty")) || (data0 === "dissolved")) || (data0 === "server"))){
+validate88.errors = [{instancePath:instancePath+"/reason",schemaPath:"#/properties/reason/enum",keyword:"enum",params:{allowedValues: schema165.properties.reason.enum}}];
+return false;
+}
+}
+}
+}
+}
+else {
+validate88.errors = [{instancePath,schemaPath:"#/type",keyword:"type",params:{type: "object"}}];
+return false;
+}
+}
+validate88.errors = vErrors;
+return errors === 0;
+}
+
+const check_error = validate90;
+const schema167 = {"type":"object","additionalProperties":false,"required":["code"],"properties":{"code":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/errorCode"},"detail":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/errorDetail"},"refSeq":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/sequence","description":"The client message this answers"}}};
+const schema168 = {"type":"string","pattern":"^(rules|table|auth|economy|content|network|voice|profile|social)\\.[a-z0-9_]+$"};
+const schema169 = {"type":"object","additionalProperties":{"type":["string","number","boolean"]}};
 const pattern28 = new RegExp("^(rules|table|auth|economy|content|network|voice|profile|social)\\.[a-z0-9_]+$", "");
 
-function validate89(data, {instancePath="", parentData, parentDataProperty, rootData=data}={}){
+function validate90(data, {instancePath="", parentData, parentDataProperty, rootData=data}={}){
 let vErrors = null;
 let errors = 0;
 if(errors === 0){
 if(data && typeof data == "object" && !Array.isArray(data)){
 let missing0;
 if((data.code === undefined) && (missing0 = "code")){
-validate89.errors = [{instancePath,schemaPath:"#/required",keyword:"required",params:{missingProperty: missing0}}];
+validate90.errors = [{instancePath,schemaPath:"#/required",keyword:"required",params:{missingProperty: missing0}}];
 return false;
 }
 else {
 const _errs1 = errors;
 for(const key0 in data){
 if(!(((key0 === "code") || (key0 === "detail")) || (key0 === "refSeq"))){
-validate89.errors = [{instancePath,schemaPath:"#/additionalProperties",keyword:"additionalProperties",params:{additionalProperty: key0}}];
+validate90.errors = [{instancePath,schemaPath:"#/additionalProperties",keyword:"additionalProperties",params:{additionalProperty: key0}}];
 return false;
 break;
 }
@@ -8242,12 +8773,12 @@ const _errs3 = errors;
 if(errors === _errs3){
 if(typeof data0 === "string"){
 if(!pattern28.test(data0)){
-validate89.errors = [{instancePath:instancePath+"/code",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/errorCode/pattern",keyword:"pattern",params:{pattern: "^(rules|table|auth|economy|content|network|voice|profile|social)\\.[a-z0-9_]+$"}}];
+validate90.errors = [{instancePath:instancePath+"/code",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/errorCode/pattern",keyword:"pattern",params:{pattern: "^(rules|table|auth|economy|content|network|voice|profile|social)\\.[a-z0-9_]+$"}}];
 return false;
 }
 }
 else {
-validate89.errors = [{instancePath:instancePath+"/code",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/errorCode/type",keyword:"type",params:{type: "string"}}];
+validate90.errors = [{instancePath:instancePath+"/code",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/errorCode/type",keyword:"type",params:{type: "string"}}];
 return false;
 }
 }
@@ -8267,7 +8798,7 @@ for(const key1 in data1){
 let data2 = data1[key1];
 const _errs9 = errors;
 if(((typeof data2 !== "string") && (!((typeof data2 == "number") && (isFinite(data2))))) && (typeof data2 !== "boolean")){
-validate89.errors = [{instancePath:instancePath+"/detail/" + key1.replace(/~/g, "~0").replace(/\//g, "~1"),schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/errorDetail/additionalProperties/type",keyword:"type",params:{type: schema166.additionalProperties.type}}];
+validate90.errors = [{instancePath:instancePath+"/detail/" + key1.replace(/~/g, "~0").replace(/\//g, "~1"),schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/errorDetail/additionalProperties/type",keyword:"type",params:{type: schema169.additionalProperties.type}}];
 return false;
 }
 var valid3 = _errs9 === errors;
@@ -8277,7 +8808,7 @@ break;
 }
 }
 else {
-validate89.errors = [{instancePath:instancePath+"/detail",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/errorDetail/type",keyword:"type",params:{type: "object"}}];
+validate90.errors = [{instancePath:instancePath+"/detail",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/errorDetail/type",keyword:"type",params:{type: "object"}}];
 return false;
 }
 }
@@ -8292,13 +8823,13 @@ let data3 = data.refSeq;
 const _errs11 = errors;
 const _errs12 = errors;
 if(!(((typeof data3 == "number") && (!(data3 % 1) && !isNaN(data3))) && (isFinite(data3)))){
-validate89.errors = [{instancePath:instancePath+"/refSeq",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/sequence/type",keyword:"type",params:{type: "integer"}}];
+validate90.errors = [{instancePath:instancePath+"/refSeq",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/sequence/type",keyword:"type",params:{type: "integer"}}];
 return false;
 }
 if(errors === _errs12){
 if((typeof data3 == "number") && (isFinite(data3))){
 if(data3 < 0 || isNaN(data3)){
-validate89.errors = [{instancePath:instancePath+"/refSeq",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/sequence/minimum",keyword:"minimum",params:{comparison: ">=", limit: 0}}];
+validate90.errors = [{instancePath:instancePath+"/refSeq",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/sequence/minimum",keyword:"minimum",params:{comparison: ">=", limit: 0}}];
 return false;
 }
 }
@@ -8314,32 +8845,32 @@ var valid0 = true;
 }
 }
 else {
-validate89.errors = [{instancePath,schemaPath:"#/type",keyword:"type",params:{type: "object"}}];
+validate90.errors = [{instancePath,schemaPath:"#/type",keyword:"type",params:{type: "object"}}];
 return false;
 }
 }
-validate89.errors = vErrors;
+validate90.errors = vErrors;
 return errors === 0;
 }
 
-const check_snapshot = validate90;
-const schema168 = {"type":"object","additionalProperties":false,"description":"A table_state plus the events after sinceSeq, each a full envelope (ARCHITECTURE 8.6)","required":["state","events"],"properties":{"state":{"$ref":"https://hulla.gg/schemas/protocol/shell/table.json#/definitions/table_state"},"events":{"type":"array","items":{"$ref":"https://hulla.gg/schemas/protocol/envelope.json"}}}};
+const check_snapshot = validate91;
+const schema171 = {"type":"object","additionalProperties":false,"description":"A table_state plus the events after sinceSeq, each a full envelope (ARCHITECTURE 8.6)","required":["state","events"],"properties":{"state":{"$ref":"https://hulla.gg/schemas/protocol/shell/table.json#/definitions/table_state"},"events":{"type":"array","items":{"$ref":"https://hulla.gg/schemas/protocol/envelope.json"}}}};
 
-function validate90(data, {instancePath="", parentData, parentDataProperty, rootData=data}={}){
+function validate91(data, {instancePath="", parentData, parentDataProperty, rootData=data}={}){
 let vErrors = null;
 let errors = 0;
 if(errors === 0){
 if(data && typeof data == "object" && !Array.isArray(data)){
 let missing0;
 if(((data.state === undefined) && (missing0 = "state")) || ((data.events === undefined) && (missing0 = "events"))){
-validate90.errors = [{instancePath,schemaPath:"#/required",keyword:"required",params:{missingProperty: missing0}}];
+validate91.errors = [{instancePath,schemaPath:"#/required",keyword:"required",params:{missingProperty: missing0}}];
 return false;
 }
 else {
 const _errs1 = errors;
 for(const key0 in data){
 if(!((key0 === "state") || (key0 === "events"))){
-validate90.errors = [{instancePath,schemaPath:"#/additionalProperties",keyword:"additionalProperties",params:{additionalProperty: key0}}];
+validate91.errors = [{instancePath,schemaPath:"#/additionalProperties",keyword:"additionalProperties",params:{additionalProperty: key0}}];
 return false;
 break;
 }
@@ -8347,8 +8878,8 @@ break;
 if(_errs1 === errors){
 if(data.state !== undefined){
 const _errs2 = errors;
-if(!(validate69(data.state, {instancePath:instancePath+"/state",parentData:data,parentDataProperty:"state",rootData}))){
-vErrors = vErrors === null ? validate69.errors : vErrors.concat(validate69.errors);
+if(!(validate70(data.state, {instancePath:instancePath+"/state",parentData:data,parentDataProperty:"state",rootData}))){
+vErrors = vErrors === null ? validate70.errors : vErrors.concat(validate70.errors);
 errors = vErrors.length;
 }
 var valid0 = _errs2 === errors;
@@ -8377,7 +8908,7 @@ break;
 }
 }
 else {
-validate90.errors = [{instancePath:instancePath+"/events",schemaPath:"#/properties/events/type",keyword:"type",params:{type: "array"}}];
+validate91.errors = [{instancePath:instancePath+"/events",schemaPath:"#/properties/events/type",keyword:"type",params:{type: "array"}}];
 return false;
 }
 }
@@ -8391,32 +8922,32 @@ var valid0 = true;
 }
 }
 else {
-validate90.errors = [{instancePath,schemaPath:"#/type",keyword:"type",params:{type: "object"}}];
+validate91.errors = [{instancePath,schemaPath:"#/type",keyword:"type",params:{type: "object"}}];
 return false;
 }
 }
-validate90.errors = vErrors;
+validate91.errors = vErrors;
 return errors === 0;
 }
 
-const check_pong = validate93;
-const schema169 = {"type":"object","additionalProperties":false,"required":["sentTs","serverTs"],"properties":{"sentTs":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/timestamp"},"serverTs":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/timestamp"}}};
+const check_pong = validate94;
+const schema172 = {"type":"object","additionalProperties":false,"required":["sentTs","serverTs"],"properties":{"sentTs":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/timestamp"},"serverTs":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/timestamp"}}};
 
-function validate93(data, {instancePath="", parentData, parentDataProperty, rootData=data}={}){
+function validate94(data, {instancePath="", parentData, parentDataProperty, rootData=data}={}){
 let vErrors = null;
 let errors = 0;
 if(errors === 0){
 if(data && typeof data == "object" && !Array.isArray(data)){
 let missing0;
 if(((data.sentTs === undefined) && (missing0 = "sentTs")) || ((data.serverTs === undefined) && (missing0 = "serverTs"))){
-validate93.errors = [{instancePath,schemaPath:"#/required",keyword:"required",params:{missingProperty: missing0}}];
+validate94.errors = [{instancePath,schemaPath:"#/required",keyword:"required",params:{missingProperty: missing0}}];
 return false;
 }
 else {
 const _errs1 = errors;
 for(const key0 in data){
 if(!((key0 === "sentTs") || (key0 === "serverTs"))){
-validate93.errors = [{instancePath,schemaPath:"#/additionalProperties",keyword:"additionalProperties",params:{additionalProperty: key0}}];
+validate94.errors = [{instancePath,schemaPath:"#/additionalProperties",keyword:"additionalProperties",params:{additionalProperty: key0}}];
 return false;
 break;
 }
@@ -8427,13 +8958,13 @@ let data0 = data.sentTs;
 const _errs2 = errors;
 const _errs3 = errors;
 if(!(((typeof data0 == "number") && (!(data0 % 1) && !isNaN(data0))) && (isFinite(data0)))){
-validate93.errors = [{instancePath:instancePath+"/sentTs",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/timestamp/type",keyword:"type",params:{type: "integer"}}];
+validate94.errors = [{instancePath:instancePath+"/sentTs",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/timestamp/type",keyword:"type",params:{type: "integer"}}];
 return false;
 }
 if(errors === _errs3){
 if((typeof data0 == "number") && (isFinite(data0))){
 if(data0 < 0 || isNaN(data0)){
-validate93.errors = [{instancePath:instancePath+"/sentTs",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/timestamp/minimum",keyword:"minimum",params:{comparison: ">=", limit: 0}}];
+validate94.errors = [{instancePath:instancePath+"/sentTs",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/timestamp/minimum",keyword:"minimum",params:{comparison: ">=", limit: 0}}];
 return false;
 }
 }
@@ -8449,13 +8980,13 @@ let data1 = data.serverTs;
 const _errs5 = errors;
 const _errs6 = errors;
 if(!(((typeof data1 == "number") && (!(data1 % 1) && !isNaN(data1))) && (isFinite(data1)))){
-validate93.errors = [{instancePath:instancePath+"/serverTs",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/timestamp/type",keyword:"type",params:{type: "integer"}}];
+validate94.errors = [{instancePath:instancePath+"/serverTs",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/timestamp/type",keyword:"type",params:{type: "integer"}}];
 return false;
 }
 if(errors === _errs6){
 if((typeof data1 == "number") && (isFinite(data1))){
 if(data1 < 0 || isNaN(data1)){
-validate93.errors = [{instancePath:instancePath+"/serverTs",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/timestamp/minimum",keyword:"minimum",params:{comparison: ">=", limit: 0}}];
+validate94.errors = [{instancePath:instancePath+"/serverTs",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/timestamp/minimum",keyword:"minimum",params:{comparison: ">=", limit: 0}}];
 return false;
 }
 }
@@ -8470,32 +9001,32 @@ var valid0 = true;
 }
 }
 else {
-validate93.errors = [{instancePath,schemaPath:"#/type",keyword:"type",params:{type: "object"}}];
+validate94.errors = [{instancePath,schemaPath:"#/type",keyword:"type",params:{type: "object"}}];
 return false;
 }
 }
-validate93.errors = vErrors;
+validate94.errors = vErrors;
 return errors === 0;
 }
 
-const check_game_changed = validate94;
-const schema172 = {"type":"object","additionalProperties":false,"description":"The room now plays another game; a table_state follows for everyone","required":["gameId","rules","changedBy"],"properties":{"gameId":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/gameId"},"rules":{"$ref":"https://hulla.gg/schemas/protocol/shell/table.json#/definitions/rulesSelection"},"changedBy":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex"}}};
+const check_game_changed = validate95;
+const schema175 = {"type":"object","additionalProperties":false,"description":"The room now plays another game; a table_state follows for everyone","required":["gameId","rules","changedBy"],"properties":{"gameId":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/gameId"},"rules":{"$ref":"https://hulla.gg/schemas/protocol/shell/table.json#/definitions/rulesSelection"},"changedBy":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex"}}};
 
-function validate94(data, {instancePath="", parentData, parentDataProperty, rootData=data}={}){
+function validate95(data, {instancePath="", parentData, parentDataProperty, rootData=data}={}){
 let vErrors = null;
 let errors = 0;
 if(errors === 0){
 if(data && typeof data == "object" && !Array.isArray(data)){
 let missing0;
 if((((data.gameId === undefined) && (missing0 = "gameId")) || ((data.rules === undefined) && (missing0 = "rules"))) || ((data.changedBy === undefined) && (missing0 = "changedBy"))){
-validate94.errors = [{instancePath,schemaPath:"#/required",keyword:"required",params:{missingProperty: missing0}}];
+validate95.errors = [{instancePath,schemaPath:"#/required",keyword:"required",params:{missingProperty: missing0}}];
 return false;
 }
 else {
 const _errs1 = errors;
 for(const key0 in data){
 if(!(((key0 === "gameId") || (key0 === "rules")) || (key0 === "changedBy"))){
-validate94.errors = [{instancePath,schemaPath:"#/additionalProperties",keyword:"additionalProperties",params:{additionalProperty: key0}}];
+validate95.errors = [{instancePath,schemaPath:"#/additionalProperties",keyword:"additionalProperties",params:{additionalProperty: key0}}];
 return false;
 break;
 }
@@ -8505,11 +9036,11 @@ if(data.gameId !== undefined){
 let data0 = data.gameId;
 const _errs2 = errors;
 if(typeof data0 !== "string"){
-validate94.errors = [{instancePath:instancePath+"/gameId",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/gameId/type",keyword:"type",params:{type: "string"}}];
+validate95.errors = [{instancePath:instancePath+"/gameId",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/gameId/type",keyword:"type",params:{type: "string"}}];
 return false;
 }
 if(!((data0 === "thulla") || (data0 === "rung"))){
-validate94.errors = [{instancePath:instancePath+"/gameId",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/gameId/enum",keyword:"enum",params:{allowedValues: schema18.enum}}];
+validate95.errors = [{instancePath:instancePath+"/gameId",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/gameId/enum",keyword:"enum",params:{allowedValues: schema18.enum}}];
 return false;
 }
 var valid0 = _errs2 === errors;
@@ -8535,18 +9066,18 @@ let data2 = data.changedBy;
 const _errs6 = errors;
 const _errs7 = errors;
 if(!(((typeof data2 == "number") && (!(data2 % 1) && !isNaN(data2))) && (isFinite(data2)))){
-validate94.errors = [{instancePath:instancePath+"/changedBy",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex/type",keyword:"type",params:{type: "integer"}}];
+validate95.errors = [{instancePath:instancePath+"/changedBy",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex/type",keyword:"type",params:{type: "integer"}}];
 return false;
 }
 if(errors === _errs7){
 if((typeof data2 == "number") && (isFinite(data2))){
 if(data2 > 7 || isNaN(data2)){
-validate94.errors = [{instancePath:instancePath+"/changedBy",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex/maximum",keyword:"maximum",params:{comparison: "<=", limit: 7}}];
+validate95.errors = [{instancePath:instancePath+"/changedBy",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex/maximum",keyword:"maximum",params:{comparison: "<=", limit: 7}}];
 return false;
 }
 else {
 if(data2 < 0 || isNaN(data2)){
-validate94.errors = [{instancePath:instancePath+"/changedBy",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex/minimum",keyword:"minimum",params:{comparison: ">=", limit: 0}}];
+validate95.errors = [{instancePath:instancePath+"/changedBy",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex/minimum",keyword:"minimum",params:{comparison: ">=", limit: 0}}];
 return false;
 }
 }
@@ -8563,32 +9094,32 @@ var valid0 = true;
 }
 }
 else {
-validate94.errors = [{instancePath,schemaPath:"#/type",keyword:"type",params:{type: "object"}}];
+validate95.errors = [{instancePath,schemaPath:"#/type",keyword:"type",params:{type: "object"}}];
 return false;
 }
 }
-validate94.errors = vErrors;
+validate95.errors = vErrors;
 return errors === 0;
 }
 
-const check_chat = validate96;
-const schema175 = {"type":"object","additionalProperties":false,"required":["seat","text"],"properties":{"seat":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndexOrNull"},"text":{"type":"string","maxLength":140},"filtered":{"type":"boolean"}}};
+const check_chat = validate97;
+const schema178 = {"type":"object","additionalProperties":false,"required":["seat","text"],"properties":{"seat":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndexOrNull"},"text":{"type":"string","maxLength":140},"filtered":{"type":"boolean"}}};
 
-function validate96(data, {instancePath="", parentData, parentDataProperty, rootData=data}={}){
+function validate97(data, {instancePath="", parentData, parentDataProperty, rootData=data}={}){
 let vErrors = null;
 let errors = 0;
 if(errors === 0){
 if(data && typeof data == "object" && !Array.isArray(data)){
 let missing0;
 if(((data.seat === undefined) && (missing0 = "seat")) || ((data.text === undefined) && (missing0 = "text"))){
-validate96.errors = [{instancePath,schemaPath:"#/required",keyword:"required",params:{missingProperty: missing0}}];
+validate97.errors = [{instancePath,schemaPath:"#/required",keyword:"required",params:{missingProperty: missing0}}];
 return false;
 }
 else {
 const _errs1 = errors;
 for(const key0 in data){
 if(!(((key0 === "seat") || (key0 === "text")) || (key0 === "filtered"))){
-validate96.errors = [{instancePath,schemaPath:"#/additionalProperties",keyword:"additionalProperties",params:{additionalProperty: key0}}];
+validate97.errors = [{instancePath,schemaPath:"#/additionalProperties",keyword:"additionalProperties",params:{additionalProperty: key0}}];
 return false;
 break;
 }
@@ -8599,18 +9130,18 @@ let data0 = data.seat;
 const _errs2 = errors;
 const _errs3 = errors;
 if((!(((typeof data0 == "number") && (!(data0 % 1) && !isNaN(data0))) && (isFinite(data0)))) && (data0 !== null)){
-validate96.errors = [{instancePath:instancePath+"/seat",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndexOrNull/type",keyword:"type",params:{type: schema25.type}}];
+validate97.errors = [{instancePath:instancePath+"/seat",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndexOrNull/type",keyword:"type",params:{type: schema25.type}}];
 return false;
 }
 if(errors === _errs3){
 if((typeof data0 == "number") && (isFinite(data0))){
 if(data0 > 7 || isNaN(data0)){
-validate96.errors = [{instancePath:instancePath+"/seat",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndexOrNull/maximum",keyword:"maximum",params:{comparison: "<=", limit: 7}}];
+validate97.errors = [{instancePath:instancePath+"/seat",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndexOrNull/maximum",keyword:"maximum",params:{comparison: "<=", limit: 7}}];
 return false;
 }
 else {
 if(data0 < 0 || isNaN(data0)){
-validate96.errors = [{instancePath:instancePath+"/seat",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndexOrNull/minimum",keyword:"minimum",params:{comparison: ">=", limit: 0}}];
+validate97.errors = [{instancePath:instancePath+"/seat",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndexOrNull/minimum",keyword:"minimum",params:{comparison: ">=", limit: 0}}];
 return false;
 }
 }
@@ -8628,12 +9159,12 @@ const _errs5 = errors;
 if(errors === _errs5){
 if(typeof data1 === "string"){
 if(data1.length > 140){
-validate96.errors = [{instancePath:instancePath+"/text",schemaPath:"#/properties/text/maxLength",keyword:"maxLength",params:{limit: 140}}];
+validate97.errors = [{instancePath:instancePath+"/text",schemaPath:"#/properties/text/maxLength",keyword:"maxLength",params:{limit: 140}}];
 return false;
 }
 }
 else {
-validate96.errors = [{instancePath:instancePath+"/text",schemaPath:"#/properties/text/type",keyword:"type",params:{type: "string"}}];
+validate97.errors = [{instancePath:instancePath+"/text",schemaPath:"#/properties/text/type",keyword:"type",params:{type: "string"}}];
 return false;
 }
 }
@@ -8646,95 +9177,7 @@ if(valid0){
 if(data.filtered !== undefined){
 const _errs7 = errors;
 if(typeof data.filtered !== "boolean"){
-validate96.errors = [{instancePath:instancePath+"/filtered",schemaPath:"#/properties/filtered/type",keyword:"type",params:{type: "boolean"}}];
-return false;
-}
-var valid0 = _errs7 === errors;
-}
-else {
-var valid0 = true;
-}
-}
-}
-}
-}
-}
-else {
-validate96.errors = [{instancePath,schemaPath:"#/type",keyword:"type",params:{type: "object"}}];
-return false;
-}
-}
-validate96.errors = vErrors;
-return errors === 0;
-}
-
-const check_quick_chat_sent = validate97;
-const schema177 = {"type":"object","additionalProperties":false,"required":["seat","phraseId"],"properties":{"seat":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex"},"phraseId":{"type":"string"},"pack":{"type":"string"}}};
-
-function validate97(data, {instancePath="", parentData, parentDataProperty, rootData=data}={}){
-let vErrors = null;
-let errors = 0;
-if(errors === 0){
-if(data && typeof data == "object" && !Array.isArray(data)){
-let missing0;
-if(((data.seat === undefined) && (missing0 = "seat")) || ((data.phraseId === undefined) && (missing0 = "phraseId"))){
-validate97.errors = [{instancePath,schemaPath:"#/required",keyword:"required",params:{missingProperty: missing0}}];
-return false;
-}
-else {
-const _errs1 = errors;
-for(const key0 in data){
-if(!(((key0 === "seat") || (key0 === "phraseId")) || (key0 === "pack"))){
-validate97.errors = [{instancePath,schemaPath:"#/additionalProperties",keyword:"additionalProperties",params:{additionalProperty: key0}}];
-return false;
-break;
-}
-}
-if(_errs1 === errors){
-if(data.seat !== undefined){
-let data0 = data.seat;
-const _errs2 = errors;
-const _errs3 = errors;
-if(!(((typeof data0 == "number") && (!(data0 % 1) && !isNaN(data0))) && (isFinite(data0)))){
-validate97.errors = [{instancePath:instancePath+"/seat",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex/type",keyword:"type",params:{type: "integer"}}];
-return false;
-}
-if(errors === _errs3){
-if((typeof data0 == "number") && (isFinite(data0))){
-if(data0 > 7 || isNaN(data0)){
-validate97.errors = [{instancePath:instancePath+"/seat",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex/maximum",keyword:"maximum",params:{comparison: "<=", limit: 7}}];
-return false;
-}
-else {
-if(data0 < 0 || isNaN(data0)){
-validate97.errors = [{instancePath:instancePath+"/seat",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex/minimum",keyword:"minimum",params:{comparison: ">=", limit: 0}}];
-return false;
-}
-}
-}
-}
-var valid0 = _errs2 === errors;
-}
-else {
-var valid0 = true;
-}
-if(valid0){
-if(data.phraseId !== undefined){
-const _errs5 = errors;
-if(typeof data.phraseId !== "string"){
-validate97.errors = [{instancePath:instancePath+"/phraseId",schemaPath:"#/properties/phraseId/type",keyword:"type",params:{type: "string"}}];
-return false;
-}
-var valid0 = _errs5 === errors;
-}
-else {
-var valid0 = true;
-}
-if(valid0){
-if(data.pack !== undefined){
-const _errs7 = errors;
-if(typeof data.pack !== "string"){
-validate97.errors = [{instancePath:instancePath+"/pack",schemaPath:"#/properties/pack/type",keyword:"type",params:{type: "string"}}];
+validate97.errors = [{instancePath:instancePath+"/filtered",schemaPath:"#/properties/filtered/type",keyword:"type",params:{type: "boolean"}}];
 return false;
 }
 var valid0 = _errs7 === errors;
@@ -8756,8 +9199,8 @@ validate97.errors = vErrors;
 return errors === 0;
 }
 
-const check_emote_sent = validate98;
-const schema179 = {"type":"object","additionalProperties":false,"required":["seat","emoteId"],"properties":{"seat":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex"},"emoteId":{"type":"string"},"targetSeat":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex"}}};
+const check_quick_chat_sent = validate98;
+const schema180 = {"type":"object","additionalProperties":false,"required":["seat","phraseId"],"properties":{"seat":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex"},"phraseId":{"type":"string"},"pack":{"type":"string"}}};
 
 function validate98(data, {instancePath="", parentData, parentDataProperty, rootData=data}={}){
 let vErrors = null;
@@ -8765,14 +9208,14 @@ let errors = 0;
 if(errors === 0){
 if(data && typeof data == "object" && !Array.isArray(data)){
 let missing0;
-if(((data.seat === undefined) && (missing0 = "seat")) || ((data.emoteId === undefined) && (missing0 = "emoteId"))){
+if(((data.seat === undefined) && (missing0 = "seat")) || ((data.phraseId === undefined) && (missing0 = "phraseId"))){
 validate98.errors = [{instancePath,schemaPath:"#/required",keyword:"required",params:{missingProperty: missing0}}];
 return false;
 }
 else {
 const _errs1 = errors;
 for(const key0 in data){
-if(!(((key0 === "seat") || (key0 === "emoteId")) || (key0 === "targetSeat"))){
+if(!(((key0 === "seat") || (key0 === "phraseId")) || (key0 === "pack"))){
 validate98.errors = [{instancePath,schemaPath:"#/additionalProperties",keyword:"additionalProperties",params:{additionalProperty: key0}}];
 return false;
 break;
@@ -8807,10 +9250,10 @@ else {
 var valid0 = true;
 }
 if(valid0){
-if(data.emoteId !== undefined){
+if(data.phraseId !== undefined){
 const _errs5 = errors;
-if(typeof data.emoteId !== "string"){
-validate98.errors = [{instancePath:instancePath+"/emoteId",schemaPath:"#/properties/emoteId/type",keyword:"type",params:{type: "string"}}];
+if(typeof data.phraseId !== "string"){
+validate98.errors = [{instancePath:instancePath+"/phraseId",schemaPath:"#/properties/phraseId/type",keyword:"type",params:{type: "string"}}];
 return false;
 }
 var valid0 = _errs5 === errors;
@@ -8819,27 +9262,11 @@ else {
 var valid0 = true;
 }
 if(valid0){
-if(data.targetSeat !== undefined){
-let data2 = data.targetSeat;
+if(data.pack !== undefined){
 const _errs7 = errors;
-const _errs8 = errors;
-if(!(((typeof data2 == "number") && (!(data2 % 1) && !isNaN(data2))) && (isFinite(data2)))){
-validate98.errors = [{instancePath:instancePath+"/targetSeat",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex/type",keyword:"type",params:{type: "integer"}}];
+if(typeof data.pack !== "string"){
+validate98.errors = [{instancePath:instancePath+"/pack",schemaPath:"#/properties/pack/type",keyword:"type",params:{type: "string"}}];
 return false;
-}
-if(errors === _errs8){
-if((typeof data2 == "number") && (isFinite(data2))){
-if(data2 > 7 || isNaN(data2)){
-validate98.errors = [{instancePath:instancePath+"/targetSeat",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex/maximum",keyword:"maximum",params:{comparison: "<=", limit: 7}}];
-return false;
-}
-else {
-if(data2 < 0 || isNaN(data2)){
-validate98.errors = [{instancePath:instancePath+"/targetSeat",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex/minimum",keyword:"minimum",params:{comparison: ">=", limit: 0}}];
-return false;
-}
-}
-}
 }
 var valid0 = _errs7 === errors;
 }
@@ -8860,44 +9287,49 @@ validate98.errors = vErrors;
 return errors === 0;
 }
 
-const check_round_start = validate100;
-const schema183 = {"type":"object","additionalProperties":false,"required":["roundId","commitment","seatCount","dealerSeat","leaderSeat","handCounts","rulesVersion"],"properties":{"roundId":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/roundId"},"commitment":{"type":"string","pattern":"^[0-9a-f]{64}$","description":"SHA-256(seed || canonicalJson(deckOrder)) published before the deal (R6)"},"seatCount":{"type":"integer","minimum":3,"maximum":8},"dealerSeat":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex"},"leaderSeat":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex"},"handCounts":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/handCounts"},"rulesVersion":{"type":"string"}}};
-const pattern30 = new RegExp("^[0-9a-f]{64}$", "");
+const check_emote_sent = validate99;
+const schema182 = {"type":"object","additionalProperties":false,"required":["seat","emoteId"],"properties":{"seat":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex"},"emoteId":{"type":"string"},"targetSeat":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex"}}};
 
-function validate100(data, {instancePath="", parentData, parentDataProperty, rootData=data}={}){
+function validate99(data, {instancePath="", parentData, parentDataProperty, rootData=data}={}){
 let vErrors = null;
 let errors = 0;
 if(errors === 0){
 if(data && typeof data == "object" && !Array.isArray(data)){
 let missing0;
-if((((((((data.roundId === undefined) && (missing0 = "roundId")) || ((data.commitment === undefined) && (missing0 = "commitment"))) || ((data.seatCount === undefined) && (missing0 = "seatCount"))) || ((data.dealerSeat === undefined) && (missing0 = "dealerSeat"))) || ((data.leaderSeat === undefined) && (missing0 = "leaderSeat"))) || ((data.handCounts === undefined) && (missing0 = "handCounts"))) || ((data.rulesVersion === undefined) && (missing0 = "rulesVersion"))){
-validate100.errors = [{instancePath,schemaPath:"#/required",keyword:"required",params:{missingProperty: missing0}}];
+if(((data.seat === undefined) && (missing0 = "seat")) || ((data.emoteId === undefined) && (missing0 = "emoteId"))){
+validate99.errors = [{instancePath,schemaPath:"#/required",keyword:"required",params:{missingProperty: missing0}}];
 return false;
 }
 else {
 const _errs1 = errors;
 for(const key0 in data){
-if(!(((((((key0 === "roundId") || (key0 === "commitment")) || (key0 === "seatCount")) || (key0 === "dealerSeat")) || (key0 === "leaderSeat")) || (key0 === "handCounts")) || (key0 === "rulesVersion"))){
-validate100.errors = [{instancePath,schemaPath:"#/additionalProperties",keyword:"additionalProperties",params:{additionalProperty: key0}}];
+if(!(((key0 === "seat") || (key0 === "emoteId")) || (key0 === "targetSeat"))){
+validate99.errors = [{instancePath,schemaPath:"#/additionalProperties",keyword:"additionalProperties",params:{additionalProperty: key0}}];
 return false;
 break;
 }
 }
 if(_errs1 === errors){
-if(data.roundId !== undefined){
-let data0 = data.roundId;
+if(data.seat !== undefined){
+let data0 = data.seat;
 const _errs2 = errors;
 const _errs3 = errors;
-if(errors === _errs3){
-if(typeof data0 === "string"){
-if(!pattern18.test(data0)){
-validate100.errors = [{instancePath:instancePath+"/roundId",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/roundId/pattern",keyword:"pattern",params:{pattern: "^r_[0-9]+$"}}];
+if(!(((typeof data0 == "number") && (!(data0 % 1) && !isNaN(data0))) && (isFinite(data0)))){
+validate99.errors = [{instancePath:instancePath+"/seat",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex/type",keyword:"type",params:{type: "integer"}}];
 return false;
 }
+if(errors === _errs3){
+if((typeof data0 == "number") && (isFinite(data0))){
+if(data0 > 7 || isNaN(data0)){
+validate99.errors = [{instancePath:instancePath+"/seat",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex/maximum",keyword:"maximum",params:{comparison: "<=", limit: 7}}];
+return false;
 }
 else {
-validate100.errors = [{instancePath:instancePath+"/roundId",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/roundId/type",keyword:"type",params:{type: "string"}}];
+if(data0 < 0 || isNaN(data0)){
+validate99.errors = [{instancePath:instancePath+"/seat",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex/minimum",keyword:"minimum",params:{comparison: ">=", limit: 0}}];
 return false;
+}
+}
 }
 }
 var valid0 = _errs2 === errors;
@@ -8906,20 +9338,11 @@ else {
 var valid0 = true;
 }
 if(valid0){
-if(data.commitment !== undefined){
-let data1 = data.commitment;
+if(data.emoteId !== undefined){
 const _errs5 = errors;
-if(errors === _errs5){
-if(typeof data1 === "string"){
-if(!pattern30.test(data1)){
-validate100.errors = [{instancePath:instancePath+"/commitment",schemaPath:"#/properties/commitment/pattern",keyword:"pattern",params:{pattern: "^[0-9a-f]{64}$"}}];
+if(typeof data.emoteId !== "string"){
+validate99.errors = [{instancePath:instancePath+"/emoteId",schemaPath:"#/properties/emoteId/type",keyword:"type",params:{type: "string"}}];
 return false;
-}
-}
-else {
-validate100.errors = [{instancePath:instancePath+"/commitment",schemaPath:"#/properties/commitment/type",keyword:"type",params:{type: "string"}}];
-return false;
-}
 }
 var valid0 = _errs5 === errors;
 }
@@ -8927,22 +9350,23 @@ else {
 var valid0 = true;
 }
 if(valid0){
-if(data.seatCount !== undefined){
-let data2 = data.seatCount;
+if(data.targetSeat !== undefined){
+let data2 = data.targetSeat;
 const _errs7 = errors;
+const _errs8 = errors;
 if(!(((typeof data2 == "number") && (!(data2 % 1) && !isNaN(data2))) && (isFinite(data2)))){
-validate100.errors = [{instancePath:instancePath+"/seatCount",schemaPath:"#/properties/seatCount/type",keyword:"type",params:{type: "integer"}}];
+validate99.errors = [{instancePath:instancePath+"/targetSeat",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex/type",keyword:"type",params:{type: "integer"}}];
 return false;
 }
-if(errors === _errs7){
+if(errors === _errs8){
 if((typeof data2 == "number") && (isFinite(data2))){
-if(data2 > 8 || isNaN(data2)){
-validate100.errors = [{instancePath:instancePath+"/seatCount",schemaPath:"#/properties/seatCount/maximum",keyword:"maximum",params:{comparison: "<=", limit: 8}}];
+if(data2 > 7 || isNaN(data2)){
+validate99.errors = [{instancePath:instancePath+"/targetSeat",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex/maximum",keyword:"maximum",params:{comparison: "<=", limit: 7}}];
 return false;
 }
 else {
-if(data2 < 3 || isNaN(data2)){
-validate100.errors = [{instancePath:instancePath+"/seatCount",schemaPath:"#/properties/seatCount/minimum",keyword:"minimum",params:{comparison: ">=", limit: 3}}];
+if(data2 < 0 || isNaN(data2)){
+validate99.errors = [{instancePath:instancePath+"/targetSeat",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex/minimum",keyword:"minimum",params:{comparison: ">=", limit: 0}}];
 return false;
 }
 }
@@ -8953,173 +9377,23 @@ var valid0 = _errs7 === errors;
 else {
 var valid0 = true;
 }
-if(valid0){
-if(data.dealerSeat !== undefined){
-let data3 = data.dealerSeat;
-const _errs9 = errors;
-const _errs10 = errors;
-if(!(((typeof data3 == "number") && (!(data3 % 1) && !isNaN(data3))) && (isFinite(data3)))){
-validate100.errors = [{instancePath:instancePath+"/dealerSeat",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex/type",keyword:"type",params:{type: "integer"}}];
-return false;
-}
-if(errors === _errs10){
-if((typeof data3 == "number") && (isFinite(data3))){
-if(data3 > 7 || isNaN(data3)){
-validate100.errors = [{instancePath:instancePath+"/dealerSeat",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex/maximum",keyword:"maximum",params:{comparison: "<=", limit: 7}}];
-return false;
-}
-else {
-if(data3 < 0 || isNaN(data3)){
-validate100.errors = [{instancePath:instancePath+"/dealerSeat",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex/minimum",keyword:"minimum",params:{comparison: ">=", limit: 0}}];
-return false;
-}
-}
-}
-}
-var valid0 = _errs9 === errors;
-}
-else {
-var valid0 = true;
-}
-if(valid0){
-if(data.leaderSeat !== undefined){
-let data4 = data.leaderSeat;
-const _errs12 = errors;
-const _errs13 = errors;
-if(!(((typeof data4 == "number") && (!(data4 % 1) && !isNaN(data4))) && (isFinite(data4)))){
-validate100.errors = [{instancePath:instancePath+"/leaderSeat",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex/type",keyword:"type",params:{type: "integer"}}];
-return false;
-}
-if(errors === _errs13){
-if((typeof data4 == "number") && (isFinite(data4))){
-if(data4 > 7 || isNaN(data4)){
-validate100.errors = [{instancePath:instancePath+"/leaderSeat",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex/maximum",keyword:"maximum",params:{comparison: "<=", limit: 7}}];
-return false;
-}
-else {
-if(data4 < 0 || isNaN(data4)){
-validate100.errors = [{instancePath:instancePath+"/leaderSeat",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex/minimum",keyword:"minimum",params:{comparison: ">=", limit: 0}}];
-return false;
-}
-}
-}
-}
-var valid0 = _errs12 === errors;
-}
-else {
-var valid0 = true;
-}
-if(valid0){
-if(data.handCounts !== undefined){
-let data5 = data.handCounts;
-const _errs15 = errors;
-const _errs16 = errors;
-if(errors === _errs16){
-if(Array.isArray(data5)){
-var valid5 = true;
-const len0 = data5.length;
-for(let i0=0; i0<len0; i0++){
-let data6 = data5[i0];
-const _errs18 = errors;
-if(!(((typeof data6 == "number") && (!(data6 % 1) && !isNaN(data6))) && (isFinite(data6)))){
-validate100.errors = [{instancePath:instancePath+"/handCounts/" + i0,schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/handCounts/items/type",keyword:"type",params:{type: "integer"}}];
-return false;
-}
-if(errors === _errs18){
-if((typeof data6 == "number") && (isFinite(data6))){
-if(data6 < 0 || isNaN(data6)){
-validate100.errors = [{instancePath:instancePath+"/handCounts/" + i0,schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/handCounts/items/minimum",keyword:"minimum",params:{comparison: ">=", limit: 0}}];
-return false;
-}
-}
-}
-var valid5 = _errs18 === errors;
-if(!valid5){
-break;
-}
-}
-}
-else {
-validate100.errors = [{instancePath:instancePath+"/handCounts",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/handCounts/type",keyword:"type",params:{type: "array"}}];
-return false;
-}
-}
-var valid0 = _errs15 === errors;
-}
-else {
-var valid0 = true;
-}
-if(valid0){
-if(data.rulesVersion !== undefined){
-const _errs20 = errors;
-if(typeof data.rulesVersion !== "string"){
-validate100.errors = [{instancePath:instancePath+"/rulesVersion",schemaPath:"#/properties/rulesVersion/type",keyword:"type",params:{type: "string"}}];
-return false;
-}
-var valid0 = _errs20 === errors;
-}
-else {
-var valid0 = true;
-}
-}
-}
-}
-}
 }
 }
 }
 }
 }
 else {
-validate100.errors = [{instancePath,schemaPath:"#/type",keyword:"type",params:{type: "object"}}];
+validate99.errors = [{instancePath,schemaPath:"#/type",keyword:"type",params:{type: "object"}}];
 return false;
 }
 }
-validate100.errors = vErrors;
+validate99.errors = vErrors;
 return errors === 0;
 }
 
-const check_turn_start = validate101;
-const schema188 = {"type":"object","additionalProperties":false,"description":"Sent to the acting seat only: the legal mask reveals suit holdings. Every card game uses it and adds its own optional fields","required":["roundId","seat","legal","canTakeHand","deadlineTs"],"properties":{"roundId":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/roundId"},"seat":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex"},"legal":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/cards"},"canTakeHand":{"type":"boolean","description":"Always false outside Thulla"},"deadlineTs":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/timestamp"},"phase":{"type":"string","description":"Rung: call, play or courtChoice"},"suits":{"type":"array","items":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/suit"},"description":"Rung, the call: the suits the caller may name"},"canRedeal":{"type":"boolean","description":"Rung, the call: the caller may ask for a redeal (RG7)"},"simultaneous":{"type":"boolean","description":"The opening window: every pending seat acts at once (R13)"}}};
-
-function validate102(data, {instancePath="", parentData, parentDataProperty, rootData=data}={}){
-let vErrors = null;
-let errors = 0;
-if(errors === 0){
-if(Array.isArray(data)){
-var valid0 = true;
-const len0 = data.length;
-for(let i0=0; i0<len0; i0++){
-let data0 = data[i0];
-const _errs1 = errors;
-const _errs2 = errors;
-if(errors === _errs2){
-if(typeof data0 === "string"){
-if(!pattern2.test(data0)){
-validate102.errors = [{instancePath:instancePath+"/" + i0,schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/card/pattern",keyword:"pattern",params:{pattern: "^[2-9TJQKA][SHCD]$"}}];
-return false;
-}
-}
-else {
-validate102.errors = [{instancePath:instancePath+"/" + i0,schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/card/type",keyword:"type",params:{type: "string"}}];
-return false;
-}
-}
-var valid0 = _errs1 === errors;
-if(!valid0){
-break;
-}
-}
-}
-else {
-validate102.errors = [{instancePath,schemaPath:"#/type",keyword:"type",params:{type: "array"}}];
-return false;
-}
-}
-validate102.errors = vErrors;
-return errors === 0;
-}
-
+const check_round_start = validate101;
+const schema186 = {"type":"object","additionalProperties":false,"required":["roundId","commitment","seatCount","dealerSeat","leaderSeat","handCounts","rulesVersion"],"properties":{"roundId":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/roundId"},"commitment":{"type":"string","pattern":"^[0-9a-f]{64}$","description":"SHA-256(seed || canonicalJson(deckOrder)) published before the deal (R6)"},"seatCount":{"type":"integer","minimum":3,"maximum":8},"dealerSeat":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex"},"leaderSeat":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex"},"handCounts":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/handCounts"},"rulesVersion":{"type":"string"}}};
+const pattern30 = new RegExp("^[0-9a-f]{64}$", "");
 
 function validate101(data, {instancePath="", parentData, parentDataProperty, rootData=data}={}){
 let vErrors = null;
@@ -9127,14 +9401,14 @@ let errors = 0;
 if(errors === 0){
 if(data && typeof data == "object" && !Array.isArray(data)){
 let missing0;
-if((((((data.roundId === undefined) && (missing0 = "roundId")) || ((data.seat === undefined) && (missing0 = "seat"))) || ((data.legal === undefined) && (missing0 = "legal"))) || ((data.canTakeHand === undefined) && (missing0 = "canTakeHand"))) || ((data.deadlineTs === undefined) && (missing0 = "deadlineTs"))){
+if((((((((data.roundId === undefined) && (missing0 = "roundId")) || ((data.commitment === undefined) && (missing0 = "commitment"))) || ((data.seatCount === undefined) && (missing0 = "seatCount"))) || ((data.dealerSeat === undefined) && (missing0 = "dealerSeat"))) || ((data.leaderSeat === undefined) && (missing0 = "leaderSeat"))) || ((data.handCounts === undefined) && (missing0 = "handCounts"))) || ((data.rulesVersion === undefined) && (missing0 = "rulesVersion"))){
 validate101.errors = [{instancePath,schemaPath:"#/required",keyword:"required",params:{missingProperty: missing0}}];
 return false;
 }
 else {
 const _errs1 = errors;
 for(const key0 in data){
-if(!(func2.call(schema188.properties, key0))){
+if(!(((((((key0 === "roundId") || (key0 === "commitment")) || (key0 === "seatCount")) || (key0 === "dealerSeat")) || (key0 === "leaderSeat")) || (key0 === "handCounts")) || (key0 === "rulesVersion"))){
 validate101.errors = [{instancePath,schemaPath:"#/additionalProperties",keyword:"additionalProperties",params:{additionalProperty: key0}}];
 return false;
 break;
@@ -9163,26 +9437,19 @@ else {
 var valid0 = true;
 }
 if(valid0){
-if(data.seat !== undefined){
-let data1 = data.seat;
+if(data.commitment !== undefined){
+let data1 = data.commitment;
 const _errs5 = errors;
-const _errs6 = errors;
-if(!(((typeof data1 == "number") && (!(data1 % 1) && !isNaN(data1))) && (isFinite(data1)))){
-validate101.errors = [{instancePath:instancePath+"/seat",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex/type",keyword:"type",params:{type: "integer"}}];
+if(errors === _errs5){
+if(typeof data1 === "string"){
+if(!pattern30.test(data1)){
+validate101.errors = [{instancePath:instancePath+"/commitment",schemaPath:"#/properties/commitment/pattern",keyword:"pattern",params:{pattern: "^[0-9a-f]{64}$"}}];
 return false;
 }
-if(errors === _errs6){
-if((typeof data1 == "number") && (isFinite(data1))){
-if(data1 > 7 || isNaN(data1)){
-validate101.errors = [{instancePath:instancePath+"/seat",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex/maximum",keyword:"maximum",params:{comparison: "<=", limit: 7}}];
-return false;
 }
 else {
-if(data1 < 0 || isNaN(data1)){
-validate101.errors = [{instancePath:instancePath+"/seat",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex/minimum",keyword:"minimum",params:{comparison: ">=", limit: 0}}];
+validate101.errors = [{instancePath:instancePath+"/commitment",schemaPath:"#/properties/commitment/type",keyword:"type",params:{type: "string"}}];
 return false;
-}
-}
 }
 }
 var valid0 = _errs5 === errors;
@@ -9191,23 +9458,54 @@ else {
 var valid0 = true;
 }
 if(valid0){
-if(data.legal !== undefined){
-const _errs8 = errors;
-if(!(validate102(data.legal, {instancePath:instancePath+"/legal",parentData:data,parentDataProperty:"legal",rootData}))){
-vErrors = vErrors === null ? validate102.errors : vErrors.concat(validate102.errors);
-errors = vErrors.length;
+if(data.seatCount !== undefined){
+let data2 = data.seatCount;
+const _errs7 = errors;
+if(!(((typeof data2 == "number") && (!(data2 % 1) && !isNaN(data2))) && (isFinite(data2)))){
+validate101.errors = [{instancePath:instancePath+"/seatCount",schemaPath:"#/properties/seatCount/type",keyword:"type",params:{type: "integer"}}];
+return false;
 }
-var valid0 = _errs8 === errors;
+if(errors === _errs7){
+if((typeof data2 == "number") && (isFinite(data2))){
+if(data2 > 8 || isNaN(data2)){
+validate101.errors = [{instancePath:instancePath+"/seatCount",schemaPath:"#/properties/seatCount/maximum",keyword:"maximum",params:{comparison: "<=", limit: 8}}];
+return false;
+}
+else {
+if(data2 < 3 || isNaN(data2)){
+validate101.errors = [{instancePath:instancePath+"/seatCount",schemaPath:"#/properties/seatCount/minimum",keyword:"minimum",params:{comparison: ">=", limit: 3}}];
+return false;
+}
+}
+}
+}
+var valid0 = _errs7 === errors;
 }
 else {
 var valid0 = true;
 }
 if(valid0){
-if(data.canTakeHand !== undefined){
+if(data.dealerSeat !== undefined){
+let data3 = data.dealerSeat;
 const _errs9 = errors;
-if(typeof data.canTakeHand !== "boolean"){
-validate101.errors = [{instancePath:instancePath+"/canTakeHand",schemaPath:"#/properties/canTakeHand/type",keyword:"type",params:{type: "boolean"}}];
+const _errs10 = errors;
+if(!(((typeof data3 == "number") && (!(data3 % 1) && !isNaN(data3))) && (isFinite(data3)))){
+validate101.errors = [{instancePath:instancePath+"/dealerSeat",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex/type",keyword:"type",params:{type: "integer"}}];
 return false;
+}
+if(errors === _errs10){
+if((typeof data3 == "number") && (isFinite(data3))){
+if(data3 > 7 || isNaN(data3)){
+validate101.errors = [{instancePath:instancePath+"/dealerSeat",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex/maximum",keyword:"maximum",params:{comparison: "<=", limit: 7}}];
+return false;
+}
+else {
+if(data3 < 0 || isNaN(data3)){
+validate101.errors = [{instancePath:instancePath+"/dealerSeat",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex/minimum",keyword:"minimum",params:{comparison: ">=", limit: 0}}];
+return false;
+}
+}
+}
 }
 var valid0 = _errs9 === errors;
 }
@@ -9215,99 +9513,84 @@ else {
 var valid0 = true;
 }
 if(valid0){
-if(data.deadlineTs !== undefined){
-let data4 = data.deadlineTs;
-const _errs11 = errors;
+if(data.leaderSeat !== undefined){
+let data4 = data.leaderSeat;
 const _errs12 = errors;
+const _errs13 = errors;
 if(!(((typeof data4 == "number") && (!(data4 % 1) && !isNaN(data4))) && (isFinite(data4)))){
-validate101.errors = [{instancePath:instancePath+"/deadlineTs",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/timestamp/type",keyword:"type",params:{type: "integer"}}];
+validate101.errors = [{instancePath:instancePath+"/leaderSeat",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex/type",keyword:"type",params:{type: "integer"}}];
 return false;
 }
-if(errors === _errs12){
+if(errors === _errs13){
 if((typeof data4 == "number") && (isFinite(data4))){
+if(data4 > 7 || isNaN(data4)){
+validate101.errors = [{instancePath:instancePath+"/leaderSeat",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex/maximum",keyword:"maximum",params:{comparison: "<=", limit: 7}}];
+return false;
+}
+else {
 if(data4 < 0 || isNaN(data4)){
-validate101.errors = [{instancePath:instancePath+"/deadlineTs",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/timestamp/minimum",keyword:"minimum",params:{comparison: ">=", limit: 0}}];
+validate101.errors = [{instancePath:instancePath+"/leaderSeat",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex/minimum",keyword:"minimum",params:{comparison: ">=", limit: 0}}];
 return false;
 }
 }
 }
-var valid0 = _errs11 === errors;
+}
+var valid0 = _errs12 === errors;
 }
 else {
 var valid0 = true;
 }
 if(valid0){
-if(data.phase !== undefined){
-const _errs14 = errors;
-if(typeof data.phase !== "string"){
-validate101.errors = [{instancePath:instancePath+"/phase",schemaPath:"#/properties/phase/type",keyword:"type",params:{type: "string"}}];
-return false;
-}
-var valid0 = _errs14 === errors;
-}
-else {
-var valid0 = true;
-}
-if(valid0){
-if(data.suits !== undefined){
-let data6 = data.suits;
+if(data.handCounts !== undefined){
+let data5 = data.handCounts;
+const _errs15 = errors;
 const _errs16 = errors;
 if(errors === _errs16){
-if(Array.isArray(data6)){
-var valid4 = true;
-const len0 = data6.length;
+if(Array.isArray(data5)){
+var valid5 = true;
+const len0 = data5.length;
 for(let i0=0; i0<len0; i0++){
-let data7 = data6[i0];
+let data6 = data5[i0];
 const _errs18 = errors;
-if(typeof data7 !== "string"){
-validate101.errors = [{instancePath:instancePath+"/suits/" + i0,schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/suit/type",keyword:"type",params:{type: "string"}}];
+if(!(((typeof data6 == "number") && (!(data6 % 1) && !isNaN(data6))) && (isFinite(data6)))){
+validate101.errors = [{instancePath:instancePath+"/handCounts/" + i0,schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/handCounts/items/type",keyword:"type",params:{type: "integer"}}];
 return false;
 }
-if(!((((data7 === "S") || (data7 === "H")) || (data7 === "C")) || (data7 === "D"))){
-validate101.errors = [{instancePath:instancePath+"/suits/" + i0,schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/suit/enum",keyword:"enum",params:{allowedValues: schema30.enum}}];
+if(errors === _errs18){
+if((typeof data6 == "number") && (isFinite(data6))){
+if(data6 < 0 || isNaN(data6)){
+validate101.errors = [{instancePath:instancePath+"/handCounts/" + i0,schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/handCounts/items/minimum",keyword:"minimum",params:{comparison: ">=", limit: 0}}];
 return false;
 }
-var valid4 = _errs18 === errors;
-if(!valid4){
+}
+}
+var valid5 = _errs18 === errors;
+if(!valid5){
 break;
 }
 }
 }
 else {
-validate101.errors = [{instancePath:instancePath+"/suits",schemaPath:"#/properties/suits/type",keyword:"type",params:{type: "array"}}];
+validate101.errors = [{instancePath:instancePath+"/handCounts",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/handCounts/type",keyword:"type",params:{type: "array"}}];
 return false;
 }
 }
-var valid0 = _errs16 === errors;
+var valid0 = _errs15 === errors;
 }
 else {
 var valid0 = true;
 }
 if(valid0){
-if(data.canRedeal !== undefined){
-const _errs21 = errors;
-if(typeof data.canRedeal !== "boolean"){
-validate101.errors = [{instancePath:instancePath+"/canRedeal",schemaPath:"#/properties/canRedeal/type",keyword:"type",params:{type: "boolean"}}];
+if(data.rulesVersion !== undefined){
+const _errs20 = errors;
+if(typeof data.rulesVersion !== "string"){
+validate101.errors = [{instancePath:instancePath+"/rulesVersion",schemaPath:"#/properties/rulesVersion/type",keyword:"type",params:{type: "string"}}];
 return false;
 }
-var valid0 = _errs21 === errors;
+var valid0 = _errs20 === errors;
 }
 else {
 var valid0 = true;
-}
-if(valid0){
-if(data.simultaneous !== undefined){
-const _errs23 = errors;
-if(typeof data.simultaneous !== "boolean"){
-validate101.errors = [{instancePath:instancePath+"/simultaneous",schemaPath:"#/properties/simultaneous/type",keyword:"type",params:{type: "boolean"}}];
-return false;
-}
-var valid0 = _errs23 === errors;
-}
-else {
-var valid0 = true;
-}
-}
 }
 }
 }
@@ -9327,11 +9610,259 @@ validate101.errors = vErrors;
 return errors === 0;
 }
 
-const check_move_applied = validate104;
-const schema195 = {"type":"object","additionalProperties":false,"required":["roundId","seat","move","trickIndex"],"properties":{"roundId":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/roundId"},"seat":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex"},"move":{"$ref":"https://hulla.gg/schemas/protocol/games/thulla/moves.json#/definitions/move"},"trickIndex":{"type":"integer","minimum":0},"thulla":{"type":"boolean"},"clientSeq":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/sequence"},"auto":{"type":"boolean","description":"Played by the auto-play policy (R44)"}}};
-const schema198 = {"oneOf":[{"type":"object","additionalProperties":false,"required":["type","card"],"properties":{"type":{"const":"play_card"},"card":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/card"}}},{"type":"object","additionalProperties":false,"required":["type"],"properties":{"type":{"const":"take_hand"}}}]};
+const check_turn_start = validate102;
+const schema191 = {"type":"object","additionalProperties":false,"description":"Sent to the acting seat only: the legal mask reveals suit holdings. Every card game uses it and adds its own optional fields","required":["roundId","seat","legal","canTakeHand","deadlineTs"],"properties":{"roundId":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/roundId"},"seat":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex"},"legal":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/cards"},"canTakeHand":{"type":"boolean","description":"Always false outside Thulla"},"deadlineTs":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/timestamp"},"phase":{"type":"string","description":"Rung: call, play or courtChoice"},"suits":{"type":"array","items":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/suit"},"description":"Rung, the call: the suits the caller may name"},"canRedeal":{"type":"boolean","description":"Rung, the call: the caller may ask for a redeal (RG7)"},"simultaneous":{"type":"boolean","description":"The opening window: every pending seat acts at once (R13)"}}};
 
-function validate105(data, {instancePath="", parentData, parentDataProperty, rootData=data}={}){
+function validate103(data, {instancePath="", parentData, parentDataProperty, rootData=data}={}){
+let vErrors = null;
+let errors = 0;
+if(errors === 0){
+if(Array.isArray(data)){
+var valid0 = true;
+const len0 = data.length;
+for(let i0=0; i0<len0; i0++){
+let data0 = data[i0];
+const _errs1 = errors;
+const _errs2 = errors;
+if(errors === _errs2){
+if(typeof data0 === "string"){
+if(!pattern2.test(data0)){
+validate103.errors = [{instancePath:instancePath+"/" + i0,schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/card/pattern",keyword:"pattern",params:{pattern: "^[2-9TJQKA][SHCD]$"}}];
+return false;
+}
+}
+else {
+validate103.errors = [{instancePath:instancePath+"/" + i0,schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/card/type",keyword:"type",params:{type: "string"}}];
+return false;
+}
+}
+var valid0 = _errs1 === errors;
+if(!valid0){
+break;
+}
+}
+}
+else {
+validate103.errors = [{instancePath,schemaPath:"#/type",keyword:"type",params:{type: "array"}}];
+return false;
+}
+}
+validate103.errors = vErrors;
+return errors === 0;
+}
+
+
+function validate102(data, {instancePath="", parentData, parentDataProperty, rootData=data}={}){
+let vErrors = null;
+let errors = 0;
+if(errors === 0){
+if(data && typeof data == "object" && !Array.isArray(data)){
+let missing0;
+if((((((data.roundId === undefined) && (missing0 = "roundId")) || ((data.seat === undefined) && (missing0 = "seat"))) || ((data.legal === undefined) && (missing0 = "legal"))) || ((data.canTakeHand === undefined) && (missing0 = "canTakeHand"))) || ((data.deadlineTs === undefined) && (missing0 = "deadlineTs"))){
+validate102.errors = [{instancePath,schemaPath:"#/required",keyword:"required",params:{missingProperty: missing0}}];
+return false;
+}
+else {
+const _errs1 = errors;
+for(const key0 in data){
+if(!(func2.call(schema191.properties, key0))){
+validate102.errors = [{instancePath,schemaPath:"#/additionalProperties",keyword:"additionalProperties",params:{additionalProperty: key0}}];
+return false;
+break;
+}
+}
+if(_errs1 === errors){
+if(data.roundId !== undefined){
+let data0 = data.roundId;
+const _errs2 = errors;
+const _errs3 = errors;
+if(errors === _errs3){
+if(typeof data0 === "string"){
+if(!pattern18.test(data0)){
+validate102.errors = [{instancePath:instancePath+"/roundId",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/roundId/pattern",keyword:"pattern",params:{pattern: "^r_[0-9]+$"}}];
+return false;
+}
+}
+else {
+validate102.errors = [{instancePath:instancePath+"/roundId",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/roundId/type",keyword:"type",params:{type: "string"}}];
+return false;
+}
+}
+var valid0 = _errs2 === errors;
+}
+else {
+var valid0 = true;
+}
+if(valid0){
+if(data.seat !== undefined){
+let data1 = data.seat;
+const _errs5 = errors;
+const _errs6 = errors;
+if(!(((typeof data1 == "number") && (!(data1 % 1) && !isNaN(data1))) && (isFinite(data1)))){
+validate102.errors = [{instancePath:instancePath+"/seat",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex/type",keyword:"type",params:{type: "integer"}}];
+return false;
+}
+if(errors === _errs6){
+if((typeof data1 == "number") && (isFinite(data1))){
+if(data1 > 7 || isNaN(data1)){
+validate102.errors = [{instancePath:instancePath+"/seat",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex/maximum",keyword:"maximum",params:{comparison: "<=", limit: 7}}];
+return false;
+}
+else {
+if(data1 < 0 || isNaN(data1)){
+validate102.errors = [{instancePath:instancePath+"/seat",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex/minimum",keyword:"minimum",params:{comparison: ">=", limit: 0}}];
+return false;
+}
+}
+}
+}
+var valid0 = _errs5 === errors;
+}
+else {
+var valid0 = true;
+}
+if(valid0){
+if(data.legal !== undefined){
+const _errs8 = errors;
+if(!(validate103(data.legal, {instancePath:instancePath+"/legal",parentData:data,parentDataProperty:"legal",rootData}))){
+vErrors = vErrors === null ? validate103.errors : vErrors.concat(validate103.errors);
+errors = vErrors.length;
+}
+var valid0 = _errs8 === errors;
+}
+else {
+var valid0 = true;
+}
+if(valid0){
+if(data.canTakeHand !== undefined){
+const _errs9 = errors;
+if(typeof data.canTakeHand !== "boolean"){
+validate102.errors = [{instancePath:instancePath+"/canTakeHand",schemaPath:"#/properties/canTakeHand/type",keyword:"type",params:{type: "boolean"}}];
+return false;
+}
+var valid0 = _errs9 === errors;
+}
+else {
+var valid0 = true;
+}
+if(valid0){
+if(data.deadlineTs !== undefined){
+let data4 = data.deadlineTs;
+const _errs11 = errors;
+const _errs12 = errors;
+if(!(((typeof data4 == "number") && (!(data4 % 1) && !isNaN(data4))) && (isFinite(data4)))){
+validate102.errors = [{instancePath:instancePath+"/deadlineTs",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/timestamp/type",keyword:"type",params:{type: "integer"}}];
+return false;
+}
+if(errors === _errs12){
+if((typeof data4 == "number") && (isFinite(data4))){
+if(data4 < 0 || isNaN(data4)){
+validate102.errors = [{instancePath:instancePath+"/deadlineTs",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/timestamp/minimum",keyword:"minimum",params:{comparison: ">=", limit: 0}}];
+return false;
+}
+}
+}
+var valid0 = _errs11 === errors;
+}
+else {
+var valid0 = true;
+}
+if(valid0){
+if(data.phase !== undefined){
+const _errs14 = errors;
+if(typeof data.phase !== "string"){
+validate102.errors = [{instancePath:instancePath+"/phase",schemaPath:"#/properties/phase/type",keyword:"type",params:{type: "string"}}];
+return false;
+}
+var valid0 = _errs14 === errors;
+}
+else {
+var valid0 = true;
+}
+if(valid0){
+if(data.suits !== undefined){
+let data6 = data.suits;
+const _errs16 = errors;
+if(errors === _errs16){
+if(Array.isArray(data6)){
+var valid4 = true;
+const len0 = data6.length;
+for(let i0=0; i0<len0; i0++){
+let data7 = data6[i0];
+const _errs18 = errors;
+if(typeof data7 !== "string"){
+validate102.errors = [{instancePath:instancePath+"/suits/" + i0,schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/suit/type",keyword:"type",params:{type: "string"}}];
+return false;
+}
+if(!((((data7 === "S") || (data7 === "H")) || (data7 === "C")) || (data7 === "D"))){
+validate102.errors = [{instancePath:instancePath+"/suits/" + i0,schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/suit/enum",keyword:"enum",params:{allowedValues: schema30.enum}}];
+return false;
+}
+var valid4 = _errs18 === errors;
+if(!valid4){
+break;
+}
+}
+}
+else {
+validate102.errors = [{instancePath:instancePath+"/suits",schemaPath:"#/properties/suits/type",keyword:"type",params:{type: "array"}}];
+return false;
+}
+}
+var valid0 = _errs16 === errors;
+}
+else {
+var valid0 = true;
+}
+if(valid0){
+if(data.canRedeal !== undefined){
+const _errs21 = errors;
+if(typeof data.canRedeal !== "boolean"){
+validate102.errors = [{instancePath:instancePath+"/canRedeal",schemaPath:"#/properties/canRedeal/type",keyword:"type",params:{type: "boolean"}}];
+return false;
+}
+var valid0 = _errs21 === errors;
+}
+else {
+var valid0 = true;
+}
+if(valid0){
+if(data.simultaneous !== undefined){
+const _errs23 = errors;
+if(typeof data.simultaneous !== "boolean"){
+validate102.errors = [{instancePath:instancePath+"/simultaneous",schemaPath:"#/properties/simultaneous/type",keyword:"type",params:{type: "boolean"}}];
+return false;
+}
+var valid0 = _errs23 === errors;
+}
+else {
+var valid0 = true;
+}
+}
+}
+}
+}
+}
+}
+}
+}
+}
+}
+}
+else {
+validate102.errors = [{instancePath,schemaPath:"#/type",keyword:"type",params:{type: "object"}}];
+return false;
+}
+}
+validate102.errors = vErrors;
+return errors === 0;
+}
+
+const check_move_applied = validate105;
+const schema198 = {"type":"object","additionalProperties":false,"required":["roundId","seat","move","trickIndex"],"properties":{"roundId":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/roundId"},"seat":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex"},"move":{"$ref":"https://hulla.gg/schemas/protocol/games/thulla/moves.json#/definitions/move"},"trickIndex":{"type":"integer","minimum":0},"thulla":{"type":"boolean"},"clientSeq":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/sequence"},"auto":{"type":"boolean","description":"Played by the auto-play policy (R44)"}}};
+const schema201 = {"oneOf":[{"type":"object","additionalProperties":false,"required":["type","card"],"properties":{"type":{"const":"play_card"},"card":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/card"}}},{"type":"object","additionalProperties":false,"required":["type"],"properties":{"type":{"const":"take_hand"}}}]};
+
+function validate106(data, {instancePath="", parentData, parentDataProperty, rootData=data}={}){
 let vErrors = null;
 let errors = 0;
 const _errs0 = errors;
@@ -9514,7 +10045,7 @@ else {
 vErrors.push(err10);
 }
 errors++;
-validate105.errors = vErrors;
+validate106.errors = vErrors;
 return false;
 }
 else {
@@ -9528,26 +10059,26 @@ vErrors = null;
 }
 }
 }
-validate105.errors = vErrors;
+validate106.errors = vErrors;
 return errors === 0;
 }
 
 
-function validate104(data, {instancePath="", parentData, parentDataProperty, rootData=data}={}){
+function validate105(data, {instancePath="", parentData, parentDataProperty, rootData=data}={}){
 let vErrors = null;
 let errors = 0;
 if(errors === 0){
 if(data && typeof data == "object" && !Array.isArray(data)){
 let missing0;
 if(((((data.roundId === undefined) && (missing0 = "roundId")) || ((data.seat === undefined) && (missing0 = "seat"))) || ((data.move === undefined) && (missing0 = "move"))) || ((data.trickIndex === undefined) && (missing0 = "trickIndex"))){
-validate104.errors = [{instancePath,schemaPath:"#/required",keyword:"required",params:{missingProperty: missing0}}];
+validate105.errors = [{instancePath,schemaPath:"#/required",keyword:"required",params:{missingProperty: missing0}}];
 return false;
 }
 else {
 const _errs1 = errors;
 for(const key0 in data){
 if(!(((((((key0 === "roundId") || (key0 === "seat")) || (key0 === "move")) || (key0 === "trickIndex")) || (key0 === "thulla")) || (key0 === "clientSeq")) || (key0 === "auto"))){
-validate104.errors = [{instancePath,schemaPath:"#/additionalProperties",keyword:"additionalProperties",params:{additionalProperty: key0}}];
+validate105.errors = [{instancePath,schemaPath:"#/additionalProperties",keyword:"additionalProperties",params:{additionalProperty: key0}}];
 return false;
 break;
 }
@@ -9560,12 +10091,12 @@ const _errs3 = errors;
 if(errors === _errs3){
 if(typeof data0 === "string"){
 if(!pattern18.test(data0)){
-validate104.errors = [{instancePath:instancePath+"/roundId",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/roundId/pattern",keyword:"pattern",params:{pattern: "^r_[0-9]+$"}}];
+validate105.errors = [{instancePath:instancePath+"/roundId",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/roundId/pattern",keyword:"pattern",params:{pattern: "^r_[0-9]+$"}}];
 return false;
 }
 }
 else {
-validate104.errors = [{instancePath:instancePath+"/roundId",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/roundId/type",keyword:"type",params:{type: "string"}}];
+validate105.errors = [{instancePath:instancePath+"/roundId",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/roundId/type",keyword:"type",params:{type: "string"}}];
 return false;
 }
 }
@@ -9580,18 +10111,18 @@ let data1 = data.seat;
 const _errs5 = errors;
 const _errs6 = errors;
 if(!(((typeof data1 == "number") && (!(data1 % 1) && !isNaN(data1))) && (isFinite(data1)))){
-validate104.errors = [{instancePath:instancePath+"/seat",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex/type",keyword:"type",params:{type: "integer"}}];
+validate105.errors = [{instancePath:instancePath+"/seat",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex/type",keyword:"type",params:{type: "integer"}}];
 return false;
 }
 if(errors === _errs6){
 if((typeof data1 == "number") && (isFinite(data1))){
 if(data1 > 7 || isNaN(data1)){
-validate104.errors = [{instancePath:instancePath+"/seat",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex/maximum",keyword:"maximum",params:{comparison: "<=", limit: 7}}];
+validate105.errors = [{instancePath:instancePath+"/seat",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex/maximum",keyword:"maximum",params:{comparison: "<=", limit: 7}}];
 return false;
 }
 else {
 if(data1 < 0 || isNaN(data1)){
-validate104.errors = [{instancePath:instancePath+"/seat",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex/minimum",keyword:"minimum",params:{comparison: ">=", limit: 0}}];
+validate105.errors = [{instancePath:instancePath+"/seat",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex/minimum",keyword:"minimum",params:{comparison: ">=", limit: 0}}];
 return false;
 }
 }
@@ -9605,8 +10136,8 @@ var valid0 = true;
 if(valid0){
 if(data.move !== undefined){
 const _errs8 = errors;
-if(!(validate105(data.move, {instancePath:instancePath+"/move",parentData:data,parentDataProperty:"move",rootData}))){
-vErrors = vErrors === null ? validate105.errors : vErrors.concat(validate105.errors);
+if(!(validate106(data.move, {instancePath:instancePath+"/move",parentData:data,parentDataProperty:"move",rootData}))){
+vErrors = vErrors === null ? validate106.errors : vErrors.concat(validate106.errors);
 errors = vErrors.length;
 }
 var valid0 = _errs8 === errors;
@@ -9619,13 +10150,13 @@ if(data.trickIndex !== undefined){
 let data3 = data.trickIndex;
 const _errs9 = errors;
 if(!(((typeof data3 == "number") && (!(data3 % 1) && !isNaN(data3))) && (isFinite(data3)))){
-validate104.errors = [{instancePath:instancePath+"/trickIndex",schemaPath:"#/properties/trickIndex/type",keyword:"type",params:{type: "integer"}}];
+validate105.errors = [{instancePath:instancePath+"/trickIndex",schemaPath:"#/properties/trickIndex/type",keyword:"type",params:{type: "integer"}}];
 return false;
 }
 if(errors === _errs9){
 if((typeof data3 == "number") && (isFinite(data3))){
 if(data3 < 0 || isNaN(data3)){
-validate104.errors = [{instancePath:instancePath+"/trickIndex",schemaPath:"#/properties/trickIndex/minimum",keyword:"minimum",params:{comparison: ">=", limit: 0}}];
+validate105.errors = [{instancePath:instancePath+"/trickIndex",schemaPath:"#/properties/trickIndex/minimum",keyword:"minimum",params:{comparison: ">=", limit: 0}}];
 return false;
 }
 }
@@ -9639,7 +10170,7 @@ if(valid0){
 if(data.thulla !== undefined){
 const _errs11 = errors;
 if(typeof data.thulla !== "boolean"){
-validate104.errors = [{instancePath:instancePath+"/thulla",schemaPath:"#/properties/thulla/type",keyword:"type",params:{type: "boolean"}}];
+validate105.errors = [{instancePath:instancePath+"/thulla",schemaPath:"#/properties/thulla/type",keyword:"type",params:{type: "boolean"}}];
 return false;
 }
 var valid0 = _errs11 === errors;
@@ -9653,13 +10184,13 @@ let data5 = data.clientSeq;
 const _errs13 = errors;
 const _errs14 = errors;
 if(!(((typeof data5 == "number") && (!(data5 % 1) && !isNaN(data5))) && (isFinite(data5)))){
-validate104.errors = [{instancePath:instancePath+"/clientSeq",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/sequence/type",keyword:"type",params:{type: "integer"}}];
+validate105.errors = [{instancePath:instancePath+"/clientSeq",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/sequence/type",keyword:"type",params:{type: "integer"}}];
 return false;
 }
 if(errors === _errs14){
 if((typeof data5 == "number") && (isFinite(data5))){
 if(data5 < 0 || isNaN(data5)){
-validate104.errors = [{instancePath:instancePath+"/clientSeq",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/sequence/minimum",keyword:"minimum",params:{comparison: ">=", limit: 0}}];
+validate105.errors = [{instancePath:instancePath+"/clientSeq",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/sequence/minimum",keyword:"minimum",params:{comparison: ">=", limit: 0}}];
 return false;
 }
 }
@@ -9673,7 +10204,7 @@ if(valid0){
 if(data.auto !== undefined){
 const _errs16 = errors;
 if(typeof data.auto !== "boolean"){
-validate104.errors = [{instancePath:instancePath+"/auto",schemaPath:"#/properties/auto/type",keyword:"type",params:{type: "boolean"}}];
+validate105.errors = [{instancePath:instancePath+"/auto",schemaPath:"#/properties/auto/type",keyword:"type",params:{type: "boolean"}}];
 return false;
 }
 var valid0 = _errs16 === errors;
@@ -9691,33 +10222,33 @@ var valid0 = true;
 }
 }
 else {
-validate104.errors = [{instancePath,schemaPath:"#/type",keyword:"type",params:{type: "object"}}];
+validate105.errors = [{instancePath,schemaPath:"#/type",keyword:"type",params:{type: "object"}}];
 return false;
 }
 }
-validate104.errors = vErrors;
+validate105.errors = vErrors;
 return errors === 0;
 }
 
-const check_move_rejected = validate107;
-const schema201 = {"type":"object","additionalProperties":false,"required":["roundId","clientSeq","error"],"properties":{"roundId":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/roundId"},"clientSeq":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/sequence"},"error":{"$ref":"https://hulla.gg/schemas/protocol/shell/errors.json#/definitions/ruleError"}}};
-const schema204 = {"type":"object","additionalProperties":false,"required":["code"],"properties":{"code":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/errorCode"},"detail":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/errorDetail"}}};
+const check_move_rejected = validate108;
+const schema204 = {"type":"object","additionalProperties":false,"required":["roundId","clientSeq","error"],"properties":{"roundId":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/roundId"},"clientSeq":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/sequence"},"error":{"$ref":"https://hulla.gg/schemas/protocol/shell/errors.json#/definitions/ruleError"}}};
+const schema207 = {"type":"object","additionalProperties":false,"required":["code"],"properties":{"code":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/errorCode"},"detail":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/errorDetail"}}};
 
-function validate108(data, {instancePath="", parentData, parentDataProperty, rootData=data}={}){
+function validate109(data, {instancePath="", parentData, parentDataProperty, rootData=data}={}){
 let vErrors = null;
 let errors = 0;
 if(errors === 0){
 if(data && typeof data == "object" && !Array.isArray(data)){
 let missing0;
 if((data.code === undefined) && (missing0 = "code")){
-validate108.errors = [{instancePath,schemaPath:"#/required",keyword:"required",params:{missingProperty: missing0}}];
+validate109.errors = [{instancePath,schemaPath:"#/required",keyword:"required",params:{missingProperty: missing0}}];
 return false;
 }
 else {
 const _errs1 = errors;
 for(const key0 in data){
 if(!((key0 === "code") || (key0 === "detail"))){
-validate108.errors = [{instancePath,schemaPath:"#/additionalProperties",keyword:"additionalProperties",params:{additionalProperty: key0}}];
+validate109.errors = [{instancePath,schemaPath:"#/additionalProperties",keyword:"additionalProperties",params:{additionalProperty: key0}}];
 return false;
 break;
 }
@@ -9730,12 +10261,12 @@ const _errs3 = errors;
 if(errors === _errs3){
 if(typeof data0 === "string"){
 if(!pattern28.test(data0)){
-validate108.errors = [{instancePath:instancePath+"/code",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/errorCode/pattern",keyword:"pattern",params:{pattern: "^(rules|table|auth|economy|content|network|voice|profile|social)\\.[a-z0-9_]+$"}}];
+validate109.errors = [{instancePath:instancePath+"/code",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/errorCode/pattern",keyword:"pattern",params:{pattern: "^(rules|table|auth|economy|content|network|voice|profile|social)\\.[a-z0-9_]+$"}}];
 return false;
 }
 }
 else {
-validate108.errors = [{instancePath:instancePath+"/code",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/errorCode/type",keyword:"type",params:{type: "string"}}];
+validate109.errors = [{instancePath:instancePath+"/code",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/errorCode/type",keyword:"type",params:{type: "string"}}];
 return false;
 }
 }
@@ -9755,7 +10286,7 @@ for(const key1 in data1){
 let data2 = data1[key1];
 const _errs9 = errors;
 if(((typeof data2 !== "string") && (!((typeof data2 == "number") && (isFinite(data2))))) && (typeof data2 !== "boolean")){
-validate108.errors = [{instancePath:instancePath+"/detail/" + key1.replace(/~/g, "~0").replace(/\//g, "~1"),schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/errorDetail/additionalProperties/type",keyword:"type",params:{type: schema166.additionalProperties.type}}];
+validate109.errors = [{instancePath:instancePath+"/detail/" + key1.replace(/~/g, "~0").replace(/\//g, "~1"),schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/errorDetail/additionalProperties/type",keyword:"type",params:{type: schema169.additionalProperties.type}}];
 return false;
 }
 var valid3 = _errs9 === errors;
@@ -9765,7 +10296,7 @@ break;
 }
 }
 else {
-validate108.errors = [{instancePath:instancePath+"/detail",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/errorDetail/type",keyword:"type",params:{type: "object"}}];
+validate109.errors = [{instancePath:instancePath+"/detail",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/errorDetail/type",keyword:"type",params:{type: "object"}}];
 return false;
 }
 }
@@ -9779,30 +10310,30 @@ var valid0 = true;
 }
 }
 else {
-validate108.errors = [{instancePath,schemaPath:"#/type",keyword:"type",params:{type: "object"}}];
+validate109.errors = [{instancePath,schemaPath:"#/type",keyword:"type",params:{type: "object"}}];
 return false;
 }
 }
-validate108.errors = vErrors;
+validate109.errors = vErrors;
 return errors === 0;
 }
 
 
-function validate107(data, {instancePath="", parentData, parentDataProperty, rootData=data}={}){
+function validate108(data, {instancePath="", parentData, parentDataProperty, rootData=data}={}){
 let vErrors = null;
 let errors = 0;
 if(errors === 0){
 if(data && typeof data == "object" && !Array.isArray(data)){
 let missing0;
 if((((data.roundId === undefined) && (missing0 = "roundId")) || ((data.clientSeq === undefined) && (missing0 = "clientSeq"))) || ((data.error === undefined) && (missing0 = "error"))){
-validate107.errors = [{instancePath,schemaPath:"#/required",keyword:"required",params:{missingProperty: missing0}}];
+validate108.errors = [{instancePath,schemaPath:"#/required",keyword:"required",params:{missingProperty: missing0}}];
 return false;
 }
 else {
 const _errs1 = errors;
 for(const key0 in data){
 if(!(((key0 === "roundId") || (key0 === "clientSeq")) || (key0 === "error"))){
-validate107.errors = [{instancePath,schemaPath:"#/additionalProperties",keyword:"additionalProperties",params:{additionalProperty: key0}}];
+validate108.errors = [{instancePath,schemaPath:"#/additionalProperties",keyword:"additionalProperties",params:{additionalProperty: key0}}];
 return false;
 break;
 }
@@ -9815,12 +10346,12 @@ const _errs3 = errors;
 if(errors === _errs3){
 if(typeof data0 === "string"){
 if(!pattern18.test(data0)){
-validate107.errors = [{instancePath:instancePath+"/roundId",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/roundId/pattern",keyword:"pattern",params:{pattern: "^r_[0-9]+$"}}];
+validate108.errors = [{instancePath:instancePath+"/roundId",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/roundId/pattern",keyword:"pattern",params:{pattern: "^r_[0-9]+$"}}];
 return false;
 }
 }
 else {
-validate107.errors = [{instancePath:instancePath+"/roundId",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/roundId/type",keyword:"type",params:{type: "string"}}];
+validate108.errors = [{instancePath:instancePath+"/roundId",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/roundId/type",keyword:"type",params:{type: "string"}}];
 return false;
 }
 }
@@ -9835,13 +10366,13 @@ let data1 = data.clientSeq;
 const _errs5 = errors;
 const _errs6 = errors;
 if(!(((typeof data1 == "number") && (!(data1 % 1) && !isNaN(data1))) && (isFinite(data1)))){
-validate107.errors = [{instancePath:instancePath+"/clientSeq",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/sequence/type",keyword:"type",params:{type: "integer"}}];
+validate108.errors = [{instancePath:instancePath+"/clientSeq",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/sequence/type",keyword:"type",params:{type: "integer"}}];
 return false;
 }
 if(errors === _errs6){
 if((typeof data1 == "number") && (isFinite(data1))){
 if(data1 < 0 || isNaN(data1)){
-validate107.errors = [{instancePath:instancePath+"/clientSeq",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/sequence/minimum",keyword:"minimum",params:{comparison: ">=", limit: 0}}];
+validate108.errors = [{instancePath:instancePath+"/clientSeq",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/sequence/minimum",keyword:"minimum",params:{comparison: ">=", limit: 0}}];
 return false;
 }
 }
@@ -9854,8 +10385,8 @@ var valid0 = true;
 if(valid0){
 if(data.error !== undefined){
 const _errs8 = errors;
-if(!(validate108(data.error, {instancePath:instancePath+"/error",parentData:data,parentDataProperty:"error",rootData}))){
-vErrors = vErrors === null ? validate108.errors : vErrors.concat(validate108.errors);
+if(!(validate109(data.error, {instancePath:instancePath+"/error",parentData:data,parentDataProperty:"error",rootData}))){
+vErrors = vErrors === null ? validate109.errors : vErrors.concat(validate109.errors);
 errors = vErrors.length;
 }
 var valid0 = _errs8 === errors;
@@ -9869,33 +10400,33 @@ var valid0 = true;
 }
 }
 else {
-validate107.errors = [{instancePath,schemaPath:"#/type",keyword:"type",params:{type: "object"}}];
+validate108.errors = [{instancePath,schemaPath:"#/type",keyword:"type",params:{type: "object"}}];
 return false;
 }
 }
-validate107.errors = vErrors;
+validate108.errors = vErrors;
 return errors === 0;
 }
 
-const check_trick_resolved = validate110;
-const schema207 = {"type":"object","additionalProperties":false,"required":["roundId","trickIndex","ledSuit","cards","thullaBy","picker","nextLeader","handCounts","escapes"],"properties":{"roundId":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/roundId"},"trickIndex":{"type":"integer","minimum":0},"ledSuit":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/suit"},"cards":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/cards"},"thullaBy":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndexOrNull"},"picker":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndexOrNull"},"nextLeader":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex"},"handCounts":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/handCounts"},"escapes":{"type":"array","items":{"$ref":"https://hulla.gg/schemas/protocol/games/thulla/events.json#/definitions/escape"}}}};
-const schema214 = {"type":"object","additionalProperties":false,"required":["roundId","seat","rank"],"properties":{"roundId":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/roundId"},"seat":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex"},"rank":{"type":"integer","minimum":1}}};
+const check_trick_resolved = validate111;
+const schema210 = {"type":"object","additionalProperties":false,"required":["roundId","trickIndex","ledSuit","cards","thullaBy","picker","nextLeader","handCounts","escapes"],"properties":{"roundId":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/roundId"},"trickIndex":{"type":"integer","minimum":0},"ledSuit":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/suit"},"cards":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/cards"},"thullaBy":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndexOrNull"},"picker":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndexOrNull"},"nextLeader":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex"},"handCounts":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/handCounts"},"escapes":{"type":"array","items":{"$ref":"https://hulla.gg/schemas/protocol/games/thulla/events.json#/definitions/escape"}}}};
+const schema217 = {"type":"object","additionalProperties":false,"required":["roundId","seat","rank"],"properties":{"roundId":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/roundId"},"seat":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex"},"rank":{"type":"integer","minimum":1}}};
 
-function validate112(data, {instancePath="", parentData, parentDataProperty, rootData=data}={}){
+function validate113(data, {instancePath="", parentData, parentDataProperty, rootData=data}={}){
 let vErrors = null;
 let errors = 0;
 if(errors === 0){
 if(data && typeof data == "object" && !Array.isArray(data)){
 let missing0;
 if((((data.roundId === undefined) && (missing0 = "roundId")) || ((data.seat === undefined) && (missing0 = "seat"))) || ((data.rank === undefined) && (missing0 = "rank"))){
-validate112.errors = [{instancePath,schemaPath:"#/required",keyword:"required",params:{missingProperty: missing0}}];
+validate113.errors = [{instancePath,schemaPath:"#/required",keyword:"required",params:{missingProperty: missing0}}];
 return false;
 }
 else {
 const _errs1 = errors;
 for(const key0 in data){
 if(!(((key0 === "roundId") || (key0 === "seat")) || (key0 === "rank"))){
-validate112.errors = [{instancePath,schemaPath:"#/additionalProperties",keyword:"additionalProperties",params:{additionalProperty: key0}}];
+validate113.errors = [{instancePath,schemaPath:"#/additionalProperties",keyword:"additionalProperties",params:{additionalProperty: key0}}];
 return false;
 break;
 }
@@ -9908,12 +10439,12 @@ const _errs3 = errors;
 if(errors === _errs3){
 if(typeof data0 === "string"){
 if(!pattern18.test(data0)){
-validate112.errors = [{instancePath:instancePath+"/roundId",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/roundId/pattern",keyword:"pattern",params:{pattern: "^r_[0-9]+$"}}];
+validate113.errors = [{instancePath:instancePath+"/roundId",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/roundId/pattern",keyword:"pattern",params:{pattern: "^r_[0-9]+$"}}];
 return false;
 }
 }
 else {
-validate112.errors = [{instancePath:instancePath+"/roundId",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/roundId/type",keyword:"type",params:{type: "string"}}];
+validate113.errors = [{instancePath:instancePath+"/roundId",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/roundId/type",keyword:"type",params:{type: "string"}}];
 return false;
 }
 }
@@ -9928,18 +10459,18 @@ let data1 = data.seat;
 const _errs5 = errors;
 const _errs6 = errors;
 if(!(((typeof data1 == "number") && (!(data1 % 1) && !isNaN(data1))) && (isFinite(data1)))){
-validate112.errors = [{instancePath:instancePath+"/seat",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex/type",keyword:"type",params:{type: "integer"}}];
+validate113.errors = [{instancePath:instancePath+"/seat",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex/type",keyword:"type",params:{type: "integer"}}];
 return false;
 }
 if(errors === _errs6){
 if((typeof data1 == "number") && (isFinite(data1))){
 if(data1 > 7 || isNaN(data1)){
-validate112.errors = [{instancePath:instancePath+"/seat",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex/maximum",keyword:"maximum",params:{comparison: "<=", limit: 7}}];
+validate113.errors = [{instancePath:instancePath+"/seat",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex/maximum",keyword:"maximum",params:{comparison: "<=", limit: 7}}];
 return false;
 }
 else {
 if(data1 < 0 || isNaN(data1)){
-validate112.errors = [{instancePath:instancePath+"/seat",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex/minimum",keyword:"minimum",params:{comparison: ">=", limit: 0}}];
+validate113.errors = [{instancePath:instancePath+"/seat",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex/minimum",keyword:"minimum",params:{comparison: ">=", limit: 0}}];
 return false;
 }
 }
@@ -9955,13 +10486,13 @@ if(data.rank !== undefined){
 let data2 = data.rank;
 const _errs8 = errors;
 if(!(((typeof data2 == "number") && (!(data2 % 1) && !isNaN(data2))) && (isFinite(data2)))){
-validate112.errors = [{instancePath:instancePath+"/rank",schemaPath:"#/properties/rank/type",keyword:"type",params:{type: "integer"}}];
+validate113.errors = [{instancePath:instancePath+"/rank",schemaPath:"#/properties/rank/type",keyword:"type",params:{type: "integer"}}];
 return false;
 }
 if(errors === _errs8){
 if((typeof data2 == "number") && (isFinite(data2))){
 if(data2 < 1 || isNaN(data2)){
-validate112.errors = [{instancePath:instancePath+"/rank",schemaPath:"#/properties/rank/minimum",keyword:"minimum",params:{comparison: ">=", limit: 1}}];
+validate113.errors = [{instancePath:instancePath+"/rank",schemaPath:"#/properties/rank/minimum",keyword:"minimum",params:{comparison: ">=", limit: 1}}];
 return false;
 }
 }
@@ -9977,30 +10508,30 @@ var valid0 = true;
 }
 }
 else {
-validate112.errors = [{instancePath,schemaPath:"#/type",keyword:"type",params:{type: "object"}}];
+validate113.errors = [{instancePath,schemaPath:"#/type",keyword:"type",params:{type: "object"}}];
 return false;
 }
 }
-validate112.errors = vErrors;
+validate113.errors = vErrors;
 return errors === 0;
 }
 
 
-function validate110(data, {instancePath="", parentData, parentDataProperty, rootData=data}={}){
+function validate111(data, {instancePath="", parentData, parentDataProperty, rootData=data}={}){
 let vErrors = null;
 let errors = 0;
 if(errors === 0){
 if(data && typeof data == "object" && !Array.isArray(data)){
 let missing0;
 if((((((((((data.roundId === undefined) && (missing0 = "roundId")) || ((data.trickIndex === undefined) && (missing0 = "trickIndex"))) || ((data.ledSuit === undefined) && (missing0 = "ledSuit"))) || ((data.cards === undefined) && (missing0 = "cards"))) || ((data.thullaBy === undefined) && (missing0 = "thullaBy"))) || ((data.picker === undefined) && (missing0 = "picker"))) || ((data.nextLeader === undefined) && (missing0 = "nextLeader"))) || ((data.handCounts === undefined) && (missing0 = "handCounts"))) || ((data.escapes === undefined) && (missing0 = "escapes"))){
-validate110.errors = [{instancePath,schemaPath:"#/required",keyword:"required",params:{missingProperty: missing0}}];
+validate111.errors = [{instancePath,schemaPath:"#/required",keyword:"required",params:{missingProperty: missing0}}];
 return false;
 }
 else {
 const _errs1 = errors;
 for(const key0 in data){
-if(!(func2.call(schema207.properties, key0))){
-validate110.errors = [{instancePath,schemaPath:"#/additionalProperties",keyword:"additionalProperties",params:{additionalProperty: key0}}];
+if(!(func2.call(schema210.properties, key0))){
+validate111.errors = [{instancePath,schemaPath:"#/additionalProperties",keyword:"additionalProperties",params:{additionalProperty: key0}}];
 return false;
 break;
 }
@@ -10013,12 +10544,12 @@ const _errs3 = errors;
 if(errors === _errs3){
 if(typeof data0 === "string"){
 if(!pattern18.test(data0)){
-validate110.errors = [{instancePath:instancePath+"/roundId",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/roundId/pattern",keyword:"pattern",params:{pattern: "^r_[0-9]+$"}}];
+validate111.errors = [{instancePath:instancePath+"/roundId",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/roundId/pattern",keyword:"pattern",params:{pattern: "^r_[0-9]+$"}}];
 return false;
 }
 }
 else {
-validate110.errors = [{instancePath:instancePath+"/roundId",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/roundId/type",keyword:"type",params:{type: "string"}}];
+validate111.errors = [{instancePath:instancePath+"/roundId",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/roundId/type",keyword:"type",params:{type: "string"}}];
 return false;
 }
 }
@@ -10032,13 +10563,13 @@ if(data.trickIndex !== undefined){
 let data1 = data.trickIndex;
 const _errs5 = errors;
 if(!(((typeof data1 == "number") && (!(data1 % 1) && !isNaN(data1))) && (isFinite(data1)))){
-validate110.errors = [{instancePath:instancePath+"/trickIndex",schemaPath:"#/properties/trickIndex/type",keyword:"type",params:{type: "integer"}}];
+validate111.errors = [{instancePath:instancePath+"/trickIndex",schemaPath:"#/properties/trickIndex/type",keyword:"type",params:{type: "integer"}}];
 return false;
 }
 if(errors === _errs5){
 if((typeof data1 == "number") && (isFinite(data1))){
 if(data1 < 0 || isNaN(data1)){
-validate110.errors = [{instancePath:instancePath+"/trickIndex",schemaPath:"#/properties/trickIndex/minimum",keyword:"minimum",params:{comparison: ">=", limit: 0}}];
+validate111.errors = [{instancePath:instancePath+"/trickIndex",schemaPath:"#/properties/trickIndex/minimum",keyword:"minimum",params:{comparison: ">=", limit: 0}}];
 return false;
 }
 }
@@ -10053,11 +10584,11 @@ if(data.ledSuit !== undefined){
 let data2 = data.ledSuit;
 const _errs7 = errors;
 if(typeof data2 !== "string"){
-validate110.errors = [{instancePath:instancePath+"/ledSuit",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/suit/type",keyword:"type",params:{type: "string"}}];
+validate111.errors = [{instancePath:instancePath+"/ledSuit",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/suit/type",keyword:"type",params:{type: "string"}}];
 return false;
 }
 if(!((((data2 === "S") || (data2 === "H")) || (data2 === "C")) || (data2 === "D"))){
-validate110.errors = [{instancePath:instancePath+"/ledSuit",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/suit/enum",keyword:"enum",params:{allowedValues: schema30.enum}}];
+validate111.errors = [{instancePath:instancePath+"/ledSuit",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/suit/enum",keyword:"enum",params:{allowedValues: schema30.enum}}];
 return false;
 }
 var valid0 = _errs7 === errors;
@@ -10068,8 +10599,8 @@ var valid0 = true;
 if(valid0){
 if(data.cards !== undefined){
 const _errs10 = errors;
-if(!(validate102(data.cards, {instancePath:instancePath+"/cards",parentData:data,parentDataProperty:"cards",rootData}))){
-vErrors = vErrors === null ? validate102.errors : vErrors.concat(validate102.errors);
+if(!(validate103(data.cards, {instancePath:instancePath+"/cards",parentData:data,parentDataProperty:"cards",rootData}))){
+vErrors = vErrors === null ? validate103.errors : vErrors.concat(validate103.errors);
 errors = vErrors.length;
 }
 var valid0 = _errs10 === errors;
@@ -10083,18 +10614,18 @@ let data4 = data.thullaBy;
 const _errs11 = errors;
 const _errs12 = errors;
 if((!(((typeof data4 == "number") && (!(data4 % 1) && !isNaN(data4))) && (isFinite(data4)))) && (data4 !== null)){
-validate110.errors = [{instancePath:instancePath+"/thullaBy",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndexOrNull/type",keyword:"type",params:{type: schema25.type}}];
+validate111.errors = [{instancePath:instancePath+"/thullaBy",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndexOrNull/type",keyword:"type",params:{type: schema25.type}}];
 return false;
 }
 if(errors === _errs12){
 if((typeof data4 == "number") && (isFinite(data4))){
 if(data4 > 7 || isNaN(data4)){
-validate110.errors = [{instancePath:instancePath+"/thullaBy",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndexOrNull/maximum",keyword:"maximum",params:{comparison: "<=", limit: 7}}];
+validate111.errors = [{instancePath:instancePath+"/thullaBy",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndexOrNull/maximum",keyword:"maximum",params:{comparison: "<=", limit: 7}}];
 return false;
 }
 else {
 if(data4 < 0 || isNaN(data4)){
-validate110.errors = [{instancePath:instancePath+"/thullaBy",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndexOrNull/minimum",keyword:"minimum",params:{comparison: ">=", limit: 0}}];
+validate111.errors = [{instancePath:instancePath+"/thullaBy",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndexOrNull/minimum",keyword:"minimum",params:{comparison: ">=", limit: 0}}];
 return false;
 }
 }
@@ -10111,18 +10642,18 @@ let data5 = data.picker;
 const _errs14 = errors;
 const _errs15 = errors;
 if((!(((typeof data5 == "number") && (!(data5 % 1) && !isNaN(data5))) && (isFinite(data5)))) && (data5 !== null)){
-validate110.errors = [{instancePath:instancePath+"/picker",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndexOrNull/type",keyword:"type",params:{type: schema25.type}}];
+validate111.errors = [{instancePath:instancePath+"/picker",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndexOrNull/type",keyword:"type",params:{type: schema25.type}}];
 return false;
 }
 if(errors === _errs15){
 if((typeof data5 == "number") && (isFinite(data5))){
 if(data5 > 7 || isNaN(data5)){
-validate110.errors = [{instancePath:instancePath+"/picker",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndexOrNull/maximum",keyword:"maximum",params:{comparison: "<=", limit: 7}}];
+validate111.errors = [{instancePath:instancePath+"/picker",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndexOrNull/maximum",keyword:"maximum",params:{comparison: "<=", limit: 7}}];
 return false;
 }
 else {
 if(data5 < 0 || isNaN(data5)){
-validate110.errors = [{instancePath:instancePath+"/picker",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndexOrNull/minimum",keyword:"minimum",params:{comparison: ">=", limit: 0}}];
+validate111.errors = [{instancePath:instancePath+"/picker",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndexOrNull/minimum",keyword:"minimum",params:{comparison: ">=", limit: 0}}];
 return false;
 }
 }
@@ -10139,18 +10670,18 @@ let data6 = data.nextLeader;
 const _errs17 = errors;
 const _errs18 = errors;
 if(!(((typeof data6 == "number") && (!(data6 % 1) && !isNaN(data6))) && (isFinite(data6)))){
-validate110.errors = [{instancePath:instancePath+"/nextLeader",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex/type",keyword:"type",params:{type: "integer"}}];
+validate111.errors = [{instancePath:instancePath+"/nextLeader",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex/type",keyword:"type",params:{type: "integer"}}];
 return false;
 }
 if(errors === _errs18){
 if((typeof data6 == "number") && (isFinite(data6))){
 if(data6 > 7 || isNaN(data6)){
-validate110.errors = [{instancePath:instancePath+"/nextLeader",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex/maximum",keyword:"maximum",params:{comparison: "<=", limit: 7}}];
+validate111.errors = [{instancePath:instancePath+"/nextLeader",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex/maximum",keyword:"maximum",params:{comparison: "<=", limit: 7}}];
 return false;
 }
 else {
 if(data6 < 0 || isNaN(data6)){
-validate110.errors = [{instancePath:instancePath+"/nextLeader",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex/minimum",keyword:"minimum",params:{comparison: ">=", limit: 0}}];
+validate111.errors = [{instancePath:instancePath+"/nextLeader",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex/minimum",keyword:"minimum",params:{comparison: ">=", limit: 0}}];
 return false;
 }
 }
@@ -10174,13 +10705,13 @@ for(let i0=0; i0<len0; i0++){
 let data8 = data7[i0];
 const _errs23 = errors;
 if(!(((typeof data8 == "number") && (!(data8 % 1) && !isNaN(data8))) && (isFinite(data8)))){
-validate110.errors = [{instancePath:instancePath+"/handCounts/" + i0,schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/handCounts/items/type",keyword:"type",params:{type: "integer"}}];
+validate111.errors = [{instancePath:instancePath+"/handCounts/" + i0,schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/handCounts/items/type",keyword:"type",params:{type: "integer"}}];
 return false;
 }
 if(errors === _errs23){
 if((typeof data8 == "number") && (isFinite(data8))){
 if(data8 < 0 || isNaN(data8)){
-validate110.errors = [{instancePath:instancePath+"/handCounts/" + i0,schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/handCounts/items/minimum",keyword:"minimum",params:{comparison: ">=", limit: 0}}];
+validate111.errors = [{instancePath:instancePath+"/handCounts/" + i0,schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/handCounts/items/minimum",keyword:"minimum",params:{comparison: ">=", limit: 0}}];
 return false;
 }
 }
@@ -10192,7 +10723,7 @@ break;
 }
 }
 else {
-validate110.errors = [{instancePath:instancePath+"/handCounts",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/handCounts/type",keyword:"type",params:{type: "array"}}];
+validate111.errors = [{instancePath:instancePath+"/handCounts",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/handCounts/type",keyword:"type",params:{type: "array"}}];
 return false;
 }
 }
@@ -10211,8 +10742,8 @@ var valid8 = true;
 const len1 = data9.length;
 for(let i1=0; i1<len1; i1++){
 const _errs27 = errors;
-if(!(validate112(data9[i1], {instancePath:instancePath+"/escapes/" + i1,parentData:data9,parentDataProperty:i1,rootData}))){
-vErrors = vErrors === null ? validate112.errors : vErrors.concat(validate112.errors);
+if(!(validate113(data9[i1], {instancePath:instancePath+"/escapes/" + i1,parentData:data9,parentDataProperty:i1,rootData}))){
+vErrors = vErrors === null ? validate113.errors : vErrors.concat(validate113.errors);
 errors = vErrors.length;
 }
 var valid8 = _errs27 === errors;
@@ -10222,7 +10753,7 @@ break;
 }
 }
 else {
-validate110.errors = [{instancePath:instancePath+"/escapes",schemaPath:"#/properties/escapes/type",keyword:"type",params:{type: "array"}}];
+validate111.errors = [{instancePath:instancePath+"/escapes",schemaPath:"#/properties/escapes/type",keyword:"type",params:{type: "array"}}];
 return false;
 }
 }
@@ -10243,32 +10774,32 @@ var valid0 = true;
 }
 }
 else {
-validate110.errors = [{instancePath,schemaPath:"#/type",keyword:"type",params:{type: "object"}}];
+validate111.errors = [{instancePath,schemaPath:"#/type",keyword:"type",params:{type: "object"}}];
 return false;
 }
 }
-validate110.errors = vErrors;
+validate111.errors = vErrors;
 return errors === 0;
 }
 
-const check_pickup = validate114;
-const schema217 = {"type":"object","additionalProperties":false,"required":["roundId","seat","cards","trickIndex"],"properties":{"roundId":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/roundId"},"seat":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex"},"cards":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/cards"},"trickIndex":{"type":"integer","minimum":0}}};
+const check_pickup = validate115;
+const schema220 = {"type":"object","additionalProperties":false,"required":["roundId","seat","cards","trickIndex"],"properties":{"roundId":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/roundId"},"seat":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex"},"cards":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/cards"},"trickIndex":{"type":"integer","minimum":0}}};
 
-function validate114(data, {instancePath="", parentData, parentDataProperty, rootData=data}={}){
+function validate115(data, {instancePath="", parentData, parentDataProperty, rootData=data}={}){
 let vErrors = null;
 let errors = 0;
 if(errors === 0){
 if(data && typeof data == "object" && !Array.isArray(data)){
 let missing0;
 if(((((data.roundId === undefined) && (missing0 = "roundId")) || ((data.seat === undefined) && (missing0 = "seat"))) || ((data.cards === undefined) && (missing0 = "cards"))) || ((data.trickIndex === undefined) && (missing0 = "trickIndex"))){
-validate114.errors = [{instancePath,schemaPath:"#/required",keyword:"required",params:{missingProperty: missing0}}];
+validate115.errors = [{instancePath,schemaPath:"#/required",keyword:"required",params:{missingProperty: missing0}}];
 return false;
 }
 else {
 const _errs1 = errors;
 for(const key0 in data){
 if(!((((key0 === "roundId") || (key0 === "seat")) || (key0 === "cards")) || (key0 === "trickIndex"))){
-validate114.errors = [{instancePath,schemaPath:"#/additionalProperties",keyword:"additionalProperties",params:{additionalProperty: key0}}];
+validate115.errors = [{instancePath,schemaPath:"#/additionalProperties",keyword:"additionalProperties",params:{additionalProperty: key0}}];
 return false;
 break;
 }
@@ -10281,12 +10812,12 @@ const _errs3 = errors;
 if(errors === _errs3){
 if(typeof data0 === "string"){
 if(!pattern18.test(data0)){
-validate114.errors = [{instancePath:instancePath+"/roundId",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/roundId/pattern",keyword:"pattern",params:{pattern: "^r_[0-9]+$"}}];
+validate115.errors = [{instancePath:instancePath+"/roundId",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/roundId/pattern",keyword:"pattern",params:{pattern: "^r_[0-9]+$"}}];
 return false;
 }
 }
 else {
-validate114.errors = [{instancePath:instancePath+"/roundId",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/roundId/type",keyword:"type",params:{type: "string"}}];
+validate115.errors = [{instancePath:instancePath+"/roundId",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/roundId/type",keyword:"type",params:{type: "string"}}];
 return false;
 }
 }
@@ -10301,18 +10832,18 @@ let data1 = data.seat;
 const _errs5 = errors;
 const _errs6 = errors;
 if(!(((typeof data1 == "number") && (!(data1 % 1) && !isNaN(data1))) && (isFinite(data1)))){
-validate114.errors = [{instancePath:instancePath+"/seat",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex/type",keyword:"type",params:{type: "integer"}}];
+validate115.errors = [{instancePath:instancePath+"/seat",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex/type",keyword:"type",params:{type: "integer"}}];
 return false;
 }
 if(errors === _errs6){
 if((typeof data1 == "number") && (isFinite(data1))){
 if(data1 > 7 || isNaN(data1)){
-validate114.errors = [{instancePath:instancePath+"/seat",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex/maximum",keyword:"maximum",params:{comparison: "<=", limit: 7}}];
+validate115.errors = [{instancePath:instancePath+"/seat",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex/maximum",keyword:"maximum",params:{comparison: "<=", limit: 7}}];
 return false;
 }
 else {
 if(data1 < 0 || isNaN(data1)){
-validate114.errors = [{instancePath:instancePath+"/seat",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex/minimum",keyword:"minimum",params:{comparison: ">=", limit: 0}}];
+validate115.errors = [{instancePath:instancePath+"/seat",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex/minimum",keyword:"minimum",params:{comparison: ">=", limit: 0}}];
 return false;
 }
 }
@@ -10326,8 +10857,8 @@ var valid0 = true;
 if(valid0){
 if(data.cards !== undefined){
 const _errs8 = errors;
-if(!(validate102(data.cards, {instancePath:instancePath+"/cards",parentData:data,parentDataProperty:"cards",rootData}))){
-vErrors = vErrors === null ? validate102.errors : vErrors.concat(validate102.errors);
+if(!(validate103(data.cards, {instancePath:instancePath+"/cards",parentData:data,parentDataProperty:"cards",rootData}))){
+vErrors = vErrors === null ? validate103.errors : vErrors.concat(validate103.errors);
 errors = vErrors.length;
 }
 var valid0 = _errs8 === errors;
@@ -10340,13 +10871,13 @@ if(data.trickIndex !== undefined){
 let data3 = data.trickIndex;
 const _errs9 = errors;
 if(!(((typeof data3 == "number") && (!(data3 % 1) && !isNaN(data3))) && (isFinite(data3)))){
-validate114.errors = [{instancePath:instancePath+"/trickIndex",schemaPath:"#/properties/trickIndex/type",keyword:"type",params:{type: "integer"}}];
+validate115.errors = [{instancePath:instancePath+"/trickIndex",schemaPath:"#/properties/trickIndex/type",keyword:"type",params:{type: "integer"}}];
 return false;
 }
 if(errors === _errs9){
 if((typeof data3 == "number") && (isFinite(data3))){
 if(data3 < 0 || isNaN(data3)){
-validate114.errors = [{instancePath:instancePath+"/trickIndex",schemaPath:"#/properties/trickIndex/minimum",keyword:"minimum",params:{comparison: ">=", limit: 0}}];
+validate115.errors = [{instancePath:instancePath+"/trickIndex",schemaPath:"#/properties/trickIndex/minimum",keyword:"minimum",params:{comparison: ">=", limit: 0}}];
 return false;
 }
 }
@@ -10363,122 +10894,15 @@ var valid0 = true;
 }
 }
 else {
-validate114.errors = [{instancePath,schemaPath:"#/type",keyword:"type",params:{type: "object"}}];
+validate115.errors = [{instancePath,schemaPath:"#/type",keyword:"type",params:{type: "object"}}];
 return false;
 }
 }
-validate114.errors = vErrors;
+validate115.errors = vErrors;
 return errors === 0;
 }
 
-const check_escape = validate116;
-
-function validate116(data, {instancePath="", parentData, parentDataProperty, rootData=data}={}){
-let vErrors = null;
-let errors = 0;
-if(errors === 0){
-if(data && typeof data == "object" && !Array.isArray(data)){
-let missing0;
-if((((data.roundId === undefined) && (missing0 = "roundId")) || ((data.seat === undefined) && (missing0 = "seat"))) || ((data.rank === undefined) && (missing0 = "rank"))){
-validate116.errors = [{instancePath,schemaPath:"#/required",keyword:"required",params:{missingProperty: missing0}}];
-return false;
-}
-else {
-const _errs1 = errors;
-for(const key0 in data){
-if(!(((key0 === "roundId") || (key0 === "seat")) || (key0 === "rank"))){
-validate116.errors = [{instancePath,schemaPath:"#/additionalProperties",keyword:"additionalProperties",params:{additionalProperty: key0}}];
-return false;
-break;
-}
-}
-if(_errs1 === errors){
-if(data.roundId !== undefined){
-let data0 = data.roundId;
-const _errs2 = errors;
-const _errs3 = errors;
-if(errors === _errs3){
-if(typeof data0 === "string"){
-if(!pattern18.test(data0)){
-validate116.errors = [{instancePath:instancePath+"/roundId",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/roundId/pattern",keyword:"pattern",params:{pattern: "^r_[0-9]+$"}}];
-return false;
-}
-}
-else {
-validate116.errors = [{instancePath:instancePath+"/roundId",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/roundId/type",keyword:"type",params:{type: "string"}}];
-return false;
-}
-}
-var valid0 = _errs2 === errors;
-}
-else {
-var valid0 = true;
-}
-if(valid0){
-if(data.seat !== undefined){
-let data1 = data.seat;
-const _errs5 = errors;
-const _errs6 = errors;
-if(!(((typeof data1 == "number") && (!(data1 % 1) && !isNaN(data1))) && (isFinite(data1)))){
-validate116.errors = [{instancePath:instancePath+"/seat",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex/type",keyword:"type",params:{type: "integer"}}];
-return false;
-}
-if(errors === _errs6){
-if((typeof data1 == "number") && (isFinite(data1))){
-if(data1 > 7 || isNaN(data1)){
-validate116.errors = [{instancePath:instancePath+"/seat",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex/maximum",keyword:"maximum",params:{comparison: "<=", limit: 7}}];
-return false;
-}
-else {
-if(data1 < 0 || isNaN(data1)){
-validate116.errors = [{instancePath:instancePath+"/seat",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex/minimum",keyword:"minimum",params:{comparison: ">=", limit: 0}}];
-return false;
-}
-}
-}
-}
-var valid0 = _errs5 === errors;
-}
-else {
-var valid0 = true;
-}
-if(valid0){
-if(data.rank !== undefined){
-let data2 = data.rank;
-const _errs8 = errors;
-if(!(((typeof data2 == "number") && (!(data2 % 1) && !isNaN(data2))) && (isFinite(data2)))){
-validate116.errors = [{instancePath:instancePath+"/rank",schemaPath:"#/properties/rank/type",keyword:"type",params:{type: "integer"}}];
-return false;
-}
-if(errors === _errs8){
-if((typeof data2 == "number") && (isFinite(data2))){
-if(data2 < 1 || isNaN(data2)){
-validate116.errors = [{instancePath:instancePath+"/rank",schemaPath:"#/properties/rank/minimum",keyword:"minimum",params:{comparison: ">=", limit: 1}}];
-return false;
-}
-}
-}
-var valid0 = _errs8 === errors;
-}
-else {
-var valid0 = true;
-}
-}
-}
-}
-}
-}
-else {
-validate116.errors = [{instancePath,schemaPath:"#/type",keyword:"type",params:{type: "object"}}];
-return false;
-}
-}
-validate116.errors = vErrors;
-return errors === 0;
-}
-
-const check_hand_taken = validate117;
-const schema223 = {"type":"object","additionalProperties":false,"required":["roundId","taker","target","cardCount"],"properties":{"roundId":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/roundId"},"taker":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex"},"target":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex"},"cardCount":{"type":"integer","minimum":1}}};
+const check_escape = validate117;
 
 function validate117(data, {instancePath="", parentData, parentDataProperty, rootData=data}={}){
 let vErrors = null;
@@ -10486,14 +10910,14 @@ let errors = 0;
 if(errors === 0){
 if(data && typeof data == "object" && !Array.isArray(data)){
 let missing0;
-if(((((data.roundId === undefined) && (missing0 = "roundId")) || ((data.taker === undefined) && (missing0 = "taker"))) || ((data.target === undefined) && (missing0 = "target"))) || ((data.cardCount === undefined) && (missing0 = "cardCount"))){
+if((((data.roundId === undefined) && (missing0 = "roundId")) || ((data.seat === undefined) && (missing0 = "seat"))) || ((data.rank === undefined) && (missing0 = "rank"))){
 validate117.errors = [{instancePath,schemaPath:"#/required",keyword:"required",params:{missingProperty: missing0}}];
 return false;
 }
 else {
 const _errs1 = errors;
 for(const key0 in data){
-if(!((((key0 === "roundId") || (key0 === "taker")) || (key0 === "target")) || (key0 === "cardCount"))){
+if(!(((key0 === "roundId") || (key0 === "seat")) || (key0 === "rank"))){
 validate117.errors = [{instancePath,schemaPath:"#/additionalProperties",keyword:"additionalProperties",params:{additionalProperty: key0}}];
 return false;
 break;
@@ -10522,23 +10946,23 @@ else {
 var valid0 = true;
 }
 if(valid0){
-if(data.taker !== undefined){
-let data1 = data.taker;
+if(data.seat !== undefined){
+let data1 = data.seat;
 const _errs5 = errors;
 const _errs6 = errors;
 if(!(((typeof data1 == "number") && (!(data1 % 1) && !isNaN(data1))) && (isFinite(data1)))){
-validate117.errors = [{instancePath:instancePath+"/taker",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex/type",keyword:"type",params:{type: "integer"}}];
+validate117.errors = [{instancePath:instancePath+"/seat",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex/type",keyword:"type",params:{type: "integer"}}];
 return false;
 }
 if(errors === _errs6){
 if((typeof data1 == "number") && (isFinite(data1))){
 if(data1 > 7 || isNaN(data1)){
-validate117.errors = [{instancePath:instancePath+"/taker",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex/maximum",keyword:"maximum",params:{comparison: "<=", limit: 7}}];
+validate117.errors = [{instancePath:instancePath+"/seat",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex/maximum",keyword:"maximum",params:{comparison: "<=", limit: 7}}];
 return false;
 }
 else {
 if(data1 < 0 || isNaN(data1)){
-validate117.errors = [{instancePath:instancePath+"/taker",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex/minimum",keyword:"minimum",params:{comparison: ">=", limit: 0}}];
+validate117.errors = [{instancePath:instancePath+"/seat",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex/minimum",keyword:"minimum",params:{comparison: ">=", limit: 0}}];
 return false;
 }
 }
@@ -10550,25 +10974,18 @@ else {
 var valid0 = true;
 }
 if(valid0){
-if(data.target !== undefined){
-let data2 = data.target;
+if(data.rank !== undefined){
+let data2 = data.rank;
 const _errs8 = errors;
-const _errs9 = errors;
 if(!(((typeof data2 == "number") && (!(data2 % 1) && !isNaN(data2))) && (isFinite(data2)))){
-validate117.errors = [{instancePath:instancePath+"/target",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex/type",keyword:"type",params:{type: "integer"}}];
+validate117.errors = [{instancePath:instancePath+"/rank",schemaPath:"#/properties/rank/type",keyword:"type",params:{type: "integer"}}];
 return false;
 }
-if(errors === _errs9){
+if(errors === _errs8){
 if((typeof data2 == "number") && (isFinite(data2))){
-if(data2 > 7 || isNaN(data2)){
-validate117.errors = [{instancePath:instancePath+"/target",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex/maximum",keyword:"maximum",params:{comparison: "<=", limit: 7}}];
+if(data2 < 1 || isNaN(data2)){
+validate117.errors = [{instancePath:instancePath+"/rank",schemaPath:"#/properties/rank/minimum",keyword:"minimum",params:{comparison: ">=", limit: 1}}];
 return false;
-}
-else {
-if(data2 < 0 || isNaN(data2)){
-validate117.errors = [{instancePath:instancePath+"/target",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex/minimum",keyword:"minimum",params:{comparison: ">=", limit: 0}}];
-return false;
-}
 }
 }
 }
@@ -10576,28 +10993,6 @@ var valid0 = _errs8 === errors;
 }
 else {
 var valid0 = true;
-}
-if(valid0){
-if(data.cardCount !== undefined){
-let data3 = data.cardCount;
-const _errs11 = errors;
-if(!(((typeof data3 == "number") && (!(data3 % 1) && !isNaN(data3))) && (isFinite(data3)))){
-validate117.errors = [{instancePath:instancePath+"/cardCount",schemaPath:"#/properties/cardCount/type",keyword:"type",params:{type: "integer"}}];
-return false;
-}
-if(errors === _errs11){
-if((typeof data3 == "number") && (isFinite(data3))){
-if(data3 < 1 || isNaN(data3)){
-validate117.errors = [{instancePath:instancePath+"/cardCount",schemaPath:"#/properties/cardCount/minimum",keyword:"minimum",params:{comparison: ">=", limit: 1}}];
-return false;
-}
-}
-}
-var valid0 = _errs11 === errors;
-}
-else {
-var valid0 = true;
-}
 }
 }
 }
@@ -10613,8 +11008,8 @@ validate117.errors = vErrors;
 return errors === 0;
 }
 
-const check_private_draw = validate118;
-const schema227 = {"type":"object","additionalProperties":false,"description":"Sent to the seats the engine names: the drawer, and the seat the card left","required":["roundId","seat","card","source","from","autoLead"],"properties":{"roundId":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/roundId"},"seat":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex"},"card":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/card"},"source":{"type":"string","enum":["discard","nextPlayer","opponent"]},"from":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndexOrNull"},"autoLead":{"type":"boolean"}}};
+const check_hand_taken = validate118;
+const schema226 = {"type":"object","additionalProperties":false,"required":["roundId","taker","target","cardCount"],"properties":{"roundId":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/roundId"},"taker":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex"},"target":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex"},"cardCount":{"type":"integer","minimum":1}}};
 
 function validate118(data, {instancePath="", parentData, parentDataProperty, rootData=data}={}){
 let vErrors = null;
@@ -10622,14 +11017,14 @@ let errors = 0;
 if(errors === 0){
 if(data && typeof data == "object" && !Array.isArray(data)){
 let missing0;
-if(((((((data.roundId === undefined) && (missing0 = "roundId")) || ((data.seat === undefined) && (missing0 = "seat"))) || ((data.card === undefined) && (missing0 = "card"))) || ((data.source === undefined) && (missing0 = "source"))) || ((data.from === undefined) && (missing0 = "from"))) || ((data.autoLead === undefined) && (missing0 = "autoLead"))){
+if(((((data.roundId === undefined) && (missing0 = "roundId")) || ((data.taker === undefined) && (missing0 = "taker"))) || ((data.target === undefined) && (missing0 = "target"))) || ((data.cardCount === undefined) && (missing0 = "cardCount"))){
 validate118.errors = [{instancePath,schemaPath:"#/required",keyword:"required",params:{missingProperty: missing0}}];
 return false;
 }
 else {
 const _errs1 = errors;
 for(const key0 in data){
-if(!((((((key0 === "roundId") || (key0 === "seat")) || (key0 === "card")) || (key0 === "source")) || (key0 === "from")) || (key0 === "autoLead"))){
+if(!((((key0 === "roundId") || (key0 === "taker")) || (key0 === "target")) || (key0 === "cardCount"))){
 validate118.errors = [{instancePath,schemaPath:"#/additionalProperties",keyword:"additionalProperties",params:{additionalProperty: key0}}];
 return false;
 break;
@@ -10658,23 +11053,23 @@ else {
 var valid0 = true;
 }
 if(valid0){
-if(data.seat !== undefined){
-let data1 = data.seat;
+if(data.taker !== undefined){
+let data1 = data.taker;
 const _errs5 = errors;
 const _errs6 = errors;
 if(!(((typeof data1 == "number") && (!(data1 % 1) && !isNaN(data1))) && (isFinite(data1)))){
-validate118.errors = [{instancePath:instancePath+"/seat",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex/type",keyword:"type",params:{type: "integer"}}];
+validate118.errors = [{instancePath:instancePath+"/taker",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex/type",keyword:"type",params:{type: "integer"}}];
 return false;
 }
 if(errors === _errs6){
 if((typeof data1 == "number") && (isFinite(data1))){
 if(data1 > 7 || isNaN(data1)){
-validate118.errors = [{instancePath:instancePath+"/seat",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex/maximum",keyword:"maximum",params:{comparison: "<=", limit: 7}}];
+validate118.errors = [{instancePath:instancePath+"/taker",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex/maximum",keyword:"maximum",params:{comparison: "<=", limit: 7}}];
 return false;
 }
 else {
 if(data1 < 0 || isNaN(data1)){
-validate118.errors = [{instancePath:instancePath+"/seat",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex/minimum",keyword:"minimum",params:{comparison: ">=", limit: 0}}];
+validate118.errors = [{instancePath:instancePath+"/taker",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex/minimum",keyword:"minimum",params:{comparison: ">=", limit: 0}}];
 return false;
 }
 }
@@ -10686,20 +11081,26 @@ else {
 var valid0 = true;
 }
 if(valid0){
-if(data.card !== undefined){
-let data2 = data.card;
+if(data.target !== undefined){
+let data2 = data.target;
 const _errs8 = errors;
 const _errs9 = errors;
-if(errors === _errs9){
-if(typeof data2 === "string"){
-if(!pattern2.test(data2)){
-validate118.errors = [{instancePath:instancePath+"/card",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/card/pattern",keyword:"pattern",params:{pattern: "^[2-9TJQKA][SHCD]$"}}];
+if(!(((typeof data2 == "number") && (!(data2 % 1) && !isNaN(data2))) && (isFinite(data2)))){
+validate118.errors = [{instancePath:instancePath+"/target",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex/type",keyword:"type",params:{type: "integer"}}];
 return false;
 }
+if(errors === _errs9){
+if((typeof data2 == "number") && (isFinite(data2))){
+if(data2 > 7 || isNaN(data2)){
+validate118.errors = [{instancePath:instancePath+"/target",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex/maximum",keyword:"maximum",params:{comparison: "<=", limit: 7}}];
+return false;
 }
 else {
-validate118.errors = [{instancePath:instancePath+"/card",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/card/type",keyword:"type",params:{type: "string"}}];
+if(data2 < 0 || isNaN(data2)){
+validate118.errors = [{instancePath:instancePath+"/target",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex/minimum",keyword:"minimum",params:{comparison: ">=", limit: 0}}];
 return false;
+}
+}
 }
 }
 var valid0 = _errs8 === errors;
@@ -10708,63 +11109,25 @@ else {
 var valid0 = true;
 }
 if(valid0){
-if(data.source !== undefined){
-let data3 = data.source;
+if(data.cardCount !== undefined){
+let data3 = data.cardCount;
 const _errs11 = errors;
-if(typeof data3 !== "string"){
-validate118.errors = [{instancePath:instancePath+"/source",schemaPath:"#/properties/source/type",keyword:"type",params:{type: "string"}}];
+if(!(((typeof data3 == "number") && (!(data3 % 1) && !isNaN(data3))) && (isFinite(data3)))){
+validate118.errors = [{instancePath:instancePath+"/cardCount",schemaPath:"#/properties/cardCount/type",keyword:"type",params:{type: "integer"}}];
 return false;
 }
-if(!(((data3 === "discard") || (data3 === "nextPlayer")) || (data3 === "opponent"))){
-validate118.errors = [{instancePath:instancePath+"/source",schemaPath:"#/properties/source/enum",keyword:"enum",params:{allowedValues: schema227.properties.source.enum}}];
+if(errors === _errs11){
+if((typeof data3 == "number") && (isFinite(data3))){
+if(data3 < 1 || isNaN(data3)){
+validate118.errors = [{instancePath:instancePath+"/cardCount",schemaPath:"#/properties/cardCount/minimum",keyword:"minimum",params:{comparison: ">=", limit: 1}}];
 return false;
+}
+}
 }
 var valid0 = _errs11 === errors;
 }
 else {
 var valid0 = true;
-}
-if(valid0){
-if(data.from !== undefined){
-let data4 = data.from;
-const _errs13 = errors;
-const _errs14 = errors;
-if((!(((typeof data4 == "number") && (!(data4 % 1) && !isNaN(data4))) && (isFinite(data4)))) && (data4 !== null)){
-validate118.errors = [{instancePath:instancePath+"/from",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndexOrNull/type",keyword:"type",params:{type: schema25.type}}];
-return false;
-}
-if(errors === _errs14){
-if((typeof data4 == "number") && (isFinite(data4))){
-if(data4 > 7 || isNaN(data4)){
-validate118.errors = [{instancePath:instancePath+"/from",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndexOrNull/maximum",keyword:"maximum",params:{comparison: "<=", limit: 7}}];
-return false;
-}
-else {
-if(data4 < 0 || isNaN(data4)){
-validate118.errors = [{instancePath:instancePath+"/from",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndexOrNull/minimum",keyword:"minimum",params:{comparison: ">=", limit: 0}}];
-return false;
-}
-}
-}
-}
-var valid0 = _errs13 === errors;
-}
-else {
-var valid0 = true;
-}
-if(valid0){
-if(data.autoLead !== undefined){
-const _errs16 = errors;
-if(typeof data.autoLead !== "boolean"){
-validate118.errors = [{instancePath:instancePath+"/autoLead",schemaPath:"#/properties/autoLead/type",keyword:"type",params:{type: "boolean"}}];
-return false;
-}
-var valid0 = _errs16 === errors;
-}
-else {
-var valid0 = true;
-}
-}
 }
 }
 }
@@ -10781,53 +11144,8 @@ validate118.errors = vErrors;
 return errors === 0;
 }
 
-const check_endgame_started = validate119;
-const schema232 = {"type":"object","additionalProperties":false,"required":["roundId","seats"],"properties":{"roundId":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/roundId"},"seats":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/seatList"}}};
-
-function validate120(data, {instancePath="", parentData, parentDataProperty, rootData=data}={}){
-let vErrors = null;
-let errors = 0;
-if(errors === 0){
-if(Array.isArray(data)){
-var valid0 = true;
-const len0 = data.length;
-for(let i0=0; i0<len0; i0++){
-let data0 = data[i0];
-const _errs1 = errors;
-const _errs2 = errors;
-if(!(((typeof data0 == "number") && (!(data0 % 1) && !isNaN(data0))) && (isFinite(data0)))){
-validate120.errors = [{instancePath:instancePath+"/" + i0,schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex/type",keyword:"type",params:{type: "integer"}}];
-return false;
-}
-if(errors === _errs2){
-if((typeof data0 == "number") && (isFinite(data0))){
-if(data0 > 7 || isNaN(data0)){
-validate120.errors = [{instancePath:instancePath+"/" + i0,schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex/maximum",keyword:"maximum",params:{comparison: "<=", limit: 7}}];
-return false;
-}
-else {
-if(data0 < 0 || isNaN(data0)){
-validate120.errors = [{instancePath:instancePath+"/" + i0,schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex/minimum",keyword:"minimum",params:{comparison: ">=", limit: 0}}];
-return false;
-}
-}
-}
-}
-var valid0 = _errs1 === errors;
-if(!valid0){
-break;
-}
-}
-}
-else {
-validate120.errors = [{instancePath,schemaPath:"#/type",keyword:"type",params:{type: "array"}}];
-return false;
-}
-}
-validate120.errors = vErrors;
-return errors === 0;
-}
-
+const check_private_draw = validate119;
+const schema230 = {"type":"object","additionalProperties":false,"description":"Sent to the seats the engine names: the drawer, and the seat the card left","required":["roundId","seat","card","source","from","autoLead"],"properties":{"roundId":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/roundId"},"seat":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex"},"card":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/card"},"source":{"type":"string","enum":["discard","nextPlayer","opponent"]},"from":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndexOrNull"},"autoLead":{"type":"boolean"}}};
 
 function validate119(data, {instancePath="", parentData, parentDataProperty, rootData=data}={}){
 let vErrors = null;
@@ -10835,14 +11153,14 @@ let errors = 0;
 if(errors === 0){
 if(data && typeof data == "object" && !Array.isArray(data)){
 let missing0;
-if(((data.roundId === undefined) && (missing0 = "roundId")) || ((data.seats === undefined) && (missing0 = "seats"))){
+if(((((((data.roundId === undefined) && (missing0 = "roundId")) || ((data.seat === undefined) && (missing0 = "seat"))) || ((data.card === undefined) && (missing0 = "card"))) || ((data.source === undefined) && (missing0 = "source"))) || ((data.from === undefined) && (missing0 = "from"))) || ((data.autoLead === undefined) && (missing0 = "autoLead"))){
 validate119.errors = [{instancePath,schemaPath:"#/required",keyword:"required",params:{missingProperty: missing0}}];
 return false;
 }
 else {
 const _errs1 = errors;
 for(const key0 in data){
-if(!((key0 === "roundId") || (key0 === "seats"))){
+if(!((((((key0 === "roundId") || (key0 === "seat")) || (key0 === "card")) || (key0 === "source")) || (key0 === "from")) || (key0 === "autoLead"))){
 validate119.errors = [{instancePath,schemaPath:"#/additionalProperties",keyword:"additionalProperties",params:{additionalProperty: key0}}];
 return false;
 break;
@@ -10871,16 +11189,115 @@ else {
 var valid0 = true;
 }
 if(valid0){
-if(data.seats !== undefined){
+if(data.seat !== undefined){
+let data1 = data.seat;
 const _errs5 = errors;
-if(!(validate120(data.seats, {instancePath:instancePath+"/seats",parentData:data,parentDataProperty:"seats",rootData}))){
-vErrors = vErrors === null ? validate120.errors : vErrors.concat(validate120.errors);
-errors = vErrors.length;
+const _errs6 = errors;
+if(!(((typeof data1 == "number") && (!(data1 % 1) && !isNaN(data1))) && (isFinite(data1)))){
+validate119.errors = [{instancePath:instancePath+"/seat",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex/type",keyword:"type",params:{type: "integer"}}];
+return false;
+}
+if(errors === _errs6){
+if((typeof data1 == "number") && (isFinite(data1))){
+if(data1 > 7 || isNaN(data1)){
+validate119.errors = [{instancePath:instancePath+"/seat",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex/maximum",keyword:"maximum",params:{comparison: "<=", limit: 7}}];
+return false;
+}
+else {
+if(data1 < 0 || isNaN(data1)){
+validate119.errors = [{instancePath:instancePath+"/seat",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex/minimum",keyword:"minimum",params:{comparison: ">=", limit: 0}}];
+return false;
+}
+}
+}
 }
 var valid0 = _errs5 === errors;
 }
 else {
 var valid0 = true;
+}
+if(valid0){
+if(data.card !== undefined){
+let data2 = data.card;
+const _errs8 = errors;
+const _errs9 = errors;
+if(errors === _errs9){
+if(typeof data2 === "string"){
+if(!pattern2.test(data2)){
+validate119.errors = [{instancePath:instancePath+"/card",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/card/pattern",keyword:"pattern",params:{pattern: "^[2-9TJQKA][SHCD]$"}}];
+return false;
+}
+}
+else {
+validate119.errors = [{instancePath:instancePath+"/card",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/card/type",keyword:"type",params:{type: "string"}}];
+return false;
+}
+}
+var valid0 = _errs8 === errors;
+}
+else {
+var valid0 = true;
+}
+if(valid0){
+if(data.source !== undefined){
+let data3 = data.source;
+const _errs11 = errors;
+if(typeof data3 !== "string"){
+validate119.errors = [{instancePath:instancePath+"/source",schemaPath:"#/properties/source/type",keyword:"type",params:{type: "string"}}];
+return false;
+}
+if(!(((data3 === "discard") || (data3 === "nextPlayer")) || (data3 === "opponent"))){
+validate119.errors = [{instancePath:instancePath+"/source",schemaPath:"#/properties/source/enum",keyword:"enum",params:{allowedValues: schema230.properties.source.enum}}];
+return false;
+}
+var valid0 = _errs11 === errors;
+}
+else {
+var valid0 = true;
+}
+if(valid0){
+if(data.from !== undefined){
+let data4 = data.from;
+const _errs13 = errors;
+const _errs14 = errors;
+if((!(((typeof data4 == "number") && (!(data4 % 1) && !isNaN(data4))) && (isFinite(data4)))) && (data4 !== null)){
+validate119.errors = [{instancePath:instancePath+"/from",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndexOrNull/type",keyword:"type",params:{type: schema25.type}}];
+return false;
+}
+if(errors === _errs14){
+if((typeof data4 == "number") && (isFinite(data4))){
+if(data4 > 7 || isNaN(data4)){
+validate119.errors = [{instancePath:instancePath+"/from",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndexOrNull/maximum",keyword:"maximum",params:{comparison: "<=", limit: 7}}];
+return false;
+}
+else {
+if(data4 < 0 || isNaN(data4)){
+validate119.errors = [{instancePath:instancePath+"/from",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndexOrNull/minimum",keyword:"minimum",params:{comparison: ">=", limit: 0}}];
+return false;
+}
+}
+}
+}
+var valid0 = _errs13 === errors;
+}
+else {
+var valid0 = true;
+}
+if(valid0){
+if(data.autoLead !== undefined){
+const _errs16 = errors;
+if(typeof data.autoLead !== "boolean"){
+validate119.errors = [{instancePath:instancePath+"/autoLead",schemaPath:"#/properties/autoLead/type",keyword:"type",params:{type: "boolean"}}];
+return false;
+}
+var valid0 = _errs16 === errors;
+}
+else {
+var valid0 = true;
+}
+}
+}
+}
 }
 }
 }
@@ -10895,24 +11312,69 @@ validate119.errors = vErrors;
 return errors === 0;
 }
 
-const check_confirmed = validate122;
-const schema236 = {"type":"object","additionalProperties":false,"required":["roundId","bhabhiSeat","cardsRemaining","fastForward"],"properties":{"roundId":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/roundId"},"bhabhiSeat":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex"},"cardsRemaining":{"type":"integer","minimum":0},"fastForward":{"type":"boolean"}}};
+const check_endgame_started = validate120;
+const schema235 = {"type":"object","additionalProperties":false,"required":["roundId","seats"],"properties":{"roundId":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/roundId"},"seats":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/seatList"}}};
 
-function validate122(data, {instancePath="", parentData, parentDataProperty, rootData=data}={}){
+function validate121(data, {instancePath="", parentData, parentDataProperty, rootData=data}={}){
+let vErrors = null;
+let errors = 0;
+if(errors === 0){
+if(Array.isArray(data)){
+var valid0 = true;
+const len0 = data.length;
+for(let i0=0; i0<len0; i0++){
+let data0 = data[i0];
+const _errs1 = errors;
+const _errs2 = errors;
+if(!(((typeof data0 == "number") && (!(data0 % 1) && !isNaN(data0))) && (isFinite(data0)))){
+validate121.errors = [{instancePath:instancePath+"/" + i0,schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex/type",keyword:"type",params:{type: "integer"}}];
+return false;
+}
+if(errors === _errs2){
+if((typeof data0 == "number") && (isFinite(data0))){
+if(data0 > 7 || isNaN(data0)){
+validate121.errors = [{instancePath:instancePath+"/" + i0,schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex/maximum",keyword:"maximum",params:{comparison: "<=", limit: 7}}];
+return false;
+}
+else {
+if(data0 < 0 || isNaN(data0)){
+validate121.errors = [{instancePath:instancePath+"/" + i0,schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex/minimum",keyword:"minimum",params:{comparison: ">=", limit: 0}}];
+return false;
+}
+}
+}
+}
+var valid0 = _errs1 === errors;
+if(!valid0){
+break;
+}
+}
+}
+else {
+validate121.errors = [{instancePath,schemaPath:"#/type",keyword:"type",params:{type: "array"}}];
+return false;
+}
+}
+validate121.errors = vErrors;
+return errors === 0;
+}
+
+
+function validate120(data, {instancePath="", parentData, parentDataProperty, rootData=data}={}){
 let vErrors = null;
 let errors = 0;
 if(errors === 0){
 if(data && typeof data == "object" && !Array.isArray(data)){
 let missing0;
-if(((((data.roundId === undefined) && (missing0 = "roundId")) || ((data.bhabhiSeat === undefined) && (missing0 = "bhabhiSeat"))) || ((data.cardsRemaining === undefined) && (missing0 = "cardsRemaining"))) || ((data.fastForward === undefined) && (missing0 = "fastForward"))){
-validate122.errors = [{instancePath,schemaPath:"#/required",keyword:"required",params:{missingProperty: missing0}}];
+if(((data.roundId === undefined) && (missing0 = "roundId")) || ((data.seats === undefined) && (missing0 = "seats"))){
+validate120.errors = [{instancePath,schemaPath:"#/required",keyword:"required",params:{missingProperty: missing0}}];
 return false;
 }
 else {
 const _errs1 = errors;
 for(const key0 in data){
-if(!((((key0 === "roundId") || (key0 === "bhabhiSeat")) || (key0 === "cardsRemaining")) || (key0 === "fastForward"))){
-validate122.errors = [{instancePath,schemaPath:"#/additionalProperties",keyword:"additionalProperties",params:{additionalProperty: key0}}];
+if(!((key0 === "roundId") || (key0 === "seats"))){
+validate120.errors = [{instancePath,schemaPath:"#/additionalProperties",keyword:"additionalProperties",params:{additionalProperty: key0}}];
 return false;
 break;
 }
@@ -10925,12 +11387,12 @@ const _errs3 = errors;
 if(errors === _errs3){
 if(typeof data0 === "string"){
 if(!pattern18.test(data0)){
-validate122.errors = [{instancePath:instancePath+"/roundId",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/roundId/pattern",keyword:"pattern",params:{pattern: "^r_[0-9]+$"}}];
+validate120.errors = [{instancePath:instancePath+"/roundId",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/roundId/pattern",keyword:"pattern",params:{pattern: "^r_[0-9]+$"}}];
 return false;
 }
 }
 else {
-validate122.errors = [{instancePath:instancePath+"/roundId",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/roundId/type",keyword:"type",params:{type: "string"}}];
+validate120.errors = [{instancePath:instancePath+"/roundId",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/roundId/type",keyword:"type",params:{type: "string"}}];
 return false;
 }
 }
@@ -10940,500 +11402,32 @@ else {
 var valid0 = true;
 }
 if(valid0){
-if(data.bhabhiSeat !== undefined){
-let data1 = data.bhabhiSeat;
+if(data.seats !== undefined){
 const _errs5 = errors;
-const _errs6 = errors;
-if(!(((typeof data1 == "number") && (!(data1 % 1) && !isNaN(data1))) && (isFinite(data1)))){
-validate122.errors = [{instancePath:instancePath+"/bhabhiSeat",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex/type",keyword:"type",params:{type: "integer"}}];
-return false;
-}
-if(errors === _errs6){
-if((typeof data1 == "number") && (isFinite(data1))){
-if(data1 > 7 || isNaN(data1)){
-validate122.errors = [{instancePath:instancePath+"/bhabhiSeat",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex/maximum",keyword:"maximum",params:{comparison: "<=", limit: 7}}];
-return false;
-}
-else {
-if(data1 < 0 || isNaN(data1)){
-validate122.errors = [{instancePath:instancePath+"/bhabhiSeat",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex/minimum",keyword:"minimum",params:{comparison: ">=", limit: 0}}];
-return false;
-}
-}
-}
+if(!(validate121(data.seats, {instancePath:instancePath+"/seats",parentData:data,parentDataProperty:"seats",rootData}))){
+vErrors = vErrors === null ? validate121.errors : vErrors.concat(validate121.errors);
+errors = vErrors.length;
 }
 var valid0 = _errs5 === errors;
 }
 else {
 var valid0 = true;
 }
-if(valid0){
-if(data.cardsRemaining !== undefined){
-let data2 = data.cardsRemaining;
-const _errs8 = errors;
-if(!(((typeof data2 == "number") && (!(data2 % 1) && !isNaN(data2))) && (isFinite(data2)))){
-validate122.errors = [{instancePath:instancePath+"/cardsRemaining",schemaPath:"#/properties/cardsRemaining/type",keyword:"type",params:{type: "integer"}}];
-return false;
-}
-if(errors === _errs8){
-if((typeof data2 == "number") && (isFinite(data2))){
-if(data2 < 0 || isNaN(data2)){
-validate122.errors = [{instancePath:instancePath+"/cardsRemaining",schemaPath:"#/properties/cardsRemaining/minimum",keyword:"minimum",params:{comparison: ">=", limit: 0}}];
-return false;
-}
-}
-}
-var valid0 = _errs8 === errors;
-}
-else {
-var valid0 = true;
-}
-if(valid0){
-if(data.fastForward !== undefined){
-const _errs10 = errors;
-if(typeof data.fastForward !== "boolean"){
-validate122.errors = [{instancePath:instancePath+"/fastForward",schemaPath:"#/properties/fastForward/type",keyword:"type",params:{type: "boolean"}}];
-return false;
-}
-var valid0 = _errs10 === errors;
-}
-else {
-var valid0 = true;
-}
-}
-}
 }
 }
 }
 }
 else {
-validate122.errors = [{instancePath,schemaPath:"#/type",keyword:"type",params:{type: "object"}}];
+validate120.errors = [{instancePath,schemaPath:"#/type",keyword:"type",params:{type: "object"}}];
 return false;
 }
 }
-validate122.errors = vErrors;
+validate120.errors = vErrors;
 return errors === 0;
 }
 
-const check_round_end = validate123;
-const schema239 = {"type":"object","additionalProperties":false,"required":["roundId","escapeOrder","bhabhiSeat","bhabhiCards","points","stats","fairness"],"properties":{"roundId":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/roundId"},"escapeOrder":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/seatList"},"bhabhiSeat":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex"},"bhabhiCards":{"type":"integer","minimum":0},"points":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/points"},"stats":{"type":"array","items":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/seatStats"}},"fairness":{"type":"object","additionalProperties":false,"required":["commitment","seed","deckOrder"],"properties":{"commitment":{"type":"string","pattern":"^[0-9a-f]{64}$"},"seed":{"type":"string","pattern":"^[0-9a-f]+$","description":"Revealed so any client can recompute the commitment (R6)"},"deckOrder":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/cards"}}},"series":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/seriesState"}}};
-const pattern48 = new RegExp("^[0-9a-f]+$", "");
-
-function validate126(data, {instancePath="", parentData, parentDataProperty, rootData=data}={}){
-let vErrors = null;
-let errors = 0;
-if(errors === 0){
-if(data && typeof data == "object" && !Array.isArray(data)){
-let missing0;
-if((((((data.roundsPlayed === undefined) && (missing0 = "roundsPlayed")) || ((data.points === undefined) && (missing0 = "points"))) || ((data.loserTally === undefined) && (missing0 = "loserTally"))) || ((data.nextDealerSeat === undefined) && (missing0 = "nextDealerSeat"))) || ((data.finished === undefined) && (missing0 = "finished"))){
-validate126.errors = [{instancePath,schemaPath:"#/required",keyword:"required",params:{missingProperty: missing0}}];
-return false;
-}
-else {
-const _errs1 = errors;
-for(const key0 in data){
-if(!((((((key0 === "roundsPlayed") || (key0 === "points")) || (key0 === "loserTally")) || (key0 === "nextDealerSeat")) || (key0 === "finished")) || (key0 === "teams"))){
-validate126.errors = [{instancePath,schemaPath:"#/additionalProperties",keyword:"additionalProperties",params:{additionalProperty: key0}}];
-return false;
-break;
-}
-}
-if(_errs1 === errors){
-if(data.roundsPlayed !== undefined){
-let data0 = data.roundsPlayed;
-const _errs2 = errors;
-if(!(((typeof data0 == "number") && (!(data0 % 1) && !isNaN(data0))) && (isFinite(data0)))){
-validate126.errors = [{instancePath:instancePath+"/roundsPlayed",schemaPath:"#/properties/roundsPlayed/type",keyword:"type",params:{type: "integer"}}];
-return false;
-}
-if(errors === _errs2){
-if((typeof data0 == "number") && (isFinite(data0))){
-if(data0 < 0 || isNaN(data0)){
-validate126.errors = [{instancePath:instancePath+"/roundsPlayed",schemaPath:"#/properties/roundsPlayed/minimum",keyword:"minimum",params:{comparison: ">=", limit: 0}}];
-return false;
-}
-}
-}
-var valid0 = _errs2 === errors;
-}
-else {
-var valid0 = true;
-}
-if(valid0){
-if(data.points !== undefined){
-let data1 = data.points;
-const _errs4 = errors;
-const _errs5 = errors;
-if(errors === _errs5){
-if(Array.isArray(data1)){
-var valid2 = true;
-const len0 = data1.length;
-for(let i0=0; i0<len0; i0++){
-let data2 = data1[i0];
-const _errs7 = errors;
-if(!(((typeof data2 == "number") && (!(data2 % 1) && !isNaN(data2))) && (isFinite(data2)))){
-validate126.errors = [{instancePath:instancePath+"/points/" + i0,schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/points/items/type",keyword:"type",params:{type: "integer"}}];
-return false;
-}
-var valid2 = _errs7 === errors;
-if(!valid2){
-break;
-}
-}
-}
-else {
-validate126.errors = [{instancePath:instancePath+"/points",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/points/type",keyword:"type",params:{type: "array"}}];
-return false;
-}
-}
-var valid0 = _errs4 === errors;
-}
-else {
-var valid0 = true;
-}
-if(valid0){
-if(data.loserTally !== undefined){
-let data3 = data.loserTally;
-const _errs9 = errors;
-if(errors === _errs9){
-if(Array.isArray(data3)){
-var valid3 = true;
-const len1 = data3.length;
-for(let i1=0; i1<len1; i1++){
-let data4 = data3[i1];
-const _errs11 = errors;
-if(!(((typeof data4 == "number") && (!(data4 % 1) && !isNaN(data4))) && (isFinite(data4)))){
-validate126.errors = [{instancePath:instancePath+"/loserTally/" + i1,schemaPath:"#/properties/loserTally/items/type",keyword:"type",params:{type: "integer"}}];
-return false;
-}
-if(errors === _errs11){
-if((typeof data4 == "number") && (isFinite(data4))){
-if(data4 < 0 || isNaN(data4)){
-validate126.errors = [{instancePath:instancePath+"/loserTally/" + i1,schemaPath:"#/properties/loserTally/items/minimum",keyword:"minimum",params:{comparison: ">=", limit: 0}}];
-return false;
-}
-}
-}
-var valid3 = _errs11 === errors;
-if(!valid3){
-break;
-}
-}
-}
-else {
-validate126.errors = [{instancePath:instancePath+"/loserTally",schemaPath:"#/properties/loserTally/type",keyword:"type",params:{type: "array"}}];
-return false;
-}
-}
-var valid0 = _errs9 === errors;
-}
-else {
-var valid0 = true;
-}
-if(valid0){
-if(data.nextDealerSeat !== undefined){
-let data5 = data.nextDealerSeat;
-const _errs13 = errors;
-const _errs14 = errors;
-if(!(((typeof data5 == "number") && (!(data5 % 1) && !isNaN(data5))) && (isFinite(data5)))){
-validate126.errors = [{instancePath:instancePath+"/nextDealerSeat",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex/type",keyword:"type",params:{type: "integer"}}];
-return false;
-}
-if(errors === _errs14){
-if((typeof data5 == "number") && (isFinite(data5))){
-if(data5 > 7 || isNaN(data5)){
-validate126.errors = [{instancePath:instancePath+"/nextDealerSeat",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex/maximum",keyword:"maximum",params:{comparison: "<=", limit: 7}}];
-return false;
-}
-else {
-if(data5 < 0 || isNaN(data5)){
-validate126.errors = [{instancePath:instancePath+"/nextDealerSeat",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex/minimum",keyword:"minimum",params:{comparison: ">=", limit: 0}}];
-return false;
-}
-}
-}
-}
-var valid0 = _errs13 === errors;
-}
-else {
-var valid0 = true;
-}
-if(valid0){
-if(data.finished !== undefined){
-const _errs16 = errors;
-if(typeof data.finished !== "boolean"){
-validate126.errors = [{instancePath:instancePath+"/finished",schemaPath:"#/properties/finished/type",keyword:"type",params:{type: "boolean"}}];
-return false;
-}
-var valid0 = _errs16 === errors;
-}
-else {
-var valid0 = true;
-}
-if(valid0){
-if(data.teams !== undefined){
-let data7 = data.teams;
-const _errs18 = errors;
-const _errs19 = errors;
-if(errors === _errs19){
-if(data7 && typeof data7 == "object" && !Array.isArray(data7)){
-let missing1;
-if(((((((data7.points === undefined) && (missing1 = "points")) || ((data7.courts === undefined) && (missing1 = "courts"))) || ((data7.dealsWon === undefined) && (missing1 = "dealsWon"))) || ((data7.streakTeam === undefined) && (missing1 = "streakTeam"))) || ((data7.streakDeals === undefined) && (missing1 = "streakDeals"))) || ((data7.winnerTeam === undefined) && (missing1 = "winnerTeam"))){
-validate126.errors = [{instancePath:instancePath+"/teams",schemaPath:"https://hulla.gg/schemas/protocol/games/rung/events.json#/definitions/teams/required",keyword:"required",params:{missingProperty: missing1}}];
-return false;
-}
-else {
-const _errs21 = errors;
-for(const key1 in data7){
-if(!((((((key1 === "points") || (key1 === "courts")) || (key1 === "dealsWon")) || (key1 === "streakTeam")) || (key1 === "streakDeals")) || (key1 === "winnerTeam"))){
-validate126.errors = [{instancePath:instancePath+"/teams",schemaPath:"https://hulla.gg/schemas/protocol/games/rung/events.json#/definitions/teams/additionalProperties",keyword:"additionalProperties",params:{additionalProperty: key1}}];
-return false;
-break;
-}
-}
-if(_errs21 === errors){
-if(data7.points !== undefined){
-let data8 = data7.points;
-const _errs22 = errors;
-if(errors === _errs22){
-if(Array.isArray(data8)){
-if(data8.length > 2){
-validate126.errors = [{instancePath:instancePath+"/teams/points",schemaPath:"https://hulla.gg/schemas/protocol/games/rung/events.json#/definitions/teams/properties/points/maxItems",keyword:"maxItems",params:{limit: 2}}];
-return false;
-}
-else {
-if(data8.length < 2){
-validate126.errors = [{instancePath:instancePath+"/teams/points",schemaPath:"https://hulla.gg/schemas/protocol/games/rung/events.json#/definitions/teams/properties/points/minItems",keyword:"minItems",params:{limit: 2}}];
-return false;
-}
-else {
-var valid7 = true;
-const len2 = data8.length;
-for(let i2=0; i2<len2; i2++){
-let data9 = data8[i2];
-const _errs24 = errors;
-if(!(((typeof data9 == "number") && (!(data9 % 1) && !isNaN(data9))) && (isFinite(data9)))){
-validate126.errors = [{instancePath:instancePath+"/teams/points/" + i2,schemaPath:"https://hulla.gg/schemas/protocol/games/rung/events.json#/definitions/teams/properties/points/items/type",keyword:"type",params:{type: "integer"}}];
-return false;
-}
-if(errors === _errs24){
-if((typeof data9 == "number") && (isFinite(data9))){
-if(data9 < 0 || isNaN(data9)){
-validate126.errors = [{instancePath:instancePath+"/teams/points/" + i2,schemaPath:"https://hulla.gg/schemas/protocol/games/rung/events.json#/definitions/teams/properties/points/items/minimum",keyword:"minimum",params:{comparison: ">=", limit: 0}}];
-return false;
-}
-}
-}
-var valid7 = _errs24 === errors;
-if(!valid7){
-break;
-}
-}
-}
-}
-}
-else {
-validate126.errors = [{instancePath:instancePath+"/teams/points",schemaPath:"https://hulla.gg/schemas/protocol/games/rung/events.json#/definitions/teams/properties/points/type",keyword:"type",params:{type: "array"}}];
-return false;
-}
-}
-var valid6 = _errs22 === errors;
-}
-else {
-var valid6 = true;
-}
-if(valid6){
-if(data7.courts !== undefined){
-let data10 = data7.courts;
-const _errs26 = errors;
-if(errors === _errs26){
-if(Array.isArray(data10)){
-if(data10.length > 2){
-validate126.errors = [{instancePath:instancePath+"/teams/courts",schemaPath:"https://hulla.gg/schemas/protocol/games/rung/events.json#/definitions/teams/properties/courts/maxItems",keyword:"maxItems",params:{limit: 2}}];
-return false;
-}
-else {
-if(data10.length < 2){
-validate126.errors = [{instancePath:instancePath+"/teams/courts",schemaPath:"https://hulla.gg/schemas/protocol/games/rung/events.json#/definitions/teams/properties/courts/minItems",keyword:"minItems",params:{limit: 2}}];
-return false;
-}
-else {
-var valid8 = true;
-const len3 = data10.length;
-for(let i3=0; i3<len3; i3++){
-let data11 = data10[i3];
-const _errs28 = errors;
-if(!(((typeof data11 == "number") && (!(data11 % 1) && !isNaN(data11))) && (isFinite(data11)))){
-validate126.errors = [{instancePath:instancePath+"/teams/courts/" + i3,schemaPath:"https://hulla.gg/schemas/protocol/games/rung/events.json#/definitions/teams/properties/courts/items/type",keyword:"type",params:{type: "integer"}}];
-return false;
-}
-if(errors === _errs28){
-if((typeof data11 == "number") && (isFinite(data11))){
-if(data11 < 0 || isNaN(data11)){
-validate126.errors = [{instancePath:instancePath+"/teams/courts/" + i3,schemaPath:"https://hulla.gg/schemas/protocol/games/rung/events.json#/definitions/teams/properties/courts/items/minimum",keyword:"minimum",params:{comparison: ">=", limit: 0}}];
-return false;
-}
-}
-}
-var valid8 = _errs28 === errors;
-if(!valid8){
-break;
-}
-}
-}
-}
-}
-else {
-validate126.errors = [{instancePath:instancePath+"/teams/courts",schemaPath:"https://hulla.gg/schemas/protocol/games/rung/events.json#/definitions/teams/properties/courts/type",keyword:"type",params:{type: "array"}}];
-return false;
-}
-}
-var valid6 = _errs26 === errors;
-}
-else {
-var valid6 = true;
-}
-if(valid6){
-if(data7.dealsWon !== undefined){
-let data12 = data7.dealsWon;
-const _errs30 = errors;
-if(errors === _errs30){
-if(Array.isArray(data12)){
-if(data12.length > 2){
-validate126.errors = [{instancePath:instancePath+"/teams/dealsWon",schemaPath:"https://hulla.gg/schemas/protocol/games/rung/events.json#/definitions/teams/properties/dealsWon/maxItems",keyword:"maxItems",params:{limit: 2}}];
-return false;
-}
-else {
-if(data12.length < 2){
-validate126.errors = [{instancePath:instancePath+"/teams/dealsWon",schemaPath:"https://hulla.gg/schemas/protocol/games/rung/events.json#/definitions/teams/properties/dealsWon/minItems",keyword:"minItems",params:{limit: 2}}];
-return false;
-}
-else {
-var valid9 = true;
-const len4 = data12.length;
-for(let i4=0; i4<len4; i4++){
-let data13 = data12[i4];
-const _errs32 = errors;
-if(!(((typeof data13 == "number") && (!(data13 % 1) && !isNaN(data13))) && (isFinite(data13)))){
-validate126.errors = [{instancePath:instancePath+"/teams/dealsWon/" + i4,schemaPath:"https://hulla.gg/schemas/protocol/games/rung/events.json#/definitions/teams/properties/dealsWon/items/type",keyword:"type",params:{type: "integer"}}];
-return false;
-}
-if(errors === _errs32){
-if((typeof data13 == "number") && (isFinite(data13))){
-if(data13 < 0 || isNaN(data13)){
-validate126.errors = [{instancePath:instancePath+"/teams/dealsWon/" + i4,schemaPath:"https://hulla.gg/schemas/protocol/games/rung/events.json#/definitions/teams/properties/dealsWon/items/minimum",keyword:"minimum",params:{comparison: ">=", limit: 0}}];
-return false;
-}
-}
-}
-var valid9 = _errs32 === errors;
-if(!valid9){
-break;
-}
-}
-}
-}
-}
-else {
-validate126.errors = [{instancePath:instancePath+"/teams/dealsWon",schemaPath:"https://hulla.gg/schemas/protocol/games/rung/events.json#/definitions/teams/properties/dealsWon/type",keyword:"type",params:{type: "array"}}];
-return false;
-}
-}
-var valid6 = _errs30 === errors;
-}
-else {
-var valid6 = true;
-}
-if(valid6){
-if(data7.streakTeam !== undefined){
-let data14 = data7.streakTeam;
-const _errs34 = errors;
-if((!(((typeof data14 == "number") && (!(data14 % 1) && !isNaN(data14))) && (isFinite(data14)))) && (data14 !== null)){
-validate126.errors = [{instancePath:instancePath+"/teams/streakTeam",schemaPath:"https://hulla.gg/schemas/protocol/games/rung/events.json#/definitions/teams/properties/streakTeam/type",keyword:"type",params:{type: schema142.properties.streakTeam.type}}];
-return false;
-}
-if(!(((data14 === 0) || (data14 === 1)) || (data14 === null))){
-validate126.errors = [{instancePath:instancePath+"/teams/streakTeam",schemaPath:"https://hulla.gg/schemas/protocol/games/rung/events.json#/definitions/teams/properties/streakTeam/enum",keyword:"enum",params:{allowedValues: schema142.properties.streakTeam.enum}}];
-return false;
-}
-var valid6 = _errs34 === errors;
-}
-else {
-var valid6 = true;
-}
-if(valid6){
-if(data7.streakDeals !== undefined){
-let data15 = data7.streakDeals;
-const _errs36 = errors;
-if(!(((typeof data15 == "number") && (!(data15 % 1) && !isNaN(data15))) && (isFinite(data15)))){
-validate126.errors = [{instancePath:instancePath+"/teams/streakDeals",schemaPath:"https://hulla.gg/schemas/protocol/games/rung/events.json#/definitions/teams/properties/streakDeals/type",keyword:"type",params:{type: "integer"}}];
-return false;
-}
-if(errors === _errs36){
-if((typeof data15 == "number") && (isFinite(data15))){
-if(data15 < 0 || isNaN(data15)){
-validate126.errors = [{instancePath:instancePath+"/teams/streakDeals",schemaPath:"https://hulla.gg/schemas/protocol/games/rung/events.json#/definitions/teams/properties/streakDeals/minimum",keyword:"minimum",params:{comparison: ">=", limit: 0}}];
-return false;
-}
-}
-}
-var valid6 = _errs36 === errors;
-}
-else {
-var valid6 = true;
-}
-if(valid6){
-if(data7.winnerTeam !== undefined){
-let data16 = data7.winnerTeam;
-const _errs38 = errors;
-if((!(((typeof data16 == "number") && (!(data16 % 1) && !isNaN(data16))) && (isFinite(data16)))) && (data16 !== null)){
-validate126.errors = [{instancePath:instancePath+"/teams/winnerTeam",schemaPath:"https://hulla.gg/schemas/protocol/games/rung/events.json#/definitions/teams/properties/winnerTeam/type",keyword:"type",params:{type: schema142.properties.winnerTeam.type}}];
-return false;
-}
-if(!(((data16 === 0) || (data16 === 1)) || (data16 === null))){
-validate126.errors = [{instancePath:instancePath+"/teams/winnerTeam",schemaPath:"https://hulla.gg/schemas/protocol/games/rung/events.json#/definitions/teams/properties/winnerTeam/enum",keyword:"enum",params:{allowedValues: schema142.properties.winnerTeam.enum}}];
-return false;
-}
-var valid6 = _errs38 === errors;
-}
-else {
-var valid6 = true;
-}
-}
-}
-}
-}
-}
-}
-}
-}
-else {
-validate126.errors = [{instancePath:instancePath+"/teams",schemaPath:"https://hulla.gg/schemas/protocol/games/rung/events.json#/definitions/teams/type",keyword:"type",params:{type: "object"}}];
-return false;
-}
-}
-var valid0 = _errs18 === errors;
-}
-else {
-var valid0 = true;
-}
-}
-}
-}
-}
-}
-}
-}
-}
-else {
-validate126.errors = [{instancePath,schemaPath:"#/type",keyword:"type",params:{type: "object"}}];
-return false;
-}
-}
-validate126.errors = vErrors;
-return errors === 0;
-}
-
+const check_confirmed = validate123;
+const schema239 = {"type":"object","additionalProperties":false,"required":["roundId","bhabhiSeat","cardsRemaining","fastForward"],"properties":{"roundId":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/roundId"},"bhabhiSeat":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex"},"cardsRemaining":{"type":"integer","minimum":0},"fastForward":{"type":"boolean"}}};
 
 function validate123(data, {instancePath="", parentData, parentDataProperty, rootData=data}={}){
 let vErrors = null;
@@ -11441,14 +11435,14 @@ let errors = 0;
 if(errors === 0){
 if(data && typeof data == "object" && !Array.isArray(data)){
 let missing0;
-if((((((((data.roundId === undefined) && (missing0 = "roundId")) || ((data.escapeOrder === undefined) && (missing0 = "escapeOrder"))) || ((data.bhabhiSeat === undefined) && (missing0 = "bhabhiSeat"))) || ((data.bhabhiCards === undefined) && (missing0 = "bhabhiCards"))) || ((data.points === undefined) && (missing0 = "points"))) || ((data.stats === undefined) && (missing0 = "stats"))) || ((data.fairness === undefined) && (missing0 = "fairness"))){
+if(((((data.roundId === undefined) && (missing0 = "roundId")) || ((data.bhabhiSeat === undefined) && (missing0 = "bhabhiSeat"))) || ((data.cardsRemaining === undefined) && (missing0 = "cardsRemaining"))) || ((data.fastForward === undefined) && (missing0 = "fastForward"))){
 validate123.errors = [{instancePath,schemaPath:"#/required",keyword:"required",params:{missingProperty: missing0}}];
 return false;
 }
 else {
 const _errs1 = errors;
 for(const key0 in data){
-if(!((((((((key0 === "roundId") || (key0 === "escapeOrder")) || (key0 === "bhabhiSeat")) || (key0 === "bhabhiCards")) || (key0 === "points")) || (key0 === "stats")) || (key0 === "fairness")) || (key0 === "series"))){
+if(!((((key0 === "roundId") || (key0 === "bhabhiSeat")) || (key0 === "cardsRemaining")) || (key0 === "fastForward"))){
 validate123.errors = [{instancePath,schemaPath:"#/additionalProperties",keyword:"additionalProperties",params:{additionalProperty: key0}}];
 return false;
 break;
@@ -11477,10 +11471,547 @@ else {
 var valid0 = true;
 }
 if(valid0){
+if(data.bhabhiSeat !== undefined){
+let data1 = data.bhabhiSeat;
+const _errs5 = errors;
+const _errs6 = errors;
+if(!(((typeof data1 == "number") && (!(data1 % 1) && !isNaN(data1))) && (isFinite(data1)))){
+validate123.errors = [{instancePath:instancePath+"/bhabhiSeat",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex/type",keyword:"type",params:{type: "integer"}}];
+return false;
+}
+if(errors === _errs6){
+if((typeof data1 == "number") && (isFinite(data1))){
+if(data1 > 7 || isNaN(data1)){
+validate123.errors = [{instancePath:instancePath+"/bhabhiSeat",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex/maximum",keyword:"maximum",params:{comparison: "<=", limit: 7}}];
+return false;
+}
+else {
+if(data1 < 0 || isNaN(data1)){
+validate123.errors = [{instancePath:instancePath+"/bhabhiSeat",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex/minimum",keyword:"minimum",params:{comparison: ">=", limit: 0}}];
+return false;
+}
+}
+}
+}
+var valid0 = _errs5 === errors;
+}
+else {
+var valid0 = true;
+}
+if(valid0){
+if(data.cardsRemaining !== undefined){
+let data2 = data.cardsRemaining;
+const _errs8 = errors;
+if(!(((typeof data2 == "number") && (!(data2 % 1) && !isNaN(data2))) && (isFinite(data2)))){
+validate123.errors = [{instancePath:instancePath+"/cardsRemaining",schemaPath:"#/properties/cardsRemaining/type",keyword:"type",params:{type: "integer"}}];
+return false;
+}
+if(errors === _errs8){
+if((typeof data2 == "number") && (isFinite(data2))){
+if(data2 < 0 || isNaN(data2)){
+validate123.errors = [{instancePath:instancePath+"/cardsRemaining",schemaPath:"#/properties/cardsRemaining/minimum",keyword:"minimum",params:{comparison: ">=", limit: 0}}];
+return false;
+}
+}
+}
+var valid0 = _errs8 === errors;
+}
+else {
+var valid0 = true;
+}
+if(valid0){
+if(data.fastForward !== undefined){
+const _errs10 = errors;
+if(typeof data.fastForward !== "boolean"){
+validate123.errors = [{instancePath:instancePath+"/fastForward",schemaPath:"#/properties/fastForward/type",keyword:"type",params:{type: "boolean"}}];
+return false;
+}
+var valid0 = _errs10 === errors;
+}
+else {
+var valid0 = true;
+}
+}
+}
+}
+}
+}
+}
+else {
+validate123.errors = [{instancePath,schemaPath:"#/type",keyword:"type",params:{type: "object"}}];
+return false;
+}
+}
+validate123.errors = vErrors;
+return errors === 0;
+}
+
+const check_round_end = validate124;
+const schema242 = {"type":"object","additionalProperties":false,"required":["roundId","escapeOrder","bhabhiSeat","bhabhiCards","points","stats","fairness"],"properties":{"roundId":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/roundId"},"escapeOrder":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/seatList"},"bhabhiSeat":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex"},"bhabhiCards":{"type":"integer","minimum":0},"points":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/points"},"stats":{"type":"array","items":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/seatStats"}},"fairness":{"type":"object","additionalProperties":false,"required":["commitment","seed","deckOrder"],"properties":{"commitment":{"type":"string","pattern":"^[0-9a-f]{64}$"},"seed":{"type":"string","pattern":"^[0-9a-f]+$","description":"Revealed so any client can recompute the commitment (R6)"},"deckOrder":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/cards"}}},"series":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/seriesState"}}};
+const pattern48 = new RegExp("^[0-9a-f]+$", "");
+
+function validate127(data, {instancePath="", parentData, parentDataProperty, rootData=data}={}){
+let vErrors = null;
+let errors = 0;
+if(errors === 0){
+if(data && typeof data == "object" && !Array.isArray(data)){
+let missing0;
+if((((((data.roundsPlayed === undefined) && (missing0 = "roundsPlayed")) || ((data.points === undefined) && (missing0 = "points"))) || ((data.loserTally === undefined) && (missing0 = "loserTally"))) || ((data.nextDealerSeat === undefined) && (missing0 = "nextDealerSeat"))) || ((data.finished === undefined) && (missing0 = "finished"))){
+validate127.errors = [{instancePath,schemaPath:"#/required",keyword:"required",params:{missingProperty: missing0}}];
+return false;
+}
+else {
+const _errs1 = errors;
+for(const key0 in data){
+if(!((((((key0 === "roundsPlayed") || (key0 === "points")) || (key0 === "loserTally")) || (key0 === "nextDealerSeat")) || (key0 === "finished")) || (key0 === "teams"))){
+validate127.errors = [{instancePath,schemaPath:"#/additionalProperties",keyword:"additionalProperties",params:{additionalProperty: key0}}];
+return false;
+break;
+}
+}
+if(_errs1 === errors){
+if(data.roundsPlayed !== undefined){
+let data0 = data.roundsPlayed;
+const _errs2 = errors;
+if(!(((typeof data0 == "number") && (!(data0 % 1) && !isNaN(data0))) && (isFinite(data0)))){
+validate127.errors = [{instancePath:instancePath+"/roundsPlayed",schemaPath:"#/properties/roundsPlayed/type",keyword:"type",params:{type: "integer"}}];
+return false;
+}
+if(errors === _errs2){
+if((typeof data0 == "number") && (isFinite(data0))){
+if(data0 < 0 || isNaN(data0)){
+validate127.errors = [{instancePath:instancePath+"/roundsPlayed",schemaPath:"#/properties/roundsPlayed/minimum",keyword:"minimum",params:{comparison: ">=", limit: 0}}];
+return false;
+}
+}
+}
+var valid0 = _errs2 === errors;
+}
+else {
+var valid0 = true;
+}
+if(valid0){
+if(data.points !== undefined){
+let data1 = data.points;
+const _errs4 = errors;
+const _errs5 = errors;
+if(errors === _errs5){
+if(Array.isArray(data1)){
+var valid2 = true;
+const len0 = data1.length;
+for(let i0=0; i0<len0; i0++){
+let data2 = data1[i0];
+const _errs7 = errors;
+if(!(((typeof data2 == "number") && (!(data2 % 1) && !isNaN(data2))) && (isFinite(data2)))){
+validate127.errors = [{instancePath:instancePath+"/points/" + i0,schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/points/items/type",keyword:"type",params:{type: "integer"}}];
+return false;
+}
+var valid2 = _errs7 === errors;
+if(!valid2){
+break;
+}
+}
+}
+else {
+validate127.errors = [{instancePath:instancePath+"/points",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/points/type",keyword:"type",params:{type: "array"}}];
+return false;
+}
+}
+var valid0 = _errs4 === errors;
+}
+else {
+var valid0 = true;
+}
+if(valid0){
+if(data.loserTally !== undefined){
+let data3 = data.loserTally;
+const _errs9 = errors;
+if(errors === _errs9){
+if(Array.isArray(data3)){
+var valid3 = true;
+const len1 = data3.length;
+for(let i1=0; i1<len1; i1++){
+let data4 = data3[i1];
+const _errs11 = errors;
+if(!(((typeof data4 == "number") && (!(data4 % 1) && !isNaN(data4))) && (isFinite(data4)))){
+validate127.errors = [{instancePath:instancePath+"/loserTally/" + i1,schemaPath:"#/properties/loserTally/items/type",keyword:"type",params:{type: "integer"}}];
+return false;
+}
+if(errors === _errs11){
+if((typeof data4 == "number") && (isFinite(data4))){
+if(data4 < 0 || isNaN(data4)){
+validate127.errors = [{instancePath:instancePath+"/loserTally/" + i1,schemaPath:"#/properties/loserTally/items/minimum",keyword:"minimum",params:{comparison: ">=", limit: 0}}];
+return false;
+}
+}
+}
+var valid3 = _errs11 === errors;
+if(!valid3){
+break;
+}
+}
+}
+else {
+validate127.errors = [{instancePath:instancePath+"/loserTally",schemaPath:"#/properties/loserTally/type",keyword:"type",params:{type: "array"}}];
+return false;
+}
+}
+var valid0 = _errs9 === errors;
+}
+else {
+var valid0 = true;
+}
+if(valid0){
+if(data.nextDealerSeat !== undefined){
+let data5 = data.nextDealerSeat;
+const _errs13 = errors;
+const _errs14 = errors;
+if(!(((typeof data5 == "number") && (!(data5 % 1) && !isNaN(data5))) && (isFinite(data5)))){
+validate127.errors = [{instancePath:instancePath+"/nextDealerSeat",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex/type",keyword:"type",params:{type: "integer"}}];
+return false;
+}
+if(errors === _errs14){
+if((typeof data5 == "number") && (isFinite(data5))){
+if(data5 > 7 || isNaN(data5)){
+validate127.errors = [{instancePath:instancePath+"/nextDealerSeat",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex/maximum",keyword:"maximum",params:{comparison: "<=", limit: 7}}];
+return false;
+}
+else {
+if(data5 < 0 || isNaN(data5)){
+validate127.errors = [{instancePath:instancePath+"/nextDealerSeat",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex/minimum",keyword:"minimum",params:{comparison: ">=", limit: 0}}];
+return false;
+}
+}
+}
+}
+var valid0 = _errs13 === errors;
+}
+else {
+var valid0 = true;
+}
+if(valid0){
+if(data.finished !== undefined){
+const _errs16 = errors;
+if(typeof data.finished !== "boolean"){
+validate127.errors = [{instancePath:instancePath+"/finished",schemaPath:"#/properties/finished/type",keyword:"type",params:{type: "boolean"}}];
+return false;
+}
+var valid0 = _errs16 === errors;
+}
+else {
+var valid0 = true;
+}
+if(valid0){
+if(data.teams !== undefined){
+let data7 = data.teams;
+const _errs18 = errors;
+const _errs19 = errors;
+if(errors === _errs19){
+if(data7 && typeof data7 == "object" && !Array.isArray(data7)){
+let missing1;
+if(((((((data7.points === undefined) && (missing1 = "points")) || ((data7.courts === undefined) && (missing1 = "courts"))) || ((data7.dealsWon === undefined) && (missing1 = "dealsWon"))) || ((data7.streakTeam === undefined) && (missing1 = "streakTeam"))) || ((data7.streakDeals === undefined) && (missing1 = "streakDeals"))) || ((data7.winnerTeam === undefined) && (missing1 = "winnerTeam"))){
+validate127.errors = [{instancePath:instancePath+"/teams",schemaPath:"https://hulla.gg/schemas/protocol/games/rung/events.json#/definitions/teams/required",keyword:"required",params:{missingProperty: missing1}}];
+return false;
+}
+else {
+const _errs21 = errors;
+for(const key1 in data7){
+if(!((((((key1 === "points") || (key1 === "courts")) || (key1 === "dealsWon")) || (key1 === "streakTeam")) || (key1 === "streakDeals")) || (key1 === "winnerTeam"))){
+validate127.errors = [{instancePath:instancePath+"/teams",schemaPath:"https://hulla.gg/schemas/protocol/games/rung/events.json#/definitions/teams/additionalProperties",keyword:"additionalProperties",params:{additionalProperty: key1}}];
+return false;
+break;
+}
+}
+if(_errs21 === errors){
+if(data7.points !== undefined){
+let data8 = data7.points;
+const _errs22 = errors;
+if(errors === _errs22){
+if(Array.isArray(data8)){
+if(data8.length > 2){
+validate127.errors = [{instancePath:instancePath+"/teams/points",schemaPath:"https://hulla.gg/schemas/protocol/games/rung/events.json#/definitions/teams/properties/points/maxItems",keyword:"maxItems",params:{limit: 2}}];
+return false;
+}
+else {
+if(data8.length < 2){
+validate127.errors = [{instancePath:instancePath+"/teams/points",schemaPath:"https://hulla.gg/schemas/protocol/games/rung/events.json#/definitions/teams/properties/points/minItems",keyword:"minItems",params:{limit: 2}}];
+return false;
+}
+else {
+var valid7 = true;
+const len2 = data8.length;
+for(let i2=0; i2<len2; i2++){
+let data9 = data8[i2];
+const _errs24 = errors;
+if(!(((typeof data9 == "number") && (!(data9 % 1) && !isNaN(data9))) && (isFinite(data9)))){
+validate127.errors = [{instancePath:instancePath+"/teams/points/" + i2,schemaPath:"https://hulla.gg/schemas/protocol/games/rung/events.json#/definitions/teams/properties/points/items/type",keyword:"type",params:{type: "integer"}}];
+return false;
+}
+if(errors === _errs24){
+if((typeof data9 == "number") && (isFinite(data9))){
+if(data9 < 0 || isNaN(data9)){
+validate127.errors = [{instancePath:instancePath+"/teams/points/" + i2,schemaPath:"https://hulla.gg/schemas/protocol/games/rung/events.json#/definitions/teams/properties/points/items/minimum",keyword:"minimum",params:{comparison: ">=", limit: 0}}];
+return false;
+}
+}
+}
+var valid7 = _errs24 === errors;
+if(!valid7){
+break;
+}
+}
+}
+}
+}
+else {
+validate127.errors = [{instancePath:instancePath+"/teams/points",schemaPath:"https://hulla.gg/schemas/protocol/games/rung/events.json#/definitions/teams/properties/points/type",keyword:"type",params:{type: "array"}}];
+return false;
+}
+}
+var valid6 = _errs22 === errors;
+}
+else {
+var valid6 = true;
+}
+if(valid6){
+if(data7.courts !== undefined){
+let data10 = data7.courts;
+const _errs26 = errors;
+if(errors === _errs26){
+if(Array.isArray(data10)){
+if(data10.length > 2){
+validate127.errors = [{instancePath:instancePath+"/teams/courts",schemaPath:"https://hulla.gg/schemas/protocol/games/rung/events.json#/definitions/teams/properties/courts/maxItems",keyword:"maxItems",params:{limit: 2}}];
+return false;
+}
+else {
+if(data10.length < 2){
+validate127.errors = [{instancePath:instancePath+"/teams/courts",schemaPath:"https://hulla.gg/schemas/protocol/games/rung/events.json#/definitions/teams/properties/courts/minItems",keyword:"minItems",params:{limit: 2}}];
+return false;
+}
+else {
+var valid8 = true;
+const len3 = data10.length;
+for(let i3=0; i3<len3; i3++){
+let data11 = data10[i3];
+const _errs28 = errors;
+if(!(((typeof data11 == "number") && (!(data11 % 1) && !isNaN(data11))) && (isFinite(data11)))){
+validate127.errors = [{instancePath:instancePath+"/teams/courts/" + i3,schemaPath:"https://hulla.gg/schemas/protocol/games/rung/events.json#/definitions/teams/properties/courts/items/type",keyword:"type",params:{type: "integer"}}];
+return false;
+}
+if(errors === _errs28){
+if((typeof data11 == "number") && (isFinite(data11))){
+if(data11 < 0 || isNaN(data11)){
+validate127.errors = [{instancePath:instancePath+"/teams/courts/" + i3,schemaPath:"https://hulla.gg/schemas/protocol/games/rung/events.json#/definitions/teams/properties/courts/items/minimum",keyword:"minimum",params:{comparison: ">=", limit: 0}}];
+return false;
+}
+}
+}
+var valid8 = _errs28 === errors;
+if(!valid8){
+break;
+}
+}
+}
+}
+}
+else {
+validate127.errors = [{instancePath:instancePath+"/teams/courts",schemaPath:"https://hulla.gg/schemas/protocol/games/rung/events.json#/definitions/teams/properties/courts/type",keyword:"type",params:{type: "array"}}];
+return false;
+}
+}
+var valid6 = _errs26 === errors;
+}
+else {
+var valid6 = true;
+}
+if(valid6){
+if(data7.dealsWon !== undefined){
+let data12 = data7.dealsWon;
+const _errs30 = errors;
+if(errors === _errs30){
+if(Array.isArray(data12)){
+if(data12.length > 2){
+validate127.errors = [{instancePath:instancePath+"/teams/dealsWon",schemaPath:"https://hulla.gg/schemas/protocol/games/rung/events.json#/definitions/teams/properties/dealsWon/maxItems",keyword:"maxItems",params:{limit: 2}}];
+return false;
+}
+else {
+if(data12.length < 2){
+validate127.errors = [{instancePath:instancePath+"/teams/dealsWon",schemaPath:"https://hulla.gg/schemas/protocol/games/rung/events.json#/definitions/teams/properties/dealsWon/minItems",keyword:"minItems",params:{limit: 2}}];
+return false;
+}
+else {
+var valid9 = true;
+const len4 = data12.length;
+for(let i4=0; i4<len4; i4++){
+let data13 = data12[i4];
+const _errs32 = errors;
+if(!(((typeof data13 == "number") && (!(data13 % 1) && !isNaN(data13))) && (isFinite(data13)))){
+validate127.errors = [{instancePath:instancePath+"/teams/dealsWon/" + i4,schemaPath:"https://hulla.gg/schemas/protocol/games/rung/events.json#/definitions/teams/properties/dealsWon/items/type",keyword:"type",params:{type: "integer"}}];
+return false;
+}
+if(errors === _errs32){
+if((typeof data13 == "number") && (isFinite(data13))){
+if(data13 < 0 || isNaN(data13)){
+validate127.errors = [{instancePath:instancePath+"/teams/dealsWon/" + i4,schemaPath:"https://hulla.gg/schemas/protocol/games/rung/events.json#/definitions/teams/properties/dealsWon/items/minimum",keyword:"minimum",params:{comparison: ">=", limit: 0}}];
+return false;
+}
+}
+}
+var valid9 = _errs32 === errors;
+if(!valid9){
+break;
+}
+}
+}
+}
+}
+else {
+validate127.errors = [{instancePath:instancePath+"/teams/dealsWon",schemaPath:"https://hulla.gg/schemas/protocol/games/rung/events.json#/definitions/teams/properties/dealsWon/type",keyword:"type",params:{type: "array"}}];
+return false;
+}
+}
+var valid6 = _errs30 === errors;
+}
+else {
+var valid6 = true;
+}
+if(valid6){
+if(data7.streakTeam !== undefined){
+let data14 = data7.streakTeam;
+const _errs34 = errors;
+if((!(((typeof data14 == "number") && (!(data14 % 1) && !isNaN(data14))) && (isFinite(data14)))) && (data14 !== null)){
+validate127.errors = [{instancePath:instancePath+"/teams/streakTeam",schemaPath:"https://hulla.gg/schemas/protocol/games/rung/events.json#/definitions/teams/properties/streakTeam/type",keyword:"type",params:{type: schema145.properties.streakTeam.type}}];
+return false;
+}
+if(!(((data14 === 0) || (data14 === 1)) || (data14 === null))){
+validate127.errors = [{instancePath:instancePath+"/teams/streakTeam",schemaPath:"https://hulla.gg/schemas/protocol/games/rung/events.json#/definitions/teams/properties/streakTeam/enum",keyword:"enum",params:{allowedValues: schema145.properties.streakTeam.enum}}];
+return false;
+}
+var valid6 = _errs34 === errors;
+}
+else {
+var valid6 = true;
+}
+if(valid6){
+if(data7.streakDeals !== undefined){
+let data15 = data7.streakDeals;
+const _errs36 = errors;
+if(!(((typeof data15 == "number") && (!(data15 % 1) && !isNaN(data15))) && (isFinite(data15)))){
+validate127.errors = [{instancePath:instancePath+"/teams/streakDeals",schemaPath:"https://hulla.gg/schemas/protocol/games/rung/events.json#/definitions/teams/properties/streakDeals/type",keyword:"type",params:{type: "integer"}}];
+return false;
+}
+if(errors === _errs36){
+if((typeof data15 == "number") && (isFinite(data15))){
+if(data15 < 0 || isNaN(data15)){
+validate127.errors = [{instancePath:instancePath+"/teams/streakDeals",schemaPath:"https://hulla.gg/schemas/protocol/games/rung/events.json#/definitions/teams/properties/streakDeals/minimum",keyword:"minimum",params:{comparison: ">=", limit: 0}}];
+return false;
+}
+}
+}
+var valid6 = _errs36 === errors;
+}
+else {
+var valid6 = true;
+}
+if(valid6){
+if(data7.winnerTeam !== undefined){
+let data16 = data7.winnerTeam;
+const _errs38 = errors;
+if((!(((typeof data16 == "number") && (!(data16 % 1) && !isNaN(data16))) && (isFinite(data16)))) && (data16 !== null)){
+validate127.errors = [{instancePath:instancePath+"/teams/winnerTeam",schemaPath:"https://hulla.gg/schemas/protocol/games/rung/events.json#/definitions/teams/properties/winnerTeam/type",keyword:"type",params:{type: schema145.properties.winnerTeam.type}}];
+return false;
+}
+if(!(((data16 === 0) || (data16 === 1)) || (data16 === null))){
+validate127.errors = [{instancePath:instancePath+"/teams/winnerTeam",schemaPath:"https://hulla.gg/schemas/protocol/games/rung/events.json#/definitions/teams/properties/winnerTeam/enum",keyword:"enum",params:{allowedValues: schema145.properties.winnerTeam.enum}}];
+return false;
+}
+var valid6 = _errs38 === errors;
+}
+else {
+var valid6 = true;
+}
+}
+}
+}
+}
+}
+}
+}
+}
+else {
+validate127.errors = [{instancePath:instancePath+"/teams",schemaPath:"https://hulla.gg/schemas/protocol/games/rung/events.json#/definitions/teams/type",keyword:"type",params:{type: "object"}}];
+return false;
+}
+}
+var valid0 = _errs18 === errors;
+}
+else {
+var valid0 = true;
+}
+}
+}
+}
+}
+}
+}
+}
+}
+else {
+validate127.errors = [{instancePath,schemaPath:"#/type",keyword:"type",params:{type: "object"}}];
+return false;
+}
+}
+validate127.errors = vErrors;
+return errors === 0;
+}
+
+
+function validate124(data, {instancePath="", parentData, parentDataProperty, rootData=data}={}){
+let vErrors = null;
+let errors = 0;
+if(errors === 0){
+if(data && typeof data == "object" && !Array.isArray(data)){
+let missing0;
+if((((((((data.roundId === undefined) && (missing0 = "roundId")) || ((data.escapeOrder === undefined) && (missing0 = "escapeOrder"))) || ((data.bhabhiSeat === undefined) && (missing0 = "bhabhiSeat"))) || ((data.bhabhiCards === undefined) && (missing0 = "bhabhiCards"))) || ((data.points === undefined) && (missing0 = "points"))) || ((data.stats === undefined) && (missing0 = "stats"))) || ((data.fairness === undefined) && (missing0 = "fairness"))){
+validate124.errors = [{instancePath,schemaPath:"#/required",keyword:"required",params:{missingProperty: missing0}}];
+return false;
+}
+else {
+const _errs1 = errors;
+for(const key0 in data){
+if(!((((((((key0 === "roundId") || (key0 === "escapeOrder")) || (key0 === "bhabhiSeat")) || (key0 === "bhabhiCards")) || (key0 === "points")) || (key0 === "stats")) || (key0 === "fairness")) || (key0 === "series"))){
+validate124.errors = [{instancePath,schemaPath:"#/additionalProperties",keyword:"additionalProperties",params:{additionalProperty: key0}}];
+return false;
+break;
+}
+}
+if(_errs1 === errors){
+if(data.roundId !== undefined){
+let data0 = data.roundId;
+const _errs2 = errors;
+const _errs3 = errors;
+if(errors === _errs3){
+if(typeof data0 === "string"){
+if(!pattern18.test(data0)){
+validate124.errors = [{instancePath:instancePath+"/roundId",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/roundId/pattern",keyword:"pattern",params:{pattern: "^r_[0-9]+$"}}];
+return false;
+}
+}
+else {
+validate124.errors = [{instancePath:instancePath+"/roundId",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/roundId/type",keyword:"type",params:{type: "string"}}];
+return false;
+}
+}
+var valid0 = _errs2 === errors;
+}
+else {
+var valid0 = true;
+}
+if(valid0){
 if(data.escapeOrder !== undefined){
 const _errs5 = errors;
-if(!(validate120(data.escapeOrder, {instancePath:instancePath+"/escapeOrder",parentData:data,parentDataProperty:"escapeOrder",rootData}))){
-vErrors = vErrors === null ? validate120.errors : vErrors.concat(validate120.errors);
+if(!(validate121(data.escapeOrder, {instancePath:instancePath+"/escapeOrder",parentData:data,parentDataProperty:"escapeOrder",rootData}))){
+vErrors = vErrors === null ? validate121.errors : vErrors.concat(validate121.errors);
 errors = vErrors.length;
 }
 var valid0 = _errs5 === errors;
@@ -11494,18 +12025,18 @@ let data2 = data.bhabhiSeat;
 const _errs6 = errors;
 const _errs7 = errors;
 if(!(((typeof data2 == "number") && (!(data2 % 1) && !isNaN(data2))) && (isFinite(data2)))){
-validate123.errors = [{instancePath:instancePath+"/bhabhiSeat",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex/type",keyword:"type",params:{type: "integer"}}];
+validate124.errors = [{instancePath:instancePath+"/bhabhiSeat",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex/type",keyword:"type",params:{type: "integer"}}];
 return false;
 }
 if(errors === _errs7){
 if((typeof data2 == "number") && (isFinite(data2))){
 if(data2 > 7 || isNaN(data2)){
-validate123.errors = [{instancePath:instancePath+"/bhabhiSeat",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex/maximum",keyword:"maximum",params:{comparison: "<=", limit: 7}}];
+validate124.errors = [{instancePath:instancePath+"/bhabhiSeat",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex/maximum",keyword:"maximum",params:{comparison: "<=", limit: 7}}];
 return false;
 }
 else {
 if(data2 < 0 || isNaN(data2)){
-validate123.errors = [{instancePath:instancePath+"/bhabhiSeat",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex/minimum",keyword:"minimum",params:{comparison: ">=", limit: 0}}];
+validate124.errors = [{instancePath:instancePath+"/bhabhiSeat",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex/minimum",keyword:"minimum",params:{comparison: ">=", limit: 0}}];
 return false;
 }
 }
@@ -11521,13 +12052,13 @@ if(data.bhabhiCards !== undefined){
 let data3 = data.bhabhiCards;
 const _errs9 = errors;
 if(!(((typeof data3 == "number") && (!(data3 % 1) && !isNaN(data3))) && (isFinite(data3)))){
-validate123.errors = [{instancePath:instancePath+"/bhabhiCards",schemaPath:"#/properties/bhabhiCards/type",keyword:"type",params:{type: "integer"}}];
+validate124.errors = [{instancePath:instancePath+"/bhabhiCards",schemaPath:"#/properties/bhabhiCards/type",keyword:"type",params:{type: "integer"}}];
 return false;
 }
 if(errors === _errs9){
 if((typeof data3 == "number") && (isFinite(data3))){
 if(data3 < 0 || isNaN(data3)){
-validate123.errors = [{instancePath:instancePath+"/bhabhiCards",schemaPath:"#/properties/bhabhiCards/minimum",keyword:"minimum",params:{comparison: ">=", limit: 0}}];
+validate124.errors = [{instancePath:instancePath+"/bhabhiCards",schemaPath:"#/properties/bhabhiCards/minimum",keyword:"minimum",params:{comparison: ">=", limit: 0}}];
 return false;
 }
 }
@@ -11550,7 +12081,7 @@ for(let i0=0; i0<len0; i0++){
 let data5 = data4[i0];
 const _errs14 = errors;
 if(!(((typeof data5 == "number") && (!(data5 % 1) && !isNaN(data5))) && (isFinite(data5)))){
-validate123.errors = [{instancePath:instancePath+"/points/" + i0,schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/points/items/type",keyword:"type",params:{type: "integer"}}];
+validate124.errors = [{instancePath:instancePath+"/points/" + i0,schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/points/items/type",keyword:"type",params:{type: "integer"}}];
 return false;
 }
 var valid4 = _errs14 === errors;
@@ -11560,7 +12091,7 @@ break;
 }
 }
 else {
-validate123.errors = [{instancePath:instancePath+"/points",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/points/type",keyword:"type",params:{type: "array"}}];
+validate124.errors = [{instancePath:instancePath+"/points",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/points/type",keyword:"type",params:{type: "array"}}];
 return false;
 }
 }
@@ -11585,14 +12116,14 @@ if(errors === _errs19){
 if(data7 && typeof data7 == "object" && !Array.isArray(data7)){
 let missing1;
 if(((((data7.thullasGiven === undefined) && (missing1 = "thullasGiven")) || ((data7.thullasReceived === undefined) && (missing1 = "thullasReceived"))) || ((data7.cardsPickedUp === undefined) && (missing1 = "cardsPickedUp"))) || ((data7.handsTaken === undefined) && (missing1 = "handsTaken"))){
-validate123.errors = [{instancePath:instancePath+"/stats/" + i1,schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatStats/required",keyword:"required",params:{missingProperty: missing1}}];
+validate124.errors = [{instancePath:instancePath+"/stats/" + i1,schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatStats/required",keyword:"required",params:{missingProperty: missing1}}];
 return false;
 }
 else {
 const _errs21 = errors;
 for(const key1 in data7){
 if(!((((key1 === "thullasGiven") || (key1 === "thullasReceived")) || (key1 === "cardsPickedUp")) || (key1 === "handsTaken"))){
-validate123.errors = [{instancePath:instancePath+"/stats/" + i1,schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatStats/additionalProperties",keyword:"additionalProperties",params:{additionalProperty: key1}}];
+validate124.errors = [{instancePath:instancePath+"/stats/" + i1,schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatStats/additionalProperties",keyword:"additionalProperties",params:{additionalProperty: key1}}];
 return false;
 break;
 }
@@ -11602,13 +12133,13 @@ if(data7.thullasGiven !== undefined){
 let data8 = data7.thullasGiven;
 const _errs22 = errors;
 if(!(((typeof data8 == "number") && (!(data8 % 1) && !isNaN(data8))) && (isFinite(data8)))){
-validate123.errors = [{instancePath:instancePath+"/stats/" + i1+"/thullasGiven",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatStats/properties/thullasGiven/type",keyword:"type",params:{type: "integer"}}];
+validate124.errors = [{instancePath:instancePath+"/stats/" + i1+"/thullasGiven",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatStats/properties/thullasGiven/type",keyword:"type",params:{type: "integer"}}];
 return false;
 }
 if(errors === _errs22){
 if((typeof data8 == "number") && (isFinite(data8))){
 if(data8 < 0 || isNaN(data8)){
-validate123.errors = [{instancePath:instancePath+"/stats/" + i1+"/thullasGiven",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatStats/properties/thullasGiven/minimum",keyword:"minimum",params:{comparison: ">=", limit: 0}}];
+validate124.errors = [{instancePath:instancePath+"/stats/" + i1+"/thullasGiven",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatStats/properties/thullasGiven/minimum",keyword:"minimum",params:{comparison: ">=", limit: 0}}];
 return false;
 }
 }
@@ -11623,13 +12154,13 @@ if(data7.thullasReceived !== undefined){
 let data9 = data7.thullasReceived;
 const _errs24 = errors;
 if(!(((typeof data9 == "number") && (!(data9 % 1) && !isNaN(data9))) && (isFinite(data9)))){
-validate123.errors = [{instancePath:instancePath+"/stats/" + i1+"/thullasReceived",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatStats/properties/thullasReceived/type",keyword:"type",params:{type: "integer"}}];
+validate124.errors = [{instancePath:instancePath+"/stats/" + i1+"/thullasReceived",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatStats/properties/thullasReceived/type",keyword:"type",params:{type: "integer"}}];
 return false;
 }
 if(errors === _errs24){
 if((typeof data9 == "number") && (isFinite(data9))){
 if(data9 < 0 || isNaN(data9)){
-validate123.errors = [{instancePath:instancePath+"/stats/" + i1+"/thullasReceived",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatStats/properties/thullasReceived/minimum",keyword:"minimum",params:{comparison: ">=", limit: 0}}];
+validate124.errors = [{instancePath:instancePath+"/stats/" + i1+"/thullasReceived",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatStats/properties/thullasReceived/minimum",keyword:"minimum",params:{comparison: ">=", limit: 0}}];
 return false;
 }
 }
@@ -11644,13 +12175,13 @@ if(data7.cardsPickedUp !== undefined){
 let data10 = data7.cardsPickedUp;
 const _errs26 = errors;
 if(!(((typeof data10 == "number") && (!(data10 % 1) && !isNaN(data10))) && (isFinite(data10)))){
-validate123.errors = [{instancePath:instancePath+"/stats/" + i1+"/cardsPickedUp",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatStats/properties/cardsPickedUp/type",keyword:"type",params:{type: "integer"}}];
+validate124.errors = [{instancePath:instancePath+"/stats/" + i1+"/cardsPickedUp",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatStats/properties/cardsPickedUp/type",keyword:"type",params:{type: "integer"}}];
 return false;
 }
 if(errors === _errs26){
 if((typeof data10 == "number") && (isFinite(data10))){
 if(data10 < 0 || isNaN(data10)){
-validate123.errors = [{instancePath:instancePath+"/stats/" + i1+"/cardsPickedUp",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatStats/properties/cardsPickedUp/minimum",keyword:"minimum",params:{comparison: ">=", limit: 0}}];
+validate124.errors = [{instancePath:instancePath+"/stats/" + i1+"/cardsPickedUp",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatStats/properties/cardsPickedUp/minimum",keyword:"minimum",params:{comparison: ">=", limit: 0}}];
 return false;
 }
 }
@@ -11665,13 +12196,13 @@ if(data7.handsTaken !== undefined){
 let data11 = data7.handsTaken;
 const _errs28 = errors;
 if(!(((typeof data11 == "number") && (!(data11 % 1) && !isNaN(data11))) && (isFinite(data11)))){
-validate123.errors = [{instancePath:instancePath+"/stats/" + i1+"/handsTaken",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatStats/properties/handsTaken/type",keyword:"type",params:{type: "integer"}}];
+validate124.errors = [{instancePath:instancePath+"/stats/" + i1+"/handsTaken",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatStats/properties/handsTaken/type",keyword:"type",params:{type: "integer"}}];
 return false;
 }
 if(errors === _errs28){
 if((typeof data11 == "number") && (isFinite(data11))){
 if(data11 < 0 || isNaN(data11)){
-validate123.errors = [{instancePath:instancePath+"/stats/" + i1+"/handsTaken",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatStats/properties/handsTaken/minimum",keyword:"minimum",params:{comparison: ">=", limit: 0}}];
+validate124.errors = [{instancePath:instancePath+"/stats/" + i1+"/handsTaken",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatStats/properties/handsTaken/minimum",keyword:"minimum",params:{comparison: ">=", limit: 0}}];
 return false;
 }
 }
@@ -11688,7 +12219,7 @@ var valid7 = true;
 }
 }
 else {
-validate123.errors = [{instancePath:instancePath+"/stats/" + i1,schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatStats/type",keyword:"type",params:{type: "object"}}];
+validate124.errors = [{instancePath:instancePath+"/stats/" + i1,schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatStats/type",keyword:"type",params:{type: "object"}}];
 return false;
 }
 }
@@ -11699,7 +12230,7 @@ break;
 }
 }
 else {
-validate123.errors = [{instancePath:instancePath+"/stats",schemaPath:"#/properties/stats/type",keyword:"type",params:{type: "array"}}];
+validate124.errors = [{instancePath:instancePath+"/stats",schemaPath:"#/properties/stats/type",keyword:"type",params:{type: "array"}}];
 return false;
 }
 }
@@ -11716,14 +12247,14 @@ if(errors === _errs30){
 if(data12 && typeof data12 == "object" && !Array.isArray(data12)){
 let missing2;
 if((((data12.commitment === undefined) && (missing2 = "commitment")) || ((data12.seed === undefined) && (missing2 = "seed"))) || ((data12.deckOrder === undefined) && (missing2 = "deckOrder"))){
-validate123.errors = [{instancePath:instancePath+"/fairness",schemaPath:"#/properties/fairness/required",keyword:"required",params:{missingProperty: missing2}}];
+validate124.errors = [{instancePath:instancePath+"/fairness",schemaPath:"#/properties/fairness/required",keyword:"required",params:{missingProperty: missing2}}];
 return false;
 }
 else {
 const _errs32 = errors;
 for(const key2 in data12){
 if(!(((key2 === "commitment") || (key2 === "seed")) || (key2 === "deckOrder"))){
-validate123.errors = [{instancePath:instancePath+"/fairness",schemaPath:"#/properties/fairness/additionalProperties",keyword:"additionalProperties",params:{additionalProperty: key2}}];
+validate124.errors = [{instancePath:instancePath+"/fairness",schemaPath:"#/properties/fairness/additionalProperties",keyword:"additionalProperties",params:{additionalProperty: key2}}];
 return false;
 break;
 }
@@ -11735,12 +12266,12 @@ const _errs33 = errors;
 if(errors === _errs33){
 if(typeof data13 === "string"){
 if(!pattern30.test(data13)){
-validate123.errors = [{instancePath:instancePath+"/fairness/commitment",schemaPath:"#/properties/fairness/properties/commitment/pattern",keyword:"pattern",params:{pattern: "^[0-9a-f]{64}$"}}];
+validate124.errors = [{instancePath:instancePath+"/fairness/commitment",schemaPath:"#/properties/fairness/properties/commitment/pattern",keyword:"pattern",params:{pattern: "^[0-9a-f]{64}$"}}];
 return false;
 }
 }
 else {
-validate123.errors = [{instancePath:instancePath+"/fairness/commitment",schemaPath:"#/properties/fairness/properties/commitment/type",keyword:"type",params:{type: "string"}}];
+validate124.errors = [{instancePath:instancePath+"/fairness/commitment",schemaPath:"#/properties/fairness/properties/commitment/type",keyword:"type",params:{type: "string"}}];
 return false;
 }
 }
@@ -11756,12 +12287,12 @@ const _errs35 = errors;
 if(errors === _errs35){
 if(typeof data14 === "string"){
 if(!pattern48.test(data14)){
-validate123.errors = [{instancePath:instancePath+"/fairness/seed",schemaPath:"#/properties/fairness/properties/seed/pattern",keyword:"pattern",params:{pattern: "^[0-9a-f]+$"}}];
+validate124.errors = [{instancePath:instancePath+"/fairness/seed",schemaPath:"#/properties/fairness/properties/seed/pattern",keyword:"pattern",params:{pattern: "^[0-9a-f]+$"}}];
 return false;
 }
 }
 else {
-validate123.errors = [{instancePath:instancePath+"/fairness/seed",schemaPath:"#/properties/fairness/properties/seed/type",keyword:"type",params:{type: "string"}}];
+validate124.errors = [{instancePath:instancePath+"/fairness/seed",schemaPath:"#/properties/fairness/properties/seed/type",keyword:"type",params:{type: "string"}}];
 return false;
 }
 }
@@ -11773,8 +12304,8 @@ var valid8 = true;
 if(valid8){
 if(data12.deckOrder !== undefined){
 const _errs37 = errors;
-if(!(validate102(data12.deckOrder, {instancePath:instancePath+"/fairness/deckOrder",parentData:data12,parentDataProperty:"deckOrder",rootData}))){
-vErrors = vErrors === null ? validate102.errors : vErrors.concat(validate102.errors);
+if(!(validate103(data12.deckOrder, {instancePath:instancePath+"/fairness/deckOrder",parentData:data12,parentDataProperty:"deckOrder",rootData}))){
+vErrors = vErrors === null ? validate103.errors : vErrors.concat(validate103.errors);
 errors = vErrors.length;
 }
 var valid8 = _errs37 === errors;
@@ -11788,7 +12319,7 @@ var valid8 = true;
 }
 }
 else {
-validate123.errors = [{instancePath:instancePath+"/fairness",schemaPath:"#/properties/fairness/type",keyword:"type",params:{type: "object"}}];
+validate124.errors = [{instancePath:instancePath+"/fairness",schemaPath:"#/properties/fairness/type",keyword:"type",params:{type: "object"}}];
 return false;
 }
 }
@@ -11800,8 +12331,8 @@ var valid0 = true;
 if(valid0){
 if(data.series !== undefined){
 const _errs38 = errors;
-if(!(validate126(data.series, {instancePath:instancePath+"/series",parentData:data,parentDataProperty:"series",rootData}))){
-vErrors = vErrors === null ? validate126.errors : vErrors.concat(validate126.errors);
+if(!(validate127(data.series, {instancePath:instancePath+"/series",parentData:data,parentDataProperty:"series",rootData}))){
+vErrors = vErrors === null ? validate127.errors : vErrors.concat(validate127.errors);
 errors = vErrors.length;
 }
 var valid0 = _errs38 === errors;
@@ -11820,175 +12351,16 @@ var valid0 = true;
 }
 }
 else {
-validate123.errors = [{instancePath,schemaPath:"#/type",keyword:"type",params:{type: "object"}}];
+validate124.errors = [{instancePath,schemaPath:"#/type",keyword:"type",params:{type: "object"}}];
 return false;
 }
 }
-validate123.errors = vErrors;
+validate124.errors = vErrors;
 return errors === 0;
 }
 
-const check_hand_asked = validate128;
-const schema248 = {"type":"object","additionalProperties":false,"description":"The asker wants the target's whole hand (R32, R35); the target answers before deadlineTs","required":["roundId","asker","target","cardCount","deadlineTs"],"properties":{"roundId":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/roundId"},"asker":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex"},"target":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex"},"cardCount":{"type":"integer","minimum":1},"deadlineTs":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/timestamp"}}};
-
-function validate128(data, {instancePath="", parentData, parentDataProperty, rootData=data}={}){
-let vErrors = null;
-let errors = 0;
-if(errors === 0){
-if(data && typeof data == "object" && !Array.isArray(data)){
-let missing0;
-if((((((data.roundId === undefined) && (missing0 = "roundId")) || ((data.asker === undefined) && (missing0 = "asker"))) || ((data.target === undefined) && (missing0 = "target"))) || ((data.cardCount === undefined) && (missing0 = "cardCount"))) || ((data.deadlineTs === undefined) && (missing0 = "deadlineTs"))){
-validate128.errors = [{instancePath,schemaPath:"#/required",keyword:"required",params:{missingProperty: missing0}}];
-return false;
-}
-else {
-const _errs1 = errors;
-for(const key0 in data){
-if(!(((((key0 === "roundId") || (key0 === "asker")) || (key0 === "target")) || (key0 === "cardCount")) || (key0 === "deadlineTs"))){
-validate128.errors = [{instancePath,schemaPath:"#/additionalProperties",keyword:"additionalProperties",params:{additionalProperty: key0}}];
-return false;
-break;
-}
-}
-if(_errs1 === errors){
-if(data.roundId !== undefined){
-let data0 = data.roundId;
-const _errs2 = errors;
-const _errs3 = errors;
-if(errors === _errs3){
-if(typeof data0 === "string"){
-if(!pattern18.test(data0)){
-validate128.errors = [{instancePath:instancePath+"/roundId",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/roundId/pattern",keyword:"pattern",params:{pattern: "^r_[0-9]+$"}}];
-return false;
-}
-}
-else {
-validate128.errors = [{instancePath:instancePath+"/roundId",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/roundId/type",keyword:"type",params:{type: "string"}}];
-return false;
-}
-}
-var valid0 = _errs2 === errors;
-}
-else {
-var valid0 = true;
-}
-if(valid0){
-if(data.asker !== undefined){
-let data1 = data.asker;
-const _errs5 = errors;
-const _errs6 = errors;
-if(!(((typeof data1 == "number") && (!(data1 % 1) && !isNaN(data1))) && (isFinite(data1)))){
-validate128.errors = [{instancePath:instancePath+"/asker",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex/type",keyword:"type",params:{type: "integer"}}];
-return false;
-}
-if(errors === _errs6){
-if((typeof data1 == "number") && (isFinite(data1))){
-if(data1 > 7 || isNaN(data1)){
-validate128.errors = [{instancePath:instancePath+"/asker",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex/maximum",keyword:"maximum",params:{comparison: "<=", limit: 7}}];
-return false;
-}
-else {
-if(data1 < 0 || isNaN(data1)){
-validate128.errors = [{instancePath:instancePath+"/asker",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex/minimum",keyword:"minimum",params:{comparison: ">=", limit: 0}}];
-return false;
-}
-}
-}
-}
-var valid0 = _errs5 === errors;
-}
-else {
-var valid0 = true;
-}
-if(valid0){
-if(data.target !== undefined){
-let data2 = data.target;
-const _errs8 = errors;
-const _errs9 = errors;
-if(!(((typeof data2 == "number") && (!(data2 % 1) && !isNaN(data2))) && (isFinite(data2)))){
-validate128.errors = [{instancePath:instancePath+"/target",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex/type",keyword:"type",params:{type: "integer"}}];
-return false;
-}
-if(errors === _errs9){
-if((typeof data2 == "number") && (isFinite(data2))){
-if(data2 > 7 || isNaN(data2)){
-validate128.errors = [{instancePath:instancePath+"/target",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex/maximum",keyword:"maximum",params:{comparison: "<=", limit: 7}}];
-return false;
-}
-else {
-if(data2 < 0 || isNaN(data2)){
-validate128.errors = [{instancePath:instancePath+"/target",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex/minimum",keyword:"minimum",params:{comparison: ">=", limit: 0}}];
-return false;
-}
-}
-}
-}
-var valid0 = _errs8 === errors;
-}
-else {
-var valid0 = true;
-}
-if(valid0){
-if(data.cardCount !== undefined){
-let data3 = data.cardCount;
-const _errs11 = errors;
-if(!(((typeof data3 == "number") && (!(data3 % 1) && !isNaN(data3))) && (isFinite(data3)))){
-validate128.errors = [{instancePath:instancePath+"/cardCount",schemaPath:"#/properties/cardCount/type",keyword:"type",params:{type: "integer"}}];
-return false;
-}
-if(errors === _errs11){
-if((typeof data3 == "number") && (isFinite(data3))){
-if(data3 < 1 || isNaN(data3)){
-validate128.errors = [{instancePath:instancePath+"/cardCount",schemaPath:"#/properties/cardCount/minimum",keyword:"minimum",params:{comparison: ">=", limit: 1}}];
-return false;
-}
-}
-}
-var valid0 = _errs11 === errors;
-}
-else {
-var valid0 = true;
-}
-if(valid0){
-if(data.deadlineTs !== undefined){
-let data4 = data.deadlineTs;
-const _errs13 = errors;
-const _errs14 = errors;
-if(!(((typeof data4 == "number") && (!(data4 % 1) && !isNaN(data4))) && (isFinite(data4)))){
-validate128.errors = [{instancePath:instancePath+"/deadlineTs",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/timestamp/type",keyword:"type",params:{type: "integer"}}];
-return false;
-}
-if(errors === _errs14){
-if((typeof data4 == "number") && (isFinite(data4))){
-if(data4 < 0 || isNaN(data4)){
-validate128.errors = [{instancePath:instancePath+"/deadlineTs",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/timestamp/minimum",keyword:"minimum",params:{comparison: ">=", limit: 0}}];
-return false;
-}
-}
-}
-var valid0 = _errs13 === errors;
-}
-else {
-var valid0 = true;
-}
-}
-}
-}
-}
-}
-}
-}
-else {
-validate128.errors = [{instancePath,schemaPath:"#/type",keyword:"type",params:{type: "object"}}];
-return false;
-}
-}
-validate128.errors = vErrors;
-return errors === 0;
-}
-
-const check_hand_answered = validate129;
-const schema253 = {"type":"object","additionalProperties":false,"description":"How a hand request ended; an accepted one is followed by move_applied and hand_taken","required":["roundId","asker","target","accepted","reason"],"properties":{"roundId":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/roundId"},"asker":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex"},"target":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex"},"accepted":{"type":"boolean"},"reason":{"type":"string","enum":["accepted","declined","lead","timeout","left"]}}};
+const check_hand_asked = validate129;
+const schema251 = {"type":"object","additionalProperties":false,"description":"The asker wants the target's whole hand (R32, R35); the target answers before deadlineTs","required":["roundId","asker","target","cardCount","deadlineTs"],"properties":{"roundId":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/roundId"},"asker":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex"},"target":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex"},"cardCount":{"type":"integer","minimum":1},"deadlineTs":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/timestamp"}}};
 
 function validate129(data, {instancePath="", parentData, parentDataProperty, rootData=data}={}){
 let vErrors = null;
@@ -11996,14 +12368,14 @@ let errors = 0;
 if(errors === 0){
 if(data && typeof data == "object" && !Array.isArray(data)){
 let missing0;
-if((((((data.roundId === undefined) && (missing0 = "roundId")) || ((data.asker === undefined) && (missing0 = "asker"))) || ((data.target === undefined) && (missing0 = "target"))) || ((data.accepted === undefined) && (missing0 = "accepted"))) || ((data.reason === undefined) && (missing0 = "reason"))){
+if((((((data.roundId === undefined) && (missing0 = "roundId")) || ((data.asker === undefined) && (missing0 = "asker"))) || ((data.target === undefined) && (missing0 = "target"))) || ((data.cardCount === undefined) && (missing0 = "cardCount"))) || ((data.deadlineTs === undefined) && (missing0 = "deadlineTs"))){
 validate129.errors = [{instancePath,schemaPath:"#/required",keyword:"required",params:{missingProperty: missing0}}];
 return false;
 }
 else {
 const _errs1 = errors;
 for(const key0 in data){
-if(!(((((key0 === "roundId") || (key0 === "asker")) || (key0 === "target")) || (key0 === "accepted")) || (key0 === "reason"))){
+if(!(((((key0 === "roundId") || (key0 === "asker")) || (key0 === "target")) || (key0 === "cardCount")) || (key0 === "deadlineTs"))){
 validate129.errors = [{instancePath,schemaPath:"#/additionalProperties",keyword:"additionalProperties",params:{additionalProperty: key0}}];
 return false;
 break;
@@ -12088,11 +12460,20 @@ else {
 var valid0 = true;
 }
 if(valid0){
-if(data.accepted !== undefined){
+if(data.cardCount !== undefined){
+let data3 = data.cardCount;
 const _errs11 = errors;
-if(typeof data.accepted !== "boolean"){
-validate129.errors = [{instancePath:instancePath+"/accepted",schemaPath:"#/properties/accepted/type",keyword:"type",params:{type: "boolean"}}];
+if(!(((typeof data3 == "number") && (!(data3 % 1) && !isNaN(data3))) && (isFinite(data3)))){
+validate129.errors = [{instancePath:instancePath+"/cardCount",schemaPath:"#/properties/cardCount/type",keyword:"type",params:{type: "integer"}}];
 return false;
+}
+if(errors === _errs11){
+if((typeof data3 == "number") && (isFinite(data3))){
+if(data3 < 1 || isNaN(data3)){
+validate129.errors = [{instancePath:instancePath+"/cardCount",schemaPath:"#/properties/cardCount/minimum",keyword:"minimum",params:{comparison: ">=", limit: 1}}];
+return false;
+}
+}
 }
 var valid0 = _errs11 === errors;
 }
@@ -12100,16 +12481,21 @@ else {
 var valid0 = true;
 }
 if(valid0){
-if(data.reason !== undefined){
-let data4 = data.reason;
+if(data.deadlineTs !== undefined){
+let data4 = data.deadlineTs;
 const _errs13 = errors;
-if(typeof data4 !== "string"){
-validate129.errors = [{instancePath:instancePath+"/reason",schemaPath:"#/properties/reason/type",keyword:"type",params:{type: "string"}}];
+const _errs14 = errors;
+if(!(((typeof data4 == "number") && (!(data4 % 1) && !isNaN(data4))) && (isFinite(data4)))){
+validate129.errors = [{instancePath:instancePath+"/deadlineTs",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/timestamp/type",keyword:"type",params:{type: "integer"}}];
 return false;
 }
-if(!(((((data4 === "accepted") || (data4 === "declined")) || (data4 === "lead")) || (data4 === "timeout")) || (data4 === "left"))){
-validate129.errors = [{instancePath:instancePath+"/reason",schemaPath:"#/properties/reason/enum",keyword:"enum",params:{allowedValues: schema253.properties.reason.enum}}];
+if(errors === _errs14){
+if((typeof data4 == "number") && (isFinite(data4))){
+if(data4 < 0 || isNaN(data4)){
+validate129.errors = [{instancePath:instancePath+"/deadlineTs",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/timestamp/minimum",keyword:"minimum",params:{comparison: ">=", limit: 0}}];
 return false;
+}
+}
 }
 var valid0 = _errs13 === errors;
 }
@@ -12132,8 +12518,8 @@ validate129.errors = vErrors;
 return errors === 0;
 }
 
-const check_rung_round_start = validate130;
-const schema257 = {"type":"object","additionalProperties":false,"description":"A deal begins: five cards each, the caller to name the rung (RG4, RG5)","required":["roundId","commitment","dealerSeat","callerSeat","handCounts","rulesVersion"],"properties":{"roundId":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/roundId"},"commitment":{"type":"string","pattern":"^[0-9a-f]{64}$"},"dealerSeat":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex"},"callerSeat":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex"},"handCounts":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/handCounts"},"rulesVersion":{"type":"string"}}};
+const check_hand_answered = validate130;
+const schema256 = {"type":"object","additionalProperties":false,"description":"How a hand request ended; an accepted one is followed by move_applied and hand_taken","required":["roundId","asker","target","accepted","reason"],"properties":{"roundId":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/roundId"},"asker":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex"},"target":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex"},"accepted":{"type":"boolean"},"reason":{"type":"string","enum":["accepted","declined","lead","timeout","left"]}}};
 
 function validate130(data, {instancePath="", parentData, parentDataProperty, rootData=data}={}){
 let vErrors = null;
@@ -12141,14 +12527,14 @@ let errors = 0;
 if(errors === 0){
 if(data && typeof data == "object" && !Array.isArray(data)){
 let missing0;
-if(((((((data.roundId === undefined) && (missing0 = "roundId")) || ((data.commitment === undefined) && (missing0 = "commitment"))) || ((data.dealerSeat === undefined) && (missing0 = "dealerSeat"))) || ((data.callerSeat === undefined) && (missing0 = "callerSeat"))) || ((data.handCounts === undefined) && (missing0 = "handCounts"))) || ((data.rulesVersion === undefined) && (missing0 = "rulesVersion"))){
+if((((((data.roundId === undefined) && (missing0 = "roundId")) || ((data.asker === undefined) && (missing0 = "asker"))) || ((data.target === undefined) && (missing0 = "target"))) || ((data.accepted === undefined) && (missing0 = "accepted"))) || ((data.reason === undefined) && (missing0 = "reason"))){
 validate130.errors = [{instancePath,schemaPath:"#/required",keyword:"required",params:{missingProperty: missing0}}];
 return false;
 }
 else {
 const _errs1 = errors;
 for(const key0 in data){
-if(!((((((key0 === "roundId") || (key0 === "commitment")) || (key0 === "dealerSeat")) || (key0 === "callerSeat")) || (key0 === "handCounts")) || (key0 === "rulesVersion"))){
+if(!(((((key0 === "roundId") || (key0 === "asker")) || (key0 === "target")) || (key0 === "accepted")) || (key0 === "reason"))){
 validate130.errors = [{instancePath,schemaPath:"#/additionalProperties",keyword:"additionalProperties",params:{additionalProperty: key0}}];
 return false;
 break;
@@ -12177,19 +12563,26 @@ else {
 var valid0 = true;
 }
 if(valid0){
-if(data.commitment !== undefined){
-let data1 = data.commitment;
+if(data.asker !== undefined){
+let data1 = data.asker;
 const _errs5 = errors;
-if(errors === _errs5){
-if(typeof data1 === "string"){
-if(!pattern30.test(data1)){
-validate130.errors = [{instancePath:instancePath+"/commitment",schemaPath:"#/properties/commitment/pattern",keyword:"pattern",params:{pattern: "^[0-9a-f]{64}$"}}];
+const _errs6 = errors;
+if(!(((typeof data1 == "number") && (!(data1 % 1) && !isNaN(data1))) && (isFinite(data1)))){
+validate130.errors = [{instancePath:instancePath+"/asker",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex/type",keyword:"type",params:{type: "integer"}}];
 return false;
 }
+if(errors === _errs6){
+if((typeof data1 == "number") && (isFinite(data1))){
+if(data1 > 7 || isNaN(data1)){
+validate130.errors = [{instancePath:instancePath+"/asker",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex/maximum",keyword:"maximum",params:{comparison: "<=", limit: 7}}];
+return false;
 }
 else {
-validate130.errors = [{instancePath:instancePath+"/commitment",schemaPath:"#/properties/commitment/type",keyword:"type",params:{type: "string"}}];
+if(data1 < 0 || isNaN(data1)){
+validate130.errors = [{instancePath:instancePath+"/asker",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex/minimum",keyword:"minimum",params:{comparison: ">=", limit: 0}}];
 return false;
+}
+}
 }
 }
 var valid0 = _errs5 === errors;
@@ -12198,113 +12591,61 @@ else {
 var valid0 = true;
 }
 if(valid0){
-if(data.dealerSeat !== undefined){
-let data2 = data.dealerSeat;
-const _errs7 = errors;
+if(data.target !== undefined){
+let data2 = data.target;
 const _errs8 = errors;
+const _errs9 = errors;
 if(!(((typeof data2 == "number") && (!(data2 % 1) && !isNaN(data2))) && (isFinite(data2)))){
-validate130.errors = [{instancePath:instancePath+"/dealerSeat",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex/type",keyword:"type",params:{type: "integer"}}];
+validate130.errors = [{instancePath:instancePath+"/target",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex/type",keyword:"type",params:{type: "integer"}}];
 return false;
 }
-if(errors === _errs8){
+if(errors === _errs9){
 if((typeof data2 == "number") && (isFinite(data2))){
 if(data2 > 7 || isNaN(data2)){
-validate130.errors = [{instancePath:instancePath+"/dealerSeat",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex/maximum",keyword:"maximum",params:{comparison: "<=", limit: 7}}];
+validate130.errors = [{instancePath:instancePath+"/target",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex/maximum",keyword:"maximum",params:{comparison: "<=", limit: 7}}];
 return false;
 }
 else {
 if(data2 < 0 || isNaN(data2)){
-validate130.errors = [{instancePath:instancePath+"/dealerSeat",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex/minimum",keyword:"minimum",params:{comparison: ">=", limit: 0}}];
+validate130.errors = [{instancePath:instancePath+"/target",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex/minimum",keyword:"minimum",params:{comparison: ">=", limit: 0}}];
 return false;
 }
 }
 }
 }
-var valid0 = _errs7 === errors;
+var valid0 = _errs8 === errors;
 }
 else {
 var valid0 = true;
 }
 if(valid0){
-if(data.callerSeat !== undefined){
-let data3 = data.callerSeat;
-const _errs10 = errors;
+if(data.accepted !== undefined){
 const _errs11 = errors;
-if(!(((typeof data3 == "number") && (!(data3 % 1) && !isNaN(data3))) && (isFinite(data3)))){
-validate130.errors = [{instancePath:instancePath+"/callerSeat",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex/type",keyword:"type",params:{type: "integer"}}];
+if(typeof data.accepted !== "boolean"){
+validate130.errors = [{instancePath:instancePath+"/accepted",schemaPath:"#/properties/accepted/type",keyword:"type",params:{type: "boolean"}}];
 return false;
 }
-if(errors === _errs11){
-if((typeof data3 == "number") && (isFinite(data3))){
-if(data3 > 7 || isNaN(data3)){
-validate130.errors = [{instancePath:instancePath+"/callerSeat",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex/maximum",keyword:"maximum",params:{comparison: "<=", limit: 7}}];
-return false;
-}
-else {
-if(data3 < 0 || isNaN(data3)){
-validate130.errors = [{instancePath:instancePath+"/callerSeat",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex/minimum",keyword:"minimum",params:{comparison: ">=", limit: 0}}];
-return false;
-}
-}
-}
-}
-var valid0 = _errs10 === errors;
+var valid0 = _errs11 === errors;
 }
 else {
 var valid0 = true;
 }
 if(valid0){
-if(data.handCounts !== undefined){
-let data4 = data.handCounts;
+if(data.reason !== undefined){
+let data4 = data.reason;
 const _errs13 = errors;
-const _errs14 = errors;
-if(errors === _errs14){
-if(Array.isArray(data4)){
-var valid5 = true;
-const len0 = data4.length;
-for(let i0=0; i0<len0; i0++){
-let data5 = data4[i0];
-const _errs16 = errors;
-if(!(((typeof data5 == "number") && (!(data5 % 1) && !isNaN(data5))) && (isFinite(data5)))){
-validate130.errors = [{instancePath:instancePath+"/handCounts/" + i0,schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/handCounts/items/type",keyword:"type",params:{type: "integer"}}];
+if(typeof data4 !== "string"){
+validate130.errors = [{instancePath:instancePath+"/reason",schemaPath:"#/properties/reason/type",keyword:"type",params:{type: "string"}}];
 return false;
 }
-if(errors === _errs16){
-if((typeof data5 == "number") && (isFinite(data5))){
-if(data5 < 0 || isNaN(data5)){
-validate130.errors = [{instancePath:instancePath+"/handCounts/" + i0,schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/handCounts/items/minimum",keyword:"minimum",params:{comparison: ">=", limit: 0}}];
+if(!(((((data4 === "accepted") || (data4 === "declined")) || (data4 === "lead")) || (data4 === "timeout")) || (data4 === "left"))){
+validate130.errors = [{instancePath:instancePath+"/reason",schemaPath:"#/properties/reason/enum",keyword:"enum",params:{allowedValues: schema256.properties.reason.enum}}];
 return false;
-}
-}
-}
-var valid5 = _errs16 === errors;
-if(!valid5){
-break;
-}
-}
-}
-else {
-validate130.errors = [{instancePath:instancePath+"/handCounts",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/handCounts/type",keyword:"type",params:{type: "array"}}];
-return false;
-}
 }
 var valid0 = _errs13 === errors;
 }
 else {
 var valid0 = true;
-}
-if(valid0){
-if(data.rulesVersion !== undefined){
-const _errs18 = errors;
-if(typeof data.rulesVersion !== "string"){
-validate130.errors = [{instancePath:instancePath+"/rulesVersion",schemaPath:"#/properties/rulesVersion/type",keyword:"type",params:{type: "string"}}];
-return false;
-}
-var valid0 = _errs18 === errors;
-}
-else {
-var valid0 = true;
-}
 }
 }
 }
@@ -12322,47 +12663,8 @@ validate130.errors = vErrors;
 return errors === 0;
 }
 
-const check_rung_hand = validate131;
-const schema262 = {"type":"object","additionalProperties":false,"description":"Sent to one seat only: its own cards after a deal, a redeal or the rest of the deal","required":["roundId","cards"],"properties":{"roundId":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/roundId"},"cards":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/cards"}}};
-
-function validate132(data, {instancePath="", parentData, parentDataProperty, rootData=data}={}){
-let vErrors = null;
-let errors = 0;
-if(errors === 0){
-if(Array.isArray(data)){
-var valid0 = true;
-const len0 = data.length;
-for(let i0=0; i0<len0; i0++){
-let data0 = data[i0];
-const _errs1 = errors;
-const _errs2 = errors;
-if(errors === _errs2){
-if(typeof data0 === "string"){
-if(!pattern2.test(data0)){
-validate132.errors = [{instancePath:instancePath+"/" + i0,schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/card/pattern",keyword:"pattern",params:{pattern: "^[2-9TJQKA][SHCD]$"}}];
-return false;
-}
-}
-else {
-validate132.errors = [{instancePath:instancePath+"/" + i0,schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/card/type",keyword:"type",params:{type: "string"}}];
-return false;
-}
-}
-var valid0 = _errs1 === errors;
-if(!valid0){
-break;
-}
-}
-}
-else {
-validate132.errors = [{instancePath,schemaPath:"#/type",keyword:"type",params:{type: "array"}}];
-return false;
-}
-}
-validate132.errors = vErrors;
-return errors === 0;
-}
-
+const check_rung_round_start = validate131;
+const schema260 = {"type":"object","additionalProperties":false,"description":"A deal begins: five cards each, the caller to name the rung (RG4, RG5)","required":["roundId","commitment","dealerSeat","callerSeat","handCounts","rulesVersion"],"properties":{"roundId":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/roundId"},"commitment":{"type":"string","pattern":"^[0-9a-f]{64}$"},"dealerSeat":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex"},"callerSeat":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex"},"handCounts":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/handCounts"},"rulesVersion":{"type":"string"}}};
 
 function validate131(data, {instancePath="", parentData, parentDataProperty, rootData=data}={}){
 let vErrors = null;
@@ -12370,14 +12672,14 @@ let errors = 0;
 if(errors === 0){
 if(data && typeof data == "object" && !Array.isArray(data)){
 let missing0;
-if(((data.roundId === undefined) && (missing0 = "roundId")) || ((data.cards === undefined) && (missing0 = "cards"))){
+if(((((((data.roundId === undefined) && (missing0 = "roundId")) || ((data.commitment === undefined) && (missing0 = "commitment"))) || ((data.dealerSeat === undefined) && (missing0 = "dealerSeat"))) || ((data.callerSeat === undefined) && (missing0 = "callerSeat"))) || ((data.handCounts === undefined) && (missing0 = "handCounts"))) || ((data.rulesVersion === undefined) && (missing0 = "rulesVersion"))){
 validate131.errors = [{instancePath,schemaPath:"#/required",keyword:"required",params:{missingProperty: missing0}}];
 return false;
 }
 else {
 const _errs1 = errors;
 for(const key0 in data){
-if(!((key0 === "roundId") || (key0 === "cards"))){
+if(!((((((key0 === "roundId") || (key0 === "commitment")) || (key0 === "dealerSeat")) || (key0 === "callerSeat")) || (key0 === "handCounts")) || (key0 === "rulesVersion"))){
 validate131.errors = [{instancePath,schemaPath:"#/additionalProperties",keyword:"additionalProperties",params:{additionalProperty: key0}}];
 return false;
 break;
@@ -12406,16 +12708,137 @@ else {
 var valid0 = true;
 }
 if(valid0){
-if(data.cards !== undefined){
+if(data.commitment !== undefined){
+let data1 = data.commitment;
 const _errs5 = errors;
-if(!(validate132(data.cards, {instancePath:instancePath+"/cards",parentData:data,parentDataProperty:"cards",rootData}))){
-vErrors = vErrors === null ? validate132.errors : vErrors.concat(validate132.errors);
-errors = vErrors.length;
+if(errors === _errs5){
+if(typeof data1 === "string"){
+if(!pattern30.test(data1)){
+validate131.errors = [{instancePath:instancePath+"/commitment",schemaPath:"#/properties/commitment/pattern",keyword:"pattern",params:{pattern: "^[0-9a-f]{64}$"}}];
+return false;
+}
+}
+else {
+validate131.errors = [{instancePath:instancePath+"/commitment",schemaPath:"#/properties/commitment/type",keyword:"type",params:{type: "string"}}];
+return false;
+}
 }
 var valid0 = _errs5 === errors;
 }
 else {
 var valid0 = true;
+}
+if(valid0){
+if(data.dealerSeat !== undefined){
+let data2 = data.dealerSeat;
+const _errs7 = errors;
+const _errs8 = errors;
+if(!(((typeof data2 == "number") && (!(data2 % 1) && !isNaN(data2))) && (isFinite(data2)))){
+validate131.errors = [{instancePath:instancePath+"/dealerSeat",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex/type",keyword:"type",params:{type: "integer"}}];
+return false;
+}
+if(errors === _errs8){
+if((typeof data2 == "number") && (isFinite(data2))){
+if(data2 > 7 || isNaN(data2)){
+validate131.errors = [{instancePath:instancePath+"/dealerSeat",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex/maximum",keyword:"maximum",params:{comparison: "<=", limit: 7}}];
+return false;
+}
+else {
+if(data2 < 0 || isNaN(data2)){
+validate131.errors = [{instancePath:instancePath+"/dealerSeat",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex/minimum",keyword:"minimum",params:{comparison: ">=", limit: 0}}];
+return false;
+}
+}
+}
+}
+var valid0 = _errs7 === errors;
+}
+else {
+var valid0 = true;
+}
+if(valid0){
+if(data.callerSeat !== undefined){
+let data3 = data.callerSeat;
+const _errs10 = errors;
+const _errs11 = errors;
+if(!(((typeof data3 == "number") && (!(data3 % 1) && !isNaN(data3))) && (isFinite(data3)))){
+validate131.errors = [{instancePath:instancePath+"/callerSeat",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex/type",keyword:"type",params:{type: "integer"}}];
+return false;
+}
+if(errors === _errs11){
+if((typeof data3 == "number") && (isFinite(data3))){
+if(data3 > 7 || isNaN(data3)){
+validate131.errors = [{instancePath:instancePath+"/callerSeat",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex/maximum",keyword:"maximum",params:{comparison: "<=", limit: 7}}];
+return false;
+}
+else {
+if(data3 < 0 || isNaN(data3)){
+validate131.errors = [{instancePath:instancePath+"/callerSeat",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex/minimum",keyword:"minimum",params:{comparison: ">=", limit: 0}}];
+return false;
+}
+}
+}
+}
+var valid0 = _errs10 === errors;
+}
+else {
+var valid0 = true;
+}
+if(valid0){
+if(data.handCounts !== undefined){
+let data4 = data.handCounts;
+const _errs13 = errors;
+const _errs14 = errors;
+if(errors === _errs14){
+if(Array.isArray(data4)){
+var valid5 = true;
+const len0 = data4.length;
+for(let i0=0; i0<len0; i0++){
+let data5 = data4[i0];
+const _errs16 = errors;
+if(!(((typeof data5 == "number") && (!(data5 % 1) && !isNaN(data5))) && (isFinite(data5)))){
+validate131.errors = [{instancePath:instancePath+"/handCounts/" + i0,schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/handCounts/items/type",keyword:"type",params:{type: "integer"}}];
+return false;
+}
+if(errors === _errs16){
+if((typeof data5 == "number") && (isFinite(data5))){
+if(data5 < 0 || isNaN(data5)){
+validate131.errors = [{instancePath:instancePath+"/handCounts/" + i0,schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/handCounts/items/minimum",keyword:"minimum",params:{comparison: ">=", limit: 0}}];
+return false;
+}
+}
+}
+var valid5 = _errs16 === errors;
+if(!valid5){
+break;
+}
+}
+}
+else {
+validate131.errors = [{instancePath:instancePath+"/handCounts",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/handCounts/type",keyword:"type",params:{type: "array"}}];
+return false;
+}
+}
+var valid0 = _errs13 === errors;
+}
+else {
+var valid0 = true;
+}
+if(valid0){
+if(data.rulesVersion !== undefined){
+const _errs18 = errors;
+if(typeof data.rulesVersion !== "string"){
+validate131.errors = [{instancePath:instancePath+"/rulesVersion",schemaPath:"#/properties/rulesVersion/type",keyword:"type",params:{type: "string"}}];
+return false;
+}
+var valid0 = _errs18 === errors;
+}
+else {
+var valid0 = true;
+}
+}
+}
+}
 }
 }
 }
@@ -12430,24 +12853,63 @@ validate131.errors = vErrors;
 return errors === 0;
 }
 
-const check_rung_redealt = validate134;
-const schema266 = {"type":"object","additionalProperties":false,"description":"The caller asked for a new deal; a new commitment replaces the old (RG7)","required":["roundId","seat","commitment","redeals","handCounts","auto"],"properties":{"roundId":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/roundId"},"seat":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex"},"commitment":{"type":"string","pattern":"^[0-9a-f]{64}$"},"redeals":{"type":"integer","minimum":1},"handCounts":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/handCounts"},"clientSeq":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/sequence"},"auto":{"type":"boolean","description":"Played by the timeout policy or a bot, not by the seat's player"}}};
+const check_rung_hand = validate132;
+const schema265 = {"type":"object","additionalProperties":false,"description":"Sent to one seat only: its own cards after a deal, a redeal or the rest of the deal","required":["roundId","cards"],"properties":{"roundId":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/roundId"},"cards":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/cards"}}};
 
-function validate134(data, {instancePath="", parentData, parentDataProperty, rootData=data}={}){
+function validate133(data, {instancePath="", parentData, parentDataProperty, rootData=data}={}){
+let vErrors = null;
+let errors = 0;
+if(errors === 0){
+if(Array.isArray(data)){
+var valid0 = true;
+const len0 = data.length;
+for(let i0=0; i0<len0; i0++){
+let data0 = data[i0];
+const _errs1 = errors;
+const _errs2 = errors;
+if(errors === _errs2){
+if(typeof data0 === "string"){
+if(!pattern2.test(data0)){
+validate133.errors = [{instancePath:instancePath+"/" + i0,schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/card/pattern",keyword:"pattern",params:{pattern: "^[2-9TJQKA][SHCD]$"}}];
+return false;
+}
+}
+else {
+validate133.errors = [{instancePath:instancePath+"/" + i0,schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/card/type",keyword:"type",params:{type: "string"}}];
+return false;
+}
+}
+var valid0 = _errs1 === errors;
+if(!valid0){
+break;
+}
+}
+}
+else {
+validate133.errors = [{instancePath,schemaPath:"#/type",keyword:"type",params:{type: "array"}}];
+return false;
+}
+}
+validate133.errors = vErrors;
+return errors === 0;
+}
+
+
+function validate132(data, {instancePath="", parentData, parentDataProperty, rootData=data}={}){
 let vErrors = null;
 let errors = 0;
 if(errors === 0){
 if(data && typeof data == "object" && !Array.isArray(data)){
 let missing0;
-if(((((((data.roundId === undefined) && (missing0 = "roundId")) || ((data.seat === undefined) && (missing0 = "seat"))) || ((data.commitment === undefined) && (missing0 = "commitment"))) || ((data.redeals === undefined) && (missing0 = "redeals"))) || ((data.handCounts === undefined) && (missing0 = "handCounts"))) || ((data.auto === undefined) && (missing0 = "auto"))){
-validate134.errors = [{instancePath,schemaPath:"#/required",keyword:"required",params:{missingProperty: missing0}}];
+if(((data.roundId === undefined) && (missing0 = "roundId")) || ((data.cards === undefined) && (missing0 = "cards"))){
+validate132.errors = [{instancePath,schemaPath:"#/required",keyword:"required",params:{missingProperty: missing0}}];
 return false;
 }
 else {
 const _errs1 = errors;
 for(const key0 in data){
-if(!(((((((key0 === "roundId") || (key0 === "seat")) || (key0 === "commitment")) || (key0 === "redeals")) || (key0 === "handCounts")) || (key0 === "clientSeq")) || (key0 === "auto"))){
-validate134.errors = [{instancePath,schemaPath:"#/additionalProperties",keyword:"additionalProperties",params:{additionalProperty: key0}}];
+if(!((key0 === "roundId") || (key0 === "cards"))){
+validate132.errors = [{instancePath,schemaPath:"#/additionalProperties",keyword:"additionalProperties",params:{additionalProperty: key0}}];
 return false;
 break;
 }
@@ -12460,12 +12922,12 @@ const _errs3 = errors;
 if(errors === _errs3){
 if(typeof data0 === "string"){
 if(!pattern18.test(data0)){
-validate134.errors = [{instancePath:instancePath+"/roundId",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/roundId/pattern",keyword:"pattern",params:{pattern: "^r_[0-9]+$"}}];
+validate132.errors = [{instancePath:instancePath+"/roundId",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/roundId/pattern",keyword:"pattern",params:{pattern: "^r_[0-9]+$"}}];
 return false;
 }
 }
 else {
-validate134.errors = [{instancePath:instancePath+"/roundId",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/roundId/type",keyword:"type",params:{type: "string"}}];
+validate132.errors = [{instancePath:instancePath+"/roundId",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/roundId/type",keyword:"type",params:{type: "string"}}];
 return false;
 }
 }
@@ -12475,169 +12937,32 @@ else {
 var valid0 = true;
 }
 if(valid0){
-if(data.seat !== undefined){
-let data1 = data.seat;
+if(data.cards !== undefined){
 const _errs5 = errors;
-const _errs6 = errors;
-if(!(((typeof data1 == "number") && (!(data1 % 1) && !isNaN(data1))) && (isFinite(data1)))){
-validate134.errors = [{instancePath:instancePath+"/seat",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex/type",keyword:"type",params:{type: "integer"}}];
-return false;
-}
-if(errors === _errs6){
-if((typeof data1 == "number") && (isFinite(data1))){
-if(data1 > 7 || isNaN(data1)){
-validate134.errors = [{instancePath:instancePath+"/seat",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex/maximum",keyword:"maximum",params:{comparison: "<=", limit: 7}}];
-return false;
-}
-else {
-if(data1 < 0 || isNaN(data1)){
-validate134.errors = [{instancePath:instancePath+"/seat",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex/minimum",keyword:"minimum",params:{comparison: ">=", limit: 0}}];
-return false;
-}
-}
-}
+if(!(validate133(data.cards, {instancePath:instancePath+"/cards",parentData:data,parentDataProperty:"cards",rootData}))){
+vErrors = vErrors === null ? validate133.errors : vErrors.concat(validate133.errors);
+errors = vErrors.length;
 }
 var valid0 = _errs5 === errors;
 }
 else {
 var valid0 = true;
 }
-if(valid0){
-if(data.commitment !== undefined){
-let data2 = data.commitment;
-const _errs8 = errors;
-if(errors === _errs8){
-if(typeof data2 === "string"){
-if(!pattern30.test(data2)){
-validate134.errors = [{instancePath:instancePath+"/commitment",schemaPath:"#/properties/commitment/pattern",keyword:"pattern",params:{pattern: "^[0-9a-f]{64}$"}}];
-return false;
-}
-}
-else {
-validate134.errors = [{instancePath:instancePath+"/commitment",schemaPath:"#/properties/commitment/type",keyword:"type",params:{type: "string"}}];
-return false;
-}
-}
-var valid0 = _errs8 === errors;
-}
-else {
-var valid0 = true;
-}
-if(valid0){
-if(data.redeals !== undefined){
-let data3 = data.redeals;
-const _errs10 = errors;
-if(!(((typeof data3 == "number") && (!(data3 % 1) && !isNaN(data3))) && (isFinite(data3)))){
-validate134.errors = [{instancePath:instancePath+"/redeals",schemaPath:"#/properties/redeals/type",keyword:"type",params:{type: "integer"}}];
-return false;
-}
-if(errors === _errs10){
-if((typeof data3 == "number") && (isFinite(data3))){
-if(data3 < 1 || isNaN(data3)){
-validate134.errors = [{instancePath:instancePath+"/redeals",schemaPath:"#/properties/redeals/minimum",keyword:"minimum",params:{comparison: ">=", limit: 1}}];
-return false;
-}
-}
-}
-var valid0 = _errs10 === errors;
-}
-else {
-var valid0 = true;
-}
-if(valid0){
-if(data.handCounts !== undefined){
-let data4 = data.handCounts;
-const _errs12 = errors;
-const _errs13 = errors;
-if(errors === _errs13){
-if(Array.isArray(data4)){
-var valid4 = true;
-const len0 = data4.length;
-for(let i0=0; i0<len0; i0++){
-let data5 = data4[i0];
-const _errs15 = errors;
-if(!(((typeof data5 == "number") && (!(data5 % 1) && !isNaN(data5))) && (isFinite(data5)))){
-validate134.errors = [{instancePath:instancePath+"/handCounts/" + i0,schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/handCounts/items/type",keyword:"type",params:{type: "integer"}}];
-return false;
-}
-if(errors === _errs15){
-if((typeof data5 == "number") && (isFinite(data5))){
-if(data5 < 0 || isNaN(data5)){
-validate134.errors = [{instancePath:instancePath+"/handCounts/" + i0,schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/handCounts/items/minimum",keyword:"minimum",params:{comparison: ">=", limit: 0}}];
-return false;
-}
-}
-}
-var valid4 = _errs15 === errors;
-if(!valid4){
-break;
-}
-}
-}
-else {
-validate134.errors = [{instancePath:instancePath+"/handCounts",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/handCounts/type",keyword:"type",params:{type: "array"}}];
-return false;
-}
-}
-var valid0 = _errs12 === errors;
-}
-else {
-var valid0 = true;
-}
-if(valid0){
-if(data.clientSeq !== undefined){
-let data6 = data.clientSeq;
-const _errs17 = errors;
-const _errs18 = errors;
-if(!(((typeof data6 == "number") && (!(data6 % 1) && !isNaN(data6))) && (isFinite(data6)))){
-validate134.errors = [{instancePath:instancePath+"/clientSeq",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/sequence/type",keyword:"type",params:{type: "integer"}}];
-return false;
-}
-if(errors === _errs18){
-if((typeof data6 == "number") && (isFinite(data6))){
-if(data6 < 0 || isNaN(data6)){
-validate134.errors = [{instancePath:instancePath+"/clientSeq",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/sequence/minimum",keyword:"minimum",params:{comparison: ">=", limit: 0}}];
-return false;
-}
-}
-}
-var valid0 = _errs17 === errors;
-}
-else {
-var valid0 = true;
-}
-if(valid0){
-if(data.auto !== undefined){
-const _errs20 = errors;
-if(typeof data.auto !== "boolean"){
-validate134.errors = [{instancePath:instancePath+"/auto",schemaPath:"#/properties/auto/type",keyword:"type",params:{type: "boolean"}}];
-return false;
-}
-var valid0 = _errs20 === errors;
-}
-else {
-var valid0 = true;
-}
-}
-}
-}
-}
-}
 }
 }
 }
 }
 else {
-validate134.errors = [{instancePath,schemaPath:"#/type",keyword:"type",params:{type: "object"}}];
+validate132.errors = [{instancePath,schemaPath:"#/type",keyword:"type",params:{type: "object"}}];
 return false;
 }
 }
-validate134.errors = vErrors;
+validate132.errors = vErrors;
 return errors === 0;
 }
 
-const check_rung_trump_called = validate135;
-const schema271 = {"type":"object","additionalProperties":false,"description":"The rung is named (RG6)","required":["roundId","seat","suit","auto"],"properties":{"roundId":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/roundId"},"seat":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex"},"suit":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/suit"},"clientSeq":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/sequence"},"auto":{"type":"boolean","description":"Played by the timeout policy or a bot, not by the seat's player"}}};
+const check_rung_redealt = validate135;
+const schema269 = {"type":"object","additionalProperties":false,"description":"The caller asked for a new deal; a new commitment replaces the old (RG7)","required":["roundId","seat","commitment","redeals","handCounts","auto"],"properties":{"roundId":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/roundId"},"seat":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex"},"commitment":{"type":"string","pattern":"^[0-9a-f]{64}$"},"redeals":{"type":"integer","minimum":1},"handCounts":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/handCounts"},"clientSeq":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/sequence"},"auto":{"type":"boolean","description":"Played by the timeout policy or a bot, not by the seat's player"}}};
 
 function validate135(data, {instancePath="", parentData, parentDataProperty, rootData=data}={}){
 let vErrors = null;
@@ -12645,14 +12970,14 @@ let errors = 0;
 if(errors === 0){
 if(data && typeof data == "object" && !Array.isArray(data)){
 let missing0;
-if(((((data.roundId === undefined) && (missing0 = "roundId")) || ((data.seat === undefined) && (missing0 = "seat"))) || ((data.suit === undefined) && (missing0 = "suit"))) || ((data.auto === undefined) && (missing0 = "auto"))){
+if(((((((data.roundId === undefined) && (missing0 = "roundId")) || ((data.seat === undefined) && (missing0 = "seat"))) || ((data.commitment === undefined) && (missing0 = "commitment"))) || ((data.redeals === undefined) && (missing0 = "redeals"))) || ((data.handCounts === undefined) && (missing0 = "handCounts"))) || ((data.auto === undefined) && (missing0 = "auto"))){
 validate135.errors = [{instancePath,schemaPath:"#/required",keyword:"required",params:{missingProperty: missing0}}];
 return false;
 }
 else {
 const _errs1 = errors;
 for(const key0 in data){
-if(!(((((key0 === "roundId") || (key0 === "seat")) || (key0 === "suit")) || (key0 === "clientSeq")) || (key0 === "auto"))){
+if(!(((((((key0 === "roundId") || (key0 === "seat")) || (key0 === "commitment")) || (key0 === "redeals")) || (key0 === "handCounts")) || (key0 === "clientSeq")) || (key0 === "auto"))){
 validate135.errors = [{instancePath,schemaPath:"#/additionalProperties",keyword:"additionalProperties",params:{additionalProperty: key0}}];
 return false;
 break;
@@ -12709,16 +13034,20 @@ else {
 var valid0 = true;
 }
 if(valid0){
-if(data.suit !== undefined){
-let data2 = data.suit;
+if(data.commitment !== undefined){
+let data2 = data.commitment;
 const _errs8 = errors;
-if(typeof data2 !== "string"){
-validate135.errors = [{instancePath:instancePath+"/suit",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/suit/type",keyword:"type",params:{type: "string"}}];
+if(errors === _errs8){
+if(typeof data2 === "string"){
+if(!pattern30.test(data2)){
+validate135.errors = [{instancePath:instancePath+"/commitment",schemaPath:"#/properties/commitment/pattern",keyword:"pattern",params:{pattern: "^[0-9a-f]{64}$"}}];
 return false;
 }
-if(!((((data2 === "S") || (data2 === "H")) || (data2 === "C")) || (data2 === "D"))){
-validate135.errors = [{instancePath:instancePath+"/suit",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/suit/enum",keyword:"enum",params:{allowedValues: schema30.enum}}];
+}
+else {
+validate135.errors = [{instancePath:instancePath+"/commitment",schemaPath:"#/properties/commitment/type",keyword:"type",params:{type: "string"}}];
 return false;
+}
 }
 var valid0 = _errs8 === errors;
 }
@@ -12726,38 +13055,101 @@ else {
 var valid0 = true;
 }
 if(valid0){
-if(data.clientSeq !== undefined){
-let data3 = data.clientSeq;
-const _errs11 = errors;
-const _errs12 = errors;
+if(data.redeals !== undefined){
+let data3 = data.redeals;
+const _errs10 = errors;
 if(!(((typeof data3 == "number") && (!(data3 % 1) && !isNaN(data3))) && (isFinite(data3)))){
+validate135.errors = [{instancePath:instancePath+"/redeals",schemaPath:"#/properties/redeals/type",keyword:"type",params:{type: "integer"}}];
+return false;
+}
+if(errors === _errs10){
+if((typeof data3 == "number") && (isFinite(data3))){
+if(data3 < 1 || isNaN(data3)){
+validate135.errors = [{instancePath:instancePath+"/redeals",schemaPath:"#/properties/redeals/minimum",keyword:"minimum",params:{comparison: ">=", limit: 1}}];
+return false;
+}
+}
+}
+var valid0 = _errs10 === errors;
+}
+else {
+var valid0 = true;
+}
+if(valid0){
+if(data.handCounts !== undefined){
+let data4 = data.handCounts;
+const _errs12 = errors;
+const _errs13 = errors;
+if(errors === _errs13){
+if(Array.isArray(data4)){
+var valid4 = true;
+const len0 = data4.length;
+for(let i0=0; i0<len0; i0++){
+let data5 = data4[i0];
+const _errs15 = errors;
+if(!(((typeof data5 == "number") && (!(data5 % 1) && !isNaN(data5))) && (isFinite(data5)))){
+validate135.errors = [{instancePath:instancePath+"/handCounts/" + i0,schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/handCounts/items/type",keyword:"type",params:{type: "integer"}}];
+return false;
+}
+if(errors === _errs15){
+if((typeof data5 == "number") && (isFinite(data5))){
+if(data5 < 0 || isNaN(data5)){
+validate135.errors = [{instancePath:instancePath+"/handCounts/" + i0,schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/handCounts/items/minimum",keyword:"minimum",params:{comparison: ">=", limit: 0}}];
+return false;
+}
+}
+}
+var valid4 = _errs15 === errors;
+if(!valid4){
+break;
+}
+}
+}
+else {
+validate135.errors = [{instancePath:instancePath+"/handCounts",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/handCounts/type",keyword:"type",params:{type: "array"}}];
+return false;
+}
+}
+var valid0 = _errs12 === errors;
+}
+else {
+var valid0 = true;
+}
+if(valid0){
+if(data.clientSeq !== undefined){
+let data6 = data.clientSeq;
+const _errs17 = errors;
+const _errs18 = errors;
+if(!(((typeof data6 == "number") && (!(data6 % 1) && !isNaN(data6))) && (isFinite(data6)))){
 validate135.errors = [{instancePath:instancePath+"/clientSeq",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/sequence/type",keyword:"type",params:{type: "integer"}}];
 return false;
 }
-if(errors === _errs12){
-if((typeof data3 == "number") && (isFinite(data3))){
-if(data3 < 0 || isNaN(data3)){
+if(errors === _errs18){
+if((typeof data6 == "number") && (isFinite(data6))){
+if(data6 < 0 || isNaN(data6)){
 validate135.errors = [{instancePath:instancePath+"/clientSeq",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/sequence/minimum",keyword:"minimum",params:{comparison: ">=", limit: 0}}];
 return false;
 }
 }
 }
-var valid0 = _errs11 === errors;
+var valid0 = _errs17 === errors;
 }
 else {
 var valid0 = true;
 }
 if(valid0){
 if(data.auto !== undefined){
-const _errs14 = errors;
+const _errs20 = errors;
 if(typeof data.auto !== "boolean"){
 validate135.errors = [{instancePath:instancePath+"/auto",schemaPath:"#/properties/auto/type",keyword:"type",params:{type: "boolean"}}];
 return false;
 }
-var valid0 = _errs14 === errors;
+var valid0 = _errs20 === errors;
 }
 else {
 var valid0 = true;
+}
+}
 }
 }
 }
@@ -12775,8 +13167,8 @@ validate135.errors = vErrors;
 return errors === 0;
 }
 
-const check_rung_hands_completed = validate136;
-const schema276 = {"type":"object","additionalProperties":false,"description":"The rest of the deck is dealt (RG8); each seat gets its rung_hand","required":["roundId","handCounts"],"properties":{"roundId":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/roundId"},"handCounts":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/handCounts"}}};
+const check_rung_trump_called = validate136;
+const schema274 = {"type":"object","additionalProperties":false,"description":"The rung is named (RG6)","required":["roundId","seat","suit","auto"],"properties":{"roundId":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/roundId"},"seat":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex"},"suit":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/suit"},"clientSeq":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/sequence"},"auto":{"type":"boolean","description":"Played by the timeout policy or a bot, not by the seat's player"}}};
 
 function validate136(data, {instancePath="", parentData, parentDataProperty, rootData=data}={}){
 let vErrors = null;
@@ -12784,14 +13176,14 @@ let errors = 0;
 if(errors === 0){
 if(data && typeof data == "object" && !Array.isArray(data)){
 let missing0;
-if(((data.roundId === undefined) && (missing0 = "roundId")) || ((data.handCounts === undefined) && (missing0 = "handCounts"))){
+if(((((data.roundId === undefined) && (missing0 = "roundId")) || ((data.seat === undefined) && (missing0 = "seat"))) || ((data.suit === undefined) && (missing0 = "suit"))) || ((data.auto === undefined) && (missing0 = "auto"))){
 validate136.errors = [{instancePath,schemaPath:"#/required",keyword:"required",params:{missingProperty: missing0}}];
 return false;
 }
 else {
 const _errs1 = errors;
 for(const key0 in data){
-if(!((key0 === "roundId") || (key0 === "handCounts"))){
+if(!(((((key0 === "roundId") || (key0 === "seat")) || (key0 === "suit")) || (key0 === "clientSeq")) || (key0 === "auto"))){
 validate136.errors = [{instancePath,schemaPath:"#/additionalProperties",keyword:"additionalProperties",params:{additionalProperty: key0}}];
 return false;
 break;
@@ -12820,44 +13212,86 @@ else {
 var valid0 = true;
 }
 if(valid0){
-if(data.handCounts !== undefined){
-let data1 = data.handCounts;
+if(data.seat !== undefined){
+let data1 = data.seat;
 const _errs5 = errors;
 const _errs6 = errors;
+if(!(((typeof data1 == "number") && (!(data1 % 1) && !isNaN(data1))) && (isFinite(data1)))){
+validate136.errors = [{instancePath:instancePath+"/seat",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex/type",keyword:"type",params:{type: "integer"}}];
+return false;
+}
 if(errors === _errs6){
-if(Array.isArray(data1)){
-var valid3 = true;
-const len0 = data1.length;
-for(let i0=0; i0<len0; i0++){
-let data2 = data1[i0];
-const _errs8 = errors;
-if(!(((typeof data2 == "number") && (!(data2 % 1) && !isNaN(data2))) && (isFinite(data2)))){
-validate136.errors = [{instancePath:instancePath+"/handCounts/" + i0,schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/handCounts/items/type",keyword:"type",params:{type: "integer"}}];
+if((typeof data1 == "number") && (isFinite(data1))){
+if(data1 > 7 || isNaN(data1)){
+validate136.errors = [{instancePath:instancePath+"/seat",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex/maximum",keyword:"maximum",params:{comparison: "<=", limit: 7}}];
 return false;
-}
-if(errors === _errs8){
-if((typeof data2 == "number") && (isFinite(data2))){
-if(data2 < 0 || isNaN(data2)){
-validate136.errors = [{instancePath:instancePath+"/handCounts/" + i0,schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/handCounts/items/minimum",keyword:"minimum",params:{comparison: ">=", limit: 0}}];
-return false;
-}
-}
-}
-var valid3 = _errs8 === errors;
-if(!valid3){
-break;
-}
-}
 }
 else {
-validate136.errors = [{instancePath:instancePath+"/handCounts",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/handCounts/type",keyword:"type",params:{type: "array"}}];
+if(data1 < 0 || isNaN(data1)){
+validate136.errors = [{instancePath:instancePath+"/seat",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex/minimum",keyword:"minimum",params:{comparison: ">=", limit: 0}}];
 return false;
+}
+}
 }
 }
 var valid0 = _errs5 === errors;
 }
 else {
 var valid0 = true;
+}
+if(valid0){
+if(data.suit !== undefined){
+let data2 = data.suit;
+const _errs8 = errors;
+if(typeof data2 !== "string"){
+validate136.errors = [{instancePath:instancePath+"/suit",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/suit/type",keyword:"type",params:{type: "string"}}];
+return false;
+}
+if(!((((data2 === "S") || (data2 === "H")) || (data2 === "C")) || (data2 === "D"))){
+validate136.errors = [{instancePath:instancePath+"/suit",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/suit/enum",keyword:"enum",params:{allowedValues: schema30.enum}}];
+return false;
+}
+var valid0 = _errs8 === errors;
+}
+else {
+var valid0 = true;
+}
+if(valid0){
+if(data.clientSeq !== undefined){
+let data3 = data.clientSeq;
+const _errs11 = errors;
+const _errs12 = errors;
+if(!(((typeof data3 == "number") && (!(data3 % 1) && !isNaN(data3))) && (isFinite(data3)))){
+validate136.errors = [{instancePath:instancePath+"/clientSeq",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/sequence/type",keyword:"type",params:{type: "integer"}}];
+return false;
+}
+if(errors === _errs12){
+if((typeof data3 == "number") && (isFinite(data3))){
+if(data3 < 0 || isNaN(data3)){
+validate136.errors = [{instancePath:instancePath+"/clientSeq",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/sequence/minimum",keyword:"minimum",params:{comparison: ">=", limit: 0}}];
+return false;
+}
+}
+}
+var valid0 = _errs11 === errors;
+}
+else {
+var valid0 = true;
+}
+if(valid0){
+if(data.auto !== undefined){
+const _errs14 = errors;
+if(typeof data.auto !== "boolean"){
+validate136.errors = [{instancePath:instancePath+"/auto",schemaPath:"#/properties/auto/type",keyword:"type",params:{type: "boolean"}}];
+return false;
+}
+var valid0 = _errs14 === errors;
+}
+else {
+var valid0 = true;
+}
+}
+}
 }
 }
 }
@@ -12872,8 +13306,8 @@ validate136.errors = vErrors;
 return errors === 0;
 }
 
-const check_rung_card_played = validate137;
-const schema279 = {"type":"object","additionalProperties":false,"required":["roundId","seat","card","trickIndex","cut","auto"],"properties":{"roundId":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/roundId"},"seat":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex"},"card":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/card"},"trickIndex":{"type":"integer","minimum":0},"cut":{"type":"boolean","description":"A kaat: a rung on a led suit the seat was void in"},"clientSeq":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/sequence"},"auto":{"type":"boolean","description":"Played by the timeout policy or a bot, not by the seat's player"}}};
+const check_rung_hands_completed = validate137;
+const schema279 = {"type":"object","additionalProperties":false,"description":"The rest of the deck is dealt (RG8); each seat gets its rung_hand","required":["roundId","handCounts"],"properties":{"roundId":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/roundId"},"handCounts":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/handCounts"}}};
 
 function validate137(data, {instancePath="", parentData, parentDataProperty, rootData=data}={}){
 let vErrors = null;
@@ -12881,14 +13315,14 @@ let errors = 0;
 if(errors === 0){
 if(data && typeof data == "object" && !Array.isArray(data)){
 let missing0;
-if(((((((data.roundId === undefined) && (missing0 = "roundId")) || ((data.seat === undefined) && (missing0 = "seat"))) || ((data.card === undefined) && (missing0 = "card"))) || ((data.trickIndex === undefined) && (missing0 = "trickIndex"))) || ((data.cut === undefined) && (missing0 = "cut"))) || ((data.auto === undefined) && (missing0 = "auto"))){
+if(((data.roundId === undefined) && (missing0 = "roundId")) || ((data.handCounts === undefined) && (missing0 = "handCounts"))){
 validate137.errors = [{instancePath,schemaPath:"#/required",keyword:"required",params:{missingProperty: missing0}}];
 return false;
 }
 else {
 const _errs1 = errors;
 for(const key0 in data){
-if(!(((((((key0 === "roundId") || (key0 === "seat")) || (key0 === "card")) || (key0 === "trickIndex")) || (key0 === "cut")) || (key0 === "clientSeq")) || (key0 === "auto"))){
+if(!((key0 === "roundId") || (key0 === "handCounts"))){
 validate137.errors = [{instancePath,schemaPath:"#/additionalProperties",keyword:"additionalProperties",params:{additionalProperty: key0}}];
 return false;
 break;
@@ -12917,126 +13351,44 @@ else {
 var valid0 = true;
 }
 if(valid0){
-if(data.seat !== undefined){
-let data1 = data.seat;
+if(data.handCounts !== undefined){
+let data1 = data.handCounts;
 const _errs5 = errors;
 const _errs6 = errors;
-if(!(((typeof data1 == "number") && (!(data1 % 1) && !isNaN(data1))) && (isFinite(data1)))){
-validate137.errors = [{instancePath:instancePath+"/seat",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex/type",keyword:"type",params:{type: "integer"}}];
+if(errors === _errs6){
+if(Array.isArray(data1)){
+var valid3 = true;
+const len0 = data1.length;
+for(let i0=0; i0<len0; i0++){
+let data2 = data1[i0];
+const _errs8 = errors;
+if(!(((typeof data2 == "number") && (!(data2 % 1) && !isNaN(data2))) && (isFinite(data2)))){
+validate137.errors = [{instancePath:instancePath+"/handCounts/" + i0,schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/handCounts/items/type",keyword:"type",params:{type: "integer"}}];
 return false;
 }
-if(errors === _errs6){
-if((typeof data1 == "number") && (isFinite(data1))){
-if(data1 > 7 || isNaN(data1)){
-validate137.errors = [{instancePath:instancePath+"/seat",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex/maximum",keyword:"maximum",params:{comparison: "<=", limit: 7}}];
+if(errors === _errs8){
+if((typeof data2 == "number") && (isFinite(data2))){
+if(data2 < 0 || isNaN(data2)){
+validate137.errors = [{instancePath:instancePath+"/handCounts/" + i0,schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/handCounts/items/minimum",keyword:"minimum",params:{comparison: ">=", limit: 0}}];
 return false;
+}
+}
+}
+var valid3 = _errs8 === errors;
+if(!valid3){
+break;
+}
+}
 }
 else {
-if(data1 < 0 || isNaN(data1)){
-validate137.errors = [{instancePath:instancePath+"/seat",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex/minimum",keyword:"minimum",params:{comparison: ">=", limit: 0}}];
+validate137.errors = [{instancePath:instancePath+"/handCounts",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/handCounts/type",keyword:"type",params:{type: "array"}}];
 return false;
-}
-}
 }
 }
 var valid0 = _errs5 === errors;
 }
 else {
 var valid0 = true;
-}
-if(valid0){
-if(data.card !== undefined){
-let data2 = data.card;
-const _errs8 = errors;
-const _errs9 = errors;
-if(errors === _errs9){
-if(typeof data2 === "string"){
-if(!pattern2.test(data2)){
-validate137.errors = [{instancePath:instancePath+"/card",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/card/pattern",keyword:"pattern",params:{pattern: "^[2-9TJQKA][SHCD]$"}}];
-return false;
-}
-}
-else {
-validate137.errors = [{instancePath:instancePath+"/card",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/card/type",keyword:"type",params:{type: "string"}}];
-return false;
-}
-}
-var valid0 = _errs8 === errors;
-}
-else {
-var valid0 = true;
-}
-if(valid0){
-if(data.trickIndex !== undefined){
-let data3 = data.trickIndex;
-const _errs11 = errors;
-if(!(((typeof data3 == "number") && (!(data3 % 1) && !isNaN(data3))) && (isFinite(data3)))){
-validate137.errors = [{instancePath:instancePath+"/trickIndex",schemaPath:"#/properties/trickIndex/type",keyword:"type",params:{type: "integer"}}];
-return false;
-}
-if(errors === _errs11){
-if((typeof data3 == "number") && (isFinite(data3))){
-if(data3 < 0 || isNaN(data3)){
-validate137.errors = [{instancePath:instancePath+"/trickIndex",schemaPath:"#/properties/trickIndex/minimum",keyword:"minimum",params:{comparison: ">=", limit: 0}}];
-return false;
-}
-}
-}
-var valid0 = _errs11 === errors;
-}
-else {
-var valid0 = true;
-}
-if(valid0){
-if(data.cut !== undefined){
-const _errs13 = errors;
-if(typeof data.cut !== "boolean"){
-validate137.errors = [{instancePath:instancePath+"/cut",schemaPath:"#/properties/cut/type",keyword:"type",params:{type: "boolean"}}];
-return false;
-}
-var valid0 = _errs13 === errors;
-}
-else {
-var valid0 = true;
-}
-if(valid0){
-if(data.clientSeq !== undefined){
-let data5 = data.clientSeq;
-const _errs15 = errors;
-const _errs16 = errors;
-if(!(((typeof data5 == "number") && (!(data5 % 1) && !isNaN(data5))) && (isFinite(data5)))){
-validate137.errors = [{instancePath:instancePath+"/clientSeq",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/sequence/type",keyword:"type",params:{type: "integer"}}];
-return false;
-}
-if(errors === _errs16){
-if((typeof data5 == "number") && (isFinite(data5))){
-if(data5 < 0 || isNaN(data5)){
-validate137.errors = [{instancePath:instancePath+"/clientSeq",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/sequence/minimum",keyword:"minimum",params:{comparison: ">=", limit: 0}}];
-return false;
-}
-}
-}
-var valid0 = _errs15 === errors;
-}
-else {
-var valid0 = true;
-}
-if(valid0){
-if(data.auto !== undefined){
-const _errs18 = errors;
-if(typeof data.auto !== "boolean"){
-validate137.errors = [{instancePath:instancePath+"/auto",schemaPath:"#/properties/auto/type",keyword:"type",params:{type: "boolean"}}];
-return false;
-}
-var valid0 = _errs18 === errors;
-}
-else {
-var valid0 = true;
-}
-}
-}
-}
-}
 }
 }
 }
@@ -13051,8 +13403,8 @@ validate137.errors = vErrors;
 return errors === 0;
 }
 
-const check_rung_trick_won = validate138;
-const schema284 = {"type":"object","additionalProperties":false,"required":["roundId","trickIndex","winner","cards","pile","counts"],"properties":{"roundId":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/roundId"},"trickIndex":{"type":"integer","minimum":0},"winner":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex"},"cards":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/cards"},"pile":{"type":"integer","minimum":0,"description":"Tricks lying in the centre after this one, before any take (Double Sar)"},"counts":{"type":"array","items":{"type":"integer","minimum":0},"minItems":2,"maxItems":2,"description":"Tricks per team"}}};
+const check_rung_card_played = validate138;
+const schema282 = {"type":"object","additionalProperties":false,"required":["roundId","seat","card","trickIndex","cut","auto"],"properties":{"roundId":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/roundId"},"seat":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex"},"card":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/card"},"trickIndex":{"type":"integer","minimum":0},"cut":{"type":"boolean","description":"A kaat: a rung on a led suit the seat was void in"},"clientSeq":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/sequence"},"auto":{"type":"boolean","description":"Played by the timeout policy or a bot, not by the seat's player"}}};
 
 function validate138(data, {instancePath="", parentData, parentDataProperty, rootData=data}={}){
 let vErrors = null;
@@ -13060,14 +13412,14 @@ let errors = 0;
 if(errors === 0){
 if(data && typeof data == "object" && !Array.isArray(data)){
 let missing0;
-if(((((((data.roundId === undefined) && (missing0 = "roundId")) || ((data.trickIndex === undefined) && (missing0 = "trickIndex"))) || ((data.winner === undefined) && (missing0 = "winner"))) || ((data.cards === undefined) && (missing0 = "cards"))) || ((data.pile === undefined) && (missing0 = "pile"))) || ((data.counts === undefined) && (missing0 = "counts"))){
+if(((((((data.roundId === undefined) && (missing0 = "roundId")) || ((data.seat === undefined) && (missing0 = "seat"))) || ((data.card === undefined) && (missing0 = "card"))) || ((data.trickIndex === undefined) && (missing0 = "trickIndex"))) || ((data.cut === undefined) && (missing0 = "cut"))) || ((data.auto === undefined) && (missing0 = "auto"))){
 validate138.errors = [{instancePath,schemaPath:"#/required",keyword:"required",params:{missingProperty: missing0}}];
 return false;
 }
 else {
 const _errs1 = errors;
 for(const key0 in data){
-if(!((((((key0 === "roundId") || (key0 === "trickIndex")) || (key0 === "winner")) || (key0 === "cards")) || (key0 === "pile")) || (key0 === "counts"))){
+if(!(((((((key0 === "roundId") || (key0 === "seat")) || (key0 === "card")) || (key0 === "trickIndex")) || (key0 === "cut")) || (key0 === "clientSeq")) || (key0 === "auto"))){
 validate138.errors = [{instancePath,schemaPath:"#/additionalProperties",keyword:"additionalProperties",params:{additionalProperty: key0}}];
 return false;
 break;
@@ -13096,18 +13448,25 @@ else {
 var valid0 = true;
 }
 if(valid0){
-if(data.trickIndex !== undefined){
-let data1 = data.trickIndex;
+if(data.seat !== undefined){
+let data1 = data.seat;
 const _errs5 = errors;
+const _errs6 = errors;
 if(!(((typeof data1 == "number") && (!(data1 % 1) && !isNaN(data1))) && (isFinite(data1)))){
-validate138.errors = [{instancePath:instancePath+"/trickIndex",schemaPath:"#/properties/trickIndex/type",keyword:"type",params:{type: "integer"}}];
+validate138.errors = [{instancePath:instancePath+"/seat",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex/type",keyword:"type",params:{type: "integer"}}];
 return false;
 }
-if(errors === _errs5){
+if(errors === _errs6){
 if((typeof data1 == "number") && (isFinite(data1))){
-if(data1 < 0 || isNaN(data1)){
-validate138.errors = [{instancePath:instancePath+"/trickIndex",schemaPath:"#/properties/trickIndex/minimum",keyword:"minimum",params:{comparison: ">=", limit: 0}}];
+if(data1 > 7 || isNaN(data1)){
+validate138.errors = [{instancePath:instancePath+"/seat",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex/maximum",keyword:"maximum",params:{comparison: "<=", limit: 7}}];
 return false;
+}
+else {
+if(data1 < 0 || isNaN(data1)){
+validate138.errors = [{instancePath:instancePath+"/seat",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex/minimum",keyword:"minimum",params:{comparison: ">=", limit: 0}}];
+return false;
+}
 }
 }
 }
@@ -13117,57 +13476,39 @@ else {
 var valid0 = true;
 }
 if(valid0){
-if(data.winner !== undefined){
-let data2 = data.winner;
-const _errs7 = errors;
+if(data.card !== undefined){
+let data2 = data.card;
 const _errs8 = errors;
-if(!(((typeof data2 == "number") && (!(data2 % 1) && !isNaN(data2))) && (isFinite(data2)))){
-validate138.errors = [{instancePath:instancePath+"/winner",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex/type",keyword:"type",params:{type: "integer"}}];
+const _errs9 = errors;
+if(errors === _errs9){
+if(typeof data2 === "string"){
+if(!pattern2.test(data2)){
+validate138.errors = [{instancePath:instancePath+"/card",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/card/pattern",keyword:"pattern",params:{pattern: "^[2-9TJQKA][SHCD]$"}}];
 return false;
 }
-if(errors === _errs8){
-if((typeof data2 == "number") && (isFinite(data2))){
-if(data2 > 7 || isNaN(data2)){
-validate138.errors = [{instancePath:instancePath+"/winner",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex/maximum",keyword:"maximum",params:{comparison: "<=", limit: 7}}];
-return false;
 }
 else {
-if(data2 < 0 || isNaN(data2)){
-validate138.errors = [{instancePath:instancePath+"/winner",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex/minimum",keyword:"minimum",params:{comparison: ">=", limit: 0}}];
+validate138.errors = [{instancePath:instancePath+"/card",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/card/type",keyword:"type",params:{type: "string"}}];
 return false;
 }
 }
-}
-}
-var valid0 = _errs7 === errors;
+var valid0 = _errs8 === errors;
 }
 else {
 var valid0 = true;
 }
 if(valid0){
-if(data.cards !== undefined){
-const _errs10 = errors;
-if(!(validate132(data.cards, {instancePath:instancePath+"/cards",parentData:data,parentDataProperty:"cards",rootData}))){
-vErrors = vErrors === null ? validate132.errors : vErrors.concat(validate132.errors);
-errors = vErrors.length;
-}
-var valid0 = _errs10 === errors;
-}
-else {
-var valid0 = true;
-}
-if(valid0){
-if(data.pile !== undefined){
-let data4 = data.pile;
+if(data.trickIndex !== undefined){
+let data3 = data.trickIndex;
 const _errs11 = errors;
-if(!(((typeof data4 == "number") && (!(data4 % 1) && !isNaN(data4))) && (isFinite(data4)))){
-validate138.errors = [{instancePath:instancePath+"/pile",schemaPath:"#/properties/pile/type",keyword:"type",params:{type: "integer"}}];
+if(!(((typeof data3 == "number") && (!(data3 % 1) && !isNaN(data3))) && (isFinite(data3)))){
+validate138.errors = [{instancePath:instancePath+"/trickIndex",schemaPath:"#/properties/trickIndex/type",keyword:"type",params:{type: "integer"}}];
 return false;
 }
 if(errors === _errs11){
-if((typeof data4 == "number") && (isFinite(data4))){
-if(data4 < 0 || isNaN(data4)){
-validate138.errors = [{instancePath:instancePath+"/pile",schemaPath:"#/properties/pile/minimum",keyword:"minimum",params:{comparison: ">=", limit: 0}}];
+if((typeof data3 == "number") && (isFinite(data3))){
+if(data3 < 0 || isNaN(data3)){
+validate138.errors = [{instancePath:instancePath+"/trickIndex",schemaPath:"#/properties/trickIndex/minimum",keyword:"minimum",params:{comparison: ">=", limit: 0}}];
 return false;
 }
 }
@@ -13178,55 +13519,51 @@ else {
 var valid0 = true;
 }
 if(valid0){
-if(data.counts !== undefined){
-let data5 = data.counts;
+if(data.cut !== undefined){
 const _errs13 = errors;
-if(errors === _errs13){
-if(Array.isArray(data5)){
-if(data5.length > 2){
-validate138.errors = [{instancePath:instancePath+"/counts",schemaPath:"#/properties/counts/maxItems",keyword:"maxItems",params:{limit: 2}}];
+if(typeof data.cut !== "boolean"){
+validate138.errors = [{instancePath:instancePath+"/cut",schemaPath:"#/properties/cut/type",keyword:"type",params:{type: "boolean"}}];
 return false;
-}
-else {
-if(data5.length < 2){
-validate138.errors = [{instancePath:instancePath+"/counts",schemaPath:"#/properties/counts/minItems",keyword:"minItems",params:{limit: 2}}];
-return false;
-}
-else {
-var valid3 = true;
-const len0 = data5.length;
-for(let i0=0; i0<len0; i0++){
-let data6 = data5[i0];
-const _errs15 = errors;
-if(!(((typeof data6 == "number") && (!(data6 % 1) && !isNaN(data6))) && (isFinite(data6)))){
-validate138.errors = [{instancePath:instancePath+"/counts/" + i0,schemaPath:"#/properties/counts/items/type",keyword:"type",params:{type: "integer"}}];
-return false;
-}
-if(errors === _errs15){
-if((typeof data6 == "number") && (isFinite(data6))){
-if(data6 < 0 || isNaN(data6)){
-validate138.errors = [{instancePath:instancePath+"/counts/" + i0,schemaPath:"#/properties/counts/items/minimum",keyword:"minimum",params:{comparison: ">=", limit: 0}}];
-return false;
-}
-}
-}
-var valid3 = _errs15 === errors;
-if(!valid3){
-break;
-}
-}
-}
-}
-}
-else {
-validate138.errors = [{instancePath:instancePath+"/counts",schemaPath:"#/properties/counts/type",keyword:"type",params:{type: "array"}}];
-return false;
-}
 }
 var valid0 = _errs13 === errors;
 }
 else {
 var valid0 = true;
+}
+if(valid0){
+if(data.clientSeq !== undefined){
+let data5 = data.clientSeq;
+const _errs15 = errors;
+const _errs16 = errors;
+if(!(((typeof data5 == "number") && (!(data5 % 1) && !isNaN(data5))) && (isFinite(data5)))){
+validate138.errors = [{instancePath:instancePath+"/clientSeq",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/sequence/type",keyword:"type",params:{type: "integer"}}];
+return false;
+}
+if(errors === _errs16){
+if((typeof data5 == "number") && (isFinite(data5))){
+if(data5 < 0 || isNaN(data5)){
+validate138.errors = [{instancePath:instancePath+"/clientSeq",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/sequence/minimum",keyword:"minimum",params:{comparison: ">=", limit: 0}}];
+return false;
+}
+}
+}
+var valid0 = _errs15 === errors;
+}
+else {
+var valid0 = true;
+}
+if(valid0){
+if(data.auto !== undefined){
+const _errs18 = errors;
+if(typeof data.auto !== "boolean"){
+validate138.errors = [{instancePath:instancePath+"/auto",schemaPath:"#/properties/auto/type",keyword:"type",params:{type: "boolean"}}];
+return false;
+}
+var valid0 = _errs18 === errors;
+}
+else {
+var valid0 = true;
+}
 }
 }
 }
@@ -13245,24 +13582,24 @@ validate138.errors = vErrors;
 return errors === 0;
 }
 
-const check_rung_pile_taken = validate140;
-const schema287 = {"type":"object","additionalProperties":false,"description":"A seat won two in a row and takes the pile for its team (RG17)","required":["roundId","seat","team","tricks","counts"],"properties":{"roundId":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/roundId"},"seat":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex"},"team":{"$ref":"https://hulla.gg/schemas/protocol/games/rung/events.json#/definitions/team"},"tricks":{"type":"integer","minimum":1},"counts":{"type":"array","items":{"type":"integer","minimum":0},"minItems":2,"maxItems":2,"description":"Tricks per team"}}};
+const check_rung_trick_won = validate139;
+const schema287 = {"type":"object","additionalProperties":false,"required":["roundId","trickIndex","winner","cards","pile","counts"],"properties":{"roundId":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/roundId"},"trickIndex":{"type":"integer","minimum":0},"winner":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex"},"cards":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/cards"},"pile":{"type":"integer","minimum":0,"description":"Tricks lying in the centre after this one, before any take (Double Sar)"},"counts":{"type":"array","items":{"type":"integer","minimum":0},"minItems":2,"maxItems":2,"description":"Tricks per team"}}};
 
-function validate140(data, {instancePath="", parentData, parentDataProperty, rootData=data}={}){
+function validate139(data, {instancePath="", parentData, parentDataProperty, rootData=data}={}){
 let vErrors = null;
 let errors = 0;
 if(errors === 0){
 if(data && typeof data == "object" && !Array.isArray(data)){
 let missing0;
-if((((((data.roundId === undefined) && (missing0 = "roundId")) || ((data.seat === undefined) && (missing0 = "seat"))) || ((data.team === undefined) && (missing0 = "team"))) || ((data.tricks === undefined) && (missing0 = "tricks"))) || ((data.counts === undefined) && (missing0 = "counts"))){
-validate140.errors = [{instancePath,schemaPath:"#/required",keyword:"required",params:{missingProperty: missing0}}];
+if(((((((data.roundId === undefined) && (missing0 = "roundId")) || ((data.trickIndex === undefined) && (missing0 = "trickIndex"))) || ((data.winner === undefined) && (missing0 = "winner"))) || ((data.cards === undefined) && (missing0 = "cards"))) || ((data.pile === undefined) && (missing0 = "pile"))) || ((data.counts === undefined) && (missing0 = "counts"))){
+validate139.errors = [{instancePath,schemaPath:"#/required",keyword:"required",params:{missingProperty: missing0}}];
 return false;
 }
 else {
 const _errs1 = errors;
 for(const key0 in data){
-if(!(((((key0 === "roundId") || (key0 === "seat")) || (key0 === "team")) || (key0 === "tricks")) || (key0 === "counts"))){
-validate140.errors = [{instancePath,schemaPath:"#/additionalProperties",keyword:"additionalProperties",params:{additionalProperty: key0}}];
+if(!((((((key0 === "roundId") || (key0 === "trickIndex")) || (key0 === "winner")) || (key0 === "cards")) || (key0 === "pile")) || (key0 === "counts"))){
+validate139.errors = [{instancePath,schemaPath:"#/additionalProperties",keyword:"additionalProperties",params:{additionalProperty: key0}}];
 return false;
 break;
 }
@@ -13275,12 +13612,12 @@ const _errs3 = errors;
 if(errors === _errs3){
 if(typeof data0 === "string"){
 if(!pattern18.test(data0)){
-validate140.errors = [{instancePath:instancePath+"/roundId",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/roundId/pattern",keyword:"pattern",params:{pattern: "^r_[0-9]+$"}}];
+validate139.errors = [{instancePath:instancePath+"/roundId",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/roundId/pattern",keyword:"pattern",params:{pattern: "^r_[0-9]+$"}}];
 return false;
 }
 }
 else {
-validate140.errors = [{instancePath:instancePath+"/roundId",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/roundId/type",keyword:"type",params:{type: "string"}}];
+validate139.errors = [{instancePath:instancePath+"/roundId",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/roundId/type",keyword:"type",params:{type: "string"}}];
 return false;
 }
 }
@@ -13290,25 +13627,18 @@ else {
 var valid0 = true;
 }
 if(valid0){
-if(data.seat !== undefined){
-let data1 = data.seat;
+if(data.trickIndex !== undefined){
+let data1 = data.trickIndex;
 const _errs5 = errors;
-const _errs6 = errors;
 if(!(((typeof data1 == "number") && (!(data1 % 1) && !isNaN(data1))) && (isFinite(data1)))){
-validate140.errors = [{instancePath:instancePath+"/seat",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex/type",keyword:"type",params:{type: "integer"}}];
+validate139.errors = [{instancePath:instancePath+"/trickIndex",schemaPath:"#/properties/trickIndex/type",keyword:"type",params:{type: "integer"}}];
 return false;
 }
-if(errors === _errs6){
+if(errors === _errs5){
 if((typeof data1 == "number") && (isFinite(data1))){
-if(data1 > 7 || isNaN(data1)){
-validate140.errors = [{instancePath:instancePath+"/seat",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex/maximum",keyword:"maximum",params:{comparison: "<=", limit: 7}}];
-return false;
-}
-else {
 if(data1 < 0 || isNaN(data1)){
-validate140.errors = [{instancePath:instancePath+"/seat",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex/minimum",keyword:"minimum",params:{comparison: ">=", limit: 0}}];
+validate139.errors = [{instancePath:instancePath+"/trickIndex",schemaPath:"#/properties/trickIndex/minimum",keyword:"minimum",params:{comparison: ">=", limit: 0}}];
 return false;
-}
 }
 }
 }
@@ -13318,34 +13648,57 @@ else {
 var valid0 = true;
 }
 if(valid0){
-if(data.team !== undefined){
-let data2 = data.team;
+if(data.winner !== undefined){
+let data2 = data.winner;
+const _errs7 = errors;
 const _errs8 = errors;
 if(!(((typeof data2 == "number") && (!(data2 % 1) && !isNaN(data2))) && (isFinite(data2)))){
-validate140.errors = [{instancePath:instancePath+"/team",schemaPath:"https://hulla.gg/schemas/protocol/games/rung/events.json#/definitions/team/type",keyword:"type",params:{type: "integer"}}];
+validate139.errors = [{instancePath:instancePath+"/winner",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex/type",keyword:"type",params:{type: "integer"}}];
 return false;
 }
-if(!((data2 === 0) || (data2 === 1))){
-validate140.errors = [{instancePath:instancePath+"/team",schemaPath:"https://hulla.gg/schemas/protocol/games/rung/events.json#/definitions/team/enum",keyword:"enum",params:{allowedValues: schema55.enum}}];
+if(errors === _errs8){
+if((typeof data2 == "number") && (isFinite(data2))){
+if(data2 > 7 || isNaN(data2)){
+validate139.errors = [{instancePath:instancePath+"/winner",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex/maximum",keyword:"maximum",params:{comparison: "<=", limit: 7}}];
 return false;
 }
-var valid0 = _errs8 === errors;
+else {
+if(data2 < 0 || isNaN(data2)){
+validate139.errors = [{instancePath:instancePath+"/winner",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex/minimum",keyword:"minimum",params:{comparison: ">=", limit: 0}}];
+return false;
+}
+}
+}
+}
+var valid0 = _errs7 === errors;
 }
 else {
 var valid0 = true;
 }
 if(valid0){
-if(data.tricks !== undefined){
-let data3 = data.tricks;
+if(data.cards !== undefined){
+const _errs10 = errors;
+if(!(validate133(data.cards, {instancePath:instancePath+"/cards",parentData:data,parentDataProperty:"cards",rootData}))){
+vErrors = vErrors === null ? validate133.errors : vErrors.concat(validate133.errors);
+errors = vErrors.length;
+}
+var valid0 = _errs10 === errors;
+}
+else {
+var valid0 = true;
+}
+if(valid0){
+if(data.pile !== undefined){
+let data4 = data.pile;
 const _errs11 = errors;
-if(!(((typeof data3 == "number") && (!(data3 % 1) && !isNaN(data3))) && (isFinite(data3)))){
-validate140.errors = [{instancePath:instancePath+"/tricks",schemaPath:"#/properties/tricks/type",keyword:"type",params:{type: "integer"}}];
+if(!(((typeof data4 == "number") && (!(data4 % 1) && !isNaN(data4))) && (isFinite(data4)))){
+validate139.errors = [{instancePath:instancePath+"/pile",schemaPath:"#/properties/pile/type",keyword:"type",params:{type: "integer"}}];
 return false;
 }
 if(errors === _errs11){
-if((typeof data3 == "number") && (isFinite(data3))){
-if(data3 < 1 || isNaN(data3)){
-validate140.errors = [{instancePath:instancePath+"/tricks",schemaPath:"#/properties/tricks/minimum",keyword:"minimum",params:{comparison: ">=", limit: 1}}];
+if((typeof data4 == "number") && (isFinite(data4))){
+if(data4 < 0 || isNaN(data4)){
+validate139.errors = [{instancePath:instancePath+"/pile",schemaPath:"#/properties/pile/minimum",keyword:"minimum",params:{comparison: ">=", limit: 0}}];
 return false;
 }
 }
@@ -13357,39 +13710,39 @@ var valid0 = true;
 }
 if(valid0){
 if(data.counts !== undefined){
-let data4 = data.counts;
+let data5 = data.counts;
 const _errs13 = errors;
 if(errors === _errs13){
-if(Array.isArray(data4)){
-if(data4.length > 2){
-validate140.errors = [{instancePath:instancePath+"/counts",schemaPath:"#/properties/counts/maxItems",keyword:"maxItems",params:{limit: 2}}];
+if(Array.isArray(data5)){
+if(data5.length > 2){
+validate139.errors = [{instancePath:instancePath+"/counts",schemaPath:"#/properties/counts/maxItems",keyword:"maxItems",params:{limit: 2}}];
 return false;
 }
 else {
-if(data4.length < 2){
-validate140.errors = [{instancePath:instancePath+"/counts",schemaPath:"#/properties/counts/minItems",keyword:"minItems",params:{limit: 2}}];
+if(data5.length < 2){
+validate139.errors = [{instancePath:instancePath+"/counts",schemaPath:"#/properties/counts/minItems",keyword:"minItems",params:{limit: 2}}];
 return false;
 }
 else {
-var valid4 = true;
-const len0 = data4.length;
+var valid3 = true;
+const len0 = data5.length;
 for(let i0=0; i0<len0; i0++){
-let data5 = data4[i0];
+let data6 = data5[i0];
 const _errs15 = errors;
-if(!(((typeof data5 == "number") && (!(data5 % 1) && !isNaN(data5))) && (isFinite(data5)))){
-validate140.errors = [{instancePath:instancePath+"/counts/" + i0,schemaPath:"#/properties/counts/items/type",keyword:"type",params:{type: "integer"}}];
+if(!(((typeof data6 == "number") && (!(data6 % 1) && !isNaN(data6))) && (isFinite(data6)))){
+validate139.errors = [{instancePath:instancePath+"/counts/" + i0,schemaPath:"#/properties/counts/items/type",keyword:"type",params:{type: "integer"}}];
 return false;
 }
 if(errors === _errs15){
-if((typeof data5 == "number") && (isFinite(data5))){
-if(data5 < 0 || isNaN(data5)){
-validate140.errors = [{instancePath:instancePath+"/counts/" + i0,schemaPath:"#/properties/counts/items/minimum",keyword:"minimum",params:{comparison: ">=", limit: 0}}];
+if((typeof data6 == "number") && (isFinite(data6))){
+if(data6 < 0 || isNaN(data6)){
+validate139.errors = [{instancePath:instancePath+"/counts/" + i0,schemaPath:"#/properties/counts/items/minimum",keyword:"minimum",params:{comparison: ">=", limit: 0}}];
 return false;
 }
 }
 }
-var valid4 = _errs15 === errors;
-if(!valid4){
+var valid3 = _errs15 === errors;
+if(!valid3){
 break;
 }
 }
@@ -13397,7 +13750,7 @@ break;
 }
 }
 else {
-validate140.errors = [{instancePath:instancePath+"/counts",schemaPath:"#/properties/counts/type",keyword:"type",params:{type: "array"}}];
+validate139.errors = [{instancePath:instancePath+"/counts",schemaPath:"#/properties/counts/type",keyword:"type",params:{type: "array"}}];
 return false;
 }
 }
@@ -13413,17 +13766,18 @@ var valid0 = true;
 }
 }
 }
+}
 else {
-validate140.errors = [{instancePath,schemaPath:"#/type",keyword:"type",params:{type: "object"}}];
+validate139.errors = [{instancePath,schemaPath:"#/type",keyword:"type",params:{type: "object"}}];
 return false;
 }
 }
-validate140.errors = vErrors;
+validate139.errors = vErrors;
 return errors === 0;
 }
 
-const check_rung_court_choice_opened = validate141;
-const schema291 = {"type":"object","additionalProperties":false,"description":"A court is won; this seat chooses to stop or play on (RG26)","required":["roundId","seat","team"],"properties":{"roundId":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/roundId"},"seat":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex"},"team":{"$ref":"https://hulla.gg/schemas/protocol/games/rung/events.json#/definitions/team"}}};
+const check_rung_pile_taken = validate141;
+const schema290 = {"type":"object","additionalProperties":false,"description":"A seat won two in a row and takes the pile for its team (RG17)","required":["roundId","seat","team","tricks","counts"],"properties":{"roundId":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/roundId"},"seat":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex"},"team":{"$ref":"https://hulla.gg/schemas/protocol/games/rung/events.json#/definitions/team"},"tricks":{"type":"integer","minimum":1},"counts":{"type":"array","items":{"type":"integer","minimum":0},"minItems":2,"maxItems":2,"description":"Tricks per team"}}};
 
 function validate141(data, {instancePath="", parentData, parentDataProperty, rootData=data}={}){
 let vErrors = null;
@@ -13431,14 +13785,14 @@ let errors = 0;
 if(errors === 0){
 if(data && typeof data == "object" && !Array.isArray(data)){
 let missing0;
-if((((data.roundId === undefined) && (missing0 = "roundId")) || ((data.seat === undefined) && (missing0 = "seat"))) || ((data.team === undefined) && (missing0 = "team"))){
+if((((((data.roundId === undefined) && (missing0 = "roundId")) || ((data.seat === undefined) && (missing0 = "seat"))) || ((data.team === undefined) && (missing0 = "team"))) || ((data.tricks === undefined) && (missing0 = "tricks"))) || ((data.counts === undefined) && (missing0 = "counts"))){
 validate141.errors = [{instancePath,schemaPath:"#/required",keyword:"required",params:{missingProperty: missing0}}];
 return false;
 }
 else {
 const _errs1 = errors;
 for(const key0 in data){
-if(!(((key0 === "roundId") || (key0 === "seat")) || (key0 === "team"))){
+if(!(((((key0 === "roundId") || (key0 === "seat")) || (key0 === "team")) || (key0 === "tricks")) || (key0 === "counts"))){
 validate141.errors = [{instancePath,schemaPath:"#/additionalProperties",keyword:"additionalProperties",params:{additionalProperty: key0}}];
 return false;
 break;
@@ -13511,6 +13865,80 @@ var valid0 = _errs8 === errors;
 else {
 var valid0 = true;
 }
+if(valid0){
+if(data.tricks !== undefined){
+let data3 = data.tricks;
+const _errs11 = errors;
+if(!(((typeof data3 == "number") && (!(data3 % 1) && !isNaN(data3))) && (isFinite(data3)))){
+validate141.errors = [{instancePath:instancePath+"/tricks",schemaPath:"#/properties/tricks/type",keyword:"type",params:{type: "integer"}}];
+return false;
+}
+if(errors === _errs11){
+if((typeof data3 == "number") && (isFinite(data3))){
+if(data3 < 1 || isNaN(data3)){
+validate141.errors = [{instancePath:instancePath+"/tricks",schemaPath:"#/properties/tricks/minimum",keyword:"minimum",params:{comparison: ">=", limit: 1}}];
+return false;
+}
+}
+}
+var valid0 = _errs11 === errors;
+}
+else {
+var valid0 = true;
+}
+if(valid0){
+if(data.counts !== undefined){
+let data4 = data.counts;
+const _errs13 = errors;
+if(errors === _errs13){
+if(Array.isArray(data4)){
+if(data4.length > 2){
+validate141.errors = [{instancePath:instancePath+"/counts",schemaPath:"#/properties/counts/maxItems",keyword:"maxItems",params:{limit: 2}}];
+return false;
+}
+else {
+if(data4.length < 2){
+validate141.errors = [{instancePath:instancePath+"/counts",schemaPath:"#/properties/counts/minItems",keyword:"minItems",params:{limit: 2}}];
+return false;
+}
+else {
+var valid4 = true;
+const len0 = data4.length;
+for(let i0=0; i0<len0; i0++){
+let data5 = data4[i0];
+const _errs15 = errors;
+if(!(((typeof data5 == "number") && (!(data5 % 1) && !isNaN(data5))) && (isFinite(data5)))){
+validate141.errors = [{instancePath:instancePath+"/counts/" + i0,schemaPath:"#/properties/counts/items/type",keyword:"type",params:{type: "integer"}}];
+return false;
+}
+if(errors === _errs15){
+if((typeof data5 == "number") && (isFinite(data5))){
+if(data5 < 0 || isNaN(data5)){
+validate141.errors = [{instancePath:instancePath+"/counts/" + i0,schemaPath:"#/properties/counts/items/minimum",keyword:"minimum",params:{comparison: ">=", limit: 0}}];
+return false;
+}
+}
+}
+var valid4 = _errs15 === errors;
+if(!valid4){
+break;
+}
+}
+}
+}
+}
+else {
+validate141.errors = [{instancePath:instancePath+"/counts",schemaPath:"#/properties/counts/type",keyword:"type",params:{type: "array"}}];
+return false;
+}
+}
+var valid0 = _errs13 === errors;
+}
+else {
+var valid0 = true;
+}
+}
+}
 }
 }
 }
@@ -13525,8 +13953,8 @@ validate141.errors = vErrors;
 return errors === 0;
 }
 
-const check_rung_court_choice_made = validate142;
-const schema295 = {"type":"object","additionalProperties":false,"required":["roundId","seat","playOn","auto"],"properties":{"roundId":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/roundId"},"seat":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex"},"playOn":{"type":"boolean"},"clientSeq":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/sequence"},"auto":{"type":"boolean","description":"Played by the timeout policy or a bot, not by the seat's player"}}};
+const check_rung_court_choice_opened = validate142;
+const schema294 = {"type":"object","additionalProperties":false,"description":"A court is won; this seat chooses to stop or play on (RG26)","required":["roundId","seat","team"],"properties":{"roundId":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/roundId"},"seat":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex"},"team":{"$ref":"https://hulla.gg/schemas/protocol/games/rung/events.json#/definitions/team"}}};
 
 function validate142(data, {instancePath="", parentData, parentDataProperty, rootData=data}={}){
 let vErrors = null;
@@ -13534,14 +13962,14 @@ let errors = 0;
 if(errors === 0){
 if(data && typeof data == "object" && !Array.isArray(data)){
 let missing0;
-if(((((data.roundId === undefined) && (missing0 = "roundId")) || ((data.seat === undefined) && (missing0 = "seat"))) || ((data.playOn === undefined) && (missing0 = "playOn"))) || ((data.auto === undefined) && (missing0 = "auto"))){
+if((((data.roundId === undefined) && (missing0 = "roundId")) || ((data.seat === undefined) && (missing0 = "seat"))) || ((data.team === undefined) && (missing0 = "team"))){
 validate142.errors = [{instancePath,schemaPath:"#/required",keyword:"required",params:{missingProperty: missing0}}];
 return false;
 }
 else {
 const _errs1 = errors;
 for(const key0 in data){
-if(!(((((key0 === "roundId") || (key0 === "seat")) || (key0 === "playOn")) || (key0 === "clientSeq")) || (key0 === "auto"))){
+if(!(((key0 === "roundId") || (key0 === "seat")) || (key0 === "team"))){
 validate142.errors = [{instancePath,schemaPath:"#/additionalProperties",keyword:"additionalProperties",params:{additionalProperty: key0}}];
 return false;
 break;
@@ -13598,52 +14026,21 @@ else {
 var valid0 = true;
 }
 if(valid0){
-if(data.playOn !== undefined){
+if(data.team !== undefined){
+let data2 = data.team;
 const _errs8 = errors;
-if(typeof data.playOn !== "boolean"){
-validate142.errors = [{instancePath:instancePath+"/playOn",schemaPath:"#/properties/playOn/type",keyword:"type",params:{type: "boolean"}}];
+if(!(((typeof data2 == "number") && (!(data2 % 1) && !isNaN(data2))) && (isFinite(data2)))){
+validate142.errors = [{instancePath:instancePath+"/team",schemaPath:"https://hulla.gg/schemas/protocol/games/rung/events.json#/definitions/team/type",keyword:"type",params:{type: "integer"}}];
+return false;
+}
+if(!((data2 === 0) || (data2 === 1))){
+validate142.errors = [{instancePath:instancePath+"/team",schemaPath:"https://hulla.gg/schemas/protocol/games/rung/events.json#/definitions/team/enum",keyword:"enum",params:{allowedValues: schema55.enum}}];
 return false;
 }
 var valid0 = _errs8 === errors;
 }
 else {
 var valid0 = true;
-}
-if(valid0){
-if(data.clientSeq !== undefined){
-let data3 = data.clientSeq;
-const _errs10 = errors;
-const _errs11 = errors;
-if(!(((typeof data3 == "number") && (!(data3 % 1) && !isNaN(data3))) && (isFinite(data3)))){
-validate142.errors = [{instancePath:instancePath+"/clientSeq",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/sequence/type",keyword:"type",params:{type: "integer"}}];
-return false;
-}
-if(errors === _errs11){
-if((typeof data3 == "number") && (isFinite(data3))){
-if(data3 < 0 || isNaN(data3)){
-validate142.errors = [{instancePath:instancePath+"/clientSeq",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/sequence/minimum",keyword:"minimum",params:{comparison: ">=", limit: 0}}];
-return false;
-}
-}
-}
-var valid0 = _errs10 === errors;
-}
-else {
-var valid0 = true;
-}
-if(valid0){
-if(data.auto !== undefined){
-const _errs13 = errors;
-if(typeof data.auto !== "boolean"){
-validate142.errors = [{instancePath:instancePath+"/auto",schemaPath:"#/properties/auto/type",keyword:"type",params:{type: "boolean"}}];
-return false;
-}
-var valid0 = _errs13 === errors;
-}
-else {
-var valid0 = true;
-}
-}
 }
 }
 }
@@ -13659,424 +14056,8 @@ validate142.errors = vErrors;
 return errors === 0;
 }
 
-const check_rung_round_end = validate143;
-const schema299 = {"type":"object","additionalProperties":false,"description":"A deal ends (RG30); the series carries the bazi score","required":["roundId","winnerTeam","kind","byCaller","counts","dealPoints","points","stats","trump","fairness"],"properties":{"roundId":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/roundId"},"winnerTeam":{"$ref":"https://hulla.gg/schemas/protocol/games/rung/events.json#/definitions/team"},"kind":{"$ref":"https://hulla.gg/schemas/protocol/games/rung/events.json#/definitions/outcomeKind"},"byCaller":{"type":"boolean","description":"The winners are the caller's team; false is the dealer's team"},"counts":{"type":"array","items":{"type":"integer","minimum":0},"minItems":2,"maxItems":2,"description":"Tricks per team"},"dealPoints":{"type":"integer","minimum":0},"points":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/points"},"stats":{"type":"array","items":{"$ref":"https://hulla.gg/schemas/protocol/games/rung/events.json#/definitions/seatStats"}},"trump":{"oneOf":[{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/suit"},{"type":"null"}]},"fairness":{"type":"object","additionalProperties":false,"required":["commitment","seed","deckOrder"],"properties":{"commitment":{"type":"string","pattern":"^[0-9a-f]{64}$"},"seed":{"type":"string","pattern":"^[0-9a-f]+$","description":"Revealed so any client can recompute the commitment"},"deckOrder":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/cards"}},"title":"RungFairness"},"series":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/seriesState"}}};
-
-function validate145(data, {instancePath="", parentData, parentDataProperty, rootData=data}={}){
-let vErrors = null;
-let errors = 0;
-if(errors === 0){
-if(data && typeof data == "object" && !Array.isArray(data)){
-let missing0;
-if((((((data.roundsPlayed === undefined) && (missing0 = "roundsPlayed")) || ((data.points === undefined) && (missing0 = "points"))) || ((data.loserTally === undefined) && (missing0 = "loserTally"))) || ((data.nextDealerSeat === undefined) && (missing0 = "nextDealerSeat"))) || ((data.finished === undefined) && (missing0 = "finished"))){
-validate145.errors = [{instancePath,schemaPath:"#/required",keyword:"required",params:{missingProperty: missing0}}];
-return false;
-}
-else {
-const _errs1 = errors;
-for(const key0 in data){
-if(!((((((key0 === "roundsPlayed") || (key0 === "points")) || (key0 === "loserTally")) || (key0 === "nextDealerSeat")) || (key0 === "finished")) || (key0 === "teams"))){
-validate145.errors = [{instancePath,schemaPath:"#/additionalProperties",keyword:"additionalProperties",params:{additionalProperty: key0}}];
-return false;
-break;
-}
-}
-if(_errs1 === errors){
-if(data.roundsPlayed !== undefined){
-let data0 = data.roundsPlayed;
-const _errs2 = errors;
-if(!(((typeof data0 == "number") && (!(data0 % 1) && !isNaN(data0))) && (isFinite(data0)))){
-validate145.errors = [{instancePath:instancePath+"/roundsPlayed",schemaPath:"#/properties/roundsPlayed/type",keyword:"type",params:{type: "integer"}}];
-return false;
-}
-if(errors === _errs2){
-if((typeof data0 == "number") && (isFinite(data0))){
-if(data0 < 0 || isNaN(data0)){
-validate145.errors = [{instancePath:instancePath+"/roundsPlayed",schemaPath:"#/properties/roundsPlayed/minimum",keyword:"minimum",params:{comparison: ">=", limit: 0}}];
-return false;
-}
-}
-}
-var valid0 = _errs2 === errors;
-}
-else {
-var valid0 = true;
-}
-if(valid0){
-if(data.points !== undefined){
-let data1 = data.points;
-const _errs4 = errors;
-const _errs5 = errors;
-if(errors === _errs5){
-if(Array.isArray(data1)){
-var valid2 = true;
-const len0 = data1.length;
-for(let i0=0; i0<len0; i0++){
-let data2 = data1[i0];
-const _errs7 = errors;
-if(!(((typeof data2 == "number") && (!(data2 % 1) && !isNaN(data2))) && (isFinite(data2)))){
-validate145.errors = [{instancePath:instancePath+"/points/" + i0,schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/points/items/type",keyword:"type",params:{type: "integer"}}];
-return false;
-}
-var valid2 = _errs7 === errors;
-if(!valid2){
-break;
-}
-}
-}
-else {
-validate145.errors = [{instancePath:instancePath+"/points",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/points/type",keyword:"type",params:{type: "array"}}];
-return false;
-}
-}
-var valid0 = _errs4 === errors;
-}
-else {
-var valid0 = true;
-}
-if(valid0){
-if(data.loserTally !== undefined){
-let data3 = data.loserTally;
-const _errs9 = errors;
-if(errors === _errs9){
-if(Array.isArray(data3)){
-var valid3 = true;
-const len1 = data3.length;
-for(let i1=0; i1<len1; i1++){
-let data4 = data3[i1];
-const _errs11 = errors;
-if(!(((typeof data4 == "number") && (!(data4 % 1) && !isNaN(data4))) && (isFinite(data4)))){
-validate145.errors = [{instancePath:instancePath+"/loserTally/" + i1,schemaPath:"#/properties/loserTally/items/type",keyword:"type",params:{type: "integer"}}];
-return false;
-}
-if(errors === _errs11){
-if((typeof data4 == "number") && (isFinite(data4))){
-if(data4 < 0 || isNaN(data4)){
-validate145.errors = [{instancePath:instancePath+"/loserTally/" + i1,schemaPath:"#/properties/loserTally/items/minimum",keyword:"minimum",params:{comparison: ">=", limit: 0}}];
-return false;
-}
-}
-}
-var valid3 = _errs11 === errors;
-if(!valid3){
-break;
-}
-}
-}
-else {
-validate145.errors = [{instancePath:instancePath+"/loserTally",schemaPath:"#/properties/loserTally/type",keyword:"type",params:{type: "array"}}];
-return false;
-}
-}
-var valid0 = _errs9 === errors;
-}
-else {
-var valid0 = true;
-}
-if(valid0){
-if(data.nextDealerSeat !== undefined){
-let data5 = data.nextDealerSeat;
-const _errs13 = errors;
-const _errs14 = errors;
-if(!(((typeof data5 == "number") && (!(data5 % 1) && !isNaN(data5))) && (isFinite(data5)))){
-validate145.errors = [{instancePath:instancePath+"/nextDealerSeat",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex/type",keyword:"type",params:{type: "integer"}}];
-return false;
-}
-if(errors === _errs14){
-if((typeof data5 == "number") && (isFinite(data5))){
-if(data5 > 7 || isNaN(data5)){
-validate145.errors = [{instancePath:instancePath+"/nextDealerSeat",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex/maximum",keyword:"maximum",params:{comparison: "<=", limit: 7}}];
-return false;
-}
-else {
-if(data5 < 0 || isNaN(data5)){
-validate145.errors = [{instancePath:instancePath+"/nextDealerSeat",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex/minimum",keyword:"minimum",params:{comparison: ">=", limit: 0}}];
-return false;
-}
-}
-}
-}
-var valid0 = _errs13 === errors;
-}
-else {
-var valid0 = true;
-}
-if(valid0){
-if(data.finished !== undefined){
-const _errs16 = errors;
-if(typeof data.finished !== "boolean"){
-validate145.errors = [{instancePath:instancePath+"/finished",schemaPath:"#/properties/finished/type",keyword:"type",params:{type: "boolean"}}];
-return false;
-}
-var valid0 = _errs16 === errors;
-}
-else {
-var valid0 = true;
-}
-if(valid0){
-if(data.teams !== undefined){
-let data7 = data.teams;
-const _errs18 = errors;
-const _errs19 = errors;
-if(errors === _errs19){
-if(data7 && typeof data7 == "object" && !Array.isArray(data7)){
-let missing1;
-if(((((((data7.points === undefined) && (missing1 = "points")) || ((data7.courts === undefined) && (missing1 = "courts"))) || ((data7.dealsWon === undefined) && (missing1 = "dealsWon"))) || ((data7.streakTeam === undefined) && (missing1 = "streakTeam"))) || ((data7.streakDeals === undefined) && (missing1 = "streakDeals"))) || ((data7.winnerTeam === undefined) && (missing1 = "winnerTeam"))){
-validate145.errors = [{instancePath:instancePath+"/teams",schemaPath:"https://hulla.gg/schemas/protocol/games/rung/events.json#/definitions/teams/required",keyword:"required",params:{missingProperty: missing1}}];
-return false;
-}
-else {
-const _errs21 = errors;
-for(const key1 in data7){
-if(!((((((key1 === "points") || (key1 === "courts")) || (key1 === "dealsWon")) || (key1 === "streakTeam")) || (key1 === "streakDeals")) || (key1 === "winnerTeam"))){
-validate145.errors = [{instancePath:instancePath+"/teams",schemaPath:"https://hulla.gg/schemas/protocol/games/rung/events.json#/definitions/teams/additionalProperties",keyword:"additionalProperties",params:{additionalProperty: key1}}];
-return false;
-break;
-}
-}
-if(_errs21 === errors){
-if(data7.points !== undefined){
-let data8 = data7.points;
-const _errs22 = errors;
-if(errors === _errs22){
-if(Array.isArray(data8)){
-if(data8.length > 2){
-validate145.errors = [{instancePath:instancePath+"/teams/points",schemaPath:"https://hulla.gg/schemas/protocol/games/rung/events.json#/definitions/teams/properties/points/maxItems",keyword:"maxItems",params:{limit: 2}}];
-return false;
-}
-else {
-if(data8.length < 2){
-validate145.errors = [{instancePath:instancePath+"/teams/points",schemaPath:"https://hulla.gg/schemas/protocol/games/rung/events.json#/definitions/teams/properties/points/minItems",keyword:"minItems",params:{limit: 2}}];
-return false;
-}
-else {
-var valid7 = true;
-const len2 = data8.length;
-for(let i2=0; i2<len2; i2++){
-let data9 = data8[i2];
-const _errs24 = errors;
-if(!(((typeof data9 == "number") && (!(data9 % 1) && !isNaN(data9))) && (isFinite(data9)))){
-validate145.errors = [{instancePath:instancePath+"/teams/points/" + i2,schemaPath:"https://hulla.gg/schemas/protocol/games/rung/events.json#/definitions/teams/properties/points/items/type",keyword:"type",params:{type: "integer"}}];
-return false;
-}
-if(errors === _errs24){
-if((typeof data9 == "number") && (isFinite(data9))){
-if(data9 < 0 || isNaN(data9)){
-validate145.errors = [{instancePath:instancePath+"/teams/points/" + i2,schemaPath:"https://hulla.gg/schemas/protocol/games/rung/events.json#/definitions/teams/properties/points/items/minimum",keyword:"minimum",params:{comparison: ">=", limit: 0}}];
-return false;
-}
-}
-}
-var valid7 = _errs24 === errors;
-if(!valid7){
-break;
-}
-}
-}
-}
-}
-else {
-validate145.errors = [{instancePath:instancePath+"/teams/points",schemaPath:"https://hulla.gg/schemas/protocol/games/rung/events.json#/definitions/teams/properties/points/type",keyword:"type",params:{type: "array"}}];
-return false;
-}
-}
-var valid6 = _errs22 === errors;
-}
-else {
-var valid6 = true;
-}
-if(valid6){
-if(data7.courts !== undefined){
-let data10 = data7.courts;
-const _errs26 = errors;
-if(errors === _errs26){
-if(Array.isArray(data10)){
-if(data10.length > 2){
-validate145.errors = [{instancePath:instancePath+"/teams/courts",schemaPath:"https://hulla.gg/schemas/protocol/games/rung/events.json#/definitions/teams/properties/courts/maxItems",keyword:"maxItems",params:{limit: 2}}];
-return false;
-}
-else {
-if(data10.length < 2){
-validate145.errors = [{instancePath:instancePath+"/teams/courts",schemaPath:"https://hulla.gg/schemas/protocol/games/rung/events.json#/definitions/teams/properties/courts/minItems",keyword:"minItems",params:{limit: 2}}];
-return false;
-}
-else {
-var valid8 = true;
-const len3 = data10.length;
-for(let i3=0; i3<len3; i3++){
-let data11 = data10[i3];
-const _errs28 = errors;
-if(!(((typeof data11 == "number") && (!(data11 % 1) && !isNaN(data11))) && (isFinite(data11)))){
-validate145.errors = [{instancePath:instancePath+"/teams/courts/" + i3,schemaPath:"https://hulla.gg/schemas/protocol/games/rung/events.json#/definitions/teams/properties/courts/items/type",keyword:"type",params:{type: "integer"}}];
-return false;
-}
-if(errors === _errs28){
-if((typeof data11 == "number") && (isFinite(data11))){
-if(data11 < 0 || isNaN(data11)){
-validate145.errors = [{instancePath:instancePath+"/teams/courts/" + i3,schemaPath:"https://hulla.gg/schemas/protocol/games/rung/events.json#/definitions/teams/properties/courts/items/minimum",keyword:"minimum",params:{comparison: ">=", limit: 0}}];
-return false;
-}
-}
-}
-var valid8 = _errs28 === errors;
-if(!valid8){
-break;
-}
-}
-}
-}
-}
-else {
-validate145.errors = [{instancePath:instancePath+"/teams/courts",schemaPath:"https://hulla.gg/schemas/protocol/games/rung/events.json#/definitions/teams/properties/courts/type",keyword:"type",params:{type: "array"}}];
-return false;
-}
-}
-var valid6 = _errs26 === errors;
-}
-else {
-var valid6 = true;
-}
-if(valid6){
-if(data7.dealsWon !== undefined){
-let data12 = data7.dealsWon;
-const _errs30 = errors;
-if(errors === _errs30){
-if(Array.isArray(data12)){
-if(data12.length > 2){
-validate145.errors = [{instancePath:instancePath+"/teams/dealsWon",schemaPath:"https://hulla.gg/schemas/protocol/games/rung/events.json#/definitions/teams/properties/dealsWon/maxItems",keyword:"maxItems",params:{limit: 2}}];
-return false;
-}
-else {
-if(data12.length < 2){
-validate145.errors = [{instancePath:instancePath+"/teams/dealsWon",schemaPath:"https://hulla.gg/schemas/protocol/games/rung/events.json#/definitions/teams/properties/dealsWon/minItems",keyword:"minItems",params:{limit: 2}}];
-return false;
-}
-else {
-var valid9 = true;
-const len4 = data12.length;
-for(let i4=0; i4<len4; i4++){
-let data13 = data12[i4];
-const _errs32 = errors;
-if(!(((typeof data13 == "number") && (!(data13 % 1) && !isNaN(data13))) && (isFinite(data13)))){
-validate145.errors = [{instancePath:instancePath+"/teams/dealsWon/" + i4,schemaPath:"https://hulla.gg/schemas/protocol/games/rung/events.json#/definitions/teams/properties/dealsWon/items/type",keyword:"type",params:{type: "integer"}}];
-return false;
-}
-if(errors === _errs32){
-if((typeof data13 == "number") && (isFinite(data13))){
-if(data13 < 0 || isNaN(data13)){
-validate145.errors = [{instancePath:instancePath+"/teams/dealsWon/" + i4,schemaPath:"https://hulla.gg/schemas/protocol/games/rung/events.json#/definitions/teams/properties/dealsWon/items/minimum",keyword:"minimum",params:{comparison: ">=", limit: 0}}];
-return false;
-}
-}
-}
-var valid9 = _errs32 === errors;
-if(!valid9){
-break;
-}
-}
-}
-}
-}
-else {
-validate145.errors = [{instancePath:instancePath+"/teams/dealsWon",schemaPath:"https://hulla.gg/schemas/protocol/games/rung/events.json#/definitions/teams/properties/dealsWon/type",keyword:"type",params:{type: "array"}}];
-return false;
-}
-}
-var valid6 = _errs30 === errors;
-}
-else {
-var valid6 = true;
-}
-if(valid6){
-if(data7.streakTeam !== undefined){
-let data14 = data7.streakTeam;
-const _errs34 = errors;
-if((!(((typeof data14 == "number") && (!(data14 % 1) && !isNaN(data14))) && (isFinite(data14)))) && (data14 !== null)){
-validate145.errors = [{instancePath:instancePath+"/teams/streakTeam",schemaPath:"https://hulla.gg/schemas/protocol/games/rung/events.json#/definitions/teams/properties/streakTeam/type",keyword:"type",params:{type: schema142.properties.streakTeam.type}}];
-return false;
-}
-if(!(((data14 === 0) || (data14 === 1)) || (data14 === null))){
-validate145.errors = [{instancePath:instancePath+"/teams/streakTeam",schemaPath:"https://hulla.gg/schemas/protocol/games/rung/events.json#/definitions/teams/properties/streakTeam/enum",keyword:"enum",params:{allowedValues: schema142.properties.streakTeam.enum}}];
-return false;
-}
-var valid6 = _errs34 === errors;
-}
-else {
-var valid6 = true;
-}
-if(valid6){
-if(data7.streakDeals !== undefined){
-let data15 = data7.streakDeals;
-const _errs36 = errors;
-if(!(((typeof data15 == "number") && (!(data15 % 1) && !isNaN(data15))) && (isFinite(data15)))){
-validate145.errors = [{instancePath:instancePath+"/teams/streakDeals",schemaPath:"https://hulla.gg/schemas/protocol/games/rung/events.json#/definitions/teams/properties/streakDeals/type",keyword:"type",params:{type: "integer"}}];
-return false;
-}
-if(errors === _errs36){
-if((typeof data15 == "number") && (isFinite(data15))){
-if(data15 < 0 || isNaN(data15)){
-validate145.errors = [{instancePath:instancePath+"/teams/streakDeals",schemaPath:"https://hulla.gg/schemas/protocol/games/rung/events.json#/definitions/teams/properties/streakDeals/minimum",keyword:"minimum",params:{comparison: ">=", limit: 0}}];
-return false;
-}
-}
-}
-var valid6 = _errs36 === errors;
-}
-else {
-var valid6 = true;
-}
-if(valid6){
-if(data7.winnerTeam !== undefined){
-let data16 = data7.winnerTeam;
-const _errs38 = errors;
-if((!(((typeof data16 == "number") && (!(data16 % 1) && !isNaN(data16))) && (isFinite(data16)))) && (data16 !== null)){
-validate145.errors = [{instancePath:instancePath+"/teams/winnerTeam",schemaPath:"https://hulla.gg/schemas/protocol/games/rung/events.json#/definitions/teams/properties/winnerTeam/type",keyword:"type",params:{type: schema142.properties.winnerTeam.type}}];
-return false;
-}
-if(!(((data16 === 0) || (data16 === 1)) || (data16 === null))){
-validate145.errors = [{instancePath:instancePath+"/teams/winnerTeam",schemaPath:"https://hulla.gg/schemas/protocol/games/rung/events.json#/definitions/teams/properties/winnerTeam/enum",keyword:"enum",params:{allowedValues: schema142.properties.winnerTeam.enum}}];
-return false;
-}
-var valid6 = _errs38 === errors;
-}
-else {
-var valid6 = true;
-}
-}
-}
-}
-}
-}
-}
-}
-}
-else {
-validate145.errors = [{instancePath:instancePath+"/teams",schemaPath:"https://hulla.gg/schemas/protocol/games/rung/events.json#/definitions/teams/type",keyword:"type",params:{type: "object"}}];
-return false;
-}
-}
-var valid0 = _errs18 === errors;
-}
-else {
-var valid0 = true;
-}
-}
-}
-}
-}
-}
-}
-}
-}
-else {
-validate145.errors = [{instancePath,schemaPath:"#/type",keyword:"type",params:{type: "object"}}];
-return false;
-}
-}
-validate145.errors = vErrors;
-return errors === 0;
-}
-
+const check_rung_court_choice_made = validate143;
+const schema298 = {"type":"object","additionalProperties":false,"required":["roundId","seat","playOn","auto"],"properties":{"roundId":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/roundId"},"seat":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex"},"playOn":{"type":"boolean"},"clientSeq":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/sequence"},"auto":{"type":"boolean","description":"Played by the timeout policy or a bot, not by the seat's player"}}};
 
 function validate143(data, {instancePath="", parentData, parentDataProperty, rootData=data}={}){
 let vErrors = null;
@@ -14084,14 +14065,14 @@ let errors = 0;
 if(errors === 0){
 if(data && typeof data == "object" && !Array.isArray(data)){
 let missing0;
-if(((((((((((data.roundId === undefined) && (missing0 = "roundId")) || ((data.winnerTeam === undefined) && (missing0 = "winnerTeam"))) || ((data.kind === undefined) && (missing0 = "kind"))) || ((data.byCaller === undefined) && (missing0 = "byCaller"))) || ((data.counts === undefined) && (missing0 = "counts"))) || ((data.dealPoints === undefined) && (missing0 = "dealPoints"))) || ((data.points === undefined) && (missing0 = "points"))) || ((data.stats === undefined) && (missing0 = "stats"))) || ((data.trump === undefined) && (missing0 = "trump"))) || ((data.fairness === undefined) && (missing0 = "fairness"))){
+if(((((data.roundId === undefined) && (missing0 = "roundId")) || ((data.seat === undefined) && (missing0 = "seat"))) || ((data.playOn === undefined) && (missing0 = "playOn"))) || ((data.auto === undefined) && (missing0 = "auto"))){
 validate143.errors = [{instancePath,schemaPath:"#/required",keyword:"required",params:{missingProperty: missing0}}];
 return false;
 }
 else {
 const _errs1 = errors;
 for(const key0 in data){
-if(!(func2.call(schema299.properties, key0))){
+if(!(((((key0 === "roundId") || (key0 === "seat")) || (key0 === "playOn")) || (key0 === "clientSeq")) || (key0 === "auto"))){
 validate143.errors = [{instancePath,schemaPath:"#/additionalProperties",keyword:"additionalProperties",params:{additionalProperty: key0}}];
 return false;
 break;
@@ -14120,15 +14101,565 @@ else {
 var valid0 = true;
 }
 if(valid0){
+if(data.seat !== undefined){
+let data1 = data.seat;
+const _errs5 = errors;
+const _errs6 = errors;
+if(!(((typeof data1 == "number") && (!(data1 % 1) && !isNaN(data1))) && (isFinite(data1)))){
+validate143.errors = [{instancePath:instancePath+"/seat",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex/type",keyword:"type",params:{type: "integer"}}];
+return false;
+}
+if(errors === _errs6){
+if((typeof data1 == "number") && (isFinite(data1))){
+if(data1 > 7 || isNaN(data1)){
+validate143.errors = [{instancePath:instancePath+"/seat",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex/maximum",keyword:"maximum",params:{comparison: "<=", limit: 7}}];
+return false;
+}
+else {
+if(data1 < 0 || isNaN(data1)){
+validate143.errors = [{instancePath:instancePath+"/seat",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex/minimum",keyword:"minimum",params:{comparison: ">=", limit: 0}}];
+return false;
+}
+}
+}
+}
+var valid0 = _errs5 === errors;
+}
+else {
+var valid0 = true;
+}
+if(valid0){
+if(data.playOn !== undefined){
+const _errs8 = errors;
+if(typeof data.playOn !== "boolean"){
+validate143.errors = [{instancePath:instancePath+"/playOn",schemaPath:"#/properties/playOn/type",keyword:"type",params:{type: "boolean"}}];
+return false;
+}
+var valid0 = _errs8 === errors;
+}
+else {
+var valid0 = true;
+}
+if(valid0){
+if(data.clientSeq !== undefined){
+let data3 = data.clientSeq;
+const _errs10 = errors;
+const _errs11 = errors;
+if(!(((typeof data3 == "number") && (!(data3 % 1) && !isNaN(data3))) && (isFinite(data3)))){
+validate143.errors = [{instancePath:instancePath+"/clientSeq",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/sequence/type",keyword:"type",params:{type: "integer"}}];
+return false;
+}
+if(errors === _errs11){
+if((typeof data3 == "number") && (isFinite(data3))){
+if(data3 < 0 || isNaN(data3)){
+validate143.errors = [{instancePath:instancePath+"/clientSeq",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/sequence/minimum",keyword:"minimum",params:{comparison: ">=", limit: 0}}];
+return false;
+}
+}
+}
+var valid0 = _errs10 === errors;
+}
+else {
+var valid0 = true;
+}
+if(valid0){
+if(data.auto !== undefined){
+const _errs13 = errors;
+if(typeof data.auto !== "boolean"){
+validate143.errors = [{instancePath:instancePath+"/auto",schemaPath:"#/properties/auto/type",keyword:"type",params:{type: "boolean"}}];
+return false;
+}
+var valid0 = _errs13 === errors;
+}
+else {
+var valid0 = true;
+}
+}
+}
+}
+}
+}
+}
+}
+else {
+validate143.errors = [{instancePath,schemaPath:"#/type",keyword:"type",params:{type: "object"}}];
+return false;
+}
+}
+validate143.errors = vErrors;
+return errors === 0;
+}
+
+const check_rung_round_end = validate144;
+const schema302 = {"type":"object","additionalProperties":false,"description":"A deal ends (RG30); the series carries the bazi score","required":["roundId","winnerTeam","kind","byCaller","counts","dealPoints","points","stats","trump","fairness"],"properties":{"roundId":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/roundId"},"winnerTeam":{"$ref":"https://hulla.gg/schemas/protocol/games/rung/events.json#/definitions/team"},"kind":{"$ref":"https://hulla.gg/schemas/protocol/games/rung/events.json#/definitions/outcomeKind"},"byCaller":{"type":"boolean","description":"The winners are the caller's team; false is the dealer's team"},"counts":{"type":"array","items":{"type":"integer","minimum":0},"minItems":2,"maxItems":2,"description":"Tricks per team"},"dealPoints":{"type":"integer","minimum":0},"points":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/points"},"stats":{"type":"array","items":{"$ref":"https://hulla.gg/schemas/protocol/games/rung/events.json#/definitions/seatStats"}},"trump":{"oneOf":[{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/suit"},{"type":"null"}]},"fairness":{"type":"object","additionalProperties":false,"required":["commitment","seed","deckOrder"],"properties":{"commitment":{"type":"string","pattern":"^[0-9a-f]{64}$"},"seed":{"type":"string","pattern":"^[0-9a-f]+$","description":"Revealed so any client can recompute the commitment"},"deckOrder":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/cards"}},"title":"RungFairness"},"series":{"$ref":"https://hulla.gg/schemas/protocol/common.json#/definitions/seriesState"}}};
+
+function validate146(data, {instancePath="", parentData, parentDataProperty, rootData=data}={}){
+let vErrors = null;
+let errors = 0;
+if(errors === 0){
+if(data && typeof data == "object" && !Array.isArray(data)){
+let missing0;
+if((((((data.roundsPlayed === undefined) && (missing0 = "roundsPlayed")) || ((data.points === undefined) && (missing0 = "points"))) || ((data.loserTally === undefined) && (missing0 = "loserTally"))) || ((data.nextDealerSeat === undefined) && (missing0 = "nextDealerSeat"))) || ((data.finished === undefined) && (missing0 = "finished"))){
+validate146.errors = [{instancePath,schemaPath:"#/required",keyword:"required",params:{missingProperty: missing0}}];
+return false;
+}
+else {
+const _errs1 = errors;
+for(const key0 in data){
+if(!((((((key0 === "roundsPlayed") || (key0 === "points")) || (key0 === "loserTally")) || (key0 === "nextDealerSeat")) || (key0 === "finished")) || (key0 === "teams"))){
+validate146.errors = [{instancePath,schemaPath:"#/additionalProperties",keyword:"additionalProperties",params:{additionalProperty: key0}}];
+return false;
+break;
+}
+}
+if(_errs1 === errors){
+if(data.roundsPlayed !== undefined){
+let data0 = data.roundsPlayed;
+const _errs2 = errors;
+if(!(((typeof data0 == "number") && (!(data0 % 1) && !isNaN(data0))) && (isFinite(data0)))){
+validate146.errors = [{instancePath:instancePath+"/roundsPlayed",schemaPath:"#/properties/roundsPlayed/type",keyword:"type",params:{type: "integer"}}];
+return false;
+}
+if(errors === _errs2){
+if((typeof data0 == "number") && (isFinite(data0))){
+if(data0 < 0 || isNaN(data0)){
+validate146.errors = [{instancePath:instancePath+"/roundsPlayed",schemaPath:"#/properties/roundsPlayed/minimum",keyword:"minimum",params:{comparison: ">=", limit: 0}}];
+return false;
+}
+}
+}
+var valid0 = _errs2 === errors;
+}
+else {
+var valid0 = true;
+}
+if(valid0){
+if(data.points !== undefined){
+let data1 = data.points;
+const _errs4 = errors;
+const _errs5 = errors;
+if(errors === _errs5){
+if(Array.isArray(data1)){
+var valid2 = true;
+const len0 = data1.length;
+for(let i0=0; i0<len0; i0++){
+let data2 = data1[i0];
+const _errs7 = errors;
+if(!(((typeof data2 == "number") && (!(data2 % 1) && !isNaN(data2))) && (isFinite(data2)))){
+validate146.errors = [{instancePath:instancePath+"/points/" + i0,schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/points/items/type",keyword:"type",params:{type: "integer"}}];
+return false;
+}
+var valid2 = _errs7 === errors;
+if(!valid2){
+break;
+}
+}
+}
+else {
+validate146.errors = [{instancePath:instancePath+"/points",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/points/type",keyword:"type",params:{type: "array"}}];
+return false;
+}
+}
+var valid0 = _errs4 === errors;
+}
+else {
+var valid0 = true;
+}
+if(valid0){
+if(data.loserTally !== undefined){
+let data3 = data.loserTally;
+const _errs9 = errors;
+if(errors === _errs9){
+if(Array.isArray(data3)){
+var valid3 = true;
+const len1 = data3.length;
+for(let i1=0; i1<len1; i1++){
+let data4 = data3[i1];
+const _errs11 = errors;
+if(!(((typeof data4 == "number") && (!(data4 % 1) && !isNaN(data4))) && (isFinite(data4)))){
+validate146.errors = [{instancePath:instancePath+"/loserTally/" + i1,schemaPath:"#/properties/loserTally/items/type",keyword:"type",params:{type: "integer"}}];
+return false;
+}
+if(errors === _errs11){
+if((typeof data4 == "number") && (isFinite(data4))){
+if(data4 < 0 || isNaN(data4)){
+validate146.errors = [{instancePath:instancePath+"/loserTally/" + i1,schemaPath:"#/properties/loserTally/items/minimum",keyword:"minimum",params:{comparison: ">=", limit: 0}}];
+return false;
+}
+}
+}
+var valid3 = _errs11 === errors;
+if(!valid3){
+break;
+}
+}
+}
+else {
+validate146.errors = [{instancePath:instancePath+"/loserTally",schemaPath:"#/properties/loserTally/type",keyword:"type",params:{type: "array"}}];
+return false;
+}
+}
+var valid0 = _errs9 === errors;
+}
+else {
+var valid0 = true;
+}
+if(valid0){
+if(data.nextDealerSeat !== undefined){
+let data5 = data.nextDealerSeat;
+const _errs13 = errors;
+const _errs14 = errors;
+if(!(((typeof data5 == "number") && (!(data5 % 1) && !isNaN(data5))) && (isFinite(data5)))){
+validate146.errors = [{instancePath:instancePath+"/nextDealerSeat",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex/type",keyword:"type",params:{type: "integer"}}];
+return false;
+}
+if(errors === _errs14){
+if((typeof data5 == "number") && (isFinite(data5))){
+if(data5 > 7 || isNaN(data5)){
+validate146.errors = [{instancePath:instancePath+"/nextDealerSeat",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex/maximum",keyword:"maximum",params:{comparison: "<=", limit: 7}}];
+return false;
+}
+else {
+if(data5 < 0 || isNaN(data5)){
+validate146.errors = [{instancePath:instancePath+"/nextDealerSeat",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/seatIndex/minimum",keyword:"minimum",params:{comparison: ">=", limit: 0}}];
+return false;
+}
+}
+}
+}
+var valid0 = _errs13 === errors;
+}
+else {
+var valid0 = true;
+}
+if(valid0){
+if(data.finished !== undefined){
+const _errs16 = errors;
+if(typeof data.finished !== "boolean"){
+validate146.errors = [{instancePath:instancePath+"/finished",schemaPath:"#/properties/finished/type",keyword:"type",params:{type: "boolean"}}];
+return false;
+}
+var valid0 = _errs16 === errors;
+}
+else {
+var valid0 = true;
+}
+if(valid0){
+if(data.teams !== undefined){
+let data7 = data.teams;
+const _errs18 = errors;
+const _errs19 = errors;
+if(errors === _errs19){
+if(data7 && typeof data7 == "object" && !Array.isArray(data7)){
+let missing1;
+if(((((((data7.points === undefined) && (missing1 = "points")) || ((data7.courts === undefined) && (missing1 = "courts"))) || ((data7.dealsWon === undefined) && (missing1 = "dealsWon"))) || ((data7.streakTeam === undefined) && (missing1 = "streakTeam"))) || ((data7.streakDeals === undefined) && (missing1 = "streakDeals"))) || ((data7.winnerTeam === undefined) && (missing1 = "winnerTeam"))){
+validate146.errors = [{instancePath:instancePath+"/teams",schemaPath:"https://hulla.gg/schemas/protocol/games/rung/events.json#/definitions/teams/required",keyword:"required",params:{missingProperty: missing1}}];
+return false;
+}
+else {
+const _errs21 = errors;
+for(const key1 in data7){
+if(!((((((key1 === "points") || (key1 === "courts")) || (key1 === "dealsWon")) || (key1 === "streakTeam")) || (key1 === "streakDeals")) || (key1 === "winnerTeam"))){
+validate146.errors = [{instancePath:instancePath+"/teams",schemaPath:"https://hulla.gg/schemas/protocol/games/rung/events.json#/definitions/teams/additionalProperties",keyword:"additionalProperties",params:{additionalProperty: key1}}];
+return false;
+break;
+}
+}
+if(_errs21 === errors){
+if(data7.points !== undefined){
+let data8 = data7.points;
+const _errs22 = errors;
+if(errors === _errs22){
+if(Array.isArray(data8)){
+if(data8.length > 2){
+validate146.errors = [{instancePath:instancePath+"/teams/points",schemaPath:"https://hulla.gg/schemas/protocol/games/rung/events.json#/definitions/teams/properties/points/maxItems",keyword:"maxItems",params:{limit: 2}}];
+return false;
+}
+else {
+if(data8.length < 2){
+validate146.errors = [{instancePath:instancePath+"/teams/points",schemaPath:"https://hulla.gg/schemas/protocol/games/rung/events.json#/definitions/teams/properties/points/minItems",keyword:"minItems",params:{limit: 2}}];
+return false;
+}
+else {
+var valid7 = true;
+const len2 = data8.length;
+for(let i2=0; i2<len2; i2++){
+let data9 = data8[i2];
+const _errs24 = errors;
+if(!(((typeof data9 == "number") && (!(data9 % 1) && !isNaN(data9))) && (isFinite(data9)))){
+validate146.errors = [{instancePath:instancePath+"/teams/points/" + i2,schemaPath:"https://hulla.gg/schemas/protocol/games/rung/events.json#/definitions/teams/properties/points/items/type",keyword:"type",params:{type: "integer"}}];
+return false;
+}
+if(errors === _errs24){
+if((typeof data9 == "number") && (isFinite(data9))){
+if(data9 < 0 || isNaN(data9)){
+validate146.errors = [{instancePath:instancePath+"/teams/points/" + i2,schemaPath:"https://hulla.gg/schemas/protocol/games/rung/events.json#/definitions/teams/properties/points/items/minimum",keyword:"minimum",params:{comparison: ">=", limit: 0}}];
+return false;
+}
+}
+}
+var valid7 = _errs24 === errors;
+if(!valid7){
+break;
+}
+}
+}
+}
+}
+else {
+validate146.errors = [{instancePath:instancePath+"/teams/points",schemaPath:"https://hulla.gg/schemas/protocol/games/rung/events.json#/definitions/teams/properties/points/type",keyword:"type",params:{type: "array"}}];
+return false;
+}
+}
+var valid6 = _errs22 === errors;
+}
+else {
+var valid6 = true;
+}
+if(valid6){
+if(data7.courts !== undefined){
+let data10 = data7.courts;
+const _errs26 = errors;
+if(errors === _errs26){
+if(Array.isArray(data10)){
+if(data10.length > 2){
+validate146.errors = [{instancePath:instancePath+"/teams/courts",schemaPath:"https://hulla.gg/schemas/protocol/games/rung/events.json#/definitions/teams/properties/courts/maxItems",keyword:"maxItems",params:{limit: 2}}];
+return false;
+}
+else {
+if(data10.length < 2){
+validate146.errors = [{instancePath:instancePath+"/teams/courts",schemaPath:"https://hulla.gg/schemas/protocol/games/rung/events.json#/definitions/teams/properties/courts/minItems",keyword:"minItems",params:{limit: 2}}];
+return false;
+}
+else {
+var valid8 = true;
+const len3 = data10.length;
+for(let i3=0; i3<len3; i3++){
+let data11 = data10[i3];
+const _errs28 = errors;
+if(!(((typeof data11 == "number") && (!(data11 % 1) && !isNaN(data11))) && (isFinite(data11)))){
+validate146.errors = [{instancePath:instancePath+"/teams/courts/" + i3,schemaPath:"https://hulla.gg/schemas/protocol/games/rung/events.json#/definitions/teams/properties/courts/items/type",keyword:"type",params:{type: "integer"}}];
+return false;
+}
+if(errors === _errs28){
+if((typeof data11 == "number") && (isFinite(data11))){
+if(data11 < 0 || isNaN(data11)){
+validate146.errors = [{instancePath:instancePath+"/teams/courts/" + i3,schemaPath:"https://hulla.gg/schemas/protocol/games/rung/events.json#/definitions/teams/properties/courts/items/minimum",keyword:"minimum",params:{comparison: ">=", limit: 0}}];
+return false;
+}
+}
+}
+var valid8 = _errs28 === errors;
+if(!valid8){
+break;
+}
+}
+}
+}
+}
+else {
+validate146.errors = [{instancePath:instancePath+"/teams/courts",schemaPath:"https://hulla.gg/schemas/protocol/games/rung/events.json#/definitions/teams/properties/courts/type",keyword:"type",params:{type: "array"}}];
+return false;
+}
+}
+var valid6 = _errs26 === errors;
+}
+else {
+var valid6 = true;
+}
+if(valid6){
+if(data7.dealsWon !== undefined){
+let data12 = data7.dealsWon;
+const _errs30 = errors;
+if(errors === _errs30){
+if(Array.isArray(data12)){
+if(data12.length > 2){
+validate146.errors = [{instancePath:instancePath+"/teams/dealsWon",schemaPath:"https://hulla.gg/schemas/protocol/games/rung/events.json#/definitions/teams/properties/dealsWon/maxItems",keyword:"maxItems",params:{limit: 2}}];
+return false;
+}
+else {
+if(data12.length < 2){
+validate146.errors = [{instancePath:instancePath+"/teams/dealsWon",schemaPath:"https://hulla.gg/schemas/protocol/games/rung/events.json#/definitions/teams/properties/dealsWon/minItems",keyword:"minItems",params:{limit: 2}}];
+return false;
+}
+else {
+var valid9 = true;
+const len4 = data12.length;
+for(let i4=0; i4<len4; i4++){
+let data13 = data12[i4];
+const _errs32 = errors;
+if(!(((typeof data13 == "number") && (!(data13 % 1) && !isNaN(data13))) && (isFinite(data13)))){
+validate146.errors = [{instancePath:instancePath+"/teams/dealsWon/" + i4,schemaPath:"https://hulla.gg/schemas/protocol/games/rung/events.json#/definitions/teams/properties/dealsWon/items/type",keyword:"type",params:{type: "integer"}}];
+return false;
+}
+if(errors === _errs32){
+if((typeof data13 == "number") && (isFinite(data13))){
+if(data13 < 0 || isNaN(data13)){
+validate146.errors = [{instancePath:instancePath+"/teams/dealsWon/" + i4,schemaPath:"https://hulla.gg/schemas/protocol/games/rung/events.json#/definitions/teams/properties/dealsWon/items/minimum",keyword:"minimum",params:{comparison: ">=", limit: 0}}];
+return false;
+}
+}
+}
+var valid9 = _errs32 === errors;
+if(!valid9){
+break;
+}
+}
+}
+}
+}
+else {
+validate146.errors = [{instancePath:instancePath+"/teams/dealsWon",schemaPath:"https://hulla.gg/schemas/protocol/games/rung/events.json#/definitions/teams/properties/dealsWon/type",keyword:"type",params:{type: "array"}}];
+return false;
+}
+}
+var valid6 = _errs30 === errors;
+}
+else {
+var valid6 = true;
+}
+if(valid6){
+if(data7.streakTeam !== undefined){
+let data14 = data7.streakTeam;
+const _errs34 = errors;
+if((!(((typeof data14 == "number") && (!(data14 % 1) && !isNaN(data14))) && (isFinite(data14)))) && (data14 !== null)){
+validate146.errors = [{instancePath:instancePath+"/teams/streakTeam",schemaPath:"https://hulla.gg/schemas/protocol/games/rung/events.json#/definitions/teams/properties/streakTeam/type",keyword:"type",params:{type: schema145.properties.streakTeam.type}}];
+return false;
+}
+if(!(((data14 === 0) || (data14 === 1)) || (data14 === null))){
+validate146.errors = [{instancePath:instancePath+"/teams/streakTeam",schemaPath:"https://hulla.gg/schemas/protocol/games/rung/events.json#/definitions/teams/properties/streakTeam/enum",keyword:"enum",params:{allowedValues: schema145.properties.streakTeam.enum}}];
+return false;
+}
+var valid6 = _errs34 === errors;
+}
+else {
+var valid6 = true;
+}
+if(valid6){
+if(data7.streakDeals !== undefined){
+let data15 = data7.streakDeals;
+const _errs36 = errors;
+if(!(((typeof data15 == "number") && (!(data15 % 1) && !isNaN(data15))) && (isFinite(data15)))){
+validate146.errors = [{instancePath:instancePath+"/teams/streakDeals",schemaPath:"https://hulla.gg/schemas/protocol/games/rung/events.json#/definitions/teams/properties/streakDeals/type",keyword:"type",params:{type: "integer"}}];
+return false;
+}
+if(errors === _errs36){
+if((typeof data15 == "number") && (isFinite(data15))){
+if(data15 < 0 || isNaN(data15)){
+validate146.errors = [{instancePath:instancePath+"/teams/streakDeals",schemaPath:"https://hulla.gg/schemas/protocol/games/rung/events.json#/definitions/teams/properties/streakDeals/minimum",keyword:"minimum",params:{comparison: ">=", limit: 0}}];
+return false;
+}
+}
+}
+var valid6 = _errs36 === errors;
+}
+else {
+var valid6 = true;
+}
+if(valid6){
+if(data7.winnerTeam !== undefined){
+let data16 = data7.winnerTeam;
+const _errs38 = errors;
+if((!(((typeof data16 == "number") && (!(data16 % 1) && !isNaN(data16))) && (isFinite(data16)))) && (data16 !== null)){
+validate146.errors = [{instancePath:instancePath+"/teams/winnerTeam",schemaPath:"https://hulla.gg/schemas/protocol/games/rung/events.json#/definitions/teams/properties/winnerTeam/type",keyword:"type",params:{type: schema145.properties.winnerTeam.type}}];
+return false;
+}
+if(!(((data16 === 0) || (data16 === 1)) || (data16 === null))){
+validate146.errors = [{instancePath:instancePath+"/teams/winnerTeam",schemaPath:"https://hulla.gg/schemas/protocol/games/rung/events.json#/definitions/teams/properties/winnerTeam/enum",keyword:"enum",params:{allowedValues: schema145.properties.winnerTeam.enum}}];
+return false;
+}
+var valid6 = _errs38 === errors;
+}
+else {
+var valid6 = true;
+}
+}
+}
+}
+}
+}
+}
+}
+}
+else {
+validate146.errors = [{instancePath:instancePath+"/teams",schemaPath:"https://hulla.gg/schemas/protocol/games/rung/events.json#/definitions/teams/type",keyword:"type",params:{type: "object"}}];
+return false;
+}
+}
+var valid0 = _errs18 === errors;
+}
+else {
+var valid0 = true;
+}
+}
+}
+}
+}
+}
+}
+}
+}
+else {
+validate146.errors = [{instancePath,schemaPath:"#/type",keyword:"type",params:{type: "object"}}];
+return false;
+}
+}
+validate146.errors = vErrors;
+return errors === 0;
+}
+
+
+function validate144(data, {instancePath="", parentData, parentDataProperty, rootData=data}={}){
+let vErrors = null;
+let errors = 0;
+if(errors === 0){
+if(data && typeof data == "object" && !Array.isArray(data)){
+let missing0;
+if(((((((((((data.roundId === undefined) && (missing0 = "roundId")) || ((data.winnerTeam === undefined) && (missing0 = "winnerTeam"))) || ((data.kind === undefined) && (missing0 = "kind"))) || ((data.byCaller === undefined) && (missing0 = "byCaller"))) || ((data.counts === undefined) && (missing0 = "counts"))) || ((data.dealPoints === undefined) && (missing0 = "dealPoints"))) || ((data.points === undefined) && (missing0 = "points"))) || ((data.stats === undefined) && (missing0 = "stats"))) || ((data.trump === undefined) && (missing0 = "trump"))) || ((data.fairness === undefined) && (missing0 = "fairness"))){
+validate144.errors = [{instancePath,schemaPath:"#/required",keyword:"required",params:{missingProperty: missing0}}];
+return false;
+}
+else {
+const _errs1 = errors;
+for(const key0 in data){
+if(!(func2.call(schema302.properties, key0))){
+validate144.errors = [{instancePath,schemaPath:"#/additionalProperties",keyword:"additionalProperties",params:{additionalProperty: key0}}];
+return false;
+break;
+}
+}
+if(_errs1 === errors){
+if(data.roundId !== undefined){
+let data0 = data.roundId;
+const _errs2 = errors;
+const _errs3 = errors;
+if(errors === _errs3){
+if(typeof data0 === "string"){
+if(!pattern18.test(data0)){
+validate144.errors = [{instancePath:instancePath+"/roundId",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/roundId/pattern",keyword:"pattern",params:{pattern: "^r_[0-9]+$"}}];
+return false;
+}
+}
+else {
+validate144.errors = [{instancePath:instancePath+"/roundId",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/roundId/type",keyword:"type",params:{type: "string"}}];
+return false;
+}
+}
+var valid0 = _errs2 === errors;
+}
+else {
+var valid0 = true;
+}
+if(valid0){
 if(data.winnerTeam !== undefined){
 let data1 = data.winnerTeam;
 const _errs5 = errors;
 if(!(((typeof data1 == "number") && (!(data1 % 1) && !isNaN(data1))) && (isFinite(data1)))){
-validate143.errors = [{instancePath:instancePath+"/winnerTeam",schemaPath:"https://hulla.gg/schemas/protocol/games/rung/events.json#/definitions/team/type",keyword:"type",params:{type: "integer"}}];
+validate144.errors = [{instancePath:instancePath+"/winnerTeam",schemaPath:"https://hulla.gg/schemas/protocol/games/rung/events.json#/definitions/team/type",keyword:"type",params:{type: "integer"}}];
 return false;
 }
 if(!((data1 === 0) || (data1 === 1))){
-validate143.errors = [{instancePath:instancePath+"/winnerTeam",schemaPath:"https://hulla.gg/schemas/protocol/games/rung/events.json#/definitions/team/enum",keyword:"enum",params:{allowedValues: schema55.enum}}];
+validate144.errors = [{instancePath:instancePath+"/winnerTeam",schemaPath:"https://hulla.gg/schemas/protocol/games/rung/events.json#/definitions/team/enum",keyword:"enum",params:{allowedValues: schema55.enum}}];
 return false;
 }
 var valid0 = _errs5 === errors;
@@ -14141,11 +14672,11 @@ if(data.kind !== undefined){
 let data2 = data.kind;
 const _errs8 = errors;
 if(typeof data2 !== "string"){
-validate143.errors = [{instancePath:instancePath+"/kind",schemaPath:"https://hulla.gg/schemas/protocol/games/rung/events.json#/definitions/outcomeKind/type",keyword:"type",params:{type: "string"}}];
+validate144.errors = [{instancePath:instancePath+"/kind",schemaPath:"https://hulla.gg/schemas/protocol/games/rung/events.json#/definitions/outcomeKind/type",keyword:"type",params:{type: "string"}}];
 return false;
 }
 if(!(((data2 === "win") || (data2 === "court")) || (data2 === "court52"))){
-validate143.errors = [{instancePath:instancePath+"/kind",schemaPath:"https://hulla.gg/schemas/protocol/games/rung/events.json#/definitions/outcomeKind/enum",keyword:"enum",params:{allowedValues: schema56.enum}}];
+validate144.errors = [{instancePath:instancePath+"/kind",schemaPath:"https://hulla.gg/schemas/protocol/games/rung/events.json#/definitions/outcomeKind/enum",keyword:"enum",params:{allowedValues: schema56.enum}}];
 return false;
 }
 var valid0 = _errs8 === errors;
@@ -14157,7 +14688,7 @@ if(valid0){
 if(data.byCaller !== undefined){
 const _errs11 = errors;
 if(typeof data.byCaller !== "boolean"){
-validate143.errors = [{instancePath:instancePath+"/byCaller",schemaPath:"#/properties/byCaller/type",keyword:"type",params:{type: "boolean"}}];
+validate144.errors = [{instancePath:instancePath+"/byCaller",schemaPath:"#/properties/byCaller/type",keyword:"type",params:{type: "boolean"}}];
 return false;
 }
 var valid0 = _errs11 === errors;
@@ -14172,12 +14703,12 @@ const _errs13 = errors;
 if(errors === _errs13){
 if(Array.isArray(data4)){
 if(data4.length > 2){
-validate143.errors = [{instancePath:instancePath+"/counts",schemaPath:"#/properties/counts/maxItems",keyword:"maxItems",params:{limit: 2}}];
+validate144.errors = [{instancePath:instancePath+"/counts",schemaPath:"#/properties/counts/maxItems",keyword:"maxItems",params:{limit: 2}}];
 return false;
 }
 else {
 if(data4.length < 2){
-validate143.errors = [{instancePath:instancePath+"/counts",schemaPath:"#/properties/counts/minItems",keyword:"minItems",params:{limit: 2}}];
+validate144.errors = [{instancePath:instancePath+"/counts",schemaPath:"#/properties/counts/minItems",keyword:"minItems",params:{limit: 2}}];
 return false;
 }
 else {
@@ -14187,13 +14718,13 @@ for(let i0=0; i0<len0; i0++){
 let data5 = data4[i0];
 const _errs15 = errors;
 if(!(((typeof data5 == "number") && (!(data5 % 1) && !isNaN(data5))) && (isFinite(data5)))){
-validate143.errors = [{instancePath:instancePath+"/counts/" + i0,schemaPath:"#/properties/counts/items/type",keyword:"type",params:{type: "integer"}}];
+validate144.errors = [{instancePath:instancePath+"/counts/" + i0,schemaPath:"#/properties/counts/items/type",keyword:"type",params:{type: "integer"}}];
 return false;
 }
 if(errors === _errs15){
 if((typeof data5 == "number") && (isFinite(data5))){
 if(data5 < 0 || isNaN(data5)){
-validate143.errors = [{instancePath:instancePath+"/counts/" + i0,schemaPath:"#/properties/counts/items/minimum",keyword:"minimum",params:{comparison: ">=", limit: 0}}];
+validate144.errors = [{instancePath:instancePath+"/counts/" + i0,schemaPath:"#/properties/counts/items/minimum",keyword:"minimum",params:{comparison: ">=", limit: 0}}];
 return false;
 }
 }
@@ -14207,7 +14738,7 @@ break;
 }
 }
 else {
-validate143.errors = [{instancePath:instancePath+"/counts",schemaPath:"#/properties/counts/type",keyword:"type",params:{type: "array"}}];
+validate144.errors = [{instancePath:instancePath+"/counts",schemaPath:"#/properties/counts/type",keyword:"type",params:{type: "array"}}];
 return false;
 }
 }
@@ -14221,13 +14752,13 @@ if(data.dealPoints !== undefined){
 let data6 = data.dealPoints;
 const _errs17 = errors;
 if(!(((typeof data6 == "number") && (!(data6 % 1) && !isNaN(data6))) && (isFinite(data6)))){
-validate143.errors = [{instancePath:instancePath+"/dealPoints",schemaPath:"#/properties/dealPoints/type",keyword:"type",params:{type: "integer"}}];
+validate144.errors = [{instancePath:instancePath+"/dealPoints",schemaPath:"#/properties/dealPoints/type",keyword:"type",params:{type: "integer"}}];
 return false;
 }
 if(errors === _errs17){
 if((typeof data6 == "number") && (isFinite(data6))){
 if(data6 < 0 || isNaN(data6)){
-validate143.errors = [{instancePath:instancePath+"/dealPoints",schemaPath:"#/properties/dealPoints/minimum",keyword:"minimum",params:{comparison: ">=", limit: 0}}];
+validate144.errors = [{instancePath:instancePath+"/dealPoints",schemaPath:"#/properties/dealPoints/minimum",keyword:"minimum",params:{comparison: ">=", limit: 0}}];
 return false;
 }
 }
@@ -14250,7 +14781,7 @@ for(let i1=0; i1<len1; i1++){
 let data8 = data7[i1];
 const _errs22 = errors;
 if(!(((typeof data8 == "number") && (!(data8 % 1) && !isNaN(data8))) && (isFinite(data8)))){
-validate143.errors = [{instancePath:instancePath+"/points/" + i1,schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/points/items/type",keyword:"type",params:{type: "integer"}}];
+validate144.errors = [{instancePath:instancePath+"/points/" + i1,schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/points/items/type",keyword:"type",params:{type: "integer"}}];
 return false;
 }
 var valid6 = _errs22 === errors;
@@ -14260,7 +14791,7 @@ break;
 }
 }
 else {
-validate143.errors = [{instancePath:instancePath+"/points",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/points/type",keyword:"type",params:{type: "array"}}];
+validate144.errors = [{instancePath:instancePath+"/points",schemaPath:"https://hulla.gg/schemas/protocol/common.json#/definitions/points/type",keyword:"type",params:{type: "array"}}];
 return false;
 }
 }
@@ -14285,14 +14816,14 @@ if(errors === _errs27){
 if(data10 && typeof data10 == "object" && !Array.isArray(data10)){
 let missing1;
 if((((data10.tricksWon === undefined) && (missing1 = "tricksWon")) || ((data10.cuts === undefined) && (missing1 = "cuts"))) || ((data10.pilesTaken === undefined) && (missing1 = "pilesTaken"))){
-validate143.errors = [{instancePath:instancePath+"/stats/" + i2,schemaPath:"https://hulla.gg/schemas/protocol/games/rung/events.json#/definitions/seatStats/required",keyword:"required",params:{missingProperty: missing1}}];
+validate144.errors = [{instancePath:instancePath+"/stats/" + i2,schemaPath:"https://hulla.gg/schemas/protocol/games/rung/events.json#/definitions/seatStats/required",keyword:"required",params:{missingProperty: missing1}}];
 return false;
 }
 else {
 const _errs29 = errors;
 for(const key1 in data10){
 if(!(((key1 === "tricksWon") || (key1 === "cuts")) || (key1 === "pilesTaken"))){
-validate143.errors = [{instancePath:instancePath+"/stats/" + i2,schemaPath:"https://hulla.gg/schemas/protocol/games/rung/events.json#/definitions/seatStats/additionalProperties",keyword:"additionalProperties",params:{additionalProperty: key1}}];
+validate144.errors = [{instancePath:instancePath+"/stats/" + i2,schemaPath:"https://hulla.gg/schemas/protocol/games/rung/events.json#/definitions/seatStats/additionalProperties",keyword:"additionalProperties",params:{additionalProperty: key1}}];
 return false;
 break;
 }
@@ -14302,13 +14833,13 @@ if(data10.tricksWon !== undefined){
 let data11 = data10.tricksWon;
 const _errs30 = errors;
 if(!(((typeof data11 == "number") && (!(data11 % 1) && !isNaN(data11))) && (isFinite(data11)))){
-validate143.errors = [{instancePath:instancePath+"/stats/" + i2+"/tricksWon",schemaPath:"https://hulla.gg/schemas/protocol/games/rung/events.json#/definitions/seatStats/properties/tricksWon/type",keyword:"type",params:{type: "integer"}}];
+validate144.errors = [{instancePath:instancePath+"/stats/" + i2+"/tricksWon",schemaPath:"https://hulla.gg/schemas/protocol/games/rung/events.json#/definitions/seatStats/properties/tricksWon/type",keyword:"type",params:{type: "integer"}}];
 return false;
 }
 if(errors === _errs30){
 if((typeof data11 == "number") && (isFinite(data11))){
 if(data11 < 0 || isNaN(data11)){
-validate143.errors = [{instancePath:instancePath+"/stats/" + i2+"/tricksWon",schemaPath:"https://hulla.gg/schemas/protocol/games/rung/events.json#/definitions/seatStats/properties/tricksWon/minimum",keyword:"minimum",params:{comparison: ">=", limit: 0}}];
+validate144.errors = [{instancePath:instancePath+"/stats/" + i2+"/tricksWon",schemaPath:"https://hulla.gg/schemas/protocol/games/rung/events.json#/definitions/seatStats/properties/tricksWon/minimum",keyword:"minimum",params:{comparison: ">=", limit: 0}}];
 return false;
 }
 }
@@ -14323,13 +14854,13 @@ if(data10.cuts !== undefined){
 let data12 = data10.cuts;
 const _errs32 = errors;
 if(!(((typeof data12 == "number") && (!(data12 % 1) && !isNaN(data12))) && (isFinite(data12)))){
-validate143.errors = [{instancePath:instancePath+"/stats/" + i2+"/cuts",schemaPath:"https://hulla.gg/schemas/protocol/games/rung/events.json#/definitions/seatStats/properties/cuts/type",keyword:"type",params:{type: "integer"}}];
+validate144.errors = [{instancePath:instancePath+"/stats/" + i2+"/cuts",schemaPath:"https://hulla.gg/schemas/protocol/games/rung/events.json#/definitions/seatStats/properties/cuts/type",keyword:"type",params:{type: "integer"}}];
 return false;
 }
 if(errors === _errs32){
 if((typeof data12 == "number") && (isFinite(data12))){
 if(data12 < 0 || isNaN(data12)){
-validate143.errors = [{instancePath:instancePath+"/stats/" + i2+"/cuts",schemaPath:"https://hulla.gg/schemas/protocol/games/rung/events.json#/definitions/seatStats/properties/cuts/minimum",keyword:"minimum",params:{comparison: ">=", limit: 0}}];
+validate144.errors = [{instancePath:instancePath+"/stats/" + i2+"/cuts",schemaPath:"https://hulla.gg/schemas/protocol/games/rung/events.json#/definitions/seatStats/properties/cuts/minimum",keyword:"minimum",params:{comparison: ">=", limit: 0}}];
 return false;
 }
 }
@@ -14344,13 +14875,13 @@ if(data10.pilesTaken !== undefined){
 let data13 = data10.pilesTaken;
 const _errs34 = errors;
 if(!(((typeof data13 == "number") && (!(data13 % 1) && !isNaN(data13))) && (isFinite(data13)))){
-validate143.errors = [{instancePath:instancePath+"/stats/" + i2+"/pilesTaken",schemaPath:"https://hulla.gg/schemas/protocol/games/rung/events.json#/definitions/seatStats/properties/pilesTaken/type",keyword:"type",params:{type: "integer"}}];
+validate144.errors = [{instancePath:instancePath+"/stats/" + i2+"/pilesTaken",schemaPath:"https://hulla.gg/schemas/protocol/games/rung/events.json#/definitions/seatStats/properties/pilesTaken/type",keyword:"type",params:{type: "integer"}}];
 return false;
 }
 if(errors === _errs34){
 if((typeof data13 == "number") && (isFinite(data13))){
 if(data13 < 0 || isNaN(data13)){
-validate143.errors = [{instancePath:instancePath+"/stats/" + i2+"/pilesTaken",schemaPath:"https://hulla.gg/schemas/protocol/games/rung/events.json#/definitions/seatStats/properties/pilesTaken/minimum",keyword:"minimum",params:{comparison: ">=", limit: 0}}];
+validate144.errors = [{instancePath:instancePath+"/stats/" + i2+"/pilesTaken",schemaPath:"https://hulla.gg/schemas/protocol/games/rung/events.json#/definitions/seatStats/properties/pilesTaken/minimum",keyword:"minimum",params:{comparison: ">=", limit: 0}}];
 return false;
 }
 }
@@ -14366,7 +14897,7 @@ var valid9 = true;
 }
 }
 else {
-validate143.errors = [{instancePath:instancePath+"/stats/" + i2,schemaPath:"https://hulla.gg/schemas/protocol/games/rung/events.json#/definitions/seatStats/type",keyword:"type",params:{type: "object"}}];
+validate144.errors = [{instancePath:instancePath+"/stats/" + i2,schemaPath:"https://hulla.gg/schemas/protocol/games/rung/events.json#/definitions/seatStats/type",keyword:"type",params:{type: "object"}}];
 return false;
 }
 }
@@ -14377,7 +14908,7 @@ break;
 }
 }
 else {
-validate143.errors = [{instancePath:instancePath+"/stats",schemaPath:"#/properties/stats/type",keyword:"type",params:{type: "array"}}];
+validate144.errors = [{instancePath:instancePath+"/stats",schemaPath:"#/properties/stats/type",keyword:"type",params:{type: "array"}}];
 return false;
 }
 }
@@ -14450,7 +14981,7 @@ else {
 vErrors.push(err3);
 }
 errors++;
-validate143.errors = vErrors;
+validate144.errors = vErrors;
 return false;
 }
 else {
@@ -14477,14 +15008,14 @@ if(errors === _errs43){
 if(data15 && typeof data15 == "object" && !Array.isArray(data15)){
 let missing2;
 if((((data15.commitment === undefined) && (missing2 = "commitment")) || ((data15.seed === undefined) && (missing2 = "seed"))) || ((data15.deckOrder === undefined) && (missing2 = "deckOrder"))){
-validate143.errors = [{instancePath:instancePath+"/fairness",schemaPath:"#/properties/fairness/required",keyword:"required",params:{missingProperty: missing2}}];
+validate144.errors = [{instancePath:instancePath+"/fairness",schemaPath:"#/properties/fairness/required",keyword:"required",params:{missingProperty: missing2}}];
 return false;
 }
 else {
 const _errs45 = errors;
 for(const key2 in data15){
 if(!(((key2 === "commitment") || (key2 === "seed")) || (key2 === "deckOrder"))){
-validate143.errors = [{instancePath:instancePath+"/fairness",schemaPath:"#/properties/fairness/additionalProperties",keyword:"additionalProperties",params:{additionalProperty: key2}}];
+validate144.errors = [{instancePath:instancePath+"/fairness",schemaPath:"#/properties/fairness/additionalProperties",keyword:"additionalProperties",params:{additionalProperty: key2}}];
 return false;
 break;
 }
@@ -14496,12 +15027,12 @@ const _errs46 = errors;
 if(errors === _errs46){
 if(typeof data16 === "string"){
 if(!pattern30.test(data16)){
-validate143.errors = [{instancePath:instancePath+"/fairness/commitment",schemaPath:"#/properties/fairness/properties/commitment/pattern",keyword:"pattern",params:{pattern: "^[0-9a-f]{64}$"}}];
+validate144.errors = [{instancePath:instancePath+"/fairness/commitment",schemaPath:"#/properties/fairness/properties/commitment/pattern",keyword:"pattern",params:{pattern: "^[0-9a-f]{64}$"}}];
 return false;
 }
 }
 else {
-validate143.errors = [{instancePath:instancePath+"/fairness/commitment",schemaPath:"#/properties/fairness/properties/commitment/type",keyword:"type",params:{type: "string"}}];
+validate144.errors = [{instancePath:instancePath+"/fairness/commitment",schemaPath:"#/properties/fairness/properties/commitment/type",keyword:"type",params:{type: "string"}}];
 return false;
 }
 }
@@ -14517,12 +15048,12 @@ const _errs48 = errors;
 if(errors === _errs48){
 if(typeof data17 === "string"){
 if(!pattern48.test(data17)){
-validate143.errors = [{instancePath:instancePath+"/fairness/seed",schemaPath:"#/properties/fairness/properties/seed/pattern",keyword:"pattern",params:{pattern: "^[0-9a-f]+$"}}];
+validate144.errors = [{instancePath:instancePath+"/fairness/seed",schemaPath:"#/properties/fairness/properties/seed/pattern",keyword:"pattern",params:{pattern: "^[0-9a-f]+$"}}];
 return false;
 }
 }
 else {
-validate143.errors = [{instancePath:instancePath+"/fairness/seed",schemaPath:"#/properties/fairness/properties/seed/type",keyword:"type",params:{type: "string"}}];
+validate144.errors = [{instancePath:instancePath+"/fairness/seed",schemaPath:"#/properties/fairness/properties/seed/type",keyword:"type",params:{type: "string"}}];
 return false;
 }
 }
@@ -14534,8 +15065,8 @@ var valid12 = true;
 if(valid12){
 if(data15.deckOrder !== undefined){
 const _errs50 = errors;
-if(!(validate132(data15.deckOrder, {instancePath:instancePath+"/fairness/deckOrder",parentData:data15,parentDataProperty:"deckOrder",rootData}))){
-vErrors = vErrors === null ? validate132.errors : vErrors.concat(validate132.errors);
+if(!(validate133(data15.deckOrder, {instancePath:instancePath+"/fairness/deckOrder",parentData:data15,parentDataProperty:"deckOrder",rootData}))){
+vErrors = vErrors === null ? validate133.errors : vErrors.concat(validate133.errors);
 errors = vErrors.length;
 }
 var valid12 = _errs50 === errors;
@@ -14549,7 +15080,7 @@ var valid12 = true;
 }
 }
 else {
-validate143.errors = [{instancePath:instancePath+"/fairness",schemaPath:"#/properties/fairness/type",keyword:"type",params:{type: "object"}}];
+validate144.errors = [{instancePath:instancePath+"/fairness",schemaPath:"#/properties/fairness/type",keyword:"type",params:{type: "object"}}];
 return false;
 }
 }
@@ -14561,8 +15092,8 @@ var valid0 = true;
 if(valid0){
 if(data.series !== undefined){
 const _errs51 = errors;
-if(!(validate145(data.series, {instancePath:instancePath+"/series",parentData:data,parentDataProperty:"series",rootData}))){
-vErrors = vErrors === null ? validate145.errors : vErrors.concat(validate145.errors);
+if(!(validate146(data.series, {instancePath:instancePath+"/series",parentData:data,parentDataProperty:"series",rootData}))){
+vErrors = vErrors === null ? validate146.errors : vErrors.concat(validate146.errors);
 errors = vErrors.length;
 }
 var valid0 = _errs51 === errors;
@@ -14584,11 +15115,11 @@ var valid0 = true;
 }
 }
 else {
-validate143.errors = [{instancePath,schemaPath:"#/type",keyword:"type",params:{type: "object"}}];
+validate144.errors = [{instancePath,schemaPath:"#/type",keyword:"type",params:{type: "object"}}];
 return false;
 }
 }
-validate143.errors = vErrors;
+validate144.errors = vErrors;
 return errors === 0;
 }
 
@@ -14618,6 +15149,7 @@ return errors === 0;
       set_mic: check_set_mic,
       remove_spectator: check_remove_spectator,
       change_game: check_change_game,
+      swap_seats: check_swap_seats,
       chat_text: check_chat_text,
       quick_chat: check_quick_chat,
       emote: check_emote,

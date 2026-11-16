@@ -35,6 +35,8 @@ export const removeSpectatorPayloadSchema = z.object({ "userId": z.string().desc
 
 export const changeGamePayloadSchema = z.object({ "gameId": z.enum(["thulla","rung"]), "rules": z.object({ "gameId": z.enum(["thulla","rung"]), "preset": z.enum(["standard","family","hardcore","classicPagat","relaxed","rung","courtPiece","hokm"]).optional(), "overrides": z.record(z.string(), z.any()).describe("Validated against the game's rules schema").optional(), "settings": z.object({ "turnTimerSeconds": z.union([z.literal(10), z.literal(15), z.literal(20), z.literal(30), z.literal(60), z.literal(null)]).optional(), "showCardCounts": z.boolean().optional(), "cardMemoryAssist": z.boolean().optional(), "loserTitle": z.enum(["bhabhi","donkey","thullad"]).optional(), "spectators": z.boolean().optional(), "voiceDefault": z.enum(["openMic","pushToTalk","off"]).optional(), "direction": z.enum(["cw","ccw"]).optional() }).strict().describe("Table settings that are not engine rules (GDD 6.13)").optional() }).strict().describe("Absent: the rules this room last used for that game, else its defaults").optional() }).strict().describe("The host switches the room to another game between rounds; sent during a round it is queued for the round's end. Naming the game already played clears a queued switch.");
 
+export const swapSeatsPayloadSchema = z.object({ "a": z.number().int().gte(0).lte(7), "b": z.number().int().gte(0).lte(7) }).strict().describe("Host only, in the lobby of a private room: two seats trade places, so the host chooses who partners whom in a game of pairs. One of the two may be empty.");
+
 export const chatTextPayloadSchema = z.object({ "text": z.string().min(1).max(140) }).strict();
 
 export const quickChatPayloadSchema = z.object({ "phraseId": z.string().regex(new RegExp("^[A-Z][0-9]{2}$")), "pack": z.string().optional() }).strict();
@@ -915,6 +917,7 @@ export const payloadValidators = {
   set_mic: setMicPayloadSchema,
   remove_spectator: removeSpectatorPayloadSchema,
   change_game: changeGamePayloadSchema,
+  swap_seats: swapSeatsPayloadSchema,
   chat_text: chatTextPayloadSchema,
   quick_chat: quickChatPayloadSchema,
   emote: emotePayloadSchema,

@@ -114,6 +114,13 @@
       "schema": "shell/table.json#/definitions/change_game"
     },
     {
+      "type": "swap_seats",
+      "opcode": 17,
+      "direction": "c2s",
+      "visibility": "public",
+      "schema": "shell/table.json#/definitions/swap_seats"
+    },
+    {
       "type": "chat_text",
       "opcode": 20,
       "direction": "c2s",

@@ -19,6 +19,14 @@ export type AchievementMetric =
   | "first_escape_streak"
   | "no_bhabhi_streak"
   | "houdini"
+  | "rung_deals_won"
+  | "rung_bazis"
+  | "rung_bazis_won"
+  | "rung_bazis_won_friend"
+  | "rung_courts"
+  | "rung_goon_courts"
+  | "rung_court52"
+  | "rung_call_streak"
   | "cosmetics_owned"
   | "seasonal_rounds";
 
@@ -30,6 +38,8 @@ export interface AchievementDef {
   readonly metric: AchievementMetric;
   readonly target: number;
   readonly reward: { readonly gems?: number; readonly title?: string };
+  /** The game the achievement belongs to; absent means Thulla or the whole app. */
+  readonly gameId?: "thulla" | "rung";
 }
 
 export interface AchievementList {

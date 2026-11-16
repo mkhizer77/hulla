@@ -31,8 +31,9 @@ export interface MatchmakerDeps {
  * requested size is accepted (ARCHITECTURE 8.1, OQ-006); the client widens the query over time.
  */
 export function tableForMatch(deps: MatchmakerDeps, entries: readonly MatchedEntry[]): string {
-  // Only Thulla is matchmade so far: Rung needs exactly four and bots to fill (Rung design 4).
-  const gameId: CreateTableParams["gameId"] = "thulla";
+  // The ticket names its game; anything the server does not know plays Thulla.
+  const requested = entries[0]?.properties["game"] ?? "thulla";
+  const gameId: CreateTableParams["gameId"] = requested === "rung" ? "rung" : "thulla";
   const entry = gameEntry(gameId);
   if (entry === null) throw new Error("no game is registered");
   const byParty = new Map<string, string[]>();
@@ -45,7 +46,7 @@ export function tableForMatch(deps: MatchmakerDeps, entries: readonly MatchedEnt
     .map(([id, members]) => ({ id, members }));
   const seed = sha256(utf8Encode(deps.runtime.uuidv4() + deps.runtime.uuidv4()));
   const code = generateRoomCode(Xoshiro128StarStar.fromState(stateFromSeed(seed)));
-  if (entries[0]?.properties["mode"] === "ranked") {
+  if (gameId === "thulla" && entries[0]?.properties["mode"] === "ranked") {
     // Ranked (GDD 7.5, 6.13): standard rules with hand-taking off from the mode, a 12 s timer,
     // no card-memory assist, no watchers, push-to-talk; nobody queued as a party.
     return deps.matchCreate(entry.matchName, {
@@ -65,7 +66,9 @@ export function tableForMatch(deps: MatchmakerDeps, entries: readonly MatchedEnt
     code,
     gameId,
     mode: "public",
-    rules: { gameId, preset: "standard" },
+    // Rung's Quick Play is the Rung rule set to five points (Rung design 4); a party of two sits
+    // as partners (the table core seats party members opposite each other).
+    rules: { gameId, preset: gameId === "rung" ? "rung" : "standard" },
     autoStart: { expected: entries.length },
     parties,
   });

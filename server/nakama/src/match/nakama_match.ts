@@ -8,7 +8,7 @@ import { countRound, nkAchievementStore, settleUnlocks } from "../services/achie
 import { emitAnalyticsSafely } from "../services/analytics";
 import { equippedFor, nkCatalogStore, ownedEmotePacks } from "../services/catalog";
 import { clientTooOld, nkConfigStore } from "../services/config";
-import { postRoundPoints } from "../services/leaderboards";
+import { postCoinsEarned, postRoundPoints } from "../services/leaderboards";
 import { credit, nkLedgerPorts } from "../services/ledger";
 import { removeFromRoom } from "../services/livekit_admin";
 import { liveKitConfigFrom } from "../services/livekit_token";
@@ -105,18 +105,19 @@ export function storagePersistence(nk: nkruntime.Nakama, logger: nkruntime.Logge
         try {
           const profile = store.read(playerId);
           // The first live round ever pays the one-time welcome reward (GDD 17.2).
-          const firstRound = profile !== null && profile.stats.rounds === 0;
-          // Stats, XP, coins, missions and achievements are Thulla's own tables. Rung pays by
-          // the bazi from its own (Rung design 10), so a Rung deal is recorded and nothing more.
-          if (record.gameId === "thulla") {
-            if (profile !== null) {
-              store.write(playerId, {
-                ...profile,
-                stats: applyRoundToStats(profile.stats, seat, record),
-              });
-            }
-            rewardPlayer(nk, logger, record, playerId, seat, humans, firstRound);
+          const firstRound =
+            profile !== null &&
+            profile.stats.rounds === 0 &&
+            (profile.stats.rung?.deals ?? 0) === 0;
+          // Each service knows the game: a Thulla round and a Rung deal count in their own
+          // stats, rewards, missions, achievements and boards (Rung design 10).
+          if (profile !== null) {
+            store.write(playerId, {
+              ...profile,
+              stats: applyRoundToStats(profile.stats, seat, record),
+            });
           }
+          rewardPlayer(nk, logger, record, playerId, seat, humans, firstRound);
           nk.storageWrite([
             {
               collection: ROUND_RESULTS_COLLECTION,
@@ -186,6 +187,7 @@ function rewardPlayer(
     );
     recordMissionMetrics(nk, playerId, metricsFromRound(record, seat, withFriend), record.endedTs);
     postRoundPoints(nk, logger, record, playerId, seat);
+    postCoinsEarned(nk, logger, record, playerId, reward.coins);
     earnPassXp(nk, playerId, "round", record.endedTs);
     const friendsAtTable = humans.filter(
       (other) => other !== playerId && nkAreFriends(nk, playerId, other),

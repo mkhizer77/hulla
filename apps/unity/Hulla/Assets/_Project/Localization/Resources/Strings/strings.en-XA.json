@@ -473,6 +473,106 @@
    "smart": false
   },
   {
+   "key": "achievement.rung_bazis_10.description",
+   "text": "[{0:plural:Plåý å båzî öf Rûñg|Plåý {} båzîs öf Rûñg} · · · ·]",
+   "smart": true
+  },
+  {
+   "key": "achievement.rung_bazis_10.name",
+   "text": "[Régûlår åt thé tåblé · · ·]",
+   "smart": false
+  },
+  {
+   "key": "achievement.rung_bazis_100.description",
+   "text": "[{0:plural:Plåý å båzî öf Rûñg|Plåý {} båzîs öf Rûñg} · · · ·]",
+   "smart": true
+  },
+  {
+   "key": "achievement.rung_bazis_100.name",
+   "text": "[Rûñg bååz · ·]",
+   "smart": false
+  },
+  {
+   "key": "achievement.rung_bazis_won_25.description",
+   "text": "[{0:plural:Wîñ å båzî öf Rûñg|Wîñ {} båzîs öf Rûñg} · · · ·]",
+   "smart": true
+  },
+  {
+   "key": "achievement.rung_bazis_won_25.name",
+   "text": "[Båzî wîññér · ·]",
+   "smart": false
+  },
+  {
+   "key": "achievement.rung_calls_10.description",
+   "text": "[{0:plural:Wîñ å déål ýöû çålléd|Wîñ {} déåls ýöû çålléd îñ å röw} · · · · ·]",
+   "smart": true
+  },
+  {
+   "key": "achievement.rung_calls_10.name",
+   "text": "[Gööd çållér · ·]",
+   "smart": false
+  },
+  {
+   "key": "achievement.rung_court52.description",
+   "text": "[{0:plural:Wîñ åll thîrtééñ trîçks åftér plåýîñg öñ|Wîñ åll thîrtééñ trîçks {} tîmés} · · · · ·]",
+   "smart": true
+  },
+  {
+   "key": "achievement.rung_court52.name",
+   "text": "[52-çöûrt · ·]",
+   "smart": false
+  },
+  {
+   "key": "achievement.rung_deals_100.description",
+   "text": "[{0:plural:Wîñ å déål öf Rûñg|Wîñ {} déåls öf Rûñg} · · · ·]",
+   "smart": true
+  },
+  {
+   "key": "achievement.rung_deals_100.name",
+   "text": "[Trîçk tåkér · ·]",
+   "smart": false
+  },
+  {
+   "key": "achievement.rung_first_court.description",
+   "text": "[{0:plural:Sçöré å çöûrt|Sçöré {} çöûrts} · · ·]",
+   "smart": true
+  },
+  {
+   "key": "achievement.rung_first_court.name",
+   "text": "[Fîrst çöûrt · ·]",
+   "smart": false
+  },
+  {
+   "key": "achievement.rung_first_deal.description",
+   "text": "[{0:plural:Wîñ å déål öf Rûñg|Wîñ {} déåls öf Rûñg} · · · ·]",
+   "smart": true
+  },
+  {
+   "key": "achievement.rung_first_deal.name",
+   "text": "[Fîrst déål · ·]",
+   "smart": false
+  },
+  {
+   "key": "achievement.rung_friend_bazi.description",
+   "text": "[{0:plural:Wîñ å båzî wîth å frîéñd åt thé tåblé|Wîñ {} båzîs wîth å frîéñd åt thé tåblé} · · · · · ·]",
+   "smart": true
+  },
+  {
+   "key": "achievement.rung_friend_bazi.name",
+   "text": "[Pårtñérs · ·]",
+   "smart": false
+  },
+  {
+   "key": "achievement.rung_goon_court.description",
+   "text": "[{0:plural:Sçöré å çöûrt ås thé déålér's téåm|Sçöré {} çöûrts ås thé déålér's téåm} · · · · · ·]",
+   "smart": true
+  },
+  {
+   "key": "achievement.rung_goon_court.name",
+   "text": "[Gööñ çöûrt · ·]",
+   "smart": false
+  },
+  {
    "key": "achievement.same_group_10.description",
    "text": "[{0:plural:Plåý {} röûñd wîth thé såmé gröûp|Plåý {} röûñds wîth thé såmé gröûp} · · · · · ·]",
    "smart": true
@@ -1778,6 +1878,36 @@
    "smart": false
   },
   {
+   "key": "mission.d_rung_cuts_2.description",
+   "text": "[{0:plural:Çût {} trîçk wîth å rûñg|Çût {} trîçks wîth å rûñg} · · · ·]",
+   "smart": true
+  },
+  {
+   "key": "mission.d_rung_cuts_2.name",
+   "text": "[Kååt ·]",
+   "smart": false
+  },
+  {
+   "key": "mission.d_rung_deals_3.description",
+   "text": "[{0:plural:Wîñ {} déål öf Rûñg|Wîñ {} déåls öf Rûñg} · · · ·]",
+   "smart": true
+  },
+  {
+   "key": "mission.d_rung_deals_3.name",
+   "text": "[Rûñg déåls · ·]",
+   "smart": false
+  },
+  {
+   "key": "mission.d_rung_piles_3.description",
+   "text": "[{0:plural:Tåké {} pîlé îñ Rûñg|Tåké {} pîlés îñ Rûñg} · · · ·]",
+   "smart": true
+  },
+  {
+   "key": "mission.d_rung_piles_3.name",
+   "text": "[Tåké thé pîlé · ·]",
+   "smart": false
+  },
+  {
    "key": "mission.d_thullas_3.description",
    "text": "[{0:plural:Gîvé {} thûllå|Gîvé {} thûllås} · · ·]",
    "smart": true
@@ -1880,6 +2010,26 @@
   {
    "key": "mission.w_rounds_15.name",
    "text": "[Röûñds 15 · ·]",
+   "smart": false
+  },
+  {
+   "key": "mission.w_rung_bazi.description",
+   "text": "[{0:plural:Wîñ {} båzî öf Rûñg|Wîñ {} båzîs öf Rûñg} · · · ·]",
+   "smart": true
+  },
+  {
+   "key": "mission.w_rung_bazi.name",
+   "text": "[Wîñ å båzî · ·]",
+   "smart": false
+  },
+  {
+   "key": "mission.w_rung_court.description",
+   "text": "[{0:plural:Sçöré {} çöûrt îñ Rûñg|Sçöré {} çöûrts îñ Rûñg} · · · ·]",
+   "smart": true
+  },
+  {
+   "key": "mission.w_rung_court.name",
+   "text": "[Çöûrt ·]",
    "smart": false
   },
   {

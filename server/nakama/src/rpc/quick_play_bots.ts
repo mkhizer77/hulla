@@ -25,21 +25,23 @@ export interface QuickPlayBotsDeps {
 }
 
 /**
- * Quick Play found nobody in 30 s (owner decision, 29 Oct): a public table with the standard preset
- * for the caller and up to three bots, which deals itself as soon as the player sits. The table is
+ * Quick Play found nobody in time (owner decision, 29 Oct; Rung after 15 s, Rung design 6.5): a
+ * public table with the game's default rules for the caller and up to three bots, which deals itself as soon as the player sits. The table is
  * not in the code registry, so nobody else can join it by code; the ticket carries its own code.
  */
 export function quickPlayBots(deps: QuickPlayBotsDeps, payload: string): TableCreateResponse {
   if (deps.userId === null) return { ok: false, error: ruleError(ErrorCodes.table.notAuthorised) };
   let seats = 4;
+  let gameId: CreateTableParams["gameId"] = "thulla";
   try {
     const parsed: unknown = payload === "" ? {} : JSON.parse(payload);
     const asked = (parsed as Record<string, unknown> | null)?.["seats"];
     if (typeof asked === "number" && Number.isInteger(asked)) seats = asked;
+    if ((parsed as Record<string, unknown> | null)?.["gameId"] === "rung") gameId = "rung";
   } catch {
     return { ok: false, error: ruleError(ErrorCodes.table.invalidPayload, { reason: "json" }) };
   }
-  const entry = gameEntry("thulla");
+  const entry = gameEntry(gameId);
   if (entry === null) return { ok: false, error: ruleError(ErrorCodes.table.notFound) };
   const bots = botsFor(
     Math.max(entry.host.module.seats.min, Math.min(entry.host.module.seats.max, seats)),
@@ -48,9 +50,9 @@ export function quickPlayBots(deps: QuickPlayBotsDeps, payload: string): TableCr
   const code = generateRoomCode(Xoshiro128StarStar.fromState(stateFromSeed(seed)));
   const matchId = deps.matchCreate(entry.matchName, {
     code,
-    gameId: "thulla",
+    gameId,
     mode: "public",
-    rules: { gameId: "thulla", preset: "standard" },
+    rules: { gameId, preset: gameId === "rung" ? "rung" : "standard" },
     autoStart: { expected: bots + 1 },
     parties: [],
     bots,

@@ -580,6 +580,20 @@
           "enum": ["host_closed", "empty", "dissolved", "server"]
         }
       }
+    },
+    "swap_seats": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Host only, in the lobby of a private room: two seats trade places, so the host chooses who partners whom in a game of pairs. One of the two may be empty.",
+      "required": ["a", "b"],
+      "properties": {
+        "a": {
+          "$ref": "../common.json#/definitions/seatIndex"
+        },
+        "b": {
+          "$ref": "../common.json#/definitions/seatIndex"
+        }
+      }
     }
   }
 }

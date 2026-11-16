@@ -234,6 +234,9 @@ namespace Hulla.Protocol
         [JsonProperty("startRoundPayload", Required = Required.DisallowNull, NullValueHandling = NullValueHandling.Ignore)]
         public StartRound? StartRoundPayload { get; set; }
 
+        [JsonProperty("swapSeatsPayload", Required = Required.DisallowNull, NullValueHandling = NullValueHandling.Ignore)]
+        public SwapSeats? SwapSeatsPayload { get; set; }
+
         [JsonProperty("tableClosedPayload", Required = Required.DisallowNull, NullValueHandling = NullValueHandling.Ignore)]
         public TableClosed? TableClosedPayload { get; set; }
 
@@ -950,6 +953,12 @@ namespace Hulla.Protocol
         public long Rounds { get; set; }
 
         /// <summary>
+        /// The Rung half of the stats card; absent until the first deal
+        /// </summary>
+        [JsonProperty("rung", Required = Required.DisallowNull, NullValueHandling = NullValueHandling.Ignore)]
+        public RungStats? Rung { get; set; }
+
+        /// <summary>
         /// Cards played per suit; the largest is the favourite
         /// </summary>
         [JsonProperty("suits", Required = Required.Always)]
@@ -960,6 +969,75 @@ namespace Hulla.Protocol
 
         [JsonProperty("thullasReceived", Required = Required.Always)]
         public long ThullasReceived { get; set; }
+    }
+
+    /// <summary>
+    /// The Rung half of the stats card; absent until the first deal
+    /// </summary>
+    public partial class RungStats
+    {
+        [JsonProperty("bazis", Required = Required.Always)]
+        public long Bazis { get; set; }
+
+        [JsonProperty("bazisWon", Required = Required.Always)]
+        public long BazisWon { get; set; }
+
+        [JsonProperty("callerDeals", Required = Required.Always)]
+        public long CallerDeals { get; set; }
+
+        [JsonProperty("callerWins", Required = Required.Always)]
+        public long CallerWins { get; set; }
+
+        [JsonProperty("courts", Required = Required.Always)]
+        public long Courts { get; set; }
+
+        [JsonProperty("courtsAgainst", Required = Required.Always)]
+        public long CourtsAgainst { get; set; }
+
+        [JsonProperty("cuts", Required = Required.Always)]
+        public long Cuts { get; set; }
+
+        [JsonProperty("deals", Required = Required.Always)]
+        public long Deals { get; set; }
+
+        [JsonProperty("dealsWon", Required = Required.Always)]
+        public long DealsWon { get; set; }
+
+        [JsonProperty("defenderDeals", Required = Required.Always)]
+        public long DefenderDeals { get; set; }
+
+        [JsonProperty("defenderWins", Required = Required.Always)]
+        public long DefenderWins { get; set; }
+
+        [JsonProperty("pilesTaken", Required = Required.Always)]
+        public long PilesTaken { get; set; }
+
+        [JsonProperty("tricksWon", Required = Required.Always)]
+        public long TricksWon { get; set; }
+
+        /// <summary>
+        /// Rungs the player called per suit; the largest is the favourite
+        /// </summary>
+        [JsonProperty("trumps", Required = Required.Always)]
+        public RungTrumps Trumps { get; set; }
+    }
+
+    /// <summary>
+    /// Rungs the player called per suit; the largest is the favourite
+    /// </summary>
+    public partial class RungTrumps
+    {
+        [JsonProperty("C", Required = Required.Always)]
+        public long C { get; set; }
+
+        [JsonProperty("D", Required = Required.Always)]
+        public long D { get; set; }
+
+        [JsonProperty("H", Required = Required.Always)]
+        public long H { get; set; }
+
+        [JsonProperty("S", Required = Required.Always)]
+        public long S { get; set; }
     }
 
     /// <summary>
@@ -2130,6 +2208,19 @@ namespace Hulla.Protocol
 
     public partial class StartRound
     {
+    }
+
+    /// <summary>
+    /// Host only, in the lobby of a private room: two seats trade places, so the host chooses
+    /// who partners whom in a game of pairs. One of the two may be empty.
+    /// </summary>
+    public partial class SwapSeats
+    {
+        [JsonProperty("a", Required = Required.Always)]
+        public long A { get; set; }
+
+        [JsonProperty("b", Required = Required.Always)]
+        public long B { get; set; }
     }
 
     public partial class TableClosed
