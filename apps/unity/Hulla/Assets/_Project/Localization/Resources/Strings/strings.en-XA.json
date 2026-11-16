@@ -2753,6 +2753,11 @@
    "smart": false
   },
   {
+   "key": "rung.called",
+   "text": "[{0} çålls {1} · ·]",
+   "smart": true
+  },
+  {
    "key": "rung.chasing",
    "text": "[Plåýîñg öñ för thé çöûrt · · · ·]",
    "smart": false
@@ -2783,6 +2788,11 @@
    "smart": false
   },
   {
+   "key": "rung.court_stamp",
+   "text": "[Çöûrt! ·]",
+   "smart": false
+  },
+  {
    "key": "rung.court_stop",
    "text": "[Tåké thé wîñ · ·]",
    "smart": false
@@ -2805,6 +2815,11 @@
   {
    "key": "rung.deal_won",
    "text": "[Ýöû wöñ thé déål · · ·]",
+   "smart": false
+  },
+  {
+   "key": "rung.kaat",
+   "text": "[Kååt! ·]",
    "smart": false
   },
   {
@@ -2853,6 +2868,16 @@
    "smart": false
   },
   {
+   "key": "rung.play_to",
+   "text": "[Plåý tö · ·]",
+   "smart": false
+  },
+  {
+   "key": "rung.points_n",
+   "text": "[{0} pöîñts · ·]",
+   "smart": true
+  },
+  {
    "key": "rung.redeal",
    "text": "[Ñéw çårds · ·]",
    "smart": false
@@ -2865,6 +2890,41 @@
   {
    "key": "rung.remove_bot",
    "text": "[Rémövé böt · ·]",
+   "smart": false
+  },
+  {
+   "key": "rung.rule_set",
+   "text": "[Rûlé sét · ·]",
+   "smart": false
+  },
+  {
+   "key": "rung.score_line",
+   "text": "[Déåls {0} – {1} · · ·]",
+   "smart": true
+  },
+  {
+   "key": "rung.score_title",
+   "text": "[Båzî sö får · ·]",
+   "smart": false
+  },
+  {
+   "key": "rung.suit_C",
+   "text": "[çlûbs ·]",
+   "smart": false
+  },
+  {
+   "key": "rung.suit_D",
+   "text": "[dîåmöñds · ·]",
+   "smart": false
+  },
+  {
+   "key": "rung.suit_H",
+   "text": "[héårts ·]",
+   "smart": false
+  },
+  {
+   "key": "rung.suit_S",
+   "text": "[spådés ·]",
    "smart": false
   },
   {
@@ -2881,6 +2941,11 @@
    "key": "rung.switched",
    "text": "[Thé rööm ñöw plåýs {0} · · · ·]",
    "smart": true
+  },
+  {
+   "key": "rung.tap_to_play",
+   "text": "[Tåp tö plåý · ·]",
+   "smart": false
   },
   {
    "key": "rung.them",
@@ -2901,6 +2966,11 @@
    "key": "rung.us",
    "text": "[Ûs ·]",
    "smart": false
+  },
+  {
+   "key": "rung.won_trick",
+   "text": "[{0} wîñs thé trîçk · · ·]",
+   "smart": true
   },
   {
    "key": "rung.your_turn",

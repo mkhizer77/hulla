@@ -7,7 +7,8 @@
         "Hulla.Presentation",
         "Hulla.Protocol",
         "UnityEngine.TestRunner",
-        "UnityEditor.TestRunner"
+        "UnityEditor.TestRunner",
+        "Hulla.Games.Shared"
     ],
     "includePlatforms": [
         "Editor"

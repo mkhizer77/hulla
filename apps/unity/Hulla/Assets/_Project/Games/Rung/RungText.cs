@@ -46,6 +46,18 @@ namespace Hulla.Games.Rung
             return Strings.Text("preset." + id + ".name") + " · " + Strings.Text("preset." + id + ".description");
         }
 
+        public static string RuleSet => Strings.Text("rung.rule_set");
+        public static string PlayTo => Strings.Text("rung.play_to");
+        public static string PointsN => Strings.Text("rung.points_n");
+        public static string Kaat => Strings.Text("rung.kaat");
+        public static string CourtStamp => Strings.Text("rung.court_stamp");
+        public static string WonTrick => Strings.Text("rung.won_trick");
+        public static string Called => Strings.Text("rung.called");
+        public static string ScoreTitle => Strings.Text("rung.score_title");
+        public static string ScoreLine => Strings.Text("rung.score_line");
+
+        public static string SuitName(char suit) => Strings.Text("rung.suit_" + suit);
+
         public static string PlayRung => Strings.Text("rung.play_rung");
     }
 }

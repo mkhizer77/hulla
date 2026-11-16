@@ -5,7 +5,8 @@
         "Hulla.Application",
         "Hulla.Domain",
         "Hulla.Presentation",
-        "Hulla.Protocol"
+        "Hulla.Protocol",
+        "Hulla.Games.Shared"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

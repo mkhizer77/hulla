@@ -334,6 +334,27 @@ namespace Hulla.Presentation.Screens.Home
             });
         }
 
+        /// <summary>
+        /// Rung is live (the `rung` remote flag): its row on the shelf stops saying "Coming soon" and a
+        /// tap opens a private room that plays Rung.
+        /// </summary>
+        public void OfferRung(VisualElement root, Action<string, string?> play)
+        {
+            var row = root.Q<VisualElement>("game-rung");
+            if (row == null)
+            {
+                return;
+            }
+
+            row.pickingMode = PickingMode.Position;
+            row.AddToClassList("home__soon--live");
+            root.Q<Label>("game-rung-soon").text = UiText.PlayRung;
+            row.RegisterCallback<ClickEvent>(_ => WithName(name => play(name, null)));
+        }
+
+        /// <summary>Whether the Rung row is live; read by tests.</summary>
+        public static bool RungLive(VisualElement root) => root.Q<VisualElement>("game-rung")?.ClassListContains("home__soon--live") == true;
+
         /// <summary>The Thulla card: the game's name in its own lettering, the line under it and Rung to come.</summary>
         private static void BuildCard(VisualElement root)
         {

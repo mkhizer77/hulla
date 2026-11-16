@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Hulla.Application.Services;
 using Hulla.Application.Table;
 using Hulla.Application.Voice;
+using Hulla.Games.Shared;
 using Hulla.Presentation.Accessibility;
 using Hulla.Presentation.Audio;
 using Hulla.Presentation.TableKit;
@@ -19,26 +20,21 @@ namespace Hulla.Games.Rung
     /// bar on the felt. The call and the court choice open as a panel over the felt for the seat that
     /// must answer. It reads the model after every message and never decides anything itself.
     /// </summary>
-    public sealed class RungTableView : IEventPresenter, IDisposable
+    public sealed class RungTableView : CardTableView, IEventPresenter, IDisposable
     {
         /// <summary>How long a won trick stays face up before the next card may show (seconds).</summary>
         public const float TrickHoldSeconds = 0.8f;
 
-        private readonly TableClient _client;
-        private readonly Func<long> _nowMs;
-        private readonly SoundPlayer? _sounds;
-        private readonly VisualElement _root;
-        private readonly OpponentRing _ring;
-        private readonly PlayerBadge _me = new PlayerBadge();
         private readonly PileView _pile;
         private readonly HandView _hand;
-        private readonly Label _info;
         private readonly Label _statusText;
         private readonly Label _statusSecs;
         private readonly Label _note;
-        private readonly Button _mic;
-        private readonly Label _voicePill;
-        private readonly Button _speaker;
+        private readonly Label _toast;
+        private float _stampLeft;
+
+        /// <summary>How long a stamped word stays on the felt.</summary>
+        public const float StampSeconds = 1.1f;
         private readonly VisualElement _bar = new VisualElement { name = "rung-bar" };
         private readonly Label _trump = new Label { name = "rung-trump" };
         private readonly Label _tricks = new Label { name = "rung-tricks" };
@@ -56,8 +52,6 @@ namespace Hulla.Games.Rung
         private readonly Button _resultLeave = new Button { name = "rung-leave" };
         private readonly List<(string Card, string Owner, long Seat)> _plays = new List<(string, string, long)>();
         private readonly List<string> _handCards = new List<string>();
-        private VoiceController? _voice;
-        private MicControl? _micControl;
         private string _askShown = "";
         private long _turnStartMs;
         private long _turnDeadlineMs;
@@ -69,32 +63,30 @@ namespace Hulla.Games.Rung
         private string _votedRound = "";
         private bool _reduceMotion;
 
-        public RungTableView(VisualElement root, TableClient client, Func<long> nowMs, Action leave, SoundPlayer? sounds = null, bool reduceMotion = false, bool oneTap = false)
+        public RungTableView(
+            VisualElement root,
+            TableClient client,
+            IChatCatalog chat,
+            Func<long> nowMs,
+            Action leave,
+            SoundPlayer? sounds = null,
+            bool reduceMotion = false,
+            bool oneTap = false,
+            Action? openSettings = null,
+            Action<string?>? openRules = null,
+            Func<string, UnityEngine.Awaitable<Domain.Result<bool>>>? sendText = null)
+            : base(root, client, chat, nowMs, leave, openSettings, openRules, sendText, sounds)
         {
-            _root = root;
-            _client = client;
-            _nowMs = nowMs;
-            _sounds = sounds;
             _reduceMotion = reduceMotion;
-            _ring = new OpponentRing(root.Q<VisualElement>("opponents"));
-            root.Q<VisualElement>("me")?.Add(_me);
             _pile = new PileView(root.Q<VisualElement>("pile")) { ReduceMotion = reduceMotion };
             _hand = new HandView(root.Q<VisualElement>("hand")) { OneTap = oneTap };
             _hand.Played += card => _client.PlayCard(card);
-            _info = root.Q<Label>("info");
             _statusText = root.Q<Label>("status-text");
             _statusSecs = root.Q<Label>("status-secs");
             _note = root.Q<Label>("pile-note");
-            _mic = root.Q<Button>("mic");
-            _mic.style.display = DisplayStyle.None;
-            _voicePill = root.Q<Label>("voice-pill");
-            _speaker = root.Q<Button>("voice-speaker");
-            _speaker.clicked += () => _voice?.ToggleSpeaker();
-            var leaveButton = root.Q<Button>("leave");
-            leaveButton.text = UiText.Leave;
-            leaveButton.clicked += leave;
-            // Thulla's own controls on the shared layout: hand-taking, the discard, the recap and the coach.
-            foreach (var name in new[] { "take-hand", "discard", "recap", "coach", "chat", "more", "rules", "settings", "watch-icon", "watch-count", "results", "quick-strip" })
+            _toast = root.Q<Label>("toast");
+            // Thulla's own controls on the shared layout: hand-taking, the discard, the recap, the coach and its results.
+            foreach (var name in new[] { "take-hand", "discard", "recap", "coach", "results" })
             {
                 var element = root.Q<VisualElement>(name);
                 if (element != null)
@@ -120,16 +112,35 @@ namespace Hulla.Games.Rung
 
         public string ScoreText => _tricks.text;
 
-        public void UseVoice(VoiceController voice)
+        /// <summary>The stamp's text while it shows; empty otherwise. Read by tests.</summary>
+        public string StampText => _toast.style.display == DisplayStyle.Flex ? _toast.text : "";
+
+        /// <summary>A word stamped on the felt for a moment (kaat, court), in the skin's stamp style.</summary>
+        private void Stamp(string text)
         {
-            _voice = voice;
-            _micControl = new MicControl(_mic, voice, ShowVoice, "table__mic-tip");
-            voice.Changed += ShowVoice;
-            ShowVoice();
+            _toast.text = text;
+            _toast.style.display = DisplayStyle.Flex;
+            _stampLeft = StampSeconds;
         }
 
-        public void ApplySettings(bool oneTap, bool reduceMotion, bool largeCards)
+        /// <summary>The bazi so far, from the menu: points, deals and courts by team.</summary>
+        protected override void AddMenuItems(Action<string, Action> item) => item(UiText.Score, OpenScore);
+
+        private void OpenScore()
         {
+            var model = _client.Model;
+            var team = RungModel.TeamOf(model.MySeat ?? 0);
+            var teams = model.Rung.Teams;
+            var panel = Hulla.Presentation.Navigation.Sheet.Open(_root, RungText.ScoreTitle);
+            long Of(System.Collections.Generic.IReadOnlyList<long>? values, int side) => values != null && values.Count >= 2 ? values[side] : 0;
+            panel.Add(Hulla.Presentation.Navigation.Sheet.Line(Strings.Format(RungText.Bazi, Of(teams?.Points, team), Of(teams?.Points, 1 - team))));
+            panel.Add(Hulla.Presentation.Navigation.Sheet.Line(Strings.Format(RungText.ScoreLine, Of(teams?.DealsWon, team), Of(teams?.DealsWon, 1 - team))));
+            Hulla.Presentation.Navigation.Sheet.Answers(panel).Add(Hulla.Presentation.Navigation.Sheet.Button(UiText.Close, () => Hulla.Presentation.Navigation.Sheet.Close(panel), "yes"));
+        }
+
+        public void ApplySettings(bool oneTap, bool reduceMotion, bool largeCards, bool haptics = true)
+        {
+            _haptics = haptics;
             _hand.OneTap = oneTap;
             _hand.SetLargeCards(largeCards);
             _reduceMotion = reduceMotion;
@@ -143,15 +154,42 @@ namespace Hulla.Games.Rung
             {
                 case RungCardPlayed played:
                     _sounds?.Play(played.Cut ? Sound.Slam : Sound.CardTap, SoundKit.TrickPitch(_client.Model.Rung.Trick.Count - 1));
+                    ScreenReader.Say(Speech.Played(NameOf(played.Seat), played.Card, false));
+                    if (played.Cut)
+                    {
+                        // The kaat (design 9.3): a rung on a suit the seat could not follow.
+                        Stamp(RungText.Kaat);
+                        Buzz(played.Seat == _client.Model.MySeat ? Haptic.ThullaGiven : Haptic.CardPlay);
+                        SetContext("gave_thulla");
+                    }
+                    else if (played.Seat == _client.Model.MySeat)
+                    {
+                        Buzz(Haptic.CardPlay);
+                    }
+
                     return 0f;
-                case RungTrickWon _:
+                case RungTrickWon won:
+                    ScreenReader.Say(Strings.Format(RungText.WonTrick, NameOf(won.Winner)));
                     return _reduceMotion ? 0.3f : TrickHoldSeconds;
+                case RungRoundEnd end:
+                    if (end.Kind != RungOutcomeKind.Win)
+                    {
+                        Stamp(end.Kind == RungOutcomeKind.Court52 ? RungText.Court52 : RungText.CourtStamp);
+                        _sounds?.Play(Sound.Stamp);
+                    }
+
+                    return 0f;
+                case TurnStart turn when turn.Seat == _client.Model.MySeat:
+                    Buzz(Haptic.TurnStart);
+                    ScreenReader.Say(Speech.YourTurn);
+                    return 0f;
                 case RungPileTaken taken:
                     _sounds?.Play(Sound.Pickup);
                     Say(Strings.Format(RungText.PileTaken, NameOf(taken.Seat)));
                     return _reduceMotion ? 0.3f : TrickHoldSeconds;
-                case RungTrumpCalled _:
+                case RungTrumpCalled called:
                     _sounds?.Play(Sound.Stamp);
+                    ScreenReader.Say(Strings.Format(RungText.Called, NameOf(called.Seat), RungText.SuitName(called.Suit.ToString()[0])));
                     return 0.6f;
                 case RungRedealt redealt:
                     Say(Strings.Format(RungText.Redealt, NameOf(redealt.Seat)));
@@ -166,14 +204,14 @@ namespace Hulla.Games.Rung
 
         public void Tick(float deltaSeconds)
         {
-            foreach (var badge in _ring.Badges)
+            TickShared(deltaSeconds);
+            if (_stampLeft > 0f)
             {
-                badge.Tick(deltaSeconds);
-            }
-
-            if (_micControl is { Stale: true })
-            {
-                ShowVoice();
+                _stampLeft -= deltaSeconds;
+                if (_stampLeft <= 0f)
+                {
+                    _toast.style.display = DisplayStyle.None;
+                }
             }
 
             _pulse += deltaSeconds;
@@ -204,12 +242,7 @@ namespace Hulla.Games.Rung
         public void Dispose()
         {
             _client.Model.Changed -= Refresh;
-            if (_voice != null)
-            {
-                _voice.Changed -= ShowVoice;
-            }
-
-            _micControl?.Dispose();
+            DisposeShared();
         }
 
         private void BuildBar(VisualElement felt)
@@ -288,6 +321,10 @@ namespace Hulla.Games.Rung
             var model = _client.Model;
             var rung = model.Rung;
             _info.text = (model.IsPrivate && model.Code.Length > 0 ? model.Code : UiText.QuickPlayTable) + (model.FairDealCommitted ? " ✓" : "");
+            var watchers = model.Spectators.Count;
+            _watchIcon.style.display = watchers > 0 ? DisplayStyle.Flex : DisplayStyle.None;
+            _watchCount.style.display = watchers > 0 ? DisplayStyle.Flex : DisplayStyle.None;
+            _watchCount.text = Strings.Format("{0}", watchers);
             RefreshSeats(model, rung);
             RefreshBar(model, rung);
             RefreshTrick(rung);
@@ -561,45 +598,6 @@ namespace Hulla.Games.Rung
             _voted = true;
             _client.VoteRematch(true);
             Refresh();
-        }
-
-        private void ShowVoice()
-        {
-            var voice = _voice;
-            if (voice == null || _micControl == null)
-            {
-                return;
-            }
-
-            var hidden = voice.State == VoiceState.Hidden;
-            _mic.style.display = hidden ? DisplayStyle.None : DisplayStyle.Flex;
-            _mic.SetEnabled(voice.CanSpeak);
-            var retry = voice.State == VoiceState.Failed && voice.MicOn;
-            var live = voice.MicOn && !retry && (!_micControl.HoldMode || voice.Talking);
-            _mic.text = _micControl.Label();
-            _mic.EnableInClassList("table__mic--off", !voice.CanSpeak || !live);
-            _mic.EnableInClassList("table__mic--on", live);
-            _mic.EnableInClassList("table__mic--retry", retry);
-            _mic.EnableInClassList("table__mic--held", voice.Talking);
-            var note = MicControl.Line(voice, _micControl.Render());
-            _voicePill.text = note;
-            _voicePill.style.display = note.Length == 0 ? DisplayStyle.None : DisplayStyle.Flex;
-            var speakerShown = !hidden && voice.State != VoiceState.Suspended;
-            _speaker.style.display = speakerShown ? DisplayStyle.Flex : DisplayStyle.None;
-            _speaker.text = voice.SpeakerOn ? UiText.VoicesOn : UiText.VoicesOff;
-            _speaker.EnableInClassList("voice-speaker--off", !voice.SpeakerOn);
-            var model = _client.Model;
-            _me.SetSpeaking(!hidden && voice.IsSpeaking(model.UserId));
-            foreach (var seat in model.Seats)
-            {
-                _ring.BadgeFor(seat.Seat)?.SetSpeaking(!hidden && voice.IsSpeaking(seat.PlayerId));
-            }
-        }
-
-        private string NameOf(long seat)
-        {
-            var seats = _client.Model.Seats;
-            return seat >= 0 && seat < seats.Count && !string.IsNullOrEmpty(seats[(int)seat].DisplayName) ? seats[(int)seat].DisplayName! : "?";
         }
     }
 }

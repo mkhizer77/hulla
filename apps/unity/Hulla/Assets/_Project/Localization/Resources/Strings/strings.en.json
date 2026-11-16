@@ -2753,6 +2753,11 @@
    "smart": false
   },
   {
+   "key": "rung.called",
+   "text": "{0} calls {1}",
+   "smart": true
+  },
+  {
    "key": "rung.chasing",
    "text": "Playing on for the court",
    "smart": false
@@ -2783,6 +2788,11 @@
    "smart": false
   },
   {
+   "key": "rung.court_stamp",
+   "text": "Court!",
+   "smart": false
+  },
+  {
    "key": "rung.court_stop",
    "text": "Take the win",
    "smart": false
@@ -2805,6 +2815,11 @@
   {
    "key": "rung.deal_won",
    "text": "You won the deal",
+   "smart": false
+  },
+  {
+   "key": "rung.kaat",
+   "text": "Kaat!",
    "smart": false
   },
   {
@@ -2853,6 +2868,16 @@
    "smart": false
   },
   {
+   "key": "rung.play_to",
+   "text": "Play to",
+   "smart": false
+  },
+  {
+   "key": "rung.points_n",
+   "text": "{0} points",
+   "smart": true
+  },
+  {
    "key": "rung.redeal",
    "text": "New cards",
    "smart": false
@@ -2865,6 +2890,41 @@
   {
    "key": "rung.remove_bot",
    "text": "Remove bot",
+   "smart": false
+  },
+  {
+   "key": "rung.rule_set",
+   "text": "Rule set",
+   "smart": false
+  },
+  {
+   "key": "rung.score_line",
+   "text": "Deals {0} – {1}",
+   "smart": true
+  },
+  {
+   "key": "rung.score_title",
+   "text": "Bazi so far",
+   "smart": false
+  },
+  {
+   "key": "rung.suit_C",
+   "text": "clubs",
+   "smart": false
+  },
+  {
+   "key": "rung.suit_D",
+   "text": "diamonds",
+   "smart": false
+  },
+  {
+   "key": "rung.suit_H",
+   "text": "hearts",
+   "smart": false
+  },
+  {
+   "key": "rung.suit_S",
+   "text": "spades",
    "smart": false
   },
   {
@@ -2881,6 +2941,11 @@
    "key": "rung.switched",
    "text": "The room now plays {0}",
    "smart": true
+  },
+  {
+   "key": "rung.tap_to_play",
+   "text": "Tap to play",
+   "smart": false
   },
   {
    "key": "rung.them",
@@ -2901,6 +2966,11 @@
    "key": "rung.us",
    "text": "Us",
    "smart": false
+  },
+  {
+   "key": "rung.won_trick",
+   "text": "{0} wins the trick",
+   "smart": true
   },
   {
    "key": "rung.your_turn",

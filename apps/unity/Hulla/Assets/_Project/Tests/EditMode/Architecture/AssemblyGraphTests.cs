@@ -15,19 +15,20 @@ namespace Hulla.Architecture.Tests
             ["Hulla.Application"] = new[] { "Hulla.Domain", "Hulla.Protocol" },
             ["Hulla.Infrastructure"] = new[] { "Hulla.Application", "Hulla.Domain", "Hulla.Protocol" },
             ["Hulla.Presentation"] = new[] { "Hulla.Application", "Hulla.Domain" },
-            ["Hulla.Games.Thulla"] = new[] { "Hulla.Application", "Hulla.Domain", "Hulla.Presentation", "Hulla.Protocol" },
-            ["Hulla.Games.Rung"] = new[] { "Hulla.Application", "Hulla.Domain", "Hulla.Presentation", "Hulla.Protocol" },
+            ["Hulla.Games.Shared"] = new[] { "Hulla.Application", "Hulla.Domain", "Hulla.Presentation", "Hulla.Protocol" },
+            ["Hulla.Games.Thulla"] = new[] { "Hulla.Application", "Hulla.Domain", "Hulla.Presentation", "Hulla.Protocol", "Hulla.Games.Shared" },
+            ["Hulla.Games.Rung"] = new[] { "Hulla.Application", "Hulla.Domain", "Hulla.Presentation", "Hulla.Protocol", "Hulla.Games.Shared" },
             ["Hulla.Composition"] = new[]
             {
                 "Hulla.Application", "Hulla.Domain", "Hulla.Protocol", "Hulla.Infrastructure",
-                "Hulla.Presentation", "Hulla.Games.Thulla", "Hulla.Games.Rung",
+                "Hulla.Presentation", "Hulla.Games.Shared", "Hulla.Games.Thulla", "Hulla.Games.Rung",
             },
         };
 
         /// <summary>Only the adapter and view layers may reference SDKs; Domain and Application stay plain.</summary>
         private static readonly HashSet<string> ThirdPartyAllowed = new HashSet<string>
         {
-            "Hulla.Infrastructure", "Hulla.Presentation", "Hulla.Games.Thulla", "Hulla.Games.Rung", "Hulla.Composition",
+            "Hulla.Infrastructure", "Hulla.Presentation", "Hulla.Games.Shared", "Hulla.Games.Thulla", "Hulla.Games.Rung", "Hulla.Composition",
         };
 
         private static Dictionary<string, AsmDef> LoadProjectAssemblies()

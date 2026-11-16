@@ -116,7 +116,7 @@ namespace Hulla.Screens.Tests
         private static RungTableView NewTable(TableClient client, out VisualElement screen)
         {
             screen = Catalog.Table!.Instantiate();
-            return new RungTableView(screen, client, () => 0, () => { });
+            return new RungTableView(screen, client, new Fakes.Chat(), () => 0, () => { });
         }
 
         [Test]
@@ -203,6 +203,60 @@ namespace Hulla.Screens.Tests
             lobby.Dispose();
         }
 
+        [Test]
+        public void TheRungTableHasChatAndTheMenuLikeThulla()
+        {
+            var (gateway, client) = NewClient();
+            var view = NewTable(client, out var screen);
+            DeliverPlay(gateway);
+            Assert.AreNotEqual(DisplayStyle.None, screen.Q<Button>("chat").style.display.value);
+            Assert.AreNotEqual(DisplayStyle.None, screen.Q<Button>("more").style.display.value);
+            // A phrase from a seat shows on that seat; mine shows by my hand.
+            gateway.Deliver(MessageTypes.QuickChatSent, 6, new QuickChatSent { Seat = 0, PhraseId = new Fakes.Chat().Phrases[0].Id });
+            Assert.AreEqual(DisplayStyle.Flex, screen.Q<Label>("my-say").style.display.value);
+            view.Dispose();
+        }
+
+        [Test]
+        public void AKaatStampsTheFeltForAMoment()
+        {
+            var (gateway, client) = NewClient();
+            var view = NewTable(client, out _);
+            DeliverPlay(gateway);
+            var played = new RungCardPlayed { RoundId = "r_1", Seat = 0, Card = "9S", Cut = true };
+            gateway.Deliver(MessageTypes.RungCardPlayed, 6, played);
+            view.Present(new ServerMessage(MessageTypes.RungCardPlayed, 6, played));
+            Assert.AreEqual(RungText.Kaat, view.StampText);
+            view.Tick(RungTableView.StampSeconds + 0.1f);
+            Assert.AreEqual("", view.StampText);
+            view.Dispose();
+        }
+
+        [Test]
+        public void TheRulesEditorBuildsARungSelectionAndTheLobbyLineNamesIt()
+        {
+            var (gateway, client) = NewClient();
+            gateway.Deliver(MessageTypes.TableState, 3, Table(GameId.Rung, null, 3));
+            RulesSelection? saved = null;
+            var closed = false;
+            var editor = new RungRulesEditor(Catalog.Settings!.Instantiate(), client.Model, s => saved = s, () => closed = true);
+            Assert.AreEqual(Preset.Rung, editor.Build().Preset);
+            Assert.IsNull(editor.Build().Overrides, "seven points is the rule set's own");
+            editor.ChoosePreset(Preset.Hokm);
+            editor.ChooseTarget(10);
+            editor.ChooseTimer(30);
+            var built = editor.Build();
+            Assert.AreEqual(GameId.Rung, built.GameId);
+            Assert.AreEqual(Preset.Hokm, built.Preset);
+            Assert.AreEqual(10L, built.Overrides![RungRulesEditor.TargetKey]);
+            Assert.AreEqual(30, built.Settings!.TurnTimerSeconds);
+            gateway.Deliver(MessageTypes.RulesChanged, 4, new RulesChanged { Rules = built, ChangedBy = 0, ChangedKeys = new List<string>() });
+            StringAssert.Contains("Hokm", RungRulesEditor.Summary(client.Model));
+            StringAssert.Contains("10", RungRulesEditor.Summary(client.Model));
+            Assert.IsNull(saved);
+            Assert.IsFalse(closed);
+        }
+
         [UnityTest, Explicit]
         public IEnumerator Render()
         {
@@ -230,7 +284,7 @@ namespace Hulla.Screens.Tests
                         Hulla.Presentation.Theme.AmbientLayer.Decorate(face, Hulla.Application.Settings.TableSkin.Basant, false);
                     }
 
-                    new RungTableView(screen, client, () => 0, () => { });
+                    new RungTableView(screen, client, new Fakes.Chat(), () => 0, () => { });
                     shot.Deliver(gateway);
                 });
                 var awaiter = task.GetAwaiter();

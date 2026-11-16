@@ -448,6 +448,10 @@ namespace Hulla.Composition
             _shell.ShowNav(Hulla.Presentation.Navigation.NavTab.Home);
             var home = new HomeView(root, _app.Home, null, OnCreate, OnJoin, OnQuickPlay, OpenSettings, OnFriends, OnProfile, _app.HomeFriends, () => StartTutorial(false), TutorialText.HowToPlay, OnWatch, _app.Progress, OnMissions, OnLeaderboard, OnShop, OnPass, OnRanked, InviteFriend);
             home.InviteToMine = (name, id) => InviteToRoom(name, null, id);
+            if (_app.RemoteConfig.Rung)
+            {
+                home.OfferRung(root, OnCreateRung);
+            }
             home.OpenFriend = OnFriend;
             _view = home;
             home.SetQuickPlay(_app.RemoteConfig.QuickPlay, QuickPlayNote());
@@ -506,6 +510,15 @@ namespace Hulla.Composition
                 await InviteAsync(userId);
             }
         }
+
+        /// <summary>Rung from Home: a private room that moves to Rung as soon as its host is seated.</summary>
+        private void OnCreateRung(string name, string? server)
+        {
+            _rungOnEnter = true;
+            OnCreate(name, server);
+        }
+
+        private bool _rungOnEnter;
 
         private async void OnCreate(string name, string? server)
         {
@@ -1498,6 +1511,17 @@ namespace Hulla.Composition
                 OfferBigThulla(client);
             }
 
+            if (_rungOnEnter && model.IsHost)
+            {
+                // The room was opened for Rung: switch before the lobby shows, so Thulla never flashes by.
+                _rungOnEnter = false;
+                if (!model.IsRung)
+                {
+                    client.SwitchGame();
+                    return;
+                }
+            }
+
             var wanted = model.ShowsTable ? Screen.Table : Screen.Lobby;
             // The table on screen must be the one for the game the room plays now.
             var rightTable = wanted != Screen.Table || model.IsRung == (_rungView != null);
@@ -1511,14 +1535,7 @@ namespace Hulla.Composition
             _shell.HideNav();
             if (wanted == Screen.Lobby)
             {
-                _lobbyView = new LobbyView(_shell.Show(_shell.Catalog.Lobby), client, () => DateTimeOffset.UtcNow.ToUnixTimeMilliseconds(), Leave, code => ShareCode(code), text => _app.TableChat.SendAsync(text, _app.Lifetime), () => client.Model.IsRung ? Hulla.Games.Rung.RungText.Summary(client.Model.Selection?.Preset) : ThullaRulesEditor.Summary(client.Model, _app.Presets), () =>
-                {
-                    // Rung's toggles have no editor yet; its rule set shows on the lobby's line.
-                    if (!client.Model.IsRung)
-                    {
-                        OpenRulesEditor(client);
-                    }
-                }, () => OpenRules(null));
+                _lobbyView = new LobbyView(_shell.Show(_shell.Catalog.Lobby), client, () => DateTimeOffset.UtcNow.ToUnixTimeMilliseconds(), Leave, code => ShareCode(code), text => _app.TableChat.SendAsync(text, _app.Lifetime), () => client.Model.IsRung ? Hulla.Games.Rung.RungRulesEditor.Summary(client.Model) : ThullaRulesEditor.Summary(client.Model, _app.Presets), () => OpenRulesEditor(client), () => OpenRules(null));
                 _lobbyView.RungOffered = _app.RemoteConfig.Rung || client.Model.IsRung;
                 _lobbyView.IsMuted = _app.Mutes.IsMuted;
                 _lobbyView.OwnsEmotePack = OwnsEmotePack;
@@ -1542,14 +1559,24 @@ namespace Hulla.Composition
             if (model.IsRung)
             {
                 var settings = _app.Settings;
-                _rungView = new Hulla.Games.Rung.RungTableView(_shell.Show(_shell.Catalog.Table), client, () => DateTimeOffset.UtcNow.ToUnixTimeMilliseconds(), Leave, _sounds, settings.ReduceMotion, settings.OneTapPlay);
-                _rungView.ApplySettings(settings.OneTapPlay, settings.ReduceMotion, settings.LargeCards);
+                _rungView = new Hulla.Games.Rung.RungTableView(_shell.Show(_shell.Catalog.Table), client, _app.Chat, () => DateTimeOffset.UtcNow.ToUnixTimeMilliseconds(), Leave, _sounds, settings.ReduceMotion, settings.OneTapPlay, OpenSettings, null, text => _app.TableChat.SendAsync(text, _app.Lifetime));
+                _rungView.ApplySettings(settings.OneTapPlay, settings.ReduceMotion, settings.LargeCards, settings.Haptics);
+                _rungView.UseEmotePacks(OwnsEmotePack);
+                LoadEmotePacks();
+                _rungView.UseMutes(_app.Mutes.IsMuted, (id, muted) => _ = _app.Mutes.SetAsync(id, muted, _app.Lifetime));
                 if (_app.Session?.Table is { } rungTable)
                 {
                     // The same voice room as the lobby and as Thulla before it: the match never changed.
-                    _rungView.UseVoice(rungTable.Voice);
+                    var voice = rungTable.Voice;
+                    _rungView.UseVoice(voice);
+                    _rungView.UseVoiceLevels(voice.PeerVolume, voice.SetPeerVolume);
+                    voice.Changed += () => _sounds.Ducked = _rungView != null && voice.OthersSpeaking;
                 }
 
+                _rungView.UseModeration(BlockPlayer, (id, reason, done) => ReportPlayer(client, id, reason, done));
+                _rungView.LookUpProfile = LookUpProfileAsync;
+                _rungView.SeatSpectator = client.SeatSpectator;
+                _rungView.RemoveSpectator = client.RemoveSpectator;
                 _scheduler = new AnimationScheduler(client.Events, _rungView);
                 _view = _rungView;
                 return;
@@ -1736,6 +1763,7 @@ namespace Hulla.Composition
             }
 
             _tableView?.UseEmotePacks(OwnsEmotePack);
+            _rungView?.UseEmotePacks(OwnsEmotePack);
         }
 
         /// <summary>Where no share sheet opened, the text went to the clipboard: say so for a moment.</summary>
@@ -1850,6 +1878,7 @@ namespace Hulla.Composition
         private void OnText(TextLine line)
         {
             _tableView?.ShowText(line);
+            _rungView?.ShowText(line);
             _lobbyView?.ShowText(line);
         }
 
@@ -2058,6 +2087,12 @@ namespace Hulla.Composition
         private void OpenRulesEditor(TableClient client)
         {
             CloseSettings();
+            if (client.Model.IsRung)
+            {
+                _ = new Hulla.Games.Rung.RungRulesEditor(_shell.ShowOverlay(_shell.Catalog.Settings), client.Model, client.SetRules, _shell.CloseOverlay);
+                return;
+            }
+
             _ = new ThullaRulesEditor(_shell.ShowOverlay(_shell.Catalog.Settings), client.Model, _app.Presets, client.SetRules, _shell.CloseOverlay);
         }
 
@@ -2132,7 +2167,7 @@ namespace Hulla.Composition
             _shell.ApplySkin(settings.Skin, settings.ReduceMotion);
             _sounds.Volume = settings.SfxVolume / 100f;
             _tableView?.ApplySettings(settings.OneTapPlay, settings.ReduceMotion, settings.LargeCards, settings.Haptics, settings.ShowRulesRecap ? HideRecap : null);
-            _rungView?.ApplySettings(settings.OneTapPlay, settings.ReduceMotion, settings.LargeCards);
+            _rungView?.ApplySettings(settings.OneTapPlay, settings.ReduceMotion, settings.LargeCards, settings.Haptics);
             _app.Session?.Table?.Client.Model.SetSort(settings.HandSort == HandSort.RankThenSuit ? CardOrder.CompareByRank : CardOrder.Compare);
         }
 

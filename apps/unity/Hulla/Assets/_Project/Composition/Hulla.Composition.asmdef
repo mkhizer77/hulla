@@ -8,7 +8,8 @@
         "Hulla.Infrastructure",
         "Hulla.Presentation",
         "Hulla.Games.Rung",
-        "Hulla.Games.Thulla"
+        "Hulla.Games.Thulla",
+        "Hulla.Games.Shared"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
