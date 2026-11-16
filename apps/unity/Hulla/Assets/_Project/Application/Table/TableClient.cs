@@ -193,6 +193,9 @@ namespace Hulla.Application.Table
         /// <summary>The host moves the room to the other of the two games.</summary>
         public void SwitchGame() => ChangeGame(Model.IsRung ? GameId.Thulla : GameId.Rung);
 
+        /// <summary>The host trades two seats in the lobby, to choose who partners whom (swap_seats).</summary>
+        public void SwapSeats(long a, long b) => Send(MessageTypes.SwapSeats, new SwapSeats { A = a, B = b });
+
         /// <summary>The host puts a bot in an empty seat of a private room (Rung).</summary>
         public void AddBot(long? seat = null) => Send(MessageTypes.AddBot, new AddBot { Seat = seat });
 

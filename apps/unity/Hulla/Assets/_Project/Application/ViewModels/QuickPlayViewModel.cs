@@ -20,6 +20,12 @@ namespace Hulla.Application.ViewModels
         public const float StartAtSeconds = 20f;
         public const float BotsAtSeconds = 30f;
 
+        /// <summary>Rung waits half as long before bots take the other seats (Rung design 6.5).</summary>
+        public const float RungBotsAtSeconds = 15f;
+
+        /// <summary>The game being searched for: "thulla" or "rung".</summary>
+        public string Game { get; private set; } = "thulla";
+
         private readonly IMatchmaker _matchmaker;
         private CancellationToken _cancellation;
 
@@ -66,8 +72,28 @@ namespace Hulla.Application.ViewModels
         /// <summary>The table found is the one with bots (for the search's analytics outcome).</summary>
         public bool WithBots { get; private set; }
 
+        /// <summary>A Rung search: four seats only, then a table with bots after 15 s.</summary>
+        public async Awaitable StartRungAsync(CancellationToken cancellation)
+        {
+            Game = "rung";
+            Ranked = false;
+            WithBots = false;
+            Seats = 4;
+            Elapsed = 0f;
+            ErrorCode = null;
+            _cancellation = cancellation;
+            Current = Stage.Strict;
+            Changed?.Invoke();
+            var started = await _matchmaker.SearchRungAsync(cancellation);
+            if (!started.IsOk && Current == Stage.Strict)
+            {
+                Fail(started.Error.Code);
+            }
+        }
+
         public async Awaitable StartAsync(int seats, CancellationToken cancellation)
         {
+            Game = "thulla";
             Ranked = false;
             WithBots = false;
             Seats = Math.Clamp(seats, 3, 6);
@@ -85,6 +111,7 @@ namespace Hulla.Application.ViewModels
 
         public async Awaitable StartRankedAsync(int band, int widenBy, int maxBand, CancellationToken cancellation)
         {
+            Game = "thulla";
             Ranked = true;
             Seats = 4;
             Band = band;
@@ -120,6 +147,18 @@ namespace Hulla.Application.ViewModels
                     Band = Math.Min(_maxBand, Band + steps * _widenBy);
                     Current = Stage.Widened;
                     WidenRanked();
+                }
+
+                Changed?.Invoke();
+                return;
+            }
+
+            if (Game == "rung")
+            {
+                // Four or nothing: no smaller table to widen to, so bots come sooner.
+                if (before < RungBotsAtSeconds && Elapsed >= RungBotsAtSeconds)
+                {
+                    FillWithBots();
                 }
 
                 Changed?.Invoke();
@@ -190,7 +229,7 @@ namespace Hulla.Application.ViewModels
             Current = Stage.Bots;
             Changed?.Invoke();
             await _matchmaker.CancelAsync();
-            var table = await _matchmaker.BotTableAsync(Seats, _cancellation);
+            var table = await _matchmaker.BotTableAsync(Seats, Game, _cancellation);
             if (Current != Stage.Bots)
             {
                 return;

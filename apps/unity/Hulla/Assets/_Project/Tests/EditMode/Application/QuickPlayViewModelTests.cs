@@ -39,6 +39,24 @@ namespace Hulla.Application.Tests
                 return done.Awaitable;
             }
 
+            public int RungSearches;
+
+            public readonly List<string> BotGames = new List<string>();
+
+            public Awaitable<Result<bool>> SearchRungAsync(CancellationToken cancellation)
+            {
+                RungSearches++;
+                var done = new AwaitableCompletionSource<Result<bool>>();
+                done.SetResult(Result<bool>.Ok(true));
+                return done.Awaitable;
+            }
+
+            public Awaitable<Result<TableTicket>> BotTableAsync(int seats, string gameId, CancellationToken cancellation)
+            {
+                BotGames.Add(gameId);
+                return BotTableAsync(seats, cancellation);
+            }
+
             public Awaitable<Result<TableTicket>> BotTableAsync(int seats, CancellationToken cancellation)
             {
                 BotTables.Add(seats);
@@ -97,6 +115,43 @@ namespace Hulla.Application.Tests
             _ = _model.StartAsync(4, default);
             _model.Tick(QuickPlayViewModel.StartAtSeconds);
             Assert.AreEqual(QuickPlayViewModel.Stage.Starting, _model.Current);
+        }
+
+        [Test]
+        public void ARungSearchAsksForFourAndNeverWidens()
+        {
+            _ = _model.StartRungAsync(default);
+            Assert.AreEqual("rung", _model.Game);
+            Assert.AreEqual(4, _model.Seats);
+            Assert.AreEqual(1, _matchmaker.RungSearches);
+            _model.Tick(QuickPlayViewModel.WidenAtSeconds + 1f);
+            Assert.AreEqual(QuickPlayViewModel.Stage.Strict, _model.Current);
+            Assert.AreEqual(0, _matchmaker.Searches.Count, "no Thulla ticket, no wider one");
+        }
+
+        [Test]
+        public void ARungSearchThatFindsNobodyGetsBotsAfterFifteenSeconds()
+        {
+            TableTicket? found = null;
+            _model.Found += t => found = t;
+            _ = _model.StartRungAsync(default);
+            _model.Tick(QuickPlayViewModel.RungBotsAtSeconds - 0.1f);
+            Assert.AreEqual(0, _matchmaker.BotGames.Count);
+            _model.Tick(0.2f);
+            CollectionAssert.AreEqual(new[] { "rung" }, _matchmaker.BotGames);
+            Assert.IsTrue(_model.WithBots);
+            Assert.IsNotNull(found);
+        }
+
+        [Test]
+        public void AThullaSearchAfterARungOneIsThullaAgain()
+        {
+            _ = _model.StartRungAsync(default);
+            _ = _model.CancelAsync();
+            _ = _model.StartAsync(4, default);
+            Assert.AreEqual("thulla", _model.Game);
+            _model.Tick(QuickPlayViewModel.BotsAtSeconds);
+            CollectionAssert.AreEqual(new[] { "thulla" }, _matchmaker.BotGames);
         }
 
         [Test]

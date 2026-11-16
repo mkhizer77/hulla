@@ -22,6 +22,15 @@ namespace Hulla.Application.ViewModels
 
         public bool Friends { get; private set; }
 
+        /// <summary>Which game's board shows; Thulla until the player picks another.</summary>
+        public GameFilter Game { get; private set; } = GameFilter.Thulla;
+
+        public Awaitable ShowAsync(LeaderboardPeriod period, bool friends, GameFilter game, CancellationToken cancellation)
+        {
+            Game = game;
+            return ShowAsync(period, friends, cancellation);
+        }
+
         public LeaderboardPage? Page { get; private set; }
 
         public string? ErrorCode { get; private set; }
@@ -41,7 +50,7 @@ namespace Hulla.Application.ViewModels
             var request = ++_request;
             Loading = true;
             Changed?.Invoke();
-            var page = await _service.BoardAsync(Period, Friends, cancellation);
+            var page = await _service.BoardAsync(Period, Friends, Game, cancellation);
             if (request != _request)
             {
                 return;

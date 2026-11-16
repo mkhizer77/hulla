@@ -28,8 +28,10 @@ namespace Hulla.Infrastructure.Nakama
 
         public event Action? Disconnected;
 
-        public Awaitable<Result<TableTicket>> CreateTableAsync(CancellationToken cancellation) =>
-            CallAsync("table_create", new JObject { ["gameId"] = "thulla", ["mode"] = "private" }, cancellation);
+        public Awaitable<Result<TableTicket>> CreateTableAsync(CancellationToken cancellation) => CreateTableAsync("thulla", cancellation);
+
+        public Awaitable<Result<TableTicket>> CreateTableAsync(string gameId, CancellationToken cancellation) =>
+            CallAsync("table_create", new JObject { ["gameId"] = gameId == "rung" ? "rung" : "thulla", ["mode"] = "private" }, cancellation);
 
         public Awaitable<Result<TableTicket>> JoinByCodeAsync(string code, CancellationToken cancellation) =>
             CallAsync("table_join_by_code", new JObject { ["code"] = code.Trim().ToUpperInvariant() }, cancellation);
