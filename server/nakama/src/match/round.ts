@@ -128,8 +128,10 @@ export function startRound<S, M, V, E, R>(
     deadline: null,
     handAsk: null,
     askClosedAtMove: null,
+    // Kept for a table with bots, and for a game whose bot may take over a seat part way through.
     botMemory:
-      deps.host.module.bot !== undefined && state.seats.some((s) => s.bot)
+      deps.host.module.bot !== undefined &&
+      (deps.host.coverAbsent !== undefined || state.seats.some((s) => s.bot))
         ? deps.host.module.bot.start(created.value)
         : null,
     startedTs: now,
@@ -412,8 +414,8 @@ export function roundRecord<S, M, V, E, R>(
 
 /**
  * Fire deadlines whose time has come (ARCHITECTURE 8.3 matchLoop). Seats under auto-play act after
- * the auto-play delay; connected seats time out at the human deadline and, after three in a row,
- * fall under auto-play (R45). Returns the seats whose timeouts escalated to auto-play.
+ * the auto-play delay; connected seats time out at the human deadline and, after three in a row
+ * (or the game's own count, `GameHost.coverAbsent`), fall under auto-play (R45, RG43). Returns the seats whose timeouts escalated to auto-play.
  */
 export function fireDeadlines<S, M, V, E, R>(
   deps: RoundDeps<S, M, V, E, R>,
@@ -452,15 +454,17 @@ export function fireDeadlines<S, M, V, E, R>(
     });
     if (due === undefined) break;
     const slot = state.seats[due];
+    const cover = deps.host.coverAbsent;
     if (slot !== undefined && !slot.autoPlay) {
       slot.timeouts += 1;
-      if (slot.timeouts >= 3) {
+      if (slot.timeouts >= (cover?.afterTimeouts ?? 3)) {
         slot.autoPlay = true;
         escalated.push(due);
       }
     }
+    // A bot seat plays the bot; so does an absent seat in a game that covers it (RG43).
     const move =
-      slot?.bot === true
+      slot?.bot === true || (cover !== undefined && slot?.autoPlay === true)
         ? botChoice(deps, round, due)
         : deps.host.module.onDeadline(round.state, due);
     if (move === null) {

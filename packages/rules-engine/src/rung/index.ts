@@ -61,6 +61,18 @@ export {
   rungSeriesUpdate,
 } from "./results";
 export type { RungModule } from "./module";
-export { RUNG_PHASES, rungModule } from "./module";
+export { RUNG_PHASES, rungBot, rungModule } from "./module";
+export type { RungBotMemory } from "./bot-memory";
+export { asRungBotMemory, observeRungBotMemory, rungBotMemory } from "./bot-memory";
+export type { RungBotTuning, ScoredRungCard } from "./bot";
+export {
+  KHILADI_BOT,
+  USTAD_BOT,
+  botCallSuit,
+  callScore,
+  rungBotMove,
+  rungPolicyMove,
+  scoreRungCards,
+} from "./bot";
 export type { RungSetup } from "./setup";
 export { rungStateFromSetup } from "./setup";

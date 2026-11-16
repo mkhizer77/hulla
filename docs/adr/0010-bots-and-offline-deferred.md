@@ -13,3 +13,12 @@ Smaller launch scope; honest tables; a liquidity risk in Quick Play that is miti
 
 ## Alternatives considered
 Bot backfill at launch (more work, fairness and labelling questions, contrary to D7); no auto-play (stalled tables).
+
+## Update, 16 November 2026: bots are part of Rung
+Rung is played in pairs, so an empty or absent seat costs a partner the game. The owner asked for bots that fill seats and play well enough to keep a bazi competitive. For Rung only:
+- The host of a private room may put a bot in an empty seat (`add_bot`, `remove_bot`); a person who joins takes the seat back.
+- A bot covers an absent seat (RG43) instead of the timeout policy.
+- The bot samples the unseen cards, plays each sample out and scores by bazi points; it reads only its own hand and what the table has seen.
+
+Thulla is unchanged: Quick Play bots for a lone player (29 October) and R44 for absences. Offline play stays deferred.
+

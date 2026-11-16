@@ -146,6 +146,14 @@ export interface GameHost<S, M, V, E, R> {
    * is Thulla's; every later game names its own so clients decode each view by its own type.
    */
   readonly viewField?: string;
+  /**
+   * Set by a game where a partner depends on every seat (Rung, RG43): a seat under auto-play is
+   * played by the game's bot instead of the timeout policy, and a connected seat falls under
+   * auto-play after this many timeouts in a row instead of three.
+   */
+  readonly coverAbsent?: { readonly afterTimeouts: number };
+  /** The host of a private room may put a bot in an empty seat (`add_bot`); a person who joins takes it back. */
+  readonly fillWithBots?: boolean;
   /** Per-seat numbers for the stats card, read from the round's logged messages (GDD 10.1). */
   /**
    * A selection as the table keeps it: a preset's table settings merged under the explicit ones,

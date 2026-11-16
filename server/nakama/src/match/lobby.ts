@@ -50,11 +50,13 @@ export function isHost<S, M>(state: TableState<S, M>, seat: SeatIndex | null): b
 
 /** The longest-seated connected human takes over (GDD 9.9, E17). */
 export function migrateHost<S, M>(state: TableState<S, M>): SeatIndex | null {
-  const candidates = activeSeats(state.seats).sort((a, b) => {
-    const left = state.seats[a]?.joinedTs ?? 0;
-    const right = state.seats[b]?.joinedTs ?? 0;
-    return left - right || a - b;
-  });
+  const candidates = activeSeats(state.seats)
+    .filter((seat) => state.seats[seat]?.bot !== true)
+    .sort((a, b) => {
+      const left = state.seats[a]?.joinedTs ?? 0;
+      const right = state.seats[b]?.joinedTs ?? 0;
+      return left - right || a - b;
+    });
   const next = candidates[0] ?? null;
   state.hostSeat = next;
   return next;

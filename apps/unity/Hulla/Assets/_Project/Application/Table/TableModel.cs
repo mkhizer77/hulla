@@ -88,6 +88,23 @@ namespace Hulla.Application.Table
         /// <summary>The toggles the engine resolved for the current round; null before the first deal.</summary>
         public ThullaRules? ActiveRules { get; private set; }
 
+        /// <summary>The game the room plays now; the host may switch it between rounds (change_game).</summary>
+        public GameId Game { get; private set; } = GameId.Thulla;
+
+        public bool IsRung => Game == GameId.Rung;
+
+        /// <summary>The Rung deal and bazi while the room plays Rung; empty otherwise.</summary>
+        public RungModel Rung { get; } = new RungModel();
+
+        /// <summary>A switch the host asked for during a round; it happens when the round ends.</summary>
+        public QueuedGame? QueuedGame { get; private set; }
+
+        /// <summary>The last switch of game, for the lobby's note; null when the room never switched.</summary>
+        public GameChanged? LastGameChange { get; private set; }
+
+        /// <summary>Whether the table screen has something to show: a round, or the result of the last one.</summary>
+        public bool ShowsTable => InRound || LastResult != null || Rung.LastResult != null;
+
         public bool IsPrivate => Mode == TableMode.Private;
 
         public bool IsRanked => Mode == TableMode.Ranked;
@@ -162,7 +179,11 @@ namespace Hulla.Application.Table
 
         public long? TurnSeat { get; private set; }
 
-        public bool MyTurn => MySeat != null && TurnSeat == MySeat && _legal.Count > 0;
+        public bool MyTurn =>
+            MySeat != null && TurnSeat == MySeat &&
+            (IsRung
+                ? Rung.LegalCount > 0 || Rung.CallableSuits.Count > 0 || Rung.ChoiceOffered
+                : _legal.Count > 0);
 
         public long DeadlineTs { get; private set; }
 
@@ -204,8 +225,28 @@ namespace Hulla.Application.Table
                     LastAskAnswer = null;
                     ApplyRoundStart(start);
                     break;
+                case TurnStart turn when IsRung:
+                    if (turn.Seat == MySeat)
+                    {
+                        Rung.ApplyTurnStart(turn);
+                        MirrorRung();
+                    }
+
+                    break;
                 case TurnStart turn:
                     ApplyTurnStart(turn);
+                    break;
+                case GameChanged changed:
+                    Game = changed.GameId;
+                    Selection = changed.Rules;
+                    LastGameChange = changed;
+                    QueuedGame = null;
+                    InRound = false;
+                    LastResult = null;
+                    TurnSeat = null;
+                    _legal.Clear();
+                    _trick.Clear();
+                    Rung.Reset();
                     break;
                 case MoveApplied applied:
                     PendingAsk = null;
@@ -213,6 +254,7 @@ namespace Hulla.Application.Table
                     break;
                 case MoveRejected _:
                     PendingCard = null;
+                    Rung.ClearPending();
                     break;
                 case TrickResolved resolved:
                     ApplyTrickResolved(resolved);
@@ -272,6 +314,20 @@ namespace Hulla.Application.Table
                 case EmoteSent emote:
                     Chat?.Invoke(new ChatLine(emote.Seat, null, emote.EmoteId, emote.TargetSeat));
                     break;
+                default:
+                    if (Rung.Apply(message.Payload, MySeat))
+                    {
+                        if (message.Payload is RungRoundStart)
+                        {
+                            Status = TableStatus.InRound;
+                            AutoStartAtTs = null;
+                            LastRulesChange = null;
+                        }
+
+                        MirrorRung();
+                    }
+
+                    break;
             }
 
             Raise();
@@ -312,6 +368,30 @@ namespace Hulla.Application.Table
                 }
             }
 
+            Game = state.GameId;
+            QueuedGame = state.QueuedGame;
+            if (IsRung)
+            {
+                PendingCard = null;
+                LastResult = null;
+                _legal.Clear();
+                _trick.Clear();
+                if (state.RungRound == null)
+                {
+                    Rung.Reset();
+                }
+                else
+                {
+                    Rung.ApplyView(state.RungRound, MySeat);
+                }
+
+                Rung.ApplySeries(state.Series);
+                MirrorRung();
+                InRound = InRound && state.Status == TableStatus.InRound;
+                return;
+            }
+
+            Rung.Reset();
             var round = state.Round;
             PendingCard = null;
             if (round == null)
@@ -361,6 +441,21 @@ namespace Hulla.Application.Table
             {
                 _legal.Clear();
             }
+        }
+
+        /// <summary>The shell reads the round, the turn and the clock here whatever the game is.</summary>
+        private void MirrorRung()
+        {
+            InRound = Rung.Phase != RungPhase.Ended;
+            TurnSeat = Rung.TurnSeat;
+            DeadlineTs = Rung.DeadlineTs;
+            if (Rung.RoundId.Length > 0)
+            {
+                RoundId = Rung.RoundId;
+            }
+
+            FairDealCommitted = Rung.Commitment.Length > 0;
+            Commitment = Rung.Commitment;
         }
 
         private void ApplyRoundStart(RoundStart start)
@@ -645,6 +740,7 @@ namespace Hulla.Application.Table
         /// <summary>The hand order is cosmetic and client-side (R8); a new order re-sorts at once.</summary>
         public void SetSort(Comparison<string> sort)
         {
+            Rung.SetSort(sort);
             _sort = sort;
             SortHand();
             Raise();

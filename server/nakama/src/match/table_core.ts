@@ -10,7 +10,7 @@ import {
 
 import { BUNDLED_CHAT, type ChatContent } from "../content/chat";
 
-import { botNames, botSlot, MAX_BOTS, renameClashingBots } from "./bots";
+import { BOT_NAMES, botNames, botSlot, MAX_BOTS, renameClashingBots } from "./bots";
 import {
   canStart,
   changedRuleKeys,
@@ -378,6 +378,12 @@ export function tableCore<S, M, V, E, R>(
     state.phase = "lobby";
     state.round = null;
     state.rematchDeadlineTs = null;
+    // Bots that filled seats stay only in a game that seats them at the host's word.
+    if (target.fillWithBots !== true) {
+      state.seats.forEach((slot, index) => {
+        if (slot.bot) freeSlot(state, index);
+      });
+    }
     resizeSeats(state, target.module.seats.max, emit);
     seatWaitingSpectators(state, emit, now);
     for (const slot of state.seats) {
@@ -865,6 +871,53 @@ export function tableCore<S, M, V, E, R>(
         broadcastTableState(state, emit);
         return;
       }
+      case "add_bot": {
+        if (!isHost(state, seat)) {
+          reject(ruleError(ErrorCodes.table.notHost));
+          return;
+        }
+        if (state.mode !== "private") {
+          reject(ruleError(ErrorCodes.table.locked, { reason: "mode" }));
+          return;
+        }
+        if (host.fillWithBots !== true || !inLobby) {
+          reject(
+            ruleError(ErrorCodes.table.invalidPayload, { reason: inLobby ? "bots" : "in_round" }),
+          );
+          return;
+        }
+        const wanted = payload["seat"];
+        const target =
+          typeof wanted === "number" ? wanted : state.seats.findIndex((s) => s.playerId === null);
+        const bots = state.seats.filter((s) => s.bot).length;
+        if (state.seats[target]?.playerId !== null || bots >= MAX_BOTS) {
+          reject(ruleError(ErrorCodes.table.invalidPayload, { reason: "seat" }));
+          return;
+        }
+        const taken = new Set(state.seats.map((s) => s.displayName?.toLowerCase() ?? ""));
+        const name =
+          botNames(state.createdTs + target, BOT_NAMES.length).find(
+            (n) => !taken.has(n.toLowerCase()),
+          ) ?? "Bot";
+        state.seats[target] = botSlot(state.seats, target, name, now);
+        broadcastTableState(state, emit);
+        return;
+      }
+      case "remove_bot": {
+        if (!isHost(state, seat)) {
+          reject(ruleError(ErrorCodes.table.notHost));
+          return;
+        }
+        const target = payload["seat"];
+        if (typeof target !== "number" || state.seats[target]?.bot !== true || !inLobby) {
+          reject(ruleError(ErrorCodes.table.invalidPayload, { reason: "seat" }));
+          return;
+        }
+        freeSlot(state, target);
+        seatWaitingSpectators(state, emit, now);
+        broadcastTableState(state, emit);
+        return;
+      }
       case "kick": {
         if (!isHost(state, seat)) {
           reject(ruleError(ErrorCodes.table.notHost));
@@ -1111,6 +1164,14 @@ export function tableCore<S, M, V, E, R>(
       }
       const pending = Object.values(state.admissions);
       const reserved = new Set(pending.flatMap((a) => (a.kind === "seat" ? [a.seat] : [])));
+      const wouldSit =
+        parsed.data.asSpectator !== true && state.phase !== "inRound" && !state.lockedByHost;
+      const noFreeSeat = !state.seats.some((slot, i) => slot.playerId === null && !reserved.has(i));
+      if (wouldSit && noFreeSeat && host.fillWithBots === true) {
+        // A person always outranks a bot that was only filling the seat (Rung design 6.5).
+        const filler = state.seats.map((slot) => slot.bot).lastIndexOf(true);
+        if (filler !== -1) freeSlot(state, filler);
+      }
       const free = state.seats.findIndex(
         (slot, index) => slot.playerId === null && !reserved.has(index),
       );

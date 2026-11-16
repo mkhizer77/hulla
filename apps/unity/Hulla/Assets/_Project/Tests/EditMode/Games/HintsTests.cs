@@ -33,7 +33,7 @@ namespace Hulla.Games.Thulla.Tests
                 views.Add(new SeatView { HandCount = 2, Hand = i == 0 ? new List<string> { "2H", "KS" } : null });
             }
 
-            model.Apply(new ServerMessage(MessageTypes.TableState, 1, new TableState { Code = "ABC123", Status = TableStatus.InRound, LastSeq = 1, Seats = seats, Round = new View { Phase = Phase.Play, SeatCount = 3, Seats = views, EscapeOrder = new List<long>(), Trick = new Trick { Plays = new List<Play> { new Play { Seat = 2, Card = "9H" } } }, TurnSeat = 0 } }));
+            model.Apply(new ServerMessage(MessageTypes.TableState, 1, new TableState { GameId = GameId.Thulla, Code = "ABC123", Status = TableStatus.InRound, LastSeq = 1, Seats = seats, Round = new View { Phase = Phase.Play, SeatCount = 3, Seats = views, EscapeOrder = new List<long>(), Trick = new Trick { Plays = new List<Play> { new Play { Seat = 2, Card = "9H" } } }, TurnSeat = 0 } }));
             model.Apply(new ServerMessage(MessageTypes.TurnStart, 1, new TurnStart { RoundId = "r", Seat = 0, Legal = new List<string>(legal), DeadlineTs = 1 }));
             return model;
         }

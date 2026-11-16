@@ -141,5 +141,81 @@ describe.skipIf(NAKAMA_HOST === undefined)(
         expect(table.seats.filter((s) => s.playerId !== null)).toHaveLength(4);
       }
     }, 180_000);
+
+    it("one player and three bots: the host fills the room and the bots play a deal", async () => {
+      const suffix = `${String(Date.now())}b`;
+      const solo = await scriptedClient("rb", suffix);
+      clients.push(solo);
+      const created = await rpc<{ ok: boolean; matchId: string; tableId: string }>(
+        solo,
+        "table_create",
+        { gameId: "rung", mode: "private" },
+      );
+      expect(created.ok).toBe(true);
+      setTableId(created.tableId);
+      const matchId = created.matchId;
+      await solo.socket.joinMatch(matchId);
+      await solo.next((e) => e.type === "table_state");
+      for (let i = 0; i < 3; i += 1) {
+        await solo.send(matchId, "add_bot", OPCODES.add_bot.opcode, {});
+      }
+      const full = (
+        await solo.next(
+          (e) =>
+            e.type === "table_state" &&
+            (e.payload as TableState).seats.filter((s) => s.bot === true).length === 3,
+        )
+      ).payload as TableState;
+      expect(new Set(full.seats.map((s) => s.displayName)).size).toBe(4);
+      await solo.send(matchId, "ready", OPCODES.ready.opcode, { ready: true });
+      await solo.next(
+        (e) => e.type === "table_state" && (e.payload as TableState).seats.every((s) => s.ready),
+      );
+      await solo.send(matchId, "start_round", OPCODES.start_round.opcode, {});
+      const roundId = (
+        (await solo.next((e) => e.type === "rung_round_start")).payload as { roundId: string }
+      ).roundId;
+
+      let handled = 0;
+      let clientSeq = 0;
+      const deadline = Date.now() + 170_000;
+      while (!solo.received.some((e) => e.type === "rung_round_end")) {
+        if (Date.now() > deadline) throw new Error("the deal did not end in time");
+        for (; handled < solo.received.length; handled += 1) {
+          const e = solo.received[handled];
+          if (e?.type !== "turn_start") continue;
+          const turn = e.payload as TurnStart;
+          clientSeq += 1;
+          const base = { roundId, clientSeq };
+          if (turn.phase === "call") {
+            await solo.send(matchId, "call_trump", OPCODES.call_trump.opcode, {
+              ...base,
+              suit: turn.suits?.[0],
+            });
+          } else if (turn.phase === "courtChoice") {
+            await solo.send(matchId, "court_choice", OPCODES.court_choice.opcode, {
+              ...base,
+              playOn: false,
+            });
+          } else {
+            await solo.send(matchId, "play_card", OPCODES.play_card.opcode, {
+              ...base,
+              card: turn.legal[0],
+            });
+          }
+        }
+        await new Promise((resolve) => setTimeout(resolve, 40));
+      }
+      expect(solo.received.filter((e) => e.type === "move_rejected" || e.type === "error")).toEqual(
+        [],
+      );
+      const plays = solo.received
+        .filter((e) => e.type === "rung_card_played")
+        .map((e) => e.payload as { seat: number; auto: boolean });
+      const mine = full.seats.findIndex((s) => s.bot !== true);
+      expect(plays.filter((p) => p.seat === mine).every((p) => !p.auto)).toBe(true);
+      expect(plays.filter((p) => p.seat !== mine).every((p) => p.auto)).toBe(true);
+      expect(plays.filter((p) => p.seat !== mine).length).toBeGreaterThan(12);
+    }, 200_000);
   },
 );

@@ -21,6 +21,7 @@ namespace Hulla.Games.Thulla.Tests
 
             model.Apply(new ServerMessage(MessageTypes.TableState, 1, new TableState
             {
+                GameId = GameId.Thulla,
                 Code = "ABC123",
                 Status = TableStatus.InRound,
                 LastSeq = 1,

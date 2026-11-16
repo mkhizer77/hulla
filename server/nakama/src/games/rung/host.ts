@@ -262,6 +262,9 @@ export function rungHighlights(
 export const rungHost: RungHost = {
   module: rungModule,
   viewField: "rungRound",
+  // RG43: after two timeouts in a row, or while a player is away, the bot plays the seat.
+  coverAbsent: { afterTimeouts: 2 },
+  fillWithBots: true,
   resolveRules(selection, mode) {
     const preset = selection.preset ?? "rung";
     if (!Object.keys(RUNG_PRESETS).includes(preset)) {

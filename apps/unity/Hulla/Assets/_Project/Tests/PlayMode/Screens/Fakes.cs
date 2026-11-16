@@ -540,6 +540,7 @@ namespace Hulla.Screens.Tests
 
             return new TableState
             {
+                GameId = GameId.Thulla,
                 Code = "K7Q2MX",
                 Mode = TableMode.Private,
                 Status = TableStatus.InRound,

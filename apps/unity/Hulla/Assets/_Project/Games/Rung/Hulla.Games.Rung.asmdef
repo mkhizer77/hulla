@@ -1,0 +1,20 @@
+{
+    "name": "Hulla.Games.Rung",
+    "rootNamespace": "Hulla.Games.Rung",
+    "references": [
+        "Hulla.Application",
+        "Hulla.Domain",
+        "Hulla.Presentation",
+        "Hulla.Protocol",
+        "Hulla.Games.Shared"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

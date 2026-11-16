@@ -1,4 +1,6 @@
 import { rungAutoPlayMove } from "./autoplay";
+import { rungBotMove } from "./bot";
+import { asRungBotMemory, observeRungBotMemory, rungBotMemory } from "./bot-memory";
 import { createRungRound } from "./deal";
 import { applyRungMove, currentRungPhase, isRungRoundOver, legalRungMoves } from "./engine";
 import { rungResults, rungSeriesUpdate } from "./results";
@@ -6,7 +8,7 @@ import { RUNG_RULES_SCHEMA, RUNG_RULES_VERSION, type RungRules } from "./rules";
 import { RUNG_SEATS, type RungState } from "./state";
 import { redactRung, type RungView } from "./view";
 
-import type { GameModule, PhaseSpec, RoundResult } from "../contract";
+import type { BotPolicy, GameModule, PhaseSpec, RoundResult } from "../contract";
 import type { RungEvent } from "./events";
 import type { RungMove } from "./moves";
 
@@ -20,7 +22,15 @@ export const RUNG_PHASES: readonly PhaseSpec[] = [
 
 export type RungModule = GameModule<RungState, RungMove, RungView, RungEvent, RungRules>;
 
-/** The Rung game module the table core registers (ARCHITECTURE 7.1). Bots join it later. */
+/** Rung design 6: bots play from public facts only; a memory that does not read back starts over. */
+export const rungBot: BotPolicy<RungState, RungMove, RungEvent> = {
+  start: () => rungBotMemory(),
+  observe: (memory, events) =>
+    observeRungBotMemory(asRungBotMemory(memory) ?? rungBotMemory(), events),
+  choose: (state, seat, memory, rng) => rungBotMove(state, seat, asRungBotMemory(memory), rng),
+};
+
+/** The Rung game module the table core registers (ARCHITECTURE 7.1). */
 export const rungModule: RungModule = {
   id: "rung",
   version: RUNG_RULES_VERSION,
@@ -34,6 +44,7 @@ export const rungModule: RungModule = {
   legalMoves: legalRungMoves,
   applyMove: applyRungMove,
   onDeadline: rungAutoPlayMove,
+  bot: rungBot,
   redact: redactRung,
   isRoundOver: isRungRoundOver,
   results: (state): RoundResult => {
