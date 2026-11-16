@@ -27,6 +27,7 @@ namespace Hulla.Presentation.Screens.Missions
             backButton.clicked += back;
             _list = root.Q<VisualElement>("list");
             _status = root.Q<Label>("status");
+            Navigation.GamePick.Mount(root, Refresh);
             _model.Changed += Refresh;
             Refresh();
         }
@@ -124,6 +125,11 @@ namespace Hulla.Presentation.Screens.Missions
             _list.Add(head);
             foreach (var mission in missions)
             {
+                if (!GameFilters.Shows(Navigation.GamePick.Chosen, mission.Game))
+                {
+                    continue;
+                }
+
                 var plate = new VisualElement();
                 plate.AddToClassList("lobby-seat");
                 plate.AddToClassList("mission");

@@ -3058,6 +3058,31 @@
    "smart": false
   },
   {
+   "key": "rung.searching",
+   "text": "Finding a Rung table",
+   "smart": false
+  },
+  {
+   "key": "rung.stat_bazis_won",
+   "text": "Bazis won",
+   "smart": false
+  },
+  {
+   "key": "rung.stat_courts",
+   "text": "Courts",
+   "smart": false
+  },
+  {
+   "key": "rung.stat_deals",
+   "text": "Deals",
+   "smart": false
+  },
+  {
+   "key": "rung.stat_deals_won",
+   "text": "Deals won",
+   "smart": false
+  },
+  {
    "key": "rung.suit_C",
    "text": "clubs",
    "smart": false
@@ -3075,6 +3100,11 @@
   {
    "key": "rung.suit_S",
    "text": "spades",
+   "smart": false
+  },
+  {
+   "key": "rung.swap_partners",
+   "text": "Swap partners",
    "smart": false
   },
   {
@@ -3724,7 +3754,7 @@
   },
   {
    "key": "ui.at_table_seats",
-   "text": "Thulla · {0} seats open",
+   "text": "{0} · {1} seats open",
    "smart": true
   },
   {
@@ -4240,6 +4270,11 @@
   {
    "key": "ui.favourite_word",
    "text": "Favourite",
+   "smart": false
+  },
+  {
+   "key": "ui.filter_all",
+   "text": "All",
    "smart": false
   },
   {
@@ -4893,6 +4928,11 @@
    "smart": true
   },
   {
+   "key": "ui.percent",
+   "text": "{0}%",
+   "smart": true
+  },
+  {
    "key": "ui.phone_linked",
    "text": "Phone linked",
    "smart": false
@@ -4963,9 +5003,24 @@
    "smart": true
   },
   {
+   "key": "ui.players_3_6",
+   "text": "3 to 6 players",
+   "smart": false
+  },
+  {
+   "key": "ui.players_4",
+   "text": "4 players",
+   "smart": false
+  },
+  {
    "key": "ui.playing",
    "text": "Playing…",
    "smart": false
+  },
+  {
+   "key": "ui.playing_game",
+   "text": "Playing {0}",
+   "smart": true
   },
   {
    "key": "ui.playing_now",
@@ -5283,6 +5338,16 @@
    "smart": false
   },
   {
+   "key": "ui.room_rung",
+   "text": "Rung room",
+   "smart": false
+  },
+  {
+   "key": "ui.room_thulla",
+   "text": "Thulla room",
+   "smart": false
+  },
+  {
    "key": "ui.rounds_count",
    "text": "{0:plural:{} round|{} rounds}",
    "smart": true
@@ -5321,6 +5386,11 @@
    "key": "ui.rules_summary_last_card",
    "text": "{0} · last card: {1}",
    "smart": true
+  },
+  {
+   "key": "ui.rung_quick_note",
+   "text": "Play now uses Rung rules to five points. Create Room uses the rule set chosen here.",
+   "smart": false
   },
   {
    "key": "ui.save",
@@ -6128,9 +6198,24 @@
    "smart": false
   },
   {
+   "key": "ui.your_game_new",
+   "text": "Your first game is one tap away",
+   "smart": false
+  },
+  {
    "key": "ui.your_name",
    "text": "Your name",
    "smart": false
+  },
+  {
+   "key": "ui.your_rung",
+   "text": "Your Rung · {0} bazis · {1}% won",
+   "smart": true
+  },
+  {
+   "key": "ui.your_thulla",
+   "text": "Your Thulla · {0} rounds",
+   "smart": true
   },
   {
    "key": "welcome.add_phone",

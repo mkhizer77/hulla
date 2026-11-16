@@ -8,6 +8,7 @@ using Hulla.Games.Rung;
 using Hulla.Presentation.Navigation;
 using Hulla.Presentation.Screens.Lobby;
 using Hulla.Presentation.Share;
+using Hulla.Presentation.Text;
 using Hulla.Protocol;
 using NUnit.Framework;
 using UnityEditor;
@@ -190,6 +191,30 @@ namespace Hulla.Screens.Tests
             gateway.Deliver(MessageTypes.TableState, 4, Table(GameId.Rung, null, 4, empty: 2));
             Assert.IsTrue(lobby.ShowsAddBot);
             StringAssert.Contains("Thulla", lobby.SwitchGameText);
+            lobby.Dispose();
+        }
+
+        [Test]
+        public void TheRungLobbyShowsTwoPairsAndTheHostSwapsPartners()
+        {
+            var (gateway, client) = NewClient();
+            var screen = Catalog.Lobby!.Instantiate();
+            var lobby = new LobbyView(screen, client, () => 0, () => { }) { RungOffered = true };
+            gateway.Deliver(MessageTypes.TableState, 3, Table(GameId.Rung, null, 3));
+            Assert.AreEqual(UiText.RoomRung, screen.Q<Label>("title").text);
+            Assert.AreEqual(2, screen.Query(className: "lobby__seat--us").ToList().Count, "my pair");
+            Assert.AreEqual(2, screen.Query(className: "lobby__seat--them").ToList().Count, "the other pair");
+            Assert.IsTrue(lobby.ShowsSwapPartners);
+            lobby.SwapPartners();
+            lobby.SwapPartners();
+            var swaps = gateway.Sent.FindAll(m => m.Type == MessageTypes.SwapSeats);
+            Assert.AreEqual(2, swaps.Count);
+            Assert.AreEqual((1L, 2L), (((SwapSeats)swaps[0].Payload).A, ((SwapSeats)swaps[0].Payload).B), "the seat beside me trades with my partner");
+            Assert.AreEqual((2L, 3L), (((SwapSeats)swaps[1].Payload).A, ((SwapSeats)swaps[1].Payload).B), "then the other side, so every partner comes round");
+            gateway.Deliver(MessageTypes.TableState, 4, Table(GameId.Thulla, null, 4));
+            Assert.AreEqual(UiText.RoomThulla, screen.Q<Label>("title").text);
+            Assert.AreEqual(0, screen.Query(className: "lobby__seat--us").ToList().Count, "Thulla has no pairs");
+            Assert.IsFalse(lobby.ShowsSwapPartners);
             lobby.Dispose();
         }
 

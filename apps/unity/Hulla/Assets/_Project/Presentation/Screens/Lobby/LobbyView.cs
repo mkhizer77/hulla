@@ -610,6 +610,27 @@ namespace Hulla.Presentation.Screens.Lobby
         private readonly VisualElement _games = new VisualElement { name = "games" };
         private readonly Button _switchGame = new Button { name = "switch-game" };
         private readonly Button _addBot = new Button { name = "add-bot" };
+        private readonly Button _swap = new Button { name = "swap-partners" };
+        private int _swaps;
+
+        public bool ShowsSwapPartners => _swap.style.display == DisplayStyle.Flex;
+
+        /// <summary>
+        /// The host's next partner: swapping the seats beside and across in turn walks through all three
+        /// possible partners, so a few taps reach any pairing.
+        /// </summary>
+        public void SwapPartners()
+        {
+            var model = _client.Model;
+            if (model.MySeat is not long mine || model.Seats.Count != 4)
+            {
+                return;
+            }
+
+            var first = _swaps % 2 == 0 ? 1 : 2;
+            _swaps++;
+            _client.SwapSeats((mine + first) % 4, (mine + first + 1) % 4);
+        }
 
         /// <summary>Whether the host's switch-game chip shows; read by tests.</summary>
         public bool ShowsSwitchGame => _switchGame.style.display == DisplayStyle.Flex;
@@ -632,7 +653,9 @@ namespace Hulla.Presentation.Screens.Lobby
             _games.style.flexDirection = FlexDirection.Row;
             _games.style.justifyContent = Justify.Center;
             _games.style.alignItems = Align.Center;
-            foreach (var chip in new[] { _switchGame, _addBot })
+            _swap.text = UiText.SwapPartners;
+            _swap.clicked += SwapPartners;
+            foreach (var chip in new[] { _switchGame, _swap, _addBot })
             {
                 chip.AddToClassList("chip");
                 chip.AddToClassList("lobby__game-chip");
@@ -663,6 +686,7 @@ namespace Hulla.Presentation.Screens.Lobby
             _switchGame.style.display = host && RungOffered ? DisplayStyle.Flex : DisplayStyle.None;
             _switchGame.text = Strings.Format(UiText.SwitchGameTo, other);
             _addBot.style.display = host && model.IsRung && seated < model.Seats.Count ? DisplayStyle.Flex : DisplayStyle.None;
+            _swap.style.display = host && model.IsRung && seated >= 3 ? DisplayStyle.Flex : DisplayStyle.None;
         }
 
         /// <summary>The `rung` remote flag: the switch to Rung shows only when the server offers it.</summary>
@@ -723,6 +747,9 @@ namespace Hulla.Presentation.Screens.Lobby
                 slot.style.top = y - SeatSize / 2f;
                 var seat = SeatAt(i, model);
                 var info = seat < model.Seats.Count ? model.Seats[(int)seat] : default;
+                // Rung is two pairs (RG1): the seat across is my partner, and each pair wears its colour.
+                var pairs = model.IsRung && count == 4;
+                slot.SetTeam(pairs ? i % 2 : (int?)null);
                 if (!info.Occupied)
                 {
                     slot.ShowEmpty();
@@ -730,7 +757,7 @@ namespace Hulla.Presentation.Screens.Lobby
                 }
 
                 seated++;
-                slot.Show(info.DisplayName ?? "", info.Seat == model.HostSeat, info.Ready, info.Avatar, seat == model.MySeat, info.Bot);
+                slot.Show(info.DisplayName ?? "", info.Seat == model.HostSeat, info.Ready, info.Avatar, seat == model.MySeat, info.Bot, pairs && i == 2 && !model.Spectating);
                 if (info.PlayerId != null && _seen.Add(info.PlayerId) && !_firstRefresh)
                 {
                     slot.AddToClassList("seat--enter");
@@ -765,7 +792,7 @@ namespace Hulla.Presentation.Screens.Lobby
             _code.text = matchmade ? UiText.QuickPlayTable : model.Code.Length > 0 ? model.Code : _client.Ticket.Code;
             _codeLabel.style.display = matchmade ? DisplayStyle.None : DisplayStyle.Flex;
             // A Quick Play table has no code to share: its name goes in the title and the code card steps aside.
-            _root.Q<Label>("title").text = matchmade ? UiText.QuickPlayTable : UiText.PrivateTable;
+            _root.Q<Label>("title").text = matchmade ? UiText.QuickPlayTable : model.IsRung ? UiText.RoomRung : model.Seats.Count > 0 ? UiText.RoomThulla : UiText.PrivateTable;
             var card = _root.Q<VisualElement>("code-card");
             if (card != null)
             {

@@ -23,6 +23,7 @@ namespace Hulla.Presentation.Screens.Achievements
             _list = root.Q<VisualElement>("list");
             _root = root;
             _status = root.Q<Label>("status");
+            Navigation.GamePick.Mount(root, Refresh);
             _model.Changed += Refresh;
             Refresh();
         }
@@ -54,20 +55,29 @@ namespace Hulla.Presentation.Screens.Achievements
                 return;
             }
 
+            var all = new System.Collections.Generic.List<AchievementInfo>();
+            var won = 0;
+            foreach (var (_, items) in _model.Groups)
+            {
+                foreach (var item in items)
+                {
+                    if (GameFilters.Shows(Navigation.GamePick.Chosen, item.Game))
+                    {
+                        all.Add(item);
+                        won += item.Unlocked ? 1 : 0;
+                    }
+                }
+            }
+
             var total = new VisualElement();
             total.AddToClassList("medals__total");
-            var count = new Label(Strings.Format(UiText.OfCount, _model.UnlockedCount, _model.Total));
+            var count = new Label(Strings.Format(UiText.OfCount, won, all.Count));
             count.AddToClassList("medals__count");
             total.Add(count);
-            var bar = new Meter(_model.UnlockedCount, _model.Total);
+            var bar = new Meter(won, Math.Max(1, all.Count));
             bar.AddToClassList("medals__bar");
             total.Add(bar);
             _list.Add(total);
-            var all = new System.Collections.Generic.List<AchievementInfo>();
-            foreach (var (_, items) in _model.Groups)
-            {
-                all.AddRange(items);
-            }
 
             all.Sort((a, b) => a.Unlocked != b.Unlocked ? (a.Unlocked ? -1 : 1) : (b.Progress * a.Target).CompareTo(a.Progress * b.Target));
             // Unlocked medals large, three a row; locked ones as wide tiles, two a row (concept: Achievements).

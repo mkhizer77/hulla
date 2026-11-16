@@ -10820,3 +10820,373 @@
     border-color: rgb(46, 170, 90);
     border-width: 10px;
 }
+
+/* ---------- Two games (docs/design/two-games.md): Home's two cards and a page per game ---------- */
+
+.skin--basant .home .home__game {
+    left: 180px;
+    width: 720px;
+    height: 442px;
+    margin: 0;
+    padding: 0;
+    border-width: 0;
+    background-color: rgba(0, 0, 0, 0);
+    overflow: visible;
+}
+
+.skin--basant .home .home__game--thulla {
+    top: 608px;
+}
+
+.skin--basant .home .home__game--rung {
+    top: 1089px;
+}
+
+.skin--basant .home .home__game > .home__face {
+    left: 0;
+    top: 0;
+    width: 720px;
+    height: 442px;
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Basant/Kit/panel-cream.png");
+    -unity-slice-left: 170;
+    -unity-slice-right: 170;
+    -unity-slice-top: 170;
+    -unity-slice-bottom: 170;
+    -unity-slice-scale: 0.22px;
+    overflow: visible;
+}
+
+.skin--basant .home .home__game:active > .home__face {
+    translate: 0 6px;
+}
+
+.skin--basant .home .home__game--thulla .home__kite {
+    left: 214px;
+    top: -52px;
+}
+
+.skin--basant .home .home__game--thulla .home__title {
+    left: 130px;
+    top: 62px;
+}
+
+.skin--basant .home .home__game--thulla .home__tagline {
+    left: 158px;
+    top: 187px;
+}
+
+.skin--basant .home .home__game--thulla .home__fan {
+    left: 189px;
+    top: 232px;
+    height: 128px;
+    overflow: hidden;
+}
+
+.skin--basant .home .home__players {
+    left: 207px;
+    top: 356px;
+    width: 306px;
+    height: 68px;
+    padding: 0;
+    margin: 0;
+    font-size: 34px;
+    -unity-text-align: middle-center;
+    color: rgb(74, 30, 14);
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Basant/Kit/plate-name.png");
+    -unity-slice-left: 60;
+    -unity-slice-right: 60;
+    -unity-slice-scale: 0.5px;
+}
+
+.skin--basant .home .home__game--rung .home__kite {
+    left: 82px;
+    top: 4px;
+    width: 330px;
+    height: 336px;
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Basant/Home/kite-rung.png");
+}
+
+.skin--basant .home .home__game--rung .home__title {
+    left: 64px;
+    top: 104px;
+    width: 366px;
+    height: 122px;
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Basant/Home/title-rung.png");
+}
+
+.skin--basant .home .home__game--rung .home__tagline {
+    left: 62px;
+    top: 232px;
+    width: 370px;
+    height: 48px;
+}
+
+.skin--basant .home .home__pairs {
+    left: 446px;
+    top: 84px;
+    width: 216px;
+    height: 220px;
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Basant/Home/cards-rung.png");
+}
+
+/* Rung behind its flag: the card is there, dimmed, and says so. */
+.skin--basant .home .home__game--soon {
+    opacity: 0.6;
+}
+
+.skin--basant.lang--en .text-art--tagline-rung {
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Basant/Text/en/tagline-rung.png");
+}
+
+/* The row under the cards: Join by Code on the left, the daily reward on the right. */
+.skin--basant .home .home__stage > .home__room--join {
+    left: 182px;
+    top: 1568px;
+}
+
+.skin--basant .home .home__stage > .home__daily {
+    left: 552px;
+    top: 1558px;
+}
+
+/* ---------- A game's page: its own calm screen over Home ---------- */
+
+.skin--basant .home .home__page {
+    display: none;
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Basant/Backdrops/calm.png");
+    -unity-background-scale-mode: scale-and-crop;
+}
+
+.skin--basant .home .home__page--open {
+    display: flex;
+}
+
+.skin--basant .home .home__round {
+    top: 44px;
+    width: 132px;
+    height: 132px;
+    margin: 0;
+    padding: 0;
+    border-width: 0;
+    background-color: rgba(0, 0, 0, 0);
+}
+
+.skin--basant .home .home__round--back {
+    left: 34px;
+}
+
+.skin--basant .home .home__round--book {
+    left: 914px;
+}
+
+.skin--basant .home .home__round .home__face {
+    left: 4px;
+    top: 4px;
+    width: 124px;
+    height: 124px;
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Basant/Kit/btn-round-normal.png");
+}
+
+.skin--basant .home .home__round:active .home__face {
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Basant/Kit/btn-round-pressed.png");
+}
+
+.skin--basant .home .home__round-icon {
+    left: 30px;
+    top: 28px;
+    width: 64px;
+    height: 64px;
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Basant/Kit/icon-back.png");
+}
+
+.skin--basant .home .home__round--book .home__round-icon {
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Basant/Kit/icon-book.png");
+}
+
+.skin--basant .home .home__page-kite {
+    left: 320px;
+    top: 150px;
+    width: 440px;
+    height: 494px;
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Basant/Home/kite-hero.png");
+}
+
+.skin--basant .home .home__page--rung .home__page-kite {
+    left: 300px;
+    top: 150px;
+    width: 480px;
+    height: 488px;
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Basant/Home/kite-rung.png");
+}
+
+.skin--basant .home .home__page-title {
+    left: 230px;
+    top: 300px;
+    width: 620px;
+    height: 172px;
+    font-size: 110px;
+    color: rgba(0, 0, 0, 0);
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Basant/Home/title-thulla.png");
+    -unity-background-scale-mode: scale-to-fit;
+}
+
+.skin--basant .home .home__page--rung .home__page-title {
+    left: 280px;
+    width: 520px;
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Basant/Home/title-rung.png");
+}
+
+.skin--basant .home .home__page-line {
+    left: 240px;
+    top: 486px;
+    width: 600px;
+    height: 56px;
+    font-size: 42px;
+    -unity-text-align: middle-center;
+    -unity-background-scale-mode: scale-to-fit;
+}
+
+.skin--basant .home .home__page .home__seat-panel {
+    left: 250px;
+    top: 760px;
+}
+
+.skin--basant .home .home__page .home__mode {
+    left: 330px;
+    top: 968px;
+}
+
+.skin--basant .home .home__sets {
+    left: 110px;
+    top: 770px;
+    width: 860px;
+    height: 132px;
+    flex-direction: row;
+    align-items: center;
+    padding: 0 14px;
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Basant/Kit/segment-track.png");
+    -unity-slice-left: 120;
+    -unity-slice-right: 120;
+    -unity-slice-scale: 0.5px;
+}
+
+.skin--basant .home .home__set {
+    flex-grow: 1;
+    flex-basis: 0;
+    height: 132px;
+    margin: 0;
+    padding: 0;
+    border-width: 0;
+    font-size: 40px;
+    color: rgb(74, 30, 14);
+    background-color: rgba(0, 0, 0, 0);
+    -unity-font-style: bold;
+}
+
+.skin--basant .home .home__set--on {
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Basant/Kit/segment-on.png");
+    -unity-slice-left: 100;
+    -unity-slice-right: 100;
+    -unity-slice-scale: 0.5px;
+}
+
+.skin--basant .home .home__set-line {
+    left: 90px;
+    top: 916px;
+    width: 900px;
+    height: 56px;
+    font-size: 36px;
+    -unity-text-align: middle-center;
+    color: rgb(110, 20, 50);
+    white-space: normal;
+}
+
+.skin--basant .home .home__page-pairs {
+    left: 440px;
+    top: 990px;
+    width: 200px;
+    height: 204px;
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Basant/Home/cards-rung.png");
+}
+
+.skin--basant .home .home__page .home__play {
+    left: 240px;
+    top: 1230px;
+    width: 600px;
+    height: 166px;
+}
+
+.skin--basant .home .home__page .home__play .home__face {
+    left: 0;
+    top: 8px;
+    width: 600px;
+    height: 150px;
+    -unity-slice-scale: 0.425px;
+}
+
+.skin--basant .home .home__page .home__play-label {
+    left: 100px;
+    top: 40px;
+    width: 400px;
+    height: 64px;
+    font-size: 62px;
+}
+
+/* The page hangs from the top of the screen, so its back button sits where every screen's does. */
+.skin--basant .home .home__page > .home__holder {
+    justify-content: flex-start;
+}
+
+.skin--basant .home .home__page-stage {
+    transform-origin: top;
+}
+
+.skin--basant .home .home__page .home__room--create {
+    left: 364px;
+    top: 1424px;
+}
+
+.skin--basant .home .home__page-stats {
+    left: 190px;
+    top: 1590px;
+    width: 700px;
+    height: 84px;
+    padding: 0;
+    font-size: 36px;
+    -unity-text-align: middle-center;
+    color: rgb(74, 30, 14);
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Basant/Kit/plate-name.png");
+    -unity-slice-left: 60;
+    -unity-slice-right: 60;
+    -unity-slice-scale: 0.5px;
+}
+
+/* Only the chosen game's own controls show on its page. */
+.skin--basant .home .home__page--thulla .home__sets,
+.skin--basant .home .home__page--thulla .home__set-line,
+.skin--basant .home .home__page--thulla .home__page-pairs,
+.skin--basant .home .home__page--rung .home__seat-panel,
+.skin--basant .home .home__page--rung .home__mode {
+    display: none;
+}
+
+/* Rung lobby: each pair's name plates wear its colour (my pair green, the other magenta). */
+.skin--basant .lobby .lobby__seat--us .lobby__name {
+    -unity-background-image-tint-color: rgb(170, 225, 120);
+}
+
+.skin--basant .lobby .lobby__seat--them .lobby__name {
+    -unity-background-image-tint-color: rgb(245, 150, 200);
+}
+
+/* The game filter under the Trophies segments and over the profile's numbers: one full-width track. */
+.skin--basant .mini-seg.game-pick {
+    width: 100%;
+    flex-shrink: 0;
+    margin: 0 0 20px 0;
+}

@@ -448,10 +448,30 @@ namespace Hulla.Composition
             _shell.ShowNav(Hulla.Presentation.Navigation.NavTab.Home);
             var home = new HomeView(root, _app.Home, null, OnCreate, OnJoin, OnQuickPlay, OpenSettings, OnFriends, OnProfile, _app.HomeFriends, () => StartTutorial(false), TutorialText.HowToPlay, OnWatch, _app.Progress, OnMissions, OnLeaderboard, OnShop, OnPass, OnRanked, InviteFriend);
             home.InviteToMine = (name, id) => InviteToRoom(name, null, id);
-            if (_app.RemoteConfig.Rung)
+            // Two games (docs/design/two-games.md): each card opens its page; the dock steps aside for it.
+            home.RungLive = _app.RemoteConfig.Rung;
+            Hulla.Presentation.Navigation.GamePick.Enabled = _app.RemoteConfig.Rung;
+            home.PlayRung = OnQuickPlayRung;
+            home.CreateRung = OnCreateRung;
+            home.OpenRulebook = game =>
             {
-                home.OfferRung(root, OnCreateRung);
-            }
+                if (game == HomeView.Thulla)
+                {
+                    OpenRules(null);
+                }
+            };
+            home.MyNumbers = GameNumbers;
+            home.PageChanged += open =>
+            {
+                if (open)
+                {
+                    _shell.HideNav();
+                }
+                else if (_screen == Screen.Home)
+                {
+                    _shell.ShowNav(Hulla.Presentation.Navigation.NavTab.Home);
+                }
+            };
             home.OpenFriend = OnFriend;
             _view = home;
             home.SetQuickPlay(_app.RemoteConfig.QuickPlay, QuickPlayNote());
@@ -511,14 +531,56 @@ namespace Hulla.Composition
             }
         }
 
-        /// <summary>Rung from Home: a private room that moves to Rung as soon as its host is seated.</summary>
-        private void OnCreateRung(string name, string? server)
+        /// <summary>The player's own numbers for a game's page; null before their first game of it.</summary>
+        private string? GameNumbers(string game)
         {
-            _rungOnEnter = true;
-            OnCreate(name, server);
+            var card = _app.Profile.Card;
+            if (card == null)
+            {
+                return null;
+            }
+
+            if (game == HomeView.Rung)
+            {
+                return card.Rung == null || card.Rung.Deals == 0 ? null : Strings.Format(UiText.YourRung, card.Rung.Bazis, card.Rung.BaziWinPercent);
+            }
+
+            return card.Rounds == 0 ? null : Strings.Format(UiText.YourThulla, card.Rounds);
         }
 
-        private bool _rungOnEnter;
+        /// <summary>A private Rung room from Rung's page, with the rule set chosen there.</summary>
+        private async void OnCreateRung(string name, string ruleSet, string? server)
+        {
+            ApplyServer(server);
+            _rungSetOnEnter = ruleSet == "courtPiece" ? Preset.CourtPiece : ruleSet == "hokm" ? Preset.Hokm : (Preset?)null;
+            var ticket = await _app.Home.CreateAsync(name, HomeView.Rung, _app.Lifetime);
+            if (ticket.IsOk)
+            {
+                _app.Analytics.Track(AnalyticsEvents.TableCreate("private"));
+            }
+
+            await EnterAsync(ticket);
+        }
+
+        /// <summary>The rule set to give a Rung room once its host is seated; null keeps the room's own.</summary>
+        private Preset? _rungSetOnEnter;
+
+        /// <summary>Rung Quick Play: four seats, bots after 15 s (Rung design 4).</summary>
+        private async void OnQuickPlayRung(string name, string? server)
+        {
+            ApplyServer(server);
+            var signedIn = await _app.Home.SignInAsync(name, _app.Lifetime);
+            if (!signedIn.IsOk)
+            {
+                return;
+            }
+
+            CloseView();
+            _screen = Screen.QuickPlay;
+            _shell.HideNav();
+            _view = new QuickPlayView(_shell.Show(_shell.Catalog.QuickPlay), _app.QuickPlay, CancelQuickPlay, MyAvatar(), _app.Home.LastName);
+            await _app.QuickPlay.StartRungAsync(_app.Lifetime);
+        }
 
         private async void OnCreate(string name, string? server)
         {
@@ -726,12 +788,19 @@ namespace Hulla.Composition
             var boardView = new LeaderboardView(boardRoot, board, () => DateTimeOffset.UtcNow.ToUnixTimeMilliseconds(), _app.Sessions.Current?.UserId, ShowHome,
                 (period, friends) => _ = board.ShowAsync(period, friends, _app.Lifetime),
                 () => OnRanked(name, server));
+            boardView.GameChanged = game => _ = board.ShowAsync(board.Period, board.Friends, game, _app.Lifetime);
             boardView.Retry = () => _ = board.RefreshAsync(_app.Lifetime);
             boardView.PlayNow = PlayNowFrom(name, server);
             Hulla.Presentation.Navigation.SegmentBar.Mount(boardRoot, TrophiesSegments(name, server), "leaderboard");
             TabTop(boardRoot, Hulla.Presentation.Navigation.NavTab.Trophies);
             _view = boardView;
             _shell.ShowNav(Hulla.Presentation.Navigation.NavTab.Trophies);
+            if (Hulla.Presentation.Navigation.GamePick.Enabled)
+            {
+                await board.ShowAsync(board.Period, board.Friends, Hulla.Presentation.Navigation.GamePick.Chosen, _app.Lifetime);
+                return;
+            }
+
             await board.RefreshAsync(_app.Lifetime);
         }
 
@@ -1511,15 +1580,11 @@ namespace Hulla.Composition
                 OfferBigThulla(client);
             }
 
-            if (_rungOnEnter && model.IsHost)
+            if (_rungSetOnEnter is Preset chosen && model.IsHost && model.IsRung)
             {
-                // The room was opened for Rung: switch before the lobby shows, so Thulla never flashes by.
-                _rungOnEnter = false;
-                if (!model.IsRung)
-                {
-                    client.SwitchGame();
-                    return;
-                }
+                // The room was opened from Rung's page with another rule set: the host sets it once.
+                _rungSetOnEnter = null;
+                client.SetRules(new RulesSelection { GameId = GameId.Rung, Preset = chosen });
             }
 
             var wanted = model.ShowsTable ? Screen.Table : Screen.Lobby;

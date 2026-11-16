@@ -39,30 +39,22 @@
                         <ui:Label name="rejoin-text" class="home__banner-text" />
                     </ui:VisualElement>
                 </ui:Button>
-                <ui:VisualElement name="game-thulla" class="home__card" picking-mode="Ignore">
-                    <ui:VisualElement class="home__kite" picking-mode="Ignore" />
-                    <ui:Label name="game-thulla-name" class="home__title" />
-                    <ui:Label name="game-thulla-line" class="home__tagline" />
-                    <ui:VisualElement class="home__fan" picking-mode="Ignore" />
-                    <ui:VisualElement class="home__seat-panel" picking-mode="Ignore">
-                        <ui:Label name="seats-label" class="home__seats-label" />
-                        <ui:VisualElement name="seats" class="home__seats" />
-                    </ui:VisualElement>
-                    <ui:VisualElement name="mode" class="home__mode">
-                        <ui:VisualElement name="mode-switch" class="home__switch" />
-                        <ui:Label name="mode-casual" class="home__mode-label" />
-                        <ui:VisualElement class="home__mode-bar" picking-mode="Ignore" />
-                        <ui:Label name="mode-ranked" class="home__mode-label" />
-                    </ui:VisualElement>
-                    <ui:Button name="quick" class="home__play">
-                        <ui:VisualElement class="home__face" picking-mode="Ignore">
-                            <ui:Label name="quick-label" class="home__play-label" />
-                        </ui:VisualElement>
-                    </ui:Button>
-                </ui:VisualElement>
-                <ui:Button name="create" class="home__room home__room--create">
+                <ui:Button name="card-thulla" class="home__game home__game--thulla">
                     <ui:VisualElement class="home__face" picking-mode="Ignore">
-                        <ui:Label name="create-label" class="home__room-label" />
+                        <ui:VisualElement class="home__kite" picking-mode="Ignore" />
+                        <ui:Label name="game-thulla-name" class="home__title" />
+                        <ui:Label name="game-thulla-line" class="home__tagline" />
+                        <ui:VisualElement class="home__fan" picking-mode="Ignore" />
+                        <ui:Label name="game-thulla-players" class="home__players" />
+                    </ui:VisualElement>
+                </ui:Button>
+                <ui:Button name="card-rung" class="home__game home__game--rung">
+                    <ui:VisualElement class="home__face" picking-mode="Ignore">
+                        <ui:VisualElement class="home__kite" picking-mode="Ignore" />
+                        <ui:Label name="game-rung-name" class="home__title" />
+                        <ui:Label name="game-rung-line" class="home__tagline" />
+                        <ui:VisualElement class="home__pairs" picking-mode="Ignore" />
+                        <ui:Label name="game-rung-players" class="home__players" />
                     </ui:VisualElement>
                 </ui:Button>
                 <ui:Button name="join-toggle" class="home__room home__room--join">
@@ -76,9 +68,48 @@
                     <ui:Label name="daily-text" class="home__daily-text" />
                     <ui:Button name="daily-claim" class="home__daily-claim" />
                 </ui:VisualElement>
-                <ui:VisualElement name="game-rung" class="home__soon">
-                    <ui:Label name="game-rung-name" class="home__soon-title" />
-                    <ui:Label name="game-rung-soon" class="home__soon-text" />
+            </ui:VisualElement>
+        </ui:VisualElement>
+        <ui:VisualElement name="game-page" class="home__page">
+            <ui:VisualElement name="page-holder" class="home__holder" picking-mode="Ignore">
+                <ui:VisualElement name="page-stage" class="home__stage home__page-stage" picking-mode="Ignore">
+                    <ui:Button name="page-back" class="home__round home__round--back">
+                        <ui:VisualElement class="home__face" picking-mode="Ignore">
+                            <ui:VisualElement class="home__round-icon" picking-mode="Ignore" />
+                        </ui:VisualElement>
+                    </ui:Button>
+                    <ui:Button name="page-book" class="home__round home__round--book">
+                        <ui:VisualElement class="home__face" picking-mode="Ignore">
+                            <ui:VisualElement class="home__round-icon" picking-mode="Ignore" />
+                        </ui:VisualElement>
+                    </ui:Button>
+                    <ui:VisualElement class="home__page-kite" picking-mode="Ignore" />
+                    <ui:Label name="page-title" class="home__page-title" picking-mode="Ignore" />
+                    <ui:Label name="page-line" class="home__page-line" picking-mode="Ignore" />
+                    <ui:VisualElement class="home__seat-panel" picking-mode="Ignore">
+                        <ui:Label name="seats-label" class="home__seats-label" />
+                        <ui:VisualElement name="seats" class="home__seats" />
+                    </ui:VisualElement>
+                    <ui:VisualElement name="mode" class="home__mode">
+                        <ui:VisualElement name="mode-switch" class="home__switch" />
+                        <ui:Label name="mode-casual" class="home__mode-label" />
+                        <ui:VisualElement class="home__mode-bar" picking-mode="Ignore" />
+                        <ui:Label name="mode-ranked" class="home__mode-label" />
+                    </ui:VisualElement>
+                    <ui:VisualElement name="rung-sets" class="home__sets" />
+                    <ui:Label name="rung-set-line" class="home__set-line" picking-mode="Ignore" />
+                    <ui:VisualElement class="home__page-pairs" picking-mode="Ignore" />
+                    <ui:Button name="quick" class="home__play">
+                        <ui:VisualElement class="home__face" picking-mode="Ignore">
+                            <ui:Label name="quick-label" class="home__play-label" />
+                        </ui:VisualElement>
+                    </ui:Button>
+                    <ui:Button name="create" class="home__room home__room--create">
+                        <ui:VisualElement class="home__face" picking-mode="Ignore">
+                            <ui:Label name="create-label" class="home__room-label" />
+                        </ui:VisualElement>
+                    </ui:Button>
+                    <ui:Label name="page-stats" class="home__page-stats" />
                 </ui:VisualElement>
             </ui:VisualElement>
         </ui:VisualElement>
