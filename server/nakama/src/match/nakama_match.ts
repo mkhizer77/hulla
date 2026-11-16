@@ -541,7 +541,12 @@ export function tableMatchHandler(
     const matchId = ctx.matchId;
     if (matchId === undefined || matchId === "") return;
     let store: PresenceStore | null = null;
+    // A bot holds a seat but has no account, so there is no presence to keep for it.
+    const bots = new Set(
+      state.seats.flatMap((s) => (s.bot && s.playerId !== null ? [s.playerId] : [])),
+    );
     for (const userId of new Set(userIds)) {
+      if (bots.has(userId) || userId.startsWith("bot_")) continue;
       try {
         store ??= nkPresenceStore(nk);
         const seated = state.phase !== "closing" && state.seats.some((s) => s.playerId === userId);
