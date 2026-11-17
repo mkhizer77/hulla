@@ -115,13 +115,25 @@ export function humansPresent<S, M>(state: TableState<S, M>): number {
   return activeSeats(state.seats).filter((seat) => state.seats[seat]?.bot !== true).length;
 }
 
-/** After a round: free the seats that left, and in public tables the ones that never returned. */
-export function settleSeatsAfterRound<S, M>(state: TableState<S, M>): SeatIndex[] {
+/**
+ * After a round: free the seats that left, and in public tables the ones that never returned.
+ * With `cover` (a matched table part way through a series, Rung RGE11) a bot takes such a seat
+ * instead and keeps it until the series ends; without it the bots that covered go too.
+ */
+export function settleSeatsAfterRound<S, M>(
+  state: TableState<S, M>,
+  cover: ((seat: SeatIndex) => SeatSlot) | null = null,
+): SeatIndex[] {
   const freed: SeatIndex[] = [];
   for (const seat of occupiedSeats(state.seats)) {
     const slot = state.seats[seat];
     if (slot === undefined) continue;
-    if (slot.left || (!slot.connected && state.mode !== "private")) {
+    const gone = slot.left || (!slot.connected && state.mode !== "private");
+    if (gone && cover !== null) {
+      state.seats[seat] = cover(seat);
+      continue;
+    }
+    if (gone || (slot.cover === true && cover === null)) {
       freeSlot(state, seat);
       freed.push(seat);
       continue;
@@ -138,6 +150,7 @@ export function settleSeatsAfterRound<S, M>(state: TableState<S, M>): SeatIndex[
     slot.ready = false;
     slot.rematch = null;
   }
-  if (state.hostSeat !== null && state.seats[state.hostSeat]?.playerId === null) migrateHost(state);
+  const hostSlot = state.hostSeat === null ? undefined : state.seats[state.hostSeat];
+  if (hostSlot !== undefined && (hostSlot.playerId === null || hostSlot.bot)) migrateHost(state);
   return freed;
 }

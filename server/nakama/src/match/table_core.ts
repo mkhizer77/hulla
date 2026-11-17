@@ -10,7 +10,15 @@ import {
 
 import { BUNDLED_CHAT, type ChatContent } from "../content/chat";
 
-import { BOT_NAMES, botNames, botSlot, MAX_BOTS, renameClashingBots } from "./bots";
+import {
+  BOT_NAMES,
+  botNames,
+  botSlot,
+  freeBotName,
+  MAX_BOTS,
+  renameClashingBots,
+  renumberBots,
+} from "./bots";
 import {
   canStart,
   changedRuleKeys,
@@ -29,15 +37,17 @@ import {
   applyRoundMove,
   compactSeats,
   fireDeadlines,
+  phaseSeconds,
   resolveHandAsk,
   roundRecord,
   startRound,
-  turnSeconds,
 } from "./round";
+import { sameSeating, seriesForPlayers } from "./series";
 import {
   DEFAULT_TABLE_CONFIG,
   newBatch,
   without,
+  type Admission,
   type AnyGameHost,
   type Batch,
   type CreateTableParams,
@@ -248,7 +258,7 @@ export function tableCore<S, M, V, E, R>(
     if (round === null || deadline === null) return;
     if (deadline.kind !== "perSeatTimer" || deadline.humanTs === null) return;
     if (!deadline.seats.includes(seat)) return;
-    const seconds = turnSeconds(state, config);
+    const seconds = phaseSeconds(host, state, config, round.phase);
     if (seconds === null) return;
     round.deadline = { ...deadline, humanTs: Math.max(deadline.humanTs, now + seconds * 1000) };
   };
@@ -263,6 +273,75 @@ export function tableCore<S, M, V, E, R>(
     deps.social === undefined || playerIds.length === 0
       ? []
       : [...deps.social.friendsAmong(userId, playerIds)];
+
+  /**
+   * The bench (Rung design 8.3): members of a private room without a seat. They are let back in
+   * without the watcher's friend check and take the next free seat.
+   */
+  const onBench = (state: TableState<S, M>, userId: string): void => {
+    if (state.mode !== "private" || (state.bench ?? []).includes(userId)) return;
+    state.bench = [...(state.bench ?? []), userId];
+  };
+
+  const offBench = (state: TableState<S, M>, userId: string): void => {
+    if (state.bench?.includes(userId) !== true) return;
+    state.bench = state.bench.filter((id) => id !== userId);
+  };
+
+  /** Reservations whose client never arrived are dropped, so the seat is free again. */
+  const dropStaleAdmissions = (state: TableState<S, M>, now: number): void => {
+    const entries = Object.entries(state.admissions);
+    if (entries.every(([, a]) => a.expiresTs === undefined || now < a.expiresTs)) return;
+    const live: Record<string, Admission> = {};
+    for (const [sessionId, a] of entries) {
+      if (a.expiresTs === undefined || now < a.expiresTs) live[sessionId] = a;
+    }
+    state.admissions = live;
+  };
+
+  /** The players a round would be dealt to, in seat order: who a per-player score belongs to. */
+  const dealtPlayers = (state: TableState<S, M>): (string | null)[] =>
+    activeSeats(state.seats).map((seat) => state.seats[seat]?.playerId ?? null);
+
+  /** Seats changed between rounds: a per-player score moves with its players (GDD R50, R51). */
+  const realignSeries = (state: TableState<S, M>, game: GameHost<S, M, V, E, R>): void => {
+    if (state.series === null || game.module.seats.teams !== undefined) return;
+    const players = dealtPlayers(state);
+    const moved = seriesForPlayers(state.series, state.seriesPlayers ?? null, players);
+    if (moved === state.series) return;
+    state.series = moved;
+    state.seriesPlayers = players;
+  };
+
+  /** A series of pairs that has begun and is not over: its seats are its teams (Rung RG1). */
+  const teamSeriesRunning = (state: TableState<S, M>): boolean =>
+    host.module.seats.teams !== undefined &&
+    state.series !== null &&
+    !state.series.finished &&
+    state.series.roundsPlayed > 0;
+
+  /**
+   * A matched table part way through a series in a game that covers absent seats (Rung RGE11):
+   * a player who leaves is replaced by a bot until the series ends, so the others can finish it.
+   */
+  const coversLeavers = (state: TableState<S, M>): boolean =>
+    state.mode !== "private" &&
+    host.coverAbsent !== undefined &&
+    host.module.bot !== undefined &&
+    state.series !== null &&
+    !state.series.finished;
+
+  const coverBot = (state: TableState<S, M>, seat: SeatIndex, now: number): SeatSlot => {
+    const slot = botSlot(state.seats, seat, freeBotName(state.seats, state.createdTs + seat), now);
+    slot.cover = true;
+    return slot;
+  };
+
+  /** A player gave up a seat between rounds: it is free, or a bot's to the end of the series. */
+  const vacate = (state: TableState<S, M>, seat: SeatIndex, now: number): void => {
+    if (coversLeavers(state)) state.seats[seat] = coverBot(state, seat, now);
+    else freeSlot(state, seat);
+  };
 
   /** Someone new sat down: watchers who are their friends now name them too (GDD 7.7). */
   const noteSeated = (state: TableState<S, M>, playerId: string): void => {
@@ -297,6 +376,7 @@ export function tableCore<S, M, V, E, R>(
     attachSession(slot, record.sessionId, now);
     const seated: PresenceRecord = { ...record, seat, seatNext: false };
     state.presences[record.sessionId] = seated;
+    offBench(state, record.userId);
     noteSeated(state, record.userId);
     state.hostSeat ??= seat;
     emit.public("presence", presencePayload(seated, slot.displayName, "joined"));
@@ -374,17 +454,23 @@ export function tableCore<S, M, V, E, R>(
 
   /**
    * Fits the seated players into `max` seats, keeping seat order and never unseating the host.
-   * Players without a seat stay in the room as spectators first in line for the next free seat;
-   * bots without a seat go.
+   * When not everyone fits, connected players keep their seats before disconnected ones, and
+   * people before bots. Players without a seat stay in the room on the bench, first in line for
+   * the next free seat; bots without a seat go.
    */
   const resizeSeats = (state: TableState<S, M>, max: number, emit: Emitter): void => {
     const occupied = state.seats.flatMap((slot, index) => (slot.playerId === null ? [] : [index]));
-    const keep = occupied.slice(0, max);
     const hostSeat = state.hostSeat;
-    if (hostSeat !== null && occupied.includes(hostSeat) && !keep.includes(hostSeat)) {
-      keep[keep.length - 1] = hostSeat;
-      keep.sort((a, b) => a - b);
-    }
+    const rank = (index: number): number => {
+      const slot = state.seats[index];
+      if (index === hostSeat) return 0;
+      if (slot?.bot === true) return 3;
+      return slot?.connected === true && !slot.left ? 1 : 2;
+    };
+    const keep = [...occupied]
+      .sort((a, b) => rank(a) - rank(b) || a - b)
+      .slice(0, max)
+      .sort((a, b) => a - b);
     for (const index of occupied) {
       if (keep.includes(index)) continue;
       const slot = state.seats[index];
@@ -393,11 +479,13 @@ export function tableCore<S, M, V, E, R>(
       if (presence === undefined) continue;
       presence.seat = null;
       presence.seatNext = true;
+      onBench(state, presence.userId);
       presence.friendOf = friendsAmong(presence.userId, seatedPlayerIds(state, presence.userId));
       emit.public("presence", presencePayload(presence, null, "spectating"));
     }
     const kept = keep.map((index) => state.seats[index]).filter((slot) => slot !== undefined);
     state.seats = [...kept, ...Array.from({ length: max - kept.length }, emptySlot)];
+    renumberBots(state.seats);
     for (const presence of Object.values(state.presences)) {
       if (presence.seat === null) continue;
       const seat = keep.indexOf(presence.seat);
@@ -405,6 +493,29 @@ export function tableCore<S, M, V, E, R>(
     }
     const newHost = hostSeat === null ? -1 : keep.indexOf(hostSeat);
     state.hostSeat = newHost === -1 ? (kept.length > 0 ? 0 : null) : newHost;
+  };
+
+  /**
+   * The score the room left this game with, fitted to who sits where now. A per-player score
+   * follows its players. A score of pairs is kept only when every seat holds who it held, since
+   * the seats are the teams; otherwise the room starts a new series (the conservative reading of
+   * Rung RG38). What a game does not carry across a switch is dropped by the game (RGE14).
+   */
+  const restoreSeries = (state: TableState<S, M>, target: GameHost<S, M, V, E, R>): void => {
+    const kept = state.series;
+    if (kept === null) return;
+    const scoredFor = state.seriesPlayers ?? null;
+    if (target.module.seats.teams === undefined) {
+      realignSeries(state, target);
+    } else if (scoredFor !== null && !sameSeating(scoredFor, dealtPlayers(state))) {
+      state.series = null;
+      state.seriesPlayers = null;
+      state.seriesByGame = without(state.seriesByGame ?? {}, state.gameId);
+      state.seriesPlayersByGame = without(state.seriesPlayersByGame ?? {}, state.gameId);
+      return;
+    }
+    const current = state.series ?? kept;
+    state.series = target.resumeSeries?.(current) ?? current;
   };
 
   /**
@@ -423,10 +534,16 @@ export function tableCore<S, M, V, E, R>(
     state.rulesByGame = { ...(state.rulesByGame ?? {}), [state.gameId]: state.rules };
     if (state.series !== null) {
       state.seriesByGame = { ...(state.seriesByGame ?? {}), [state.gameId]: state.series };
+      // Who the score belongs to goes with it; a score from before this was kept has no names.
+      const scoredFor = state.seriesPlayers ?? null;
+      const names = without(state.seriesPlayersByGame ?? {}, state.gameId);
+      state.seriesPlayersByGame =
+        scoredFor === null ? names : { ...names, [state.gameId]: scoredFor };
     }
     state.gameId = target.module.id;
     state.rules = rules;
     state.series = state.seriesByGame?.[state.gameId] ?? null;
+    state.seriesPlayers = state.seriesPlayersByGame?.[state.gameId] ?? null;
     state.queuedGame = null;
     state.phase = "lobby";
     state.round = null;
@@ -443,6 +560,7 @@ export function tableCore<S, M, V, E, R>(
       slot.ready = slot.bot;
       slot.rematch = slot.bot ? true : null;
     }
+    restoreSeries(state, target);
     const changedBy = state.seats.findIndex(
       (s) => s.playerId !== null && s.playerId === hostPlayer,
     );
@@ -520,7 +638,10 @@ export function tableCore<S, M, V, E, R>(
     state.phase = "roundEnded";
     state.rematchDeadlineTs = now + config.rematchWindowMs;
     const hostBefore = state.hostSeat;
-    settleSeatsAfterRound(state);
+    settleSeatsAfterRound(
+      state,
+      coversLeavers(state) ? (seat) => coverBot(state, seat, now) : null,
+    );
     seatWaitingSpectators(state, emit, now);
     if (state.hostSeat !== hostBefore) hostChanged(state, emit, "host_left");
     // A bot table carries on for its one player; other public tables need two people.
@@ -543,6 +664,38 @@ export function tableCore<S, M, V, E, R>(
   const resolveRematch = (state: TableState<S, M>, emit: Emitter, now: number): void => {
     if (state.phase !== "roundEnded") return;
     state.rematchDeadlineTs = null;
+    if (coversLeavers(state)) {
+      // RGE11: the series is played to its end. A player who says no hands the seat to a bot and
+      // watches; one who says nothing plays on (RG43 covers them if they are away).
+      const watching: PresenceRecord[] = [];
+      for (const seat of activeSeats(state.seats)) {
+        const slot = state.seats[seat];
+        if (slot === undefined || slot.bot) continue;
+        if (slot.rematch !== false) {
+          slot.rematch = true;
+          continue;
+        }
+        const presence = slot.sessionId === null ? undefined : state.presences[slot.sessionId];
+        state.seats[seat] = coverBot(state, seat, now);
+        if (presence !== undefined) {
+          presence.seat = null;
+          watching.push(presence);
+          emit.public("presence", presencePayload(presence, null, "spectating"));
+        }
+      }
+      for (const presence of watching) {
+        presence.friendOf = friendsAmong(presence.userId, seatedPlayerIds(state, presence.userId));
+      }
+      if (humansPresent(state) === 0) {
+        closeTable(state, emit, "dissolved", now);
+        return;
+      }
+      const hostSlot = state.hostSeat === null ? undefined : state.seats[state.hostSeat];
+      if (hostSlot?.bot === true) {
+        migrateHost(state);
+        hostChanged(state, emit, "host_left");
+      }
+    }
     const yes = activeSeats(state.seats).filter((seat) => state.seats[seat]?.rematch === true);
     if (yes.length >= host.module.seats.min) {
       const demoted: PresenceRecord[] = [];
@@ -754,6 +907,8 @@ export function tableCore<S, M, V, E, R>(
         emit.batch.kicks.push(presence.sessionId);
         emit.batch.voiceRemovals.push(presence.userId);
         if (seat === null || slot === undefined) {
+          // Leaving on purpose gives up the place on the bench too.
+          offBench(state, presence.userId);
           emit.public("presence", presencePayload(presence, null, "left"));
           return;
         }
@@ -765,7 +920,7 @@ export function tableCore<S, M, V, E, R>(
           slot.autoPlay = true;
           slot.awaySinceTs ??= now;
         } else {
-          freeSlot(state, seat);
+          vacate(state, seat, now);
         }
         emit.public("presence", presencePayload(presence, slot.displayName, "left"));
         if (isHost(state, seat) && state.phase !== "inRound") {
@@ -887,6 +1042,7 @@ export function tableCore<S, M, V, E, R>(
         }
         if (state.phase === "inRound") {
           state.presences[watcher.sessionId] = { ...watcher, seatNext: true };
+          onBench(state, watcher.userId);
           broadcastTableState(state, emit);
           return;
         }
@@ -916,6 +1072,7 @@ export function tableCore<S, M, V, E, R>(
         // Removed for the life of the table, like a kick (OQ-050): sent before the socket is
         // dropped, so the watcher hears why.
         if (!state.kicked.includes(target)) state.kicked.push(target);
+        offBench(state, target);
         emit.public("presence", presencePayload(first, first.displayName ?? null, "removed"));
         for (const watcher of watchers) {
           state.presences = without(state.presences, watcher.sessionId);
@@ -999,6 +1156,12 @@ export function tableCore<S, M, V, E, R>(
           );
           return;
         }
+        // The seats of a game of pairs are its teams: nobody changes sides or partners while a
+        // series is being played, or two players would trade their teams' scores.
+        if (teamSeriesRunning(state)) {
+          reject(ruleError(ErrorCodes.table.locked, { reason: "series" }));
+          return;
+        }
         state.seats[a] = second;
         state.seats[b] = first;
         for (const record of Object.values(state.presences)) {
@@ -1008,10 +1171,9 @@ export function tableCore<S, M, V, E, R>(
         if (state.hostSeat === a) state.hostSeat = b;
         else if (state.hostSeat === b) state.hostSeat = a;
         // A bot's id names its seat; keep it in step so two bots never share one.
-        for (const index of [a, b]) {
-          const slot = state.seats[index];
-          if (slot?.bot === true) slot.playerId = `bot_${String(index)}`;
-        }
+        renumberBots(state.seats);
+        // A player's own score goes with them to the new seat.
+        realignSeries(state, host);
         broadcastTableState(state, emit);
         return;
       }
@@ -1231,8 +1393,10 @@ export function tableCore<S, M, V, E, R>(
       };
     },
 
-    joinAttempt(state, presence, metadata) {
+    joinAttempt(state, presence, metadata, now) {
       if (state.phase === "closing") return { accept: false, code: ErrorCodes.table.notFound };
+      dropStaleAdmissions(state, now);
+      const expiresTs = now + config.admissionTtlMs;
       if (state.kicked.includes(presence.userId)) {
         return { accept: false, code: ErrorCodes.table.banned };
       }
@@ -1256,31 +1420,58 @@ export function tableCore<S, M, V, E, R>(
         if (live && parsed.data.resumeToken !== slot.resumeToken) {
           return { accept: false, code: ErrorCodes.auth.deviceLimit };
         }
-        state.admissions[presence.sessionId] = { kind: "seat", seat: own, reattach: true };
+        state.admissions[presence.sessionId] = {
+          kind: "seat",
+          seat: own,
+          reattach: true,
+          expiresTs,
+        };
         return { accept: true };
       }
       const pending = Object.values(state.admissions);
       const reserved = new Set(pending.flatMap((a) => (a.kind === "seat" ? [a.seat] : [])));
-      const wouldSit =
-        parsed.data.asSpectator !== true && state.phase !== "inRound" && !state.lockedByHost;
-      const noFreeSeat = !state.seats.some((slot, i) => slot.playerId === null && !reserved.has(i));
-      if (wouldSit && noFreeSeat && host.fillWithBots === true) {
-        // A person always outranks a bot that was only filling the seat (Rung design 6.5).
-        const filler = state.seats.map((slot) => slot.bot).lastIndexOf(true);
-        if (filler !== -1) freeSlot(state, filler);
-      }
       const open = (index: number): boolean =>
         state.seats[index]?.playerId === null && !reserved.has(index);
-      const free = teamSeat(state, presence.userId, open, host.module.seats.teams?.size ?? 0);
       const wantsSeat =
         parsed.data.asSpectator !== true && state.phase !== "inRound" && !state.lockedByHost;
+      let free = teamSeat(state, presence.userId, open, host.module.seats.teams?.size ?? 0);
+      if (wantsSeat && free === -1 && host.fillWithBots === true) {
+        // A person always outranks a bot that was only filling the seat (Rung design 6.5). The
+        // bot keeps playing until the person arrives: a client that never does costs nothing.
+        free = state.seats
+          .map((slot, index) => slot.bot && slot.cover !== true && !reserved.has(index))
+          .lastIndexOf(true);
+      }
       if (wantsSeat && free !== -1) {
-        state.admissions[presence.sessionId] = { kind: "seat", seat: free, reattach: false };
+        state.admissions[presence.sessionId] = {
+          kind: "seat",
+          seat: free,
+          reattach: false,
+          expiresTs,
+        };
+        return { accept: true };
+      }
+      const spectators =
+        spectatorCount(state.presences) + pending.filter((a) => a.kind === "spectator").length;
+      // The bench (Rung design 8.3): whoever was moved off a seat in this private room, and
+      // whoever comes to it to play and finds no seat, is a member and waits for the next seat.
+      // The friend check and the spectators setting are for watchers.
+      const benched = state.bench?.includes(presence.userId) === true;
+      const comesToPlay = parsed.data.asSpectator !== true && !state.lockedByHost;
+      if (state.mode === "private" && (benched || comesToPlay)) {
+        if (!benched && spectators >= config.maxSpectators) {
+          return { accept: false, code: ErrorCodes.table.full };
+        }
+        const friends = friendsAmong(presence.userId, seatedPlayerIds(state));
+        state.admissions[presence.sessionId] = {
+          kind: "spectator",
+          seatNext: true,
+          ...(friends.length > 0 ? { friendOf: friends } : {}),
+          expiresTs,
+        };
         return { accept: true };
       }
       const spectatorsAllowed = state.rules.settings?.spectators !== false;
-      const spectators =
-        spectatorCount(state.presences) + pending.filter((a) => a.kind === "spectator").length;
       if (!spectatorsAllowed || spectators >= config.maxSpectators) {
         return {
           accept: false,
@@ -1297,6 +1488,7 @@ export function tableCore<S, M, V, E, R>(
         kind: "spectator",
         ...(late ? { seatNext: true } : {}),
         ...(friendOf.length > 0 ? { friendOf } : {}),
+        expiresTs,
       };
       return { accept: true };
     },
@@ -1304,12 +1496,26 @@ export function tableCore<S, M, V, E, R>(
     join(state, presences, now) {
       const emit = emitFor(state, now);
       for (const info of presences) {
-        const admission = state.admissions[info.sessionId] ?? { kind: "spectator" };
+        let admission: Admission = state.admissions[info.sessionId] ?? { kind: "spectator" };
         state.admissions = without(state.admissions, info.sessionId);
+        if (admission.kind === "seat" && !admission.reattach) {
+          // The seat was promised a moment ago. If a round began or someone else sat down in
+          // between, the newcomer waits for the next seat; a bot that kept it warm goes now.
+          const promised = state.seats[admission.seat];
+          const gone =
+            promised === undefined ||
+            state.phase === "inRound" ||
+            (promised.playerId !== null && !promised.bot);
+          if (gone) admission = { kind: "spectator", seatNext: true };
+          else if (promised.bot) freeSlot(state, admission.seat);
+        }
         const displayName = nameOf(info.userId, info.username);
         const record: PresenceRecord = { ...info, node: info.node ?? "", seat: null, displayName };
         let status: "joined" | "reconnected" | "spectating" = "spectating";
-        if (admission.kind === "spectator" && admission.seatNext === true) record.seatNext = true;
+        if (admission.kind === "spectator" && admission.seatNext === true) {
+          record.seatNext = true;
+          onBench(state, info.userId);
+        }
         if (admission.kind === "spectator" && admission.friendOf !== undefined) {
           record.friendOf = [...admission.friendOf];
         }
@@ -1334,6 +1540,7 @@ export function tableCore<S, M, V, E, R>(
             renameClashingBots(state.seats, slot.displayName);
             noteSeated(state, info.userId);
             status = "joined";
+            offBench(state, info.userId);
             state.hostSeat ??= admission.seat;
           }
           attachSession(slot, info.sessionId, now);
@@ -1404,10 +1611,13 @@ export function tableCore<S, M, V, E, R>(
         slot.mic = false;
         slot.disconnectedTs = now;
         if (state.phase === "inRound") {
-          slot.autoPlay = true;
+          // Thulla's auto-play takes the seat at once (R46). In a game that covers absent seats
+          // the player keeps their turn timer first (Rung RGE1): a short drop costs no move.
+          const covered = host.coverAbsent !== undefined;
+          if (!covered) slot.autoPlay = true;
           slot.awaySinceTs ??= now;
           const current = state.round;
-          if (current !== null && current.deadline?.seats.includes(seat) === true) {
+          if (!covered && current !== null && current.deadline?.seats.includes(seat) === true) {
             current.deadline = {
               ...current.deadline,
               autoTs: Math.max(current.deadline.autoTs, now + config.autoPlayDelayMs),
@@ -1424,7 +1634,7 @@ export function tableCore<S, M, V, E, R>(
           );
         } else {
           const wasHost = isHost(state, seat);
-          freeSlot(state, seat);
+          vacate(state, seat, now);
           emit.public("presence", presencePayload(record, slot.displayName, "left"));
           emit.batch.voiceRemovals.push(record.userId);
           if (wasHost) {
@@ -1546,6 +1756,9 @@ export function tableCore<S, M, V, E, R>(
     tick(state, now) {
       const emit = emitFor(state, now);
       if (state.phase === "closing") return emit.batch;
+      dropStaleAdmissions(state, now);
+      const coverAfterMs = host.coverAbsent?.afterDisconnectMs;
+      const droppedAt = state.seats.map((slot) => slot.disconnectedTs);
       for (const [index, slot] of state.seats.entries()) {
         if (slot.playerId === null || slot.connected || slot.disconnectedTs === null) continue;
         if (now - slot.disconnectedTs < config.reconnectWindowMs) continue;
@@ -1570,6 +1783,15 @@ export function tableCore<S, M, V, E, R>(
         }
         finishRound(state, emit, now);
       }
+      if (coverAfterMs !== undefined && state.phase === "inRound") {
+        // RG43: away this long, the bot plays the seat until the player is back. Checked after
+        // the timers, so a turn timer ending on the same tick is the timeout rule's (RGE1).
+        for (const [index, slot] of state.seats.entries()) {
+          const since = droppedAt[index] ?? null;
+          if (slot.playerId === null || slot.connected || slot.autoPlay || since === null) continue;
+          if (now - since >= coverAfterMs) slot.autoPlay = true;
+        }
+      }
       if (
         state.phase === "roundEnded" &&
         state.rematchDeadlineTs !== null &&
@@ -1578,10 +1800,12 @@ export function tableCore<S, M, V, E, R>(
         resolveRematch(state, emit, now);
       }
       const auto = state.autoStart;
-      // A bot table ends once its player has gone (left, not just dropped: they may reconnect),
-      // and never deals to bots alone if the player never arrived.
+      // A matched bot table ends once its player has gone (left, not just dropped: they may
+      // reconnect), and never deals to bots alone if the player never arrived. A private room
+      // with bots waits for its people like any other private room, until the empty-room time.
       if (
         !closing(state) &&
+        state.mode !== "private" &&
         state.seats.some((s) => s.bot) &&
         !state.seats.some((s) => !s.bot && s.playerId !== null && !s.left) &&
         (state.phase !== "lobby" || auto?.startsAtTs !== null || now >= auto.joinDeadlineTs)

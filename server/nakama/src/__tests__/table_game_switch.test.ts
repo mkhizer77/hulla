@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 
 import { tableCore, type PresenceInfo, type TableCore } from "../match/table_core";
+import { without } from "../match/types";
 
 import { T0, broadcasts, payloadOf, presence, sentTo, types } from "./table-helpers";
 import { toyHost, toyModule, type ToyMove, type ToyState } from "./toy-game";
@@ -88,6 +89,13 @@ function startRound(r: Room, count: number): string {
     r.send(`s${String(i)}`, "play_card", { roundId, clientSeq: 1, card: 1 });
   }
   return roundId;
+}
+
+/** Writes a score onto the series the room has played, so a test can follow who it belongs to. */
+function scored(r: Room, points: number[], loserTally: number[]): void {
+  const series = r.state.series;
+  if (series === null) throw new Error("no series");
+  r.state.series = { ...series, points, loserTally };
 }
 
 /** With a target of four and three seats, seat 0's first turn ends the round. */
@@ -238,6 +246,68 @@ describe("switching a room's game", () => {
     expect(r.state.series).toEqual(score);
     r.send("s0", "change_game", { gameId: "rung" });
     expect(r.state.rules).toEqual({ gameId: "rung", overrides: { target: 6 } });
+  });
+
+  it("R50 a player's score comes back with the player when the switch reseated them", () => {
+    // Four play with the host in the last seat; the three-seat game benches u2, and on the way
+    // back u2 sits after the host: two players return in each other's seats.
+    const r = room("private", 4);
+    r.send("s0", "transfer_host", { seat: 3 });
+    for (let i = 0; i < 4; i += 1) r.send(`s${String(i)}`, "ready", { ready: true });
+    r.send("s3", "start_round", {});
+    const roundId = r.state.round?.roundId ?? "";
+    for (let i = 0; i < 4; i += 1) {
+      r.send(`s${String(i)}`, "play_card", { roundId, clientSeq: 1, card: 1 });
+    }
+    finishRound(r, roundId);
+    expect(r.state.phase).toBe("roundEnded");
+    scored(r, [10, 20, 30, 40], [0, 0, 1, 2]);
+    r.send("s3", "change_game", { gameId: "rung" });
+    expect(seatsOf(r)).toEqual(["u0", "u1", "u3"]);
+    r.send("s3", "change_game", { gameId: "thulla" });
+    expect(seatsOf(r)).toEqual(["u0", "u1", "u3", "u2"]);
+    expect(r.state.series?.points).toEqual([10, 20, 40, 30]);
+    expect(r.state.series?.loserTally).toEqual([0, 0, 2, 1]);
+    expect(r.state.seriesPlayers).toEqual(["u0", "u1", "u3", "u2"]);
+  });
+
+  it("R50 two players the host swaps between rounds keep their own scores", () => {
+    const r = room("private", 3);
+    finishRound(r, startRound(r, 3));
+    scored(r, [5, 6, 7], [0, 0, 0]);
+    const dealer = r.state.series?.nextDealerSeat ?? 0;
+    const dealerId = seatsOf(r)[dealer];
+    r.send("s0", "swap_seats", { a: 1, b: 2 });
+    expect(seatsOf(r)).toEqual(["u0", "u2", "u1", null]);
+    expect(r.state.series?.points).toEqual([5, 7, 6]);
+    // The deal stays with the player who was to deal.
+    expect(seatsOf(r)[r.state.series?.nextDealerSeat ?? -1]).toBe(dealerId);
+    // The next round is dealt to the moved score, not a fresh one.
+    for (let i = 0; i < 3; i += 1) r.send(`s${String(i)}`, "ready", { ready: true });
+    r.send("s0", "start_round", {});
+    expect(r.state.series?.points).toEqual([5, 7, 6]);
+    expect(r.state.series?.roundsPlayed).toBe(1);
+  });
+
+  it("when not everyone fits, a connected player keeps a seat before one who dropped", () => {
+    const r = room("private", 4);
+    for (let i = 0; i < 4; i += 1) r.send(`s${String(i)}`, "ready", { ready: true });
+    r.send("s0", "start_round", {});
+    const roundId = r.state.round?.roundId ?? "";
+    for (let i = 0; i < 4; i += 1) {
+      r.send(`s${String(i)}`, "play_card", { roundId, clientSeq: 1, card: 1 });
+    }
+    finishRound(r, roundId);
+    expect(r.state.phase).toBe("roundEnded");
+    // u1 lost the connection and still holds a seat in this private room.
+    const slot = r.state.seats[1];
+    if (slot === undefined) throw new Error("no seat");
+    slot.connected = false;
+    slot.sessionId = null;
+    r.state.presences = without(r.state.presences, "s1");
+    r.send("s0", "change_game", { gameId: "rung" });
+    expect(seatsOf(r)).toEqual(["u0", "u2", "u3"]);
+    expect(Object.values(r.state.presences).every((p) => p.seat !== null)).toBe(true);
   });
 
   it("the new game deals a round to the same seats", () => {

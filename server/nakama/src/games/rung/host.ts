@@ -4,8 +4,10 @@ import {
   legalRungMoves,
   resolveRungRules,
   rungModule,
+  rungFirstDealer,
   rungResults,
   rungRoundStartedEvent,
+  rungSeriesAfterSwitch,
 } from "@hulla/rules-engine";
 import { ErrorCodes, err, ok, ruleError, stateHash } from "@hulla/shared-ts";
 
@@ -30,6 +32,12 @@ import type { Result, RuleError, SeatIndex } from "@hulla/shared-ts";
 export const RUNG_TRICK_MS = 900;
 export const RUNG_PILE_MS = 1_200;
 export const RUNG_CALL_MS = 1_200;
+
+/** RG41: the caller's clock and the court choice's; the turn timer is a table setting. */
+export const RUNG_CALL_SECONDS = 20;
+export const RUNG_COURT_CHOICE_SECONDS = 8;
+/** RG43: a seat this long disconnected is played by the bot. */
+export const RUNG_COVER_AFTER_MS = 20_000;
 
 export const RUNG_MOVE_TYPES: readonly string[] = [
   "play_card",
@@ -263,7 +271,18 @@ export const rungHost: RungHost = {
   module: rungModule,
   viewField: "rungRound",
   // RG43: after two timeouts in a row, or while a player is away, the bot plays the seat.
-  coverAbsent: { afterTimeouts: 2 },
+  // RGE1: a seat that drops keeps its turn timer first; after 20 s away the bot plays it anyway.
+  coverAbsent: { afterTimeouts: 2, afterDisconnectMs: RUNG_COVER_AFTER_MS },
+  // RG4, RG38: the first dealer of a bazi comes from the round seed, not from the host's seat.
+  firstDealer: (seed) => rungFirstDealer(seed),
+  // RGE14: the run of deals won in a row does not carry across a game switch.
+  resumeSeries: rungSeriesAfterSwitch,
+  // RG41: 20 s for the call (longer when the table's turns are longer), 8 s for the court choice.
+  phaseSeconds(phase, turnSeconds) {
+    if (phase === "call") return Math.max(RUNG_CALL_SECONDS, turnSeconds);
+    if (phase === "courtChoice") return RUNG_COURT_CHOICE_SECONDS;
+    return turnSeconds;
+  },
   fillWithBots: true,
   resolveRules(selection, mode) {
     const preset = selection.preset ?? "rung";

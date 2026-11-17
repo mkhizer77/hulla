@@ -53,11 +53,12 @@ describe("lobby: joining and seats", () => {
     expect(sentTo(batch, "s0").map((e) => e.type)).toContain("table_state");
   });
 
-  it("fills the lowest free seat, then seats spectators and rejects a full table", () => {
+  it("fills the lowest free seat, then benches who comes to play and rejects a full room", () => {
     const h = harness({ config: { maxSpectators: 1 } });
     for (let i = 0; i < 4; i += 1) h.join(presence(i));
     expect(h.core.joinAttempt(h.state, presence(4), {}, h.now)).toEqual({ accept: true });
-    expect(h.state.admissions["s4"]).toEqual({ kind: "spectator" });
+    // A private room's member without a seat waits on the bench for the next one.
+    expect(h.state.admissions["s4"]).toMatchObject({ kind: "spectator", seatNext: true });
     h.core.join(h.state, [presence(4)], h.now);
     expect(h.core.joinAttempt(h.state, presence(5), {}, h.now)).toEqual({
       accept: false,
