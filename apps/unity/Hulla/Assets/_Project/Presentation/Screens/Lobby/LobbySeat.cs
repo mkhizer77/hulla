@@ -65,7 +65,18 @@ namespace Hulla.Presentation.Screens.Lobby
             _tag.style.display = DisplayStyle.None;
         }
 
-        public void Show(string name, bool host, bool ready, string? avatar, bool me, bool bot = false)
+        /// <summary>The seat's pair in a game of pairs: 0 is the player's own, 1 the other; null for a game without pairs.</summary>
+        public void SetTeam(int? team)
+        {
+            EnableInClassList("lobby__seat--us", team == 0);
+            EnableInClassList("lobby__seat--them", team == 1);
+        }
+
+        public bool OnMyTeam => ClassListContains("lobby__seat--us");
+
+        public string Tag => _tag.style.display == DisplayStyle.None ? "" : _tag.text;
+
+        public void Show(string name, bool host, bool ready, string? avatar, bool me, bool bot = false, bool partner = false)
         {
             EnableInClassList("lobby__seat--empty", false);
             EnableInClassList("lobby__seat--me", me);
@@ -74,7 +85,7 @@ namespace Hulla.Presentation.Screens.Lobby
             _crown.style.display = host ? DisplayStyle.Flex : DisplayStyle.None;
             _tick.style.display = ready ? DisplayStyle.Flex : DisplayStyle.None;
             _tag.style.display = DisplayStyle.Flex;
-            _tag.text = bot ? UiText.BotTag : host ? UiText.Host : ready ? UiText.Ready : UiText.NotReady;
+            _tag.text = bot ? UiText.BotTag : host ? UiText.Host : partner ? UiText.Partner : ready ? UiText.Ready : UiText.NotReady;
             _tag.EnableInClassList("lobby__tag--host", host);
             _tag.EnableInClassList("lobby__tag--ready", !host && ready);
             _tag.EnableInClassList("lobby__tag--waiting", !host && !ready);

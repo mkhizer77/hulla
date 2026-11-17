@@ -160,10 +160,21 @@ namespace Hulla.Presentation.Screens.Profile
                         ? Strings.Format(UiText.ProfileLineTitle, card.Handle, level, UiText.TitleName(card.Title))
                         : Strings.Format(UiText.ProfileLine, card.Handle, level);
                 _tiles.Clear();
-                Tile(card.Rounds, UiText.StatRounds, false);
-                Tile(card.Escapes, UiText.StatEscapes, false);
-                Tile(card.ThullasGiven, UiText.StatThullas, false);
-                Tile(card.Bhabhis, UiText.StatBhabhi, true);
+                DrawGames(card.Rung != null);
+                if (_rung && card.Rung is { } rung)
+                {
+                    Tile(rung.Deals.ToString("N0", Strings.Culture), UiText.RungStatDeals, false);
+                    Tile(Strings.Format(UiText.Percent, Hulla.Application.Social.RungCard.Percent(rung.DealsWon, rung.Deals)), UiText.RungStatDealsWon, false);
+                    Tile(rung.BazisWon.ToString("N0", Strings.Culture), UiText.RungStatBazisWon, false);
+                    Tile(rung.Courts.ToString("N0", Strings.Culture), UiText.RungStatCourts, false);
+                }
+                else
+                {
+                    Tile(card.Rounds, UiText.StatRounds, false);
+                    Tile(card.Escapes, UiText.StatEscapes, false);
+                    Tile(card.ThullasGiven, UiText.StatThullas, false);
+                    Tile(card.Bhabhis, UiText.StatBhabhi, true);
+                }
                 if (!_filled)
                 {
                     _filled = true;
@@ -202,11 +213,48 @@ namespace Hulla.Presentation.Screens.Profile
             _status.text = _model.ErrorCode != null ? UiText.Error(_model.ErrorCode) : _model.Saved ? UiText.Saved : "";
         }
 
-        private void Tile(long value, string label, bool red)
+        private bool _rung;
+        private VisualElement? _games;
+
+        /// <summary>Which game's numbers show; the switch appears once the player has Rung numbers.</summary>
+        public bool ShowsRung => _rung;
+
+        private void DrawGames(bool both)
+        {
+            if (_games == null)
+            {
+                _games = new VisualElement { name = "stat-games" };
+                _games.AddToClassList("mini-seg");
+                _games.AddToClassList("game-pick");
+                _games.Add(GameItem("stats-thulla", UiText.GameThulla, false));
+                _games.Add(GameItem("stats-rung", UiText.GameRung, true));
+                _tiles.parent.Insert(_tiles.parent.IndexOf(_tiles), _games);
+            }
+
+            _rung &= both;
+            _games.style.display = both ? DisplayStyle.Flex : DisplayStyle.None;
+            _games.Q<Button>("stats-thulla").EnableInClassList("mini-seg__item--on", !_rung);
+            _games.Q<Button>("stats-rung").EnableInClassList("mini-seg__item--on", _rung);
+        }
+
+        private Button GameItem(string name, string label, bool rung)
+        {
+            var item = new Button(() =>
+            {
+                _rung = rung;
+                Refresh();
+            }) { name = name, text = label };
+            item.AddToClassList("mini-seg__item");
+            return item;
+        }
+
+        private void Tile(long value, string label, bool red) => Tile(value.ToString("N0", Strings.Culture), label, red);
+
+        private void Tile(string value, string label, bool red)
         {
             var tile = new VisualElement();
             tile.AddToClassList("profile__tile");
-            var number = new Label(value.ToString("N0", Strings.Culture));
+            var number = new Label(value);
             number.AddToClassList("profile__tile-number");
             number.EnableInClassList("profile__tile-number--red", red);
             tile.Add(number);

@@ -16,6 +16,9 @@ namespace Hulla.Application.Social
             Joinable = joinable;
         }
 
+        /// <summary>The game at the friend's table by wire id ("thulla", "rung"); null away from a table.</summary>
+        public string? Game { get; set; }
+
         public string UserId { get; }
 
         public string Name { get; }

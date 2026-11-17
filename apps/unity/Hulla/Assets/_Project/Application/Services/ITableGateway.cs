@@ -17,6 +17,9 @@ namespace Hulla.Application.Services
 
         Awaitable<Result<TableTicket>> CreateTableAsync(CancellationToken cancellation);
 
+        /// <summary>A private room that plays the named game ("thulla" or "rung") from the start.</summary>
+        Awaitable<Result<TableTicket>> CreateTableAsync(string gameId, CancellationToken cancellation) => CreateTableAsync(cancellation);
+
         Awaitable<Result<TableTicket>> JoinByCodeAsync(string code, CancellationToken cancellation);
 
         /// <summary>The table the player still holds a seat at (table_mine), connected or not; null when none.</summary>

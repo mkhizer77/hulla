@@ -31,6 +31,8 @@ WIDTH = {
     "switch": 102, "btn_play": 476, "btn_create_room": 352, "btn_join_code": 356, "card_daily": 352,
     "icon_gift": 106, "card_soon": 356, "tab_tile": 254, "icon_nav": 112, "badge_count": 60,
     "title_thulla": 458, "title_rung_soon": 200,
+    # Two games (docs/design/two-games.md): Rung's title, kite and cards, drawn on Home and on its page.
+    "title_rung": 520, "kite_rung": 480, "cards_rung": 260,
 }
 
 # The shared kit (art-design/extraction/02_lobby_basant.md): blank plates, buttons and icons every
@@ -52,7 +54,7 @@ SCREEN_WIDTH = {
 # Display height on the 1080 canvas for each text sprite (written at twice this).
 TEXT_HEIGHT = {
     "play_now": 52, "create_room": 40, "join_by_code": 40, "friends_online": 34, "invite": 26,
-    "join": 30, "casual": 34, "ranked": 34, "seat_size": 30, "tagline_thulla": 42, "daily_reward": 30,
+    "join": 30, "casual": 34, "ranked": 34, "seat_size": 30, "tagline_thulla": 42, "tagline_rung": 42, "daily_reward": 30,
     "coming_soon": 26, "nav_home": 36, "nav_friends": 36, "nav_trophies": 36, "nav_shop": 36,
     "digit_3": 58, "digit_4": 58, "digit_5": 58, "digit_6": 58,
 }

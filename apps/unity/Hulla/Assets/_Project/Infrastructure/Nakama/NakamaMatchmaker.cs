@@ -64,6 +64,40 @@ namespace Hulla.Infrastructure.Nakama
             }
         }
 
+        public const int RungSeats = 4;
+
+        public async Awaitable<Result<bool>> SearchRungAsync(CancellationToken cancellation)
+        {
+            var socket = _connection.Socket;
+            if (socket == null)
+            {
+                return Result<bool>.Fail("session.not_signed_in");
+            }
+
+            Attach(socket);
+            try
+            {
+                await RemoveTicketAsync();
+                cancellation.ThrowIfCancellationRequested();
+                _ticket = await socket.AddMatchmakerAsync(
+                    "+properties.game:rung +properties.mode:quick +properties.lane:" + Lane,
+                    RungSeats,
+                    RungSeats,
+                    new Dictionary<string, string> { ["game"] = "rung", ["mode"] = "quick", ["lane"] = Lane },
+                    new Dictionary<string, double> { ["seats"] = RungSeats });
+                return Result<bool>.Ok(true);
+            }
+            catch (OperationCanceledException)
+            {
+                throw;
+            }
+            catch (Exception error)
+            {
+                Debug.LogWarning($"rung matchmaker: {error.Message}");
+                return Result<bool>.Fail("matchmaker.unavailable", error.GetType().Name);
+            }
+        }
+
         public const int RankedSeats = 4;
 
         public async Awaitable<Result<bool>> SearchRankedAsync(int band, CancellationToken cancellation)
@@ -99,7 +133,9 @@ namespace Hulla.Infrastructure.Nakama
             }
         }
 
-        public async Awaitable<Result<TableTicket>> BotTableAsync(int seats, CancellationToken cancellation)
+        public Awaitable<Result<TableTicket>> BotTableAsync(int seats, CancellationToken cancellation) => BotTableAsync(seats, "thulla", cancellation);
+
+        public async Awaitable<Result<TableTicket>> BotTableAsync(int seats, string gameId, CancellationToken cancellation)
         {
             var session = _connection.Session;
             if (session == null)
@@ -109,7 +145,7 @@ namespace Hulla.Infrastructure.Nakama
 
             try
             {
-                var input = new Newtonsoft.Json.Linq.JObject { ["seats"] = seats };
+                var input = new Newtonsoft.Json.Linq.JObject { ["seats"] = seats, ["gameId"] = gameId == "rung" ? "rung" : "thulla" };
                 var response = await _connection.Client.RpcAsync(session, "quick_play_bots", input.ToString(Newtonsoft.Json.Formatting.None), null, cancellation);
                 var body = Newtonsoft.Json.Linq.JObject.Parse(response.Payload);
                 if ((bool?)body["ok"] != true)

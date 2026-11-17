@@ -146,7 +146,16 @@ namespace Hulla.Presentation.Screens.Home
             _join = root.Q<Button>("join");
             _join.text = UiText.JoinTable;
             _status = root.Q<Label>("status");
-            _create.clicked += () => WithName(name => create(name, null));
+            _create.clicked += () => WithName(name =>
+            {
+                if (Page == Rung)
+                {
+                    CreateRung?.Invoke(name, RungSet, null);
+                    return;
+                }
+
+                create(name, null);
+            });
             _join.clicked += () => WithName(name => join(name, _code.value, null));
             var inviteButton = root.Q<Button>("invite");
             inviteButton.text = "";
@@ -156,6 +165,7 @@ namespace Hulla.Presentation.Screens.Home
             _watch = watch;
             _openFriends = openFriends;
             BuildCard(root);
+            BuildGames(root);
             BuildSeats(root);
             BuildMode(root, openRanked != null);
             _quick = root.Q<Button>("quick");
@@ -163,6 +173,12 @@ namespace Hulla.Presentation.Screens.Home
             TextArt.Mark(root.Q<Label>("quick-label"), "play-now").text = UiText.PlayNow;
             _quick.clicked += () => WithName(name =>
             {
+                if (Page == Rung)
+                {
+                    PlayRung?.Invoke(name, null);
+                    return;
+                }
+
                 if (_ranked && openRanked != null)
                 {
                     openRanked(name, null);
@@ -334,34 +350,153 @@ namespace Hulla.Presentation.Screens.Home
             });
         }
 
-        /// <summary>
-        /// Rung is live (the `rung` remote flag): its row on the shelf stops saying "Coming soon" and a
-        /// tap opens a private room that plays Rung.
-        /// </summary>
-        public void OfferRung(VisualElement root, Action<string, string?> play)
-        {
-            var row = root.Q<VisualElement>("game-rung");
-            if (row == null)
-            {
-                return;
-            }
-
-            row.pickingMode = PickingMode.Position;
-            row.AddToClassList("home__soon--live");
-            root.Q<Label>("game-rung-soon").text = UiText.PlayRung;
-            row.RegisterCallback<ClickEvent>(_ => WithName(name => play(name, null)));
-        }
-
-        /// <summary>Whether the Rung row is live; read by tests.</summary>
-        public static bool RungLive(VisualElement root) => root.Q<VisualElement>("game-rung")?.ClassListContains("home__soon--live") == true;
-
-        /// <summary>The Thulla card: the game's name in its own lettering, the line under it and Rung to come.</summary>
+        /// <summary>The two game cards (docs/design/two-games.md): each game's name in its own lettering, its line and who it seats.</summary>
         private static void BuildCard(VisualElement root)
         {
             root.Q<Label>("game-thulla-name").text = UiText.GameThulla;
             TextArt.Mark(root.Q<Label>("game-thulla-line"), "tagline-thulla").text = UiText.GameThullaLine;
+            root.Q<Label>("game-thulla-players").text = UiText.PlayersThreeToSix;
             root.Q<Label>("game-rung-name").text = UiText.GameRung;
-            TextArt.Mark(root.Q<Label>("game-rung-soon"), "coming-soon").text = UiText.ComingSoon;
+            TextArt.Mark(root.Q<Label>("game-rung-line"), "tagline-rung").text = UiText.GameRungLine;
+            root.Q<Label>("game-rung-players").text = UiText.PlayersFour;
+        }
+
+        public const string Thulla = "thulla";
+        public const string Rung = "rung";
+
+        private static readonly string[] RungSets = { "rung", "courtPiece", "hokm" };
+
+        private VisualElement _page = null!;
+        private Label _pageTitle = null!;
+        private Label _pageLine = null!;
+        private Label _pageStats = null!;
+        private Label _setLine = null!;
+        private VisualElement _sets = null!;
+        private Button _cardRung = null!;
+        private Label _rungPlayers = null!;
+        private bool _rungLive;
+
+        /// <summary>The game whose page is open ("thulla" or "rung"); null on Home itself.</summary>
+        public string? Page { get; private set; }
+
+        /// <summary>The rule set chosen on Rung's page: rung, courtPiece or hokm.</summary>
+        public string RungSet { get; private set; } = "rung";
+
+        /// <summary>Raised when a game's page opens or closes, so the shell hides or shows the dock.</summary>
+        public event Action<bool>? PageChanged;
+
+        /// <summary>Rung Quick Play from its page (name, server).</summary>
+        public Action<string, string?>? PlayRung { get; set; }
+
+        /// <summary>A private Rung room with the chosen rule set (name, rule set, server).</summary>
+        public Action<string, string, string?>? CreateRung { get; set; }
+
+        /// <summary>Opens a game's rulebook from its page; null hides the book.</summary>
+        public Action<string>? OpenRulebook { get; set; }
+
+        /// <summary>The line of the player's own numbers on a game's page; null shows the first-game line.</summary>
+        public Func<string, string?>? MyNumbers { get; set; }
+
+        /// <summary>The `rung` remote flag: off shows Rung's card dimmed with "Coming soon".</summary>
+        public bool RungLive
+        {
+            get => _rungLive;
+            set
+            {
+                _rungLive = value;
+                _cardRung.EnableInClassList("home__game--soon", !value);
+                _rungPlayers.text = value ? UiText.PlayersFour : UiText.ComingSoon;
+            }
+        }
+
+        private void BuildGames(VisualElement root)
+        {
+            _page = root.Q<VisualElement>("game-page");
+            _pageTitle = root.Q<Label>("page-title");
+            _pageLine = root.Q<Label>("page-line");
+            _pageStats = root.Q<Label>("page-stats");
+            _setLine = root.Q<Label>("rung-set-line");
+            _sets = root.Q<VisualElement>("rung-sets");
+            _cardRung = root.Q<Button>("card-rung");
+            _rungPlayers = root.Q<Label>("game-rung-players");
+            Stage.Fit(root.Q<VisualElement>("page-holder"), root.Q<VisualElement>("page-stage"), StageWidth, StageHeight);
+            var cardThulla = root.Q<Button>("card-thulla");
+            cardThulla.text = "";
+            cardThulla.tooltip = UiText.GameThulla;
+            cardThulla.clicked += () => OpenPage(Thulla);
+            _cardRung.text = "";
+            _cardRung.tooltip = UiText.GameRung;
+            _cardRung.clicked += () =>
+            {
+                if (_rungLive)
+                {
+                    OpenPage(Rung);
+                }
+            };
+            var back = root.Q<Button>("page-back");
+            back.text = "";
+            back.tooltip = UiText.Back;
+            back.clicked += ClosePage;
+            var book = root.Q<Button>("page-book");
+            book.text = "";
+            book.tooltip = Strings.Text("rulebook.title");
+            book.clicked += () =>
+            {
+                if (Page != null)
+                {
+                    OpenRulebook?.Invoke(Page);
+                }
+            };
+            foreach (var set in RungSets)
+            {
+                var id = set;
+                var chip = new Button { name = "set-" + id, text = Strings.Text(id == "courtPiece" ? "preset.courtPiece.name" : id == "hokm" ? "preset.hokm.name" : "preset.rung.name") };
+                chip.AddToClassList("home__set");
+                chip.clicked += () => ChooseSet(id);
+                _sets.Add(chip);
+            }
+
+            ChooseSet("rung");
+            RungLive = false;
+        }
+
+        private void ChooseSet(string set)
+        {
+            RungSet = set;
+            foreach (var chip in _sets.Children())
+            {
+                chip.EnableInClassList("home__set--on", chip.name == "set-" + set);
+            }
+
+            _setLine.text = Strings.Text(set == "courtPiece" ? "preset.courtPiece.description" : set == "hokm" ? "preset.hokm.description" : "preset.rung.description");
+        }
+
+        /// <summary>Opens a game's page over Home: its options, Play now and Create Room.</summary>
+        public void OpenPage(string game)
+        {
+            Page = game == Rung ? Rung : Thulla;
+            _page.EnableInClassList("home__page--rung", Page == Rung);
+            _page.EnableInClassList("home__page--thulla", Page == Thulla);
+            _page.AddToClassList("home__page--open");
+            _pageTitle.text = Page == Rung ? UiText.GameRung : UiText.GameThulla;
+            _pageLine.text = Page == Rung ? UiText.GameRungLine : UiText.GameThullaLine;
+            _pageLine.ClearClassList();
+            _pageLine.AddToClassList("home__page-line");
+            TextArt.Mark(_pageLine, Page == Rung ? "tagline-rung" : "tagline-thulla");
+            _pageStats.text = MyNumbers?.Invoke(Page) ?? UiText.YourGameNew;
+            PageChanged?.Invoke(true);
+        }
+
+        public void ClosePage()
+        {
+            if (Page == null)
+            {
+                return;
+            }
+
+            Page = null;
+            _page.RemoveFromClassList("home__page--open");
+            PageChanged?.Invoke(false);
         }
 
         /// <summary>Four enamel medallions, 3 to 6; the chosen one wears the gold rim.</summary>

@@ -185,7 +185,7 @@ namespace Hulla.Infrastructure.Nakama
                         (long?)table?["open"] ?? 0,
                         (bool?)table?["joinable"] == true,
                         (bool?)table?["watchable"] == true,
-                        (long?)item["lastSeenTs"]));
+                        (long?)item["lastSeenTs"]) { Game = (string?)table?["gameId"] });
                 }
             }
 

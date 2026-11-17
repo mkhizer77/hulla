@@ -27,6 +27,12 @@ namespace Hulla.Application.Services
         /// </summary>
         Awaitable<Result<TableTicket>> BotTableAsync(int seats, CancellationToken cancellation);
 
+        /// <summary>A Rung search: exactly four seats; two who queue as a party sit as partners (Rung design 4).</summary>
+        Awaitable<Result<bool>> SearchRungAsync(CancellationToken cancellation) => SearchAsync(4, false, cancellation);
+
+        /// <summary>A table with bots for the named game ("thulla" or "rung").</summary>
+        Awaitable<Result<TableTicket>> BotTableAsync(int seats, string gameId, CancellationToken cancellation) => BotTableAsync(seats, cancellation);
+
         Awaitable CancelAsync();
     }
 }

@@ -42,9 +42,13 @@ namespace Hulla.Presentation.Screens.Leaderboard
             _me = root.Q<VisualElement>("me");
             _status = root.Q<Label>("status");
             _reset = root.Q<Label>("reset");
+            Navigation.GamePick.Mount(root, () => GameChanged?.Invoke(Navigation.GamePick.Chosen));
             _model.Changed += Refresh;
             Refresh();
         }
+
+        /// <summary>The player picked another game's board.</summary>
+        public Action<GameFilter>? GameChanged { get; set; }
 
         public void Dispose() => _model.Changed -= Refresh;
 

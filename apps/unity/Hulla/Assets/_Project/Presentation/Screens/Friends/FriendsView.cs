@@ -268,7 +268,14 @@ namespace Hulla.Presentation.Screens.Friends
             }, friend =>
             {
                 var presence = PresenceOf?.Invoke(friend.UserId);
-                return presence != null && presence.Joinable ? Strings.Format(UiText.AtTableSeats, presence.OpenSeats) : UiText.InARound;
+                if (presence == null)
+                {
+                    return UiText.InARound;
+                }
+
+                return presence.Joinable
+                    ? Strings.Format(UiText.AtTableSeats, UiText.GameName(presence.Game), presence.OpenSeats)
+                    : Strings.Format(UiText.PlayingGame, UiText.GameName(presence.Game));
             });
             Section(UiText.Requests, Filter(_model.Received, filter), friend => Primary(UiText.Accept, () => _actions.Add(friend.UserId)), friend => friend.Handle != null ? "@" + friend.Handle : "", friend => Dismiss(() => _actions.Remove(friend.UserId)), counted: true);
             Section(UiText.Recent, Filter(_model.Recent, filter), friend => Primary(UiText.Add, () => _actions.Add(friend.UserId)), friend => Strings.Get("ui.rounds_together", friend.Rounds));
