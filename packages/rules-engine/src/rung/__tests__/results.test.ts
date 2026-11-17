@@ -4,7 +4,9 @@ import { rungModule } from "../module";
 import {
   createRungSeries,
   nextRungDealer,
+  rungFirstDealer,
   rungResults,
+  rungSeriesAfterSwitch,
   rungSeriesUpdate,
   type RungRoundResult,
   type RungSeriesState,
@@ -84,6 +86,16 @@ describe("the bazi", () => {
     });
   });
 
+  it("RG4_RG38_the_first_dealer_of_a_bazi_is_drawn_from_the_round_seed", () => {
+    const seed = (fill: number): Uint8Array => new Uint8Array(32).fill(fill);
+    // The same seed always names the same dealer, so a replay deals the same bazi.
+    expect(rungFirstDealer(seed(7))).toBe(rungFirstDealer(seed(7)));
+    const drawn = Array.from({ length: 64 }, (_, fill) => rungFirstDealer(seed(fill)));
+    expect(drawn.every((seat) => Number.isInteger(seat) && seat >= 0 && seat < 4)).toBe(true);
+    // Every seat deals first for some seed: the host seat has no claim on it.
+    expect(new Set(drawn).size).toBe(4);
+  });
+
   it("RG34_the_first_team_to_the_target_wins_the_bazi", () => {
     const rules = { target: 5 } as const;
     const four = after([WIN_A, COURT_A], rules);
@@ -155,6 +167,37 @@ describe("the bazi", () => {
     expect(court.streakDeals).toBe(1);
     // A new bazi starts the count again.
     expect(createRungSeries(0).streakDeals).toBe(0);
+  });
+
+  it("RGE14_the_run_of_seven_does_not_carry_across_a_game_switch", () => {
+    const courts = { scoring: "courts" } as const;
+    const run = after([WIN_A, WIN_A, WIN_A, COURT_B], courts);
+    const six = after(
+      Array.from({ length: 6 }, () => WIN_A),
+      courts,
+    );
+    expect(six.streakDeals).toBe(6);
+    const back = rungSeriesAfterSwitch(six) as RungSeriesState;
+    expect(back.streakTeam).toBeNull();
+    expect(back.streakDeals).toBe(0);
+    // The score itself stays.
+    expect(back.dealsWon).toEqual(six.dealsWon);
+    expect(back.courts).toEqual(six.courts);
+    expect(back.roundsPlayed).toBe(6);
+    expect((rungSeriesAfterSwitch(run) as RungSeriesState).courts).toEqual(run.courts);
+    // The next win after the switch is the first of a new run, not the seventh.
+    const next = rungSeriesUpdate(back, result(WIN_A, courts)) as RungSeriesState;
+    expect(next.streakDeals).toBe(1);
+    expect(next.courts).toEqual(six.courts);
+    // Another game's score is left alone.
+    const plain = {
+      roundsPlayed: 1,
+      points: [1, 0, 0],
+      loserTally: [0, 0, 1],
+      nextDealerSeat: 1,
+      finished: false,
+    };
+    expect(rungSeriesAfterSwitch(plain)).toBe(plain);
   });
 
   it("starts a Rung score when it is handed a plain series", () => {

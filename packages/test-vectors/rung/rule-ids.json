@@ -19,7 +19,7 @@
     },
     {
       "id": "RG4",
-      "title": "The caller is the seat after the dealer",
+      "title": "The first dealer of a bazi is drawn from the round seed; the caller is the seat after the dealer",
       "scope": "engine"
     },
     {
@@ -179,7 +179,7 @@
     },
     {
       "id": "RG38",
-      "title": "A new bazi starts level with a new dealer",
+      "title": "A new bazi starts level with a new random dealer",
       "scope": "engine",
       "vectorable": false
     },
@@ -266,7 +266,7 @@
     },
     {
       "id": "RGE14",
-      "title": "The run of seven deals is broken by the other team and by a court",
+      "title": "The run of seven deals is broken by the other team, by a court and by a game switch",
       "scope": "engine"
     }
   ]

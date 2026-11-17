@@ -1,3 +1,5 @@
+import { utf8Encode, Xoshiro128StarStar } from "@hulla/shared-ts";
+
 import {
   RUNG_SEAT_COUNT,
   otherTeam,
@@ -106,6 +108,30 @@ export function createRungSeries(firstDealer: SeatIndex): RungSeriesState {
     streakDeals: 0,
     winnerTeam: null,
   };
+}
+
+/**
+ * RG4, RG38: the first dealer of a bazi, drawn from the round seed. The draw has its own stream,
+ * so it never moves the shuffle the same seed commits to (RG5).
+ */
+export function rungFirstDealer(seed: Uint8Array): SeatIndex {
+  const label = utf8Encode("rung:first-dealer:");
+  const bytes = new Uint8Array(label.length + seed.length);
+  bytes.set(label, 0);
+  bytes.set(seed, label.length);
+  return Xoshiro128StarStar.fromSeed(bytes).nextInt(RUNG_SEAT_COUNT);
+}
+
+/**
+ * RGE14: a bazi the room comes back to after another game keeps its score, but the run of deals
+ * won in a row starts again. A series of another shape comes back unchanged.
+ */
+export function rungSeriesAfterSwitch(series: SeriesState): SeriesState {
+  if (!isRungSeries(series)) {
+    return series;
+  }
+  const resumed: RungSeriesState = { ...series, streakTeam: null, streakDeals: 0 };
+  return resumed;
 }
 
 /**
