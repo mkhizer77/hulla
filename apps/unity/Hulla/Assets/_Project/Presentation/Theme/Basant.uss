@@ -11403,3 +11403,12 @@
 .skin--basant .rung-result__panel > .button--quiet:active {
     background-image: url("/Assets/_Project/Presentation/Theme/Art/Basant/Kit/btn-pill-pressed.png");
 }
+
+/* The board keeps its sides in right-to-left scripts: my pair's plate and the medallion are placed by side. */
+.skin--basant .rung-bar .rung-bar__board {
+    flex-direction: row;
+}
+
+.skin--basant .rung-bar .rung-bar__team {
+    flex-direction: column;
+}
