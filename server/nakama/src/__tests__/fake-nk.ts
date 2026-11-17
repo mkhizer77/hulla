@@ -442,6 +442,31 @@ export function memoryNk(): MemoryNk {
     sessionLogout(id: string) {
       loggedOut.push(id);
     },
+    /** One transaction, like Nakama's: a key conflict or a wallet below zero changes nothing. */
+    multiUpdate(
+      _accounts: unknown,
+      writes: nkruntime.StorageWriteRequest[] | null,
+      _deletes: unknown,
+      walletUpdates: nkruntime.WalletUpdate[] | null,
+      updateLedger = false,
+    ) {
+      for (const r of writes ?? []) {
+        const taken = storage.get(storageKey(r.collection, r.userId ?? "", r.key)) !== undefined;
+        if (r.version === "*" && taken) throw new Error("storage version conflict");
+      }
+      for (const w of walletUpdates ?? []) {
+        const current = wallets.get(w.userId) ?? {};
+        for (const [k, v] of Object.entries(w.changeset)) {
+          if ((current[k] ?? 0) + v < 0) throw new Error("wallet: insufficient funds");
+        }
+      }
+      const self = this as unknown as Pick<nkruntime.Nakama, "storageWrite" | "walletUpdate">;
+      const storageWriteAcks = self.storageWrite(writes ?? []);
+      const walletUpdateAcks = (walletUpdates ?? []).map((w) =>
+        self.walletUpdate(w.userId, w.changeset, w.metadata ?? {}, updateLedger),
+      );
+      return { storageWriteAcks, walletUpdateAcks };
+    },
     walletUpdate(
       id: string,
       changeset: Record<string, number>,

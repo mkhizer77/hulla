@@ -76,7 +76,9 @@ function memoryPorts(seasonRunning: boolean): PurchasePorts & {
         claimed.add(`${u}:${id}`);
         return true;
       },
-      update(_u, changeset) {
+      apply(u, id, changeset) {
+        if (claimed.has(`${u}:${id}`)) return null;
+        claimed.add(`${u}:${id}`);
         wallet.gems += changeset["gems"] ?? 0;
         wallet.coins += changeset["coins"] ?? 0;
         return { ...wallet };

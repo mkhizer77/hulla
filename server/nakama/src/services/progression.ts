@@ -1,9 +1,10 @@
+import { botHeavy, seatCover, type RewardContext, type RoundReward } from "./reward_types";
 import { rungReward } from "./rung_progress";
 
-import type { RewardContext, RoundReward } from "./reward_types";
 import type { RoundRecord } from "../match/types";
 
 export type { RewardContext, RoundReward } from "./reward_types";
+export { botHeavy, seatCover } from "./reward_types";
 
 /**
  * XP, levels, titles and per-round coins (GDD 12.2, 12.3): computed on the server from the round
@@ -22,6 +23,10 @@ export const COINS_OTHERS = 25;
 export const COINS_BHABHI = 15;
 export const DAILY_SOFT_CAP = 1_500;
 export const CAPPED_RATE = 0.2;
+/** Bot-heavy tables (GDD 12.3, 8.9): half the coins, full XP for the first rounds of the day. */
+export const BOT_TABLE_COIN_RATE = 0.5;
+export const BOT_TABLE_FULL_XP_ROUNDS = 5;
+export const BOT_TABLE_XP_RATE = 0.5;
 export const STREAK_STEP = 0.1;
 export const STREAK_MAX = 0.5;
 /** Every level grants coins; the amount is an interim choice (OQ-021). */
@@ -68,13 +73,28 @@ export function levelFor(totalXp: number): LevelInfo {
   return { level, intoLevel: remaining, toNext: level >= MAX_LEVEL ? 0 : xpToAdvance(level) };
 }
 
-/** The GDD tables applied to one seat of a completed round. */
+/**
+ * The GDD tables applied to one seat of a completed round. A seat that never acted earns nothing
+ * (OQ-065), and a bot-heavy table pays less so bots cannot be farmed (GDD 12.3, 24.5).
+ */
 export function roundReward(
   record: RoundRecord,
   seat: number,
   ctx: RewardContext,
 ): RoundReward | null {
-  if (record.gameId === "rung") return rungReward(record, seat, ctx);
+  if (seatCover(record, seat) === "all") return null;
+  const reward =
+    record.gameId === "rung" ? rungReward(record, seat, ctx) : thullaReward(record, seat, ctx);
+  if (reward === null || !botHeavy(record)) return reward;
+  const fullXp = (ctx.botRoundsToday ?? 0) < BOT_TABLE_FULL_XP_ROUNDS;
+  return {
+    ...reward,
+    xp: fullXp ? reward.xp : Math.round(reward.xp * BOT_TABLE_XP_RATE),
+    coins: Math.round(reward.coins * BOT_TABLE_COIN_RATE),
+  };
+}
+
+function thullaReward(record: RoundRecord, seat: number, ctx: RewardContext): RoundReward | null {
   const result = record.result;
   if (result === null || !record.completed) return null;
   const bhabhi = result.loserSeat === seat;
@@ -131,6 +151,8 @@ export interface Progress {
   readonly lastReward: LastReward | null;
   /** Baithak points posted from private rooms today, against the daily cap (GDD 12.8). */
   readonly privatePointsToday?: number;
+  /** Rounds at bot-heavy tables today: the first few pay full XP (GDD 8.9). */
+  readonly botRoundsToday?: number;
   readonly updatedTs: number;
 }
 
@@ -196,7 +218,7 @@ export function forDay(progress: Progress, now: number): Progress {
   const today = localDay(now, progress.tzOffsetMinutes);
   return progress.day === today
     ? progress
-    : { ...progress, day: today, coinsToday: 0, privatePointsToday: 0 };
+    : { ...progress, day: today, coinsToday: 0, privatePointsToday: 0, botRoundsToday: 0 };
 }
 
 export interface LevelGrant {
@@ -232,6 +254,7 @@ export function applyReward(
   reward: RoundReward,
   ids: { readonly tableId: string; readonly roundId: string },
   now: number,
+  botTable = false,
 ): Applied {
   const today = forDay(progress, now);
   const xp = today.xp + reward.xp;
@@ -258,6 +281,7 @@ export function applyReward(
       xp,
       level: after,
       coinsToday: today.coinsToday + reward.coins,
+      ...(botTable ? { botRoundsToday: (today.botRoundsToday ?? 0) + 1 } : {}),
       titles: [...today.titles, ...newTitles],
       lastReward,
       updatedTs: now,

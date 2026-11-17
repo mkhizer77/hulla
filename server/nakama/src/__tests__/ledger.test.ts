@@ -26,12 +26,15 @@ function memoryPorts(): LedgerPorts & { readonly updates: string[] } {
       keys.add(k);
       return true;
     },
-    update(u, changeset) {
+    apply(u, s, changeset) {
+      if (keys.has(`${u}/${s}`)) return null;
       const current = balances.get(u) ?? { coins: 0, gems: 0 };
       const next = {
         coins: current.coins + (changeset["coins"] ?? 0),
         gems: current.gems + (changeset["gems"] ?? 0),
       };
+      if (next.coins < 0 || next.gems < 0) throw new Error("wallet: insufficient funds");
+      keys.add(`${u}/${s}`);
       balances.set(u, next);
       updates.push(`${u} ${JSON.stringify(changeset)}`);
       return next;
@@ -123,6 +126,46 @@ describe("the append-only ledger (GDD 13.2, 13.9, D2)", () => {
         expect(summed.gems).toBeGreaterThanOrEqual(0);
       }
     }
+  });
+
+  it("takes the key and the wallet change together: a refused spend leaves no key behind", () => {
+    const m = memoryNk();
+    const ports = nkLedgerPorts(m.nk);
+    credit(ports, { userId: "u1", sourceId: "grant", reason: "test", coins: 1000 });
+    // Two purchases pass the balance check before either writes; the second write is refused.
+    const racing: LedgerPorts = { ...ports, balances: () => ({ coins: 1000, gems: 0 }) };
+    const first = spend(racing, { userId: "u1", sourceId: "purchase:a", reason: "p", coins: 1000 });
+    const second = spend(racing, {
+      userId: "u1",
+      sourceId: "purchase:b",
+      reason: "p",
+      coins: 1000,
+    });
+    expect(first).toMatchObject({ ok: true, applied: true, balances: { coins: 0 } });
+    expect(second).toMatchObject({ ok: false, error: { code: "economy.insufficient_funds" } });
+    expect(ports.applied("u1", "purchase:b")).toBe(false);
+    // The retry is refused again instead of reading as already paid.
+    expect(
+      spend(ports, { userId: "u1", sourceId: "purchase:b", reason: "p", coins: 1000 }),
+    ).toMatchObject({ ok: false, error: { code: "economy.insufficient_funds" } });
+    expect(ports.balances("u1")).toEqual({ coins: 0, gems: 0 });
+  });
+
+  it("a credit whose wallet write fails can be retried and then pays once", () => {
+    const m = memoryNk();
+    const ports = nkLedgerPorts(m.nk);
+    const real = m.nk.multiUpdate.bind(m.nk);
+    let fail = true;
+    m.nk.multiUpdate = (...args: Parameters<typeof real>) => {
+      if (fail) throw new Error("database is away");
+      return real(...args);
+    };
+    const entry = { userId: "u1", sourceId: "iap:t1", reason: "purchase", gems: 650 };
+    expect(() => credit(ports, entry)).toThrow("database is away");
+    expect(ports.applied("u1", "iap:t1")).toBe(false);
+    fail = false;
+    expect(credit(ports, entry)).toMatchObject({ applied: true, balances: { gems: 650 } });
+    expect(credit(ports, entry)).toMatchObject({ applied: false, balances: { gems: 650 } });
   });
 
   it("has no transfer: wallets change only through the ledger, for one account at a time", () => {

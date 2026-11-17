@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 
 import {
   applyReward,
+  botHeavy,
   COINS_PER_LEVEL,
   DAILY_SOFT_CAP,
   EMPTY_PROGRESS,
@@ -10,6 +11,7 @@ import {
   levelGrants,
   localDay,
   roundReward,
+  seatCover,
   touchLogin,
   xpToAdvance,
   type Progress,
@@ -201,5 +203,61 @@ describe("local midnight (GDD 12.3)", () => {
       loginStreak: 1,
       lastLoginDay: "2026-10-16",
     });
+  });
+});
+
+describe("bot tables and covered seats (GDD 12.3, 8.9, OQ-064, OQ-065)", () => {
+  const withBots = (bots: number): RoundRecord => ({
+    ...record(),
+    players: ["u0", "u1", "u2", "u3"].map((p, seat) => (seat < 4 - bots ? p : null)),
+    bots,
+  });
+
+  it("pays half the coins when bots hold half the seats or more", () => {
+    expect(botHeavy(record())).toBe(false);
+    expect(botHeavy(withBots(1))).toBe(false);
+    expect(botHeavy(withBots(2))).toBe(true);
+    expect(roundReward(withBots(1), 0, plain)).toMatchObject({ xp: 50, coins: 60 });
+    expect(roundReward(withBots(3), 0, plain)).toMatchObject({ xp: 50, coins: 30 });
+  });
+
+  it("pays full XP for the first five bot rounds of the day, then half", () => {
+    let progress: Progress = forDay(EMPTY_PROGRESS, T0);
+    const r = withBots(3);
+    for (let i = 0; i < 5; i += 1) {
+      const reward = roundReward(r, 0, { ...plain, botRoundsToday: progress.botRoundsToday ?? 0 });
+      expect(reward?.xp).toBe(50);
+      progress = applyReward(progress, reward!, r, T0 + i, true).progress;
+    }
+    expect(progress.botRoundsToday).toBe(5);
+    expect(roundReward(r, 0, { ...plain, botRoundsToday: 5 })).toMatchObject({ xp: 25, coins: 30 });
+    expect(forDay(progress, T0 + 24 * HOUR).botRoundsToday).toBe(0);
+    // A table of people does not move the counter.
+    expect(
+      applyReward(progress, roundReward(record(), 0, plain)!, record(), T0).progress,
+    ).toMatchObject({ botRoundsToday: 5 });
+  });
+
+  it("pays nothing to a seat that never acted, and tells a mostly covered seat apart", () => {
+    const move = (seat: number, auto: boolean) => ({ seat, move: {}, auto });
+    const r: RoundRecord = {
+      ...record(),
+      moves: [
+        move(0, false),
+        move(0, true),
+        move(0, false),
+        move(1, true),
+        move(1, true),
+        move(2, true),
+        move(2, true),
+        move(2, false),
+      ],
+    };
+    expect(seatCover(r, 0)).toBe("none");
+    expect(seatCover(r, 1)).toBe("all");
+    expect(seatCover(r, 2)).toBe("most");
+    expect(seatCover(r, 3)).toBe("none");
+    expect(roundReward(r, 1, plain)).toBeNull();
+    expect(roundReward(r, 2, plain)).toMatchObject({ coins: 35 });
   });
 });

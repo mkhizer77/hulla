@@ -217,8 +217,7 @@ describe.skipIf(NAKAMA_HOST === undefined)(
       expect(plays.filter((p) => p.seat !== mine).every((p) => p.auto)).toBe(true);
       expect(plays.filter((p) => p.seat !== mine).length).toBeGreaterThan(12);
 
-      // The deal counted: Rung stats on the profile, coins on the board across both games, and
-      // Thulla's own numbers untouched.
+      // The deal counted: Rung stats on the profile, and Thulla's own numbers untouched.
       const end = solo.received.find((e) => e.type === "rung_round_end")?.payload as {
         winnerTeam: number;
       };
@@ -240,8 +239,17 @@ describe.skipIf(NAKAMA_HOST === undefined)(
         "leaderboard_get",
         { board: "weekly", game: "all" },
       );
+      // Three bots is a bot-heavy table: the deal pays coins (half) but stays off the boards.
       expect(board).toMatchObject({ ok: true, game: "all" });
-      expect(board.me?.score).toBeGreaterThan(0);
+      expect(board.me).toBeNull();
+      const wallet = await rpc<{
+        ok: boolean;
+        ledger: { reason: string; changeset: { coins?: number } }[];
+      }>(solo, "wallet_get", {});
+      const paid = wallet.ledger.find((line) => line.reason === "round");
+      expect(paid?.changeset.coins).toBeGreaterThan(0);
+      // At most a won deal with a 52-court (18 + 30), halved.
+      expect(paid?.changeset.coins).toBeLessThanOrEqual(24);
       const thulla = await rpc<{ ok: boolean; me: { score: number } | null }>(
         solo,
         "leaderboard_get",

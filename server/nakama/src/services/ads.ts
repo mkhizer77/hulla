@@ -1,7 +1,7 @@
 import { ErrorCodes, ruleError, sha1Hex, utf8Encode, type RuleError } from "@hulla/shared-ts";
 
 import { itemById, owns, startTrial, type CatalogStore } from "./catalog";
-import { type LedgerPorts } from "./ledger";
+import { claimWith, type LedgerPorts } from "./ledger";
 import { DEFAULT_TZ_OFFSET_MINUTES, localDay, type ProgressStore } from "./progression";
 
 /**
@@ -164,23 +164,18 @@ export function applyAdReward(
     if (today.doubled.includes(key)) {
       return refuse(ruleError(ErrorCodes.economy.alreadyGranted, { reason: "round" }));
     }
-    if (!ports.ledger.claim(userId, `ad:${eventId}`)) {
+    const paid = claimWith(
+      ports.ledger,
+      userId,
+      `ad:${eventId}`,
+      { coins: last.coins },
+      { reason: "rewarded_ad", placement: data.placement, roundId: last.roundId },
+    );
+    if (!paid) {
       return {
         record: today,
         response: { ok: true, applied: false, placement: data.placement, remaining: cap - used },
       };
-    }
-    if (last.coins > 0) {
-      ports.ledger.update(
-        userId,
-        { coins: last.coins },
-        {
-          reason: "rewarded_ad",
-          sourceId: `ad:${eventId}`,
-          placement: data.placement,
-          roundId: last.roundId,
-        },
-      );
     }
     const next: AdRecord = {
       ...today,

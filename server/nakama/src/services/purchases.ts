@@ -1,6 +1,6 @@
 import { BUNDLED_PRODUCTS, type Product, type Products } from "../content/products";
 
-import { nkLedgerPorts, type LedgerPorts } from "./ledger";
+import { claimWith, nkLedgerPorts, type LedgerPorts } from "./ledger";
 import {
   BUNDLED_SEASONS,
   activatePremium,
@@ -106,17 +106,15 @@ export function applyPurchase(
   }
   if (purchase.refundTime > 0) return { ...base, applied: false, reason: "refunded" };
   const sourceId = sourceIdFor(purchase);
-  if (!ports.ledger.claim(callerId, sourceId)) {
-    return { ...base, applied: false, reason: "already_granted" };
-  }
   const grants = product.grants;
-  if (grants.gems !== undefined && grants.gems > 0) {
-    ports.ledger.update(
-      callerId,
-      { gems: grants.gems },
-      { reason: "purchase", sourceId, productId: product.id, store: purchase.store },
-    );
-  }
+  const taken = claimWith(
+    ports.ledger,
+    callerId,
+    sourceId,
+    { gems: grants.gems ?? 0 },
+    { reason: "purchase", productId: product.id, store: purchase.store },
+  );
+  if (!taken) return { ...base, applied: false, reason: "already_granted" };
   for (const itemId of grants.items ?? []) ports.grantItem(callerId, itemId, now);
   const current = ports.entitlements.read(callerId);
   let pendingPass = current.pendingPass;
