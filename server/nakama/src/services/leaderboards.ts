@@ -4,7 +4,7 @@ import { log } from "../infra/log";
 
 import { credit, type LedgerPorts } from "./ledger";
 import { PROFILE_KEY, PROFILES_COLLECTION } from "./profiles";
-import { forDay, nkProgressStore, type Progress } from "./progression";
+import { botHeavy, forDay, nkProgressStore, type Progress } from "./progression";
 
 import type { RoundRecord } from "../match/types";
 
@@ -101,6 +101,8 @@ export function postRoundPoints(
   userId: string,
   seat: number,
 ): number {
+  // Bot-heavy tables stay off the boards (GDD 12.8: bots and vs-AI rounds are excluded).
+  if (botHeavy(record)) return 0;
   const points = pointsEarned(record, seat);
   if (points === 0) return 0;
   const store = nkProgressStore(nk);
@@ -138,7 +140,7 @@ export function postCoinsEarned(
   userId: string,
   coins: number,
 ): void {
-  if (coins <= 0) return;
+  if (coins <= 0 || botHeavy(record)) return;
   for (const key of Object.keys(BOARDS) as BoardKey[]) {
     try {
       nk.leaderboardRecordWrite(boardId("all", key), userId, undefined, coins, 0, {

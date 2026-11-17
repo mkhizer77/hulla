@@ -393,6 +393,8 @@ export interface RoundRecord {
   readonly dealerSeat: SeatIndex;
   readonly seedHex: string;
   readonly players: readonly (string | null)[];
+  /** Seats a bot held this round; absent on older records. */
+  readonly bots?: number;
   readonly moves: readonly { seat: SeatIndex; move: unknown; auto: boolean }[];
   readonly result: RoundResult | null;
   readonly series: SeriesState | null;

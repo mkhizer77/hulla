@@ -1,4 +1,5 @@
-import type { RewardContext, RoundReward } from "./reward_types";
+import { seatCover, type RewardContext, type RoundReward } from "./reward_types";
+
 import type { AchievementMetric } from "../content/achievements";
 import type { MissionMetric } from "../content/missions";
 import type { RoundRecord } from "../match/types";
@@ -138,9 +139,11 @@ export function applyRungToStats(
   const facts = rungDealFacts(record, seat);
   if (facts === null) return stats;
   const r = stats.rung ?? EMPTY_RUNG_STATS;
-  const h = record.highlights[seat] ?? {};
+  // A seat the bot mostly played keeps the team's result but none of the personal numbers (6.5).
+  const own = seatCover(record, seat) === "none";
+  const h = own ? (record.highlights[seat] ?? {}) : {};
   const trumps = { ...r.trumps };
-  if (facts.caller && facts.trump !== null) trumps[facts.trump] += 1;
+  if (own && facts.caller && facts.trump !== null) trumps[facts.trump] += 1;
   return {
     ...stats,
     rung: {
@@ -184,11 +187,12 @@ export function countRungDeal(
     rung_goon_courts: n("rung_goon_courts") + (wonCourt && facts.byDealer ? 1 : 0),
     rung_court52: n("rung_court52") + (facts.won && facts.court52 ? 1 : 0),
     // Calls won in a row: only the caller's own deals move it.
-    rung_call_streak: !facts.caller
-      ? n("rung_call_streak")
-      : facts.won
-        ? n("rung_call_streak") + 1
-        : 0,
+    rung_call_streak:
+      !facts.caller || seatCover(record, seat) !== "none"
+        ? n("rung_call_streak")
+        : facts.won
+          ? n("rung_call_streak") + 1
+          : 0,
     rounds_with_friend: n("rounds_with_friend") + (friendsAtTable > 0 ? 1 : 0),
   };
 }
@@ -197,7 +201,7 @@ export function countRungDeal(
 export function rungMetrics(record: RoundRecord, seat: number, withFriend: boolean): Metrics {
   const facts = rungDealFacts(record, seat);
   if (facts === null) return {};
-  const h = record.highlights[seat] ?? {};
+  const h = seatCover(record, seat) === "none" ? (record.highlights[seat] ?? {}) : {};
   return {
     rounds_played: 1,
     rounds_with_friend: withFriend ? 1 : 0,

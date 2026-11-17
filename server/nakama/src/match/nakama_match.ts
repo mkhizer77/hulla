@@ -21,7 +21,13 @@ import {
   type PresenceStore,
 } from "../services/presence";
 import { applyRoundToStats, nkAreFriends, nkProfileStore } from "../services/profiles";
-import { applyReward, forDay, nkProgressStore, roundReward } from "../services/progression";
+import {
+  applyReward,
+  botHeavy,
+  forDay,
+  nkProgressStore,
+  roundReward,
+} from "../services/progression";
 import { applyRankedRound } from "../services/ranked";
 import { isBanned, readModeration } from "../services/sanctions";
 import { earnPassXp } from "../services/season_pass";
@@ -172,9 +178,10 @@ function rewardPlayer(
       withFriend,
       coinsToday: current.coinsToday,
       loginStreak: current.loginStreak,
+      botRoundsToday: current.botRoundsToday ?? 0,
     });
     if (reward === null) return;
-    const applied = applyReward(current, reward, record, record.endedTs);
+    const applied = applyReward(current, reward, record, record.endedTs, botHeavy(record));
     const welcome = firstRound ? payWelcome(nkLedgerPorts(nk), playerId, "firstRound") : 0;
     progressStore.write(
       playerId,

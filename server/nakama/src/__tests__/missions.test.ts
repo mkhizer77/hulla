@@ -76,7 +76,9 @@ function memoryLedger(): LedgerPorts & { readonly paid: string[] } {
       keys.add(`${u}/${s}`);
       return true;
     },
-    update(u, changeset) {
+    apply(u, s, changeset) {
+      if (keys.has(`${u}/${s}`)) return null;
+      keys.add(`${u}/${s}`);
       const c = balances.get(u) ?? { coins: 0, gems: 0 };
       const n = {
         coins: c.coins + (changeset["coins"] ?? 0),

@@ -10,7 +10,7 @@ import { log } from "../infra/log";
 
 import { grant as grantItem, nkCatalogStore } from "./catalog";
 import { playerNames } from "./leaderboards";
-import { nkLedgerPorts, type LedgerPorts } from "./ledger";
+import { claimWith, nkLedgerPorts, type LedgerPorts } from "./ledger";
 import { nkProgressStore } from "./progression";
 import { nkEntitlementStore } from "./purchases";
 
@@ -378,15 +378,14 @@ export function paySeasonReward(
   const reward = summary.reward;
   if (reward === null || summary.league === null) return false;
   const sourceId = `ranked:${summary.seasonId}:reward`;
-  if (!ports.ledger.claim(userId, sourceId)) return false;
-  const coins = reward.coins ?? 0;
-  if (coins > 0) {
-    ports.ledger.update(
-      userId,
-      { coins },
-      { reason: "ranked_season", sourceId, season: summary.seasonId, league: summary.league },
-    );
-  }
+  const paid = claimWith(
+    ports.ledger,
+    userId,
+    sourceId,
+    { coins: reward.coins ?? 0 },
+    { reason: "ranked_season", season: summary.seasonId, league: summary.league },
+  );
+  if (!paid) return false;
   for (const itemId of reward.items ?? []) ports.grantItem(userId, itemId, now);
   ports.grantTitle(userId, reward.title, now);
   if (reward.frame !== undefined) ports.grantFrame(userId, reward.frame, now);

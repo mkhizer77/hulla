@@ -17,7 +17,10 @@ import {
   RUNG_XP_COURT,
   RUNG_XP_DEAL_LOST,
   RUNG_XP_DEAL_WON,
+  applyRungToStats,
+  countRungDeal,
   rungDealFacts,
+  rungMetrics,
 } from "../services/rung_progress";
 
 import type { RoundRecord } from "../match/types";
@@ -220,5 +223,34 @@ describe("leaderboards per game", () => {
     expect(allBoards()).toHaveLength(6);
     expect(isBoardGame("rung")).toBe(true);
     expect(isBoardGame("ludo")).toBe(false);
+  });
+});
+
+describe("a seat the bot covered (Rung design 6.5, RG43)", () => {
+  const covered: RoundRecord = {
+    ...deal({ callerSeat: 0 }),
+    moves: [
+      { seat: 0, move: {}, auto: false },
+      { seat: 0, move: {}, auto: true },
+      { seat: 0, move: {}, auto: true },
+    ],
+  };
+
+  it("keeps the team's result and drops the personal numbers", () => {
+    const own = applyRungToStats({ ...EMPTY_STATS }, 0, deal({ callerSeat: 0 })).rung;
+    expect(own).toMatchObject({ deals: 1, dealsWon: 1, tricksWon: 4, cuts: 1, pilesTaken: 2 });
+    expect(own?.trumps.S).toBe(1);
+    const bot = applyRungToStats({ ...EMPTY_STATS }, 0, covered).rung;
+    expect(bot).toMatchObject({ deals: 1, dealsWon: 1, tricksWon: 0, cuts: 0, pilesTaken: 0 });
+    expect(bot?.trumps.S).toBe(0);
+  });
+
+  it("does not move the call streak or the pile and cut missions", () => {
+    expect(countRungDeal({ rung_call_streak: 2 }, covered, 0, 0).rung_call_streak).toBe(2);
+    expect(rungMetrics(covered, 0, false)).toMatchObject({
+      rung_deals_won: 1,
+      rung_piles: 0,
+      rung_cuts: 0,
+    });
   });
 });

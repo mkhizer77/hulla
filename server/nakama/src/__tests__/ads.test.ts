@@ -97,7 +97,9 @@ function memoryPorts(
         claimed.push(`${u}:${id}`);
         return true;
       },
-      update(_u, changeset) {
+      apply(u, id, changeset) {
+        if (claimed.includes(`${u}:${id}`)) return null;
+        claimed.push(`${u}:${id}`);
         wallet.coins += changeset["coins"] ?? 0;
         return { coins: wallet.coins, gems: 0 };
       },

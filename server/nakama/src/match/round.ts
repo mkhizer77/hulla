@@ -395,6 +395,7 @@ export function roundRecord<S, M, V, E, R>(
     seedHex: round.seedHex,
     // Bots are not players for stats, rewards or recent players: they count as empty seats.
     players: state.seats.slice(0, round.seatCount).map((s) => (s.bot ? null : s.playerId)),
+    bots: state.seats.slice(0, round.seatCount).filter((s) => s.bot).length,
     moves: round.moves.map((m) => ({ seat: m.seat, move: m.move, auto: m.auto })),
     result: round.result,
     series: state.series,

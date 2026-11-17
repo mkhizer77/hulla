@@ -9,6 +9,7 @@ import {
   gemsForRank,
   payTopBrackets,
   pointsEarned,
+  postCoinsEarned,
   postRoundPoints,
   PRIVATE_POINTS_DAILY_CAP,
 } from "../services/leaderboards";
@@ -125,6 +126,19 @@ describe("Baithak points on the boards (GDD 12.8, R50)", () => {
     expect(
       parse(rpcLeaderboardGet({ env: {} } as unknown as nkruntime.Context, log, m.nk, "{}")),
     ).toMatchObject({ ok: false });
+  });
+
+  it("keeps bot-heavy tables off every board (GDD 12.8)", () => {
+    const m = memoryNk();
+    const log = fakeLogger();
+    ensureLeaderboards(m.nk, log);
+    const solo: RoundRecord = { ...record("public"), players: ["u0", null, null, null], bots: 3 };
+    expect(postRoundPoints(m.nk, log, solo, "u0", 0)).toBe(0);
+    postCoinsEarned(m.nk, log, solo, "u0", 60);
+    expect(m.boards.get(BOARDS.weekly.id)?.get("u0")).toBeUndefined();
+    expect(m.boards.get("all_weekly")?.get("u0")).toBeUndefined();
+    const oneBot: RoundRecord = { ...record("public"), players: ["u0", "u1", "u2", null], bots: 1 };
+    expect(postRoundPoints(m.nk, log, oneBot, "u0", 0)).toBeGreaterThan(0);
   });
 
   it("pays the top brackets once when a board resets", () => {

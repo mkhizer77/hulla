@@ -27,13 +27,18 @@ export interface Balances {
 export interface LedgerPorts {
   /** Whether this source id was applied before. */
   applied(userId: string, sourceId: string): boolean;
-  /** True when the key was new and is now taken; false when the source id was already applied. */
+  /** Takes the key with no wallet change, for grants that carry no currency. True when it was new. */
   claim(userId: string, sourceId: string): boolean;
-  update(
+  /**
+   * Takes the key and changes the wallet in one transaction, so neither happens without the
+   * other. Null when the source id was already applied; throws when the wallet refuses.
+   */
+  apply(
     userId: string,
+    sourceId: string,
     changeset: Readonly<Record<string, number>>,
     metadata: Record<string, unknown>,
-  ): Balances;
+  ): Balances | null;
   balances(userId: string): Balances;
 }
 
@@ -68,15 +73,34 @@ export function credit(ports: LedgerPorts, entry: LedgerEntry): LedgerResponse {
   if (Object.keys(changeset).length === 0) {
     return { ok: true, applied: false, balances: ports.balances(entry.userId) };
   }
-  if (!ports.claim(entry.userId, entry.sourceId)) {
-    return { ok: true, applied: false, balances: ports.balances(entry.userId) };
-  }
-  const balances = ports.update(entry.userId, changeset, {
+  const balances = ports.apply(entry.userId, entry.sourceId, changeset, {
     reason: entry.reason,
     sourceId: entry.sourceId,
     ...(entry.metadata ?? {}),
   });
+  if (balances === null) {
+    return { ok: true, applied: false, balances: ports.balances(entry.userId) };
+  }
   return { ok: true, applied: true, balances };
+}
+
+/**
+ * Takes a source id for a grant that may or may not carry currency: with a changeset the key and
+ * the wallet change land together, without one only the key is taken. False when already applied.
+ */
+export function claimWith(
+  ports: LedgerPorts,
+  userId: string,
+  sourceId: string,
+  changeset: Readonly<Record<string, number>>,
+  metadata: Record<string, unknown>,
+): boolean {
+  const amounts: Record<string, number> = {};
+  for (const [currency, amount] of Object.entries(changeset)) {
+    if (amount !== 0) amounts[currency] = amount;
+  }
+  if (Object.keys(amounts).length === 0) return ports.claim(userId, sourceId);
+  return ports.apply(userId, sourceId, amounts, { ...metadata, sourceId }) !== null;
 }
 
 /** Takes from one account, refusing to go below zero; idempotent the same way. */
@@ -97,14 +121,18 @@ export function spend(ports: LedgerPorts, entry: LedgerEntry): LedgerResponse {
   ) {
     return { ok: false, error: ruleError(ErrorCodes.economy.insufficientFunds) };
   }
-  if (!ports.claim(entry.userId, entry.sourceId)) {
-    return { ok: true, applied: false, balances: current };
+  let balances: Balances | null;
+  try {
+    balances = ports.apply(entry.userId, entry.sourceId, changeset, {
+      reason: entry.reason,
+      sourceId: entry.sourceId,
+      ...(entry.metadata ?? {}),
+    });
+  } catch {
+    // Another spend got there between the check and the write: nothing was taken and no key is held.
+    return { ok: false, error: ruleError(ErrorCodes.economy.insufficientFunds) };
   }
-  const balances = ports.update(entry.userId, changeset, {
-    reason: entry.reason,
-    sourceId: entry.sourceId,
-    ...(entry.metadata ?? {}),
-  });
+  if (balances === null) return { ok: true, applied: false, balances: current };
   return { ok: true, applied: true, balances };
 }
 
@@ -124,33 +152,43 @@ export function nkLedgerPorts(nk: nkruntime.Nakama): LedgerPorts {
     }
     return balancesOf((wallet as Record<string, number> | undefined) ?? {});
   };
+  const applied = (userId: string, sourceId: string): boolean =>
+    nk.storageRead([{ collection: LEDGER_KEYS_COLLECTION, key: sourceId, userId }]).length > 0;
+  const keyWrite = (userId: string, sourceId: string): nkruntime.StorageWriteRequest => ({
+    collection: LEDGER_KEYS_COLLECTION,
+    key: sourceId,
+    userId,
+    value: { ts: Date.now() },
+    version: "*",
+    permissionRead: 0,
+    permissionWrite: 0,
+  });
   return {
-    applied(userId, sourceId) {
-      return (
-        nk.storageRead([{ collection: LEDGER_KEYS_COLLECTION, key: sourceId, userId }]).length > 0
-      );
-    },
+    applied,
     claim(userId, sourceId) {
       try {
-        nk.storageWrite([
-          {
-            collection: LEDGER_KEYS_COLLECTION,
-            key: sourceId,
-            userId,
-            value: { ts: Date.now() },
-            version: "*",
-            permissionRead: 0,
-            permissionWrite: 0,
-          },
-        ]);
+        nk.storageWrite([keyWrite(userId, sourceId)]);
         return true;
       } catch {
         return false;
       }
     },
-    update(userId, changeset, metadata) {
-      const result = nk.walletUpdate(userId, { ...changeset }, metadata, true);
-      return balancesOf(result.updated);
+    apply(userId, sourceId, changeset, metadata) {
+      try {
+        const result = nk.multiUpdate(
+          null,
+          [keyWrite(userId, sourceId)],
+          null,
+          [{ userId, changeset: { ...changeset }, metadata }],
+          true,
+        );
+        const ack = result.walletUpdateAcks[0];
+        return ack === undefined ? read(userId) : balancesOf(ack.updated);
+      } catch (error) {
+        // The key was there already, or the wallet refused; only the first is "already applied".
+        if (applied(userId, sourceId)) return null;
+        throw error;
+      }
     },
     balances: read,
   };
