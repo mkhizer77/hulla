@@ -775,6 +775,8 @@ export function tableMatchHandler(
             tableId: state.tableId,
             present: record !== undefined,
             seat: record?.seat ?? null,
+            // The bench of a private room keeps the microphone (Rung design 8.3).
+            bench: record !== undefined && record.seat === null && record.seatNext === true,
             // Whether the user still owns a seat, connected or not: Home offers Rejoin while it does.
             seated: state.phase !== "closing" && state.seats.some((s) => s.playerId === userId),
             code: state.code,
