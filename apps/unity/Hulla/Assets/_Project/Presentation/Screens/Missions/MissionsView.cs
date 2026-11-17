@@ -156,7 +156,7 @@ namespace Hulla.Presentation.Screens.Missions
                 else if (mission.Claimable)
                 {
                     var id = mission.Id;
-                    var claim = new Button(() => _claim(id)) { text = Strings.Format(UiText.ClaimCoins, mission.Coins) };
+                    var claim = new Button(() => _claim(id)) { text = mission.Gems > 0 ? Strings.Format(UiText.ClaimCoinsGems, mission.Coins, mission.Gems) : Strings.Format(UiText.ClaimCoins, mission.Coins) };
                     claim.AddToClassList("chip");
                     claim.AddToClassList("chip--on");
                     claim.AddToClassList("mission__claim");

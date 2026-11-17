@@ -25,7 +25,7 @@ namespace Hulla.Games.Thulla
     /// overlay with the rematch vote. It renders from the model; the scheduler only decides how long
     /// each event holds the stage.
     /// </summary>
-    public sealed class ThullaTableView : CardTableView, IEventPresenter, IDisposable
+    public sealed class ThullaTableView : CardTableView, IEventPresenter, IRoundResults, IDisposable
     {
         /// <summary>The thulla moment never delays the next turn by more than this (GDD 14.6).</summary>
         private const float ThullaMomentSeconds = 1.2f;

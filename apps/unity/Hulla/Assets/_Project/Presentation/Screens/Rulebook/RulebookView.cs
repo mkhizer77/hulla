@@ -11,7 +11,8 @@ namespace Hulla.Presentation.Screens.Rulebook
         private readonly ScrollView _scroll;
         private readonly Dictionary<string, VisualElement> _sections = new Dictionary<string, VisualElement>();
 
-        public RulebookView(VisualElement root, string title, IReadOnlyList<RulebookSection> sections, Action close, string? openAt = null)
+        /// <param name="otherGame">The other game's rulebook, as a first chip in the contents row; null for none.</param>
+        public RulebookView(VisualElement root, string title, IReadOnlyList<RulebookSection> sections, Action close, string? openAt = null, (string Label, Action Open)? otherGame = null)
         {
             root.Q<Label>("title").text = title;
             var closeButton = root.Q<Button>("close");
@@ -21,6 +22,15 @@ namespace Hulla.Presentation.Screens.Rulebook
             var list = root.Q<VisualElement>("list");
             // The contents as a chip row (design: Rulebook): a tap scrolls to the section.
             var contents = root.Q<VisualElement>("contents");
+            if (contents != null && otherGame is { } other)
+            {
+                var swap = new Button(other.Open) { name = "other-game", text = other.Label };
+                swap.AddToClassList("chip");
+                swap.AddToClassList("rulebook__chip");
+                swap.AddToClassList("rulebook__chip--game");
+                contents.Add(swap);
+            }
+
             foreach (var section in sections)
             {
                 var box = new VisualElement();

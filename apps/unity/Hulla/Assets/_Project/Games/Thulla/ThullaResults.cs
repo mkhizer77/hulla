@@ -28,9 +28,7 @@ namespace Hulla.Games.Thulla
         private readonly Func<long, string> _nameOf;
         private readonly Func<long, string?> _avatarOf;
         private long _shownSeconds = -1;
-        private readonly Label _reward;
-        private readonly Button _double;
-        private Action? _onDouble;
+        private readonly Hulla.Games.Shared.RoundRewards _rewards;
         private readonly Button _share;
         private readonly Button _fair;
         private readonly Button _changeRules;
@@ -56,12 +54,8 @@ namespace Hulla.Games.Thulla
             _playAgain.clicked += playAgain;
             _onPlayAgain = playAgain;
             _status = root.Q<Label>("result-status");
-            _reward = root.Q<Label>("result-reward");
-            // The rewarded 2x coins (GDD 13.6), under the reward line; hidden unless offered.
-            _double = new Button(() => _onDouble?.Invoke()) { name = "result-double" };
-            _double.AddToClassList("results__double");
-            _double.style.display = DisplayStyle.None;
-            _reward.parent.Insert(_reward.parent.IndexOf(_reward) + 1, _double);
+            // The reward line, the rewarded 2x coins under it (GDD 13.6) and the level bar, shared with Rung.
+            _rewards = new Hulla.Games.Shared.RoundRewards(root.Q<Label>("result-reward"), root.Q<VisualElement>("result-level"), root.Q<VisualElement>("result-level-fill"), root.Q<Label>("result-level-text"));
             _share = root.Q<Button>("result-share");
             _share.text = "";
             _share.tooltip = UiText.ShareResult;
@@ -80,10 +74,6 @@ namespace Hulla.Games.Thulla
             _changeRules.text = UiText.ChangeRules;
             _changeRules.clicked += () => _onChangeRules?.Invoke();
             _changeRules.style.display = DisplayStyle.None;
-            _level = root.Q<VisualElement>("result-level");
-            _levelFill = root.Q<VisualElement>("result-level-fill");
-            _levelText = root.Q<Label>("result-level-text");
-            _level.style.display = DisplayStyle.None;
             _leaveButton = root.Q<Button>("result-leave");
             // Underlined, a quiet link rather than a button (concept: Results): the words sit on a line of their own.
             _leaveButton.text = "";
@@ -93,21 +83,13 @@ namespace Hulla.Games.Thulla
             _leaveButton.clicked += () => Leave?.Invoke();
         }
 
-        private readonly VisualElement _level;
-        private readonly VisualElement _levelFill;
-        private readonly Label _levelText;
         private readonly Button _leaveButton;
 
         /// <summary>Leave the table, a plain plank at the bottom so nobody leaves by accident (design: Results).</summary>
         public Action? Leave { get; set; }
 
         /// <summary>The level bar under the reward line: the level reached and how far into the next.</summary>
-        public void ShowLevel(long level, float fraction)
-        {
-            _level.style.display = DisplayStyle.Flex;
-            _levelFill.style.width = Length.Percent(Math.Clamp(fraction, 0.04f, 1f) * 100f);
-            _levelText.text = Strings.Format(UiText.LevelN, level);
-        }
+        public void ShowLevel(long level, float fraction) => _rewards.ShowLevel(level, fraction);
 
         /// <summary>Shares the result as a card (GDD 10.9); null hides the button (the tutorial).</summary>
         public Action? Share
@@ -142,16 +124,10 @@ namespace Hulla.Games.Thulla
         }
 
         /// <summary>The round's XP, coins and any level-up (GDD 14.8), once the server has paid it.</summary>
-        public void ShowReward(string? text) => _reward.text = text ?? "";
+        public void ShowReward(string? text) => _rewards.ShowReward(text);
 
         /// <summary>Offers 2x coins for a rewarded ad; a null text hides it, a null action shows it waiting.</summary>
-        public void OfferDouble(string? text, Action? onTap)
-        {
-            _double.style.display = text == null ? DisplayStyle.None : DisplayStyle.Flex;
-            _double.text = text ?? "";
-            _onDouble = onTap;
-            _double.SetEnabled(onTap != null);
-        }
+        public void OfferDouble(string? text, Action? onTap) => _rewards.OfferDouble(text, onTap);
 
         /// <summary>Who may get an "Add friend" chip; null hides the chips.</summary>
         public Func<string, bool>? CanAdd { get; set; }
@@ -431,39 +407,9 @@ namespace Hulla.Games.Thulla
 
         private void FriendChips(TableModel model)
         {
-            if (CanAdd == null || AddFriend == null)
+            var row = Hulla.Games.Shared.RoundRewards.FriendChips(model, CanAdd, AddFriend);
+            if (row != null)
             {
-                return;
-            }
-
-            var row = new VisualElement();
-            row.AddToClassList("chips");
-            foreach (var seat in model.Seats)
-            {
-                if (!seat.Occupied || seat.Seat == model.MySeat || seat.PlayerId == null || !CanAdd(seat.PlayerId))
-                {
-                    continue;
-                }
-
-                var id = seat.PlayerId;
-                var chip = new Button { text = Strings.Format(UiText.AddNamePlus, seat.DisplayName ?? "?") };
-                chip.AddToClassList("chip");
-                chip.clicked += () =>
-                {
-                    AddFriend(id);
-                    chip.SetEnabled(false);
-                    chip.text = UiText.RequestSent;
-                };
-                row.Add(chip);
-            }
-
-            if (row.childCount > 0)
-            {
-                // "New here:" and the chips on one line (design: Results).
-                var label = new Label(UiText.NewHere);
-                label.AddToClassList("results__new-here");
-                row.Insert(0, label);
-                row.AddToClassList("results__friends");
                 _body.Add(row);
             }
         }

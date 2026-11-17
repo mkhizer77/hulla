@@ -11431,3 +11431,75 @@
 .skin--basant .rung-bar .rung-bar__team {
     flex-direction: column;
 }
+
+/* ==================== Rung deal result: the reward rows (two-games) ==================== */
+.skin--basant .rung-result__panel > .results__level {
+    height: 70px;
+    margin: 6px 60px 16px 60px;
+}
+
+.skin--basant .rung-result__friends .chip,
+.skin--basant .rung-result__friends .chip:hover,
+.skin--basant .rung-result__friends .chip:active {
+    height: 132px;
+    min-height: 132px;
+    margin: 0 8px;
+    padding: 0 26px;
+    font-size: 38px;
+    background-size: 100% 96px;
+}
+
+/* Dark words on the bar: the white outlined ones fall short of the contrast the screen check asks for. */
+.skin--basant .rung-result__panel .results__level-text {
+    color: rgb(74, 30, 14);
+    -unity-text-outline-width: 0;
+}
+
+/* A search that stopped: the reason moves up under the bar, then Retry or Keep searching, and Cancel. */
+.skin--basant .quick__panel--stopped .quick__status {
+    top: 560px;
+    height: 96px;
+    font-size: 36px;
+}
+
+.skin--basant .quick__actions {
+    left: 0;
+    right: 0;
+    top: 662px;
+    height: 290px;
+    margin-top: 0;
+    align-items: center;
+}
+
+/* 138 on the stage, so the buttons stay a full tap high where the stage is scaled down a little. */
+.skin--basant .quick__actions > .button {
+    width: 620px;
+    min-width: 620px;
+    height: 138px;
+    min-height: 138px;
+    margin: 0 0 8px 0;
+    font-size: 40px;
+}
+
+/* The daily card with what today pays: three lines instead of two while it waits. */
+.skin--basant .home .home__daily-amount {
+    left: 131px;
+    top: 104px;
+    width: 200px;
+    height: 30px;
+    font-size: 26px;
+    -unity-font-style: bold;
+    -unity-text-align: middle-left;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    color: rgb(150, 70, 20);
+}
+
+.skin--basant .home .home__daily--amount .home__daily-title {
+    top: 16px;
+}
+
+.skin--basant .home .home__daily--amount .home__daily-text {
+    top: 54px;
+}

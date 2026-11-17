@@ -150,7 +150,7 @@ namespace Hulla.Games.Thulla
         {
             _list.Clear();
             Choice(UiText.PresetLabel, Array.ConvertAll(Presets, PresetName), Array.IndexOf(Presets, _preset), i => ChoosePreset(Presets[i]));
-            Choice(UiText.TurnTimerLabel, Array.ConvertAll(Timers, t => t == null ? UiText.NoTimer : t + " s"), Array.IndexOf(Timers, _timer), i => ChooseTimer(Timers[i]));
+            Choice(UiText.TurnTimerLabel, Array.ConvertAll(Timers, t => t == null ? UiText.NoTimer : Strings.Format(UiText.SecondsOption, t.Value)), Array.IndexOf(Timers, _timer), i => ChooseTimer(Timers[i]));
             Choice(UiText.LoserTitleLabel, Array.ConvertAll(Titles, TitleName), Array.IndexOf(Titles, _title), i => ChooseTitle(Titles[i]));
             Choice(UiText.EmptyHandLabel, Array.ConvertAll(EmptyHands, EmptyHandName), Array.IndexOf(EmptyHands, _emptyHand), i => ChooseEmptyHand(EmptyHands[i]));
             Choice(UiText.HandTakingLabel, Array.ConvertAll(HandTakings, HandTakingName), Array.IndexOf(HandTakings, _handTaking), i => ChooseHandTaking(HandTakings[i]));

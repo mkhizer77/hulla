@@ -92,7 +92,7 @@ namespace Hulla.Games.Rung
             Draw();
         }
 
-        private static Preset PresetOf(RulesSelection? selection) =>
+        internal static Preset PresetOf(RulesSelection? selection) =>
             selection?.Preset is Preset chosen && Array.IndexOf(Presets, chosen) >= 0 ? chosen : Preset.Rung;
 
         private static long TargetOf(RulesSelection? selection)

@@ -9,6 +9,8 @@ namespace Hulla.Games.Thulla
         public static string GateYes => Strings.Text("tutorial.gate_yes");
         public static string GateNo => Strings.Text("tutorial.gate_no");
         public static string Refresher => Strings.Text("tutorial.refresher");
+
+        public static string RefresherAsk => Strings.Text("tutorial.refresher_ask");
         public static string HowToPlay => Strings.Text("tutorial.how_to_play");
         public static string Next => Strings.Text("tutorial.next");
         public static string Finish => Strings.Text("tutorial.finish");

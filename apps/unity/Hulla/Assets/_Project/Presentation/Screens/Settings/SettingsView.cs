@@ -217,7 +217,7 @@ namespace Hulla.Presentation.Screens.Settings
                 case Page.TextSize:
                     Heading(null);
                     var scales = new[] { TextScale.Normal, TextScale.Large, TextScale.Larger, TextScale.Largest };
-                    var labels = new[] { "100%", "125%", "150%", "200%" };
+                    var labels = Array.ConvertAll(new[] { 100, 125, 150, 200 }, percent => Strings.Format(UiText.Percent, percent));
                     for (var i = 0; i < scales.Length; i++)
                     {
                         var scale = scales[i];
@@ -249,8 +249,8 @@ namespace Hulla.Presentation.Screens.Settings
             Toggle(UiText.FourColourLabel, () => _settings.FourColourDeck, v => _settings.FourColourDeck = v);
             Toggle(UiText.HighContrastLabel, () => _settings.HighContrast, v => _settings.HighContrast = v);
             Toggle(UiText.LargeCardsLabel, () => _settings.LargeCards, v => _settings.LargeCards = v);
-            var percent = _settings.TextScale switch { TextScale.Large => "125%", TextScale.Larger => "150%", TextScale.Largest => "200%", _ => "100%" };
-            Row(UiText.TextSizeLabel, percent, () => ShowPage(Page.TextSize));
+            var percent = _settings.TextScale switch { TextScale.Large => 125, TextScale.Larger => 150, TextScale.Largest => 200, _ => 100 };
+            Row(UiText.TextSizeLabel, Strings.Format(UiText.Percent, percent), () => ShowPage(Page.TextSize));
             Toggle(UiText.ReduceMotionLabel, () => _settings.ReduceMotion, v => _settings.ReduceMotion = v);
             Toggle(UiText.LeftHandedLabel, () => _settings.LeftHanded, v => _settings.LeftHanded = v);
             Heading(UiText.SettingsMore);

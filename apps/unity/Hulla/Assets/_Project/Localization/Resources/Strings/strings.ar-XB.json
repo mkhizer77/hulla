@@ -2488,6 +2488,11 @@
    "smart": false
   },
   {
+   "key": "ranked.keep_searching",
+   "text": "Keep searching",
+   "smart": false
+  },
+  {
    "key": "ranked.leagues",
    "text": "Leagues",
    "smart": false
@@ -2551,6 +2556,11 @@
    "key": "ranked.season_ends",
    "text": "Season {0} ends in {1}",
    "smart": true
+  },
+  {
+   "key": "ranked.timed_out",
+   "text": "Nobody near your rating is searching right now.",
+   "smart": false
   },
   {
    "key": "ranked.title",
@@ -2798,6 +2808,191 @@
    "smart": false
   },
   {
+   "key": "rulebook.rung.away",
+   "text": "When the timer runs out",
+   "smart": false
+  },
+  {
+   "key": "rulebook.rung.away1",
+   "text": "Your lowest card of the led suit is played for you. With none of that suit, or when you lead, it is the lowest card of your longest suit that is not the rung.",
+   "smart": false
+  },
+  {
+   "key": "rulebook.rung.away2",
+   "text": "Miss two turns in a row and a bot plays your seat for your partner's sake. The seat is yours again as soon as you play.",
+   "smart": false
+  },
+  {
+   "key": "rulebook.rung.courts",
+   "text": "Courts",
+   "smart": false
+  },
+  {
+   "key": "rulebook.rung.courts1",
+   "text": "A court is the big win, and it scores more.",
+   "smart": false
+  },
+  {
+   "key": "rulebook.rung.courts2",
+   "text": "Rung: at seven tricks to nothing you choose to take the win or play on. Take all thirteen and it is a court. Lose a pile on the way and you keep the plain win.",
+   "smart": false
+  },
+  {
+   "key": "rulebook.rung.courts3",
+   "text": "Court Piece: the first seven tricks with the other pair on nothing is a court. Play on and take all thirteen for a 52-court, which wins the bazi at once.",
+   "smart": false
+  },
+  {
+   "key": "rulebook.rung.courts4",
+   "text": "Hokm: the first seven tricks with the other pair on nothing is a court, and the deal stops there.",
+   "smart": false
+  },
+  {
+   "key": "rulebook.rung.deal",
+   "text": "The deal and the rung",
+   "smart": false
+  },
+  {
+   "key": "rulebook.rung.deal1",
+   "text": "Everyone gets five cards first. The player after the dealer is the caller and names the rung, the trump suit, from those five.",
+   "smart": false
+  },
+  {
+   "key": "rulebook.rung.deal2",
+   "text": "Then the rest are dealt, so everyone holds thirteen.",
+   "smart": false
+  },
+  {
+   "key": "rulebook.rung.deal3",
+   "text": "In Rung and Court Piece, a caller with no ace, king, queen or jack in the five may ask for new cards, twice at most.",
+   "smart": false
+  },
+  {
+   "key": "rulebook.rung.deal4",
+   "text": "If the caller runs out of time, the rung is their longest suit.",
+   "smart": false
+  },
+  {
+   "key": "rulebook.rung.goal",
+   "text": "The goal",
+   "smart": false
+  },
+  {
+   "key": "rulebook.rung.goal1",
+   "text": "Four players in two pairs. Your partner sits across from you.",
+   "smart": false
+  },
+  {
+   "key": "rulebook.rung.goal2",
+   "text": "A deal has thirteen tricks. The pair that gets seven wins the deal.",
+   "smart": false
+  },
+  {
+   "key": "rulebook.rung.goal3",
+   "text": "Deals score points. The first pair to reach the target wins the bazi.",
+   "smart": false
+  },
+  {
+   "key": "rulebook.rung.pile",
+   "text": "Taking the pile",
+   "smart": false
+  },
+  {
+   "key": "rulebook.rung.pile1",
+   "text": "In Rung (Double Sar) a won trick goes face down onto the pile in the centre. Nobody owns it yet.",
+   "smart": false
+  },
+  {
+   "key": "rulebook.rung.pile2",
+   "text": "Win two tricks in a row yourself and your pair takes the whole pile. The crown marks the player who needs one more.",
+   "smart": false
+  },
+  {
+   "key": "rulebook.rung.pile3",
+   "text": "A trick won by you and the next by your partner does not take the pile; your partner now needs one more.",
+   "smart": false
+  },
+  {
+   "key": "rulebook.rung.pile4",
+   "text": "Whoever wins the thirteenth trick takes what is left in the pile.",
+   "smart": false
+  },
+  {
+   "key": "rulebook.rung.pile5",
+   "text": "Court Piece and Hokm have no pile: every trick counts for the pair that wins it.",
+   "smart": false
+  },
+  {
+   "key": "rulebook.rung.play",
+   "text": "Following suit and cutting",
+   "smart": false
+  },
+  {
+   "key": "rulebook.rung.play1",
+   "text": "The caller leads the first trick with any card. Whoever wins a trick leads the next.",
+   "smart": false
+  },
+  {
+   "key": "rulebook.rung.play2",
+   "text": "Play the led suit if you hold it. If you don't, play any card.",
+   "smart": false
+  },
+  {
+   "key": "rulebook.rung.play3",
+   "text": "A rung played on a suit you don't hold is a kaat, a cut. The highest rung wins the trick; with no rung in it, the highest card of the led suit wins.",
+   "smart": false
+  },
+  {
+   "key": "rulebook.rung.play4",
+   "text": "Only the cards you may play are lit, so a wrong card can't be played.",
+   "smart": false
+  },
+  {
+   "key": "rulebook.rung.scoring",
+   "text": "Scoring a bazi",
+   "smart": false
+  },
+  {
+   "key": "rulebook.rung.scoring1",
+   "text": "Rung and Court Piece: a deal won by the caller's pair is 1 point, by the dealer's pair 2. A court is 3 for the caller's pair and 4 for the dealer's pair.",
+   "smart": false
+  },
+  {
+   "key": "rulebook.rung.scoring2",
+   "text": "Hokm: a deal won is 1 point. A court is 2 for the caller's pair and 3 for the dealer's pair.",
+   "smart": false
+  },
+  {
+   "key": "rulebook.rung.scoring3",
+   "text": "The first pair to the target wins the bazi. A room plays to 5, 7 or 10 points; Quick Play plays to 5.",
+   "smart": false
+  },
+  {
+   "key": "rulebook.rung.scoring4",
+   "text": "While the caller's pair keeps winning, the call stays with it. When the dealer's pair wins a deal, the call moves on to that pair.",
+   "smart": false
+  },
+  {
+   "key": "rulebook.rung.sets",
+   "text": "The three rule sets",
+   "smart": false
+  },
+  {
+   "key": "rulebook.rung.sets1",
+   "text": "Rung (Double Sar): tricks go to the pile and two in a row takes it. A court is all thirteen tricks.",
+   "smart": false
+  },
+  {
+   "key": "rulebook.rung.sets2",
+   "text": "Court Piece (Single Sar): every trick counts at once. A court is the first seven tricks, and all thirteen is a 52-court.",
+   "smart": false
+  },
+  {
+   "key": "rulebook.rung.sets3",
+   "text": "Hokm: every trick counts at once, a deal stops at seven tricks, nobody may ask for new cards, and a court scores less.",
+   "smart": false
+  },
+  {
    "key": "rulebook.this_table",
    "text": "This table",
    "smart": false
@@ -2840,6 +3035,16 @@
   {
    "key": "rulebook.title",
    "text": "Rules",
+   "smart": false
+  },
+  {
+   "key": "rulebook.title_rung",
+   "text": "Rung rules",
+   "smart": false
+  },
+  {
+   "key": "rulebook.title_thulla",
+   "text": "Thulla rules",
    "smart": false
   },
   {
@@ -3160,6 +3365,11 @@
   {
    "key": "rung.tricks",
    "text": "{0} – {1}",
+   "smart": true
+  },
+  {
+   "key": "rung.tricks_line",
+   "text": "Us {0} – {1} Them",
    "smart": true
   },
   {
@@ -3530,6 +3740,11 @@
   {
    "key": "tutorial.refresher",
    "text": "20-second refresher",
+   "smart": false
+  },
+  {
+   "key": "tutorial.refresher_ask",
+   "text": "20-second refresher?",
    "smart": false
   },
   {
@@ -3939,7 +4154,12 @@
   },
   {
    "key": "ui.claim_coins",
-   "text": "Claim {0} coins",
+   "text": "Claim {0:N0} coins",
+   "smart": true
+  },
+  {
+   "key": "ui.claim_coins_gems",
+   "text": "Claim {0:N0} + {1} gems",
    "smart": true
   },
   {
@@ -3969,7 +4189,7 @@
   },
   {
    "key": "ui.coins_doubled",
-   "text": "Coins doubled: +{0}",
+   "text": "Coins doubled: +{0:N0}",
    "smart": true
   },
   {
@@ -3983,6 +4203,11 @@
    "smart": true
   },
   {
+   "key": "ui.coins_short_line",
+   "text": "You are {0} short.",
+   "smart": true
+  },
+  {
    "key": "ui.coming_soon",
    "text": "Coming soon",
    "smart": false
@@ -3990,6 +4215,11 @@
   {
    "key": "ui.connecting",
    "text": "Connecting…",
+   "smart": false
+  },
+  {
+   "key": "ui.connection_lost",
+   "text": "The connection dropped and the table couldn't be reached.",
    "smart": false
   },
   {
@@ -4151,6 +4381,11 @@
    "key": "ui.duration_minutes",
    "text": "{0}m",
    "smart": true
+  },
+  {
+   "key": "ui.earn_coins",
+   "text": "Earn coins in Missions",
+   "smart": false
   },
   {
    "key": "ui.edit_profile",
@@ -5059,17 +5294,17 @@
   },
   {
    "key": "ui.plus_coins",
-   "text": "+{0} coins",
+   "text": "+{0:N0} coins",
    "smart": true
   },
   {
    "key": "ui.plus_reward",
-   "text": "+{0}",
+   "text": "+{0:N0}",
    "smart": true
   },
   {
    "key": "ui.plus_reward_gems",
-   "text": "+{0} · {1} gems",
+   "text": "+{0:N0} · {1} gems",
    "smart": true
   },
   {
@@ -5349,17 +5584,17 @@
   },
   {
    "key": "ui.reward_coins",
-   "text": "{0} coins",
+   "text": "{0:N0} coins",
    "smart": true
   },
   {
    "key": "ui.reward_gems",
-   "text": "{0} coins, {1} gems",
+   "text": "{0:N0} coins, {1} gems",
    "smart": true
   },
   {
    "key": "ui.reward_line",
-   "text": "+{0} XP · +{1} coins",
+   "text": "+{0:N0} XP · +{1:N0} coins",
    "smart": true
   },
   {
@@ -5556,6 +5791,11 @@
    "key": "ui.seats_short",
    "text": "Seats",
    "smart": false
+  },
+  {
+   "key": "ui.seconds_option",
+   "text": "{0} s",
+   "smart": true
   },
   {
    "key": "ui.seconds_short",
@@ -5885,6 +6125,11 @@
   {
    "key": "ui.swapped",
    "text": "Swapped",
+   "smart": false
+  },
+  {
+   "key": "ui.table_closed",
+   "text": "The table has closed.",
    "smart": false
   },
   {
@@ -6219,7 +6464,7 @@
   },
   {
    "key": "ui.you_have",
-   "text": "You have {0} coins · {1} gems",
+   "text": "You have {0:N0} coins · {1:N0} gems",
    "smart": true
   },
   {

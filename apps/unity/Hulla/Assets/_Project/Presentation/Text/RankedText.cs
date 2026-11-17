@@ -7,6 +7,8 @@ namespace Hulla.Presentation.Text
         public static string Play => Strings.Text("ranked.play");
         public static string Searching => Strings.Text("ranked.searching");
         public static string Widened => Strings.Text("ranked.widened");
+        public static string TimedOut => Strings.Text("ranked.timed_out");
+        public static string KeepSearching => Strings.Text("ranked.keep_searching");
         public static string Placement => Strings.Text("ranked.placement");
         public static string PlacementNote => Strings.Text("ranked.placement_note");
         public static string Unranked => Strings.Text("ranked.unranked");

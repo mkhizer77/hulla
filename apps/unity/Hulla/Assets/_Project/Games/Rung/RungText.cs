@@ -12,6 +12,7 @@ namespace Hulla.Games.Rung
         public static string Us => Strings.Text("rung.us");
         public static string Them => Strings.Text("rung.them");
         public static string Tricks => Strings.Text("rung.tricks");
+        public static string TricksLine => Strings.Text("rung.tricks_line");
         public static string Pile => Strings.Text("rung.pile");
         public static string OneMore => Strings.Text("rung.one_more");
         public static string PileTaken => Strings.Text("rung.pile_taken");

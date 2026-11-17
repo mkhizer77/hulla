@@ -76,7 +76,8 @@ namespace Hulla.Presentation.Screens.Shop
         /// </summary>
         private void Refresh()
         {
-            Navigation.TopBar.Wallet(_root, _model.Coins ?? 0, _model.Gems ?? 0);
+            // Until the server has sent the balances the pill is empty, not zero, and nothing is marked out of reach.
+            Navigation.TopBar.Wallet(_root, _model.Coins, _model.Gems);
             _status.text = "";
             foreach (var chip in _categories.Children())
             {
@@ -133,6 +134,9 @@ namespace Hulla.Presentation.Screens.Shop
 
         /// <summary>Loads the catalog again after an error; null hides Retry.</summary>
         public Action? Retry { get; set; }
+
+        /// <summary>Where coins are earned (Missions), offered on an item the coins don't reach; null keeps the plain "short" line.</summary>
+        public Action? EarnCoins { get; set; }
 
         /// <summary>Connects to the phone's store again when the Gems tab found it away; null hides Retry.</summary>
         public Action? StoreRetry { get; set; }
@@ -238,6 +242,7 @@ namespace Hulla.Presentation.Screens.Shop
             var kind = Navigation.Sheet.Line(Strings.Format(UiText.ItemTypeRarity, ItemText.Category(item.Category), ItemText.Rarity(item.Rarity)), "rarity--" + item.Rarity);
             panel.Add(kind);
             Button action;
+            Label? shortLine = null;
             if (item.Equipped)
             {
                 action = Navigation.Sheet.Button(UiText.Equipped, () => { }, "");
@@ -268,6 +273,16 @@ namespace Hulla.Presentation.Screens.Shop
                     _model.Show(StoreView.Category);
                 }, "yes");
             }
+            else if (item.Gems == 0 && EarnCoins != null)
+            {
+                // Short of coins: the button leads to Missions, where coins are earned, and a line says how many.
+                action = Navigation.Sheet.Button(UiText.EarnCoins, () =>
+                {
+                    Navigation.Sheet.Close(panel);
+                    EarnCoins();
+                }, "yes");
+                shortLine = Navigation.Sheet.Line(Strings.Format(UiText.CoinsShortLine, Strings.Format(UiText.PriceCoins, item.Coins - (_model.Coins ?? 0))), "item-sheet__short");
+            }
             else
             {
                 var missing = item.Gems > 0 ? item.Gems - (_model.Gems ?? 0) : item.Coins - (_model.Coins ?? 0);
@@ -282,6 +297,11 @@ namespace Hulla.Presentation.Screens.Shop
             }
 
             panel.Add(action);
+            if (shortLine != null)
+            {
+                panel.Add(shortLine);
+            }
+
             if (!item.Owned && item.Category == "table" && WatchForTrial != null && TrialOffered?.Invoke() == true)
             {
                 var trial = Navigation.Sheet.Button(UiText.TryTableForAd, () =>
@@ -293,7 +313,10 @@ namespace Hulla.Presentation.Screens.Shop
                 panel.Add(trial);
             }
 
-            panel.Add(Navigation.Sheet.Line(Strings.Format(UiText.YouHave, _model.Coins ?? 0, _model.Gems ?? 0), "item-sheet__balance"));
+            if (_model.Coins != null && _model.Gems != null)
+            {
+                panel.Add(Navigation.Sheet.Line(Strings.Format(UiText.YouHave, _model.Coins.Value, _model.Gems.Value), "item-sheet__balance"));
+            }
         }
 
         public static string Price(ShopItem item) =>

@@ -8,6 +8,10 @@ namespace Hulla.Games.Thulla
     /// </summary>
     public static class RulebookText
     {
+        public static string TitleThulla => Strings.Text("rulebook.title_thulla");
+
+        public static string TitleRung => Strings.Text("rulebook.title_rung");
+
         public static string Title => Strings.Text("rulebook.title");
         public static string ThisTable => Strings.Text("rulebook.this_table");
         public static string Basics => Strings.Text("rulebook.basics");
