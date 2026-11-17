@@ -16,6 +16,8 @@ export const VOICE_TOKEN_SECONDS = 600;
 export interface TableMembership {
   readonly present: boolean;
   readonly seat: number | null;
+  /** Without a seat but a member of the room, waiting for the next one (Rung design 8.3). */
+  readonly bench?: boolean;
   readonly tableId: string;
 }
 
@@ -49,7 +51,8 @@ export type VoiceTokenResponse =
 
 /**
  * A short-lived token for the caller's table channel, bound to their user id so a token can't be
- * lent to another account; spectators may listen, seats may speak.
+ * lent to another account; spectators may listen, seats may speak, and so may the bench of a
+ * private room (Rung design 8.3).
  */
 export function voiceToken(deps: VoiceTokenDeps, payload: string): VoiceTokenResponse {
   if (deps.userId === null) return { ok: false, error: ruleError(ErrorCodes.table.notAuthorised) };
@@ -82,7 +85,9 @@ export function voiceToken(deps: VoiceTokenDeps, payload: string): VoiceTokenRes
     identity: deps.userId,
     issueTs: Math.floor(now / 1000),
     expireSeconds: VOICE_TOKEN_SECONDS,
-    publishAudio: membership.seat !== null,
+    publishAudio:
+      membership.seat !== null ||
+      (membership.bench === true && deps.privateTable?.(matchId) === true),
   });
   return {
     ok: true,
@@ -153,11 +158,18 @@ function voiceTokenFor(
         try {
           const answer = JSON.parse(
             nk.matchSignal(matchId, JSON.stringify({ kind: "has_user", userId: ctx.userId ?? "" })),
-          ) as { ok?: boolean; present?: boolean; seat?: number | null; tableId?: string };
+          ) as {
+            ok?: boolean;
+            present?: boolean;
+            seat?: number | null;
+            bench?: boolean;
+            tableId?: string;
+          };
           if (answer.ok !== true || typeof answer.tableId !== "string") return null;
           return {
             present: answer.present === true,
             seat: answer.seat ?? null,
+            bench: answer.bench === true,
             tableId: answer.tableId,
           };
         } catch {
