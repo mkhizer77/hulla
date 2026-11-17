@@ -1211,10 +1211,6 @@
     opacity: 0.6;
 }
 
-.shop__balances {
-    color: var(--accent-saffron);
-}
-
 .shop__tabs {
     flex-shrink: 0;
     margin-bottom: var(--space-1);

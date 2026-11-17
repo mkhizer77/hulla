@@ -223,6 +223,7 @@ namespace Hulla.Screens.Tests
             {
                 var model = new ShopViewModel(new Fakes.Shop());
                 new ShopView(r, model, () => { }, _ => { }, _ => { });
+                model.SetBalances(12480, 35);
                 SegmentBar.Mount(r, ShopTabs, "shop");
                 _ = model.RefreshAsync(default);
             });
@@ -230,6 +231,7 @@ namespace Hulla.Screens.Tests
             {
                 var model = new PassViewModel(new Fakes.Pass());
                 new PassView(r, model, () => 1_000_000_000_000, () => { }, (_, _) => { });
+                TopBar.Wallet(r, 12480, 35);
                 SegmentBar.Mount(r, ShopTabs, "pass");
                 SegmentBar.Mount(r, ShopTabs, "pass");
                 _ = model.RefreshAsync(default);
@@ -238,6 +240,7 @@ namespace Hulla.Screens.Tests
             {
                 var model = new ShopViewModel(new Fakes.Shop());
                 new ShopView(r, model, () => { }, _ => { }, _ => { }, Fakes.ReadyPurchases());
+                model.SetBalances(12480, 8000);
                 SegmentBar.Mount(r, ShopTabs, "shop");
                 _ = model.RefreshAsync(default);
                 model.Show(StoreView.Category);

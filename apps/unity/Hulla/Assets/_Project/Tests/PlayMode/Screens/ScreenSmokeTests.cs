@@ -852,7 +852,8 @@ namespace Hulla.Screens.Tests
                 _ = model.RefreshAsync(default);
             });
             Assert.AreEqual("1,200", root.Q<Label>("coin-amount").text, "the balance on the coin pill");
-            Assert.AreEqual("50 gems", root.Q<Label>("balances").text);
+            Assert.AreEqual("50", root.Q<Label>("gem-amount").text, "the gems beside them");
+            Assert.AreEqual("1,200 coins · 50 gems", root.Q<VisualElement>("coin-pill").tooltip, "both balances for a screen reader");
             var texts = root.Q<VisualElement>("list").Query<TextElement>().ToList().Select(l => l.text).ToList();
             Assert.IsTrue(texts.Any(t => t.StartsWith("This week's spotlight")), "the spotlight card");
             CollectionAssert.Contains(texts, "Marble");

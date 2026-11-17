@@ -48,6 +48,7 @@ namespace Hulla.Presentation.Screens.Home
         private readonly ProgressViewModel? _progress;
         private readonly Label _level;
         private readonly Label _coins;
+        private readonly Label _gems;
         private readonly VisualElement _wallet;
         private readonly Button _hero;
         private readonly Label _heroText;
@@ -73,6 +74,7 @@ namespace Hulla.Presentation.Screens.Home
             Fit(root);
             _level = root.Q<Label>("level");
             _coins = root.Q<Label>("coins");
+            _gems = root.Q<Label>("gems");
             _wallet = root.Q<VisualElement>("wallet");
             _avatar = root.Q<VisualElement>("avatar");
             _avatarInitial = root.Q<Label>("avatar-initial");
@@ -722,6 +724,8 @@ namespace Hulla.Presentation.Screens.Home
             // Before the first sign-in the balance is unknown: no pill rather than an empty one.
             var known = _progress?.BalancesKnown == true;
             _coins.text = known ? _progress!.Coins.ToString("N0", Strings.Culture) : "";
+            _gems.text = known ? _progress!.Gems.ToString("N0", Strings.Culture) : "";
+            _wallet.tooltip = known ? Strings.Format(UiText.Balances, _progress!.Coins, _progress.Gems) : "";
             _wallet.style.visibility = known ? Visibility.Visible : Visibility.Hidden;
         }
 
