@@ -79,7 +79,7 @@ namespace Hulla.Screens.Tests
 
         private static readonly string[] Thirteen = { "AS", "KS", "9S", "4S", "QH", "8H", "2H", "JD", "9D", "5D", "5C", "3C", "2C" };
 
-        private static (Fakes.Gateway Gateway, TableClient Client) NewClient()
+        internal static (Fakes.Gateway Gateway, TableClient Client) NewClient()
         {
             var gateway = new Fakes.Gateway();
             return (gateway, new TableClient(gateway, new TableTicket("m", "K7Q2MX", "t_K7Q2MX"), "me", 1));
@@ -102,11 +102,23 @@ namespace Hulla.Screens.Tests
             gateway.Deliver(MessageTypes.TurnStart, 5, new TurnStart { RoundId = "r_1", Seat = 0, Legal = new List<string> { "QH", "8H", "2H" }, DeadlineTs = 20000, Phase = "play" });
         }
 
-        private static void DeliverResult(Fakes.Gateway gateway) => DeliverResult(gateway, RungOutcomeKind.Win);
+        internal static void DeliverResult(Fakes.Gateway gateway) => DeliverResult(gateway, RungOutcomeKind.Win);
+
+        /// <summary>A deal won at seven tricks to four, with the cards a player still holds when it stops there.</summary>
+        internal static void DeliverResultAtSeven(Fakes.Gateway gateway)
+        {
+            gateway.Deliver(MessageTypes.TableState, 5, Table(GameId.Rung, View(RungPhase.Play, new[] { "9S", "QH" }, 2, Suit.S, 0, null, us: 6, them: 4), 5));
+            DeliverEnd(gateway, RungOutcomeKind.Win);
+        }
 
         private static void DeliverResult(Fakes.Gateway gateway, RungOutcomeKind kind)
         {
             DeliverPlay(gateway);
+            DeliverEnd(gateway, kind);
+        }
+
+        private static void DeliverEnd(Fakes.Gateway gateway, RungOutcomeKind kind)
+        {
             gateway.Deliver(MessageTypes.RungRoundEnd, 6, new RungRoundEnd
             {
                 RoundId = "r_1", WinnerTeam = 0, Kind = kind, ByCaller = true, Counts = new List<long> { 7, kind == RungOutcomeKind.Win ? 4 : 0 }, DealPoints = 1,
@@ -177,6 +189,68 @@ namespace Hulla.Screens.Tests
             }
 
             view.Dispose();
+        }
+
+        [Test]
+        public void TheDealResultShowsWhatTheDealPaidAndWhoToAdd()
+        {
+            var (gateway, client) = NewClient();
+            var view = NewTable(client, out var screen);
+            DeliverResult(gateway);
+            Assert.AreEqual("", view.RewardText, "nothing until the server has paid the deal");
+            view.ShowReward(Strings.Format(UiText.RewardLine, 12, 18));
+            view.ShowLevel(4, 0.5f);
+            view.OfferDouble(UiText.DoubleForAd, () => { });
+            view.SetFriendActions(id => id == "u1", _ => { });
+            StringAssert.Contains("18", screen.Q<Label>("rung-result-reward").text);
+            Assert.AreEqual(DisplayStyle.Flex, screen.Q<VisualElement>("rung-result-level").style.display.value);
+            Assert.AreEqual(DisplayStyle.Flex, screen.Q<Button>("rung-result-double").style.display.value);
+            Assert.AreEqual(1, screen.Q<VisualElement>("rung-result-friends").Query<Button>(className: "chip").ToList().Count, "one co-player is not a friend yet");
+            // The next deal's result starts empty again.
+            gateway.Deliver(MessageTypes.RungRoundEnd, 7, new RungRoundEnd
+            {
+                RoundId = "r_2", WinnerTeam = 1, Kind = RungOutcomeKind.Win, ByCaller = true, Counts = new List<long> { 3, 7 }, DealPoints = 1,
+                Points = new List<long> { 0, 1, 0, 1 }, Stats = new List<RungSeatStats>(), Trump = Suit.S,
+                Fairness = new RungFairness { Commitment = "abc", Seed = "00", DeckOrder = new List<string>() },
+                Series = new SeriesState { RoundsPlayed = 4, Points = new List<long>(), LoserTally = new List<long>(), Teams = new RungTeams { Points = new List<long> { 3, 2 }, Courts = new List<long> { 0, 0 }, DealsWon = new List<long> { 2, 2 } } },
+            });
+            Assert.AreEqual("", view.RewardText);
+            Assert.AreEqual(DisplayStyle.None, screen.Q<Button>("rung-result-double").style.display.value);
+            view.Dispose();
+        }
+
+        [Test]
+        public void TheRungRulebookHasItsSectionsAndTheTablesRuleSet()
+        {
+            var away = RungRulebook.Build(null);
+            Assert.AreEqual(8, away.Count);
+            foreach (var section in away)
+            {
+                Assert.IsFalse(section.Title.StartsWith("rulebook."), section.Id + " has a title");
+                foreach (var line in section.Lines)
+                {
+                    Assert.IsFalse(line.StartsWith("rulebook."), section.Id + " has every line");
+                }
+            }
+
+            var (gateway, client) = NewClient();
+            gateway.Deliver(MessageTypes.TableState, 3, Table(GameId.Rung, null, 3));
+            var atTable = RungRulebook.Build(client.Model);
+            Assert.AreEqual(9, atTable.Count);
+            StringAssert.Contains("Rung", atTable[8].Lines[0]);
+        }
+
+        [Test]
+        public void TheRulebookOffersTheOtherGamesBook()
+        {
+            var screen = Catalog.Rulebook!.Instantiate();
+            var opened = false;
+            _ = new Hulla.Presentation.Screens.Rulebook.RulebookView(screen, Hulla.Games.Thulla.RulebookText.TitleRung, RungRulebook.Build(null), () => { }, null, (Hulla.Games.Thulla.RulebookText.TitleThulla, () => opened = true));
+            var chip = screen.Q<Button>("other-game");
+            Assert.IsNotNull(chip);
+            Assert.AreEqual(Hulla.Games.Thulla.RulebookText.TitleThulla, chip.text);
+            Assert.AreEqual(9, screen.Q<VisualElement>("contents").childCount, "the other game, then a chip a section");
+            Assert.IsFalse(opened);
         }
 
         [Test]

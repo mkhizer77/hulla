@@ -17,6 +17,9 @@ namespace Hulla.Composition
         public const string ServerPrefKey = "hulla.server";
         public const string ServerKeyPrefKey = "hulla.server.key";
         public const string LocalServerKey = "local-only-server-key";
+
+        /// <summary>The app's id on the App Store, for the update prompt on Apple devices.</summary>
+        public const string AppStoreId = "6835179853";
         private const string DevServerResource = "hulla-dev-server";
         private const int DefaultPort = 7350;
         private const int HttpsPort = 443;

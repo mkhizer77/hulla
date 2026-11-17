@@ -44,6 +44,19 @@ namespace Hulla.Application.ViewModels
 
         public IReadOnlyList<FriendEntry> Recent => _recent;
 
+        /// <summary>Another account signed in: nothing of the last one stays.</summary>
+        public void Reset()
+        {
+            _received.Clear();
+            _sent.Clear();
+            _friends.Clear();
+            _blocked.Clear();
+            _recent.Clear();
+            ErrorCode = null;
+            RequestSent = false;
+            Changed?.Invoke();
+        }
+
         public async Awaitable RefreshAsync(CancellationToken cancellation)
         {
             Busy = true;

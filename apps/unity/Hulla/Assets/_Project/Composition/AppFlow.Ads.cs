@@ -45,18 +45,18 @@ namespace Hulla.Composition
             var tableId = _app.Session?.Table?.Client.Ticket.TableId ?? "";
             if (coins <= 0 || tableId.Length == 0 || !_app.Ads.CanOffer(AdsViewModel.DoubleCoins))
             {
-                _tableView?.OfferDouble(null, null);
+                Results?.OfferDouble(null, null);
                 return;
             }
 
-            _tableView?.OfferDouble(UiText.DoubleForAd, () => WatchForDouble(tableId, roundId, coins));
+            Results?.OfferDouble(UiText.DoubleForAd, () => WatchForDouble(tableId, roundId, coins));
         }
 
         private async void WatchForDouble(string tableId, string roundId, long coins)
         {
-            _tableView?.OfferDouble(UiText.DoubleForAd, null);
+            Results?.OfferDouble(UiText.DoubleForAd, null);
             var paid = await _app.Ads.WatchAsync(AdsViewModel.DoubleCoins, AdsViewModel.DoubleCoins + ":" + tableId + ":" + roundId, _app.Lifetime);
-            _tableView?.OfferDouble(paid ? Strings.Format(UiText.CoinsDoubled, coins) : UiText.AdNoReward, null);
+            Results?.OfferDouble(paid ? Strings.Format(UiText.CoinsDoubled, coins) : UiText.AdNoReward, null);
             if (paid)
             {
                 _ = _app.Progress.RefreshAsync(LocalOffsetMinutes(), _app.Lifetime);

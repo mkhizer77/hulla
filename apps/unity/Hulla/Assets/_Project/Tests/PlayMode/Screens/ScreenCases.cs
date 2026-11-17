@@ -158,10 +158,36 @@ namespace Hulla.Screens.Tests
                 new QuickPlayView(r, model, () => { });
                 _ = model.StartAsync(5, default);
             });
+            yield return new Case("quick-play-timed-out", catalog.QuickPlay, r =>
+            {
+                var model = new QuickPlayViewModel(new Fakes.Matchmaker());
+                new QuickPlayView(r, model, () => { }, null, "", () => { });
+                _ = model.StartRankedAsync(150, 150, 600, default);
+                model.Tick(QuickPlayViewModel.RankedTimeoutSeconds);
+            });
+            yield return new Case("quick-play-failed", catalog.QuickPlay, r =>
+            {
+                var model = new QuickPlayViewModel(new Fakes.Matchmaker());
+                new QuickPlayView(r, model, () => { }, null, "", () => { });
+                _ = model.StartAsync(4, default);
+                model.ConnectionLost("session.unavailable");
+            });
             yield return new Case("settings", catalog.Settings, r =>
                 new SettingsView(r, new SettingsModel(new MemoryStore()), () => { }, new SettingsView.AccountActions(_ => { }, _ => { }, _ => { }, () => null)));
             yield return new Case("rulebook", catalog.Rulebook, r =>
                 new RulebookView(r, RulebookText.Title, ThullaRulebook.Build(new TableModel("me"), new NoPresets()), () => { }));
+            yield return new Case("rulebook-rung", catalog.Rulebook, r =>
+                new RulebookView(r, RulebookText.TitleRung, Hulla.Games.Rung.RungRulebook.Build(null), () => { }, null, (RulebookText.TitleThulla, () => { })));
+            yield return new Case("rung-result-reward", catalog.Table, r =>
+            {
+                var (gateway, client) = RungScreens.NewClient();
+                var view = new Hulla.Games.Rung.RungTableView(r, client, new Fakes.Chat(), () => 0, () => { });
+                RungScreens.DeliverResultAtSeven(gateway);
+                view.ShowReward(Strings.Format(UiText.RewardLine, 12, 18) + "\n" + Strings.Format(UiText.LevelUp, 3, 4));
+                view.ShowLevel(4, 0.35f);
+                view.OfferDouble(UiText.DoubleForAd, () => { });
+                view.SetFriendActions(_ => true, _ => { });
+            });
             yield return new Case("profile", catalog.Profile, r =>
             {
                 var model = new ProfileViewModel(new Fakes.Social());

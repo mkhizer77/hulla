@@ -46,6 +46,15 @@ namespace Hulla.Application.ViewModels
 
         public bool Saved { get; private set; }
 
+        /// <summary>Another account signed in: nothing of the last one stays.</summary>
+        public void Reset()
+        {
+            Profile = null;
+            ErrorCode = null;
+            Saved = false;
+            Changed?.Invoke();
+        }
+
         public async Awaitable RefreshAsync(CancellationToken cancellation)
         {
             var profile = await _social.MyProfileAsync(cancellation);

@@ -27,8 +27,11 @@ namespace Hulla.Presentation.Screens.QuickPlay
         private int _shownSeats = -1;
         private readonly string? _myAvatar;
         private readonly string _myName;
+        private readonly VisualElement _actions = new VisualElement { name = "actions" };
+        private readonly Button _again = new Button { name = "again" };
 
-        public QuickPlayView(VisualElement root, QuickPlayViewModel model, Action cancel, string? myAvatar = null, string myName = "")
+        /// <param name="again">Starts the same search again (Retry, Keep searching); null leaves Cancel only.</param>
+        public QuickPlayView(VisualElement root, QuickPlayViewModel model, Action cancel, string? myAvatar = null, string myName = "", Action? again = null)
         {
             _model = model;
             _myAvatar = myAvatar;
@@ -46,6 +49,25 @@ namespace Hulla.Presentation.Screens.QuickPlay
             cancelButton.text = "";
             cancelButton.tooltip = UiText.Cancel;
             cancelButton.clicked += cancel;
+            // A search that stopped (failed, or Ranked found nobody in time) offers to go again or to cancel.
+            _actions.AddToClassList("quick__actions");
+            _again.AddToClassList("button");
+            _again.AddToClassList("button--primary");
+            _again.AddToClassList("quick__again");
+            _again.style.display = again == null ? DisplayStyle.None : DisplayStyle.Flex;
+            if (again != null)
+            {
+                _again.clicked += again;
+            }
+
+            var stop = new Button(cancel) { name = "stop", text = UiText.Cancel };
+            stop.AddToClassList("button");
+            stop.AddToClassList("button--quiet");
+            stop.AddToClassList("quick__stop");
+            _actions.Add(_again);
+            _actions.Add(stop);
+            _actions.style.display = DisplayStyle.None;
+            _status.parent.Add(_actions);
             for (var n = 3; n <= 6; n++)
             {
                 var medal = new VisualElement { name = "seat-" + n, pickingMode = PickingMode.Ignore };
@@ -107,8 +129,12 @@ namespace Hulla.Presentation.Screens.QuickPlay
 
             // Ranked and Rung always seat four: nothing to show or choose.
             var fixedSeats = _model.Ranked || _model.Game == "rung";
-            _seats.style.display = fixedSeats ? DisplayStyle.None : DisplayStyle.Flex;
-            _seatsLabel.style.display = fixedSeats ? DisplayStyle.None : DisplayStyle.Flex;
+            var stopped = _model.Stopped;
+            _seats.style.display = fixedSeats || stopped ? DisplayStyle.None : DisplayStyle.Flex;
+            _seatsLabel.style.display = fixedSeats || stopped ? DisplayStyle.None : DisplayStyle.Flex;
+            _actions.style.display = stopped ? DisplayStyle.Flex : DisplayStyle.None;
+            _actions.parent.EnableInClassList("quick__panel--stopped", stopped);
+            _again.text = _model.Current == QuickPlayViewModel.Stage.TimedOut ? RankedText.KeepSearching : UiText.Retry;
             switch (_model.Current)
             {
                 case QuickPlayViewModel.Stage.Widened:
@@ -125,6 +151,9 @@ namespace Hulla.Presentation.Screens.QuickPlay
                     break;
                 case QuickPlayViewModel.Stage.Failed:
                     _status.text = UiText.Error(_model.ErrorCode ?? "matchmaker");
+                    break;
+                case QuickPlayViewModel.Stage.TimedOut:
+                    _status.text = RankedText.TimedOut;
                     break;
                 default:
                     _status.text = "";

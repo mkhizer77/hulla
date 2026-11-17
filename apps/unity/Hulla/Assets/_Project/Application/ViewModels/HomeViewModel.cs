@@ -33,6 +33,18 @@ namespace Hulla.Application.ViewModels
             Changed?.Invoke();
         }
 
+        /// <summary>The refusal was shown somewhere else (a pill over another screen): Home forgets it.</summary>
+        public void ClearError()
+        {
+            if (ErrorCode == null)
+            {
+                return;
+            }
+
+            ErrorCode = null;
+            Changed?.Invoke();
+        }
+
         public Awaitable<Result<TableTicket>> CreateAsync(string name, CancellationToken cancellation) =>
             RunAsync(name, null, cancellation);
 

@@ -72,6 +72,7 @@
                     <ui:VisualElement class="home__gift" picking-mode="Ignore" />
                     <ui:Label name="daily-title" class="home__daily-title" />
                     <ui:Label name="daily-text" class="home__daily-text" />
+                    <ui:Label name="daily-amount" class="home__daily-amount" picking-mode="Ignore" />
                     <ui:Button name="daily-claim" class="home__daily-claim" />
                 </ui:VisualElement>
             </ui:VisualElement>

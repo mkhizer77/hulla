@@ -127,6 +127,17 @@ namespace Hulla.Application.ViewModels
         public bool CanAfford(ShopItem item) =>
             item.Gems > 0 ? Gems == null || Gems >= item.Gems : Coins == null || Coins >= item.Coins;
 
+        /// <summary>Another account signed in: nothing of the last one stays.</summary>
+        public void Reset()
+        {
+            Catalog = null;
+            Coins = null;
+            Gems = null;
+            ErrorCode = null;
+            Busy = null;
+            Changed?.Invoke();
+        }
+
         public async Awaitable RefreshAsync(CancellationToken cancellation)
         {
             var catalog = await _service.CatalogAsync(cancellation);

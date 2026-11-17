@@ -47,6 +47,16 @@ namespace Hulla.Application.ViewModels
             }
         }
 
+        /// <summary>Another account signed in: nothing of the last one stays.</summary>
+        public void Reset()
+        {
+            _daily.Clear();
+            _weekly.Clear();
+            RerollAvailable = false;
+            ErrorCode = null;
+            Changed?.Invoke();
+        }
+
         public async Awaitable RefreshAsync(int tzOffsetMinutes, CancellationToken cancellation)
         {
             var result = await _missions.MissionsAsync(tzOffsetMinutes, cancellation);

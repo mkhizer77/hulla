@@ -97,6 +97,8 @@ namespace Hulla.Screens.Tests
             Shown(root.Q<VisualElement>("daily"), "the daily reward");
             Assert.AreEqual("Day 4", root.Q<Label>("daily-text").text);
             Assert.AreEqual("Daily reward, day 4: 80 coins + 2 gems", root.Q<VisualElement>("daily").tooltip, "the amount is in the tooltip");
+            Assert.AreEqual("+80 · 2 gems", root.Q<Label>("daily-amount").text, "and on the card, since phones show no tooltips");
+            Shown(root.Q<Label>("daily-amount"), "the amount line");
         }
 
         [UnityTest]

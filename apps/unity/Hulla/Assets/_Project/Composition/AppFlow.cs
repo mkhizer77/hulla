@@ -69,6 +69,9 @@ namespace Hulla.Composition
         private AnimationScheduler? _scheduler;
         private ThullaTableView? _tableView;
         private Hulla.Games.Rung.RungTableView? _rungView;
+
+        /// <summary>The result of the table on screen, whichever game it plays.</summary>
+        private Hulla.Games.Shared.IRoundResults? Results => (Hulla.Games.Shared.IRoundResults?)_tableView ?? _rungView;
         private bool _reconnecting;
         private SettingsView? _settingsView;
         private bool _updateAsked;
@@ -231,7 +234,18 @@ namespace Hulla.Composition
                 return;
             }
 
-            _shell.ShowDialog(text, UiText.JoinTable, UiText.NotNow, () => OnJoin(_app.Home.LastName, code, null), () => { });
+            _shell.ShowDialog(text, UiText.JoinTable, UiText.NotNow, () => AcceptInvite(code), () => { });
+        }
+
+        /// <summary>Joins the friend's table; a search still running is cancelled first, so it can't pull the player out again.</summary>
+        private async void AcceptInvite(string code)
+        {
+            if (_screen == Screen.QuickPlay)
+            {
+                await _app.QuickPlay.CancelAsync();
+            }
+
+            OnJoin(_app.Home.LastName, code, null);
         }
 
         /// <summary>
@@ -295,14 +309,34 @@ namespace Hulla.Composition
             ShowBriefly(_app.Friends.RequestSent ? UiText.RequestSent : UiText.Error(_app.Friends.ErrorCode ?? ""));
         }
 
-        private async void ShowBriefly(string text)
+        /// <summary>
+        /// A pill at the top for a few seconds. It only takes down its own text, and hands the pill back to
+        /// "Reconnecting" when a table is still reconnecting underneath.
+        /// </summary>
+        private async void ShowBriefly(string text, float seconds = 5f)
         {
             _shell.SetBanner(text);
-            await Awaitable.WaitForSecondsAsync(5f);
+            await Awaitable.WaitForSecondsAsync(seconds);
             if (UnityEngine.UIElements.UQueryExtensions.Q<UnityEngine.UIElements.Label>(_shell.Root, "shell-banner")?.text == text)
             {
-                _shell.SetBanner(null);
+                _shell.SetBanner(_reconnecting && _app.Session?.Table != null ? UiText.Reconnecting : null);
             }
+        }
+
+        /// <summary>
+        /// A refusal in plain words where the player is. Home shows its own errors; anywhere else the pill
+        /// says it, and the error is taken off Home so it does not turn up there later.
+        /// </summary>
+        private void ShowErrorHere(string code)
+        {
+            if (_view is HomeView)
+            {
+                _app.Home.ShowError(code);
+                return;
+            }
+
+            _app.Home.ClearError();
+            ShowBriefly(UiText.Error(code));
         }
 
         /// <summary>An unlock shows briefly at the top of whatever screen is open (GDD 12.7).</summary>
@@ -436,6 +470,8 @@ namespace Hulla.Composition
             _app.RemoteConfig.Changed -= ApplyShopSwitch;
             _app.TableChat.Received -= OnText;
             _app.Tables.Disconnected -= OnDisconnected;
+            _app.Sessions.Notified -= OnNotice;
+            StopFollowing(_app.Session?.Table);
             CloseView();
             _sounds.Dispose();
         }
@@ -453,13 +489,7 @@ namespace Hulla.Composition
             Hulla.Presentation.Navigation.GamePick.Enabled = _app.RemoteConfig.Rung;
             home.PlayRung = OnQuickPlayRung;
             home.CreateRung = OnCreateRung;
-            home.OpenRulebook = game =>
-            {
-                if (game == HomeView.Thulla)
-                {
-                    OpenRules(null);
-                }
-            };
+            home.OpenRulebook = game => OpenRules(null, game);
             home.MyNumbers = GameNumbers;
             home.PageChanged += open =>
             {
@@ -498,17 +528,21 @@ namespace Hulla.Composition
         /// <summary>The face on Home's profile pill: the profile's chosen avatar once it has loaded.</summary>
         private async void RefreshHomeAvatar(HomeView home)
         {
-            if (_app.Sessions.Current == null || _app.Profile.Card != null)
+            if (_app.Sessions.Current == null || (_app.Profile.Card != null && !_profileStale))
             {
                 return;
             }
 
+            _profileStale = false;
             await _app.Profile.RefreshAsync(_app.Lifetime);
             if (_view == home && _app.Profile.Card?.Avatar is string avatar)
             {
                 home.SetAvatar(avatar);
             }
         }
+
+        /// <summary>A round was played since the profile loaded: the game pages' numbers are read again.</summary>
+        private bool _profileStale;
 
         private async void ClaimDailyReward()
         {
@@ -575,10 +609,11 @@ namespace Hulla.Composition
                 return;
             }
 
+            AfterSignIn();
             CloseView();
             _screen = Screen.QuickPlay;
             _shell.HideNav();
-            _view = new QuickPlayView(_shell.Show(_shell.Catalog.QuickPlay), _app.QuickPlay, CancelQuickPlay, MyAvatar(), _app.Home.LastName);
+            _view = new QuickPlayView(_shell.Show(_shell.Catalog.QuickPlay), _app.QuickPlay, CancelQuickPlay, MyAvatar(), _app.Home.LastName, SearchAgain);
             await _app.QuickPlay.StartRungAsync(_app.Lifetime);
         }
 
@@ -618,10 +653,11 @@ namespace Hulla.Composition
                 return;
             }
 
+            AfterSignIn();
             CloseView();
             _screen = Screen.QuickPlay;
             _shell.HideNav();
-            _view = new QuickPlayView(_shell.Show(_shell.Catalog.QuickPlay), _app.QuickPlay, CancelQuickPlay, MyAvatar(), _app.Home.LastName);
+            _view = new QuickPlayView(_shell.Show(_shell.Catalog.QuickPlay), _app.QuickPlay, CancelQuickPlay, MyAvatar(), _app.Home.LastName, SearchAgain);
             await _app.QuickPlay.StartAsync(seats, _app.Lifetime);
         }
 
@@ -761,14 +797,21 @@ namespace Hulla.Composition
             var shopView = new ShopView(shopRoot, shop, ShowHome, item => BuyAndEquip(shop, item.Id),
                 item => _ = shop.EquipAsync(item.Id, _app.Lifetime), _app.Purchases);
             shopView.Retry = () => _ = shop.RefreshAsync(_app.Lifetime);
+            shopView.EarnCoins = () => OnMissions(name, server);
             shopView.StoreRetry = () => _ = _app.Purchases.StartAsync(_app.Lifetime);
             WireAds(shopView);
             Hulla.Presentation.Navigation.SegmentBar.Mount(shopRoot, ShopSegments(name, server), "shop");
             TabTop(shopRoot, Hulla.Presentation.Navigation.NavTab.Shop);
             _view = shopView;
             _shell.ShowNav(Hulla.Presentation.Navigation.NavTab.Shop);
+            // The balances the app already has show at once; unknown ones stay blank, never zero.
+            if (_app.Progress.BalancesKnown)
+            {
+                shop.SetBalances(_app.Progress.Coins, _app.Progress.Gems);
+            }
+
             await _app.Progress.RefreshAsync(LocalOffsetMinutes(), _app.Lifetime);
-            if (_app.Progress.Info != null)
+            if (_app.Progress.BalancesKnown)
             {
                 shop.SetBalances(_app.Progress.Coins, _app.Progress.Gems);
             }
@@ -798,7 +841,7 @@ namespace Hulla.Composition
             var boardRoot = _shell.Show(_shell.Catalog.Leaderboard);
             var boardView = new LeaderboardView(boardRoot, board, () => DateTimeOffset.UtcNow.ToUnixTimeMilliseconds(), _app.Sessions.Current?.UserId, ShowHome,
                 (period, friends) => _ = board.ShowAsync(period, friends, _app.Lifetime),
-                () => OnRanked(name, server));
+                () => OnRanked(name, server, () => OnLeaderboard(name, server)));
             boardView.GameChanged = game => _ = board.ShowAsync(board.Period, board.Friends, game, _app.Lifetime);
             boardView.Retry = () => _ = board.RefreshAsync(_app.Lifetime);
             boardView.PlayNow = PlayNowFrom(name, server);
@@ -815,7 +858,11 @@ namespace Hulla.Composition
             await board.RefreshAsync(_app.Lifetime);
         }
 
-        private async void OnRanked(string name, string? server)
+        /// <summary>Ranked from Home: Back goes Home again.</summary>
+        private void OnRanked(string name, string? server) => OnRanked(name, server, ShowHome);
+
+        /// <param name="back">Where Back leads: the screen Ranked was opened from.</param>
+        private async void OnRanked(string name, string? server, Action back)
         {
             if (!await SignedInAsync(name, server))
             {
@@ -826,9 +873,10 @@ namespace Hulla.Composition
             _screen = Screen.Home;
             var ranked = _app.Ranked;
             var rankedView = new RankedView(_shell.Show(_shell.Catalog.Ranked), ranked, () => DateTimeOffset.UtcNow.ToUnixTimeMilliseconds(), _app.Sessions.Current?.UserId,
-                () => OnLeaderboard(name, server), card => OnRankedPlay(name, server, card));
+                back, card => OnRankedPlay(name, server, card));
             rankedView.Retry = () => _ = ranked.RefreshAsync(_app.Lifetime);
-            Hulla.Presentation.Navigation.TopBar.On(_shell.Root, "rules", RulebookText.Title, () => OpenRules(null));
+            // Ranked is Thulla only, so its book is Thulla's.
+            Hulla.Presentation.Navigation.TopBar.On(_shell.Root, "rules", RulebookText.Title, () => OpenRules(null, HomeView.Thulla));
             _view = rankedView;
             _shell.HideNav();
             await ranked.RefreshAsync(_app.Lifetime);
@@ -845,7 +893,7 @@ namespace Hulla.Composition
             CloseView();
             _screen = Screen.QuickPlay;
             _shell.HideNav();
-            _view = new QuickPlayView(_shell.Show(_shell.Catalog.QuickPlay), _app.QuickPlay, CancelQuickPlay, MyAvatar(), _app.Home.LastName);
+            _view = new QuickPlayView(_shell.Show(_shell.Catalog.QuickPlay), _app.QuickPlay, CancelQuickPlay, MyAvatar(), _app.Home.LastName, SearchAgain);
             await _app.QuickPlay.StartRankedAsync(card.Band, card.WidenBy, card.MaxBand, _app.Lifetime);
         }
 
@@ -857,7 +905,7 @@ namespace Hulla.Composition
         private Hulla.Presentation.Navigation.SegmentBar.Entry[] TrophiesSegments(string name, string? server) => new[]
         {
             new Hulla.Presentation.Navigation.SegmentBar.Entry("missions", UiText.Missions, () => OnMissions(name, server)),
-            new Hulla.Presentation.Navigation.SegmentBar.Entry("achievements", UiText.Achievements, () => OpenAchievements(name, server)),
+            new Hulla.Presentation.Navigation.SegmentBar.Entry("achievements", UiText.Achievements, () => OpenAchievements(name, server, ShowHome)),
             new Hulla.Presentation.Navigation.SegmentBar.Entry("leaderboard", UiText.Leaderboard, () => OnLeaderboard(name, server)),
         };
 
@@ -906,7 +954,7 @@ namespace Hulla.Composition
             CloseView();
             _screen = Screen.Home;
             var profile = _app.Profile;
-            var profileView = new ProfileView(_shell.Show(_shell.Catalog.Profile), profile, ShowHome, (display, handle, bio) => SaveProfile(display, handle, bio), () => OpenAchievements(name, server));
+            var profileView = new ProfileView(_shell.Show(_shell.Catalog.Profile), profile, ShowHome, (display, handle, bio) => SaveProfile(display, handle, bio), () => OpenAchievements(name, server, () => OnProfile(name, server)));
             _view = profileView;
             profileView.ShareCode = () => InviteFriend(name, server);
             profileView.Retry = () => _ = profile.RefreshAsync(_app.Lifetime);
@@ -964,13 +1012,14 @@ namespace Hulla.Composition
             }
         }
 
-        private async void OpenAchievements(string name, string? server)
+        /// <param name="back">Where Back leads: Home from the Trophies tab, the profile from its medals.</param>
+        private async void OpenAchievements(string name, string? server, Action back)
         {
             CloseView();
             _screen = Screen.Home;
             var achievements = _app.Achievements;
             var achievementsRoot = _shell.Show(_shell.Catalog.Achievements);
-            var achievementsView = new AchievementsView(achievementsRoot, achievements, () => OnProfile(name, server));
+            var achievementsView = new AchievementsView(achievementsRoot, achievements, back);
             achievementsView.Retry = () => _ = achievements.RefreshAsync(_app.Lifetime);
             Hulla.Presentation.Navigation.SegmentBar.Mount(achievementsRoot, TrophiesSegments(name, server), "achievements");
             TabTop(achievementsRoot, Hulla.Presentation.Navigation.NavTab.Trophies);
@@ -982,7 +1031,8 @@ namespace Hulla.Composition
         private async Awaitable<bool> SignedInAsync(string name, string? server)
         {
             ApplyServer(server);
-            var ok = (await _app.Home.SignInAsync(name, _app.Lifetime)).IsOk;
+            var signedIn = await _app.Home.SignInAsync(name, _app.Lifetime);
+            var ok = signedIn.IsOk;
             if (ok)
             {
                 RememberName(name);
@@ -993,9 +1043,73 @@ namespace Hulla.Composition
                 _ = _app.Progress.RefreshAsync(LocalOffsetMinutes(), _app.Lifetime);
                 StartPurchases();
                 StartAds();
+                AfterSignIn();
+            }
+            else
+            {
+                ShowErrorHere(signedIn.Error.Code);
             }
 
             return ok;
+        }
+
+        /// <summary>The account the once-per-sign-in work last ran for.</summary>
+        private string? _signedInUser;
+
+        /// <summary>
+        /// Once per signed-in account, however the sign-in happened (at launch, from a tab, with a first
+        /// room): the tab badges load, and a tutorial bonus earned before any account existed is claimed.
+        /// </summary>
+        private void AfterSignIn()
+        {
+            var user = _app.Sessions.Current?.UserId;
+            if (user == null || user == _signedInUser)
+            {
+                return;
+            }
+
+            _signedInUser = user;
+            RefreshBadgeCounts();
+            if (_app.Store.GetInt(TutorialBonusDueKey, 0) == 1)
+            {
+                PayTutorial();
+            }
+        }
+
+        /// <summary>
+        /// Reads what the tab badges count (friend requests, claimable missions and pass tiers), so they
+        /// show without each screen having been opened: after sign-in and after every round.
+        /// </summary>
+        private async void RefreshBadgeCounts(float afterSeconds = 0f)
+        {
+            if (_app.Sessions.Current == null)
+            {
+                return;
+            }
+
+            try
+            {
+                if (afterSeconds > 0f)
+                {
+                    // A round end already sends several calls at once; these can wait a moment.
+                    await Awaitable.WaitForSecondsAsync(afterSeconds, _app.Lifetime);
+                }
+
+                await _app.Missions.RefreshAsync(LocalOffsetMinutes(), _app.Lifetime);
+                if (_app.RemoteConfig.Shop)
+                {
+                    await _app.Pass.RefreshAsync(_app.Lifetime);
+                }
+
+                // The table's Add chips read the friends list at round end; elsewhere the badge needs it.
+                if (_app.Session?.Table == null)
+                {
+                    await _app.Friends.RefreshAsync(_app.Lifetime);
+                }
+            }
+            catch (OperationCanceledException)
+            {
+            }
         }
 
         /// <summary>The phone's push token goes to the server for the signed-in player (GDD 10.10).</summary>
@@ -1049,6 +1163,7 @@ namespace Hulla.Composition
                 RegisterPush();
                 await _app.RemoteConfig.RefreshAsync(UnityEngine.Application.version, "*", _app.Lifetime);
                 ApplyRemoteConfig();
+                AfterSignIn();
                 await _app.Progress.RefreshAsync(LocalOffsetMinutes(), _app.Lifetime);
                 await _app.DailyReward.RefreshAsync(LocalOffsetMinutes(), _app.Lifetime);
             }
@@ -1097,9 +1212,15 @@ namespace Hulla.Composition
         }
 
 
-        /// <summary>The store page: the config's update_url, else this app on Google Play.</summary>
+        /// <summary>The store page: the config's update_url, else this app on the phone's own store.</summary>
         private void OpenStore() =>
-            UnityEngine.Application.OpenURL(_app.RemoteConfig.Current.Text("update_url", "market://details?id=" + UnityEngine.Application.identifier));
+            UnityEngine.Application.OpenURL(_app.RemoteConfig.Current.Text("update_url", StorePage(UnityEngine.Application.platform)));
+
+        /// <summary>The app's page on the platform's store: the App Store on Apple devices, Google Play elsewhere.</summary>
+        internal static string StorePage(RuntimePlatform platform) =>
+            platform == RuntimePlatform.IPhonePlayer || platform == RuntimePlatform.OSXPlayer || platform == RuntimePlatform.OSXEditor
+                ? "https://apps.apple.com/app/id" + AppConfig.AppStoreId
+                : "market://details?id=" + UnityEngine.Application.identifier;
 
         /// <summary>"Lahori Lion 42": a friendly starting name the player can change (GDD 17.2).</summary>
         /// <summary>
@@ -1252,6 +1373,22 @@ namespace Hulla.Composition
             }
         }
 
+        /// <summary>Retry on a failed search, Keep searching on a Ranked one that found nobody in time.</summary>
+        private async void SearchAgain()
+        {
+            // The socket may be the thing that failed: it is reopened first. Still down, the search stays stopped.
+            if (!(await _app.Home.SignInAsync(_app.Home.LastName, _app.Lifetime)).IsOk)
+            {
+                _app.Home.ClearError();
+                return;
+            }
+
+            if (_screen == Screen.QuickPlay && _app.QuickPlay.Stopped)
+            {
+                await _app.QuickPlay.RetryAsync(_app.Lifetime);
+            }
+        }
+
         private async void CancelQuickPlay()
         {
             _app.Analytics.Track(AnalyticsEvents.MatchSearch(_app.QuickPlay.Seats, _app.QuickPlay.Elapsed, "abandoned"));
@@ -1290,12 +1427,31 @@ namespace Hulla.Composition
             }
 
             var player = _app.Sessions.Current;
-            if (!ticket.IsOk || player == null)
+            if (!ticket.IsOk)
+            {
+                // "home.busy" is a second tap while the first is still on its way: nothing to say.
+                if (ticket.Error.Code != "home.busy")
+                {
+                    // A search that was dropped for this join has nothing left to show.
+                    if (_screen == Screen.QuickPlay)
+                    {
+                        ShowHome();
+                    }
+
+                    ShowErrorHere(ticket.Error.Code);
+                }
+
+                return;
+            }
+
+            if (player == null)
             {
                 return;
             }
 
+            AfterSignIn();
             var session = _app.BeginSession(player);
+            StopFollowing(session.Table);
             var table = session.BeginTable(ticket.Value);
             table.Client.Model.SetSort(_app.Settings.HandSort == HandSort.RankThenSuit ? CardOrder.CompareByRank : CardOrder.Compare);
             table.Client.Model.Changed += FollowModel;
@@ -1305,9 +1461,15 @@ namespace Hulla.Composition
             if (!entered.IsOk)
             {
                 Debug.LogWarning($"could not enter the table: {entered.Error}");
-                session.EndTable();
-                ShowHome();
-                _app.Home.ShowError(entered.Error.Code);
+                EndTable();
+                // On a tab screen (Friends, Shop) the player stays there and the pill says why; from Home or a
+                // search the way back is Home, which shows the refusal in its own place.
+                if (_screen != Screen.Home || _view == null || _view is HomeView)
+                {
+                    ShowHome();
+                }
+
+                ShowErrorHere(entered.Error.Code);
                 return;
             }
 
@@ -1328,19 +1490,45 @@ namespace Hulla.Composition
             await _app.Mutes.RefreshAsync(table.Lifetime);
         }
 
-        private async void Leave()
+        private void Leave() => LeaveWith(null);
+
+        /// <summary>True while a leave is on its way, so a second one (a model change on a closed table) does nothing.</summary>
+        private bool _leaving;
+
+        /// <param name="notice">Why the player is back on Home when they did not ask to leave; null when they did.</param>
+        private async void LeaveWith(string? notice)
         {
-            // Leaving mid-round keeps the table on Home to rejoin; leaving between rounds is final.
-            if (_app.Session?.Table?.Client.Model.InRound != true)
+            if (_leaving)
             {
-                ForgetLastTable();
+                return;
             }
 
-            await _app.TableChat.LeaveAsync();
-            await _app.Tables.LeaveAsync();
-            var betweenRounds = _app.Session?.Table?.Client.Model.InRound != true;
-            _app.Session?.EndTable();
+            _leaving = true;
+            bool betweenRounds;
+            try
+            {
+                // Leaving mid-round keeps the table on Home to rejoin; leaving between rounds is final.
+                if (_app.Session?.Table?.Client.Model.InRound != true)
+                {
+                    ForgetLastTable();
+                }
+
+                await _app.TableChat.LeaveAsync();
+                await _app.Tables.LeaveAsync();
+                betweenRounds = _app.Session?.Table?.Client.Model.InRound != true;
+                EndTable();
+            }
+            finally
+            {
+                _leaving = false;
+            }
+
             ShowHome();
+            if (notice != null)
+            {
+                ShowBriefly(notice);
+            }
+
             if (betweenRounds && InterstitialAfterLeaving())
             {
                 return;
@@ -1375,6 +1563,36 @@ namespace Hulla.Composition
                     _shell.ShowDialog(Strings.Text("welcome.invite"), UiText.CreateRoom, UiText.NotNow, () => OnCreate(name, null), () => { });
                     break;
             }
+        }
+
+        /// <summary>Ends the table on screen and takes this flow's listeners off it.</summary>
+        private void EndTable()
+        {
+            StopFollowing(_app.Session?.Table);
+            _app.Session?.EndTable();
+        }
+
+        /// <summary>The table model and its voice no longer drive the screens.</summary>
+        private void StopFollowing(TableScope? table)
+        {
+            if (table == null)
+            {
+                return;
+            }
+
+            table.Client.Model.Changed -= FollowModel;
+            table.Voice.Changed -= DuckForVoice;
+        }
+
+        /// <summary>Table sounds duck while someone else talks (GDD 11.4), whichever game's table shows.</summary>
+        private void DuckForVoice() =>
+            _sounds.Ducked = (_tableView != null || _rungView != null) && _app.Session?.Table?.Voice.OthersSpeaking == true;
+
+        /// <summary>One listener per table's voice, however often its table view is rebuilt.</summary>
+        private void FollowVoice(Hulla.Application.Voice.VoiceController voice)
+        {
+            voice.Changed -= DuckForVoice;
+            voice.Changed += DuckForVoice;
         }
 
         /// <returns>The code of the table the player left mid-round in the last 30 minutes, else null.</returns>
@@ -1502,7 +1720,20 @@ namespace Hulla.Composition
             {
                 if (table == null)
                 {
-                    await _app.Sessions.ReconnectAsync(_app.Lifetime);
+                    var reopened = await _app.Sessions.ReconnectAsync(_app.Lifetime);
+                    // A search lost its ticket with the socket: ask again, or say the search stopped.
+                    if (_screen == Screen.QuickPlay)
+                    {
+                        if (reopened.IsOk)
+                        {
+                            await _app.QuickPlay.ResumeAsync(_app.Lifetime);
+                        }
+                        else
+                        {
+                            _app.QuickPlay.ConnectionLost(reopened.Error.Code);
+                        }
+                    }
+
                     return;
                 }
 
@@ -1528,8 +1759,10 @@ namespace Hulla.Composition
                 _app.Analytics.Track(AnalyticsEvents.Reconnect("gave_up", Time.realtimeSinceStartup - started));
                 if (_app.Session?.Table == table)
                 {
-                    _app.Session?.EndTable();
+                    EndTable();
                     ShowHome();
+                    // Home offers Rejoin while the seat is held; the pill says why the table went away.
+                    ShowBriefly(UiText.ConnectionLost);
                 }
             }
             catch (OperationCanceledException)
@@ -1565,14 +1798,18 @@ namespace Hulla.Composition
             var model = client.Model;
             if (model.Closed)
             {
-                Leave();
+                LeaveWith(UiText.TableClosed);
                 return;
             }
 
             if (model.RemovedByHost)
             {
-                Leave();
-                ShowRemovedByHost();
+                if (!_leaving)
+                {
+                    Leave();
+                    ShowRemovedByHost();
+                }
+
                 return;
             }
 
@@ -1581,14 +1818,22 @@ namespace Hulla.Composition
                 return;
             }
 
-            if (model.LastResult != null && model.LastResult.RoundId != _friendsForRound)
+            // A Thulla round or a Rung deal has ended: both get the reward line and the same follow-ups.
+            var endedRound = model.IsRung ? model.Rung.LastResult?.RoundId : model.LastResult?.RoundId;
+            if (endedRound != null && endedRound != _friendsForRound)
             {
-                _friendsForRound = model.LastResult.RoundId;
-                ShowReward(model.LastResult.RoundId);
-                new ThullaHints(_app.Store).RoundEnded();
+                _friendsForRound = endedRound;
+                ShowReward(endedRound);
                 _app.PushPrompt.RoundFinished();
                 OfferFriends();
-                OfferBigThulla(client);
+                // The round moved missions, the pass and the player's own numbers.
+                _profileStale = true;
+                RefreshBadgeCounts(3f);
+                if (!model.IsRung)
+                {
+                    new ThullaHints(_app.Store).RoundEnded();
+                    OfferBigThulla(client);
+                }
             }
 
             if (_rungSetOnEnter is Preset chosen && model.IsHost && model.IsRung)
@@ -1635,7 +1880,7 @@ namespace Hulla.Composition
             if (model.IsRung)
             {
                 var settings = _app.Settings;
-                _rungView = new Hulla.Games.Rung.RungTableView(_shell.Show(_shell.Catalog.Table), client, _app.Chat, () => DateTimeOffset.UtcNow.ToUnixTimeMilliseconds(), Leave, _sounds, settings.ReduceMotion, settings.OneTapPlay, OpenSettings, null, text => _app.TableChat.SendAsync(text, _app.Lifetime));
+                _rungView = new Hulla.Games.Rung.RungTableView(_shell.Show(_shell.Catalog.Table), client, _app.Chat, () => DateTimeOffset.UtcNow.ToUnixTimeMilliseconds(), Leave, _sounds, settings.ReduceMotion, settings.OneTapPlay, OpenSettings, OpenRules, text => _app.TableChat.SendAsync(text, _app.Lifetime));
                 _rungView.ApplySettings(settings.OneTapPlay, settings.ReduceMotion, settings.LargeCards, settings.Haptics);
                 _rungView.UseEmotePacks(OwnsEmotePack);
                 LoadEmotePacks();
@@ -1646,7 +1891,7 @@ namespace Hulla.Composition
                     var voice = rungTable.Voice;
                     _rungView.UseVoice(voice);
                     _rungView.UseVoiceLevels(voice.PeerVolume, voice.SetPeerVolume);
-                    voice.Changed += () => _sounds.Ducked = _rungView != null && voice.OthersSpeaking;
+                    FollowVoice(voice);
                 }
 
                 _rungView.UseModeration(BlockPlayer, (id, reason, done) => ReportPlayer(client, id, reason, done));
@@ -1675,8 +1920,7 @@ namespace Hulla.Composition
                 var voice = voiceTable.Voice;
                 _tableView.UseVoice(voice);
                 _tableView.UseVoiceLevels(voice.PeerVolume, voice.SetPeerVolume);
-                // Table sounds duck while someone else talks (GDD 11.4).
-                voice.Changed += () => _sounds.Ducked = _tableView != null && voice.OthersSpeaking;
+                FollowVoice(voice);
             }
 
             _tableView.UseModeration(BlockPlayer, (id, reason, done) => ReportPlayer(client, id, reason, done));
@@ -1734,7 +1978,7 @@ namespace Hulla.Composition
             }
 
             var me = _app.Sessions.Current?.UserId;
-            _tableView?.SetFriendActions(id => id != me && !known.Contains(id), id =>
+            Results?.SetFriendActions(id => id != me && !known.Contains(id), id =>
             {
                 _app.Analytics.Track(AnalyticsEvents.FriendAdd("results"));
                 _ = friends.AddAsync(id, _app.Lifetime);
@@ -1933,11 +2177,11 @@ namespace Hulla.Composition
                         text += "\n" + Strings.Format(UiText.LevelUp, reward.LevelFrom, reward.LevelTo);
                     }
 
-                    _tableView?.ShowReward(text);
+                    Results?.ShowReward(text);
                     if (_app.Progress.Info is { } info)
                     {
                         var span = Math.Max(1, info.ToNext);
-                        _tableView?.ShowLevel(info.Level, info.IntoLevel / (float)span);
+                        Results?.ShowLevel(info.Level, info.IntoLevel / (float)span);
                     }
                     return;
                 }
@@ -1947,7 +2191,7 @@ namespace Hulla.Composition
 
             if (_app.Progress.Info is { } last)
             {
-                _tableView?.ShowLevel(last.Level, last.IntoLevel / (float)Math.Max(1, last.ToNext));
+                Results?.ShowLevel(last.Level, last.IntoLevel / (float)Math.Max(1, last.ToNext));
             }
         }
 
@@ -2043,11 +2287,7 @@ namespace Hulla.Composition
             OpenPhone);
 
         /// <summary>A short pill at the top for results away from Settings (linked, or why not).</summary>
-        private void Notice(string text)
-        {
-            _shell.SetBanner(text);
-            _shell.Root.schedule.Execute(() => _shell.SetBanner(null)).StartingIn(3000);
-        }
+        private void Notice(string text) => ShowBriefly(text, 3f);
 
         /// <summary>
         /// From Facebook on Friends: the account links Facebook first, so friends who play can find this
@@ -2103,12 +2343,8 @@ namespace Hulla.Composition
                     return;
                 }
 
-                _app.Home.LastName = switched.Value.DisplayName;
-                RememberName(switched.Value.DisplayName);
-                _app.EndSession();
-                _app.BeginSession(switched.Value);
                 CloseSettings();
-                ShowHome();
+                AccountSwitched(switched.Value);
             }, () => { });
         }
 
@@ -2142,21 +2378,57 @@ namespace Hulla.Composition
         /// <summary>Signed in to the number's account: its name, a fresh session scope, Home again.</summary>
         private void OnPhoneSwitched(PlayerSession player)
         {
-            _app.Home.LastName = player.DisplayName;
-            RememberName(player.DisplayName);
-            _app.EndSession();
-            _app.BeginSession(player);
             ClosePhone();
-            ShowHome();
+            AccountSwitched(player);
         }
 
-        /// <summary>The rulebook opens over the table, so play goes on underneath (GDD 14.11).</summary>
-        private void OpenRules(string? section)
+        /// <summary>
+        /// Another account is signed in on this phone (a phone or social switch): its name, a fresh session
+        /// scope, nothing kept of the last account, then Home with the new account's data loading.
+        /// </summary>
+        private void AccountSwitched(PlayerSession player)
         {
-            var client = _app.Session?.Table?.Client;
+            _app.Home.LastName = player.DisplayName;
+            RememberName(player.DisplayName);
+            StopFollowing(_app.Session?.Table);
+            _app.EndSession();
+            _app.BeginSession(player);
+            _app.ResetAccountData();
+            _socialLinked.Clear();
+            _profileStale = false;
+            _friendsForRound = "";
+            ForgetLastTable();
+            ShowHome();
+            SyncAge();
+            RegisterPush();
+            StartPurchases();
+            StartAds();
+            AfterSignIn();
+        }
+
+        /// <summary>
+        /// The rulebook opens over the table, so play goes on underneath (GDD 14.11). It is the book of the
+        /// game in question: the one asked for, else the table's, else the game page open on Home, else
+        /// Thulla. Away from a table, with both games live, a chip at the top turns to the other game's book.
+        /// </summary>
+        private void OpenRules(string? section) => OpenRules(section, null);
+
+        private void OpenRules(string? section, string? game)
+        {
+            var model = _app.Session?.Table?.Client.Model;
             CloseSettings();
-            var sections = ThullaRulebook.Build(client?.Model, _app.Presets);
-            _ = new RulebookView(_shell.ShowOverlay(_shell.Catalog.Rulebook), RulebookText.Title, sections, _shell.CloseOverlay, section);
+            var rung = game != null ? game == HomeView.Rung
+                : model != null ? model.IsRung
+                : (_view as HomeView)?.Page == HomeView.Rung;
+            // A table's own rules close the book only when it is that table's game.
+            var atTable = model != null && model.IsRung == rung ? model : null;
+            var both = _app.RemoteConfig.Rung || rung;
+            var sections = rung ? Hulla.Games.Rung.RungRulebook.Build(atTable) : ThullaRulebook.Build(atTable, _app.Presets);
+            var title = rung ? RulebookText.TitleRung : both ? RulebookText.TitleThulla : RulebookText.Title;
+            (string, Action)? other = model == null && both
+                ? (rung ? RulebookText.TitleThulla : RulebookText.TitleRung, () => OpenRules(null, rung ? HomeView.Thulla : HomeView.Rung))
+                : ((string, Action)?)null;
+            _ = new RulebookView(_shell.ShowOverlay(_shell.Catalog.Rulebook), title, sections, _shell.CloseOverlay, section, other);
         }
 
         /// <summary>The host edits the next deal's rules over the lobby (GDD 14.9).</summary>
@@ -2268,7 +2540,7 @@ namespace Hulla.Composition
         private void OfferRefresher()
         {
             MarkTutorialSeen();
-            _shell.ShowDialog(TutorialText.Refresher + "?", TutorialText.Next, TutorialText.Skip, () => StartTutorial(true), () => { });
+            _shell.ShowDialog(TutorialText.RefresherAsk, TutorialText.Next, TutorialText.Skip, () => StartTutorial(true), () => { });
         }
 
         /// <summary>The scripted mini-hands through the normal table (GDD 17.3); the refresher is the thulla steps only.</summary>
@@ -2318,29 +2590,46 @@ namespace Hulla.Composition
         {
             MarkTutorialSeen();
             ShowHome();
-            if (!_tutorialRefresher && _app.Sessions.Current != null)
+            if (_tutorialRefresher)
+            {
+                return;
+            }
+
+            if (_app.Sessions.Current != null)
             {
                 PayTutorial();
+                return;
             }
+
+            // A new player has no account until their first room: the bonus waits for the first sign-in.
+            _app.Store.SetInt(TutorialBonusDueKey, 1);
+            _app.Store.Save();
         }
+
+        /// <summary>1 while a finished tutorial's bonus is still to be claimed after the first sign-in.</summary>
+        public const string TutorialBonusDueKey = "hulla.tutorial_bonus_due";
 
         /// <summary>The tutorial's one-time reward (GDD 17.2), said in the top pill for a few seconds.</summary>
         private async void PayTutorial()
         {
             var paid = await _app.Welcome.TutorialCompleteAsync(_app.Lifetime);
-            if (!paid.IsOk || paid.Value <= 0)
+            if (!paid.IsOk)
+            {
+                // Still owed: the next sign-in asks again (the server pays it once whatever happens).
+                _app.Store.SetInt(TutorialBonusDueKey, 1);
+                _app.Store.Save();
+                return;
+            }
+
+            _app.Store.SetInt(TutorialBonusDueKey, 0);
+            _app.Store.Save();
+            if (paid.Value <= 0)
             {
                 return;
             }
 
-            var text = Strings.Get("welcome.tutorial_bonus", paid.Value);
-            _shell.SetBanner(text);
             _ = _app.Progress.RefreshAsync(LocalOffsetMinutes(), _app.Lifetime);
-            await Awaitable.WaitForSecondsAsync(4f);
-            if (UnityEngine.UIElements.UQueryExtensions.Q<UnityEngine.UIElements.Label>(_shell.Root, "shell-banner")?.text == text)
-            {
-                _shell.SetBanner(null);
-            }
+            ShowBriefly(Strings.Get("welcome.tutorial_bonus", paid.Value), 4f);
         }
 
         private static void MarkTutorialSeen()

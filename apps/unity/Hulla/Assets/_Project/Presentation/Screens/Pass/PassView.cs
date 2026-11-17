@@ -262,7 +262,7 @@ namespace Hulla.Presentation.Screens.Pass
 
         /// <summary>The number under a coin or gem picture.</summary>
         private static string Amount(PassReward reward) =>
-            (reward.Gems > 0 ? reward.Gems : reward.Coins).ToString("N0", System.Globalization.CultureInfo.CurrentCulture);
+            (reward.Gems > 0 ? reward.Gems : reward.Coins).ToString("N0", Strings.Culture);
 
         /// <summary>"60 coins", "5 gems", "Kites" or a combination.</summary>
         public static string Describe(PassReward reward)

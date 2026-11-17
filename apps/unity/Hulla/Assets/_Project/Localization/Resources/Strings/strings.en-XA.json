@@ -2488,6 +2488,11 @@
    "smart": false
   },
   {
+   "key": "ranked.keep_searching",
+   "text": "[Kéép séårçhîñg · · ·]",
+   "smart": false
+  },
+  {
    "key": "ranked.leagues",
    "text": "[Léågûés · ·]",
    "smart": false
@@ -2551,6 +2556,11 @@
    "key": "ranked.season_ends",
    "text": "[Séåsöñ {0} éñds îñ {1} · · · ·]",
    "smart": true
+  },
+  {
+   "key": "ranked.timed_out",
+   "text": "[Ñöbödý ñéår ýöûr råtîñg îs séårçhîñg rîght ñöw. · · · · · · · ·]",
+   "smart": false
   },
   {
    "key": "ranked.title",
@@ -2798,6 +2808,191 @@
    "smart": false
   },
   {
+   "key": "rulebook.rung.away",
+   "text": "[Whéñ thé tîmér rûñs öût · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "rulebook.rung.away1",
+   "text": "[Ýöûr löwést çård öf thé léd sûît îs plåýéd för ýöû. Wîth ñöñé öf thåt sûît, ör whéñ ýöû léåd, ît îs thé löwést çård öf ýöûr löñgést sûît thåt îs ñöt thé rûñg. · · · · · · · · · · · · · · · · · · · · · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "rulebook.rung.away2",
+   "text": "[Mîss twö tûrñs îñ å röw åñd å böt plåýs ýöûr séåt för ýöûr pårtñér's såké. Thé séåt îs ýöûrs ågåîñ ås sööñ ås ýöû plåý. · · · · · · · · · · · · · · · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "rulebook.rung.courts",
+   "text": "[Çöûrts ·]",
+   "smart": false
+  },
+  {
+   "key": "rulebook.rung.courts1",
+   "text": "[Å çöûrt îs thé bîg wîñ, åñd ît sçörés möré. · · · · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "rulebook.rung.courts2",
+   "text": "[Rûñg: åt sévéñ trîçks tö ñöthîñg ýöû çhöösé tö tåké thé wîñ ör plåý öñ. Tåké åll thîrtééñ åñd ît îs å çöûrt. Lösé å pîlé öñ thé wåý åñd ýöû kéép thé plåîñ wîñ. · · · · · · · · · · · · · · · · · · · · · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "rulebook.rung.courts3",
+   "text": "[Çöûrt Pîéçé: thé fîrst sévéñ trîçks wîth thé öthér påîr öñ ñöthîñg îs å çöûrt. Plåý öñ åñd tåké åll thîrtééñ för å 52-çöûrt, whîçh wîñs thé båzî åt öñçé. · · · · · · · · · · · · · · · · · · · · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "rulebook.rung.courts4",
+   "text": "[Hökm: thé fîrst sévéñ trîçks wîth thé öthér påîr öñ ñöthîñg îs å çöûrt, åñd thé déål stöps théré. · · · · · · · · · · · · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "rulebook.rung.deal",
+   "text": "[Thé déål åñd thé rûñg · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "rulebook.rung.deal1",
+   "text": "[Évérýöñé géts fîvé çårds fîrst. Thé plåýér åftér thé déålér îs thé çållér åñd ñåmés thé rûñg, thé trûmp sûît, fröm thösé fîvé. · · · · · · · · · · · · · · · · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "rulebook.rung.deal2",
+   "text": "[Théñ thé rést åré déålt, sö évérýöñé hölds thîrtééñ. · · · · · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "rulebook.rung.deal3",
+   "text": "[Îñ Rûñg åñd Çöûrt Pîéçé, å çållér wîth ñö åçé, kîñg, qûééñ ör jåçk îñ thé fîvé måý åsk för ñéw çårds, twîçé åt möst. · · · · · · · · · · · · · · · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "rulebook.rung.deal4",
+   "text": "[Îf thé çållér rûñs öût öf tîmé, thé rûñg îs théîr löñgést sûît. · · · · · · · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "rulebook.rung.goal",
+   "text": "[Thé göål · ·]",
+   "smart": false
+  },
+  {
+   "key": "rulebook.rung.goal1",
+   "text": "[Föûr plåýérs îñ twö påîrs. Ýöûr pårtñér sîts åçröss fröm ýöû. · · · · · · · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "rulebook.rung.goal2",
+   "text": "[Å déål hås thîrtééñ trîçks. Thé påîr thåt géts sévéñ wîñs thé déål. · · · · · · · · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "rulebook.rung.goal3",
+   "text": "[Déåls sçöré pöîñts. Thé fîrst påîr tö réåçh thé tårgét wîñs thé båzî. · · · · · · · · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "rulebook.rung.pile",
+   "text": "[Tåkîñg thé pîlé · · ·]",
+   "smart": false
+  },
+  {
+   "key": "rulebook.rung.pile1",
+   "text": "[Îñ Rûñg (Döûblé Sår) å wöñ trîçk göés fåçé döwñ öñtö thé pîlé îñ thé çéñtré. Ñöbödý öwñs ît ýét. · · · · · · · · · · · · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "rulebook.rung.pile2",
+   "text": "[Wîñ twö trîçks îñ å röw ýöûrsélf åñd ýöûr påîr tåkés thé whölé pîlé. Thé çröwñ mårks thé plåýér whö ñééds öñé möré. · · · · · · · · · · · · · · · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "rulebook.rung.pile3",
+   "text": "[Å trîçk wöñ bý ýöû åñd thé ñéxt bý ýöûr pårtñér döés ñöt tåké thé pîlé; ýöûr pårtñér ñöw ñééds öñé möré. · · · · · · · · · · · · · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "rulebook.rung.pile4",
+   "text": "[Whöévér wîñs thé thîrtééñth trîçk tåkés whåt îs léft îñ thé pîlé. · · · · · · · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "rulebook.rung.pile5",
+   "text": "[Çöûrt Pîéçé åñd Hökm håvé ñö pîlé: évérý trîçk çöûñts för thé påîr thåt wîñs ît. · · · · · · · · · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "rulebook.rung.play",
+   "text": "[Föllöwîñg sûît åñd çûttîñg · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "rulebook.rung.play1",
+   "text": "[Thé çållér léåds thé fîrst trîçk wîth åñý çård. Whöévér wîñs å trîçk léåds thé ñéxt. · · · · · · · · · · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "rulebook.rung.play2",
+   "text": "[Plåý thé léd sûît îf ýöû höld ît. Îf ýöû döñ't, plåý åñý çård. · · · · · · · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "rulebook.rung.play3",
+   "text": "[Å rûñg plåýéd öñ å sûît ýöû döñ't höld îs å kååt, å çût. Thé hîghést rûñg wîñs thé trîçk; wîth ñö rûñg îñ ît, thé hîghést çård öf thé léd sûît wîñs. · · · · · · · · · · · · · · · · · · · · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "rulebook.rung.play4",
+   "text": "[Öñlý thé çårds ýöû måý plåý åré lît, sö å wröñg çård çåñ't bé plåýéd. · · · · · · · · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "rulebook.rung.scoring",
+   "text": "[Sçörîñg å båzî · · ·]",
+   "smart": false
+  },
+  {
+   "key": "rulebook.rung.scoring1",
+   "text": "[Rûñg åñd Çöûrt Pîéçé: å déål wöñ bý thé çållér's påîr îs 1 pöîñt, bý thé déålér's påîr 2. Å çöûrt îs 3 för thé çållér's påîr åñd 4 för thé déålér's påîr. · · · · · · · · · · · · · · · · · · · · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "rulebook.rung.scoring2",
+   "text": "[Hökm: å déål wöñ îs 1 pöîñt. Å çöûrt îs 2 för thé çållér's påîr åñd 3 för thé déålér's påîr. · · · · · · · · · · · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "rulebook.rung.scoring3",
+   "text": "[Thé fîrst påîr tö thé tårgét wîñs thé båzî. Å rööm plåýs tö 5, 7 ör 10 pöîñts; Qûîçk Plåý plåýs tö 5. · · · · · · · · · · · · · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "rulebook.rung.scoring4",
+   "text": "[Whîlé thé çållér's påîr kééps wîññîñg, thé çåll ståýs wîth ît. Whéñ thé déålér's påîr wîñs å déål, thé çåll mövés öñ tö thåt påîr. · · · · · · · · · · · · · · · · · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "rulebook.rung.sets",
+   "text": "[Thé thréé rûlé séts · · ·]",
+   "smart": false
+  },
+  {
+   "key": "rulebook.rung.sets1",
+   "text": "[Rûñg (Döûblé Sår): trîçks gö tö thé pîlé åñd twö îñ å röw tåkés ît. Å çöûrt îs åll thîrtééñ trîçks. · · · · · · · · · · · · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "rulebook.rung.sets2",
+   "text": "[Çöûrt Pîéçé (Sîñglé Sår): évérý trîçk çöûñts åt öñçé. Å çöûrt îs thé fîrst sévéñ trîçks, åñd åll thîrtééñ îs å 52-çöûrt. · · · · · · · · · · · · · · · · · ·]",
+   "smart": false
+  },
+  {
+   "key": "rulebook.rung.sets3",
+   "text": "[Hökm: évérý trîçk çöûñts åt öñçé, å déål stöps åt sévéñ trîçks, ñöbödý måý åsk för ñéw çårds, åñd å çöûrt sçörés léss. · · · · · · · · · · · · · · · · · ·]",
+   "smart": false
+  },
+  {
    "key": "rulebook.this_table",
    "text": "[Thîs tåblé · ·]",
    "smart": false
@@ -2840,6 +3035,16 @@
   {
    "key": "rulebook.title",
    "text": "[Rûlés ·]",
+   "smart": false
+  },
+  {
+   "key": "rulebook.title_rung",
+   "text": "[Rûñg rûlés · ·]",
+   "smart": false
+  },
+  {
+   "key": "rulebook.title_thulla",
+   "text": "[Thûllå rûlés · ·]",
    "smart": false
   },
   {
@@ -3160,6 +3365,11 @@
   {
    "key": "rung.tricks",
    "text": "[{0} – {1} · ·]",
+   "smart": true
+  },
+  {
+   "key": "rung.tricks_line",
+   "text": "[Ûs {0} – {1} Thém · · ·]",
    "smart": true
   },
   {
@@ -3530,6 +3740,11 @@
   {
    "key": "tutorial.refresher",
    "text": "[20-séçöñd réfréshér · · ·]",
+   "smart": false
+  },
+  {
+   "key": "tutorial.refresher_ask",
+   "text": "[20-séçöñd réfréshér? · · ·]",
    "smart": false
   },
   {
@@ -3939,7 +4154,12 @@
   },
   {
    "key": "ui.claim_coins",
-   "text": "[Çlåîm {0} çöîñs · · ·]",
+   "text": "[Çlåîm {0:N0} çöîñs · · ·]",
+   "smart": true
+  },
+  {
+   "key": "ui.claim_coins_gems",
+   "text": "[Çlåîm {0:N0} + {1} géms · · ·]",
    "smart": true
   },
   {
@@ -3969,7 +4189,7 @@
   },
   {
    "key": "ui.coins_doubled",
-   "text": "[Çöîñs döûbléd: +{0} · · ·]",
+   "text": "[Çöîñs döûbléd: +{0:N0} · · ·]",
    "smart": true
   },
   {
@@ -3983,6 +4203,11 @@
    "smart": true
   },
   {
+   "key": "ui.coins_short_line",
+   "text": "[Ýöû åré {0} shört. · · ·]",
+   "smart": true
+  },
+  {
    "key": "ui.coming_soon",
    "text": "[Çömîñg sööñ · ·]",
    "smart": false
@@ -3990,6 +4215,11 @@
   {
    "key": "ui.connecting",
    "text": "[Çöññéçtîñg… · ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.connection_lost",
+   "text": "[Thé çöññéçtîöñ dröppéd åñd thé tåblé çöûldñ't bé réåçhéd. · · · · · · · · ·]",
    "smart": false
   },
   {
@@ -4151,6 +4381,11 @@
    "key": "ui.duration_minutes",
    "text": "[{0}m ·]",
    "smart": true
+  },
+  {
+   "key": "ui.earn_coins",
+   "text": "[Éårñ çöîñs îñ Mîssîöñs · · · ·]",
+   "smart": false
   },
   {
    "key": "ui.edit_profile",
@@ -5059,17 +5294,17 @@
   },
   {
    "key": "ui.plus_coins",
-   "text": "[+{0} çöîñs · ·]",
+   "text": "[+{0:N0} çöîñs · ·]",
    "smart": true
   },
   {
    "key": "ui.plus_reward",
-   "text": "[+{0} ·]",
+   "text": "[+{0:N0} ·]",
    "smart": true
   },
   {
    "key": "ui.plus_reward_gems",
-   "text": "[+{0} · {1} géms · · ·]",
+   "text": "[+{0:N0} · {1} géms · · ·]",
    "smart": true
   },
   {
@@ -5349,17 +5584,17 @@
   },
   {
    "key": "ui.reward_coins",
-   "text": "[{0} çöîñs · ·]",
+   "text": "[{0:N0} çöîñs · ·]",
    "smart": true
   },
   {
    "key": "ui.reward_gems",
-   "text": "[{0} çöîñs, {1} géms · · ·]",
+   "text": "[{0:N0} çöîñs, {1} géms · · ·]",
    "smart": true
   },
   {
    "key": "ui.reward_line",
-   "text": "[+{0} XP · +{1} çöîñs · · ·]",
+   "text": "[+{0:N0} XP · +{1:N0} çöîñs · · ·]",
    "smart": true
   },
   {
@@ -5556,6 +5791,11 @@
    "key": "ui.seats_short",
    "text": "[Séåts ·]",
    "smart": false
+  },
+  {
+   "key": "ui.seconds_option",
+   "text": "[{0} s ·]",
+   "smart": true
   },
   {
    "key": "ui.seconds_short",
@@ -5885,6 +6125,11 @@
   {
    "key": "ui.swapped",
    "text": "[Swåppéd · ·]",
+   "smart": false
+  },
+  {
+   "key": "ui.table_closed",
+   "text": "[Thé tåblé hås çlöséd. · · · ·]",
    "smart": false
   },
   {
@@ -6219,7 +6464,7 @@
   },
   {
    "key": "ui.you_have",
-   "text": "[Ýöû håvé {0} çöîñs · {1} géms · · · · ·]",
+   "text": "[Ýöû håvé {0:N0} çöîñs · {1:N0} géms · · · · ·]",
    "smart": true
   },
   {

@@ -25,6 +25,15 @@ namespace Hulla.Application.ViewModels
         /// <summary>What the last claim paid, for the "Claimed" line; null before a claim this session.</summary>
         public DailyRewardDay? Claimed { get; private set; }
 
+        /// <summary>Another account signed in: nothing of the last one stays.</summary>
+        public void Reset()
+        {
+            Status = null;
+            Claimed = null;
+            Claiming = false;
+            Changed?.Invoke();
+        }
+
         public async Awaitable RefreshAsync(int tzOffsetMinutes, CancellationToken cancellation)
         {
             var status = await _service.StatusAsync(tzOffsetMinutes, cancellation);

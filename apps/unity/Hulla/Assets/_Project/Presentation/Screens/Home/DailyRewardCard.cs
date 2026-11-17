@@ -9,13 +9,14 @@ namespace Hulla.Presentation.Screens.Home
 {
     /// <summary>
     /// The daily reward card on Home: the gift, "Daily Reward" and the day of the 7-day calendar. While
-    /// today's reward waits the card glows and a tap claims it; the amount is in the card's tooltip.
+    /// today's reward waits the card glows, shows what it pays under the day, and a tap claims it.
     /// </summary>
     public sealed class DailyRewardCard : IDisposable
     {
         private readonly DailyRewardViewModel _model;
         private readonly VisualElement _root;
         private readonly Label _text;
+        private readonly Label? _amount;
         private readonly Button _claim;
 
         public DailyRewardCard(VisualElement root, DailyRewardViewModel model, Action claim)
@@ -23,6 +24,7 @@ namespace Hulla.Presentation.Screens.Home
             _root = root;
             _model = model;
             _text = root.Q<Label>("daily-text");
+            _amount = root.Q<Label>("daily-amount");
             TextArt.Mark(root.Q<Label>("daily-title"), "daily-reward").text = UiText.DailyReward;
             _claim = root.Q<Button>("daily-claim");
             _claim.text = "";
@@ -46,6 +48,15 @@ namespace Hulla.Presentation.Screens.Home
             _text.text = Strings.Format(UiText.DailyDay, status.Today.Day);
             _root.EnableInClassList("home__daily--done", false);
             _root.EnableInClassList("home__daily--ready", status.Claimable);
+            // Phones show no tooltips: what today pays is on the card while it waits.
+            _root.EnableInClassList("home__daily--amount", status.Claimable && _amount != null);
+            if (_amount != null)
+            {
+                _amount.text = !status.Claimable ? ""
+                    : status.Today.Gems > 0 ? Strings.Format(UiText.PlusRewardGems, status.Today.Coins, status.Today.Gems)
+                    : Strings.Format(UiText.PlusCoins, status.Today.Coins);
+            }
+
             if (status.Claimable)
             {
                 _root.tooltip = Strings.Format(UiText.DailyReady, status.Today.Day, Amount(status.Today));

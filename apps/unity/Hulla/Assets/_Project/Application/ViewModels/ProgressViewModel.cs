@@ -26,6 +26,16 @@ namespace Hulla.Application.ViewModels
 
         public long Gems { get; private set; }
 
+        /// <summary>Another account signed in: nothing of the last one stays.</summary>
+        public void Reset()
+        {
+            Info = null;
+            BalancesKnown = false;
+            Coins = 0;
+            Gems = 0;
+            Changed?.Invoke();
+        }
+
         public async Awaitable RefreshAsync(int tzOffsetMinutes, CancellationToken cancellation)
         {
             var info = await _progress.ProgressAsync(tzOffsetMinutes, cancellation);

@@ -42,6 +42,25 @@ namespace Hulla.Presentation.Navigation
         }
 
         /// <summary>The wallet pill on the right of the Shop and Pass tops: coins, then gems.</summary>
+        /// <summary>The wallet pill before the balances are known: empty amounts, never a zero that isn't true.</summary>
+        public static void Wallet(VisualElement root, long? coins, long? gems)
+        {
+            if (coins != null && gems != null)
+            {
+                Wallet(root, coins.Value, gems.Value);
+                return;
+            }
+
+            foreach (var name in new[] { "coin-amount", "gem-amount" })
+            {
+                var amount = root.Q<Label>(name);
+                if (amount != null)
+                {
+                    amount.text = "";
+                }
+            }
+        }
+
         public static void Wallet(VisualElement root, long coins, long gems)
         {
             var culture = Text.Strings.Culture;

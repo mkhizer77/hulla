@@ -17,6 +17,9 @@ namespace Hulla.Application.Tests
 
             public int Cancels;
 
+            /// <summary>When set, every search is refused with this code (a dropped socket).</summary>
+            public string? Refuse;
+
             public event Action<TableTicket>? Matched;
 
             public void Match(string matchId) => Matched?.Invoke(TableTicket.Matchmade(matchId));
@@ -25,7 +28,7 @@ namespace Hulla.Application.Tests
             {
                 Searches.Add((seats, anySize));
                 var done = new AwaitableCompletionSource<Result<bool>>();
-                done.SetResult(Result<bool>.Ok(true));
+                done.SetResult(Refuse == null ? Result<bool>.Ok(true) : Result<bool>.Fail(Refuse));
                 return done.Awaitable;
             }
 
@@ -35,7 +38,7 @@ namespace Hulla.Application.Tests
             {
                 RankedBands.Add(band);
                 var done = new AwaitableCompletionSource<Result<bool>>();
-                done.SetResult(Result<bool>.Ok(true));
+                done.SetResult(Refuse == null ? Result<bool>.Ok(true) : Result<bool>.Fail(Refuse));
                 return done.Awaitable;
             }
 
@@ -234,6 +237,106 @@ namespace Hulla.Application.Tests
             Assert.AreNotEqual(QuickPlayViewModel.Stage.Starting, _model.Current);
             _ = _model.StartAsync(4, default);
             Assert.IsFalse(_model.Ranked, "a Quick Play search after a Ranked one is Quick Play again");
+        }
+
+        [Test]
+        public void ARankedSearchStopsAfterNinetySecondsAndAsks()
+        {
+            _ = _model.StartRankedAsync(150, 150, 600, default);
+            _model.Tick(QuickPlayViewModel.RankedTimeoutSeconds - 1f);
+            Assert.IsTrue(_model.Searching);
+            _model.Tick(1f);
+            Assert.AreEqual(QuickPlayViewModel.Stage.TimedOut, _model.Current);
+            Assert.IsTrue(_model.Stopped);
+            Assert.IsFalse(_model.Searching);
+            Assert.AreEqual(1, _matchmaker.Cancels, "the ticket is dropped while the player decides");
+            _matchmaker.Match("late.1");
+            Assert.AreEqual(QuickPlayViewModel.Stage.TimedOut, _model.Current, "a late match does not seat a player who was asked");
+            Assert.IsEmpty(_matchmaker.BotTables, "Ranked never fills with bots");
+        }
+
+        [Test]
+        public void KeepSearchingStartsTheRankedSearchAgainAtTheBandItReached()
+        {
+            _ = _model.StartRankedAsync(150, 150, 600, default);
+            for (var second = 0; second < QuickPlayViewModel.RankedTimeoutSeconds; second += 10)
+            {
+                _model.Tick(10f);
+            }
+
+            Assert.AreEqual(QuickPlayViewModel.Stage.TimedOut, _model.Current);
+            var bandsBefore = _matchmaker.RankedBands.Count;
+            _ = _model.RetryAsync(default);
+            Assert.AreEqual(QuickPlayViewModel.Stage.Strict, _model.Current);
+            Assert.IsTrue(_model.Ranked);
+            Assert.AreEqual(0f, _model.Elapsed);
+            Assert.AreEqual(bandsBefore + 1, _matchmaker.RankedBands.Count);
+            Assert.AreEqual(600, _matchmaker.RankedBands[_matchmaker.RankedBands.Count - 1], "the widened band is kept");
+        }
+
+        [Test]
+        public void CancelFromAStoppedSearchGoesIdleWithoutAnotherCall()
+        {
+            _ = _model.StartRankedAsync(150, 150, 600, default);
+            _model.Tick(QuickPlayViewModel.RankedTimeoutSeconds);
+            var cancels = _matchmaker.Cancels;
+            _ = _model.CancelAsync();
+            Assert.AreEqual(QuickPlayViewModel.Stage.Idle, _model.Current);
+            Assert.AreEqual(cancels, _matchmaker.Cancels);
+        }
+
+        [Test]
+        public void AFailedSearchCanBeRetriedAsTheSameSearch()
+        {
+            _matchmaker.Refuse = "matchmaker.unavailable";
+            _ = _model.StartAsync(5, default);
+            Assert.AreEqual(QuickPlayViewModel.Stage.Failed, _model.Current);
+            Assert.IsTrue(_model.Stopped);
+            _matchmaker.Refuse = null;
+            _ = _model.RetryAsync(default);
+            Assert.AreEqual(QuickPlayViewModel.Stage.Strict, _model.Current);
+            Assert.AreEqual(5, _model.Seats);
+            Assert.IsNull(_model.ErrorCode);
+            _ = _model.StartRungAsync(default);
+            _matchmaker.Refuse = "matchmaker.unavailable";
+            _model.ConnectionLost("session.unavailable");
+            _matchmaker.Refuse = null;
+            var rungBefore = _matchmaker.RungSearches;
+            _ = _model.RetryAsync(default);
+            Assert.AreEqual("rung", _model.Game);
+            Assert.AreEqual(rungBefore + 1, _matchmaker.RungSearches);
+        }
+
+        [Test]
+        public void AfterAReconnectTheSearchAsksForItsTicketAgain()
+        {
+            _ = _model.StartAsync(4, default);
+            _model.Tick(QuickPlayViewModel.WidenAtSeconds);
+            var before = _matchmaker.Searches.Count;
+            _ = _model.ResumeAsync(default);
+            Assert.AreEqual(before + 1, _matchmaker.Searches.Count);
+            Assert.AreEqual((4, true), _matchmaker.Searches[_matchmaker.Searches.Count - 1], "the widened search stays widened");
+            Assert.IsTrue(_model.Searching);
+
+            _ = _model.StartRankedAsync(150, 150, 600, default);
+            _ = _model.ResumeAsync(default);
+            Assert.AreEqual(150, _matchmaker.RankedBands[_matchmaker.RankedBands.Count - 1]);
+
+            _matchmaker.Refuse = "matchmaker.unavailable";
+            _ = _model.ResumeAsync(default);
+            Assert.AreEqual(QuickPlayViewModel.Stage.Failed, _model.Current, "a ticket that can't be asked for again fails in sight");
+            Assert.AreEqual("matchmaker.unavailable", _model.ErrorCode);
+        }
+
+        [Test]
+        public void ALostConnectionFailsARunningSearchOnly()
+        {
+            _model.ConnectionLost("session.unavailable");
+            Assert.AreEqual(QuickPlayViewModel.Stage.Idle, _model.Current);
+            _ = _model.StartAsync(4, default);
+            _model.ConnectionLost("session.unavailable");
+            Assert.AreEqual(QuickPlayViewModel.Stage.Failed, _model.Current);
+            Assert.AreEqual("session.unavailable", _model.ErrorCode);
         }
 
         [Test]

@@ -44,6 +44,16 @@ namespace Hulla.Application.ViewModels
             return RefreshAsync(cancellation);
         }
 
+        /// <summary>Another account signed in: nothing of the last one stays.</summary>
+        public void Reset()
+        {
+            _request++;
+            Page = null;
+            ErrorCode = null;
+            Loading = false;
+            Changed?.Invoke();
+        }
+
         public async Awaitable RefreshAsync(CancellationToken cancellation)
         {
             // Only the latest tap's answer lands; a slower earlier one is dropped.

@@ -21,7 +21,8 @@ Decided by the owner on 16 November 2026. Thulla and Rung get equal weight every
 - **Profile**: the stats card has a Thulla and a Rung side. Level, coins and titles stay shared.
 - **Shop**: nothing is sold per game. The preview can show either table. The pass earns from both.
 - **Friends**: a friend's status names the game, and an invite says which game it is to.
-- **Results**: Thulla's stays. Rung shows a short strip after each deal that moves on by itself, and the full team result when the bazi ends.
+- **Results**: Thulla's stays. Rung shows a short strip after each deal that moves on by itself, and the full team result when the bazi ends. The deal result carries what the deal paid (XP, coins, a level-up), the level bar, the 2x coins offer and Add chips for co-players who are not friends yet, the same rows as Thulla's result.
+- **Rulebook**: the book on a game's page, in the lobby, at the table and in Settings opens the rulebook of the game in question (the table's, else the open game page's, else Thulla's). Away from a table a chip at the top turns to the other game's book. Rung's has no tutorial yet.
 
 ## Rung Quick Play
 

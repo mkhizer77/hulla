@@ -20,7 +20,7 @@ namespace Hulla.Games.Rung
     /// bar on the felt. The call and the court choice open as a panel over the felt for the seat that
     /// must answer. It reads the model after every message and never decides anything itself.
     /// </summary>
-    public sealed class RungTableView : CardTableView, IEventPresenter, IDisposable
+    public sealed class RungTableView : CardTableView, IEventPresenter, IRoundResults, IDisposable
     {
         /// <summary>How long a won trick stays face up before the next card may show (seconds).</summary>
         public const float TrickHoldSeconds = 0.8f;
@@ -57,6 +57,11 @@ namespace Hulla.Games.Rung
         private readonly Button _again = new Button { name = "rung-again" };
         private readonly Button _switch = new Button { name = "rung-switch" };
         private readonly Button _resultLeave = new Button { name = "rung-leave" };
+        private readonly VisualElement _resultFriends = new VisualElement { name = "rung-result-friends" };
+        private RoundRewards _rewards = null!;
+        private Func<string, bool>? _canAdd;
+        private Action<string>? _addFriendChip;
+        private string _friendsShownFor = "";
         private readonly List<(string Card, string Owner, long Seat)> _plays = new List<(string, string, long)>();
         private readonly List<string> _handCards = new List<string>();
         private string _askShown = "";
@@ -359,6 +364,10 @@ namespace Hulla.Games.Rung
             panel.Add(_resultTitle);
             panel.Add(_resultLine);
             panel.Add(_resultBazi);
+            // What the deal paid, the 2x offer, the level bar and Add chips: the same rows as Thulla's result.
+            _rewards = RoundRewards.AddTo(panel, "rung-");
+            _resultFriends.AddToClassList("rung-result__friends");
+            panel.Add(_resultFriends);
             panel.Add(_again);
             panel.Add(_switch);
             panel.Add(_resultLeave);
@@ -422,7 +431,7 @@ namespace Hulla.Games.Rung
             _trump.EnableInClassList("rung-bar__trump--red", rung.Trump == 'H' || rung.Trump == 'D');
             _trump.style.display = rung.Trump == null ? DisplayStyle.None : DisplayStyle.Flex;
             // The whole line stays for the screen reader and other skins; the plates carry it in Basant.
-            _tricks.text = RungText.Us + " " + Strings.Format(RungText.Tricks, rung.Counts[team], rung.Counts[1 - team]) + " " + RungText.Them;
+            _tricks.text = Strings.Format(RungText.TricksLine, rung.Counts[team], rung.Counts[1 - team]);
             _usName.text = RungText.Us;
             _themName.text = RungText.Them;
             _usCount.text = Strings.Format("{0}", rung.Counts[team]);
@@ -596,7 +605,10 @@ namespace Hulla.Games.Rung
             {
                 _votedRound = result.RoundId;
                 _voted = false;
+                _rewards.Clear();
             }
+
+            ShowFriendChips(model, result.RoundId);
 
             _result.style.display = DisplayStyle.Flex;
             var team = RungModel.TeamOf(model.MySeat ?? 0);
@@ -618,7 +630,7 @@ namespace Hulla.Games.Rung
             var court = !finished && !model.Spectating && result.Kind != RungOutcomeKind.Win;
             _resultStamp.style.display = court ? DisplayStyle.Flex : DisplayStyle.None;
             _resultStamp.EnableInClassList("rung-result__stamp--52", result.Kind == RungOutcomeKind.Court52);
-            _resultLine.text = RungText.Us + " " + Strings.Format(RungText.Tricks, result.Counts[team], result.Counts[1 - team]) + " " + RungText.Them;
+            _resultLine.text = Strings.Format(RungText.TricksLine, result.Counts[team], result.Counts[1 - team]);
             var points = rung.Teams?.Points;
             _resultBazi.text = points != null && points.Count >= 2 ? Strings.Format(RungText.Bazi, points[team], points[1 - team]) : "";
             var votes = model.RematchVotes.Count;
@@ -627,6 +639,42 @@ namespace Hulla.Games.Rung
                 : finished ? RungText.NewBazi : RungText.NextDeal;
             _again.SetEnabled(!_voted && !model.Spectating);
             _switch.style.display = model.IsHost && model.IsPrivate ? DisplayStyle.Flex : DisplayStyle.None;
+        }
+
+        /// <summary>The deal's XP and coins (docs/design/two-games.md), once the server has paid it.</summary>
+        public void ShowReward(string? text) => _rewards.ShowReward(text);
+
+        public void ShowLevel(long level, float fraction) => _rewards.ShowLevel(level, fraction);
+
+        public void OfferDouble(string? text, Action? onTap) => _rewards.OfferDouble(text, onTap);
+
+        /// <summary>The reward line on the deal result; empty until the deal is paid. Read by tests.</summary>
+        public string RewardText => _rewards.RewardText;
+
+        public void SetFriendActions(Func<string, bool> canAdd, Action<string> addFriend)
+        {
+            UseFriendActions(canAdd, addFriend);
+            _canAdd = canAdd;
+            _addFriendChip = addFriend;
+            _friendsShownFor = "";
+            Refresh();
+        }
+
+        /// <summary>The Add chips are drawn once a deal, so a chip that says "Request sent" keeps saying it.</summary>
+        private void ShowFriendChips(TableModel model, string roundId)
+        {
+            if (_friendsShownFor == roundId || _canAdd == null)
+            {
+                return;
+            }
+
+            _friendsShownFor = roundId;
+            _resultFriends.Clear();
+            var row = model.Spectating ? null : RoundRewards.FriendChips(model, _canAdd, _addFriendChip);
+            if (row != null)
+            {
+                _resultFriends.Add(row);
+            }
         }
 
         private void VoteNext()

@@ -2993,6 +2993,21 @@
     margin: var(--space-2) 0;
 }
 
+/* What the deal paid: the level bar runs the panel's width, the Add chips sit centred under it. */
+.rung-result__panel > .results__level {
+    align-self: stretch;
+}
+
+.rung-result__friends {
+    align-self: stretch;
+    align-items: center;
+}
+
+.rung-result__friends > .chips {
+    justify-content: center;
+    margin-bottom: 0;
+}
+
 .rung-result__panel > .button {
     margin-top: var(--space-2);
     min-width: 520px;
@@ -3000,4 +3015,24 @@
 
 .seat--partner .seat__name {
     color: var(--gold);
+}
+
+/* The daily card's amount line shows only while today's reward waits. */
+.home__daily-amount {
+    display: none;
+}
+
+.home__daily--amount .home__daily-amount {
+    display: flex;
+}
+
+/* A search that stopped: go again or cancel, under the status line. */
+.quick__actions {
+    align-items: center;
+    margin-top: var(--space-2);
+}
+
+.quick__actions > .button {
+    margin-top: var(--space-2);
+    min-width: 520px;
 }

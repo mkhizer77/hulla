@@ -9,6 +9,10 @@ namespace Hulla.Presentation.Text
     /// </summary>
     public static class UiText
     {
+        public static string ConnectionLost => Strings.Text("ui.connection_lost");
+
+        public static string TableClosed => Strings.Text("ui.table_closed");
+
         public static string DailyBackTomorrow => Strings.Text("ui.daily_back_tomorrow");
 
         public static string PlusCoins => Strings.Text("ui.plus_coins");
@@ -118,6 +122,14 @@ namespace Hulla.Presentation.Text
         public static string Swap => Strings.Text("ui.swap");
 
         public static string ClaimCoins => Strings.Text("ui.claim_coins");
+
+        public static string ClaimCoinsGems => Strings.Text("ui.claim_coins_gems");
+
+        public static string EarnCoins => Strings.Text("ui.earn_coins");
+
+        public static string CoinsShortLine => Strings.Text("ui.coins_short_line");
+
+        public static string SecondsOption => Strings.Text("ui.seconds_option");
 
         public static string OfCount => Strings.Text("ui.of_count");
 
