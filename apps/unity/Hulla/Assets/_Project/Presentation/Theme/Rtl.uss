@@ -334,8 +334,17 @@
     -unity-text-align: middle-center;
 }
 
-.rtl .rung-bar {
+.rtl .rung-bar__board,
+.rtl .rung-bar__under {
     flex-direction: row-reverse;
+}
+
+.rtl .rung-bar__team {
+    flex-direction: row-reverse;
+}
+
+.rtl .rung-bar__trump {
+    -unity-text-align: middle-center;
 }
 
 .rtl .rung-ask__title {

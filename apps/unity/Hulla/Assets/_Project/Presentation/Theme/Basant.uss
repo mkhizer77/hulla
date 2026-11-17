@@ -9193,6 +9193,16 @@
 .skin--basant .achievement__medal.medal--cosmetics_30 { background-image: url("/Assets/_Project/Presentation/Theme/Art/Basant/Medals/cosmetics_30.png"); }
 .skin--basant .achievement__medal.medal--seasonal_rounds_10 { background-image: url("/Assets/_Project/Presentation/Theme/Art/Basant/Medals/seasonal_rounds_10.png"); }
 .skin--basant .achievement__medal.medal--seasonal_rounds_50 { background-image: url("/Assets/_Project/Presentation/Theme/Art/Basant/Medals/seasonal_rounds_50.png"); }
+.skin--basant .achievement__medal.medal--rung_first_deal { background-image: url("/Assets/_Project/Presentation/Theme/Art/Basant/Medals/rung_first_deal.png"); }
+.skin--basant .achievement__medal.medal--rung_deals_100 { background-image: url("/Assets/_Project/Presentation/Theme/Art/Basant/Medals/rung_deals_100.png"); }
+.skin--basant .achievement__medal.medal--rung_bazis_10 { background-image: url("/Assets/_Project/Presentation/Theme/Art/Basant/Medals/rung_bazis_10.png"); }
+.skin--basant .achievement__medal.medal--rung_bazis_100 { background-image: url("/Assets/_Project/Presentation/Theme/Art/Basant/Medals/rung_bazis_100.png"); }
+.skin--basant .achievement__medal.medal--rung_bazis_won_25 { background-image: url("/Assets/_Project/Presentation/Theme/Art/Basant/Medals/rung_bazis_won_25.png"); }
+.skin--basant .achievement__medal.medal--rung_first_court { background-image: url("/Assets/_Project/Presentation/Theme/Art/Basant/Medals/rung_first_court.png"); }
+.skin--basant .achievement__medal.medal--rung_goon_court { background-image: url("/Assets/_Project/Presentation/Theme/Art/Basant/Medals/rung_goon_court.png"); }
+.skin--basant .achievement__medal.medal--rung_court52 { background-image: url("/Assets/_Project/Presentation/Theme/Art/Basant/Medals/rung_court52.png"); }
+.skin--basant .achievement__medal.medal--rung_calls_10 { background-image: url("/Assets/_Project/Presentation/Theme/Art/Basant/Medals/rung_calls_10.png"); }
+.skin--basant .achievement__medal.medal--rung_friend_bazi { background-image: url("/Assets/_Project/Presentation/Theme/Art/Basant/Medals/rung_friend_bazi.png"); }
 .skin--basant .medal-tile--locked .achievement__medal.medal--first_thulla, .skin--basant .medal-sheet__medal--locked.medal--first_thulla { background-image: url("/Assets/_Project/Presentation/Theme/Art/Basant/Medals/first_thulla-locked.png"); }
 .skin--basant .medal-tile--locked .achievement__medal.medal--thullas_100, .skin--basant .medal-sheet__medal--locked.medal--thullas_100 { background-image: url("/Assets/_Project/Presentation/Theme/Art/Basant/Medals/thullas_100-locked.png"); }
 .skin--basant .medal-tile--locked .achievement__medal.medal--thullas_1000, .skin--basant .medal-sheet__medal--locked.medal--thullas_1000 { background-image: url("/Assets/_Project/Presentation/Theme/Art/Basant/Medals/thullas_1000-locked.png"); }
@@ -9233,6 +9243,16 @@
 .skin--basant .medal-tile--locked .achievement__medal.medal--cosmetics_30, .skin--basant .medal-sheet__medal--locked.medal--cosmetics_30 { background-image: url("/Assets/_Project/Presentation/Theme/Art/Basant/Medals/cosmetics_30-locked.png"); }
 .skin--basant .medal-tile--locked .achievement__medal.medal--seasonal_rounds_10, .skin--basant .medal-sheet__medal--locked.medal--seasonal_rounds_10 { background-image: url("/Assets/_Project/Presentation/Theme/Art/Basant/Medals/seasonal_rounds_10-locked.png"); }
 .skin--basant .medal-tile--locked .achievement__medal.medal--seasonal_rounds_50, .skin--basant .medal-sheet__medal--locked.medal--seasonal_rounds_50 { background-image: url("/Assets/_Project/Presentation/Theme/Art/Basant/Medals/seasonal_rounds_50-locked.png"); }
+.skin--basant .medal-tile--locked .achievement__medal.medal--rung_first_deal, .skin--basant .medal-sheet__medal--locked.medal--rung_first_deal { background-image: url("/Assets/_Project/Presentation/Theme/Art/Basant/Medals/rung_first_deal-locked.png"); }
+.skin--basant .medal-tile--locked .achievement__medal.medal--rung_deals_100, .skin--basant .medal-sheet__medal--locked.medal--rung_deals_100 { background-image: url("/Assets/_Project/Presentation/Theme/Art/Basant/Medals/rung_deals_100-locked.png"); }
+.skin--basant .medal-tile--locked .achievement__medal.medal--rung_bazis_10, .skin--basant .medal-sheet__medal--locked.medal--rung_bazis_10 { background-image: url("/Assets/_Project/Presentation/Theme/Art/Basant/Medals/rung_bazis_10-locked.png"); }
+.skin--basant .medal-tile--locked .achievement__medal.medal--rung_bazis_100, .skin--basant .medal-sheet__medal--locked.medal--rung_bazis_100 { background-image: url("/Assets/_Project/Presentation/Theme/Art/Basant/Medals/rung_bazis_100-locked.png"); }
+.skin--basant .medal-tile--locked .achievement__medal.medal--rung_bazis_won_25, .skin--basant .medal-sheet__medal--locked.medal--rung_bazis_won_25 { background-image: url("/Assets/_Project/Presentation/Theme/Art/Basant/Medals/rung_bazis_won_25-locked.png"); }
+.skin--basant .medal-tile--locked .achievement__medal.medal--rung_first_court, .skin--basant .medal-sheet__medal--locked.medal--rung_first_court { background-image: url("/Assets/_Project/Presentation/Theme/Art/Basant/Medals/rung_first_court-locked.png"); }
+.skin--basant .medal-tile--locked .achievement__medal.medal--rung_goon_court, .skin--basant .medal-sheet__medal--locked.medal--rung_goon_court { background-image: url("/Assets/_Project/Presentation/Theme/Art/Basant/Medals/rung_goon_court-locked.png"); }
+.skin--basant .medal-tile--locked .achievement__medal.medal--rung_court52, .skin--basant .medal-sheet__medal--locked.medal--rung_court52 { background-image: url("/Assets/_Project/Presentation/Theme/Art/Basant/Medals/rung_court52-locked.png"); }
+.skin--basant .medal-tile--locked .achievement__medal.medal--rung_calls_10, .skin--basant .medal-sheet__medal--locked.medal--rung_calls_10 { background-image: url("/Assets/_Project/Presentation/Theme/Art/Basant/Medals/rung_calls_10-locked.png"); }
+.skin--basant .medal-tile--locked .achievement__medal.medal--rung_friend_bazi, .skin--basant .medal-sheet__medal--locked.medal--rung_friend_bazi { background-image: url("/Assets/_Project/Presentation/Theme/Art/Basant/Medals/rung_friend_bazi-locked.png"); }
 
 /* One laurel medal per ranked league (concept: Ranked). */
 .skin--basant .ranked__medal.ranked__medal--league-bronze { background-image: url("/Assets/_Project/Presentation/Theme/Art/Basant/Medals/league-bronze.png"); }
@@ -11189,4 +11209,206 @@
     width: 100%;
     flex-shrink: 0;
     margin: 0 0 20px 0;
+}
+
+/* ==================== Rung table: scoreboard, call sheet, deal result ==================== */
+/* Concept rung-table: my pair green, the other pair magenta, the rung in a crowned medallion between
+   them on the rug's top rim; the pile and the bazi score under it. */
+/* The rug is a square as wide as the rail, centred in it: the board sits just inside its top edge. */
+.skin--basant .rung-bar {
+    top: 50%;
+    margin-top: -416px;
+}
+
+.skin--basant .rung-bar__board {
+    width: 640px;
+    height: 150px;
+    justify-content: space-between;
+}
+
+.skin--basant .rung-bar__team {
+    width: 340px;
+    height: 120px;
+    margin: 0;
+    padding: 0 0 8px 0;
+    border-radius: 0;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(0, 0, 0, 0);
+    -unity-background-scale-mode: stretch-to-fill;
+}
+
+.skin--basant .rung-bar__team--us {
+    margin-right: -40px;
+    padding-right: 70px;
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Basant/Table/plate-team-us.png");
+}
+
+.skin--basant .rung-bar__team--them {
+    margin-left: 0;
+    padding-left: 70px;
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Basant/Table/plate-team-them.png");
+}
+
+.skin--basant .rung-bar__team .rung-bar__team-name {
+    height: 34px;
+    margin: 0;
+    font-size: 30px;
+    color: rgb(74, 30, 14);
+    -unity-text-align: middle-center;
+}
+
+.skin--basant .rung-bar__team .rung-bar__team-count {
+    height: 56px;
+    margin: -4px 0 0 0;
+    font-size: 56px;
+    color: rgb(255, 248, 232);
+    -unity-text-outline-width: 3px;
+    -unity-text-outline-color: rgb(74, 30, 14);
+    -unity-text-align: middle-center;
+}
+
+.skin--basant .rung-bar__medallion {
+    left: 230px;
+    top: -52px;
+    width: 180px;
+    height: 217px;
+    translate: 0 0;
+    border-radius: 0;
+    padding-top: 37px;
+    background-color: rgba(0, 0, 0, 0);
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Basant/Table/rung-medallion.png");
+    -unity-background-scale-mode: stretch-to-fill;
+}
+
+.skin--basant .rung-bar .rung-bar__medallion .rung-bar__trump {
+    font-size: 112px;
+    color: rgb(34, 24, 26);
+}
+
+.skin--basant .rung-bar .rung-bar__medallion .rung-bar__trump.rung-bar__trump--red {
+    color: rgb(212, 46, 46);
+}
+
+.skin--basant .rung-bar__under {
+    height: 84px;
+    margin-top: 8px;
+}
+
+.skin--basant .rung-bar__pile-cards {
+    width: 100px;
+    height: 78px;
+    margin-right: 14px;
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Basant/Table/pile-cards.png");
+    -unity-background-scale-mode: scale-to-fit;
+}
+
+.skin--basant .rung-bar__pile {
+    position: absolute;
+    right: -8px;
+    bottom: -4px;
+    width: 52px;
+    height: 52px;
+    margin: 0;
+    padding: 0;
+    font-size: 30px;
+    color: rgb(74, 30, 14);
+    -unity-text-align: middle-center;
+    border-radius: 26px;
+    border-width: 4px;
+    border-color: rgb(74, 30, 14);
+    background-color: rgb(255, 200, 40);
+}
+
+.skin--basant .rung-bar__bazi {
+    height: 58px;
+    margin: 0;
+    padding: 0 34px;
+    font-size: 32px;
+    color: rgb(74, 30, 14);
+    -unity-text-align: middle-center;
+    border-radius: 0;
+    background-color: rgba(0, 0, 0, 0);
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Basant/Kit/plate-name.png");
+    -unity-slice-left: 100;
+    -unity-slice-right: 100;
+    -unity-slice-scale: 0.483px;
+}
+
+/* Suit tiles: small card faces with the kit's dark outline and a lip. */
+.skin--basant .rung-ask__buttons > .rung-ask__suit,
+.skin--basant .rung-ask__buttons > .rung-ask__suit:hover {
+    width: 108px;
+    height: 132px;
+    min-width: 0;
+    margin: 4px;
+    padding: 0 0 6px 0;
+    font-size: 78px;
+    color: rgb(34, 24, 26);
+    text-shadow: 0 0 0 rgba(0, 0, 0, 0);
+    border-radius: 26px;
+    border-width: 5px;
+    border-bottom-width: 11px;
+    border-color: rgb(74, 30, 14);
+    background-image: none;
+    background-color: rgb(255, 250, 240);
+}
+
+.skin--basant .rung-ask__buttons > .rung-ask__suit:active {
+    translate: 0 6px;
+    border-bottom-width: 5px;
+    height: 126px;
+    background-color: rgb(255, 236, 205);
+}
+
+.skin--basant .rung-ask__buttons > .rung-ask__suit.rung-ask__suit--red {
+    color: rgb(212, 46, 46);
+}
+
+/* The court stamp on the deal result, over the panel's top right corner. */
+.skin--basant .rung-result__stamp {
+    display: flex;
+    position: absolute;
+    right: -6px;
+    top: -70px;
+    width: 300px;
+    height: 150px;
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Basant/Table/stamp-court.png");
+    -unity-background-scale-mode: scale-to-fit;
+}
+
+.skin--basant .rung-result__stamp.rung-result__stamp--52 {
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Basant/Table/stamp-court52.png");
+}
+
+.skin--basant .rung-result__panel > .button--quiet,
+.skin--basant .rung-result__panel > .button--quiet:hover,
+.skin--basant .rung-result__panel > .button--quiet:active {
+    min-width: 360px;
+    height: 80px;
+    margin-top: 18px;
+    padding: 0 30px;
+    border-width: 0;
+    border-radius: 0;
+    font-size: 32px;
+    color: rgb(74, 30, 14);
+    background-color: rgba(0, 0, 0, 0);
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Basant/Kit/btn-pill-normal.png");
+    -unity-slice-left: 130;
+    -unity-slice-right: 130;
+    -unity-slice-scale: 0.59px;
+}
+
+.skin--basant .rung-result__panel > .button--quiet:active {
+    background-image: url("/Assets/_Project/Presentation/Theme/Art/Basant/Kit/btn-pill-pressed.png");
+}
+
+/* The board keeps its sides in right-to-left scripts: my pair's plate and the medallion are placed by side. */
+.skin--basant .rung-bar .rung-bar__board {
+    flex-direction: row;
+}
+
+.skin--basant .rung-bar .rung-bar__team {
+    flex-direction: column;
 }

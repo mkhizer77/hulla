@@ -36,7 +36,14 @@ namespace Hulla.Games.Rung
         /// <summary>How long a stamped word stays on the felt.</summary>
         public const float StampSeconds = 1.1f;
         private readonly VisualElement _bar = new VisualElement { name = "rung-bar" };
+        private readonly VisualElement _trumpPlate = new VisualElement { name = "rung-medallion" };
         private readonly Label _trump = new Label { name = "rung-trump" };
+        private readonly Label _usName = new Label { name = "rung-us" };
+        private readonly Label _usCount = new Label { name = "rung-us-count" };
+        private readonly Label _themName = new Label { name = "rung-them" };
+        private readonly Label _themCount = new Label { name = "rung-them-count" };
+        private readonly VisualElement _pileStack = new VisualElement { name = "rung-pile-cards" };
+        private readonly VisualElement _resultStamp = new VisualElement { name = "rung-result-stamp" };
         private readonly Label _tricks = new Label { name = "rung-tricks" };
         private readonly Label _pileCount = new Label { name = "rung-pile" };
         private readonly Label _bazi = new Label { name = "rung-bazi" };
@@ -96,7 +103,8 @@ namespace Hulla.Games.Rung
             }
 
             var felt = root.Q<VisualElement>("felt");
-            BuildBar(felt);
+            // On the rail, not the felt: the felt clips to its round edge and the board sits on the rim.
+            BuildBar(root.Q<VisualElement>("rail") ?? felt);
             BuildAsk(felt);
             BuildResult(root, leave);
             _client.Model.Changed += Refresh;
@@ -160,7 +168,7 @@ namespace Hulla.Games.Rung
                         // The kaat (design 9.3): a rung on a suit the seat could not follow.
                         Stamp(RungText.Kaat);
                         Buzz(played.Seat == _client.Model.MySeat ? Haptic.ThullaGiven : Haptic.CardPlay);
-                        SetContext("gave_thulla");
+                        SetContext("good_play");
                     }
                     else if (played.Seat == _client.Model.MySeat)
                     {
@@ -247,25 +255,43 @@ namespace Hulla.Games.Rung
 
         private void BuildBar(VisualElement felt)
         {
+            // The scoreboard (two-games concept): my pair's plate, the rung in a medallion, the other pair's plate;
+            // under it the pile with its count and the bazi score.
             _bar.AddToClassList("rung-bar");
             _bar.pickingMode = PickingMode.Ignore;
+            var board = new VisualElement { name = "rung-board" };
+            board.AddToClassList("rung-bar__board");
+            _trumpPlate.AddToClassList("rung-bar__medallion");
             _trump.AddToClassList("rung-bar__trump");
+            _trumpPlate.Add(_trump);
             _tricks.AddToClassList("rung-bar__tricks");
+            board.Add(TeamPlate("rung-bar__team--us", _usName, _usCount));
+            board.Add(TeamPlate("rung-bar__team--them", _themName, _themCount));
+            board.Add(_trumpPlate);
+            board.Add(_tricks);
+            var under = new VisualElement { name = "rung-under" };
+            under.AddToClassList("rung-bar__under");
+            _pileStack.AddToClassList("rung-bar__pile-cards");
             _pileCount.AddToClassList("rung-bar__pile");
+            _pileStack.Add(_pileCount);
             _bazi.AddToClassList("rung-bar__bazi");
-            foreach (var plate in new[] { _trump, _tricks, _pileCount, _bazi })
-            {
-                // Read on any skin's felt: ivory on a dark plate, set here so no skin's label colours win.
-                plate.style.color = new UnityEngine.Color(0.96f, 0.95f, 0.91f);
-                plate.style.backgroundColor = new UnityEngine.Color(0.13f, 0.09f, 0.1f, 0.88f);
-                plate.style.fontSize = 30;
-                _bar.Add(plate);
-            }
-
-            _trump.style.fontSize = 44;
-            _trump.style.backgroundColor = new UnityEngine.Color(0.98f, 0.97f, 0.95f);
-            _pileCount.style.color = new UnityEngine.Color(1f, 0.76f, 0.29f);
+            under.Add(_pileStack);
+            under.Add(_bazi);
+            _bar.Add(board);
+            _bar.Add(under);
             felt.Add(_bar);
+        }
+
+        private static VisualElement TeamPlate(string side, Label name, Label count)
+        {
+            var plate = new VisualElement();
+            plate.AddToClassList("rung-bar__team");
+            plate.AddToClassList(side);
+            name.AddToClassList("rung-bar__team-name");
+            count.AddToClassList("rung-bar__team-count");
+            plate.Add(name);
+            plate.Add(count);
+            return plate;
         }
 
         private void BuildAsk(VisualElement felt)
@@ -305,6 +331,9 @@ namespace Hulla.Games.Rung
             _switch.clicked += () => _client.ChangeGame(GameId.Thulla);
             _resultLeave.text = UiText.Leave;
             _resultLeave.clicked += leave;
+            _resultStamp.AddToClassList("rung-result__stamp");
+            _resultStamp.pickingMode = PickingMode.Ignore;
+            panel.Add(_resultStamp);
             panel.Add(_resultTitle);
             panel.Add(_resultLine);
             panel.Add(_resultBazi);
@@ -368,11 +397,17 @@ namespace Hulla.Games.Rung
         {
             var team = RungModel.TeamOf(model.MySeat ?? 0);
             _trump.text = rung.Trump == null ? "" : CardElement.SuitGlyph(rung.Trump.Value);
-            _trump.style.color = rung.Trump == 'H' || rung.Trump == 'D' ? new UnityEngine.Color(0.83f, 0.18f, 0.18f) : new UnityEngine.Color(0.11f, 0.11f, 0.12f);
+            _trump.EnableInClassList("rung-bar__trump--red", rung.Trump == 'H' || rung.Trump == 'D');
             _trump.style.display = rung.Trump == null ? DisplayStyle.None : DisplayStyle.Flex;
+            // The whole line stays for the screen reader and other skins; the plates carry it in Basant.
             _tricks.text = RungText.Us + " " + Strings.Format(RungText.Tricks, rung.Counts[team], rung.Counts[1 - team]) + " " + RungText.Them;
-            _pileCount.text = rung.Pile > 0 ? Strings.Format(RungText.Pile, rung.Pile) : "";
+            _usName.text = RungText.Us;
+            _themName.text = RungText.Them;
+            _usCount.text = Strings.Format("{0}", rung.Counts[team]);
+            _themCount.text = Strings.Format("{0}", rung.Counts[1 - team]);
+            _pileCount.text = rung.Pile > 0 ? Strings.Format("{0}", rung.Pile) : "";
             _pileCount.style.display = rung.Pile > 0 ? DisplayStyle.Flex : DisplayStyle.None;
+            _pileStack.style.display = rung.Pile > 0 ? DisplayStyle.Flex : DisplayStyle.None;
             var points = rung.Teams?.Points;
             var has = points != null && points.Count >= 2;
             _bazi.text = has ? Strings.Format(RungText.Bazi, points![team], points[1 - team]) : "";
@@ -498,26 +533,7 @@ namespace Hulla.Games.Rung
                 var named = suit;
                 var button = AddAskButton(CardElement.SuitGlyph(suit), "call-" + suit, false, () => _client.CallTrump(named));
                 button.AddToClassList("rung-ask__suit");
-                // A suit button is a card face whatever the skin makes of buttons: dark suits on ivory.
-                var red = suit == 'H' || suit == 'D';
-                button.style.backgroundColor = new UnityEngine.Color(0.98f, 0.97f, 0.95f);
-                button.style.color = red ? new UnityEngine.Color(0.83f, 0.18f, 0.18f) : new UnityEngine.Color(0.11f, 0.11f, 0.12f);
-                button.EnableInClassList("rung-ask__suit--red", red);
-                button.style.backgroundImage = StyleKeyword.None;
-                button.style.width = 118;
-                button.style.height = 118;
-                button.style.minWidth = 0;
-                button.style.fontSize = 78;
-                button.style.paddingLeft = 0;
-                button.style.paddingRight = 0;
-                button.style.paddingTop = 0;
-                button.style.paddingBottom = 0;
-                button.style.marginLeft = 4;
-                button.style.marginRight = 4;
-                button.style.borderTopLeftRadius = 24;
-                button.style.borderTopRightRadius = 24;
-                button.style.borderBottomLeftRadius = 24;
-                button.style.borderBottomRightRadius = 24;
+                button.EnableInClassList("rung-ask__suit--red", suit == 'H' || suit == 'D');
             }
 
             if (rung.CanRedeal)
@@ -577,6 +593,9 @@ namespace Hulla.Games.Rung
                 _resultTitle.text = result.Kind == RungOutcomeKind.Court52 ? RungText.Court52 : result.Kind == RungOutcomeKind.Court ? RungText.Court : won ? RungText.DealWon : RungText.DealLost;
             }
 
+            var court = !finished && !model.Spectating && result.Kind != RungOutcomeKind.Win;
+            _resultStamp.style.display = court ? DisplayStyle.Flex : DisplayStyle.None;
+            _resultStamp.EnableInClassList("rung-result__stamp--52", result.Kind == RungOutcomeKind.Court52);
             _resultLine.text = RungText.Us + " " + Strings.Format(RungText.Tricks, result.Counts[team], result.Counts[1 - team]) + " " + RungText.Them;
             var points = rung.Teams?.Points;
             _resultBazi.text = points != null && points.Count >= 2 ? Strings.Format(RungText.Bazi, points[team], points[1 - team]) : "";

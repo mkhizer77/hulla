@@ -102,12 +102,14 @@ namespace Hulla.Screens.Tests
             gateway.Deliver(MessageTypes.TurnStart, 5, new TurnStart { RoundId = "r_1", Seat = 0, Legal = new List<string> { "QH", "8H", "2H" }, DeadlineTs = 20000, Phase = "play" });
         }
 
-        private static void DeliverResult(Fakes.Gateway gateway)
+        private static void DeliverResult(Fakes.Gateway gateway) => DeliverResult(gateway, RungOutcomeKind.Win);
+
+        private static void DeliverResult(Fakes.Gateway gateway, RungOutcomeKind kind)
         {
             DeliverPlay(gateway);
             gateway.Deliver(MessageTypes.RungRoundEnd, 6, new RungRoundEnd
             {
-                RoundId = "r_1", WinnerTeam = 0, Kind = RungOutcomeKind.Win, ByCaller = true, Counts = new List<long> { 7, 4 }, DealPoints = 1,
+                RoundId = "r_1", WinnerTeam = 0, Kind = kind, ByCaller = true, Counts = new List<long> { 7, kind == RungOutcomeKind.Win ? 4 : 0 }, DealPoints = 1,
                 Points = new List<long> { 1, 0, 1, 0 }, Stats = new List<RungSeatStats>(), Trump = Suit.S,
                 Fairness = new RungFairness { Commitment = "abc", Seed = "00", DeckOrder = new List<string>() },
                 Series = new SeriesState { RoundsPlayed = 3, Points = new List<long>(), LoserTally = new List<long>(), Teams = new RungTeams { Points = new List<long> { 3, 1 }, Courts = new List<long> { 0, 0 }, DealsWon = new List<long> { 2, 1 } } },
@@ -293,6 +295,7 @@ namespace Hulla.Screens.Tests
                 ("rung-calling", g => DeliverCall(g, mine: false, canRedeal: false)),
                 ("rung-play", DeliverPlay),
                 ("rung-result", DeliverResult),
+                ("rung-court", g => DeliverResult(g, RungOutcomeKind.Court)),
             };
             foreach (var shot in shots)
             {

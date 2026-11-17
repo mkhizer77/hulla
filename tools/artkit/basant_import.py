@@ -48,7 +48,9 @@ KIT_WIDTH = {
 }
 SCREEN_WIDTH = {
     "Lobby": {"rug_table": 760},
-    "Table": {"plate_turn": 540, "card_back": 110, "podium": 480, "stamp_bhabhi": 260},
+    "Table": {"plate_turn": 540, "card_back": 110, "podium": 480, "stamp_bhabhi": 260,
+              # The Rung scoreboard and its result stamps.
+              "plate_team": 340, "rung_medallion": 180, "pile_cards": 120, "stamp_court": 300},
 }
 
 # Display height on the 1080 canvas for each text sprite (written at twice this).

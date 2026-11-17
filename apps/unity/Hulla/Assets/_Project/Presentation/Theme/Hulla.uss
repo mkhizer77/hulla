@@ -2836,26 +2836,71 @@
     position: absolute;
     left: 0;
     right: 0;
-    top: 24%;
+    top: 20%;
+    align-items: center;
+}
+
+.rung-bar__board,
+.rung-bar__under {
     flex-direction: row;
     justify-content: center;
     align-items: center;
 }
 
-.rung-bar > Label {
+.rung-bar__under {
+    margin-top: 10px;
+}
+
+.rung-bar__tricks {
+    display: none;
+}
+
+.rung-bar__team {
+    flex-direction: row;
+    align-items: center;
     margin: 0 10px;
     padding: 6px 22px;
     border-radius: 999px;
-    background-color: rgba(0, 0, 0, 0.45);
+    background-color: rgba(33, 23, 26, 0.88);
+}
+
+.rung-bar__team Label,
+.rung-bar__bazi,
+.rung-bar__pile {
     color: var(--ink-ivory);
-    font-size: var(--font-small);
+    font-size: 30px;
     -unity-font-style: bold;
+    margin: 0 4px;
+    padding: 0;
+}
+
+.rung-bar__medallion {
+    position: absolute;
+    left: 50%;
+    top: -8px;
+    width: 76px;
+    height: 76px;
+    translate: -50% 0;
+    border-radius: 38px;
+    background-color: var(--card-face);
+    align-items: center;
+    justify-content: center;
+}
+
+.rung-bar__team--us {
+    margin-right: 54px;
+}
+
+.rung-bar__team--them {
+    margin-left: 54px;
 }
 
 .rung-bar__trump {
-    font-size: 56px;
-    background-color: var(--card-face);
+    font-size: 44px;
     color: var(--suit-black);
+    margin: 0;
+    padding: 0;
+    -unity-text-align: middle-center;
 }
 
 .rung-bar__trump--red {
@@ -2864,6 +2909,13 @@
 
 .rung-bar__pile {
     color: var(--gold);
+}
+
+.rung-bar__bazi {
+    margin: 0 10px;
+    padding: 6px 22px;
+    border-radius: 999px;
+    background-color: rgba(33, 23, 26, 0.88);
 }
 
 .rung-ask {
@@ -2895,14 +2947,25 @@
     min-width: 132px;
 }
 
-.rung-ask__suit {
-    font-size: 84px;
-    background-color: var(--card-face);
-    color: var(--suit-black);
+.rung-ask__buttons > .rung-ask__suit {
+    width: 118px;
+    height: 118px;
+    min-width: 0;
+    margin: 4px;
+    padding: 0;
+    border-radius: 24px;
+    font-size: 78px;
+    background-image: none;
+    background-color: rgb(250, 247, 242);
+    color: rgb(28, 28, 31);
 }
 
-.rung-ask__suit--red {
-    color: var(--suit-red);
+.rung-ask__buttons > .rung-ask__suit--red {
+    color: rgb(212, 46, 46);
+}
+
+.rung-result__stamp {
+    display: none;
 }
 
 .rung-result {

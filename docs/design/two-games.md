@@ -42,3 +42,5 @@ The friend bonus, the login streak and the daily soft cap apply as in Thulla.
 ## Art
 
 New Basant art for Home's two cards, the two game pages, the Rung lobby and the game filter. Concepts are rendered, reviewed and put into the app without a round of approval per screen (owner, 16 November).
+
+The Rung table has its own scoreboard on the rug's top edge: my pair's tricks on a green plate, the other pair's on a magenta one, the rung in a crowned medallion between them; under it the pile with its count and the bazi score. A court puts a stamp on the deal result. Each Rung achievement has its own medal.
