@@ -174,6 +174,38 @@ describe("voice_token", () => {
     expect(JSON.stringify(response)).not.toContain(config.apiSecret);
   });
 
+  it("the bench of a private room keeps the microphone; a watcher only listens", () => {
+    const grants = (deps: Partial<Parameters<typeof voiceToken>[0]>): unknown => {
+      const response = voiceToken(
+        {
+          runtime: fakeRuntime({ now: T0 }),
+          userId: "u1",
+          config,
+          membership: at(true, 2),
+          ...deps,
+        },
+        JSON.stringify({ matchId: "m1" }),
+      );
+      if (!response.ok) throw new Error("no token");
+      const claims = JSON.parse(
+        Buffer.from(response.token.split(".")[1] ?? "", "base64url").toString("utf8"),
+      ) as { video: { canPublish: boolean } };
+      return claims.video.canPublish;
+    };
+    const bench = (): { present: boolean; seat: null; bench: boolean; tableId: string } => ({
+      present: true,
+      seat: null,
+      bench: true,
+      tableId: "t_ABCDEF",
+    });
+    expect(grants({})).toBe(true);
+    expect(grants({ membership: at(true, null) })).toBe(false);
+    expect(grants({ membership: bench, privateTable: () => true })).toBe(true);
+    // Waiting for a seat at a matched table is watching: no microphone.
+    expect(grants({ membership: bench, privateTable: () => false })).toBe(false);
+    expect(grants({ membership: bench })).toBe(false);
+  });
+
   it("refuses without credentials, away from the table, without a session or a match id", () => {
     const deps = { runtime: fakeRuntime(), userId: "u1", config, membership: at(true, null) };
     expect(voiceToken({ ...deps, config: null }, JSON.stringify({ matchId: "m1" }))).toMatchObject({

@@ -279,6 +279,72 @@ describe("switching a real room between Thulla and Rung", () => {
     expect(r.state.queuedGame?.gameId).toBe("rung");
   });
 
+  it("RG1 nobody changes seats while a bazi is being played, so no pair trades its score", () => {
+    const r = room("rung");
+    start(r);
+    playDeal(r);
+    expect(r.state.series?.finished).toBe(false);
+    const score = r.state.series;
+    const refused = r.send("s0", "swap_seats", { a: 0, b: 1 });
+    const error = sentTo(refused, "s0").find((e) => e.type === "error");
+    expect(payloadOf<{ code: string; detail: { reason: string } }>(error)).toMatchObject({
+      code: "table.locked",
+      detail: { reason: "series" },
+    });
+    expect(r.state.seats.map((s) => s.playerId)).toEqual(["u0", "u1", "u2", "u3"]);
+    expect(r.state.series).toEqual(score);
+    // Once the bazi is over the seats are free again.
+    if (r.state.series !== null) r.state.series = { ...r.state.series, finished: true };
+    r.send("s0", "swap_seats", { a: 0, b: 1 });
+    expect(r.state.seats.map((s) => s.playerId)).toEqual(["u1", "u0", "u2", "u3"]);
+  });
+
+  it("RGE14 a bazi the room comes back to keeps its score but not the run of deals", () => {
+    const r = room("thulla");
+    r.send("s0", "change_game", {
+      gameId: "rung",
+      rules: { gameId: "rung", overrides: { scoring: "courts" } },
+    });
+    start(r);
+    playDeal(r);
+    const before = r.state.series as unknown as {
+      dealsWon: number[];
+      courts: number[];
+      streakDeals: number;
+    };
+    // Give the winners a run that a switch must not carry.
+    r.state.series = { ...r.state.series, streakTeam: 0, streakDeals: 6 } as never;
+    r.send("s0", "change_game", { gameId: "thulla" });
+    r.send("s0", "change_game", { gameId: "rung" });
+    expect(r.state.series).toMatchObject({
+      roundsPlayed: 1,
+      dealsWon: before.dealsWon,
+      courts: before.courts,
+      streakTeam: null,
+      streakDeals: 0,
+    });
+  });
+
+  it("RG38 a bazi whose seats changed while the room played Thulla is not resumed", () => {
+    const r = room("rung");
+    start(r);
+    playDeal(r);
+    expect(r.state.series?.roundsPlayed).toBe(1);
+    r.send("s0", "change_game", { gameId: "thulla" });
+    r.send("s0", "swap_seats", { a: 1, b: 2 });
+    r.send("s0", "change_game", { gameId: "rung" });
+    // The pairs are different people now: the old score belongs to nobody at these seats.
+    expect(r.state.series).toBeNull();
+    expect(r.state.seriesByGame?.rung).toBeUndefined();
+    // The same seats would have brought it back.
+    const same = room("rung");
+    start(same);
+    playDeal(same);
+    same.send("s0", "change_game", { gameId: "thulla" });
+    same.send("s0", "change_game", { gameId: "rung" });
+    expect(same.state.series?.roundsPlayed).toBe(1);
+  });
+
   it("a fifth Thulla player becomes a watcher who sits next when the room moves to Rung", () => {
     const r = room("thulla", 5);
     r.send("s0", "change_game", { gameId: "rung" });

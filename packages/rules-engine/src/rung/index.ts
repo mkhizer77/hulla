@@ -57,7 +57,9 @@ export {
   nextRungDealer,
   rungCourtsWon,
   rungDealPoints,
+  rungFirstDealer,
   rungResults,
+  rungSeriesAfterSwitch,
   rungSeriesUpdate,
 } from "./results";
 export type { RungModule } from "./module";

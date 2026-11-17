@@ -102,3 +102,19 @@ function unit(key: string): number {
   }
   return hash / 0x100000000;
 }
+
+/**
+ * A bot's id names its seat. Seats move when a round compacts them or a game with fewer seats
+ * takes over, so the ids are set again afterwards and two bots never share one.
+ */
+export function renumberBots(seats: readonly SeatSlot[]): void {
+  seats.forEach((slot, index) => {
+    if (slot.bot) slot.playerId = `bot_${String(index)}`;
+  });
+}
+
+/** A roster name nobody at the table shows, for a bot that sits down at `index`. */
+export function freeBotName(seats: readonly SeatSlot[], seed: number): string {
+  const taken = new Set(seats.map((s) => s.displayName?.toLowerCase() ?? ""));
+  return botNames(seed, BOT_NAMES.length).find((n) => !taken.has(n.toLowerCase())) ?? "Bot";
+}

@@ -263,7 +263,7 @@ describe("Rung: a bot covers an absent seat (RG43)", () => {
 
   it("R45 Thulla still waits for three timeouts and plays the timeout policy", () => {
     expect(hostFor("thulla")?.coverAbsent).toBeUndefined();
-    expect(rungHost.coverAbsent).toEqual({ afterTimeouts: 2 });
+    expect(rungHost.coverAbsent).toEqual({ afterTimeouts: 2, afterDisconnectMs: 20_000 });
   });
 });
 

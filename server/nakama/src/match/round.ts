@@ -7,8 +7,9 @@ import {
   Xoshiro128StarStar,
 } from "@hulla/shared-ts";
 
-import { botRng, botThinkMs } from "./bots";
+import { botRng, botThinkMs, renumberBots } from "./bots";
 import { maybeSnapshot, type Emitter } from "./log";
+import { seriesForPlayers } from "./series";
 import { activeSeats, emptySeries } from "./view";
 
 import type {
@@ -39,6 +40,21 @@ export function turnSeconds<S, M>(state: TableState<S, M>, config: TableConfig):
   if (chosen === null)
     return state.mode === "private" ? null : config.defaultTurnSeconds[state.mode];
   return chosen;
+}
+
+/**
+ * Seconds for the phase the round is in: the turn seconds, or the game's own clock for that phase
+ * (Rung RG41). Null when the timer is off.
+ */
+export function phaseSeconds<S, M, V, E, R>(
+  host: GameHost<S, M, V, E, R>,
+  state: TableState<S, M>,
+  config: TableConfig,
+  phase: string,
+): number | null {
+  const seconds = turnSeconds(state, config);
+  if (seconds === null) return null;
+  return host.phaseSeconds?.(phase, seconds) ?? seconds;
 }
 
 /** A 256-bit round seed from four runtime UUIDs (ARCHITECTURE 8.7). */
@@ -87,6 +103,7 @@ export function compactSeats<S, M>(state: TableState<S, M>): SeatIndex[] {
   }
   state.hostSeat = state.hostSeat === null ? null : order.indexOf(state.hostSeat);
   if (state.hostSeat === -1) state.hostSeat = kept.length > 0 ? 0 : null;
+  renumberBots(state.seats);
   return order;
 }
 
@@ -99,12 +116,23 @@ export function startRound<S, M, V, E, R>(
 ): Result<RoundRuntime<S, M>, RuleError> {
   const rules = deps.host.resolveRules(state.rules, state.mode);
   if (!rules.ok) return rules;
-  const seatCount = activeSeats(state.seats).length;
-  // A new score for a new set of seats, and after a series a game called finished.
-  if (state.series?.points.length !== seatCount || state.series.finished) {
-    state.series = emptySeries(seatCount, state.hostSeat ?? 0);
-  }
+  const active = activeSeats(state.seats);
+  const seatCount = active.length;
+  const players = active.map((seat) => state.seats[seat]?.playerId ?? null);
   const seed = roundSeed(uuids);
+  // A new score for a new set of seats, and after a series a game called finished. Its first
+  // dealer is the game's draw from the round seed (Rung RG4, RG38), else the host's seat.
+  if (state.series?.points.length !== seatCount || state.series.finished) {
+    state.series = emptySeries(
+      seatCount,
+      deps.host.firstDealer?.(seed, seatCount) ?? state.hostSeat ?? 0,
+    );
+  } else if (deps.host.module.seats.teams === undefined) {
+    // A player's score is theirs: it follows them when seats changed since the last round. A
+    // team's score stays with its seats, whoever sits in for a partner (Rung RGE11).
+    state.series = seriesForPlayers(state.series, state.seriesPlayers ?? null, players);
+  }
+  state.seriesPlayers = players;
   const rng = Xoshiro128StarStar.fromState(stateFromSeed(seed));
   const created = deps.host.module.createRound(
     { rules: rules.value, seatCount, dealerSeat: state.series.nextDealerSeat, seed },
@@ -177,7 +205,7 @@ export function armDeadline<S, M, V, E, R>(
   const phase = deps.host.module.phases.find((p) => p.id === round.phase);
   const kind =
     phase?.deadline.kind === "simultaneousWindow" ? "simultaneousWindow" : "perSeatTimer";
-  const seconds = turnSeconds(state, deps.config);
+  const seconds = phaseSeconds(deps.host, state, deps.config, round.phase);
   const windowMs =
     seconds === null
       ? null
@@ -416,7 +444,8 @@ export function roundRecord<S, M, V, E, R>(
 /**
  * Fire deadlines whose time has come (ARCHITECTURE 8.3 matchLoop). Seats under auto-play act after
  * the auto-play delay; connected seats time out at the human deadline and, after three in a row
- * (or the game's own count, `GameHost.coverAbsent`), fall under auto-play (R45, RG43). Returns the seats whose timeouts escalated to auto-play.
+ * (or the game's own count, `GameHost.coverAbsent`), fall under auto-play (R45, RG43). Returns the
+ * seats whose timeouts escalated to auto-play.
  */
 export function fireDeadlines<S, M, V, E, R>(
   deps: RoundDeps<S, M, V, E, R>,
@@ -456,16 +485,19 @@ export function fireDeadlines<S, M, V, E, R>(
     if (due === undefined) break;
     const slot = state.seats[due];
     const cover = deps.host.coverAbsent;
+    // A seat that dropped and ran out its own timer: the timeout rule makes this one move (RGE1,
+    // RG9 for the call), and the bot has the seat from the next one without a second timeout.
+    const droppedOut = cover !== undefined && slot?.autoPlay === false && !slot.connected;
     if (slot !== undefined && !slot.autoPlay) {
       slot.timeouts += 1;
-      if (slot.timeouts >= (cover?.afterTimeouts ?? 3)) {
+      if (droppedOut || slot.timeouts >= (cover?.afterTimeouts ?? 3)) {
         slot.autoPlay = true;
         escalated.push(due);
       }
     }
     // A bot seat plays the bot; so does an absent seat in a game that covers it (RG43).
     const move =
-      slot?.bot === true || (cover !== undefined && slot?.autoPlay === true)
+      slot?.bot === true || (cover !== undefined && slot?.autoPlay === true && !droppedOut)
         ? botChoice(deps, round, due)
         : deps.host.module.onDeadline(round.state, due);
     if (move === null) {

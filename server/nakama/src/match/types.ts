@@ -72,15 +72,27 @@ export interface SeatSlot {
   avatar: string | null;
   /** A bot holds this seat (match/bots.ts): it plays the game's bot policy, never away, earns nothing. */
   bot: boolean;
+  /**
+   * The bot took over from a player who left a matched table mid-series (Rung RGE11). It keeps
+   * the seat until the series ends and is never moved aside for a joiner.
+   */
+  cover?: boolean;
 }
 
 /** What `matchJoinAttempt` decided for a session, consumed by `matchJoin`. */
 export type Admission =
-  | { readonly kind: "seat"; readonly seat: SeatIndex; readonly reattach: boolean }
+  | {
+      readonly kind: "seat";
+      readonly seat: SeatIndex;
+      readonly reattach: boolean;
+      /** A client that never arrives gives the seat back after this time. */
+      readonly expiresTs?: number;
+    }
   | {
       readonly kind: "spectator";
       readonly seatNext?: boolean;
       readonly friendOf?: readonly string[];
+      readonly expiresTs?: number;
     };
 
 /** A wire message produced from engine events; `seat` set means that seat only. */
@@ -151,7 +163,26 @@ export interface GameHost<S, M, V, E, R> {
    * played by the game's bot instead of the timeout policy, and a connected seat falls under
    * auto-play after this many timeouts in a row instead of three.
    */
-  readonly coverAbsent?: { readonly afterTimeouts: number };
+  readonly coverAbsent?: {
+    readonly afterTimeouts: number;
+    /**
+     * A disconnected seat keeps its own turn timer; the bot takes it over when that timer ends or
+     * after this long away, whichever comes first (RG43, RGE1).
+     */
+    readonly afterDisconnectMs: number;
+  };
+  /**
+   * The seat that deals the first round of a new series, drawn from the round seed (Rung RG4,
+   * RG38). Absent, the host's seat deals first.
+   */
+  firstDealer?(seed: Uint8Array, seatCount: number): SeatIndex;
+  /** A kept score as the room finds it when it comes back to this game (Rung RGE14). */
+  resumeSeries?(series: SeriesState): SeriesState;
+  /**
+   * Seconds for one phase's timer, given the table's turn seconds (Rung RG41: the call and the
+   * court choice run on their own clocks). Absent, every phase runs on the turn timer.
+   */
+  phaseSeconds?(phase: string, turnSeconds: number): number;
   /** The host of a private room may put a bot in an empty seat (`add_bot`); a person who joins takes it back. */
   readonly fillWithBots?: boolean;
   /** Per-seat numbers for the stats card, read from the round's logged messages (GDD 10.1). */
@@ -185,6 +216,8 @@ export interface TableConfig {
   /** Public tables: the countdown before the first deal and how long matched players may take to arrive (GDD 9.5). */
   readonly autoStartCountdownMs: number;
   readonly autoStartJoinWindowMs: number;
+  /** How long a seat stays reserved for a client that was admitted and has not arrived. */
+  readonly admissionTtlMs: number;
 }
 
 /** GDD R43, R46, R52, 9.1 and 9.10. */
@@ -203,6 +236,7 @@ export const DEFAULT_TABLE_CONFIG: TableConfig = {
   emoteCooldownMs: 3_000,
   autoStartCountdownMs: 5_000,
   autoStartJoinWindowMs: 20_000,
+  admissionTtlMs: 15_000,
 };
 
 export interface AppliedMove<M> {
@@ -308,6 +342,17 @@ export interface TableState<S, M> {
   /** The rules and the score each game was left with, so switching back resumes the evening. */
   rulesByGame?: Partial<Record<GameId, RulesSelection>>;
   seriesByGame?: Partial<Record<GameId, SeriesState>>;
+  /**
+   * Who the score belongs to: the player at each index of `series` when it was last dealt. A
+   * score follows its player, not the seat number, when seats change between rounds.
+   */
+  seriesPlayers?: (string | null)[] | null;
+  seriesPlayersByGame?: Partial<Record<GameId, (string | null)[]>>;
+  /**
+   * Members of a private room who have no seat (Rung design 8.3): they come back in without the
+   * watcher's friend check and take the next free seat.
+   */
+  bench?: string[];
   /** A switch the host asked for during a round; it happens when the round ends. */
   queuedGame?: QueuedGame | null;
   round: RoundRuntime<S, M> | null;
