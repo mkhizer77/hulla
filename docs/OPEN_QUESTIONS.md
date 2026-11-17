@@ -69,8 +69,8 @@ Implementation sometimes meets a gap or an ambiguity in the GDD. Contributors re
 | OQ-063 | 2026-11-16 | Rung §4 | A party of two that finds nobody in Rung Quick Play cannot ask for a table with two bots: the bots table is for one caller. | The pair uses Create Room and Add bot; build the party version with the client | | |
 | OQ-064 | 2026-11-17 | GDD §8.9, §12.3, §12.8 | "Bot-heavy" is not defined, and the vs-AI row gives full XP for the first 5 rounds a day without saying what follows. | Bot-heavy is bots in half the seats or more. Such a round pays 50% coins, full XP for the first five of the day and half after, and posts nothing to any board. Missions, achievements and pass XP still count. | | |
 | OQ-065 | 2026-11-17 | GDD R44–R46, Rung §6.5 | What a seat earns when auto-play or the covering bot played it. | A seat whose every move was automatic earns nothing for that round (both games). In Rung, a seat with over half its moves automatic keeps the team's result but not tricks, cuts, piles, the trump tally, the call streak or the pile and cut missions. | | |
-
-Rules: one row per question; never delete rows, mark them decided; the owner's decision is then reflected in the GDD and the row links to the change.
 | OQ-066 | 2026-11-17 | §12.10 | What happens to pass tiers a player reached but did not claim when the season ends? | They are paid the next time the player's pass is read or earns XP after the season's end: the free track always, the premium track if it was bought | | |
 | OQ-067 | 2026-11-17 | §12.7 | What do "rounds this season" and "cosmetics owned" count? | Rounds of either game while a pass season runs, starting again with each season; every item in the inventory, bought or granted | | |
 | OQ-068 | 2026-11-17 | §13.9 | The day's caps follow a time zone the client sends. How is that kept honest? | A player's day and week only move forward, so turning the offset back reopens nothing; moving it ahead gains at most one early reset | | |
+
+Rules: one row per question; never delete rows, mark them decided; the owner's decision is then reflected in the GDD and the row links to the change.
