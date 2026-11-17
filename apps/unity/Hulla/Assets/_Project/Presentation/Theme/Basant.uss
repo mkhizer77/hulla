@@ -11459,7 +11459,10 @@
 .skin--basant .quick__panel--stopped .quick__status {
     top: 560px;
     height: 96px;
-    font-size: 36px;
+    font-size: 30px;
+    white-space: normal;
+    text-overflow: clip;
+    -unity-text-align: middle-center;
 }
 
 .skin--basant .quick__actions {
