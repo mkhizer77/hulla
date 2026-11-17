@@ -14,8 +14,14 @@
                     <ui:Label name="level" class="home__level" picking-mode="Ignore" />
                 </ui:VisualElement>
                 <ui:VisualElement name="wallet" class="home__wallet" picking-mode="Ignore">
-                    <ui:VisualElement class="home__coin" picking-mode="Ignore" />
-                    <ui:Label name="coins" class="home__coins" />
+                    <ui:VisualElement class="home__purse" picking-mode="Ignore">
+                        <ui:VisualElement class="home__coin" picking-mode="Ignore" />
+                        <ui:Label name="coins" class="home__coins" picking-mode="Ignore" />
+                    </ui:VisualElement>
+                    <ui:VisualElement class="home__purse home__purse--gems" picking-mode="Ignore">
+                        <ui:VisualElement class="home__gem" picking-mode="Ignore" />
+                        <ui:Label name="gems" class="home__coins" picking-mode="Ignore" />
+                    </ui:VisualElement>
                 </ui:VisualElement>
                 <ui:VisualElement name="friends-panel" class="home__friends">
                     <ui:Label name="friends-title" class="home__friends-title" />

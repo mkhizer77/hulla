@@ -41,13 +41,26 @@ namespace Hulla.Presentation.Navigation
             button.clicked += action;
         }
 
-        /// <summary>The coin pill on the right of the Shop and Pass tops.</summary>
-        public static void Coins(VisualElement root, long coins)
+        /// <summary>The wallet pill on the right of the Shop and Pass tops: coins, then gems.</summary>
+        public static void Wallet(VisualElement root, long coins, long gems)
         {
-            var amount = root.Q<Label>("coin-amount");
-            if (amount != null)
+            var culture = Text.Strings.Culture;
+            var coinAmount = root.Q<Label>("coin-amount");
+            if (coinAmount != null)
             {
-                amount.text = coins.ToString("N0", System.Globalization.CultureInfo.InvariantCulture);
+                coinAmount.text = coins.ToString("N0", culture);
+            }
+
+            var gemAmount = root.Q<Label>("gem-amount");
+            if (gemAmount != null)
+            {
+                gemAmount.text = gems.ToString("N0", culture);
+            }
+
+            var pill = root.Q<VisualElement>("coin-pill");
+            if (pill != null)
+            {
+                pill.tooltip = Text.Strings.Format(Text.UiText.Balances, coins, gems);
             }
         }
     }

@@ -724,13 +724,24 @@ namespace Hulla.Composition
             _screen = Screen.Home;
             var pass = _app.Pass;
             var passRoot = _shell.Show(_shell.Catalog.Pass);
-            var passView = new PassView(passRoot, pass, () => DateTimeOffset.UtcNow.ToUnixTimeMilliseconds(), ShowHome,
-                (tier, premium) => _ = pass.ClaimAsync(tier, premium, _app.Lifetime), _app.Purchases);
+            PassView? passView = null;
+            // A claim pays coins or gems: read the wallet again so the pill on the top shows them.
+            async void Claim(long tier, bool premium)
+            {
+                await pass.ClaimAsync(tier, premium, _app.Lifetime);
+                await _app.Progress.RefreshAsync(LocalOffsetMinutes(), _app.Lifetime);
+                if (ReferenceEquals(_view, passView))
+                {
+                    Hulla.Presentation.Navigation.TopBar.Wallet(passRoot, _app.Progress.Coins, _app.Progress.Gems);
+                }
+            }
+
+            passView = new PassView(passRoot, pass, () => DateTimeOffset.UtcNow.ToUnixTimeMilliseconds(), ShowHome, Claim, _app.Purchases);
             passView.Retry = () => _ = pass.RefreshAsync(_app.Lifetime);
             _view = passView;
             Hulla.Presentation.Navigation.SegmentBar.Mount(passRoot, ShopSegments(name, server), "pass");
             TabTop(passRoot, Hulla.Presentation.Navigation.NavTab.Shop);
-            Hulla.Presentation.Navigation.TopBar.Coins(passRoot, _app.Progress.Coins);
+            Hulla.Presentation.Navigation.TopBar.Wallet(passRoot, _app.Progress.Coins, _app.Progress.Gems);
             _shell.ShowNav(Hulla.Presentation.Navigation.NavTab.Shop);
             await pass.RefreshAsync(_app.Lifetime);
         }

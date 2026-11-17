@@ -4,13 +4,18 @@
             <ui:Label name="title" class="title title--small top__title" />
             <ui:Button name="gear" class="top__button top__left top__gear" />
             <ui:Button name="back" class="top__button top__hidden" />
-            <ui:VisualElement name="coin-pill" class="top__right top__coins">
-                <ui:VisualElement class="top__coin-icon" picking-mode="Ignore" />
-                <ui:Label name="coin-amount" class="top__coin-amount" />
+            <ui:VisualElement name="coin-pill" class="top__right top__wallet">
+                <ui:VisualElement class="top__purse" picking-mode="Ignore">
+                    <ui:VisualElement class="top__coin-icon" picking-mode="Ignore" />
+                    <ui:Label name="coin-amount" class="top__coin-amount" picking-mode="Ignore" />
+                </ui:VisualElement>
+                <ui:VisualElement class="top__purse" picking-mode="Ignore">
+                    <ui:VisualElement class="top__coin-icon top__gem-icon" picking-mode="Ignore" />
+                    <ui:Label name="gem-amount" class="top__coin-amount" picking-mode="Ignore" />
+                </ui:VisualElement>
             </ui:VisualElement>
         </ui:VisualElement>
         <ui:VisualElement name="segment" class="segment-host" />
-        <ui:Label name="balances" class="status shop__balances" />
         <ui:ScrollView name="tabs" mode="Horizontal" horizontal-scroller-visibility="Hidden" vertical-scroller-visibility="Hidden" class="shop__tabs">
             <ui:VisualElement name="categories" class="chips shop__chips" />
         </ui:ScrollView>

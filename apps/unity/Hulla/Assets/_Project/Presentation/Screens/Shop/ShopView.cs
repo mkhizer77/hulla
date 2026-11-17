@@ -19,7 +19,6 @@ namespace Hulla.Presentation.Screens.Shop
         private readonly VisualElement _list;
         private readonly VisualElement _categories;
         private readonly Label _status;
-        private readonly Label _balances;
 
         private readonly VisualElement _root;
         private readonly PurchasesViewModel? _purchases;
@@ -39,7 +38,6 @@ namespace Hulla.Presentation.Screens.Shop
             _list = root.Q<VisualElement>("list");
             _categories = root.Q<VisualElement>("categories");
             _status = root.Q<Label>("status");
-            _balances = root.Q<Label>("balances");
             // Gems first: the one tab that sells for money, so it is never scrolled out of sight.
             if (_purchases != null)
             {
@@ -72,15 +70,13 @@ namespace Hulla.Presentation.Screens.Shop
         }
 
         /// <summary>
-        /// The shop (design: Shop): the balance on the top's coin pill, the spotlight card with its days,
+        /// The shop (design: Shop): both balances on the top's wallet pill, the spotlight card with its days,
         /// the category chips, then a two-column grid where each tile shows its art, name and one chip
         /// for its state. A tile opens the item sheet; buying happens there, with one confirm only.
         /// </summary>
         private void Refresh()
         {
-            Navigation.TopBar.Coins(_root, _model.Coins ?? 0);
-            _balances.text = _model.Gems is long gems && gems > 0 ? Strings.Format(UiText.GemsOnlyBalance, gems) : "";
-            _balances.style.display = _balances.text.Length == 0 ? DisplayStyle.None : DisplayStyle.Flex;
+            Navigation.TopBar.Wallet(_root, _model.Coins ?? 0, _model.Gems ?? 0);
             _status.text = "";
             foreach (var chip in _categories.Children())
             {
