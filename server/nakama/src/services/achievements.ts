@@ -8,6 +8,7 @@ import {
 import { credit, type LedgerPorts } from "./ledger";
 import { seriesWon } from "./missions";
 import { nkProgressStore } from "./progression";
+import { countRungDeal } from "./rung_progress";
 
 import type { RoundRecord } from "../match/types";
 
@@ -53,6 +54,12 @@ export function countRound(
   seat: number,
   facts: RoundFacts,
 ): AchievementRecord {
+  if (round.gameId === "rung") {
+    const counters = countRungDeal(record.counters, round, seat, facts.friendsAtTable);
+    return counters === record.counters
+      ? record
+      : { ...record, counters, updatedTs: round.endedTs };
+  }
   const result = round.result;
   if (result === null || !round.completed) return record;
   const h = round.highlights[seat] ?? {};

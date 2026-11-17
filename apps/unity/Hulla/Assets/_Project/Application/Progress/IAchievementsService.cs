@@ -36,6 +36,9 @@ namespace Hulla.Application.Progress
 
         public long Gems { get; }
 
+        /// <summary>The game it belongs to; null when it counts in both.</summary>
+        public GameFilter? Game => GameFilters.OfMetric(Metric);
+
         /// <summary>The title it grants, as a key; null when it grants none.</summary>
         public string? Title { get; }
     }

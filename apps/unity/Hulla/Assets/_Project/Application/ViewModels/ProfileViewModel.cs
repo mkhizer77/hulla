@@ -34,7 +34,13 @@ namespace Hulla.Application.ViewModels
                 Profile.Stats?.ThullasGiven ?? 0,
                 Profile.Avatar,
                 Profile.Title,
-                Profile.Level);
+                Profile.Level) { Rung = RungOf(Profile.Stats?.Rung) };
+
+        /// <summary>The Rung side of a profile's stats; null until the first deal.</summary>
+        public static RungCard? RungOf(RungStats? rung) => rung == null
+            ? null
+            : new RungCard(rung.Deals, rung.DealsWon, rung.Bazis, rung.BazisWon, rung.Courts, rung.CallerDeals, rung.CallerWins, rung.DefenderDeals, rung.DefenderWins,
+                RungCard.Favourite(rung.Trumps?.S ?? 0, rung.Trumps?.H ?? 0, rung.Trumps?.C ?? 0, rung.Trumps?.D ?? 0));
 
         public string? ErrorCode { get; private set; }
 

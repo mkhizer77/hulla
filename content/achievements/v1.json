@@ -1,7 +1,7 @@
 {
   "schema": "../../tools/content-schemas/achievements.schema.json",
   "id": "achievements-v1",
-  "version": 1,
+  "version": 2,
   "achievements": [
     {
       "id": "first_thulla",
@@ -454,6 +454,126 @@
       "reward": {
         "gems": 30
       }
+    },
+    {
+      "id": "rung_first_deal",
+      "name": "achievement.rung_first_deal.name",
+      "description": "achievement.rung_first_deal.description",
+      "category": "play",
+      "metric": "rung_deals_won",
+      "target": 1,
+      "reward": {
+        "gems": 5
+      },
+      "gameId": "rung"
+    },
+    {
+      "id": "rung_deals_100",
+      "name": "achievement.rung_deals_100.name",
+      "description": "achievement.rung_deals_100.description",
+      "category": "play",
+      "metric": "rung_deals_won",
+      "target": 100,
+      "reward": {
+        "gems": 20
+      },
+      "gameId": "rung"
+    },
+    {
+      "id": "rung_bazis_10",
+      "name": "achievement.rung_bazis_10.name",
+      "description": "achievement.rung_bazis_10.description",
+      "category": "play",
+      "metric": "rung_bazis",
+      "target": 10,
+      "reward": {
+        "gems": 10
+      },
+      "gameId": "rung"
+    },
+    {
+      "id": "rung_bazis_100",
+      "name": "achievement.rung_bazis_100.name",
+      "description": "achievement.rung_bazis_100.description",
+      "category": "play",
+      "metric": "rung_bazis",
+      "target": 100,
+      "reward": {
+        "gems": 40
+      },
+      "gameId": "rung"
+    },
+    {
+      "id": "rung_bazis_won_25",
+      "name": "achievement.rung_bazis_won_25.name",
+      "description": "achievement.rung_bazis_won_25.description",
+      "category": "skill",
+      "metric": "rung_bazis_won",
+      "target": 25,
+      "reward": {
+        "gems": 30
+      },
+      "gameId": "rung"
+    },
+    {
+      "id": "rung_first_court",
+      "name": "achievement.rung_first_court.name",
+      "description": "achievement.rung_first_court.description",
+      "category": "skill",
+      "metric": "rung_courts",
+      "target": 1,
+      "reward": {
+        "gems": 10
+      },
+      "gameId": "rung"
+    },
+    {
+      "id": "rung_goon_court",
+      "name": "achievement.rung_goon_court.name",
+      "description": "achievement.rung_goon_court.description",
+      "category": "skill",
+      "metric": "rung_goon_courts",
+      "target": 1,
+      "reward": {
+        "gems": 20
+      },
+      "gameId": "rung"
+    },
+    {
+      "id": "rung_court52",
+      "name": "achievement.rung_court52.name",
+      "description": "achievement.rung_court52.description",
+      "category": "skill",
+      "metric": "rung_court52",
+      "target": 1,
+      "reward": {
+        "gems": 40
+      },
+      "gameId": "rung"
+    },
+    {
+      "id": "rung_calls_10",
+      "name": "achievement.rung_calls_10.name",
+      "description": "achievement.rung_calls_10.description",
+      "category": "skill",
+      "metric": "rung_call_streak",
+      "target": 10,
+      "reward": {
+        "gems": 30
+      },
+      "gameId": "rung"
+    },
+    {
+      "id": "rung_friend_bazi",
+      "name": "achievement.rung_friend_bazi.name",
+      "description": "achievement.rung_friend_bazi.description",
+      "category": "social",
+      "metric": "rung_bazis_won_friend",
+      "target": 1,
+      "reward": {
+        "gems": 10
+      },
+      "gameId": "rung"
     }
   ]
 }

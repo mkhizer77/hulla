@@ -36,7 +36,12 @@
             "low_pickup_rounds",
             "hands_taken",
             "series_won",
-            "voice_private"
+            "voice_private",
+            "rung_deals_won",
+            "rung_piles",
+            "rung_cuts",
+            "rung_courts",
+            "rung_bazis_won"
           ]
         },
         "target": {
@@ -59,6 +64,11 @@
               "maximum": 1000
             }
           }
+        },
+        "gameId": {
+          "type": "string",
+          "enum": ["thulla", "rung"],
+          "description": "The game the mission is played in; absent means either"
         }
       }
     }

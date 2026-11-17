@@ -546,6 +546,43 @@ namespace Hulla.Presentation.Text
         public static string NeedFour => Strings.Text("rung.need_four");
 
         public static string PlayRung => Strings.Text("rung.play_rung");
+
+        public static string RungSearching => Strings.Text("rung.searching");
+
+        public static string Percent => Strings.Text("ui.percent");
+
+        public static string FilterAll => Strings.Text("ui.filter_all");
+
+        public static string PlayingGame => Strings.Text("ui.playing_game");
+
+        public static string RungStatDeals => Strings.Text("rung.stat_deals");
+
+        public static string RungStatDealsWon => Strings.Text("rung.stat_deals_won");
+
+        public static string RungStatBazisWon => Strings.Text("rung.stat_bazis_won");
+
+        public static string RungStatCourts => Strings.Text("rung.stat_courts");
+
+        /// <summary>The game's name from its wire id; Thulla for anything unknown.</summary>
+        public static string GameName(string? gameId) => gameId == "rung" ? GameRung : GameThulla;
+
+        public static string RoomThulla => Strings.Text("ui.room_thulla");
+
+        public static string RoomRung => Strings.Text("ui.room_rung");
+
+        public static string SwapPartners => Strings.Text("rung.swap_partners");
+
+        public static string Partner => Strings.Text("rung.partner");
+
+        public static string PlayersThreeToSix => Strings.Text("ui.players_3_6");
+
+        public static string PlayersFour => Strings.Text("ui.players_4");
+
+        public static string YourThulla => Strings.Text("ui.your_thulla");
+
+        public static string YourRung => Strings.Text("ui.your_rung");
+
+        public static string YourGameNew => Strings.Text("ui.your_game_new");
         public static string GameRungLine => Strings.Text("ui.game_rung_line");
         public static string Trophies => Strings.Text("nav.trophies");
         public static string ComingSoon => Strings.Text("ui.coming_soon");

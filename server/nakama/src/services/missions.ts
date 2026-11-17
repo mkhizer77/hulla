@@ -17,6 +17,7 @@ import {
 
 import { credit, type LedgerPorts } from "./ledger";
 import { localDay } from "./progression";
+import { rungMetrics } from "./rung_progress";
 
 import type { RoundRecord } from "../match/types";
 
@@ -140,6 +141,7 @@ export type Metrics = Partial<Record<MissionMetric, number>>;
 
 /** What one seat of a completed round counts for. */
 export function metricsFromRound(record: RoundRecord, seat: number, withFriend: boolean): Metrics {
+  if (record.gameId === "rung") return rungMetrics(record, seat, withFriend);
   const result = record.result;
   if (result === null || !record.completed) return {};
   const h = record.highlights[seat] ?? {};

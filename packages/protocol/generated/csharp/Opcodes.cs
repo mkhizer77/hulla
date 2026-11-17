@@ -21,6 +21,7 @@ namespace Hulla.Protocol
         public const long SetMic = 14;
         public const long RemoveSpectator = 15;
         public const long ChangeGame = 16;
+        public const long SwapSeats = 17;
         public const long ChatText = 20;
         public const long QuickChat = 21;
         public const long Emote = 22;
@@ -88,6 +89,7 @@ namespace Hulla.Protocol
         public const string SetMic = "set_mic";
         public const string RemoveSpectator = "remove_spectator";
         public const string ChangeGame = "change_game";
+        public const string SwapSeats = "swap_seats";
         public const string ChatText = "chat_text";
         public const string QuickChat = "quick_chat";
         public const string Emote = "emote";
@@ -157,6 +159,7 @@ namespace Hulla.Protocol
                 case 14: return SetMic;
                 case 15: return RemoveSpectator;
                 case 16: return ChangeGame;
+                case 17: return SwapSeats;
                 case 20: return ChatText;
                 case 21: return QuickChat;
                 case 22: return Emote;
@@ -229,6 +232,7 @@ namespace Hulla.Protocol
                 case SetMic:
                 case RemoveSpectator:
                 case ChangeGame:
+                case SwapSeats:
                 case ChatText:
                 case QuickChat:
                 case Emote:
@@ -295,6 +299,7 @@ namespace Hulla.Protocol
                 case SetMic: return Opcodes.SetMic;
                 case RemoveSpectator: return Opcodes.RemoveSpectator;
                 case ChangeGame: return Opcodes.ChangeGame;
+                case SwapSeats: return Opcodes.SwapSeats;
                 case ChatText: return Opcodes.ChatText;
                 case QuickChat: return Opcodes.QuickChat;
                 case Emote: return Opcodes.Emote;

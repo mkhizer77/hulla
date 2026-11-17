@@ -262,3 +262,107 @@ describe("admin_bot_bench", () => {
     expect(botBench("ludo", 1, () => 0)).toMatchObject({ ok: false });
   });
 });
+
+describe("Rung Quick Play: a matched table (Rung design 4)", () => {
+  /** A public Rung table the matchmaker opened for these players; `party` queued together. */
+  function matched(expected: number, party: readonly string[] = []): Room {
+    const r = room("rung", 0);
+    const core = tableCore(rungHost as unknown as AnyGameHost, {
+      ids: { uuid: () => "00000000-0000-4000-8000-000000000001" },
+      persist: { roundRecord: () => undefined },
+    });
+    const state = core.create(
+      {
+        code: "QUICKP",
+        gameId: "rung",
+        mode: "public",
+        rules: { gameId: "rung", preset: "rung" },
+        autoStart: { expected },
+        parties: party.length > 1 ? [{ id: "p1", members: party }] : [],
+      },
+      T0,
+    );
+    const q: Room = {
+      ...r,
+      state,
+      now: T0,
+      join(p) {
+        const decision = core.joinAttempt(state, p, {}, q.now);
+        if (!decision.accept) throw new Error(`join rejected: ${decision.code}`);
+        return core.join(state, [p], q.now);
+      },
+      tick(advanceMs = 0) {
+        q.now += advanceMs;
+        return core.tick(state, q.now);
+      },
+    };
+    return q;
+  }
+
+  it("RG1 two who queued together sit opposite as partners, whatever order they arrive in", () => {
+    for (const order of [
+      [0, 1, 2, 3],
+      [2, 0, 3, 1],
+      [0, 2, 3, 1],
+      [3, 2, 1, 0],
+    ]) {
+      const q = matched(4, ["u0", "u1"]);
+      for (const i of order) q.join(presence(i));
+      const seatOf = (id: string): number => q.state.seats.findIndex((s) => s.playerId === id);
+      expect(Math.abs(seatOf("u0") - seatOf("u1")), order.join("")).toBe(2);
+      expect(q.state.seats.every((s) => s.playerId !== null)).toBe(true);
+    }
+  });
+
+  it("the table deals itself once all four are seated, to five points", () => {
+    const q = matched(4);
+    for (let i = 0; i < 4; i += 1) q.join(presence(i));
+    for (let i = 0; i < 40 && q.state.round === null; i += 1) q.tick(1_000);
+    expect(q.state.round).not.toBeNull();
+    expect((q.state.round?.state as RungState).rules.target).toBe(5);
+  });
+
+  it("bots take the seats of matched players who never arrive", () => {
+    const q = matched(4);
+    q.join(presence(0));
+    q.join(presence(1));
+    for (let i = 0; i < 60 && q.state.round === null; i += 1) q.tick(1_000);
+    expect(q.state.seats.filter((s) => s.bot)).toHaveLength(2);
+    expect(q.state.round).not.toBeNull();
+  });
+
+  it("nobody arriving closes the table instead of dealing to bots", () => {
+    const q = matched(4);
+    for (let i = 0; i < 60; i += 1) q.tick(1_000);
+    expect(q.state.round).toBeNull();
+    expect(q.state.seats.some((s) => s.bot)).toBe(false);
+  });
+});
+
+describe("Rung lobby: the host chooses the pairs (swap_seats)", () => {
+  it("two seats trade places, presences and the host seat follow, and only the host may", () => {
+    const r = room("rung", 3);
+    expect(errorOf(r.send("s1", "swap_seats", { a: 0, b: 1 }), "s1")).toBe("table.not_host");
+    // The host moves from seat 0 to the empty seat 3, then puts u2 across from u1.
+    r.send("s0", "swap_seats", { a: 0, b: 3 });
+    expect(r.state.seats.map((s) => s.playerId)).toEqual([null, "u1", "u2", "u0"]);
+    expect(r.state.hostSeat).toBe(3);
+    expect(r.state.presences["s0"]?.seat).toBe(3);
+    r.send("s0", "swap_seats", { a: 2, b: 3 });
+    expect(r.state.seats.map((s) => s.playerId)).toEqual([null, "u1", "u0", "u2"]);
+    expect(r.state.presences["s2"]?.seat).toBe(3);
+    expect(r.state.hostSeat).toBe(2);
+    // Nothing to swap, a seat that does not exist, and a swap mid-deal are refused.
+    expect(errorOf(r.send("s0", "swap_seats", { a: 2, b: 2 }), "s0")).toBe("seat");
+    expect(errorOf(r.send("s0", "swap_seats", { a: 2, b: 7 }), "s0")).toBe("seat");
+    r.send("s0", "add_bot", {});
+    expect(r.state.seats[0]?.playerId).toBe("bot_0");
+    r.send("s0", "swap_seats", { a: 0, b: 1 });
+    expect(r.state.seats.map((s) => s.playerId)).toEqual(["u1", "bot_1", "u0", "u2"]);
+    // After the swaps a session no longer sits at the seat of its own number.
+    for (const session of ["s0", "s1", "s2"]) r.send(session, "ready", { ready: true });
+    r.send("s0", "start_round", {});
+    expect(r.state.round).not.toBeNull();
+    expect(errorOf(r.send("s0", "swap_seats", { a: 0, b: 1 }), "s0")).toBe("in_round");
+  });
+});

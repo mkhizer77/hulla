@@ -1,7 +1,7 @@
 {
   "schema": "../../tools/content-schemas/missions.schema.json",
   "id": "missions-v1",
-  "version": 1,
+  "version": 2,
   "daily": [
     {
       "id": "d_thullas_3",
@@ -72,6 +72,39 @@
       "reward": {
         "coins": 60
       }
+    },
+    {
+      "id": "d_rung_deals_3",
+      "name": "mission.d_rung_deals_3.name",
+      "description": "mission.d_rung_deals_3.description",
+      "metric": "rung_deals_won",
+      "target": 3,
+      "reward": {
+        "coins": 60
+      },
+      "gameId": "rung"
+    },
+    {
+      "id": "d_rung_piles_3",
+      "name": "mission.d_rung_piles_3.name",
+      "description": "mission.d_rung_piles_3.description",
+      "metric": "rung_piles",
+      "target": 3,
+      "reward": {
+        "coins": 60
+      },
+      "gameId": "rung"
+    },
+    {
+      "id": "d_rung_cuts_2",
+      "name": "mission.d_rung_cuts_2.name",
+      "description": "mission.d_rung_cuts_2.description",
+      "metric": "rung_cuts",
+      "target": 2,
+      "reward": {
+        "coins": 50
+      },
+      "gameId": "rung"
     }
   ],
   "weekly": [
@@ -128,6 +161,30 @@
         "coins": 250,
         "gems": 5
       }
+    },
+    {
+      "id": "w_rung_bazi",
+      "name": "mission.w_rung_bazi.name",
+      "description": "mission.w_rung_bazi.description",
+      "metric": "rung_bazis_won",
+      "target": 1,
+      "reward": {
+        "coins": 200,
+        "gems": 5
+      },
+      "gameId": "rung"
+    },
+    {
+      "id": "w_rung_court",
+      "name": "mission.w_rung_court.name",
+      "description": "mission.w_rung_court.description",
+      "metric": "rung_courts",
+      "target": 1,
+      "reward": {
+        "coins": 250,
+        "gems": 5
+      },
+      "gameId": "rung"
     }
   ],
   "welcome": {

@@ -34,5 +34,8 @@ namespace Hulla.Application.Progress
         public long Gems { get; }
 
         public bool Daily { get; }
+
+        /// <summary>The game it is played in; null when either counts.</summary>
+        public GameFilter? Game => GameFilters.OfMetric(Metric);
     }
 }

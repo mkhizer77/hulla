@@ -473,6 +473,106 @@
    "smart": false
   },
   {
+   "key": "achievement.rung_bazis_10.description",
+   "text": "{0:plural:Play a bazi of Rung|Play {} bazis of Rung}",
+   "smart": true
+  },
+  {
+   "key": "achievement.rung_bazis_10.name",
+   "text": "Regular at the table",
+   "smart": false
+  },
+  {
+   "key": "achievement.rung_bazis_100.description",
+   "text": "{0:plural:Play a bazi of Rung|Play {} bazis of Rung}",
+   "smart": true
+  },
+  {
+   "key": "achievement.rung_bazis_100.name",
+   "text": "Rung baaz",
+   "smart": false
+  },
+  {
+   "key": "achievement.rung_bazis_won_25.description",
+   "text": "{0:plural:Win a bazi of Rung|Win {} bazis of Rung}",
+   "smart": true
+  },
+  {
+   "key": "achievement.rung_bazis_won_25.name",
+   "text": "Bazi winner",
+   "smart": false
+  },
+  {
+   "key": "achievement.rung_calls_10.description",
+   "text": "{0:plural:Win a deal you called|Win {} deals you called in a row}",
+   "smart": true
+  },
+  {
+   "key": "achievement.rung_calls_10.name",
+   "text": "Good caller",
+   "smart": false
+  },
+  {
+   "key": "achievement.rung_court52.description",
+   "text": "{0:plural:Win all thirteen tricks after playing on|Win all thirteen tricks {} times}",
+   "smart": true
+  },
+  {
+   "key": "achievement.rung_court52.name",
+   "text": "52-court",
+   "smart": false
+  },
+  {
+   "key": "achievement.rung_deals_100.description",
+   "text": "{0:plural:Win a deal of Rung|Win {} deals of Rung}",
+   "smart": true
+  },
+  {
+   "key": "achievement.rung_deals_100.name",
+   "text": "Trick taker",
+   "smart": false
+  },
+  {
+   "key": "achievement.rung_first_court.description",
+   "text": "{0:plural:Score a court|Score {} courts}",
+   "smart": true
+  },
+  {
+   "key": "achievement.rung_first_court.name",
+   "text": "First court",
+   "smart": false
+  },
+  {
+   "key": "achievement.rung_first_deal.description",
+   "text": "{0:plural:Win a deal of Rung|Win {} deals of Rung}",
+   "smart": true
+  },
+  {
+   "key": "achievement.rung_first_deal.name",
+   "text": "First deal",
+   "smart": false
+  },
+  {
+   "key": "achievement.rung_friend_bazi.description",
+   "text": "{0:plural:Win a bazi with a friend at the table|Win {} bazis with a friend at the table}",
+   "smart": true
+  },
+  {
+   "key": "achievement.rung_friend_bazi.name",
+   "text": "Partners",
+   "smart": false
+  },
+  {
+   "key": "achievement.rung_goon_court.description",
+   "text": "{0:plural:Score a court as the dealer's team|Score {} courts as the dealer's team}",
+   "smart": true
+  },
+  {
+   "key": "achievement.rung_goon_court.name",
+   "text": "Goon court",
+   "smart": false
+  },
+  {
    "key": "achievement.same_group_10.description",
    "text": "{0:plural:Play {} round with the same group|Play {} rounds with the same group}",
    "smart": true
@@ -1778,6 +1878,36 @@
    "smart": false
   },
   {
+   "key": "mission.d_rung_cuts_2.description",
+   "text": "{0:plural:Cut {} trick with a rung|Cut {} tricks with a rung}",
+   "smart": true
+  },
+  {
+   "key": "mission.d_rung_cuts_2.name",
+   "text": "Kaat",
+   "smart": false
+  },
+  {
+   "key": "mission.d_rung_deals_3.description",
+   "text": "{0:plural:Win {} deal of Rung|Win {} deals of Rung}",
+   "smart": true
+  },
+  {
+   "key": "mission.d_rung_deals_3.name",
+   "text": "Rung deals",
+   "smart": false
+  },
+  {
+   "key": "mission.d_rung_piles_3.description",
+   "text": "{0:plural:Take {} pile in Rung|Take {} piles in Rung}",
+   "smart": true
+  },
+  {
+   "key": "mission.d_rung_piles_3.name",
+   "text": "Take the pile",
+   "smart": false
+  },
+  {
    "key": "mission.d_thullas_3.description",
    "text": "{0:plural:Give {} thulla|Give {} thullas}",
    "smart": true
@@ -1880,6 +2010,26 @@
   {
    "key": "mission.w_rounds_15.name",
    "text": "Rounds 15",
+   "smart": false
+  },
+  {
+   "key": "mission.w_rung_bazi.description",
+   "text": "{0:plural:Win {} bazi of Rung|Win {} bazis of Rung}",
+   "smart": true
+  },
+  {
+   "key": "mission.w_rung_bazi.name",
+   "text": "Win a bazi",
+   "smart": false
+  },
+  {
+   "key": "mission.w_rung_court.description",
+   "text": "{0:plural:Score {} court in Rung|Score {} courts in Rung}",
+   "smart": true
+  },
+  {
+   "key": "mission.w_rung_court.name",
+   "text": "Court",
    "smart": false
   },
   {
@@ -2908,6 +3058,31 @@
    "smart": false
   },
   {
+   "key": "rung.searching",
+   "text": "Finding a Rung table",
+   "smart": false
+  },
+  {
+   "key": "rung.stat_bazis_won",
+   "text": "Bazis won",
+   "smart": false
+  },
+  {
+   "key": "rung.stat_courts",
+   "text": "Courts",
+   "smart": false
+  },
+  {
+   "key": "rung.stat_deals",
+   "text": "Deals",
+   "smart": false
+  },
+  {
+   "key": "rung.stat_deals_won",
+   "text": "Deals won",
+   "smart": false
+  },
+  {
    "key": "rung.suit_C",
    "text": "clubs",
    "smart": false
@@ -2925,6 +3100,11 @@
   {
    "key": "rung.suit_S",
    "text": "spades",
+   "smart": false
+  },
+  {
+   "key": "rung.swap_partners",
+   "text": "Swap partners",
    "smart": false
   },
   {
@@ -3574,7 +3754,7 @@
   },
   {
    "key": "ui.at_table_seats",
-   "text": "Thulla · {0} seats open",
+   "text": "{0} · {1} seats open",
    "smart": true
   },
   {
@@ -4090,6 +4270,11 @@
   {
    "key": "ui.favourite_word",
    "text": "Favourite",
+   "smart": false
+  },
+  {
+   "key": "ui.filter_all",
+   "text": "All",
    "smart": false
   },
   {
@@ -4743,6 +4928,11 @@
    "smart": true
   },
   {
+   "key": "ui.percent",
+   "text": "{0}%",
+   "smart": true
+  },
+  {
    "key": "ui.phone_linked",
    "text": "Phone linked",
    "smart": false
@@ -4813,9 +5003,24 @@
    "smart": true
   },
   {
+   "key": "ui.players_3_6",
+   "text": "3 to 6 players",
+   "smart": false
+  },
+  {
+   "key": "ui.players_4",
+   "text": "4 players",
+   "smart": false
+  },
+  {
    "key": "ui.playing",
    "text": "Playing…",
    "smart": false
+  },
+  {
+   "key": "ui.playing_game",
+   "text": "Playing {0}",
+   "smart": true
   },
   {
    "key": "ui.playing_now",
@@ -5133,6 +5338,16 @@
    "smart": false
   },
   {
+   "key": "ui.room_rung",
+   "text": "Rung room",
+   "smart": false
+  },
+  {
+   "key": "ui.room_thulla",
+   "text": "Thulla room",
+   "smart": false
+  },
+  {
    "key": "ui.rounds_count",
    "text": "{0:plural:{} round|{} rounds}",
    "smart": true
@@ -5171,6 +5386,11 @@
    "key": "ui.rules_summary_last_card",
    "text": "{0} · last card: {1}",
    "smart": true
+  },
+  {
+   "key": "ui.rung_quick_note",
+   "text": "Play now uses Rung rules to five points. Create Room uses the rule set chosen here.",
+   "smart": false
   },
   {
    "key": "ui.save",
@@ -5978,9 +6198,24 @@
    "smart": false
   },
   {
+   "key": "ui.your_game_new",
+   "text": "Your first game is one tap away",
+   "smart": false
+  },
+  {
    "key": "ui.your_name",
    "text": "Your name",
    "smart": false
+  },
+  {
+   "key": "ui.your_rung",
+   "text": "Your Rung · {0} bazis · {1}% won",
+   "smart": true
+  },
+  {
+   "key": "ui.your_thulla",
+   "text": "Your Thulla · {0} rounds",
+   "smart": true
   },
   {
    "key": "welcome.add_phone",

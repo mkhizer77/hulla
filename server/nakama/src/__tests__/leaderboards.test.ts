@@ -64,7 +64,14 @@ describe("Baithak points on the boards (GDD 12.8, R50)", () => {
     const m = memoryNk();
     const log = fakeLogger();
     ensureLeaderboards(m.nk, log);
-    expect([...m.boards.keys()].sort()).toEqual([BOARDS.monthly.id, BOARDS.weekly.id]);
+    expect([...m.boards.keys()].sort()).toEqual([
+      "all_monthly",
+      "all_weekly",
+      BOARDS.monthly.id,
+      BOARDS.weekly.id,
+      "rung_monthly",
+      "rung_weekly",
+    ]);
     let posted = 0;
     for (let i = 0; i < 12; i += 1)
       posted += postRoundPoints(m.nk, log, record("private", `r_${String(i)}`), "u0", 0);

@@ -7,9 +7,17 @@
   "additionalProperties": false,
   "required": ["schema", "id", "version", "achievements"],
   "properties": {
-    "schema": { "type": "string" },
-    "id": { "type": "string", "pattern": "^[a-z0-9-]+$" },
-    "version": { "type": "integer", "minimum": 1 },
+    "schema": {
+      "type": "string"
+    },
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z0-9-]+$"
+    },
+    "version": {
+      "type": "integer",
+      "minimum": 1
+    },
     "achievements": {
       "type": "array",
       "minItems": 30,
@@ -18,9 +26,18 @@
         "additionalProperties": false,
         "required": ["id", "name", "description", "category", "metric", "target", "reward"],
         "properties": {
-          "id": { "type": "string", "pattern": "^[a-z0-9_]+$" },
-          "name": { "type": "string", "pattern": "^achievement\\.[a-z0-9_.]+$" },
-          "description": { "type": "string", "pattern": "^achievement\\.[a-z0-9_.]+$" },
+          "id": {
+            "type": "string",
+            "pattern": "^[a-z0-9_]+$"
+          },
+          "name": {
+            "type": "string",
+            "pattern": "^achievement\\.[a-z0-9_.]+$"
+          },
+          "description": {
+            "type": "string",
+            "pattern": "^achievement\\.[a-z0-9_.]+$"
+          },
           "category": {
             "type": "string",
             "enum": ["play", "social", "skill", "collection", "seasonal"]
@@ -47,17 +64,41 @@
               "no_bhabhi_streak",
               "houdini",
               "cosmetics_owned",
-              "seasonal_rounds"
+              "seasonal_rounds",
+              "rung_deals_won",
+              "rung_bazis",
+              "rung_bazis_won",
+              "rung_bazis_won_friend",
+              "rung_courts",
+              "rung_goon_courts",
+              "rung_court52",
+              "rung_call_streak"
             ]
           },
-          "target": { "type": "integer", "minimum": 1, "maximum": 1000000 },
+          "target": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 1000000
+          },
           "reward": {
             "type": "object",
             "additionalProperties": false,
             "properties": {
-              "gems": { "type": "integer", "minimum": 0, "maximum": 1000 },
-              "title": { "type": "string", "pattern": "^[a-z0-9_]+$" }
+              "gems": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 1000
+              },
+              "title": {
+                "type": "string",
+                "pattern": "^[a-z0-9_]+$"
+              }
             }
+          },
+          "gameId": {
+            "type": "string",
+            "enum": ["thulla", "rung"],
+            "description": "The game the achievement belongs to; absent means Thulla or the whole app"
           }
         }
       }

@@ -1,16 +1,16 @@
 {
   "schema": "../tools/content-schemas/manifest.schema.json",
   "id": "content-manifest",
-  "version": 57,
-  "digest": "bc3c5a4f24a1d4e9ec1699e2e0ac8e063102c44e69d8ac95f35cb31057eee5f9",
+  "version": 62,
+  "digest": "608538d960e54b6eb57bd66219012cc5c8f5a826e2c5b380ed7092f77d02a67e",
   "files": [
     {
       "path": "achievements/v1.json",
       "type": "achievements",
       "id": "achievements-v1",
-      "version": 1,
-      "sha256": "70157b7e8314b0046fa5fb0d3e42b2fd94b8dc753bcf3d6a95843aa3505a6c38",
-      "bytes": 11615
+      "version": 2,
+      "sha256": "450cbb8f889b812f76323690ef80aa8e522c311a5387714a70f11f26ec27fb7b",
+      "bytes": 14671
     },
     {
       "path": "avatars/v1.json",
@@ -56,9 +56,9 @@
       "path": "missions/v1.json",
       "type": "missions",
       "id": "missions-v1",
-      "version": 1,
-      "sha256": "85982a3c3a58bb6c13cf0693cabd0f25c6f380d8910eeb448945b7bd61d2d2a1",
-      "bytes": 3398
+      "version": 2,
+      "sha256": "5447e47030c278985150d0937fb2417810ed1edaf49f139dd59b755bc3aa6423",
+      "bytes": 4758
     },
     {
       "path": "presets/rung/courtPiece.json",
@@ -161,8 +161,8 @@
       "type": "strings",
       "id": "strings-en",
       "version": 1,
-      "sha256": "77a2c2f4ccbd8a49e3a643f6b344e26d5aca18b4f0521a10470712095a8170b6",
-      "bytes": 74473
+      "sha256": "e2475bf06179236c6b0530a68e947c19c5edd02ff9c34e3e3c7935e5336f701e",
+      "bytes": 77933
     }
   ]
 }

@@ -36,6 +36,10 @@ namespace Hulla.Application.ViewModels
         public Awaitable<Result<TableTicket>> CreateAsync(string name, CancellationToken cancellation) =>
             RunAsync(name, null, cancellation);
 
+        /// <summary>A private room for the chosen game ("thulla" or "rung").</summary>
+        public Awaitable<Result<TableTicket>> CreateAsync(string name, string gameId, CancellationToken cancellation) =>
+            RunAsync(name, null, cancellation, gameId);
+
         public Awaitable<Result<TableTicket>> JoinAsync(string name, string code, CancellationToken cancellation) =>
             RunAsync(name, code, cancellation);
 
@@ -85,7 +89,7 @@ namespace Hulla.Application.ViewModels
             return mine.IsOk ? mine.Value : null;
         }
 
-        private async Awaitable<Result<TableTicket>> RunAsync(string name, string? code, CancellationToken cancellation)
+        private async Awaitable<Result<TableTicket>> RunAsync(string name, string? code, CancellationToken cancellation, string gameId = "thulla")
         {
             if (Busy)
             {
@@ -109,7 +113,7 @@ namespace Hulla.Application.ViewModels
                 }
 
                 var ticket = code == null
-                    ? await _tables.CreateTableAsync(cancellation)
+                    ? await _tables.CreateTableAsync(gameId, cancellation)
                     : await _tables.JoinByCodeAsync(code, cancellation);
                 return ticket.IsOk ? ticket : Fail(ticket.Error);
             }

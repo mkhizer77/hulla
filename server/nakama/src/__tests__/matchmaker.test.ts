@@ -39,13 +39,29 @@ describe("the matchmaker hook", () => {
     );
   });
 
-  it("falls back to Thulla for an unknown game property", () => {
+  it("opens a Rung table for Rung tickets and falls back to Thulla for a game it does not know", () => {
     const params: unknown[] = [];
-    tableForMatch({ runtime: fakeRuntime(), matchCreate: (_m, p) => (params.push(p), "m") }, [
-      entry("u1", null, { game: "rung" }),
-      entry("u2", null, { game: "rung" }),
+    const deps = {
+      runtime: fakeRuntime(),
+      matchCreate: (_m: string, p: unknown) => (params.push(p), "m"),
+    };
+    tableForMatch(deps, [
+      entry("u1", "party-a", { game: "rung" }),
+      entry("u2", "party-a", { game: "rung" }),
       entry("u3", null, { game: "rung" }),
+      entry("u4", null, { game: "rung" }),
     ]);
-    expect(params[0]).toMatchObject({ gameId: "thulla", autoStart: { expected: 3 } });
+    expect(params[0]).toMatchObject({
+      gameId: "rung",
+      mode: "public",
+      rules: { gameId: "rung", preset: "rung" },
+      autoStart: { expected: 4 },
+      parties: [{ id: "party-a", members: ["u1", "u2"] }],
+    });
+    tableForMatch(deps, [entry("u1", null, { game: "ludo" }), entry("u2", null, { game: "ludo" })]);
+    expect(params[1]).toMatchObject({ gameId: "thulla", rules: { preset: "standard" } });
+    // Ranked is Thulla's only: a Rung ticket marked ranked still opens a public Rung table.
+    tableForMatch(deps, [entry("u1", null, { game: "rung", mode: "ranked" })]);
+    expect(params[2]).toMatchObject({ gameId: "rung", mode: "public" });
   });
 });

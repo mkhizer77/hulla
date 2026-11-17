@@ -9,6 +9,8 @@ import {
 } from "../content/avatars";
 import { log } from "../infra/log";
 
+import { applyRungToStats } from "./rung_progress";
+
 import type { RoundRecord } from "../match/types";
 import type {
   Profile as ProfileView,
@@ -231,6 +233,7 @@ export function applyRoundToStats(
   seat: number,
   record: RoundRecord,
 ): ProfileStats {
+  if (record.gameId === "rung") return applyRungToStats(stats, seat, record);
   const result = record.result;
   if (result === null) return stats;
   const h = record.highlights[seat] ?? {};

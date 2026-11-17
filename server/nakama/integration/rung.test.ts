@@ -216,6 +216,95 @@ describe.skipIf(NAKAMA_HOST === undefined)(
       expect(plays.filter((p) => p.seat === mine).every((p) => !p.auto)).toBe(true);
       expect(plays.filter((p) => p.seat !== mine).every((p) => p.auto)).toBe(true);
       expect(plays.filter((p) => p.seat !== mine).length).toBeGreaterThan(12);
+
+      // The deal counted: Rung stats on the profile, coins on the board across both games, and
+      // Thulla's own numbers untouched.
+      const end = solo.received.find((e) => e.type === "rung_round_end")?.payload as {
+        winnerTeam: number;
+      };
+      let stats: { rounds: number; rung?: { deals: number; dealsWon: number } } | undefined;
+      for (let i = 0; i < 40 && stats?.rung === undefined; i += 1) {
+        await new Promise((resolve) => setTimeout(resolve, 250));
+        const profile = await rpc<{ ok: boolean; profile?: { stats?: typeof stats } }>(
+          solo,
+          "profile_get",
+          {},
+        );
+        stats = profile.profile?.stats;
+      }
+      expect(stats?.rung?.deals).toBe(1);
+      expect(stats?.rung?.dealsWon).toBe(end.winnerTeam === mine % 2 ? 1 : 0);
+      expect(stats?.rounds).toBe(0);
+      const board = await rpc<{ ok: boolean; game: string; me: { score: number } | null }>(
+        solo,
+        "leaderboard_get",
+        { board: "weekly", game: "all" },
+      );
+      expect(board).toMatchObject({ ok: true, game: "all" });
+      expect(board.me?.score).toBeGreaterThan(0);
+      const thulla = await rpc<{ ok: boolean; me: { score: number } | null }>(
+        solo,
+        "leaderboard_get",
+        { board: "weekly" },
+      );
+      expect(thulla.me).toBeNull();
     }, 200_000);
+
+    it("Quick Play: four Rung searches land at one Rung table that deals itself, a queued pair as partners", async () => {
+      const suffix = `${String(Date.now())}q`;
+      const lane = `r${suffix.slice(-8)}`;
+      const four: ScriptedClient[] = [];
+      for (let i = 0; i < 4; i += 1) four.push(await scriptedClient(`rq${String(i)}`, suffix));
+      clients.push(...four);
+      const matched = four.map(
+        (c) =>
+          new Promise<{ match_id: string; token: string }>((resolve, reject) => {
+            const timer = setTimeout(() => {
+              reject(new Error(`${c.name}: no match in time`));
+            }, 60_000);
+            c.socket.onmatchmakermatched = (m) => {
+              clearTimeout(timer);
+              resolve({ match_id: m.match_id, token: m.token });
+            };
+          }),
+      );
+      for (const c of four) {
+        await c.socket.addMatchmaker(
+          `+properties.game:rung +properties.mode:quick +properties.lane:${lane}`,
+          4,
+          4,
+          { game: "rung", mode: "quick", lane },
+          { seats: 4 },
+        );
+      }
+      const found = await Promise.all(matched);
+      expect(new Set(found.map((m) => m.match_id)).size).toBe(1);
+      for (const [i, c] of four.entries()) {
+        const m = found[i];
+        if (m === undefined) throw new Error("no match");
+        await c.socket.joinMatch(m.match_id, m.token);
+      }
+      const first = four[0];
+      if (first === undefined) throw new Error("no client");
+      const table = (
+        await first.next(
+          (e) =>
+            e.type === "table_state" &&
+            (e.payload as TableState).seats.filter((s) => s.playerId !== null).length === 4,
+        )
+      ).payload as TableState;
+      expect(table.gameId).toBe("rung");
+      expect(table.mode).toBe("public");
+      expect(table.rules).toMatchObject({ gameId: "rung", preset: "rung" });
+      // Nobody presses Start: the table deals itself, to five points.
+      const start = await first.next((e) => e.type === "rung_round_start", 40_000);
+      expect(start.payload).toHaveProperty("callerSeat");
+      const dealt = (
+        await first.next(
+          (e) => e.type === "table_state" && (e.payload as TableState).rungRound !== undefined,
+        )
+      ).payload as TableState;
+      expect(dealt.rungRound?.rules.target).toBe(5);
+    }, 120_000);
   },
 );

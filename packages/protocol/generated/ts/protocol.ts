@@ -61,6 +61,7 @@ export interface Protocol {
   setMicPayload?: SetMic;
   removeSpectatorPayload?: RemoveSpectator;
   changeGamePayload?: ChangeGame;
+  swapSeatsPayload?: SwapSeats;
   chatTextPayload?: ChatText;
   quickChatPayload?: QuickChat;
   emotePayload?: Emote;
@@ -377,6 +378,35 @@ export interface ProfileStats {
     C: number;
     D: number;
   };
+  rung?: RungStats;
+}
+/**
+ * The Rung half of the stats card; absent until the first deal
+ */
+export interface RungStats {
+  deals: number;
+  dealsWon: number;
+  bazis: number;
+  bazisWon: number;
+  courts: number;
+  courtsAgainst: number;
+  callerDeals: number;
+  callerWins: number;
+  defenderDeals: number;
+  defenderWins: number;
+  tricksWon: number;
+  cuts: number;
+  pilesTaken: number;
+  trumps: RungTrumps;
+}
+/**
+ * Rungs the player called per suit; the largest is the favourite
+ */
+export interface RungTrumps {
+  S: number;
+  H: number;
+  C: number;
+  D: number;
 }
 /**
  * Owner only
@@ -611,6 +641,13 @@ export interface RulesSelection1 {
     voiceDefault?: "openMic" | "pushToTalk" | "off";
     direction?: "cw" | "ccw";
   };
+}
+/**
+ * Host only, in the lobby of a private room: two seats trade places, so the host chooses who partners whom in a game of pairs. One of the two may be empty.
+ */
+export interface SwapSeats {
+  a: number;
+  b: number;
 }
 export interface ChatText {
   text: string;

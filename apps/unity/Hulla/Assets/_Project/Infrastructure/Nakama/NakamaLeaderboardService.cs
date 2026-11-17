@@ -17,7 +17,10 @@ namespace Hulla.Infrastructure.Nakama
             _connection = connection;
         }
 
-        public async Awaitable<Result<LeaderboardPage>> BoardAsync(LeaderboardPeriod period, bool friends, CancellationToken cancellation)
+        public Awaitable<Result<LeaderboardPage>> BoardAsync(LeaderboardPeriod period, bool friends, CancellationToken cancellation) =>
+            BoardAsync(period, friends, GameFilter.Thulla, cancellation);
+
+        public async Awaitable<Result<LeaderboardPage>> BoardAsync(LeaderboardPeriod period, bool friends, GameFilter game, CancellationToken cancellation)
         {
             var session = _connection.Session;
             if (session == null)
@@ -29,6 +32,7 @@ namespace Hulla.Infrastructure.Nakama
             {
                 ["board"] = period == LeaderboardPeriod.Monthly ? "monthly" : "weekly",
                 ["scope"] = friends ? "friends" : "global",
+                ["game"] = GameFilters.Wire(game),
                 ["limit"] = 50,
             };
             try
