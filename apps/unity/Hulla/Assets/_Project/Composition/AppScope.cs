@@ -245,6 +245,25 @@ namespace Hulla.Composition
 
         public SessionScope? Session => _session;
 
+        /// <summary>
+        /// The account changed (a phone or social switch): everything the app keeps about the player is
+        /// emptied, so the screens load the new account's and never show the old one's.
+        /// </summary>
+        public void ResetAccountData()
+        {
+            Progress.Reset();
+            Shop.Reset();
+            Profile.Reset();
+            Friends.Reset();
+            HomeFriends.Reset();
+            Missions.Reset();
+            Pass.Reset();
+            Achievements.Reset();
+            Ranked.Reset();
+            DailyReward.Reset();
+            Leaderboard.Reset();
+        }
+
         public void UseServer(AppConfig config)
         {
             if (config.Address == Config.Address && config.ServerKey == Config.ServerKey)

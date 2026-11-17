@@ -62,6 +62,24 @@ namespace Hulla.Application.Tests
         }
 
         [Test]
+        public void AnAccountSwitchLeavesNothingOfTheLastAccount()
+        {
+            var model = new ShopViewModel(new FakeShop());
+            _ = model.RefreshAsync(CancellationToken.None);
+            model.SetBalances(100, 5);
+            Assert.IsFalse(model.CanAfford(model.Catalog!.Items[3]), "100 coins don't reach the marble table");
+            var changes = 0;
+            model.Changed += () => changes++;
+            model.Reset();
+            Assert.IsNull(model.Catalog);
+            Assert.IsNull(model.Coins);
+            Assert.IsNull(model.Gems);
+            Assert.AreEqual(1, changes);
+            _ = model.RefreshAsync(CancellationToken.None);
+            Assert.IsTrue(model.CanAfford(model.Catalog!.Items[3]), "unknown balances mark nothing out of reach");
+        }
+
+        [Test]
         public void ACategoryShowsOnlyItsItemsAndTheSpotlightSkipsOwned()
         {
             var model = new ShopViewModel(new FakeShop());

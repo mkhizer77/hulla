@@ -30,6 +30,17 @@ namespace Hulla.Application.ViewModels
 
         public string? ErrorCode { get; private set; }
 
+        /// <summary>Another account signed in: nothing of the last one stays.</summary>
+        public void Reset()
+        {
+            Groups = Array.Empty<(string, IReadOnlyList<AchievementInfo>)>();
+            UnlockedCount = 0;
+            Total = 0;
+            UnlockedNow = Array.Empty<string>();
+            ErrorCode = null;
+            Changed?.Invoke();
+        }
+
         public async Awaitable RefreshAsync(CancellationToken cancellation)
         {
             var answer = await _service.AchievementsAsync(cancellation);

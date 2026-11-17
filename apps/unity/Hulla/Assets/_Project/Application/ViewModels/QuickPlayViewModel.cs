@@ -10,6 +10,8 @@ namespace Hulla.Application.ViewModels
     /// matchmaker intervals accept a group of three at the 20 s mark. A Ranked search (GDD 7.5) is
     /// four seats only and widens its rating band every 10 s up to the cap. A Quick Play search that finds
     /// nobody in 30 s opens a table with up to three bots instead (owner decision, 29 Oct; never Ranked).
+    /// A Ranked search stops after 90 s and asks whether to keep searching. A search that lost its socket
+    /// asks again once the socket is back, since the server drops a ticket with its socket.
     /// Time comes in through
     /// <see cref="Tick"/>, so the schedule is testable without a clock.
     /// </summary>
@@ -19,6 +21,9 @@ namespace Hulla.Application.ViewModels
         public const float WideAtSeconds = 15f;
         public const float StartAtSeconds = 20f;
         public const float BotsAtSeconds = 30f;
+
+        /// <summary>A Ranked search has no bots to fall back on: after this long it stops and asks.</summary>
+        public const float RankedTimeoutSeconds = 90f;
 
         /// <summary>Rung waits half as long before bots take the other seats (Rung design 6.5).</summary>
         public const float RungBotsAtSeconds = 15f;
@@ -45,6 +50,8 @@ namespace Hulla.Application.ViewModels
             Bots,
             Found,
             Failed,
+            /// <summary>A Ranked search found nobody in time: the ticket is dropped, the player keeps searching or cancels.</summary>
+            TimedOut,
         }
 
         public event Action? Changed;
@@ -68,6 +75,9 @@ namespace Hulla.Application.ViewModels
         private int _maxBand;
 
         public bool Searching => Current == Stage.Strict || Current == Stage.Widened || Current == Stage.Starting || Current == Stage.Bots;
+
+        /// <summary>The search stopped without a table and waits for the player: Retry, Keep searching or Cancel.</summary>
+        public bool Stopped => Current == Stage.Failed || Current == Stage.TimedOut;
 
         /// <summary>The table found is the one with bots (for the search's analytics outcome).</summary>
         public bool WithBots { get; private set; }
@@ -140,6 +150,12 @@ namespace Hulla.Application.ViewModels
             Elapsed += deltaSeconds;
             if (Ranked)
             {
+                if (Elapsed >= RankedTimeoutSeconds)
+                {
+                    TimeOut();
+                    return;
+                }
+
                 // Every 10 s the band grows until it reaches the cap; no smaller tables in Ranked.
                 var steps = (int)(Elapsed / WidenAtSeconds) - (int)(before / WidenAtSeconds);
                 if (steps > 0 && Band < _maxBand)
@@ -184,8 +200,50 @@ namespace Hulla.Application.ViewModels
             Changed?.Invoke();
         }
 
+        /// <summary>The same search again, from a failed or timed-out one; Ranked keeps the band it had widened to.</summary>
+        public Awaitable RetryAsync(CancellationToken cancellation) =>
+            Ranked ? StartRankedAsync(Band, _widenBy, _maxBand, cancellation)
+            : Game == "rung" ? StartRungAsync(cancellation)
+            : StartAsync(Seats, cancellation);
+
+        /// <summary>
+        /// The socket came back during a search: the server dropped the ticket with the old socket, so the
+        /// search asks again as it stands. The bot table is a call, not a ticket, and fails by itself.
+        /// </summary>
+        public async Awaitable ResumeAsync(CancellationToken cancellation)
+        {
+            if (!Searching || Current == Stage.Bots)
+            {
+                return;
+            }
+
+            var again = Ranked ? await _matchmaker.SearchRankedAsync(Band, cancellation)
+                : Game == "rung" ? await _matchmaker.SearchRungAsync(cancellation)
+                : await _matchmaker.SearchAsync(Seats, Current != Stage.Strict, cancellation);
+            if (!again.IsOk && Searching)
+            {
+                Fail(again.Error.Code);
+            }
+        }
+
+        /// <summary>The socket dropped and did not come back: the search has no ticket, so it says so.</summary>
+        public void ConnectionLost(string code)
+        {
+            if (Searching)
+            {
+                Fail(code);
+            }
+        }
+
         public async Awaitable CancelAsync()
         {
+            if (Stopped)
+            {
+                Current = Stage.Idle;
+                Changed?.Invoke();
+                return;
+            }
+
             if (!Searching)
             {
                 return;
@@ -214,6 +272,13 @@ namespace Hulla.Application.ViewModels
             {
                 Fail(widened.Error.Code);
             }
+        }
+
+        private async void TimeOut()
+        {
+            Current = Stage.TimedOut;
+            Changed?.Invoke();
+            await _matchmaker.CancelAsync();
         }
 
         private void Fail(string code)

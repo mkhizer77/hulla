@@ -55,6 +55,16 @@ namespace Hulla.Application.ViewModels
 
         public void RefreshSoon() => _sinceRefresh = RefreshSeconds;
 
+        /// <summary>Another account signed in: nothing of the last one stays.</summary>
+        public void Reset()
+        {
+            _online.Clear();
+            Hero = null;
+            WatchHero = null;
+            _sinceRefresh = RefreshSeconds;
+            Changed?.Invoke();
+        }
+
         public async Awaitable RefreshAsync(CancellationToken cancellation)
         {
             _refreshing = true;

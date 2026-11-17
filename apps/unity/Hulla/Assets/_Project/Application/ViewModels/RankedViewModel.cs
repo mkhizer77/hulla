@@ -27,6 +27,17 @@ namespace Hulla.Application.ViewModels
 
         public bool Loading { get; private set; }
 
+        /// <summary>Another account signed in: nothing of the last one stays.</summary>
+        public void Reset()
+        {
+            _request++;
+            Card = null;
+            Top = Array.Empty<RankedRow>();
+            ErrorCode = null;
+            Loading = false;
+            Changed?.Invoke();
+        }
+
         public async Awaitable RefreshAsync(CancellationToken cancellation)
         {
             var request = ++_request;

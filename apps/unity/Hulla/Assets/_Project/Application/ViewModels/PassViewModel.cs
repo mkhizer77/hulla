@@ -52,6 +52,16 @@ namespace Hulla.Application.ViewModels
             }
         }
 
+        /// <summary>Another account signed in: nothing of the last one stays.</summary>
+        public void Reset()
+        {
+            Info = null;
+            NoSeason = false;
+            ErrorCode = null;
+            Busy = false;
+            Changed?.Invoke();
+        }
+
         public async Awaitable RefreshAsync(CancellationToken cancellation)
         {
             var pass = await _service.PassAsync(cancellation);
