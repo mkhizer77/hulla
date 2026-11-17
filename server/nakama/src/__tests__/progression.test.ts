@@ -261,3 +261,14 @@ describe("bot tables and covered seats (GDD 12.3, 8.9, OQ-064, OQ-065)", () => {
     expect(roundReward(r, 2, plain)).toMatchObject({ coins: 35 });
   });
 });
+
+describe("the client's time zone cannot reopen a day", () => {
+  it("keeps the day's counters when the offset is turned back", () => {
+    const today = forDay({ ...EMPTY_PROGRESS, tzOffsetMinutes: 300 }, T0);
+    const earned = { ...today, coinsToday: 1400 };
+    const ahead = forDay({ ...earned, tzOffsetMinutes: 14 * 60 }, T0 + 12 * HOUR);
+    const back = forDay({ ...ahead, coinsToday: 900, tzOffsetMinutes: -12 * 60 }, T0 + 12 * HOUR);
+    expect(back.coinsToday).toBe(900);
+    expect(back.day).toBe(ahead.day);
+  });
+});

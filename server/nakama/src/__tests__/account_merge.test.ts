@@ -4,7 +4,11 @@ import { describe, expect, it } from "vitest";
 import {
   addStats,
   MERGE_CODE_TTL_MS,
+  mergeEntitlements,
+  mergeInventory,
   mergeProfiles,
+  mergeProgress,
+  WALLET_MERGE_GAP_MS,
   prepareMerge,
   redeemMerge,
   walletChangeset,
@@ -12,7 +16,10 @@ import {
   type MergeCodeStore,
   type MergePorts,
 } from "../services/account_merge";
+import { EMPTY_INVENTORY } from "../services/catalog";
 import { EMPTY_STATS, type Profile } from "../services/profiles";
+import { EMPTY_PROGRESS } from "../services/progression";
+import { EMPTY_ENTITLEMENTS } from "../services/purchases";
 
 const T0 = 1_760_200_000_000;
 
@@ -88,8 +95,13 @@ function ports(
     ],
   ]);
   const log: string[] = [];
+  const walletMerges = new Map<string, number>();
   return {
     codes: store,
+    isGuest: (u) => u !== "L",
+    lastWalletMergeTs: (u) => walletMerges.get(u) ?? null,
+    markWalletMerge: (u, now) => void walletMerges.set(u, now),
+    moveOwned: (from, to) => void log.push(`owned ${from}->${to}`),
     log,
     profiles,
     readProfile: (u) => profiles.get(u) ?? null,
@@ -187,6 +199,7 @@ describe("guest merge into a linked account (GDD 10.2)", () => {
     });
     expect(p.log).toEqual([
       'credit B {"coins":120,"gems":3} from A',
+      "owned A->B",
       "move A->B",
       "delete A",
       "link B phone-a",
@@ -200,5 +213,72 @@ describe("guest merge into a linked account (GDD 10.2)", () => {
       error: { code: "auth.merge_code_invalid" },
     });
     expect(store.map.has(stale.code)).toBe(false);
+  });
+
+  it("only a guest can be merged away, so a merge is never a transfer between accounts (D2)", () => {
+    const store = codes();
+    const rng = Xoshiro128StarStar.fromState(stateFromSeed(new Uint8Array([2])));
+    expect(prepareMerge(store, rng, "L", T0, (u) => u !== "L")).toMatchObject({
+      error: { code: "auth.merge_code_invalid", detail: { reason: "not_guest" } },
+    });
+    store.write("LLLLLLLL", { fromUserId: "L", expiresTs: T0 + 1000 });
+    const p = ports(store);
+    expect(redeemMerge(p, "B", "LLLLLLLL", T0)).toMatchObject({
+      error: { code: "auth.merge_code_invalid", detail: { reason: "not_guest" } },
+    });
+    expect(p.log).toEqual([]);
+  });
+
+  it("takes a guest's wallet at most once in thirty days; an empty guest still merges", () => {
+    const store = codes();
+    const p = ports(store);
+    store.write("AAAAAAAA", { fromUserId: "A", expiresTs: T0 + 1000 });
+    expect(redeemMerge(p, "B", "AAAAAAAA", T0)).toMatchObject({ ok: true });
+    store.write("AAAAAAAB", { fromUserId: "A", expiresTs: T0 + 5000 });
+    expect(redeemMerge(p, "B", "AAAAAAAB", T0 + 2000)).toMatchObject({
+      error: { code: "auth.merge_code_invalid", detail: { reason: "too_soon" } },
+    });
+    expect(p.log.filter((l) => l.startsWith("credit"))).toHaveLength(1);
+    store.write("CCCCCCCC", { fromUserId: "C", expiresTs: T0 + 5000 });
+    expect(redeemMerge(p, "B", "CCCCCCCC", T0 + 2000)).toMatchObject({ ok: true });
+    const later = T0 + WALLET_MERGE_GAP_MS;
+    store.write("AAAAAAAC", { fromUserId: "A", expiresTs: later + 1000 });
+    expect(redeemMerge(p, "B", "AAAAAAAC", later)).toMatchObject({ ok: true });
+    expect(p.log.filter((l) => l.startsWith("credit"))).toHaveLength(2);
+  });
+
+  it("moves what the guest owns: items, entitlements and the further level", () => {
+    expect(
+      mergeInventory(
+        { ...EMPTY_INVENTORY, owned: { t1: 5 }, equipped: { table: "t1" } },
+        { ...EMPTY_INVENTORY, owned: { t1: 9, b2: 7 }, equipped: { table: "t9", back: "b2" } },
+        T0,
+      ),
+    ).toMatchObject({ owned: { t1: 5, b2: 7 }, equipped: { table: "t1", back: "b2" } });
+    expect(
+      mergeEntitlements(
+        { ...EMPTY_ENTITLEMENTS, frames: ["f1"], products: { gems_s: 1 } },
+        {
+          ...EMPTY_ENTITLEMENTS,
+          removeAds: true,
+          frames: ["f1", "f2"],
+          products: { gems_s: 2 },
+          pendingPass: "premium",
+        },
+        T0,
+      ),
+    ).toMatchObject({
+      removeAds: true,
+      frames: ["f1", "f2"],
+      products: { gems_s: 3 },
+      pendingPass: "premium",
+    });
+    expect(
+      mergeProgress(
+        { ...EMPTY_PROGRESS, xp: 100, level: 2, coinsToday: 40, titles: ["a"] },
+        { ...EMPTY_PROGRESS, xp: 900, level: 5, coinsToday: 999, titles: ["b"] },
+        T0,
+      ),
+    ).toMatchObject({ xp: 900, level: 5, coinsToday: 40, titles: ["a", "b"] });
   });
 });

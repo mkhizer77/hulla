@@ -112,7 +112,8 @@ export function forPeriod(
   const day = localDay(now, record.tzOffsetMinutes);
   const week = localWeek(now, record.tzOffsetMinutes);
   let next = record;
-  if (record.day !== day) {
+  // Days and weeks only move forward, so a changed offset neither wipes nor reopens them.
+  if (day > record.day) {
     next = {
       ...next,
       day,
@@ -123,7 +124,7 @@ export function forPeriod(
       })),
     };
   }
-  if (record.week !== week) {
+  if (week > record.week) {
     next = {
       ...next,
       week,

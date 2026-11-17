@@ -9,6 +9,7 @@ import {
   achievementsView,
   countRound,
   EMPTY_ACHIEVEMENTS,
+  withSeasonRound,
   markUnlocked,
   newlyUnlocked,
   nkAchievementStore,
@@ -287,5 +288,38 @@ describe("achievements (GDD 12.7)", () => {
         ),
       ),
     ).toEqual({ ok: true, id: "achievements-v1", version: 2 });
+  });
+});
+
+describe("the collection and seasonal achievements can be reached", () => {
+  it("counts rounds in the running season and starts again in the next", () => {
+    let rec = withSeasonRound(EMPTY_ACHIEVEMENTS, null, T0);
+    expect(rec).toBe(EMPTY_ACHIEVEMENTS);
+    rec = withSeasonRound(withSeasonRound(rec, "s1", T0), "s1", T0);
+    expect(rec.counters.seasonal_rounds).toBe(2);
+    expect(withSeasonRound(rec, "s2", T0).counters.seasonal_rounds).toBe(1);
+  });
+
+  it("unlocks a collection achievement from what the player owns", () => {
+    const nk = memoryNk().nk;
+    const first = BUNDLED_ACHIEVEMENTS.achievements.find((a) => a.metric === "cosmetics_owned");
+    if (first === undefined) throw new Error("no collection achievement");
+    const owned: Record<string, number> = {};
+    for (let i = 0; i < first.target; i += 1) owned[`item_${String(i)}`] = T0;
+    nk.storageWrite([
+      {
+        collection: "inventory",
+        key: "state",
+        userId: "u1",
+        value: { owned, equipped: {}, perGame: {}, updatedTs: T0 },
+        permissionRead: 1,
+        permissionWrite: 0,
+      },
+    ]);
+    const ctx = { userId: "u1", env: {} } as unknown as nkruntime.Context;
+    const got = JSON.parse(rpcAchievementsGet(ctx, fakeLogger(), nk)) as {
+      unlockedNow: string[];
+    };
+    expect(got.unlockedNow).toContain(first.id);
   });
 });

@@ -216,7 +216,9 @@ export function touchLogin(progress: Progress, now: number): Progress {
 /** The daily counters roll over at local midnight. */
 export function forDay(progress: Progress, now: number): Progress {
   const today = localDay(now, progress.tzOffsetMinutes);
-  return progress.day === today
+  // Days only move forward: the offset comes from the client, and turning it back must not
+  // start the day's counters again.
+  return today <= progress.day
     ? progress
     : { ...progress, day: today, coinsToday: 0, privatePointsToday: 0, botRoundsToday: 0 };
 }

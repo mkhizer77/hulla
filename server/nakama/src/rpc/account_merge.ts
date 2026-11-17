@@ -8,13 +8,42 @@ import {
 } from "../services/account_deletion";
 import {
   MERGE_CODES_COLLECTION,
+  mergeEntitlements,
+  mergeInventory,
+  mergeProgress,
   prepareMerge,
   redeemMerge,
   type MergeCode,
   type MergeCodeStore,
   type MergePorts,
 } from "../services/account_merge";
+import { nkCatalogStore } from "../services/catalog";
+import { credit, nkLedgerPorts } from "../services/ledger";
 import { nkProfileStore } from "../services/profiles";
+import { nkProgressStore } from "../services/progression";
+import { nkEntitlementStore } from "../services/purchases";
+
+export const MERGES_COLLECTION = "merges";
+
+/** A guest signs in by device id only; anything else linked makes it a full account. */
+function isGuest(nk: nkruntime.Nakama, userId: string): boolean {
+  try {
+    const account = nk.accountGetId(userId);
+    const user = account.user as unknown as Record<string, unknown>;
+    const linked = [
+      account.email,
+      account.customId,
+      user["facebookId"],
+      user["googleId"],
+      user["appleId"],
+      user["gamecenterId"],
+      user["steamId"],
+    ];
+    return linked.every((id) => typeof id !== "string" || id === "");
+  } catch {
+    return false;
+  }
+}
 
 function nkMergeCodes(nk: nkruntime.Nakama): MergeCodeStore {
   return {
@@ -76,9 +105,55 @@ function nkMergePorts(nk: nkruntime.Nakama, logger: nkruntime.Logger): MergePort
     writeProfile: (userId, profile) => {
       profiles.write(userId, profile);
     },
+    isGuest: (userId) => isGuest(nk, userId),
     readWallet: (userId) => walletOf(nk, userId),
     creditWallet(userId, changeset, fromUserId) {
-      nk.walletUpdate(userId, { ...changeset }, { reason: "guest_merge", from: fromUserId }, true);
+      const result = credit(nkLedgerPorts(nk), {
+        userId,
+        sourceId: `merge:${fromUserId}`,
+        reason: "guest_merge",
+        coins: changeset["coins"] ?? 0,
+        gems: changeset["gems"] ?? 0,
+        metadata: { from: fromUserId },
+      });
+      if (!result.ok) throw new Error(`guest wallet not merged: ${result.error.code}`);
+    },
+    lastWalletMergeTs(userId) {
+      const value: unknown = nk.storageRead([
+        { collection: MERGES_COLLECTION, key: "wallet", userId },
+      ])[0]?.value;
+      const ts = (value as { ts?: unknown } | undefined)?.ts;
+      return typeof ts === "number" ? ts : null;
+    },
+    markWalletMerge(userId, now) {
+      nk.storageWrite([
+        {
+          collection: MERGES_COLLECTION,
+          key: "wallet",
+          userId,
+          value: { ts: now },
+          permissionRead: 0,
+          permissionWrite: 0,
+        },
+      ]);
+    },
+    moveOwned(fromUserId, toUserId) {
+      const now = Date.now();
+      const catalog = nkCatalogStore(nk);
+      catalog.writeInventory(
+        toUserId,
+        mergeInventory(catalog.inventory(toUserId), catalog.inventory(fromUserId), now),
+      );
+      const entitlements = nkEntitlementStore(nk);
+      entitlements.write(
+        toUserId,
+        mergeEntitlements(entitlements.read(toUserId), entitlements.read(fromUserId), now),
+      );
+      const progress = nkProgressStore(nk);
+      progress.write(
+        toUserId,
+        mergeProgress(progress.read(toUserId), progress.read(fromUserId), now),
+      );
     },
     moveRounds(fromUserId, toUserId) {
       let moved = 0;
@@ -144,7 +219,9 @@ export function rpcAccountMergePrepare(
   nk: nkruntime.Nakama,
 ): string {
   const rng = Xoshiro128StarStar.fromState(stateFromSeed(sha256(utf8Encode(nk.uuidv4()))));
-  return JSON.stringify(prepareMerge(nkMergeCodes(nk), rng, ctx.userId ?? null, Date.now()));
+  return JSON.stringify(
+    prepareMerge(nkMergeCodes(nk), rng, ctx.userId ?? null, Date.now(), (id) => isGuest(nk, id)),
+  );
 }
 
 /** As the linked account: absorbs the guest named by the code and deletes it. */
