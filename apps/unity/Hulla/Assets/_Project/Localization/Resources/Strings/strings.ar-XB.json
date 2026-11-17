@@ -1968,6 +1968,31 @@
    "smart": true
   },
   {
+   "key": "mission.goal.rung_bazis_won",
+   "text": "{0:plural:Win {} bazis of Rung|Win {} bazi of Rung|Win {} bazis of Rung|Win {} bazis of Rung|Win {} bazis of Rung|Win {} bazis of Rung}",
+   "smart": true
+  },
+  {
+   "key": "mission.goal.rung_courts",
+   "text": "{0:plural:Score {} courts in Rung|Score {} court in Rung|Score {} courts in Rung|Score {} courts in Rung|Score {} courts in Rung|Score {} courts in Rung}",
+   "smart": true
+  },
+  {
+   "key": "mission.goal.rung_cuts",
+   "text": "{0:plural:Cut {} tricks with a rung|Cut {} trick with a rung|Cut {} tricks with a rung|Cut {} tricks with a rung|Cut {} tricks with a rung|Cut {} tricks with a rung}",
+   "smart": true
+  },
+  {
+   "key": "mission.goal.rung_deals_won",
+   "text": "{0:plural:Win {} deals of Rung|Win {} deal of Rung|Win {} deals of Rung|Win {} deals of Rung|Win {} deals of Rung|Win {} deals of Rung}",
+   "smart": true
+  },
+  {
+   "key": "mission.goal.rung_piles",
+   "text": "{0:plural:Take {} piles in Rung|Take {} pile in Rung|Take {} piles in Rung|Take {} piles in Rung|Take {} piles in Rung|Take {} piles in Rung}",
+   "smart": true
+  },
+  {
    "key": "mission.goal.series_won",
    "text": "{0:plural:Win {} series|Win a series|Win {} series|Win {} series|Win {} series|Win {} series}",
    "smart": true
@@ -4631,6 +4656,11 @@
    "key": "ui.lobby_hint_host_ready",
    "text": "Get ready, then start when 3 or more are ready",
    "smart": false
+  },
+  {
+   "key": "ui.lobby_hint_rung",
+   "text": "{0} starts when all four are ready",
+   "smart": true
   },
   {
    "key": "ui.locked",

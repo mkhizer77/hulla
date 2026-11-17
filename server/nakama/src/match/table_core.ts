@@ -578,8 +578,9 @@ export function tableCore<S, M, V, E, R>(
       state.phase = "lobby";
       state.round = null;
       for (const slot of state.seats) {
-        slot.ready = false;
-        slot.rematch = null;
+        // A bot stays ready, or the room could never start again.
+        slot.ready = slot.bot;
+        slot.rematch = slot.bot ? true : null;
       }
       broadcastTableState(state, emit);
       return;

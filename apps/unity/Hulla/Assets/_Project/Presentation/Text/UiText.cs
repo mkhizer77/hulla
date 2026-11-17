@@ -914,6 +914,7 @@ namespace Hulla.Presentation.Text
         public static string SearchElapsed => Strings.Text("ui.search_elapsed");
         public static string PrivateTable => Strings.Text("ui.private_table");
         public static string LobbyHint => Strings.Text("ui.lobby_hint");
+        public static string LobbyHintRung => Strings.Text("ui.lobby_hint_rung");
         public static string LobbyHintHost => Strings.Text("ui.lobby_hint_host");
         public static string DisplayNameLabel => Strings.Text("ui.display_name_label");
         public static string HandleLabel => Strings.Text("ui.handle_label");

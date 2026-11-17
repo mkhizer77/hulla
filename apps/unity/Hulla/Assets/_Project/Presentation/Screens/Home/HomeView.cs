@@ -549,7 +549,8 @@ namespace Hulla.Presentation.Screens.Home
         private void BuildMode(VisualElement root, bool rankedAvailable)
         {
             var mode = root.Q<VisualElement>("mode");
-            mode.style.display = rankedAvailable ? DisplayStyle.Flex : DisplayStyle.None;
+            // Left to the stylesheet when available: the Rung page hides it (Ranked is Thulla only).
+            mode.style.display = rankedAvailable ? StyleKeyword.Null : DisplayStyle.None;
             var casual = TextArt.Mark(root.Q<Label>("mode-casual"), "casual");
             var ranked = TextArt.Mark(root.Q<Label>("mode-ranked"), "ranked");
             var toggle = root.Q<VisualElement>("mode-switch");

@@ -857,7 +857,7 @@ namespace Hulla.Presentation.Screens.Lobby
                 : matchmade ? (seated < 3 ? UiText.Waiting : "")
                 : model.IsHost && model.IsRung ? ""
                 : model.IsHost ? (ready ? UiText.LobbyHintHost : UiText.LobbyHintHostReady)
-                : Strings.Format(UiText.LobbyHint, host);
+                : Strings.Format(model.IsRung ? UiText.LobbyHintRung : UiText.LobbyHint, host);
         }
 
         private static string Upper(string text) => text.ToUpper(Strings.Culture);
