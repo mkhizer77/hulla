@@ -8,6 +8,7 @@ import {
   settleUnlocks,
   withCounter,
 } from "../services/achievements";
+import { nkCatalogStore } from "../services/catalog";
 import { nkLedgerPorts } from "../services/ledger";
 import { nkFriendIds } from "../services/presence";
 
@@ -27,7 +28,9 @@ export function rpcAchievementsGet(
   const now = Date.now();
   const current = store.read(userId);
   const withFriends = withCounter(current, "friends", nkFriendIds(nk, userId).length, now);
-  const unlocked = settleUnlocks(nk, nkLedgerPorts(nk), store, userId, withFriends, list, now);
+  const owned = Object.keys(nkCatalogStore(nk).inventory(userId).owned).length;
+  const counted = withCounter(withFriends, "cosmetics_owned", owned, now);
+  const unlocked = settleUnlocks(nk, nkLedgerPorts(nk), store, userId, counted, list, now);
   const record = store.read(userId);
   return JSON.stringify({
     ok: true,

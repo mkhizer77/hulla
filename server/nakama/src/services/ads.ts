@@ -52,7 +52,8 @@ export const EMPTY_AD_RECORD: AdRecord = {
 /** The record for today: counts, credits and doubled rounds reset at local midnight. */
 export function forDay(record: AdRecord, now: number): AdRecord {
   const day = localDay(now, record.tzOffsetMinutes);
-  if (record.day === day) return record;
+  // Days only move forward, so a changed offset cannot reopen the day's caps.
+  if (day <= record.day) return record;
   return { ...EMPTY_AD_RECORD, tzOffsetMinutes: record.tzOffsetMinutes, day, updatedTs: now };
 }
 

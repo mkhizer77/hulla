@@ -14,6 +14,7 @@ import {
   forSeason,
   nkRewardPorts,
   passView,
+  settleEndedSeason,
   tierFor,
   TIER_COUNT,
   xpFor,
@@ -141,5 +142,32 @@ describe("the season pass (GDD 12.10)", () => {
           (o.value as { action: string }).action === "pass_premium_plus",
       ),
     ).toBe(true);
+  });
+
+  it("pays the reached, unclaimed tiers of a season that has ended, once", () => {
+    const nk = memoryNk().nk;
+    const ports = nkRewardPorts(nk, nkLedgerPorts(nk));
+    const state = {
+      ...emptyPass(season.id),
+      xp: 3 * season.xpPerTier,
+      claimed: { "1:free": MID },
+    };
+    expect(settleEndedSeason(state, BUNDLED_SEASONS, ports, "u1", LATE)).toBe(state);
+    const coinsBefore = nkLedgerPorts(nk).balances("u1").coins;
+    const settled = settleEndedSeason(state, BUNDLED_SEASONS, ports, "u1", season.endTs + 1);
+    expect(Object.keys(settled?.claimed ?? {}).sort()).toEqual(["1:free", "2:free", "3:free"]);
+    const owed = [2, 3].reduce((n, t) => n + (season.tiers[t - 1]?.free.coins ?? 0), 0);
+    expect(nkLedgerPorts(nk).balances("u1").coins - coinsBefore).toBe(owed);
+    expect(settleEndedSeason(settled, BUNDLED_SEASONS, ports, "u1", season.endTs + 2)).toBe(
+      settled,
+    );
+    const premium = settleEndedSeason(
+      { ...state, premium: true },
+      BUNDLED_SEASONS,
+      ports,
+      "u2",
+      season.endTs + 1,
+    );
+    expect(Object.keys(premium?.claimed ?? {})).toHaveLength(6);
   });
 });

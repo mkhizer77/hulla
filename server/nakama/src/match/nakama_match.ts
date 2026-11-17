@@ -4,7 +4,13 @@ import { ErrorCodes } from "@hulla/shared-ts";
 import { log } from "../infra/log";
 import { METRICS, metrics } from "../infra/metrics";
 import { ROUND_RESULTS_COLLECTION } from "../services/account_deletion";
-import { countRound, nkAchievementStore, settleUnlocks } from "../services/achievements";
+import {
+  countRound,
+  nkAchievementStore,
+  settleUnlocks,
+  withCounter,
+  withSeasonRound,
+} from "../services/achievements";
 import { emitAnalyticsSafely } from "../services/analytics";
 import { equippedFor, nkCatalogStore, ownedEmotePacks } from "../services/catalog";
 import { clientTooOld, nkConfigStore } from "../services/config";
@@ -30,7 +36,7 @@ import {
 } from "../services/progression";
 import { applyRankedRound } from "../services/ranked";
 import { isBanned, readModeration } from "../services/sanctions";
-import { earnPassXp } from "../services/season_pass";
+import { BUNDLED_SEASONS, currentSeason, earnPassXp } from "../services/season_pass";
 import { nkSocialStore, recordRecentPlayers } from "../services/social";
 import { payWelcome } from "../services/welcome";
 
@@ -182,42 +188,12 @@ function rewardPlayer(
     });
     if (reward === null) return;
     const applied = applyReward(current, reward, record, record.endedTs, botHeavy(record));
-    const welcome = firstRound ? payWelcome(nkLedgerPorts(nk), playerId, "firstRound") : 0;
-    progressStore.write(
-      playerId,
-      welcome > 0 && applied.progress.lastReward !== null
-        ? {
-            ...applied.progress,
-            lastReward: { ...applied.progress.lastReward, welcomeCoins: welcome },
-          }
-        : applied.progress,
-    );
-    recordMissionMetrics(nk, playerId, metricsFromRound(record, seat, withFriend), record.endedTs);
-    postRoundPoints(nk, logger, record, playerId, seat);
-    postCoinsEarned(nk, logger, record, playerId, reward.coins);
-    earnPassXp(nk, playerId, "round", record.endedTs);
-    const friendsAtTable = humans.filter(
-      (other) => other !== playerId && nkAreFriends(nk, playerId, other),
-    ).length;
-    const achievements = nkAchievementStore(nk);
-    const counted = countRound(achievements.read(playerId), record, seat, {
-      friendsAtTable,
-      playerIds: humans,
-    });
-    settleUnlocks(
-      nk,
-      nkLedgerPorts(nk),
-      achievements,
-      playerId,
-      counted,
-      achievements.list(),
-      record.endedTs,
-    );
+    // Coins and level grants go first: both are keyed by their cause, so nothing after them can
+    // lose them, and a level's grant is only known at the moment the level is crossed.
     const ledger = nkLedgerPorts(nk);
-    const prefix = `${record.tableId}:${record.roundId}`;
     credit(ledger, {
       userId: playerId,
-      sourceId: `${prefix}:round`,
+      sourceId: `${record.tableId}:${record.roundId}:round`,
       reason: "round",
       coins: reward.coins,
     });
@@ -231,6 +207,74 @@ function rewardPlayer(
         metadata: { level: grant.level },
       });
     }
+    const welcome = firstRound ? payWelcome(ledger, playerId, "firstRound") : 0;
+    progressStore.write(
+      playerId,
+      welcome > 0 && applied.progress.lastReward !== null
+        ? {
+            ...applied.progress,
+            lastReward: { ...applied.progress.lastReward, welcomeCoins: welcome },
+          }
+        : applied.progress,
+    );
+    // The rest each stand alone: one failing must not stop the others.
+    const step = (label: string, run: () => void): void => {
+      try {
+        run();
+      } catch (error: unknown) {
+        log.warn(logger, "round follow-up not applied", {
+          step: label,
+          seat,
+          error: String(error),
+        });
+      }
+    };
+    step("missions", () => {
+      recordMissionMetrics(
+        nk,
+        playerId,
+        metricsFromRound(record, seat, withFriend),
+        record.endedTs,
+      );
+    });
+    step("points", () => {
+      postRoundPoints(nk, logger, record, playerId, seat);
+    });
+    step("coins_board", () => {
+      postCoinsEarned(nk, logger, record, playerId, reward.coins);
+    });
+    step("pass", () => {
+      earnPassXp(nk, playerId, "round", record.endedTs);
+    });
+    step("achievements", () => {
+      const friendsAtTable = humans.filter(
+        (other) => other !== playerId && nkAreFriends(nk, playerId, other),
+      ).length;
+      const achievements = nkAchievementStore(nk);
+      const season = currentSeason(BUNDLED_SEASONS, record.endedTs);
+      const counted = withCounter(
+        withSeasonRound(
+          countRound(achievements.read(playerId), record, seat, {
+            friendsAtTable,
+            playerIds: humans,
+          }),
+          season?.id ?? null,
+          record.endedTs,
+        ),
+        "cosmetics_owned",
+        Object.keys(nkCatalogStore(nk).inventory(playerId).owned).length,
+        record.endedTs,
+      );
+      settleUnlocks(
+        nk,
+        ledger,
+        achievements,
+        playerId,
+        counted,
+        achievements.list(),
+        record.endedTs,
+      );
+    });
   } catch (error: unknown) {
     log.warn(logger, "round reward not applied", { seat, error: String(error) });
   }

@@ -13,6 +13,7 @@ import {
   nkPassStore,
   nkRewardPorts,
   passView,
+  settlePass,
 } from "../services/season_pass";
 
 import { isAdmin } from "./admin";
@@ -43,6 +44,8 @@ export function rpcPassGet(
   if (userId === "") return refused();
   const now = Date.now();
   const season = currentSeason(BUNDLED_SEASONS, now);
+  // Tiers reached in a season that has ended are paid before its state is replaced.
+  settlePass(nk, nkPassStore(nk), userId, now);
   if (season === null) return noSeason();
   // A premium pass bought between seasons opens now (#58).
   applyPendingPass(nkPurchasePorts(nk), userId, now);
@@ -66,7 +69,7 @@ export function rpcPassClaim(
   const tier = typeof input["tier"] === "number" ? input["tier"] : 0;
   const track = input["track"] === "premium" ? "premium" : "free";
   const store = nkPassStore(nk);
-  const state = forSeason(store.read(userId), season);
+  const state = forSeason(settlePass(nk, store, userId, now), season);
   const result = claimTier(
     state,
     season,

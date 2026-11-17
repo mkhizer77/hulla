@@ -182,10 +182,7 @@ describe("the append-only ledger (GDD 13.2, 13.9, D2)", () => {
     const touching = walk(root).filter((file) =>
       /wallets?Update|multiUpdate/.test(readFileSync(file, "utf8")),
     );
-    expect(touching.map((f) => f.slice(root.length + 1)).sort()).toEqual([
-      "rpc/account_merge.ts",
-      "services/ledger.ts",
-    ]);
+    expect(touching.map((f) => f.slice(root.length + 1)).sort()).toEqual(["services/ledger.ts"]);
     const ledgerSource = readFileSync(join(root, "services/ledger.ts"), "utf8");
     expect(ledgerSource).not.toMatch(/fromUserId|toUserId|transfer/i);
     const rpcs =

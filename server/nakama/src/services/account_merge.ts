@@ -8,18 +8,28 @@ import {
 
 import { GUEST_NAME, EMPTY_STATS, type Profile } from "./profiles";
 
+import type { Inventory } from "./catalog";
+import type { Progress } from "./progression";
+import type { Entitlements } from "./purchases";
 import type { ProfileStats } from "@hulla/protocol/generated";
 
 /**
  * Guest progress merges into a linked account (GDD 10.2, #38). The guest asks for a one-time
- * code while still signed in as the guest; the linked account redeems it. Stats add up, the
- * wallet adds up (interim, OQ-015), streaks and name changes take the larger, and the linked
- * account keeps its identity: handle, friend code, privacy, and its name unless it still wears
- * the generated guest name. The guest account is then deleted.
+ * code while still signed in as the guest; the linked account redeems it. Stats add up, streaks
+ * and name changes take the larger, and the linked account keeps its identity: handle, friend
+ * code, privacy, and its name unless it still wears the generated guest name. The guest account
+ * is then deleted.
+ *
+ * A merge must not work as a transfer (D2). Only a guest, an account with nothing but device
+ * ids, can be merged away; its wallet moves through the ledger once, and an account takes a
+ * wallet this way at most once in thirty days (interim, OQ-015). What the guest owns (items,
+ * entitlements, the further progress) moves too.
  */
 export const MERGE_CODES_COLLECTION = "merge_codes";
 export const MERGE_CODE_TTL_MS = 10 * 60_000;
 export const MERGE_CODE_LENGTH = 8;
+/** The gap between two merges that carry a wallet into the same account (OQ-015). */
+export const WALLET_MERGE_GAP_MS = 30 * 86_400_000;
 
 export interface MergeCode {
   readonly fromUserId: string;
@@ -49,8 +59,14 @@ export function prepareMerge(
   rng: Rng,
   userId: string | null,
   now: number,
+  isGuest: (userId: string) => boolean = () => true,
 ): PrepareResponse {
   if (userId === null) return { ok: false, error: ruleError(ErrorCodes.table.notAuthorised) };
+  if (!isGuest(userId))
+    return {
+      ok: false,
+      error: ruleError(ErrorCodes.auth.mergeCodeInvalid, { reason: "not_guest" }),
+    };
   for (let attempt = 0; attempt < 5; attempt += 1) {
     const code = generateMergeCode(rng);
     const value = { fromUserId: userId, expiresTs: now + MERGE_CODE_TTL_MS };
@@ -108,16 +124,68 @@ export function walletChangeset(
   return out;
 }
 
+/** Everything either account bought or was granted; the linked account's choices stay. */
+export function mergeInventory(into: Inventory, guest: Inventory, now: number): Inventory {
+  return {
+    ...into,
+    owned: { ...guest.owned, ...into.owned },
+    equipped: { ...guest.equipped, ...into.equipped },
+    updatedTs: now,
+  };
+}
+
+export function mergeEntitlements(
+  into: Entitlements,
+  guest: Entitlements,
+  now: number,
+): Entitlements {
+  const products: Record<string, number> = { ...into.products };
+  for (const [id, count] of Object.entries(guest.products)) {
+    products[id] = (products[id] ?? 0) + count;
+  }
+  return {
+    removeAds: into.removeAds || guest.removeAds,
+    frames: [...new Set([...into.frames, ...guest.frames])],
+    products,
+    pendingPass: into.pendingPass ?? guest.pendingPass,
+    updatedTs: now,
+  };
+}
+
+/**
+ * The further of the two levels, never the sum: adding XP would cross levels without their
+ * grants. The linked account keeps its own day counters and streak.
+ */
+export function mergeProgress(into: Progress, guest: Progress, now: number): Progress {
+  const ahead = guest.xp > into.xp ? guest : into;
+  return {
+    ...into,
+    xp: ahead.xp,
+    level: ahead.level,
+    titles: [...new Set([...into.titles, ...guest.titles])],
+    loginStreak: Math.max(into.loginStreak, guest.loginStreak),
+    updatedTs: now,
+  };
+}
+
 export interface MergePorts {
   readonly codes: MergeCodeStore;
   readProfile(userId: string): Profile | null;
   writeProfile(userId: string, profile: Profile): void;
+  /** True for an account that signs in by device id only: no email, phone or provider. */
+  isGuest(userId: string): boolean;
   readWallet(userId: string): Readonly<Record<string, number>>;
+  /** Credits through the ledger under a key made from the guest's id, so a replay adds nothing. */
   creditWallet(
     userId: string,
     changeset: Readonly<Record<string, number>>,
     fromUserId: string,
   ): void;
+  /** When this account last took a wallet from a guest, or null. */
+  lastWalletMergeTs(userId: string): number | null;
+  markWalletMerge(userId: string, now: number): void;
+  /** Items, entitlements and the further progress of the guest, added to the linked account. */
+  moveOwned?(fromUserId: string, toUserId: string): void;
   /** Moves the guest's round history to the linked account; the stats were summed already. */
   moveRounds(fromUserId: string, toUserId: string): number;
   deleteAccount(userId: string): void;
@@ -154,13 +222,31 @@ export function redeemMerge(
       ok: false,
       error: ruleError(ErrorCodes.auth.mergeCodeInvalid, { reason: "same_account" }),
     };
+  if (!ports.isGuest(from))
+    return {
+      ok: false,
+      error: ruleError(ErrorCodes.auth.mergeCodeInvalid, { reason: "not_guest" }),
+    };
   const into = ports.readProfile(userId);
   if (into === null) return { ok: false, error: ruleError(ErrorCodes.profile.notFound) };
+  const changeset = walletChangeset(ports.readWallet(from));
+  const carriesWallet = Object.keys(changeset).length > 0;
+  if (carriesWallet) {
+    const last = ports.lastWalletMergeTs(userId);
+    if (last !== null && now - last < WALLET_MERGE_GAP_MS)
+      return {
+        ok: false,
+        error: ruleError(ErrorCodes.auth.mergeCodeInvalid, { reason: "too_soon" }),
+      };
+  }
   const guest = ports.readProfile(from);
   const merged = guest === null ? into : mergeProfiles(into, guest, now);
   ports.writeProfile(userId, merged);
-  const changeset = walletChangeset(ports.readWallet(from));
-  if (Object.keys(changeset).length > 0) ports.creditWallet(userId, changeset, from);
+  if (carriesWallet) {
+    ports.creditWallet(userId, changeset, from);
+    ports.markWalletMerge(userId, now);
+  }
+  ports.moveOwned?.(from, userId);
   const rounds = ports.moveRounds(from, userId);
   // The guest's device signs in by device id at every start; once the guest is gone that id must
   // lead to the account it merged into (a phone or provider sign-in on a new device, #99).

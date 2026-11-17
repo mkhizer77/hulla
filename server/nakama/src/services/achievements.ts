@@ -31,6 +31,8 @@ export interface AchievementRecord {
   readonly unlocked: Readonly<Record<string, number>>;
   /** Rounds played with each exact group of players, keyed by the sorted ids. */
   readonly groups: Readonly<Record<string, number>>;
+  /** The season the `seasonal_rounds` counter belongs to; a new season starts it again. */
+  readonly seasonId?: string;
   readonly updatedTs: number;
 }
 
@@ -110,6 +112,22 @@ export function withCounter(
 ): AchievementRecord {
   if ((record.counters[metric] ?? 0) === value) return record;
   return { ...record, counters: { ...record.counters, [metric]: value }, updatedTs: now };
+}
+
+/** One more round in the running season; outside a season nothing counts. */
+export function withSeasonRound(
+  record: AchievementRecord,
+  seasonId: string | null,
+  now: number,
+): AchievementRecord {
+  if (seasonId === null) return record;
+  const before = record.seasonId === seasonId ? (record.counters.seasonal_rounds ?? 0) : 0;
+  return {
+    ...record,
+    seasonId,
+    counters: { ...record.counters, seasonal_rounds: before + 1 },
+    updatedTs: now,
+  };
 }
 
 export interface Unlock {

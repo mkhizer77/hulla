@@ -3,7 +3,7 @@ import { ErrorCodes, ruleError, type RuleError } from "@hulla/shared-ts";
 import { BUNDLED_SEASONS, type PassReward, type Season } from "../content/seasons";
 
 import { grant as grantItem, nkCatalogStore } from "./catalog";
-import { credit, type LedgerPorts } from "./ledger";
+import { credit, nkLedgerPorts, type LedgerPorts } from "./ledger";
 import { nkProgressStore } from "./progression";
 
 /**
@@ -158,6 +158,34 @@ export function claimTier(
   return { state: next, response: { ok: true, applied: true, tier, track, reward } };
 }
 
+/**
+ * A season that ended with reached tiers unclaimed pays them now, once: the free track always,
+ * the premium track when it was bought. Without this the rewards went with the old state when
+ * the next season began. Returns the state with those claims, or the same state.
+ */
+export function settleEndedSeason(
+  state: PassState | null,
+  seasons: readonly Season[],
+  ports: RewardPorts,
+  userId: string,
+  now: number,
+): PassState | null {
+  if (state === null) return null;
+  const season = seasons.find((s) => s.id === state.seasonId);
+  if (season === undefined || now < season.endTs) return state;
+  const reached = tierFor(state.xp, season);
+  let next = state;
+  for (const entry of season.tiers) {
+    if (entry.tier > reached) continue;
+    const tracks: Track[] = state.premium ? ["free", "premium"] : ["free"];
+    for (const track of tracks) {
+      if (`${String(entry.tier)}:${track}` in next.claimed) continue;
+      next = claimTier(next, season, ports, userId, entry.tier, track, now).state;
+    }
+  }
+  return next;
+}
+
 export interface PassView {
   readonly season: Pick<Season, "id" | "name" | "startTs" | "endTs" | "xpPerTier">;
   readonly xp: number;
@@ -262,12 +290,32 @@ export function earnPassXp(
   now: number,
 ): boolean {
   const season = currentSeason(BUNDLED_SEASONS, now);
-  if (season === null) return false;
   const store = nkPassStore(nk);
-  const state = forSeason(store.read(userId), season);
+  const settled = settlePass(nk, store, userId, now);
+  if (season === null) return false;
+  const state = forSeason(settled, season);
   const next = addPassXp(state, season, source, now);
   if (next !== state) store.write(userId, next);
   return next !== state;
+}
+
+/** The stored pass with an ended season's unclaimed tiers paid; call before `forSeason`. */
+export function settlePass(
+  nk: nkruntime.Nakama,
+  store: PassStore,
+  userId: string,
+  now: number,
+): PassState | null {
+  const stored = store.read(userId);
+  const settled = settleEndedSeason(
+    stored,
+    BUNDLED_SEASONS,
+    nkRewardPorts(nk, nkLedgerPorts(nk)),
+    userId,
+    now,
+  );
+  if (settled !== null && settled !== stored) store.write(userId, settled);
+  return settled;
 }
 
 export { BUNDLED_SEASONS };
