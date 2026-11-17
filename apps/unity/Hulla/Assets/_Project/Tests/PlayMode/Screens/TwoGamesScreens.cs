@@ -160,6 +160,28 @@ namespace Hulla.Screens.Tests
         }
 
         [Test]
+        public void TheCasualOrRankedSwitchIsLeftToTheStylesheetSoRungsPageCanHideIt()
+        {
+            var root = Catalog.Home!.Instantiate();
+            var friends = new HomeFriendsViewModel(new Fakes.Social());
+            _ = new HomeView(root, new HomeViewModel(new Fakes.Session(), new Fakes.Gateway()) { LastName = "Khizer" }, null,
+                (_, _) => { }, (_, _, _) => { }, (_, _, _) => { }, () => { }, (_, _) => { }, (_, _) => { }, friends, () => { }, TutorialText.HowToPlay, openRanked: (_, _) => { });
+            // An inline Flex would beat the Rung page's rule that hides the switch (Ranked is Thulla only).
+            Assert.AreEqual(StyleKeyword.Null, root.Q<VisualElement>("mode").style.display.keyword);
+        }
+
+        [Test]
+        public void SearchingForARungTableShowsNoSeatPicker()
+        {
+            var root = Catalog.QuickPlay!.Instantiate();
+            var model = new Hulla.Application.ViewModels.QuickPlayViewModel(new Fakes.Matchmaker());
+            _ = new Hulla.Presentation.Screens.QuickPlay.QuickPlayView(root, model, () => { });
+            _ = model.StartRungAsync(default);
+            Assert.AreEqual(DisplayStyle.None, root.Q<VisualElement>("seats").style.display.value);
+            Assert.AreEqual(DisplayStyle.None, root.Q<Label>("seats-label").style.display.value);
+        }
+
+        [Test]
         public void WithTheFlagOffRungsCardSaysComingSoonAndDoesNotOpen()
         {
             var root = Catalog.Home!.Instantiate();

@@ -104,7 +104,9 @@ namespace Hulla.Games.Rung
 
             var felt = root.Q<VisualElement>("felt");
             // On the rail, not the felt: the felt clips to its round edge and the board sits on the rim.
-            BuildBar(root.Q<VisualElement>("rail") ?? felt);
+            var rail = root.Q<VisualElement>("rail") ?? felt;
+            BuildBar(rail);
+            rail.RegisterCallback<GeometryChangedEvent>(_ => PlaceBar(rail));
             BuildAsk(felt);
             BuildResult(root, leave);
             _client.Model.Changed += Refresh;
@@ -280,6 +282,26 @@ namespace Hulla.Games.Rung
             _bar.Add(board);
             _bar.Add(under);
             felt.Add(_bar);
+        }
+
+        /// <summary>How far above the table's bottom edge the board starts, in canvas pixels.</summary>
+        public const float BoardLift = 96f;
+
+        /// <summary>
+        /// The board straddles the bottom edge of the table, on my side: the partner's seat covers the top
+        /// edge on a phone. The table is a square centred in the rail, as wide as the rail's shorter side.
+        /// </summary>
+        private void PlaceBar(VisualElement rail)
+        {
+            var width = rail.resolvedStyle.width;
+            var height = rail.resolvedStyle.height;
+            if (float.IsNaN(width) || float.IsNaN(height) || height <= 0f)
+            {
+                return;
+            }
+
+            var side = Math.Min(width, height);
+            _bar.style.top = (height / 2f) + (side / 2f) - BoardLift;
         }
 
         private static VisualElement TeamPlate(string side, Label name, Label count)

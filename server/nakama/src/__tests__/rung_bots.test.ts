@@ -4,6 +4,7 @@ import { describe, expect, it } from "vitest";
 import { rungHost } from "../games/rung/host";
 import { hostFor } from "../match/registry";
 import { tableCore, type PresenceInfo, type TableCore } from "../match/table_core";
+import { DEFAULT_TABLE_CONFIG } from "../match/types";
 import { botBench } from "../rpc/ops";
 
 import { T0, payloadOf, presence, sentTo } from "./table-helpers";
@@ -159,6 +160,24 @@ describe("Rung: bots fill empty seats in a private room (design 6.5)", () => {
       .map((o) => o.envelope.payload as { seat: number; auto: boolean });
     expect(plays.filter((p) => p.seat === 0).every((p) => !p.auto)).toBe(true);
     expect(plays.filter((p) => p.seat !== 0).every((p) => p.auto)).toBe(true);
+  });
+
+  it("bots stay ready when nobody votes for the next deal and the room returns to the lobby", () => {
+    const r = room("rung", 1);
+    for (let i = 0; i < 3; i += 1) r.send("s0", "add_bot", {});
+    start(r);
+    let clientSeq = 0;
+    for (let i = 0; i < 2_000 && r.state.round?.result === null; i += 1) {
+      if (rung(r).turnSeat === 0) {
+        clientSeq += 1;
+        act(r, clientSeq);
+      }
+      r.tick(200);
+    }
+    expect(r.state.phase).toBe("roundEnded");
+    r.tick(DEFAULT_TABLE_CONFIG.rematchWindowMs + 1_000);
+    expect(r.state.phase).toBe("lobby");
+    expect(r.state.seats.map((s) => s.ready)).toEqual([false, true, true, true]);
   });
 
   it("a friend who joins a full room takes a bot's seat", () => {

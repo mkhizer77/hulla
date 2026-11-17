@@ -1968,6 +1968,31 @@
    "smart": true
   },
   {
+   "key": "mission.goal.rung_bazis_won",
+   "text": "[{0:plural:Wîñ {} båzî öf Rûñg|Wîñ {} båzîs öf Rûñg} · · · ·]",
+   "smart": true
+  },
+  {
+   "key": "mission.goal.rung_courts",
+   "text": "[{0:plural:Sçöré {} çöûrt îñ Rûñg|Sçöré {} çöûrts îñ Rûñg} · · · ·]",
+   "smart": true
+  },
+  {
+   "key": "mission.goal.rung_cuts",
+   "text": "[{0:plural:Çût {} trîçk wîth å rûñg|Çût {} trîçks wîth å rûñg} · · · ·]",
+   "smart": true
+  },
+  {
+   "key": "mission.goal.rung_deals_won",
+   "text": "[{0:plural:Wîñ {} déål öf Rûñg|Wîñ {} déåls öf Rûñg} · · · ·]",
+   "smart": true
+  },
+  {
+   "key": "mission.goal.rung_piles",
+   "text": "[{0:plural:Tåké {} pîlé îñ Rûñg|Tåké {} pîlés îñ Rûñg} · · · ·]",
+   "smart": true
+  },
+  {
    "key": "mission.goal.series_won",
    "text": "[{0:plural:Wîñ å sérîés|Wîñ {} sérîés} · · ·]",
    "smart": true
@@ -4631,6 +4656,11 @@
    "key": "ui.lobby_hint_host_ready",
    "text": "[Gét réådý, théñ stårt whéñ 3 ör möré åré réådý · · · · · · ·]",
    "smart": false
+  },
+  {
+   "key": "ui.lobby_hint_rung",
+   "text": "[{0} stårts whéñ åll föûr åré réådý · · · · · ·]",
+   "smart": true
   },
   {
    "key": "ui.locked",

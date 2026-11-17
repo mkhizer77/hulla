@@ -37,12 +37,19 @@ namespace Hulla.Presentation.Screens.Leaderboard
             // Ranked has its own season board (GDD 12.9); the chip opens it.
             Chip(root, "ranked", UiText.PlayRankedShort, () => ranked?.Invoke());
             root.Q<Label>("ranked-title").text = RankedText.Title;
-            root.Q<VisualElement>("ranked-card").style.display = ranked == null ? DisplayStyle.None : DisplayStyle.Flex;
+            // Ranked is Thulla's: the card rests while the Rung board is chosen.
+            var rankedCard = root.Q<VisualElement>("ranked-card");
+            void ShowRanked() => rankedCard.style.display = ranked == null || Navigation.GamePick.Chosen == GameFilter.Rung ? DisplayStyle.None : DisplayStyle.Flex;
+            ShowRanked();
             _list = root.Q<VisualElement>("list");
             _me = root.Q<VisualElement>("me");
             _status = root.Q<Label>("status");
             _reset = root.Q<Label>("reset");
-            Navigation.GamePick.Mount(root, () => GameChanged?.Invoke(Navigation.GamePick.Chosen));
+            Navigation.GamePick.Mount(root, () =>
+            {
+                ShowRanked();
+                GameChanged?.Invoke(Navigation.GamePick.Chosen);
+            });
             _model.Changed += Refresh;
             Refresh();
         }

@@ -20,6 +20,7 @@ namespace Hulla.Presentation.Screens.QuickPlay
         private readonly Label _elapsed;
         private readonly Label _status;
         private readonly VisualElement _faces;
+        private readonly Label _seatsLabel;
         private readonly VisualElement _seats;
         private readonly VisualElement _fill;
         private int _shownSeconds = -1;
@@ -39,7 +40,8 @@ namespace Hulla.Presentation.Screens.QuickPlay
             _faces = root.Q<VisualElement>("faces");
             _seats = root.Q<VisualElement>("seats");
             _fill = root.Q<VisualElement>("bar-fill");
-            root.Q<Label>("seats-label").text = UiText.SeatsShort;
+            _seatsLabel = root.Q<Label>("seats-label");
+            _seatsLabel.text = UiText.SeatsShort;
             var cancelButton = root.Q<Button>("cancel");
             cancelButton.text = "";
             cancelButton.tooltip = UiText.Cancel;
@@ -103,7 +105,10 @@ namespace Hulla.Presentation.Screens.QuickPlay
                 }
             }
 
-            _seats.style.display = _model.Ranked ? DisplayStyle.None : DisplayStyle.Flex;
+            // Ranked and Rung always seat four: nothing to show or choose.
+            var fixedSeats = _model.Ranked || _model.Game == "rung";
+            _seats.style.display = fixedSeats ? DisplayStyle.None : DisplayStyle.Flex;
+            _seatsLabel.style.display = fixedSeats ? DisplayStyle.None : DisplayStyle.Flex;
             switch (_model.Current)
             {
                 case QuickPlayViewModel.Stage.Widened:

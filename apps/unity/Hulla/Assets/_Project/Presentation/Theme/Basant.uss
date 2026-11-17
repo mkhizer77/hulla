@@ -11213,12 +11213,8 @@
 
 /* ==================== Rung table: scoreboard, call sheet, deal result ==================== */
 /* Concept rung-table: my pair green, the other pair magenta, the rung in a crowned medallion between
-   them on the rug's top rim; the pile and the bazi score under it. */
-/* The rug is a square as wide as the rail, centred in it: the board sits just inside its top edge. */
-.skin--basant .rung-bar {
-    top: 50%;
-    margin-top: -416px;
-}
+   them; the pile and the bazi score under it. RungTableView places the board on the rug's bottom edge,
+   my side of the table, because the partner's seat covers the top edge. */
 
 .skin--basant .rung-bar__board {
     width: 640px;
