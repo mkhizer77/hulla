@@ -30,6 +30,13 @@ namespace Hulla.Presentation.Screens.Home
         /// <summary>The gear's centre on the stage (concept: Home).</summary>
         private const float StageGearCentre = 103f;
 
+        /// <summary>The friends panel's foot and the body under it (the Thulla kite's tip to the daily card's foot).</summary>
+        private const float FriendsFoot = 397f;
+        private const float BodyTop = 556f;
+
+        /// <summary>The table banner's middle on the stage; it sits in the gap between friends and the cards.</summary>
+        private const float BannerMiddle = 500f;
+
         /// <summary>How many friends the panel shows before Invite.</summary>
         public const int PartySize = 4;
 
@@ -330,6 +337,8 @@ namespace Hulla.Presentation.Screens.Home
             var holder = root.Q<VisualElement>("stage-holder");
             var stage = root.Q<VisualElement>("stage");
             var top = new[] { root.Q<VisualElement>("settings"), root.Q<VisualElement>("me"), root.Q<VisualElement>("wallet"), root.Q<VisualElement>("friends-panel") };
+            var body = new[] { root.Q<VisualElement>("card-thulla"), root.Q<VisualElement>("card-rung"), root.Q<VisualElement>("join-toggle"), root.Q<VisualElement>("daily") };
+            var banners = new[] { root.Q<VisualElement>("hero"), root.Q<VisualElement>("rejoin") };
             holder.RegisterCallback<GeometryChangedEvent>(_ =>
             {
                 var size = holder.contentRect.size;
@@ -347,6 +356,69 @@ namespace Hulla.Presentation.Screens.Home
                     if (element != null)
                     {
                         element.style.translate = new Translate(0, lift);
+                    }
+                }
+
+                // The header rose to the top bar's line and a tall phone has room to spare: it spreads over
+                // the gaps (most above the cards and over the dock, a little between the cards and the row)
+                // instead of opening one hole above the cards.
+                var extra = Math.Max(0f, (StageHeight + (spare / scale)) - (FriendsFoot + lift) - (StageHeight - FriendsFoot));
+                var steps = new[] { 0.35f, 0.5f, 0.65f, 0.65f };
+                for (var i = 0; i < body.Length; i++)
+                {
+                    if (body[i] != null)
+                    {
+                        body[i].style.translate = new Translate(0, lift + (extra * steps[i]));
+                    }
+                }
+
+                var drop = lift + (extra * steps[0]);
+                var bannerDrop = ((FriendsFoot + lift + BodyTop + drop) / 2f) - BannerMiddle;
+                foreach (var element in banners)
+                {
+                    if (element != null)
+                    {
+                        element.style.translate = new Translate(0, bannerDrop);
+                    }
+                }
+            });
+        }
+
+        /// <summary>
+        /// A game's page hangs from the top like every screen; on a tall phone the spare height goes
+        /// under the options (half) and under Play now, Create Room and the numbers (all), so the buttons
+        /// sit low in reach of the thumb and the options stay centred between the title and them.
+        /// </summary>
+        private static void FitPage(VisualElement root)
+        {
+            var holder = root.Q<VisualElement>("page-holder");
+            var stage = root.Q<VisualElement>("page-stage");
+            var options = new[] { stage.Q(className: "home__seat-panel"), stage.Q("mode"), stage.Q("rung-sets"), stage.Q("rung-set-line"), stage.Q(className: "home__page-pairs") };
+            var buttons = new[] { stage.Q("quick"), stage.Q("create"), stage.Q("page-stats") };
+            holder.RegisterCallback<GeometryChangedEvent>(_ =>
+            {
+                var size = holder.contentRect.size;
+                if (size.x <= 0f || size.y <= 0f)
+                {
+                    return;
+                }
+
+                var scale = Math.Min(size.x / StageWidth, size.y / StageHeight);
+                stage.style.scale = new Scale(new UnityEngine.Vector3(scale, scale, 1f));
+                var extra = Math.Max(0f, (size.y / scale) - StageHeight);
+                foreach (var element in options)
+                {
+                    if (element != null)
+                    {
+                        element.style.translate = new Translate(0, extra / 2f);
+                    }
+                }
+
+                foreach (var element in buttons)
+                {
+                    if (element != null)
+                    {
+                        element.style.translate = new Translate(0, extra);
                     }
                 }
             });
@@ -369,6 +441,7 @@ namespace Hulla.Presentation.Screens.Home
         private static readonly string[] RungSets = { "rung", "courtPiece", "hokm" };
 
         private VisualElement _page = null!;
+        private VisualElement _stageHolder = null!;
         private Label _pageTitle = null!;
         private Label _pageLine = null!;
         private Label _pageStats = null!;
@@ -421,7 +494,8 @@ namespace Hulla.Presentation.Screens.Home
             _sets = root.Q<VisualElement>("rung-sets");
             _cardRung = root.Q<Button>("card-rung");
             _rungPlayers = root.Q<Label>("game-rung-players");
-            Stage.Fit(root.Q<VisualElement>("page-holder"), root.Q<VisualElement>("page-stage"), StageWidth, StageHeight);
+            FitPage(root);
+            _stageHolder = root.Q<VisualElement>("stage-holder");
             var cardThulla = root.Q<Button>("card-thulla");
             cardThulla.text = "";
             cardThulla.tooltip = UiText.GameThulla;
@@ -480,6 +554,10 @@ namespace Hulla.Presentation.Screens.Home
             _page.EnableInClassList("home__page--rung", Page == Rung);
             _page.EnableInClassList("home__page--thulla", Page == Thulla);
             _page.AddToClassList("home__page--open");
+            // The page is the calm sky on the whole screen: the shell paints it under the notch and the
+            // home bar too, and Home's stage steps out from under it.
+            _stageHolder.style.display = DisplayStyle.None;
+            Backdrop.Set(_page, BackdropKind.Calm);
             _pageTitle.text = Page == Rung ? UiText.GameRung : UiText.GameThulla;
             _pageLine.text = Page == Rung ? UiText.GameRungLine : UiText.GameThullaLine;
             _pageLine.ClearClassList();
@@ -498,6 +576,8 @@ namespace Hulla.Presentation.Screens.Home
 
             Page = null;
             _page.RemoveFromClassList("home__page--open");
+            _stageHolder.style.display = StyleKeyword.Null;
+            Backdrop.Set(_page, BackdropKind.Festival);
             PageChanged?.Invoke(false);
         }
 
@@ -775,6 +855,14 @@ namespace Hulla.Presentation.Screens.Home
                 dot.EnableInClassList("party__dot--busy", friend.TableCode != null);
                 face.Add(dot);
                 _party.Add(face);
+            }
+
+            if (shown == 0)
+            {
+                // An empty panel reads as broken: say why, beside Invite.
+                var empty = new Label(UiText.PartyEmpty) { pickingMode = PickingMode.Ignore };
+                empty.AddToClassList("party__empty");
+                _party.Add(empty);
             }
         }
 

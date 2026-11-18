@@ -450,7 +450,7 @@ namespace Hulla.Presentation.Navigation
         /// Overlays fill the whole screen (their scene or dim reaches under the notch) and keep their
         /// content inside the safe area, like the screens the root pads.
         /// </summary>
-        private void PadToSafeArea(VisualElement? overlay)
+        private void PadToSafeArea(VisualElement? overlay, bool bottom = true)
         {
             if (overlay == null)
             {
@@ -459,16 +459,116 @@ namespace Hulla.Presentation.Navigation
 
             var insets = SafeArea;
             if (Math.Abs(overlay.style.paddingTop.value.value - insets.Top) < 0.5f
-                && Math.Abs(overlay.style.paddingBottom.value.value - insets.Bottom) < 0.5f
+                && (!bottom || Math.Abs(overlay.style.paddingBottom.value.value - insets.Bottom) < 0.5f)
                 && overlay.style.paddingTop.keyword != StyleKeyword.Null)
             {
                 return;
             }
 
             overlay.style.paddingTop = insets.Top;
-            overlay.style.paddingBottom = insets.Bottom;
+            if (bottom)
+            {
+                overlay.style.paddingBottom = insets.Bottom;
+            }
+
             overlay.style.paddingLeft = insets.Left;
             overlay.style.paddingRight = insets.Right;
+        }
+
+        /// <summary>
+        /// A bottom sheet sits on the bottom edge: its panel runs under the home bar, with room at its
+        /// foot for the bar, instead of floating above a strip of the dimmed screen.
+        /// </summary>
+        private void PadSheet(VisualElement? scrim)
+        {
+            if (scrim == null)
+            {
+                return;
+            }
+
+            var insets = SafeArea;
+            scrim.style.paddingTop = insets.Top;
+            scrim.style.paddingLeft = insets.Left;
+            scrim.style.paddingRight = insets.Right;
+            scrim.style.paddingBottom = 0;
+            var panel = scrim.Q(className: "sheet");
+            if (panel == null)
+            {
+                return;
+            }
+
+            var foot = panel.Q("sheet-foot");
+            if (foot == null)
+            {
+                foot = new VisualElement { name = "sheet-foot", pickingMode = PickingMode.Ignore };
+                foot.style.flexShrink = 0;
+            }
+
+            if (foot.parent != panel || panel.IndexOf(foot) != panel.childCount - 1)
+            {
+                panel.Add(foot);
+            }
+
+            if (Math.Abs(foot.style.height.value.value - insets.Bottom) > 0.5f)
+            {
+                foot.style.height = insets.Bottom;
+            }
+        }
+
+        /// <summary>
+        /// A screen whose foot is a scrolling list (settings, profile, the pass) lets the list run under
+        /// the home bar and pads the list's end instead, so it scrolls to the edge rather than stopping at
+        /// a hard line above it. Screens with the dock or with buttons at the foot keep the safe area.
+        /// </summary>
+        private void BleedList(VisualElement? holder, bool overlay)
+        {
+            if (holder == null)
+            {
+                return;
+            }
+
+            var face = holder.ClassListContains("screen") ? holder : holder.Q(className: "screen");
+            if (face != null && (face.ClassListContains("home") || face.ClassListContains("table")))
+            {
+                face = null;
+            }
+
+            ScrollView? list = null;
+            for (var i = (face?.childCount ?? 0) - 1; face != null && i >= 0; i--)
+            {
+                var child = face[i];
+                if (child.resolvedStyle.display == DisplayStyle.None || child.resolvedStyle.position == Position.Absolute)
+                {
+                    continue;
+                }
+
+                list = child as ScrollView;
+                break;
+            }
+
+            var docked = !overlay && _nav != null && _nav.parent == Root;
+            var bleed = list != null && !docked ? SafeArea.Bottom : 0f;
+            if (overlay)
+            {
+                SetIfChanged(holder, SafeArea.Bottom - bleed, (e, v) => e.style.paddingBottom = v, e => e.style.paddingBottom.value.value);
+            }
+            else
+            {
+                SetIfChanged(holder, -bleed, (e, v) => e.style.marginBottom = v, e => e.style.marginBottom.value.value);
+            }
+
+            if (list != null)
+            {
+                SetIfChanged(list.contentContainer, bleed, (e, v) => e.style.paddingBottom = v, e => e.style.paddingBottom.value.value);
+            }
+        }
+
+        private static void SetIfChanged(VisualElement element, float value, Action<VisualElement, float> set, Func<VisualElement, float> get)
+        {
+            if (Math.Abs(get(element) - value) > 0.5f)
+            {
+                set(element, value);
+            }
         }
 
         private Accessibility.ScreenReader? _reader;
@@ -486,9 +586,11 @@ namespace Hulla.Presentation.Navigation
             Relayout();
             KeyboardAvoidance.Apply(Root, _current);
             KeyboardAvoidance.Apply(Root, Root.Q("shell-overlay"));
-            PadToSafeArea(Root.Q("shell-overlay"));
+            PadToSafeArea(Root.Q("shell-overlay"), false);
+            BleedList(Root.Q("shell-overlay"), true);
+            BleedList(_current, false);
             PadToSafeArea(Root.Q("shell-dialog"));
-            PadToSafeArea(Root.Q(Sheet.Name));
+            PadSheet(Root.Q(Sheet.Name));
             PadToSafeArea(Root.Q("shell-gate"));
             var banner = Root.Q("shell-banner");
             if (banner != null && Math.Abs(banner.style.marginTop.value.value - SafeArea.Top) > 0.5f)
@@ -496,6 +598,7 @@ namespace Hulla.Presentation.Navigation
                 banner.style.marginTop = SafeArea.Top;
             }
 
+            _nav?.SetBottomInset(SafeArea.Bottom);
             DrawFakeNotch();
         }
     }

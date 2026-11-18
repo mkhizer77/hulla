@@ -84,6 +84,33 @@ namespace Hulla.Presentation.Navigation
             badge.style.display = count > 0 ? DisplayStyle.Flex : DisplayStyle.None;
         }
 
+        /// <summary>The dock's height and its tiles' in the Basant look, above the home indicator.</summary>
+        public const float DockHeight = 200f;
+        public const float TileHeight = 240f;
+
+        private float _bottomInset = -1f;
+
+        /// <summary>
+        /// The dock reaches down under the home indicator instead of stopping above it, so no strip of
+        /// the scene shows below the tiles; the tiles grow by the same amount and their words stay clear.
+        /// </summary>
+        public void SetBottomInset(float inset)
+        {
+            inset = Math.Max(0f, inset);
+            if (Math.Abs(inset - _bottomInset) < 0.5f)
+            {
+                return;
+            }
+
+            _bottomInset = inset;
+            style.marginBottom = -inset;
+            style.height = DockHeight + inset;
+            foreach (var button in _buttons.Values)
+            {
+                button.style.height = TileHeight + inset;
+            }
+        }
+
         public static string BadgeText(int count) => count <= 0 ? "" : count > BadgeCap ? BadgeCap + "+" : count.ToString();
     }
 }

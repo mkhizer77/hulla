@@ -263,6 +263,16 @@
     padding: 0;
 }
 
+.skin--basant .home .party .party__empty {
+    width: 400px;
+    height: 116px;
+    padding: 0 0 0 16px;
+    font-size: 32px;
+    white-space: normal;
+    -unity-text-align: middle-left;
+    color: rgb(120, 70, 40);
+}
+
 .skin--basant .home .party__face {
     width: 116px;
     height: 116px;
@@ -1972,9 +1982,12 @@
 .skin--basant .seat__name {
     margin-top: 10px;
     min-width: 170px;
+    max-width: 236px;
     height: 56px;
-    padding: 0 26px;
+    padding: 0 20px;
     font-size: 32px;
+    /* A long name shrinks to fit its plate before it is cut. */
+    -unity-text-auto-size: best-fit 22px 32px;
     color: rgb(74, 30, 14);
     text-shadow: 0 0 0 rgba(0, 0, 0, 0);
     background-image: url("/Assets/_Project/Presentation/Theme/Art/Basant/Kit/plate-name.png");
@@ -3781,9 +3794,16 @@
 }
 
 .skin--basant .quick__status {
-    top: 862px;
-    height: 54px;
-    font-size: 36px;
+    top: 846px;
+    height: 100px;
+    font-size: 34px;
+}
+
+/* The hint under the seats is a sentence: it wraps onto two lines instead of ending in an ellipsis. */
+.skin--basant .kit__stage .quick__panel .quick__status {
+    white-space: normal;
+    text-overflow: clip;
+    padding: 0 20px;
 }
 
 .skin--basant .quick__close .kit__icon {
@@ -4066,8 +4086,33 @@
     flex-grow: 1;
 }
 
+/* The rug sits in the middle of the room between the top bar and the player's strip. */
 .skin--basant.size--compact .table__gap--top {
-    flex-grow: 0.35;
+    flex-grow: 0.8;
+}
+
+/* The player's tray: one sand surface under the strip, the quick chat and the hand (CardTableView). */
+.skin--basant .table__tray {
+    position: absolute;
+    left: 0;
+    right: 0;
+    background-color: rgb(244, 224, 190);
+    border-top-width: 6px;
+    border-color: rgb(74, 30, 14);
+    border-top-left-radius: 64px;
+    border-top-right-radius: 64px;
+}
+
+/* Who is talking and the speaker switch sit in the rug's top left corner, clear of the top seat. */
+.skin--basant .table .voice-pill__row {
+    top: 0;
+    left: 0;
+    right: auto;
+    align-items: flex-start;
+}
+
+.skin--basant .table .voice-pill {
+    max-width: 420px;
 }
 
 .skin--basant .table__zone > .rail {
@@ -11001,8 +11046,9 @@
     top: 0;
     right: 0;
     bottom: 0;
-    background-image: url("/Assets/_Project/Presentation/Theme/Art/Basant/Backdrops/calm.png");
-    -unity-background-scale-mode: scale-and-crop;
+    /* The shell root paints the calm sky edge to edge while a page is open (HomeView.OpenPage). */
+    background-image: none;
+    background-color: rgba(0, 0, 0, 0);
 }
 
 .skin--basant .home .home__page--open {
@@ -11096,17 +11142,17 @@
 
 .skin--basant .home .home__page .home__seat-panel {
     left: 250px;
-    top: 760px;
+    top: 790px;
 }
 
 .skin--basant .home .home__page .home__mode {
     left: 330px;
-    top: 968px;
+    top: 1004px;
 }
 
 .skin--basant .home .home__sets {
     left: 110px;
-    top: 770px;
+    top: 700px;
     width: 860px;
     height: 132px;
     flex-direction: row;
@@ -11140,7 +11186,7 @@
 
 .skin--basant .home .home__set-line {
     left: 90px;
-    top: 916px;
+    top: 846px;
     width: 900px;
     height: 56px;
     font-size: 36px;
@@ -11151,33 +11197,34 @@
 
 .skin--basant .home .home__page-pairs {
     left: 440px;
-    top: 990px;
+    top: 930px;
     width: 200px;
     height: 204px;
     background-image: url("/Assets/_Project/Presentation/Theme/Art/Basant/Home/cards-rung.png");
 }
 
+/* Play now, Create Room and the numbers: one column of equal width at the foot of the page. */
 .skin--basant .home .home__page .home__play {
-    left: 240px;
-    top: 1230px;
-    width: 600px;
-    height: 166px;
+    left: 170px;
+    top: 1286px;
+    width: 740px;
+    height: 176px;
 }
 
 .skin--basant .home .home__page .home__play .home__face {
     left: 0;
     top: 8px;
-    width: 600px;
-    height: 150px;
-    -unity-slice-scale: 0.425px;
+    width: 740px;
+    height: 160px;
+    -unity-slice-scale: 0.453px;
 }
 
 .skin--basant .home .home__page .home__play-label {
-    left: 100px;
-    top: 40px;
-    width: 400px;
-    height: 64px;
-    font-size: 62px;
+    left: 160px;
+    top: 44px;
+    width: 420px;
+    height: 68px;
+    font-size: 64px;
 }
 
 /* The page hangs from the top of the screen, so its back button sits where every screen's does. */
@@ -11190,14 +11237,23 @@
 }
 
 .skin--basant .home .home__page .home__room--create {
-    left: 364px;
-    top: 1424px;
+    left: 170px;
+    top: 1482px;
+    width: 740px;
+}
+
+.skin--basant .home .home__page .home__room--create .home__face {
+    width: 740px;
+}
+
+.skin--basant .home .home__page .home__room--create .home__room-label {
+    left: 220px;
 }
 
 .skin--basant .home .home__page-stats {
-    left: 190px;
-    top: 1590px;
-    width: 700px;
+    left: 170px;
+    top: 1636px;
+    width: 740px;
     height: 84px;
     padding: 0;
     font-size: 36px;
@@ -11505,4 +11561,73 @@
 
 .skin--basant .home .home__daily--amount .home__daily-text {
     top: 54px;
+}
+
+/* ---------- UI review, 18 Nov: small fixes ---------- */
+
+/* A sheet's answer stays on one line ("Create a room"); a long one shrinks instead of wrapping. */
+.skin--basant .sheet .sheet__answer,
+.skin--basant .sheet .sheet__answer:hover,
+.skin--basant .sheet .sheet__answer:active,
+.skin--basant .sheet .sheet__answer:focus {
+    white-space: nowrap;
+    -unity-text-auto-size: best-fit 30px 46px;
+}
+
+/* Opponents' names shrink to fit their plates instead of ending in "...". */
+.skin--basant .table .seat .seat__name {
+    max-width: 236px;
+    padding: 0 18px;
+    -unity-text-auto-size: best-fit 24px 38px;
+}
+
+/* The table menu's buttons stand apart from each other. */
+.skin--basant .sheet.menu-sheet .menu-sheet__item,
+.skin--basant .sheet.menu-sheet .menu-sheet__item:hover,
+.skin--basant .sheet.menu-sheet .menu-sheet__item:active,
+.skin--basant .sheet.menu-sheet .menu-sheet__item:focus {
+    margin: 12px 20px;
+}
+
+/* The chat log gives way so the compose row always shows whole. */
+.skin--basant .chat-panel .chat-panel__log {
+    flex-shrink: 1;
+    min-height: 0;
+}
+
+.skin--basant .chat-panel .chat-panel__compose {
+    flex-shrink: 0;
+}
+
+/* The compose field keeps its whole outline: a fixed row with the field and its input the same height. */
+.skin--basant .chat-panel .chat-panel__compose {
+    height: 136px;
+    margin-bottom: 8px;
+}
+
+.skin--basant .chat-panel .chat-panel__input {
+    height: 124px;
+    margin: 0 18px 0 0;
+    overflow: visible;
+}
+
+.skin--basant .chat-panel .chat-panel__input TextInput,
+.skin--basant .chat-panel .chat-panel__input .unity-base-text-field__input {
+    height: 124px;
+    min-height: 124px;
+    margin: 0;
+}
+
+/* The discard pile's count and word read clearly on the felt: cream, bold, with a soft shadow. */
+.skin--basant .table .discard .discard__count {
+    font-size: 40px;
+    color: rgb(255, 246, 228);
+    text-shadow: 0 2px 4px rgba(20, 40, 20, 0.7);
+}
+
+.skin--basant .table .discard .discard__label {
+    font-size: 28px;
+    -unity-font-style: bold;
+    color: rgb(255, 246, 228);
+    text-shadow: 0 2px 4px rgba(20, 40, 20, 0.7);
 }

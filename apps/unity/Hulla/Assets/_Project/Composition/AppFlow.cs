@@ -1194,9 +1194,12 @@ namespace Hulla.Composition
                 _shell.ShowDialog(Strings.Text("config.update_required"), Strings.Text("config.update"), UiText.NotNow, OpenStore, () => { });
             }
 
+            // The config arrives after the first Home is drawn: Rung's card and the game pick follow it.
+            Hulla.Presentation.Navigation.GamePick.Enabled = config.Rung;
             if (_view is HomeView home)
             {
                 home.SetQuickPlay(config.QuickPlay, QuickPlayNote());
+                home.RungLive = config.Rung;
             }
         }
 

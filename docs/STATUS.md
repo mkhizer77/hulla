@@ -1,11 +1,12 @@
 # Status
 
-Updated: 17 November 2026
+Updated: 18 November 2026
 
 ## Phase
 M0 complete: the Thulla rulebook runs in TypeScript with full traceability. M1, the vertical slice, starts with the protocol schemas.
 
 ## Done
+- UI review on an iPhone-sized window (18 Nov, this PR): the dock, bottom sheets, the table's chat panel and scrolling screens run to the bottom edge instead of stopping above the home bar; a game's page is one calm sky edge to edge, with Play now, Create Room and the numbers in one column low on the screen; the table has a sand tray under the strip, quick chat and hand, the rug centred and the voice pill off the top seat; Home spreads spare height evenly; the Rung card works on first launch (it waited for the remote config); the coin carries the h-kite mark; the table menu icon (a broken 128×7 image) is redrawn; long names shrink to fit; Quick Play's hint wraps; sheet answers stay on one line; an empty friends panel says so.
 - Release 0.1.1 for testers (17 Nov): the phase 0 box runs the server image of commit 3aa540b (a dump was written to the backup bucket right after the switch; rollback is the previous image b18f8d7 in `box.env.bak`). Android 0.1.1 (2) is on Play internal testing; iOS 0.1.1 (2) is on TestFlight for the group Team. The `rung` flag is on on the box (remote config version 3), so testers see both games.
 - QA pass on the two games (17 Nov, PR 331): four Mac windows against the local server, both games played with bots. Fixed: bots stay ready when a room returns to the lobby (it could not start again), the Rung scoreboard sits on the table's near edge (the partner's seat covered it), no Casual or Ranked switch on the Rung page, no seat picker while finding a Rung table, Rung missions have their words, the Ranked card rests on the Rung board, the lobby hint says four for Rung, the deal result dims the whole screen. The next-deal vote stays as it is (owner, 17 Nov). Open: the voice pill sits on the top seat at four and six seats, no rewards on the Rung deal result.
 - Rung art (17 Nov, this PR): medals for the ten Rung achievements with their locked versions; the Rung table has its scoreboard (my pair green, the other pair magenta, the rung in a crowned medallion, the pile with its count, the bazi score), suit tiles as card faces on the call sheet, and a Court stamp on the deal result. Checked in renders against the concept; not yet on phones.
