@@ -89,6 +89,40 @@ function step(t: BotTable, clientSeq: number): number {
 }
 
 describe("Thulla bots at the table (GDD 8)", () => {
+  it("keep their seats on a Quick Play table: nobody else takes a bot's seat (OQ-070)", () => {
+    const core = tableCore(thullaHost, {
+      ids: { uuid: () => "00000001-0000-4000-8000-000000000001" },
+      persist: { roundRecord: () => undefined },
+    });
+    const state = core.create(
+      {
+        code: "ABCDEF",
+        gameId: "thulla",
+        mode: "public",
+        bots: 3,
+        autoStart: { expected: 4 },
+        parties: [],
+        rules: { gameId: "thulla" },
+      },
+      T0,
+    );
+    const player = { sessionId: "s0", userId: "u0", username: "Player" };
+    core.joinAttempt(state, player, {}, T0);
+    core.join(state, [player], T0);
+    expect(state.phase).toBe("lobby");
+    const stranger = { sessionId: "s9", userId: "u9", username: "Stranger" };
+    // Fill every free seat first, so the only seats left are the bots'.
+    state.seats.forEach((slot, index) => {
+      if (slot.playerId !== null) return;
+      const other = { sessionId: `f${String(index)}`, userId: `f${String(index)}`, username: "F" };
+      core.joinAttempt(state, other, {}, T0);
+      core.join(state, [other], T0);
+    });
+    core.joinAttempt(state, stranger, {}, T0);
+    expect(state.admissions["s9"]?.kind).not.toBe("seat");
+    expect(state.seats.filter((s) => s.bot)).toHaveLength(3);
+  });
+
   it("play a whole round with the bot policy and keep the table's memory as plain data", () => {
     const t = botTable();
     expect(t.state.phase).toBe("inRound");

@@ -185,6 +185,11 @@ export interface GameHost<S, M, V, E, R> {
   phaseSeconds?(phase: string, turnSeconds: number): number;
   /** The host of a private room may put a bot in an empty seat (`add_bot`); a person who joins takes it back. */
   readonly fillWithBots?: boolean;
+  /**
+   * Bots take the seats of matched players who never arrive, so the rest of a Quick Play table can
+   * play (Rung design 4). Absent, such a table closes when too few arrive.
+   */
+  readonly fillNoShows?: boolean;
   /** Per-seat numbers for the stats card, read from the round's logged messages (GDD 10.1). */
   /**
    * A selection as the table keeps it: a preset's table settings merged under the explicit ones,

@@ -1435,9 +1435,15 @@ export function tableCore<S, M, V, E, R>(
       const wantsSeat =
         parsed.data.asSpectator !== true && state.phase !== "inRound" && !state.lockedByHost;
       let free = teamSeat(state, presence.userId, open, host.module.seats.teams?.size ?? 0);
-      if (wantsSeat && free === -1 && host.fillWithBots === true) {
+      if (
+        wantsSeat &&
+        free === -1 &&
+        host.fillWithBots === true &&
+        (state.mode === "private" || host.fillNoShows === true)
+      ) {
         // A person always outranks a bot that was only filling the seat (Rung design 6.5). The
         // bot keeps playing until the person arrives: a client that never does costs nothing.
+        // A Thulla Quick Play table keeps its bots: only the matched player sits there.
         free = state.seats
           .map((slot, index) => slot.bot && slot.cover !== true && !reserved.has(index))
           .lastIndexOf(true);
@@ -1817,7 +1823,7 @@ export function tableCore<S, M, V, E, R>(
         if (
           auto.startsAtTs === null &&
           now >= auto.joinDeadlineTs &&
-          host.fillWithBots === true &&
+          host.fillNoShows === true &&
           seated > 0 &&
           seated < host.module.seats.min
         ) {

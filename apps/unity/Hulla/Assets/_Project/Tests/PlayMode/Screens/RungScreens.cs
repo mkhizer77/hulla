@@ -254,7 +254,7 @@ namespace Hulla.Screens.Tests
         }
 
         [Test]
-        public void TheLobbyOffersTheSwitchToTheHostAndBotsOnlyInRung()
+        public void TheLobbyOffersTheSwitchToTheHostAndBotsInBothGames()
         {
             var (gateway, client) = NewClient();
             var screen = Catalog.Lobby!.Instantiate();
@@ -262,7 +262,7 @@ namespace Hulla.Screens.Tests
             gateway.Deliver(MessageTypes.TableState, 3, Table(GameId.Thulla, null, 3, empty: 2));
             Assert.IsTrue(lobby.ShowsSwitchGame);
             StringAssert.Contains("Rung", lobby.SwitchGameText);
-            Assert.IsFalse(lobby.ShowsAddBot);
+            Assert.IsTrue(lobby.ShowsAddBot);
             gateway.Deliver(MessageTypes.GameChanged, 4, new GameChanged { GameId = GameId.Rung, ChangedBy = 0, Rules = new RulesSelection { GameId = GameId.Rung, Preset = Preset.Rung } });
             gateway.Deliver(MessageTypes.TableState, 4, Table(GameId.Rung, null, 4, empty: 2));
             Assert.IsTrue(lobby.ShowsAddBot);
@@ -292,6 +292,76 @@ namespace Hulla.Screens.Tests
             Assert.AreEqual(0, screen.Query(className: "lobby__seat--us").ToList().Count, "Thulla has no pairs");
             Assert.IsFalse(lobby.ShowsSwapPartners);
             lobby.Dispose();
+        }
+
+        /// <summary>A private Thulla room of six seats: me as host, then <paramref name="bots"/> bots, the rest empty.</summary>
+        private static TableState ThullaRoom(long seq, int bots, bool host = true) => new TableState
+        {
+            GameId = GameId.Thulla,
+            Code = "K7Q2MX",
+            Mode = TableMode.Private,
+            Status = TableStatus.Open,
+            HostSeat = host ? 0 : 1,
+            LastSeq = seq,
+            Seats = ThullaSeats(bots, host),
+            Spectators = new List<Spectator>(),
+            Rules = new RulesSelection { GameId = GameId.Thulla },
+            Series = new SeriesState { Points = new List<long>(), LoserTally = new List<long>() },
+        };
+
+        private static List<Seat> ThullaSeats(int bots, bool host)
+        {
+            var seats = new List<Seat>();
+            var people = host ? 1 : 2;
+            for (var i = 0; i < 6; i++)
+            {
+                var bot = i >= people && i < people + bots;
+                var free = i >= people + bots;
+                seats.Add(new Seat { SeatSeat = i, PlayerId = free ? null : i == 0 ? "me" : bot ? "bot_" + i : "u" + i, DisplayName = free ? null : "Seat " + i, Connected = !free, Ready = bot, Bot = bot ? true : (bool?)null, Avatar = free ? null : "a0" + (i + 2) });
+            }
+
+            return seats;
+        }
+
+        [UnityTest]
+        public IEnumerator AThullaHostAloneAddsBotsUpToThree()
+        {
+            var (gateway, client) = NewClient();
+            var host = new GameObject("lobby");
+            var document = host.AddComponent<UIDocument>();
+            document.panelSettings = AssetDatabase.LoadAssetAtPath<PanelSettings>("Assets/Settings/UI/PanelSettings.asset");
+            yield return null;
+            var screen = Catalog.Lobby!.Instantiate();
+            screen.style.flexGrow = 1;
+            document.rootVisualElement.Add(screen);
+            var lobby = new LobbyView(screen, client, () => 0, () => { });
+            gateway.Deliver(MessageTypes.TableState, 3, ThullaRoom(3, bots: 0));
+            yield return null;
+            Assert.AreEqual(UiText.RoomThulla, screen.Q<Label>("title").text);
+            Assert.IsTrue(lobby.ShowsAddBot, "a host alone may fill a seat");
+            var chip = screen.Q<Button>("add-bot");
+            Assert.AreEqual(UiText.AddBot, chip.text);
+            Assert.AreNotEqual(DisplayStyle.None, chip.resolvedStyle.display);
+            using (var click = NavigationSubmitEvent.GetPooled())
+            {
+                click.target = chip;
+                chip.SendEvent(click);
+            }
+
+            yield return null;
+            Assert.IsNotNull(gateway.Sent.Find(m => m.Type == MessageTypes.AddBot), "the chip asks the server for a bot");
+            gateway.Deliver(MessageTypes.TableState, 4, ThullaRoom(4, bots: 2));
+            Assert.IsTrue(lobby.ShowsAddBot, "two bots, room for a third");
+            gateway.Deliver(MessageTypes.TableState, 5, ThullaRoom(5, bots: 3));
+            Assert.IsFalse(lobby.ShowsAddBot, "three bots is the most a room holds");
+            lobby.Dispose();
+
+            var (guestGateway, guestClient) = NewClient();
+            var guest = new LobbyView(Catalog.Lobby!.Instantiate(), guestClient, () => 0, () => { });
+            guestGateway.Deliver(MessageTypes.TableState, 3, ThullaRoom(3, bots: 0, host: false));
+            Assert.IsFalse(guest.ShowsAddBot, "only the host adds bots");
+            guest.Dispose();
+            Object.Destroy(host);
         }
 
         [Test]

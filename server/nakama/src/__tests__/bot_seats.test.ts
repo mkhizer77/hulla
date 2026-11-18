@@ -1,4 +1,12 @@
-import { rungBot, rungModule, type RungMove, type RungState } from "@hulla/rules-engine";
+import {
+  legalMoves,
+  rungBot,
+  rungModule,
+  type RungMove,
+  type RungState,
+  type ThullaMove,
+  type ThullaState,
+} from "@hulla/rules-engine";
 import { describe, expect, it } from "vitest";
 
 import { rungHost } from "../games/rung/host";
@@ -6,10 +14,11 @@ import { hostFor } from "../match/registry";
 import { tableCore, type PresenceInfo, type TableCore } from "../match/table_core";
 import { DEFAULT_TABLE_CONFIG } from "../match/types";
 import { botBench } from "../rpc/ops";
+import { botHeavy } from "../services/reward_types";
 
 import { T0, payloadOf, presence, sentTo } from "./table-helpers";
 
-import type { AnyGameHost, Batch, Envelope, TableState } from "../match/types";
+import type { AnyGameHost, Batch, Envelope, RoundRecord, TableState } from "../match/types";
 import type { TableState as TableStatePayload } from "@hulla/protocol/generated";
 
 interface Room {
@@ -17,6 +26,8 @@ interface Room {
   readonly sent: Batch["outbound"];
   /** Seats the bot policy was asked to play for, in order. */
   readonly botAsked: number[];
+  /** Round records the table handed to persistence, in order. */
+  readonly records: RoundRecord[];
   now: number;
   join(p: PresenceInfo): Batch;
   send(sessionId: string, type: string, payload: object): Batch;
@@ -27,6 +38,7 @@ interface Room {
 function room(gameId: "thulla" | "rung", players: number): Room {
   let uuids = 0;
   const botAsked: number[] = [];
+  const records: RoundRecord[] = [];
   const spied = {
     ...rungHost,
     module: {
@@ -51,7 +63,7 @@ function room(gameId: "thulla" | "rung", players: number): Room {
           return `00000000-0000-4000-8000-${String(uuids).padStart(12, "0")}`;
         },
       },
-      persist: { roundRecord: () => undefined },
+      persist: { roundRecord: (record) => records.push(record) },
       games,
     });
   };
@@ -68,6 +80,7 @@ function room(gameId: "thulla" | "rung", players: number): Room {
     state,
     sent,
     botAsked,
+    records,
     now: T0,
     join(p) {
       const core = coreOf(state.gameId);
@@ -189,14 +202,13 @@ describe("Rung: bots fill empty seats in a private room (design 6.5)", () => {
     expect(r.state.presences["s2"]?.seat).toBe(3);
   });
 
-  it("bots are for private Rung rooms: Thulla refuses, and a switch to Thulla sends them home", () => {
-    const thulla = room("thulla", 2);
-    expect(errorOf(thulla.send("s0", "add_bot", {}), "s0")).toBe("bots");
+  it("a bot that filled a Rung seat keeps it when the room switches to Thulla", () => {
     const r = room("rung", 2);
     r.send("s0", "add_bot", {});
     r.send("s0", "change_game", { gameId: "thulla" });
-    expect(r.state.seats.filter((s) => s.bot)).toHaveLength(0);
-    expect(r.state.seats.filter((s) => s.playerId !== null)).toHaveLength(2);
+    expect(r.state.gameId).toBe("thulla");
+    expect(r.state.seats.filter((s) => s.bot)).toHaveLength(1);
+    expect(r.state.seats.filter((s) => s.playerId !== null)).toHaveLength(3);
   });
 
   it("a bot is never made host when the host leaves", () => {
@@ -383,5 +395,77 @@ describe("Rung lobby: the host chooses the pairs (swap_seats)", () => {
     r.send("s0", "start_round", {});
     expect(r.state.round).not.toBeNull();
     expect(errorOf(r.send("s0", "swap_seats", { a: 0, b: 1 }), "s0")).toBe("in_round");
+  });
+});
+
+function thulla(r: Room): ThullaState {
+  return r.state.round?.state as ThullaState;
+}
+
+describe("Thulla: bots fill empty seats in a private room", () => {
+  it("the host adds and removes bots, only the host may, and never in a public room", () => {
+    const r = room("thulla", 2);
+    expect(errorOf(r.send("s1", "add_bot", {}), "s1")).toBe("table.not_host");
+    r.send("s0", "add_bot", {});
+    r.send("s0", "add_bot", { seat: 4 });
+    expect(r.state.seats.map((s) => s.bot)).toEqual([false, false, true, false, true, false]);
+    expect(r.state.seats[2]).toMatchObject({ ready: true, playerId: "bot_2" });
+    expect(new Set(r.state.seats.flatMap((s) => s.displayName ?? [])).size).toBe(4);
+    expect(errorOf(r.send("s0", "add_bot", { seat: 1 }), "s0")).toBe("seat");
+    expect(errorOf(r.send("s0", "remove_bot", { seat: 1 }), "s0")).toBe("seat");
+    r.send("s0", "remove_bot", { seat: 4 });
+    expect(r.state.seats[4]?.playerId).toBeNull();
+    expect(r.state.seats.filter((s) => s.bot)).toHaveLength(1);
+  });
+
+  it("a host alone adds two bots and plays a whole round; it pays as a bot table", () => {
+    const r = room("thulla", 1);
+    r.send("s0", "add_bot", {});
+    r.send("s0", "add_bot", {});
+    start(r);
+    expect(thulla(r).seatCount).toBe(3);
+    let clientSeq = 0;
+    for (let i = 0; i < 4_000 && r.state.phase === "inRound"; i += 1) {
+      const card = legalMoves(thulla(r), 0).find(
+        (m): m is Extract<ThullaMove, { type: "play_card" }> => m.type === "play_card",
+      );
+      if (card === undefined) {
+        r.tick(250);
+        continue;
+      }
+      clientSeq += 1;
+      r.send("s0", "play_card", { roundId: r.state.round?.roundId, clientSeq, card: card.card });
+    }
+    expect(r.state.phase).not.toBe("inRound");
+    const record = r.records.at(-1);
+    expect(record?.bots).toBe(2);
+    expect(record?.players).toEqual(["u0", null, null]);
+    // Two bots of three seats: half pay, nothing on the boards (OQ-064).
+    if (record === undefined) throw new Error("no round record");
+    expect(botHeavy(record)).toBe(true);
+    // Every bot move was the bot's; the person's moves were their own.
+    const moves = record.moves;
+    expect(moves.filter((m) => m.seat !== 0).every((m) => m.auto)).toBe(true);
+    expect(moves.filter((m) => m.seat === 0).some((m) => !m.auto)).toBe(true);
+  });
+
+  it("bots in seats with gaps between them still make one table", () => {
+    const r = room("thulla", 1);
+    r.send("s0", "add_bot", { seat: 2 });
+    r.send("s0", "add_bot", { seat: 5 });
+    start(r);
+    expect(thulla(r).seatCount).toBe(3);
+    expect(r.state.seats.slice(0, 3).map((s) => s.playerId)).toEqual(["u0", "bot_1", "bot_2"]);
+  });
+
+  it("a friend who joins a full Thulla room takes a bot's seat", () => {
+    const r = room("thulla", 3);
+    for (let i = 0; i < 3; i += 1) r.send("s0", "add_bot", {});
+    // Three bots at most (match/bots.ts).
+    expect(errorOf(r.send("s0", "add_bot", {}), "s0")).toBe("seat");
+    expect(r.state.seats.filter((s) => s.bot)).toHaveLength(3);
+    r.join(presence(3));
+    expect(r.state.seats.filter((s) => s.bot)).toHaveLength(2);
+    expect(r.state.seats.some((s) => s.playerId === "u3")).toBe(true);
   });
 });
