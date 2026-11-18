@@ -257,6 +257,7 @@ namespace Hulla.Presentation.Screens.Home
                 boxes.Add(cells[i]);
             }
 
+            Button? go = null;
             var field = new TextField { maxLength = CodeLength, name = "join-code" };
             field.AddToClassList("join-sheet__field");
             boxes.Add(field);
@@ -280,6 +281,7 @@ namespace Hulla.Presentation.Screens.Home
                 }
 
                 Show(clean);
+                go?.SetEnabled(clean.Length == CodeLength);
             });
             var clipboard = Clean(UnityEngine.GUIUtility.systemCopyBuffer ?? "");
             if (clipboard.Length == CodeLength)
@@ -289,14 +291,25 @@ namespace Hulla.Presentation.Screens.Home
                 panel.Add(paste);
             }
 
-            var go = Navigation.Sheet.Button(UiText.JoinTable, () =>
+            void Submit()
             {
                 var code = Clean(field.value);
                 if (code.Length == CodeLength)
                 {
                     WithName(name => join(name, code, null));
                 }
-            }, "yes");
+            }
+
+            go = Navigation.Sheet.Button(UiText.JoinTable, Submit, "yes");
+            // Join waits for all six characters; Return (or the keyboard's Go) joins like the button.
+            go.SetEnabled(false);
+            field.RegisterCallback<KeyDownEvent>(evt =>
+            {
+                if (evt.keyCode == UnityEngine.KeyCode.Return || evt.keyCode == UnityEngine.KeyCode.KeypadEnter)
+                {
+                    Submit();
+                }
+            }, TrickleDown.TrickleDown);
             go.AddToClassList("join-sheet__join");
             panel.Add(go);
             _sheetHint = Navigation.Sheet.Line(UiText.CodeHint, "join-sheet__hint");
@@ -691,7 +704,7 @@ namespace Hulla.Presentation.Screens.Home
             string where;
             if (code != null && friend.Joinable)
             {
-                where = Strings.Format(UiText.WhereTable, friend.OpenSeats);
+                where = Strings.Format(UiText.WhereTable, UiText.GameName(friend.Game), friend.OpenSeats);
                 main = Navigation.Sheet.Button(Strings.Format(UiText.JoinTheirTable, friend.Name), () => { Navigation.Sheet.Close(panel); _join2?.Invoke(name, code, null); }, "yes");
             }
             else if (code != null && friend.Watchable && _watch != null)

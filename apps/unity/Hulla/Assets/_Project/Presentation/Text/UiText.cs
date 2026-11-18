@@ -135,6 +135,8 @@ namespace Hulla.Presentation.Text
 
         public static string PlusReward => Strings.Text("ui.plus_reward");
 
+        public static string TapAgainToPlay => Strings.Text("ui.tap_again_to_play");
+
         public static string PlusRewardGems => Strings.Text("ui.plus_reward_gems");
 
         public static string UnlockedOn => Strings.Text("ui.unlocked_on");
@@ -638,6 +640,8 @@ namespace Hulla.Presentation.Text
         public static string AgeLine => Strings.Text("age.line");
 
         public static string AgeInvalid => Strings.Text("age.invalid");
+
+        public static string AgePlaceholder => Strings.Text("age.placeholder");
 
         public static string AgeBlocked => Strings.Text("age.blocked");
 

@@ -11631,3 +11631,58 @@
     color: rgb(255, 246, 228);
     text-shadow: 0 2px 4px rgba(20, 40, 20, 0.7);
 }
+
+/* The daily card's third line ("Tomorrow: 60 coins.") shrinks to fit instead of ending in "...". */
+.skin--basant .home .home__daily .home__daily-amount {
+    -unity-text-auto-size: best-fit 18px 26px;
+}
+
+/* The host's pencil sits at the end of the rules line it changes. */
+.skin--basant .lobby .lobby__stage > .lobby__edit-rules {
+    left: 904px;
+    top: 1346px;
+}
+
+/* The lobby's hint under Ready was cream with a thin outline on the pale sky: dark brown reads at a glance. */
+.skin--basant .lobby .lobby__stage > .lobby__hint {
+    color: rgb(74, 30, 14);
+    -unity-text-outline-width: 0;
+    text-shadow: 0 1px 3px rgba(255, 248, 232, 0.9);
+}
+
+/* The status line on the felt ("Hamza picks up") is larger, with a shadow, not small white on green. */
+.skin--basant .table .pile__note {
+    font-size: 34px;
+    color: rgb(255, 246, 228);
+    text-shadow: 0 2px 4px rgba(20, 40, 20, 0.8);
+}
+
+/* "Out" on a faded seat: dark green on the green tag, like "Ready" in the lobby, instead of white. */
+.skin--basant .table .seat .seat__state--out {
+    color: rgb(36, 90, 30);
+}
+
+/* The results sit on the felt: the player's tray steps away with the strip and the hand. */
+.skin--basant .table--results .table__tray {
+    display: none;
+}
+
+/* On a wide screen (a tablet on its side) the lists, the shop and the sheets keep a readable width,
+   centred, instead of stretching across the whole screen. */
+.skin--basant.size--expanded .settings.screen {
+    width: 100%;
+    max-width: 1500px;
+    align-self: center;
+}
+
+.skin--basant.size--expanded .sheet {
+    width: 100%;
+    max-width: 1500px;
+    align-self: center;
+}
+
+/* A mission card is a column (its line, then its bar) in every language: the right-to-left twin of
+   the seat row (Rtl.uss, generated) must not turn it sideways. Its rows mirror on their own. */
+.skin--basant .lobby-seat.mission {
+    flex-direction: column;
+}

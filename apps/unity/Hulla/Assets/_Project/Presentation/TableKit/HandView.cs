@@ -43,14 +43,7 @@ namespace Hulla.Presentation.TableKit
         public HandView(VisualElement hand)
         {
             _hand = hand;
-            _hand.RegisterCallback<GeometryChangedEvent>(evt =>
-            {
-                if (Math.Abs(evt.newRect.width - _width) > 1f)
-                {
-                    _width = evt.newRect.width;
-                    Rebuild();
-                }
-            });
+            _hand.RegisterCallback<GeometryChangedEvent>(_ => Measure());
             _hand.RegisterCallback<PointerMoveEvent>(OnMove);
             _hand.RegisterCallback<PointerLeaveEvent>(_ => Hover(null));
         }
@@ -65,6 +58,12 @@ namespace Hulla.Presentation.TableKit
         public event Action? Touched;
 
         public bool OneTap { get; set; }
+
+        /// <summary>The card raised by a first tap, waiting for the second; null when none is.</summary>
+        public string? Raised => _raised;
+
+        /// <summary>Raised when a first tap lifts a card (or the lifted card is played or dropped).</summary>
+        public event Action? RaisedChanged;
 
         /// <summary>The one legal card the hand raised on its own, or null.</summary>
         public string? OnlyLegal { get; private set; }
@@ -212,6 +211,23 @@ namespace Hulla.Presentation.TableKit
             Rebuild();
         }
 
+        /// <summary>
+        /// The fan's room is the width the table gives the hand, not the hand's own width: a hand that
+        /// shrank to a few cards would otherwise lay a big pick-up out in that narrow box.
+        /// </summary>
+        private void Measure()
+        {
+            var parent = _hand.parent;
+            var room = parent != null && parent.contentRect.width > 0f ? parent.contentRect.width : _hand.layout.width;
+            if (float.IsNaN(room) || room <= 0f || Math.Abs(room - _width) <= 1f)
+            {
+                return;
+            }
+
+            _width = room;
+            Rebuild();
+        }
+
         private void Rebuild()
         {
             _hand.Clear();
@@ -285,6 +301,7 @@ namespace Hulla.Presentation.TableKit
             if (flick || OneTap || (!dragged && card == _raised))
             {
                 _raised = null;
+                RaisedChanged?.Invoke();
                 Played?.Invoke(card);
                 return;
             }
@@ -294,6 +311,8 @@ namespace Hulla.Presentation.TableKit
             {
                 other.EnableInClassList("card--raised", other.Card == card);
             }
+
+            RaisedChanged?.Invoke();
         }
 
         /// <summary>A screen reader's double tap: plays the card at once when it is legal, else the refusal says why.</summary>

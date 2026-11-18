@@ -683,6 +683,11 @@
    "smart": false
   },
   {
+   "key": "age.placeholder",
+   "text": "For example 2004",
+   "smart": false
+  },
+  {
    "key": "age.title",
    "text": "What year were you born?",
    "smart": false
@@ -3994,7 +3999,7 @@
   },
   {
    "key": "ui.at_table_seats",
-   "text": "{0} · {1} seats open",
+   "text": "{0} · {1:plural:{} seat open|{} seats open}",
    "smart": true
   },
   {
@@ -4569,7 +4574,7 @@
   },
   {
    "key": "ui.friend_table_banner",
-   "text": "{0}'s table · {1} seats open",
+   "text": "{0}'s table · {1:plural:{} seat open|{} seats open}",
    "smart": true
   },
   {
@@ -6143,6 +6148,11 @@
    "smart": false
   },
   {
+   "key": "ui.tap_again_to_play",
+   "text": "Tap it again to play",
+   "smart": false
+  },
+  {
    "key": "ui.terms_of_service",
    "text": "Terms of service",
    "smart": false
@@ -6434,7 +6444,7 @@
   },
   {
    "key": "ui.where_table",
-   "text": "At a Thulla table · {0} seats open",
+   "text": "At a {0} table · {1:plural:{} seat open|{} seats open}",
    "smart": true
   },
   {

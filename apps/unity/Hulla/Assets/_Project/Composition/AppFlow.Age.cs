@@ -21,6 +21,9 @@ namespace Hulla.Composition
             plate.Add(Line(UiText.AgeLine, "gate__line"));
             var field = new TextField { maxLength = 4, keyboardType = TouchScreenKeyboardType.NumberPad };
             field.AddToClassList("gate__name");
+            // An empty box gave no clue what to type: the hint shows the four-digit form.
+            field.textEdition.placeholder = UiText.AgePlaceholder;
+            field.textEdition.hidePlaceholderOnFocus = false;
             plate.Add(field);
             var guard = Line("", "gate__guard");
             plate.Add(guard);

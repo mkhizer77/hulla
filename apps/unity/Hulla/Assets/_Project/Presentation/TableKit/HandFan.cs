@@ -11,6 +11,9 @@ namespace Hulla.Presentation.TableKit
     {
         public const float MinStrip = 22f;
 
+        /// <summary>The most rows a hand wraps into.</summary>
+        public const int MaxRows = 3;
+
         private HandFan(int rows, int perRow, float strip)
         {
             Rows = rows;
@@ -37,9 +40,11 @@ namespace Hulla.Presentation.TableKit
             {
                 var perRow = (cards + rows - 1) / rows;
                 var strip = perRow <= 1 ? cardWidth : (width - cardWidth) / (perRow - 1);
-                if (strip >= MinStrip || perRow <= 1)
+                // Never more than three rows: a fourth would stack the hand into a column of single
+                // cards. Past that the cards overlap more but every row still fans.
+                if (strip >= MinStrip || perRow <= 1 || rows >= MaxRows)
                 {
-                    return new HandFan(rows, perRow, Math.Min(strip, cardWidth + 8f));
+                    return new HandFan(rows, perRow, Math.Max(0f, Math.Min(strip, cardWidth + 8f)));
                 }
 
                 rows++;

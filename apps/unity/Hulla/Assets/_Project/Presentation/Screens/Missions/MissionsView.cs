@@ -138,7 +138,8 @@ namespace Hulla.Presentation.Screens.Missions
                 var name = new Label(UiText.MissionText(mission.Metric, mission.Target));
                 name.AddToClassList("mission__name");
                 top.Add(name);
-                var reward = new Label(mission.Gems > 0 ? Strings.Format(UiText.PlusRewardGems, mission.Coins, mission.Gems) : Strings.Format(UiText.PlusReward, mission.Coins));
+                // "+50" alone did not say what it pays: the reward names coins, as gems are named.
+                var reward = new Label(mission.Gems > 0 ? Strings.Format(UiText.PlusRewardGems, mission.Coins, mission.Gems) : Strings.Format(UiText.PlusCoins, mission.Coins));
                 reward.AddToClassList("mission__reward");
                 top.Add(reward);
                 plate.Add(top);

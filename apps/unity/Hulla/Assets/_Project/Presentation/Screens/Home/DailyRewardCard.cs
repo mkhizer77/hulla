@@ -69,6 +69,13 @@ namespace Hulla.Presentation.Screens.Home
             // Claimed today: the card says so, and the claim this session pops its coins once.
             _text.text = UiText.Claimed;
             _root.EnableInClassList("home__daily--done", true);
+            // Done for today: the third line says what tomorrow brings, so the card invites a return.
+            if (_amount != null)
+            {
+                _root.EnableInClassList("home__daily--amount", true);
+                _amount.text = Strings.Format(UiText.DailyTomorrow, Amount(status.Next));
+            }
+
             if (_model.Claimed != null && _model.Claimed != _popped)
             {
                 _popped = _model.Claimed;

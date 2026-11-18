@@ -464,7 +464,7 @@ namespace Hulla.Presentation.Screens.Friends
             Button? main = null;
             if (presence?.TableCode is string code && presence.Joinable)
             {
-                where = Strings.Format(UiText.WhereTable, presence.OpenSeats);
+                where = Strings.Format(UiText.WhereTable, UiText.GameName(presence.Game), presence.OpenSeats);
                 main = Sheet.Button(Strings.Format(UiText.JoinTheirTable, entry.Name), () => { Sheet.Close(panel); Join?.Invoke(code); }, "yes");
             }
             else if (presence?.TableCode is string watchCode && presence.Watchable)

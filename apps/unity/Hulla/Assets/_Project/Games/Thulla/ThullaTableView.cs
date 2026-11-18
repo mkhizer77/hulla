@@ -149,6 +149,7 @@ namespace Hulla.Games.Thulla
             };
             _hand.Refused += ShowHint;
             _hand.Touched += () => _singleLegal = null;
+            _hand.RaisedChanged += RefreshStatus;
             _hint = root.Q<Label>("hint");
             _hint.RegisterCallback<ClickEvent>(_ => openRules?.Invoke(ThullaRulebook.WhyNotSection));
             _takeHand = root.Q<Button>("take-hand");
@@ -908,9 +909,9 @@ namespace Hulla.Games.Thulla
             var info = model.Seats[(int)mine];
             _me.style.display = DisplayStyle.Flex;
             var escaped = model.IsEscaped((int)mine);
-            // Out of cards: the seat stays for watching, chat and voice (R25), and says so.
-            var state = model.InRound && escaped ? UiText.OutWatching : "";
-            _me.Show(info.DisplayName ?? UiText.You, info.Avatar, true, model.InRound && model.TurnSeat == mine, model.InRound && model.LeaderSeat == mine && !escaped, state);
+            // Out of cards: the seat stays for watching, chat and voice (R25). The status pill beside the
+            // face says so; the badge itself stays quiet, or the words show twice.
+            _me.Show(info.DisplayName ?? UiText.You, info.Avatar, true, model.InRound && model.TurnSeat == mine, model.InRound && model.LeaderSeat == mine && !escaped, "");
             RefreshStatus();
         }
 
@@ -934,6 +935,11 @@ namespace Hulla.Games.Thulla
             else if (model.IsEscaped((int)mine))
             {
                 text = UiText.OutWatching;
+            }
+            else if (model.MyTurn && _hand.Raised != null && !_hand.OneTap && _hand.Raised != _hand.OnlyLegal)
+            {
+                // A first tap lifts the card; say what the second does (players who skipped the tutorial).
+                text = UiText.TapAgainToPlay;
             }
             else if (model.MyTurn)
             {
