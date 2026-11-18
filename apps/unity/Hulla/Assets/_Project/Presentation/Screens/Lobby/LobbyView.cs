@@ -75,7 +75,7 @@ namespace Hulla.Presentation.Screens.Lobby
             _openEditor = editRules;
             _root = root;
             BuildGameRow(root.Q<VisualElement>("stage"));
-            Stage.Fit(root.Q<VisualElement>("stage-holder"), root.Q<VisualElement>("stage"), Stage.Width, StageHeight);
+            Stage.Fit(root.Q<VisualElement>("stage-holder"), root.Q<VisualElement>("stage"), Stage.Width, StageHeight, root.Q<VisualElement>("leave"), root.Q<VisualElement>("title"), root.Q<VisualElement>("rulebook"));
             root.Q<Label>("title").text = UiText.PrivateTable;
             var rulebook = root.Q<Button>("rulebook");
             rulebook.text = "";

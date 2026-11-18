@@ -36,7 +36,7 @@ namespace Hulla.Presentation.Screens.QuickPlay
             _model = model;
             _myAvatar = myAvatar;
             _myName = myName;
-            Stage.Fit(root.Q<VisualElement>("stage-holder"), root.Q<VisualElement>("stage"), Stage.Width, StageHeight);
+            Stage.Fit(root.Q<VisualElement>("stage-holder"), root.Q<VisualElement>("stage"), Stage.Width, StageHeight, root.Q<VisualElement>("cancel"));
             _title = root.Q<Label>("title");
             _elapsed = root.Q<Label>("elapsed");
             _status = root.Q<Label>("status");

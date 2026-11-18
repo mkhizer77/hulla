@@ -876,6 +876,82 @@ namespace Hulla.Games.Shared
             return seat < model.Seats.Count ? model.Seats[(int)seat].Avatar : null;
         }
 
+        /// <summary>
+        /// A sand tray under the player's own strip, the quick chat and the hand, from the strip down to
+        /// the bottom edge (under the home bar too), so the hand sits on one calm surface instead of on
+        /// the rooftops of the scene.
+        /// </summary>
+        private static void AddTray(VisualElement root)
+        {
+            var table = root.ClassListContains("table") ? root : root.Q(className: "table");
+            var strip = root.Q<VisualElement>("my-strip");
+            if (table == null || strip == null || table.Q("tray") != null)
+            {
+                return;
+            }
+
+            var tray = new VisualElement { name = "tray", pickingMode = PickingMode.Ignore };
+            tray.AddToClassList("table__tray");
+            table.Insert(0, tray);
+            strip.RegisterCallback<GeometryChangedEvent>(_ => PlaceTray(table, strip, tray));
+            table.RegisterCallback<GeometryChangedEvent>(_ => PlaceTray(table, strip, tray));
+        }
+
+        private static void PlaceTray(VisualElement table, VisualElement strip, VisualElement tray)
+        {
+            var top = strip.layout.y - 26f;
+            if (float.IsNaN(top))
+            {
+                return;
+            }
+
+            // The shell pads its root by the safe area; the tray reaches through that padding to the edge.
+            var shell = table.parent;
+            while (shell?.parent != null && !shell.ClassListContains(ThemeClasses.Skinned))
+            {
+                shell = shell.parent;
+            }
+
+            var inset = shell != null ? shell.resolvedStyle.paddingBottom : 0f;
+            if (Math.Abs(tray.resolvedStyle.top - top) > 0.5f)
+            {
+                tray.style.top = top;
+            }
+
+            if (Math.Abs(tray.resolvedStyle.bottom + inset) > 0.5f)
+            {
+                tray.style.bottom = -inset;
+            }
+
+            // The chat panel and the player sheet are bottom sheets too: down to the edge, room at the foot.
+            foreach (var name in new[] { "chat-panel", "player-sheet" })
+            {
+                var sheet = table.Q(name);
+                if (sheet == null)
+                {
+                    continue;
+                }
+
+                if (Math.Abs(sheet.style.bottom.value.value + inset) > 0.5f || sheet.style.bottom.keyword == StyleKeyword.Null)
+                {
+                    sheet.style.bottom = -inset;
+                }
+
+                var foot = sheet.Q("sheet-foot");
+                if (foot == null)
+                {
+                    foot = new VisualElement { name = "sheet-foot", pickingMode = PickingMode.Ignore };
+                    foot.style.flexShrink = 0;
+                    sheet.Add(foot);
+                }
+
+                if (Math.Abs(foot.style.height.value.value - inset) > 0.5f)
+                {
+                    foot.style.height = inset;
+                }
+            }
+        }
+
         protected CardTableView(
             VisualElement root,
             TableClient client,
@@ -897,6 +973,7 @@ namespace Hulla.Games.Shared
             _sendText = sendText;
             _sounds = sounds;
             _ring = new OpponentRing(root.Q<VisualElement>("opponents"));
+            AddTray(root);
             root.Q<VisualElement>("me")?.Add(_me);
             _ring.Tapped += OnBadgeTapped;
             _info = root.Q<Label>("info");
