@@ -579,6 +579,105 @@ namespace Hulla.Presentation.Navigation
             // TalkBack and VoiceOver read the panel through Unity's accessibility hierarchy (GDD 27).
             _reader ??= new Accessibility.ScreenReader(Root);
             _reader.Tick(Time.unscaledDeltaTime, _current);
+            // Android's back button arrives as Escape (desktop builds get the same).
+            if (Input.GetKeyDown(KeyCode.Escape))
+            {
+                Back();
+            }
+        }
+
+        /// <summary>The screen showing now, under any overlay.</summary>
+        public VisualElement? Current => _current;
+
+        /// <summary>Raised by <see cref="Back"/> when no dialog, sheet or overlay took it: the screen's turn.</summary>
+        public event Action? BackPressed;
+
+        /// <summary>The buttons that step back on a screen, in the order they are tried.</summary>
+        public static readonly string[] BackButtons = { "back", "back-left", "page-back", "close", "cancel", "leave" };
+
+        /// <summary>
+        /// Back (Android's button, Escape): answers a dialog with its safe choice, closes a sheet or an
+        /// overlay, else hands it to the screen. Sheets that only their own answers close stay open.
+        /// </summary>
+        public void Back()
+        {
+            var dialog = Root.Q("shell-dialog");
+            if (dialog != null)
+            {
+                Press(dialog.Q<Button>(className: "dialog__button"));
+                return;
+            }
+
+            var sheet = Root.Q(Sheet.Name);
+            if (sheet != null)
+            {
+                if (!sheet.ClassListContains(Sheet.LockedClass))
+                {
+                    Sheet.Close(sheet);
+                }
+
+                return;
+            }
+
+            var overlay = Root.Q("shell-overlay");
+            if (overlay != null)
+            {
+                if (!PressBack(overlay))
+                {
+                    CloseOverlay();
+                }
+
+                return;
+            }
+
+            BackPressed?.Invoke();
+        }
+
+        /// <summary>Presses the first shown back, close or leave button inside <paramref name="screen"/>.</summary>
+        public static bool PressBack(VisualElement? screen)
+        {
+            if (screen == null)
+            {
+                return false;
+            }
+
+            foreach (var name in BackButtons)
+            {
+                var button = screen.Q<Button>(name);
+                if (button != null && button.resolvedStyle.display != DisplayStyle.None && button.enabledInHierarchy && Shown(button))
+                {
+                    Press(button);
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        private static bool Shown(VisualElement element)
+        {
+            for (var current = element; current != null; current = current.parent)
+            {
+                if (current.resolvedStyle.display == DisplayStyle.None || current.resolvedStyle.visibility == Visibility.Hidden)
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        /// <summary>Presses a button as a tap would, through its own click handler.</summary>
+        public static void Press(Button? button)
+        {
+            if (button == null)
+            {
+                return;
+            }
+
+            using var submit = NavigationSubmitEvent.GetPooled();
+            submit.target = button;
+            button.SendEvent(submit);
         }
 
         private void LateUpdate()
@@ -589,8 +688,8 @@ namespace Hulla.Presentation.Navigation
             PadToSafeArea(Root.Q("shell-overlay"), false);
             BleedList(Root.Q("shell-overlay"), true);
             BleedList(_current, false);
-            PadToSafeArea(Root.Q("shell-dialog"));
             PadSheet(Root.Q(Sheet.Name));
+            PadSheet(Root.Q("shell-dialog"));
             PadToSafeArea(Root.Q("shell-gate"));
             var banner = Root.Q("shell-banner");
             if (banner != null && Math.Abs(banner.style.marginTop.value.value - SafeArea.Top) > 0.5f)

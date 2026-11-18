@@ -103,6 +103,7 @@ namespace Hulla.Composition
             Hulla.Infrastructure.Platform.AudioMeter.Attach();
             _shell.Ticked += Tick;
             _shell.NavChosen += OnNav;
+            _shell.BackPressed += OnBack;
             _app.Settings.Changed += ApplySettings;
             _app.QuickPlay.Found += OnQuickPlayFound;
             _app.Phone.Switched += OnPhoneSwitched;
@@ -157,6 +158,31 @@ namespace Hulla.Composition
         }
 
         /// <summary>The bottom navigation (GDD 14.1); every tab opens from wherever the player is.</summary>
+        /// <summary>
+        /// Back with nothing over the screen: a game's page closes to Home, the table closes its chat or
+        /// player sheet, and any other screen presses its own back, close or leave button (Leave still asks
+        /// first at the table). On Home itself back does nothing, so a stray press never quits the app.
+        /// </summary>
+        private void OnBack()
+        {
+            if (_view is HomeView home)
+            {
+                home.ClosePage();
+                return;
+            }
+
+            if ((_tableView as Hulla.Games.Shared.CardTableView ?? _rungView)?.Back() == true)
+            {
+                return;
+            }
+
+            // A tab (Friends, Trophies, Shop) or any other screen without its own back steps back to Home.
+            if (!Hulla.Presentation.Navigation.ShellView.PressBack(_shell.Current) && _screen != Screen.Table && _screen != Screen.Lobby && _screen != Screen.QuickPlay)
+            {
+                ShowHome();
+            }
+        }
+
         private void OnNav(Hulla.Presentation.Navigation.NavTab tab)
         {
             var name = _app.Home.LastName;
@@ -457,6 +483,7 @@ namespace Hulla.Composition
         {
             _shell.Ticked -= Tick;
             _shell.NavChosen -= OnNav;
+            _shell.BackPressed -= OnBack;
             _app.Friends.Changed -= RefreshBadges;
             _app.Pass.Changed -= RefreshBadges;
             _app.Missions.Changed -= RefreshBadges;

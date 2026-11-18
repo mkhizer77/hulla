@@ -80,16 +80,16 @@ namespace Hulla.Presentation.Screens.Lobby
             var rulebook = root.Q<Button>("rulebook");
             rulebook.text = "";
             rulebook.tooltip = Strings.Text("rulebook.title");
-            // One book top right (design: Lobby): the host's opens the rules editor, a guest's the rulebook.
+            // The book is the rulebook for everyone; the host changes the rules with the pencil by the rules line.
             rulebook.clicked += () =>
             {
-                if (_client.Model.IsHost && _client.Model.IsPrivate && _openEditor != null)
+                if (openRulebook == null)
                 {
-                    _openEditor();
+                    _openEditor?.Invoke();
                     return;
                 }
 
-                openRulebook?.Invoke();
+                openRulebook();
             };
             rulebook.style.display = openRulebook == null && editRules == null ? DisplayStyle.None : DisplayStyle.Flex;
             _rules = root.Q<Label>("rules");
@@ -835,7 +835,7 @@ namespace Hulla.Presentation.Screens.Lobby
                 _watchers.Add(row);
             }
 
-            _editRules.style.display = DisplayStyle.None;
+            _editRules.style.display = model.IsHost && model.IsPrivate && _openEditor != null && !model.Spectating ? DisplayStyle.Flex : DisplayStyle.None;
             var changedBy = model.RulesChangedBy;
             _rulesChanged.text = changedBy == null || changedBy == model.MySeat
                 ? ""

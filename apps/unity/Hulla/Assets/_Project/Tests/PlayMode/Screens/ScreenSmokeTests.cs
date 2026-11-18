@@ -140,7 +140,8 @@ namespace Hulla.Screens.Tests
             // The host gets ready first, then the same place shows Start.
             var hostReady = client.Model.Seats[(int)client.Model.MySeat!.Value].Ready;
             Shown(root.Q<Button>(hostReady ? "start" : "ready"), "Ready, then Start, for the host");
-            Shown(root.Q<Button>("rulebook"), "the book opens the rules editor for the host");
+            Shown(root.Q<Button>("rulebook"), "the book opens the rulebook");
+            Shown(root.Q<Button>("edit-rules"), "the host changes the rules with the pencil by the rules line");
             StringAssert.Contains("Standard", root.Q<Label>("rules").text);
         }
 
@@ -446,7 +447,8 @@ namespace Hulla.Screens.Tests
             yield return null;
             Shown(root.Q<VisualElement>("coach"), "the you're-out note");
             StringAssert.Contains("You're out", root.Q<Label>("coach-text").text);
-            Assert.AreEqual("Out · watching", root.Q<VisualElement>("me").Q<Label>(className: "seat__state").text, "the own badge says so");
+            Assert.AreEqual("Out · watching", root.Q<Label>("status-text").text, "the status pill says so");
+            Assert.AreEqual("", root.Q<VisualElement>("me").Q<Label>(className: "seat__state").text, "the badge does not say it twice");
             Shown(root.Q<Button>("chat"), "chat stays open to an escaped player");
         }
 

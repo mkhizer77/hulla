@@ -683,6 +683,11 @@
    "smart": false
   },
   {
+   "key": "age.placeholder",
+   "text": "[För éxåmplé 2004 · · ·]",
+   "smart": false
+  },
+  {
    "key": "age.title",
    "text": "[Whåt ýéår wéré ýöû börñ? · · · ·]",
    "smart": false
@@ -3994,7 +3999,7 @@
   },
   {
    "key": "ui.at_table_seats",
-   "text": "[{0} · {1} séåts öpéñ · · ·]",
+   "text": "[{0} · {1:plural:{} séåt öpéñ|{} séåts öpéñ} · · ·]",
    "smart": true
   },
   {
@@ -4569,7 +4574,7 @@
   },
   {
    "key": "ui.friend_table_banner",
-   "text": "[{0}'s tåblé · {1} séåts öpéñ · · · · ·]",
+   "text": "[{0}'s tåblé · {1:plural:{} séåt öpéñ|{} séåts öpéñ} · · · · ·]",
    "smart": true
   },
   {
@@ -6143,6 +6148,11 @@
    "smart": false
   },
   {
+   "key": "ui.tap_again_to_play",
+   "text": "[Tåp ît ågåîñ tö plåý · · ·]",
+   "smart": false
+  },
+  {
    "key": "ui.terms_of_service",
    "text": "[Térms öf sérvîçé · · ·]",
    "smart": false
@@ -6434,7 +6444,7 @@
   },
   {
    "key": "ui.where_table",
-   "text": "[Åt å Thûllå tåblé · {0} séåts öpéñ · · · · · ·]",
+   "text": "[Åt å {0} tåblé · {1:plural:{} séåt öpéñ|{} séåts öpéñ} · · · · ·]",
    "smart": true
   },
   {

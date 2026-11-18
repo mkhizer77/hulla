@@ -13,6 +13,9 @@ namespace Hulla.Presentation.Navigation
     {
         public const string Name = "shell-sheet";
 
+        /// <summary>On a sheet that only its own answers close (no tap on the dim, no back key).</summary>
+        public const string LockedClass = "sheet-scrim--locked";
+
         /// <summary>Opens a sheet (closing any open one) and returns the panel to fill.</summary>
         public static VisualElement Open(VisualElement anyInside, string? title, Action? closed = null, bool closeOnDim = true)
         {
@@ -34,6 +37,7 @@ namespace Hulla.Presentation.Navigation
             }
 
             scrim.Add(panel);
+            scrim.EnableInClassList(LockedClass, !closeOnDim);
             if (closeOnDim)
             {
                 scrim.RegisterCallback<PointerDownEvent>(evt =>

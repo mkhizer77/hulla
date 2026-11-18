@@ -525,6 +525,41 @@ namespace Hulla.Games.Shared
             _strip.Add(more);
         }
 
+        /// <summary>
+        /// A narrow phone fits fewer phrases: the last ones step out until the row, with "…" at its end,
+        /// fits inside the screen instead of running off its edge.
+        /// </summary>
+        private void FitStrip()
+        {
+            var room = _strip.contentRect.width;
+            if (room <= 0f || _strip.childCount < 2)
+            {
+                return;
+            }
+
+            float Width(VisualElement chip) => chip.resolvedStyle.display == DisplayStyle.None ? 0f
+                : chip.layout.width + chip.resolvedStyle.marginLeft + chip.resolvedStyle.marginRight;
+
+            var used = 0f;
+            foreach (var chip in _strip.Children())
+            {
+                used += Width(chip);
+            }
+
+            // The "…" chip is last and always stays; phrases go from the end, keeping at least one.
+            for (var i = _strip.childCount - 2; i > 0 && used > room + 0.5f; i--)
+            {
+                var chip = _strip[i];
+                if (chip.resolvedStyle.display == DisplayStyle.None)
+                {
+                    continue;
+                }
+
+                used -= Width(chip);
+                chip.style.display = DisplayStyle.None;
+            }
+        }
+
         protected void Say(Action send)
         {
             send();
@@ -573,6 +608,18 @@ namespace Hulla.Games.Shared
         }
 
         /// <summary>Closes whichever sheet is open on the table (a tap on the dim).</summary>
+        /// <summary>Back on the table: closes the chat panel or the player sheet; false when none is open.</summary>
+        public bool Back()
+        {
+            if (_dim.resolvedStyle.display == DisplayStyle.None && _chatPanel.resolvedStyle.display == DisplayStyle.None && _sheet.resolvedStyle.display == DisplayStyle.None)
+            {
+                return false;
+            }
+
+            CloseSheets();
+            return true;
+        }
+
         protected void CloseSheets()
         {
             if (SheetsLocked)
@@ -894,7 +941,38 @@ namespace Hulla.Games.Shared
             tray.AddToClassList("table__tray");
             table.Insert(0, tray);
             strip.RegisterCallback<GeometryChangedEvent>(_ => PlaceTray(table, strip, tray));
+            var zone = root.Q<VisualElement>("zone");
+            zone?.RegisterCallback<GeometryChangedEvent>(_ => KeepZoneNearSquare(zone));
             table.RegisterCallback<GeometryChangedEvent>(_ => PlaceTray(table, strip, tray));
+        }
+
+        /// <summary>
+        /// On a wide screen (a tablet on its side) the seats would spread to the zone's far corners while
+        /// the rug stays square in the middle: the zone keeps close to square, centred, so they sit round it.
+        /// </summary>
+        private static void KeepZoneNearSquare(VisualElement zone)
+        {
+            var room = zone.parent?.contentRect.width ?? 0f;
+            var height = zone.layout.height;
+            if (room <= 0f || height <= 0f || float.IsNaN(height))
+            {
+                return;
+            }
+
+            var wanted = Math.Min(room, height * 1.4f);
+            if (wanted < room - 1f)
+            {
+                if (Math.Abs(zone.resolvedStyle.width - wanted) > 1f)
+                {
+                    zone.style.width = wanted;
+                    zone.style.alignSelf = Align.Center;
+                }
+            }
+            else if (zone.style.width.keyword != StyleKeyword.Null)
+            {
+                zone.style.width = StyleKeyword.Null;
+                zone.style.alignSelf = StyleKeyword.Null;
+            }
         }
 
         private static void PlaceTray(VisualElement table, VisualElement strip, VisualElement tray)
@@ -918,7 +996,8 @@ namespace Hulla.Games.Shared
                 tray.style.top = top;
             }
 
-            if (Math.Abs(tray.resolvedStyle.bottom + inset) > 0.5f)
+            // Set even when it is 0: without a bottom the tray has no height (phones without a home bar).
+            if (Math.Abs(tray.resolvedStyle.bottom + inset) > 0.5f || tray.style.bottom.keyword == StyleKeyword.Null)
             {
                 tray.style.bottom = -inset;
             }
@@ -1011,6 +1090,7 @@ namespace Hulla.Games.Shared
             _mySay = root.Q<Label>("my-say");
             _chatPanel = root.Q<VisualElement>("chat-panel");
             _strip = root.Q<VisualElement>("quick-strip");
+            _strip.RegisterCallback<GeometryChangedEvent>(_ => FitStrip());
             var chatButton = root.Q<Button>("chat");
             chatButton.text = "";
             chatButton.tooltip = UiText.Chat;

@@ -50,6 +50,16 @@ namespace Hulla.Presentation.Tests
         }
 
         [Test]
+        public void ABigHandInANarrowBoxStillFansInAtMostThreeRows()
+        {
+            // 22 cards in barely more than a card's width once stacked them one per row.
+            var fan = HandFan.For(22, 200f, 180f);
+            Assert.LessOrEqual(fan.Rows, HandFan.MaxRows);
+            Assert.Greater(fan.PerRow, 1);
+            Assert.GreaterOrEqual(fan.Rows * fan.PerRow, 22);
+        }
+
+        [Test]
         public void AShortHandDoesNotSpreadWiderThanACardApart()
         {
             var fan = HandFan.For(3, 1032f, 120f);
