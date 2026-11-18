@@ -284,6 +284,7 @@ export const rungHost: RungHost = {
     return turnSeconds;
   },
   fillWithBots: true,
+  fillNoShows: true,
   resolveRules(selection, mode) {
     const preset = selection.preset ?? "rung";
     if (!Object.keys(RUNG_PRESETS).includes(preset)) {

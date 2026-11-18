@@ -640,8 +640,8 @@ namespace Hulla.Presentation.Screens.Lobby
         public string SwitchGameText => _switchGame.text;
 
         /// <summary>
-        /// The host's row under the rules: move the room to the other game, and in Rung fill an empty
-        /// seat with a bot. The room, its code, the chat and the voice stay as they are (Rung design 8).
+        /// The host's row under the rules: move the room to the other game, and fill an empty seat
+        /// with a bot. The room, its code, the chat and the voice stay as they are (Rung design 8).
         /// </summary>
         private void BuildGameRow(VisualElement? stage)
         {
@@ -685,9 +685,22 @@ namespace Hulla.Presentation.Screens.Lobby
             var other = model.IsRung ? UiText.GameThulla : UiText.GameRung;
             _switchGame.style.display = host && RungOffered ? DisplayStyle.Flex : DisplayStyle.None;
             _switchGame.text = Strings.Format(UiText.SwitchGameTo, other);
-            _addBot.style.display = host && model.IsRung && seated < model.Seats.Count ? DisplayStyle.Flex : DisplayStyle.None;
+            var bots = 0;
+            foreach (var seat in model.Seats)
+            {
+                if (seat.Bot)
+                {
+                    bots++;
+                }
+            }
+
+            // Either game: the host fills an empty seat with a bot, up to the server's three.
+            _addBot.style.display = host && seated < model.Seats.Count && bots < MaxBots ? DisplayStyle.Flex : DisplayStyle.None;
             _swap.style.display = host && model.IsRung && seated >= 3 ? DisplayStyle.Flex : DisplayStyle.None;
         }
+
+        /// <summary>Bots a room may hold (server `match/bots.ts`).</summary>
+        private const int MaxBots = 3;
 
         /// <summary>The `rung` remote flag: the switch to Rung shows only when the server offers it.</summary>
         public bool RungOffered { get; set; }

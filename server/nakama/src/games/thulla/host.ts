@@ -223,6 +223,9 @@ export function decodeThullaMove(
 /** Thulla at the table core: moves in, events out, the legal mask per turn, the seed reveal. */
 export const thullaHost: ThullaHost = {
   module: thullaModule,
+  // The host of a private room may seat the Quick Play bot in an empty seat, so one or two
+  // friends can play with the room's own rules. Matched tables never take bots for no-shows.
+  fillWithBots: true,
   resolveRules(selection, mode) {
     const preset = selection.preset ?? "standard";
     if (!Object.keys(THULLA_PRESETS).includes(preset)) {
