@@ -6,16 +6,14 @@ using UnityEngine;
 using Firebase;
 using Firebase.Analytics;
 using Firebase.Crashlytics;
-#endif
-#if !UNITY_EDITOR && UNITY_ANDROID
 using Firebase.Messaging;
 #endif
 
 namespace Hulla.Infrastructure.Platform
 {
     /// <summary>
-    /// Firebase on the phone (#71, #72): Analytics, Crashlytics and, on Android, the FCM token for
-    /// push_register. Nothing is collected before the player says yes to usage data: the manifest and
+    /// Firebase on the phone (#71, #72): Analytics, Crashlytics and the FCM token for push_register
+    /// (on iOS only after <see cref="StartMessaging"/>). Nothing is collected before the player says yes to usage data: the manifest and
     /// Info.plist start with collection off (FirebaseConfigBuild) and only <see cref="SetConsent"/> turns
     /// it on. Ad storage and personalisation stay denied. The editor and desktop builds skip Firebase.
     /// </summary>
@@ -23,11 +21,17 @@ namespace Hulla.Infrastructure.Platform
     {
         private bool _ready;
         private bool _consented;
+#pragma warning disable CS0067, CS0169, CS0414 // used only in phone players
+        private bool _messagingWanted;
+        private bool _permissionWanted;
+        private bool _messaging;
 
         /// <summary>The FCM token, on the main thread, whenever Firebase issues or rotates it.</summary>
-#pragma warning disable CS0067 // raised only in Android players
         public event Action<string>? TokenReceived;
-#pragma warning restore CS0067
+
+        /// <summary>The data of a notification the player tapped, on the main thread (iOS).</summary>
+        public event Action<IReadOnlyDictionary<string, string>>? NotificationOpened;
+#pragma warning restore CS0067, CS0169, CS0414
 
         public bool Ready => _ready;
 
@@ -36,6 +40,21 @@ namespace Hulla.Infrastructure.Platform
 #if !UNITY_EDITOR && (UNITY_ANDROID || UNITY_IOS)
             StartAsync();
 #endif
+        }
+
+        /// <summary>
+        /// Starts Firebase Messaging, which on iOS registers with APNs, and with
+        /// <paramref name="askPermission"/> shows the system's notification dialog. Android starts it
+        /// with Firebase and asks through its own permission.
+        /// </summary>
+        public void StartMessaging(bool askPermission)
+        {
+            _messagingWanted = true;
+            _permissionWanted |= askPermission;
+            if (_ready)
+            {
+                ApplyMessaging();
+            }
         }
 
         public void SetConsent(bool consented)
@@ -111,10 +130,10 @@ namespace Hulla.Infrastructure.Platform
                 _ready = true;
                 Apply();
 #if UNITY_ANDROID
-                // iOS joins when the paid Apple account brings APNs; asking for the token there would
-                // show the system's notification dialog at launch.
-                FirebaseMessaging.TokenReceived += OnTokenReceived;
+                _messagingWanted = true;
 #endif
+                // iOS waits for StartMessaging: Messaging may show the notification dialog when it starts.
+                ApplyMessaging();
             }
             catch (Exception error)
             {
@@ -123,11 +142,59 @@ namespace Hulla.Infrastructure.Platform
         }
 #endif
 
-#if !UNITY_EDITOR && UNITY_ANDROID
+        private void ApplyMessaging()
+        {
+#if !UNITY_EDITOR && (UNITY_ANDROID || UNITY_IOS)
+            if (!_messagingWanted)
+            {
+                return;
+            }
+
+            try
+            {
+                if (!_messaging)
+                {
+                    _messaging = true;
+                    FirebaseMessaging.TokenReceived += OnTokenReceived;
+#if UNITY_IOS
+                    FirebaseMessaging.MessageReceived += OnMessageReceived;
+#endif
+                }
+
+#if UNITY_IOS
+                if (_permissionWanted)
+                {
+                    _permissionWanted = false;
+                    _ = FirebaseMessaging.RequestPermissionAsync();
+                }
+#endif
+            }
+            catch (Exception error)
+            {
+                Debug.LogWarning($"firebase messaging: {error.Message}");
+            }
+#endif
+        }
+
+#if !UNITY_EDITOR && (UNITY_ANDROID || UNITY_IOS)
         private async void OnTokenReceived(object sender, TokenReceivedEventArgs args)
         {
             await Awaitable.MainThreadAsync();
             TokenReceived?.Invoke(args.Token);
+        }
+#endif
+
+#if !UNITY_EDITOR && UNITY_IOS
+        private async void OnMessageReceived(object sender, MessageReceivedEventArgs args)
+        {
+            if (!args.Message.NotificationOpened || args.Message.Data == null)
+            {
+                return;
+            }
+
+            var data = new Dictionary<string, string>(args.Message.Data);
+            await Awaitable.MainThreadAsync();
+            NotificationOpened?.Invoke(data);
         }
 #endif
     }

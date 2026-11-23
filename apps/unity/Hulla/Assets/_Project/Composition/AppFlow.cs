@@ -476,6 +476,7 @@ namespace Hulla.Composition
             }
 
             _app.Links.Ready();
+            _app.PushDevice.Opened += OpenFromPush;
             OpenFromPush();
         }
 
@@ -490,6 +491,7 @@ namespace Hulla.Composition
             _app.Settings.Changed -= ApplySettings;
             _app.QuickPlay.Found -= OnQuickPlayFound;
             _app.Phone.Switched -= OnPhoneSwitched;
+            _app.PushDevice.Opened -= OpenFromPush;
             _phoneView?.Dispose();
             _app.Links.InviteOpened -= OnInviteLink;
             _app.Links.ReferralOpened -= OnReferralLink;

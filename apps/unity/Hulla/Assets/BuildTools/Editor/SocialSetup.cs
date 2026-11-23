@@ -19,8 +19,8 @@ namespace Hulla.BuildTools
     /// manifest take the Facebook app id from Infrastructure/Social/Resources/HullaSocial.json and the client
     /// token from HULLA_FACEBOOK_CLIENT_TOKEN, else the git-ignored HullaSocial.local.json beside Assets.
     /// BuildCommands clears the token again after the build so it is never committed. The Xcode
-    /// project links AuthenticationServices and Contacts, says why it asks for contacts and, once the paid
-    /// Apple account exists, adds Sign in with Apple.
+    /// project links AuthenticationServices and Contacts, says why it asks for contacts and, when appleSignIn
+    /// is on, adds Sign in with Apple.
     /// </summary>
     public sealed class SocialSetup : IPreprocessBuildWithReport
     {
@@ -116,7 +116,7 @@ namespace Hulla.BuildTools
             plist.WriteToFile(plistPath);
             if ((bool?)Config()["appleSignIn"] == true)
             {
-                // The capability needs the paid Apple Developer account; a personal team cannot sign with it.
+                // The capability needs the paid Apple Developer team; a personal team cannot sign with it.
                 var capabilities = new ProjectCapabilityManager(projectPath, "Unity-iPhone.entitlements", null, project.GetUnityMainTargetGuid());
                 capabilities.AddSignInWithApple();
                 capabilities.WriteToFile();

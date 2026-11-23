@@ -27,11 +27,13 @@ The app uses Meta's SDK for Unity 18.1.1 with its examples, Windows and IAP extr
 
 ## Apple (free with the paid developer account)
 
-Sign in with Apple needs the Apple Developer Program's capability; a personal team cannot sign an app that carries it. When the paid account exists:
+Sign in with Apple needs the Apple Developer Program's capability; a personal team cannot sign an app that carries it. It is on since 23 Nov 2026:
 
-1. In the developer portal, enable Sign in with Apple on the `gg.hulla.app` identifier.
-2. Set `appleSignIn` to `true`. The iOS build then adds the entitlement (`SocialSetup.OnPostProcessBuild`).
-3. The server's `social.apple.bundle_id` is already `gg.hulla.app`.
+1. Sign in with Apple is enabled on the `gg.hulla.app` identifier as a primary app id (`tools/ios-release/asc.py capabilities gg.hulla.app APPLE_ID_AUTH`).
+2. `appleSignIn` is `true`. The iOS build adds the entitlement (`SocialSetup.OnPostProcessBuild`) and the app shows the Apple button on iPhones. Set it to `false` for a build signed by a personal team.
+3. The server's `social.apple.bundle_id` is `gg.hulla.app` (`server/nakama/config/local.yml`, `infra/phase0/nakama.yml.tmpl`). The app signs in natively, so Apple issues the token for the bundle id: no Services ID, no sign-in key and no return URL are needed. Those come with the web client.
+
+Still to check on a phone: link Apple in Settings → Account, then sign in with it on a second install.
 
 ## Current ids (30 Oct 2026)
 

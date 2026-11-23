@@ -30,7 +30,18 @@ The second line should say `playhulla.pages.dev: verified` after installing a bu
 
 ## iOS
 
-Universal Links need the Associated Domains capability, which a free personal team cannot sign. Until the paid Apple Developer account exists, iPhones open the link page and its Open Hulla button opens the app through `hulla://`. Then: put the new team id in `apple-app-site-association` and set `InviteLinkXcode.UniversalLinks` to true.
+Universal Links need the Associated Domains capability, which is on for `gg.hulla.app` in the paid team `B7GXSQMTHV`. `InviteLinkXcode.UniversalLinks` is true, so the build adds `applinks:` for every host in `InviteLink.Hosts` to the entitlements. `apple-app-site-association` must list `B7GXSQMTHV.gg.hulla.app`; iOS reads it through Apple's servers when the app is installed, and Apple caches it for up to a day.
+
+Check after a deploy and an install from TestFlight:
+
+```bash
+curl -s https://playhulla.pages.dev/.well-known/apple-app-site-association
+curl -s https://app-site-association.cdn-apple.com/a/v1/playhulla.pages.dev
+```
+
+Both should show the team id. Then tap a shared link in Messages or Notes: the app opens without the link page. Pasting the link into Safari's address bar never opens the app; that is how iOS works. Where the check has not passed yet, the link page's Open Hulla button still opens the app through `hulla://`.
+
+A build signed by a free personal team cannot carry the capability: set `InviteLinkXcode.UniversalLinks` to false for one.
 
 ## Moving to our own domain
 

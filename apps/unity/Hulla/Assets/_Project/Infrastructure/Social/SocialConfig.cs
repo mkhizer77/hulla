@@ -20,7 +20,7 @@ namespace Hulla.Infrastructure.Social
             FacebookAppId = facebookAppId;
         }
 
-        /// <summary>Sign in with Apple needs the paid Apple Developer account's capability, so it is switched on by hand.</summary>
+        /// <summary>Sign in with Apple; off for a build signed by a personal team, which cannot carry the capability.</summary>
         public bool AppleSignIn { get; }
 
         /// <summary>The Google Cloud "Web application" client id: the audience Android's ID tokens are issued for.</summary>

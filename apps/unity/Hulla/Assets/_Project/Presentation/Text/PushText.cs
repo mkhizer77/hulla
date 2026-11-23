@@ -53,5 +53,15 @@ namespace Hulla.Presentation.Text
             var escaped = SecurityElement.Escape(text).Replace("&apos;", "\\'").Replace("&quot;", "\\\"");
             return Regex.Replace(escaped, @"\{(\d)\}", m => "%" + (int.Parse(m.Groups[1].Value) + 1) + "$s");
         }
+
+        /// <summary>
+        /// A value for an iOS .strings file: backslashes, quotes and line breaks escaped, a literal
+        /// percent doubled, and {0} as %1$@ so the notification fills in the server's arguments.
+        /// </summary>
+        public static string ToApple(string text)
+        {
+            var escaped = text.Replace("\\", "\\\\").Replace("\"", "\\\"").Replace("\n", "\\n").Replace("%", "%%");
+            return Regex.Replace(escaped, @"\{(\d)\}", m => "%" + (int.Parse(m.Groups[1].Value) + 1) + "$@");
+        }
     }
 }

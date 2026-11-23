@@ -5,13 +5,15 @@ The server sends push through Firebase Cloud Messaging, validates store receipts
 ## Push (GDD 10.10)
 
 1. Firebase project: create one for Hulla (the same project the Unity client uses for Analytics and Crashlytics). Add the Android app with the package name and the iOS app with the bundle id.
-2. iOS delivery: in the Apple Developer account create an APNs authentication key (.p8) and upload it to the Firebase project under Cloud Messaging. One FCM path then serves both platforms.
+2. iOS delivery: the app side is in (below). What is left is the account holder's: in the Apple Developer account, Certificates, Identifiers & Profiles → Keys → +, name it "Hulla APNs", tick Apple Push Notifications service (APNs), environment Sandbox & Production, download the `.p8` once and keep it in `~/Documents/hulla-signing/`. In the Firebase console (project `hulla-513213`), Project settings → Cloud Messaging → Apple app `gg.hulla.app` → APNs Authentication Key → Upload: the file, its key id and the team id `B7GXSQMTHV`. One FCM path then serves both platforms. An individual team allows two APNs keys; an App Store Connect API key cannot make one.
 3. Service account: in Google Cloud for that project, create a service account with the role "Firebase Cloud Messaging API Admin" and download its JSON key.
 4. Box environment (`runtime.env` in the Nakama config): `HULLA_FCM_PROJECT_ID` (the `project_id` of the key), `HULLA_FCM_CLIENT_EMAIL` (`client_email`), `HULLA_FCM_PRIVATE_KEY` (`private_key`, kept on one line with the newlines written as `\n`). Restart Nakama.
 5. Check from a device: sign in on the device, let the client call `push_register`, then run
    `curl -s -X POST "http://127.0.0.1:7350/v2/rpc/admin_push_test?http_key=<key>&unwrap" -d '{"userId":"<user id>","type":"table_invite"}'`
    The answer lists each device and its outcome: `sent`, `invalid_token` (the token was dropped), `failed` (quota or network; the log line `push request failed` has the cause) or `unconfigured` (a variable is missing). Repeat for `friend_request`, `friend_online`, `daily_reward` and `season_end`; each must open its screen (lobby, friends, friends, home, pass).
 6. Schedule `admin_push_sweep` hourly from the cron sidecar (#76) next to `admin_purge_deleted`.
+
+On iPhones: Push Notifications is on for `gg.hulla.app`, and the build adds the `aps-environment` entitlement (sandbox for development builds, production for release), the remote-notification background mode and `Localizable.strings` with the push keys (`BuildTools/Editor/PushXcode.cs`). Firebase Messaging starts only after the player says yes to the app's own question (after their first round), so nothing asks at launch; from then on it starts with the app, the token goes to `push_register` as `ios`, and a tapped notification opens its screen. A build signed by a personal team needs `PushXcode.Push` off.
 
 The server never writes notification text. The push carries `push.<type>.title` and `push.<type>.body` as localisation keys with their arguments (a display name, a room code, hours left), so the client's string table must hold those ten keys in every language.
 
