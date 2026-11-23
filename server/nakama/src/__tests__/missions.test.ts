@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 
 import { BUNDLED_MISSIONS } from "../content/missions";
 import {
@@ -93,6 +93,10 @@ function memoryLedger(): LedgerPorts & { readonly paid: string[] } {
 }
 
 describe("missions (GDD 12.5)", () => {
+  afterEach(() => {
+    vi.useRealTimers();
+  });
+
   it("draws three dailies and five weeklies per player and period, the same on every device", () => {
     const a = forPeriod(EMPTY_MISSIONS, BUNDLED_MISSIONS, "u1", T0);
     const b = forPeriod(EMPTY_MISSIONS, BUNDLED_MISSIONS, "u1", T0 + 60_000);
@@ -214,6 +218,8 @@ describe("missions (GDD 12.5)", () => {
   });
 
   it("runs through the RPCs, records round metrics with a notification, and reloads the pool", () => {
+    // The weekly draw is seeded by the week, so the clock is pinned to one that draws w_rounds_15.
+    vi.useFakeTimers({ now: new Date("2026-11-18T12:00:00Z") });
     const m = memoryNk();
     const log = fakeLogger();
     const first = parse(
