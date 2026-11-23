@@ -89,6 +89,7 @@ namespace Hulla.Composition
                 PushRegistration = push;
             }
 
+            PushDevice = Hulla.Infrastructure.Platform.PushDevices.Create(Hulla.Presentation.Text.PushText.ChannelName, Firebase);
             Firebase.Start();
             Pass = new PassViewModel(new NakamaPassService(_connection));
             Missions = new MissionsViewModel(new NakamaMissionsService(_connection));
@@ -227,7 +228,7 @@ namespace Hulla.Composition
 
         public IShareSheet ShareSheet { get; } = new Hulla.Infrastructure.Platform.NativeShareSheet();
 
-        public IPushDevice PushDevice { get; } = Hulla.Infrastructure.Platform.PushDevices.Create(Hulla.Presentation.Text.PushText.ChannelName);
+        public IPushDevice PushDevice { get; }
 
         public PushPrompt PushPrompt => _pushPrompt ??= new PushPrompt(Store);
 

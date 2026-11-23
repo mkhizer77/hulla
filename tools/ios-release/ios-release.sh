@@ -36,6 +36,28 @@ rm -rf "$out/export"
 # The archive is unsigned: automatic signing would want a development profile, and a new team has
 # no devices for one. The export signs for App Store distribution and makes the certificate and
 # profile through the key.
+#
+# An unsigned app carries no entitlements, and the export takes them from the archived app's
+# signature, so push, Sign in with Apple and Universal Links would be dropped without a word.
+# Sign the archive ad hoc with the project's entitlements first; the export replaces the signature
+# and keeps them.
+entitlements="$project_dir/Unity-iPhone.entitlements"
+if [ -f "$entitlements" ]; then
+  app="$(find "$archive/Products/Applications" -maxdepth 1 -name '*.app' | head -1)"
+  [ -n "$app" ] || { echo "no app in $archive" >&2; exit 1; }
+  if [ -d "$app/Frameworks" ]; then
+    find "$app/Frameworks" -depth \( -name '*.framework' -o -name '*.dylib' \) \
+      -exec codesign --force --sign - {} \;
+  fi
+  codesign --force --sign - --entitlements "$entitlements" "$app"
+  signed="$(codesign -d --entitlements - --xml "$app" 2>/dev/null)"
+  for key in $(/usr/libexec/PlistBuddy -c Print "$entitlements" | sed -n 's/^    \([^ ]*\) = .*/\1/p'); do
+    case "$signed" in
+      *"<key>$key</key>"*) ;;
+      *) echo "entitlement $key is missing from the archived app" >&2; exit 1 ;;
+    esac
+  done
+fi
 
 sed "s/__TEAM__/$team/" "$here/ExportOptions.plist" > "$out/ExportOptions.plist"
 xcodebuild -exportArchive -archivePath "$archive" -exportOptionsPlist "$out/ExportOptions.plist" \

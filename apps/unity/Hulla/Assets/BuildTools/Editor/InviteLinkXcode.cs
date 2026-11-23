@@ -10,13 +10,13 @@ namespace Hulla.BuildTools
     /// <summary>
     /// Universal Links for invite and referral links (GDD 10.5, 10.9): the Associated Domains capability for
     /// every <see cref="InviteLink.Hosts"/>, checked by iOS against /.well-known/apple-app-site-association.
-    /// A personal team cannot sign the capability, so it waits for the paid Apple Developer account; until
-    /// then the link page opens the app through hulla://.
+    /// A personal team cannot sign the capability, so a build signed by one needs the switch off; the link
+    /// page then opens the app through hulla://.
     /// </summary>
     public static class InviteLinkXcode
     {
-        /// <summary>Switch on once the paid account signs the app (docs/runbooks/links-setup.md).</summary>
-        public static readonly bool UniversalLinks = false;
+        /// <summary>On since the paid account signs the app (docs/runbooks/links-setup.md).</summary>
+        public static readonly bool UniversalLinks = true;
 
         [PostProcessBuild(5)]
         public static void OnPostProcessBuild(BuildTarget target, string path)

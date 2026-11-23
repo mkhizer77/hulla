@@ -38,6 +38,23 @@ namespace Hulla.Presentation.Tests
             Assert.AreEqual(expected, PushText.ToAndroid(text));
         }
 
+        [TestCase("{0} invites you to their table ({1}).", "%1$@ invites you to their table (%2$@).")]
+        [TestCase("Ali's \"chai\" \\ 100%", "Ali's \\\"chai\\\" \\\\ 100%%")]
+        [TestCase("one\ntwo", "one\\ntwo")]
+        public void AppleStringsAreEscapedAndPositional(string text, string expected)
+        {
+            Assert.AreEqual(expected, PushText.ToApple(text));
+        }
+
+        [Test]
+        public void NoAppleStringKeepsABracePlaceholder()
+        {
+            foreach (var text in PushText.Keyed.Values)
+            {
+                Assert.IsFalse(Regex.IsMatch(PushText.ToApple(text), @"\{\d\}"), text);
+            }
+        }
+
         [Test]
         public void NoAndroidStringKeepsABracePlaceholder()
         {

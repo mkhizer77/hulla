@@ -60,5 +60,8 @@ namespace Hulla.Application.Social
 
         /// <summary>The data of the notification that opened the app, once; null if none.</summary>
         IReadOnlyDictionary<string, string>? TakeOpenedData();
+
+        /// <summary>A tapped notification's data arrived after the app was already asked for it (iOS).</summary>
+        event System.Action Opened;
     }
 }

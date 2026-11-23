@@ -6,6 +6,8 @@ so no Python packages are needed.
 
   asc.py bundle-id gg.hulla.app "Hulla"   register the app id if missing; prints the team id
   asc.py builds gg.hulla.app              list uploaded builds and their processing state
+  asc.py capabilities gg.hulla.app [TYPE…]  list the app id's capabilities; switch on the named ones
+                                          (ASSOCIATED_DOMAINS, APPLE_ID_AUTH, PUSH_NOTIFICATIONS, …)
 """
 import base64
 import json
@@ -72,6 +74,32 @@ def bundle_id(identifier: str, name: str) -> None:
     print("team id:", found[0]["attributes"]["seedId"])
 
 
+# Capabilities Apple refuses without a setting: Sign in with Apple as a primary app id.
+CAPABILITY_SETTINGS = {
+    "APPLE_ID_AUTH": [{"key": "APPLE_ID_AUTH_APP_CONSENT", "options": [{"key": "PRIMARY_APP_CONSENT"}]}],
+}
+
+
+def capabilities(identifier: str, *wanted: str) -> None:
+    found = call("GET", f"/bundleIds?filter[identifier]={identifier}&include=bundleIdCapabilities")
+    ids = [b for b in found["data"] if b["attributes"]["identifier"] == identifier]
+    if not ids:
+        sys.exit(f"no app id {identifier}; register it with bundle-id first")
+    on = {c["attributes"]["capabilityType"] for c in found.get("included", []) if c["type"] == "bundleIdCapabilities"}
+    for capability in wanted:
+        if capability in on:
+            continue
+        body = {"data": {
+            "type": "bundleIdCapabilities",
+            "attributes": {"capabilityType": capability, "settings": CAPABILITY_SETTINGS.get(capability, [])},
+            "relationships": {"bundleId": {"data": {"type": "bundleIds", "id": ids[0]["id"]}}},
+        }}
+        call("POST", "/bundleIdCapabilities", body)
+        on.add(capability)
+        print(f"enabled {capability}")
+    print("capabilities:", ", ".join(sorted(on)) or "none")
+
+
 def builds(identifier: str) -> None:
     apps = call("GET", f"/apps?filter[bundleId]={identifier}")["data"]
     if not apps:
@@ -84,4 +112,4 @@ def builds(identifier: str) -> None:
 
 if __name__ == "__main__":
     command, *args = sys.argv[1:] or ["help"]
-    {"bundle-id": bundle_id, "builds": builds}.get(command, lambda *_: sys.exit(__doc__))(*args)
+    {"bundle-id": bundle_id, "builds": builds, "capabilities": capabilities}.get(command, lambda *_: sys.exit(__doc__))(*args)
