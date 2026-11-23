@@ -18,9 +18,9 @@ The development and test server (ADR-0013, update of 9 November 2026): one VM in
 
 ## Money
 - About $40 a month: the VM about $32, disk and address about $7, snapshots, storage and traffic cents.
-- The billing account is a free trial. While it is not upgraded, Google cannot charge the card; at the end of the credit or the 90 days the VM stops. Image and video generation spend the same credit, which is why the budget covers the whole billing account.
+- The billing account was a free trial and was upgraded to paid on 11 November 2026. The credit is still spent first; once it ends or expires the card is charged, which is why the budget covers the whole billing account. Image and video generation bill the owner's other Google account, whose own trial credit was upgraded on 26 October and runs to 14 January 2027.
 - Once the box is stopped by the switch, the disk, address and snapshots still cost about $10 a month until deleted.
-- Before the trial ends (late January 2027): upgrade the account and keep paying, or move to the Phase 1 box. Copy the latest dump to the Mac first: `gcloud storage cp gs://hulla-phase0-backups/postgres/<latest> .`.
+- Before the credit ends (late January 2027): keep paying for the box, or move to the Phase 1 box. Copy the latest dump to the Mac first: `gcloud storage cp gs://hulla-phase0-backups/postgres/<latest> .`.
 
 ## Daily use
 ```bash
