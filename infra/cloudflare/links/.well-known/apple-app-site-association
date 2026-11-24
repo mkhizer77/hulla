@@ -2,7 +2,7 @@
   "applinks": {
     "details": [
       {
-        "appIDs": ["H6MP27AWFT.gg.hulla.app"],
+        "appIDs": ["B7GXSQMTHV.gg.hulla.app"],
         "components": [
           { "/": "/j/*", "comment": "table invites" },
           { "/": "/r/*", "comment": "referral links" }
