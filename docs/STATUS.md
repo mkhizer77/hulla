@@ -1,11 +1,12 @@
 # Status
 
-Updated: 23 November 2026
+Updated: 25 November 2026
 
 ## Phase
 M0 complete: the Thulla rulebook runs in TypeScript with full traceability. M1, the vertical slice, starts with the protocol schemas.
 
 ## Done
+- Push on the box (25 Nov, this PR): the phase 0 box had no Firebase credentials, so it sent no pushes to any phone. It now has them (service account `hulla-push` in `hulla-513213`, read from `secrets.env`; `admin_push_test` answers `configured: true`), and the owner uploaded the APNs key to Firebase. The links site serves the paid team's id (PR 345) and Apple's copy has it. Not yet checked: a push arriving on a phone, a link opening the iPhone app.
 - iOS capabilities (23 Nov, PR 344): Universal Links, Sign in with Apple and iPhone push are switched on for team `B7GXSQMTHV`; the three capabilities are enabled on `gg.hulla.app`; `ios-release.sh` now carries the entitlements through the unsigned archive. A development build of `55ad219` on the owner's iPhone is signed with all three entitlements, the remote-notification mode and the push strings. Not yet checked on the phone: Apple sign-in, a link opening the app, the permission question, a push arriving. TestFlight 0.1.2 (3) predates this; the next iOS upload carries it.
 - Release 0.1.2 for testers (23 Nov): Android 0.1.2 (3) is on Play internal testing and iOS 0.1.2 (3) is on TestFlight for the group Team, both built from `d2b67ce` against the phase 0 box, which runs `f5ac7cc`. The Android bundle is 155 MB; the per-device download size is in Play's bundle explorer and still to be read for GDD §19.5. The restore drill ran off the box (PR 343): today's dump restores in under a second and the box's image starts on it; `docs/runbooks/database-restore.md` now describes the nightly dump the box really takes. The restore on the box and the rollback drill are still to do (#90).
 - Server deploy (23 Nov): the phase 0 box runs the server image of commit f5ac7cc, so the review fixes of PRs 336 to 341 are live (a dump, `nakama-20261123T1235Z.dump`, was written before the switch; rollback is the previous image 7fc18f3 in `box.env.bak`). Healthcheck, device sign-in and `hello` checked from outside. A development build of the same commit runs on the owner's iPhone; since `gg.hulla.app` belongs to the paid team, device builds sign with `DEVELOPMENT_TEAM=B7GXSQMTHV` and the App Store Connect key (`-allowProvisioningUpdates -allowProvisioningDeviceRegistration -authenticationKey...`), not the Personal Team.
@@ -113,7 +114,6 @@ The web client starts after v1.1 as planned.
 - Legal review of `docs/legal/` (#87), then publish the pages and `/delete` on the link domain and set `privacy_url` and `terms_url` in remote config; vendor DPAs; the India decision (#88).
 - Trademark search (#130): urgent, the repository is public and the GDD's name research was pushed in the first commit.
 - Domain: settled (16 Nov). The project stays on the `khizerkhalid.de` subdomains and `playhulla.pages.dev`; revisit only if they cannot do something we need.
-- iOS, owner's steps: an APNs key (Developer portal, Keys, APNs Sandbox & Production) uploaded to Firebase project `hulla-513213` with team id `B7GXSQMTHV`, without which iPhones get no pushes; and the go-ahead to merge PR 345, which deploys the links site with the paid team's id so Universal Links open the app (`docs/runbooks/ios-release.md`).
 - History rewritten on 12 Oct: `main` is now 4835100 with no GDD. Still to do: untick "Allow force pushes" on the `main` rule, and ask GitHub support to purge the unreachable commit 116116e, which the site still serves by SHA. The ignore rule lands with the next commit.
 - Product and legal, from the audit (GDD §31.2): O15 report weighting, O16 UK Online Safety Act (#133), O17 locked-screen voice on iOS, O18 the public-table endgame default, O20 wallet merge on account linking, O21 client nonces in the fairness commitment. Rule gaps OQ-001 and OQ-003 to OQ-006 run on interim choices until decided.
 - Technical: Facebook login stays, so the install-size budget in GDD §19.5 is measured with the Meta SDK included at #35.
