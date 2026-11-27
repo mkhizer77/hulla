@@ -41,6 +41,12 @@ namespace Hulla.Infrastructure.Analytics
             _file = Path.Combine(UnityEngine.Application.persistentDataPath, DeviceProfile.Key("amplitude-events") + ".jsonl");
         }
 
+        /// <summary>Events not yet accepted by Amplitude.</summary>
+        public int Held => _queue?.Held.Count ?? 0;
+
+        /// <summary>The HTTP status of the last request (0 before the first, or when it got no answer).</summary>
+        public int LastStatus { get; private set; }
+
         public void Send(IReadOnlyList<AnalyticsEvent> batch)
         {
             var queue = Queue();
@@ -176,6 +182,7 @@ namespace Hulla.Infrastructure.Analytics
                         return;
                     }
 
+                    LastStatus = status;
                     queue.Completed(status);
                     Save(queue);
                 }

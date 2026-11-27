@@ -2,7 +2,9 @@
 
 Product analytics for the client (ADR-0025). The events and what they answer: `docs/design/analytics-events.md`. Until a build is given a key, Amplitude is off and nothing else changes.
 
-## The account (owner, once)
+## The account
+
+Made on 27 November 2026: an organisation in the EU region on the free plan (`app.eu.amplitude.com`, the owner's personal sign-in) with two projects, **Hulla** (id 100072950, store builds) and **Hulla dev** (id 100073074, development builds). The steps, for a new organisation:
 
 1. Sign up at amplitude.com on the Starter (free) plan. When asked for the data region choose **EU**; it cannot be changed later for a project.
 2. Make two projects: `Hulla` for store builds and `Hulla dev` for development builds, so test rounds stay out of the real numbers.
@@ -21,6 +23,10 @@ Or in the git-ignored `apps/unity/Hulla/HullaAnalytics.local.json` in the checko
 A development build also takes `-hulla-amplitude-key <key>` on the command line (the Mac QA windows).
 
 ## Checks
+
+Quick, without a build: the play-mode test `AmplitudeAgainstAmplitudeTests` sends three events and a player description through the real sink and passes when Amplitude answers 200. Run it with `HULLA_AMPLITUDE_KEY` set to the dev project's key; the project's settings page then shows three more events. It is skipped without the key.
+
+With a build:
 
 1. Start a development build with a key, answer **Yes, share** to the usage question, open a tab or two and play a round against bots.
 2. Development builds log each batch (`[analytics] …`) and any answer from Amplitude other than 200 (`amplitude: 400 …`).
