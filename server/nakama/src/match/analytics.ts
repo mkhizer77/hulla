@@ -149,9 +149,18 @@ export function analyticsFromBatch<S, M>(
       case "round_end":
       case "rung_round_end": {
         const started = state.round?.startedTs ?? now;
+        // The seats that played: everyone seated when the round ends, bots apart.
+        const bots = state.seats.filter((s) => s.bot).length;
+        const humans = state.seats.filter((s) => s.playerId !== null && !s.bot).length;
         push(
           "round_end",
-          { duration: Math.max(0, now - started) / 1000, bhabhi_cards: num(p["bhabhiCards"]) ?? 0 },
+          {
+            duration: Math.max(0, now - started) / 1000,
+            bhabhi_cards: num(p["bhabhiCards"]) ?? 0,
+            seats: humans + bots,
+            humans,
+            bots,
+          },
           null,
         );
         break;

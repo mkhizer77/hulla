@@ -3,7 +3,7 @@ import { join } from "node:path";
 
 import { describe, expect, it } from "vitest";
 
-import { ANALYTICS_EVENT_NAMES } from "../../generated/ts";
+import { ANALYTICS_EVENT_NAMES, ANALYTICS_HIGH_VOLUME } from "../../generated/ts";
 
 const schema = JSON.parse(
   readFileSync(
@@ -19,6 +19,15 @@ const FORBIDDEN =
 describe("analytics events (GDD 23.3)", () => {
   it("lists every event in the schema", () => {
     expect([...ANALYTICS_EVENT_NAMES].sort()).toEqual(Object.keys(schema.definitions).sort());
+  });
+
+  it("keeps per-move events out of Amplitude and the events its charts are built on in", () => {
+    for (const name of ["move_played", "pickup", "thulla", "quick_chat"]) {
+      expect(ANALYTICS_HIGH_VOLUME, name).toContain(name);
+    }
+    for (const name of ["app_open", "round_start", "round_end", "screen_view", "purchase"]) {
+      expect(ANALYTICS_HIGH_VOLUME, name).not.toContain(name);
+    }
   });
 
   it("no event carries a name, chat text, a hand or a card list", () => {

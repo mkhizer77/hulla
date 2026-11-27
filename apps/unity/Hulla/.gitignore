@@ -23,6 +23,7 @@ crashlytics-build.properties
 /HullaSocial.local.json
 /HullaAds.local.json
 /HullaServer.local.json
+/HullaAnalytics.local.json
 # Firebase config for this checkout and the files Firebase generates from it (docs/runbooks/firebase-setup.md)
 /Assets/Firebase/
 /Assets/Firebase.meta

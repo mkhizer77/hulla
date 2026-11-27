@@ -142,6 +142,31 @@ namespace Hulla.Composition
         }
 
         /// <summary>
+        /// The Amplitude project this build reports to (docs/runbooks/amplitude-setup.md), or null when it
+        /// has none and Amplitude stays off: the key on the resource's third line, "us" on the fourth for a
+        /// project outside the EU data centre. A development build also takes <c>-hulla-amplitude-key</c>.
+        /// </summary>
+        public static (string Key, bool Eu)? Amplitude()
+        {
+            if (Debug.isDebugBuild)
+            {
+                var args = Environment.GetCommandLineArgs();
+                for (var i = 0; i < args.Length - 1; i++)
+                {
+                    if (args[i] == "-hulla-amplitude-key" && args[i + 1].Trim().Length > 0)
+                    {
+                        return (args[i + 1].Trim(), true);
+                    }
+                }
+            }
+
+            var lines = (Resources.Load<TextAsset>(DevServerResource)?.text ?? "").Split('\n');
+            var key = lines.Length > 2 ? lines[2].Trim() : "";
+            var region = lines.Length > 3 ? lines[3].Trim() : "";
+            return key.Length == 0 ? null : (key, !string.Equals(region, "us", StringComparison.OrdinalIgnoreCase));
+        }
+
+        /// <summary>
         /// The server the build was made for: the address on the first line of the resource and, for a
         /// deployed server, its key on the second. Written by BuildCommands for the build only.
         /// </summary>

@@ -78,8 +78,11 @@ namespace Hulla.Composition
             var notifications = new NakamaNotificationsService(_connection);
             NotificationsService = notifications;
             NotificationSettings = new NotificationSettingsViewModel(notifications);
-            Analytics = new Hulla.Application.Analytics.AnalyticsClient(
-                new Hulla.Infrastructure.Analytics.FirebaseAnalyticsSink(Firebase, new Hulla.Infrastructure.Analytics.LogAnalyticsSink()));
+            var firebaseSink = new Hulla.Infrastructure.Analytics.FirebaseAnalyticsSink(Firebase, new Hulla.Infrastructure.Analytics.LogAnalyticsSink());
+            // Amplitude only in a build that was given a project key (docs/runbooks/amplitude-setup.md).
+            Analytics = AppConfig.Amplitude() is (string amplitudeKey, bool amplitudeEu)
+                ? new Hulla.Application.Analytics.AnalyticsClient(firebaseSink, new Hulla.Infrastructure.Analytics.AmplitudeSink(amplitudeKey, amplitudeEu))
+                : new Hulla.Application.Analytics.AnalyticsClient(firebaseSink);
             var platform = Hulla.Infrastructure.Platform.PushDevices.Platform;
             if (platform != null)
             {

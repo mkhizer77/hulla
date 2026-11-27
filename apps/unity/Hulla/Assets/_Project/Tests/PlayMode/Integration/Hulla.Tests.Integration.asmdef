@@ -3,6 +3,7 @@
     "rootNamespace": "Hulla.Integration.Tests",
     "references": [
         "Hulla.Application",
+        "Hulla.Composition",
         "Hulla.Domain",
         "Hulla.Protocol",
         "Hulla.Infrastructure",

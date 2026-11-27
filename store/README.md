@@ -75,7 +75,7 @@ Families policy: not enrolled; target audience 13 and over, not designed for chi
 
 - **Data used to track you:** advertising data and device id, only after the tracking prompt (ATT) is allowed.
 - **Data linked to you:** contact info (phone number, if linked), user content (chat, gameplay), identifiers (user id, device id), purchases, other data (birth year).
-- **Data not linked to you:** usage data and diagnostics (analytics and crash reports carry no user id).
+- **Data not linked to you:** usage data and diagnostics (analytics and crash reports carry no user id; Amplitude gets a random per-install id).
 - Account deletion: in the app, Settings > Account > Delete account.
 
 ## Console steps (owner)

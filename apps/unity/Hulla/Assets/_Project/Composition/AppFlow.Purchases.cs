@@ -31,6 +31,7 @@ namespace Hulla.Composition
         /// <summary>A purchase was granted: say thanks and bring the wallet, the shop and the pass up to date.</summary>
         private async void OnPurchaseGranted(PurchaseGrant grant)
         {
+            _app.Analytics.Track(Hulla.Protocol.AnalyticsEvents.IapResult(grant.ProductId, "granted"));
             if (_app.Purchases.Balances is (long coins, long gems))
             {
                 _app.Shop.SetBalances(coins, gems);

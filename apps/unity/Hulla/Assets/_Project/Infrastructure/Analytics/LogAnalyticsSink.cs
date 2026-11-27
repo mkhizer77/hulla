@@ -32,5 +32,27 @@ namespace Hulla.Infrastructure.Analytics
 
             Debug.Log(text.ToString());
         }
+
+        public void Identify(string? userId, IReadOnlyDictionary<string, object> properties)
+        {
+            if (!Debug.isDebugBuild || properties.Count == 0)
+            {
+                return;
+            }
+
+            var text = new StringBuilder("[analytics] player{");
+            var first = true;
+            foreach (var pair in properties)
+            {
+                text.Append(first ? "" : ",").Append(pair.Key).Append('=').Append(pair.Value);
+                first = false;
+            }
+
+            Debug.Log(text.Append('}').ToString());
+        }
+
+        public void Forget()
+        {
+        }
     }
 }

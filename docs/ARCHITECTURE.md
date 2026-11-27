@@ -510,7 +510,7 @@ Flags live in a storage object mirrored to the content manifest and in Firebase 
 All strings in tables keyed by stable ids, authored in `content/strings` and exported for Unity and the web (ADR-0023); the server sends ids and parameters, never prose; VO and quick-chat packs are content keyed by locale; pseudo-localisation runs in CI (GDD §26.1).
 
 ### 12.4 Analytics
-A typed event schema in `packages/protocol/schemas/analytics/` generates both the client event builders and the server emitters, so names and parameters cannot drift (GDD §23.3). Events carry `gameId`, `tableId`, `roundId`, `seat` where relevant and never chat or voice content.
+A typed event schema in `packages/protocol/schemas/analytics/` generates both the client event builders and the server emitters, so names and parameters cannot drift (GDD §23.3). Events carry `gameId`, `tableId`, `roundId`, `seat` where relevant and never chat or voice content. Client events go to Firebase and, without the per-move ones, to Amplitude (ADR-0025); the server writes its own as log lines. The full list is `docs/design/analytics-events.md`.
 
 ### 12.5 Errors
 Domain and application code return `Result<T, ErrorCode>`. Error codes form a catalogue (`packages/shared-ts/src/errors.ts` and the generated C# enum) grouped by area: `rules.*` (illegal move, wrong phase), `table.*` (full, locked, banned), `auth.*`, `economy.*`, `content.*`, `network.*`. User-facing text is a localisation key derived from the code. Exceptions are reserved for programmer errors and are reported to crash analytics.

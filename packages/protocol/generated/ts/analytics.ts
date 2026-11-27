@@ -38,6 +38,8 @@ export interface AnalyticsEvents {
     readonly bots?: number;
     readonly preset_hash?: string;
     readonly region?: string;
+    readonly friends?: number;
+    readonly rematch?: boolean;
   };
   readonly move_played: {
     readonly legal_count: number;
@@ -77,6 +79,20 @@ export interface AnalyticsEvents {
     readonly duration: number;
     readonly bhabhi_cards?: number;
     readonly rematch_vote?: boolean;
+    readonly seats?: number;
+    readonly humans?: number;
+    readonly bots?: number;
+    readonly friends?: number;
+    readonly rank?: number;
+    readonly lost?: boolean;
+    readonly court?: boolean;
+    readonly moves?: number;
+    readonly timeouts?: number;
+    readonly thullas_given?: number;
+    readonly thullas_taken?: number;
+    readonly cards_picked?: number;
+    readonly chats?: number;
+    readonly voice?: boolean;
   };
   readonly quick_chat: {
     readonly pack?: string;
@@ -116,6 +132,7 @@ export interface AnalyticsEvents {
   };
   readonly pass_tier: {
     readonly id: string;
+    readonly premium?: boolean;
   };
   readonly shop_view: {
     readonly item?: string;
@@ -125,6 +142,7 @@ export interface AnalyticsEvents {
     readonly item: string;
     readonly price?: number;
     readonly placement?: string;
+    readonly currency?: "coins" | "gems" | "store";
   };
   readonly ad_impression: {
     readonly placement: string;
@@ -144,6 +162,65 @@ export interface AnalyticsEvents {
     readonly fps_avg: number;
     readonly mem_mb?: number;
     readonly device_tier?: "low" | "mid" | "high";
+  };
+  readonly screen_view: {
+    readonly screen: string;
+    readonly overlay?: boolean;
+  };
+  readonly sign_in: {
+    readonly method: "device" | "google" | "facebook" | "apple" | "phone";
+  };
+  readonly account_link: {
+    readonly provider: "google" | "facebook" | "apple" | "phone";
+    readonly outcome: "linked" | "switched" | "in_use" | "failed";
+  };
+  readonly table_join: {
+    readonly via: "create" | "code" | "link" | "friend" | "quick_play" | "ranked" | "rejoin" | "watch";
+    readonly mode?: "private" | "public" | "ranked";
+    readonly spectator?: boolean;
+  };
+  readonly table_leave: {
+    readonly phase: "lobby" | "round" | "between_rounds";
+    readonly reason: "left" | "removed" | "closed";
+    readonly rounds?: number;
+    readonly duration?: number;
+  };
+  readonly share_result: {
+    readonly ratio: "feed" | "story";
+    readonly sheet?: boolean;
+  };
+  readonly daily_reward_claim: {
+    readonly day: number;
+    readonly coins?: number;
+    readonly gems?: number;
+  };
+  readonly level_up: {
+    readonly level: number;
+  };
+  readonly achievement_unlock: {
+    readonly id: string;
+  };
+  readonly iap_start: {
+    readonly product: string;
+  };
+  readonly iap_result: {
+    readonly product: string;
+    readonly outcome: "granted" | "cancelled" | "failed";
+    readonly code?: string;
+  };
+  readonly ad_watch: {
+    readonly placement: string;
+    readonly rewarded: boolean;
+  };
+  readonly error_shown: {
+    readonly code: string;
+    readonly screen?: string;
+  };
+  readonly push_prompt: {
+    readonly answer: "yes" | "no";
+  };
+  readonly push_open: {
+    readonly route: "lobby" | "friends" | "pass" | "home";
   };
 }
 
@@ -184,4 +261,35 @@ export const ANALYTICS_EVENT_NAMES: readonly AnalyticsEventName[] = [
   "reconnect",
   "disconnect",
   "perf_sample",
+  "screen_view",
+  "sign_in",
+  "account_link",
+  "table_join",
+  "table_leave",
+  "share_result",
+  "daily_reward_claim",
+  "level_up",
+  "achievement_unlock",
+  "iap_start",
+  "iap_result",
+  "ad_watch",
+  "error_shown",
+  "push_prompt",
+  "push_open",
+];
+
+/** Per-move and per-message events: not sent to Amplitude (docs/design/analytics-events.md). */
+export const ANALYTICS_HIGH_VOLUME: readonly AnalyticsEventName[] = [
+  "move_played",
+  "thulla",
+  "pickup",
+  "hand_taken",
+  "empty_hand_draw",
+  "endgame_draw",
+  "confirmed",
+  "escape",
+  "quick_chat",
+  "emote",
+  "chat_text",
+  "voice_speak",
 ];

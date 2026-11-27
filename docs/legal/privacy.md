@@ -46,6 +46,7 @@ We share data only with the services that run parts of Hulla for us, under contr
 | Google Cloud (Frankfurt, Germany) | Runs our servers and database | Everything above that we store |
 | Cloudflare | Protects the servers and hosts our link pages | Connection data such as your IP address |
 | Google Firebase | Push notifications; usage and crash reports if you said yes | Device token; usage events and crash reports |
+| Amplitude (EU data centre) | Usage statistics if you said yes | Usage events with a random id made for this purpose on your device, your device model, system version and language; not your account, name or IP address |
 | AppLovin (MAX) and its ad networks | Ads | Advertising id, device data, ad interactions, and your Hulla id so a rewarded ad pays the right account |
 | Meta (WhatsApp) and Twilio | Sending sign-in codes | Your phone number and the code |
 | Google, Facebook, Apple | Sign-in, if you use it | What you agree to on their screen |
@@ -70,7 +71,7 @@ Our servers are in Germany, in the European Union. Some services above process d
 | Bans | Until they end |
 | Phone-code counters (with IP addresses) | 1 day |
 | Push tokens | Until you delete your account, or after 60 days unused |
-| Usage and crash reports | As set by Firebase: up to 14 months |
+| Usage and crash reports | As set by Firebase: up to 14 months; in Amplitude: up to 13 months |
 | Server logs | 30 days |
 
 ## Children

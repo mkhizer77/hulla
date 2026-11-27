@@ -57,6 +57,9 @@ namespace Hulla.Presentation.Navigation
         /// <summary>Raised when a bottom-navigation tab is tapped.</summary>
         public event Action<NavTab>? NavChosen;
 
+        /// <summary>A screen or an overlay opened: its document's name and whether it sits over another screen.</summary>
+        public event Action<string, bool>? ScreenShown;
+
         public VisualElement Show(VisualTreeAsset? screen)
         {
             var root = GetComponent<UIDocument>().rootVisualElement;
@@ -66,6 +69,7 @@ namespace Hulla.Presentation.Navigation
             }
 
             // The navigation, an open overlay (settings) and the top pill stay across the swap.
+            ScreenShown?.Invoke(screen.name, false);
             root.Q(Sheet.Name)?.RemoveFromHierarchy();
             var overlay = root.Q("shell-overlay");
             var banner = root.Q("shell-banner");
@@ -187,6 +191,7 @@ namespace Hulla.Presentation.Navigation
                 throw new InvalidOperationException("screen document missing from the catalog");
             }
 
+            ScreenShown?.Invoke(screen.name, true);
             var instance = screen.Instantiate();
             instance.name = "shell-overlay";
             instance.AddToClassList("overlay");

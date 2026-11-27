@@ -22,7 +22,7 @@ Players: the closed beta (#79) asks about the age question, the voice defaults a
 - Guest play needs no personal data. Linking is optional.
 - Only the birth year is asked, not a date of birth; it sets the age band and nothing else.
 - Phone numbers and one-time codes are stored only as hashes; contacts are hashed, matched and dropped.
-- Analytics carry no user id and run only after consent. Personalised ads need consent and are never shown under 18.
+- Analytics carry no user id and run only after consent; Amplitude gets a random per-install id and no IP address. Personalised ads need consent and are never shown under 18.
 - Voice runs only at a table, only while two microphones are on, and is never recorded; spectators only listen.
 - Retention is set per category and enforced by scheduled purges.
 - Players can export and delete everything in the app.
@@ -43,7 +43,7 @@ Players: the closed beta (#79) asks about the age question, the voice defaults a
 
 ## 6. Actions before launch
 
-- [ ] Sign or accept the data processing terms of: the hosting provider, Cloudflare, Google (Firebase), AppLovin, Meta (WhatsApp Cloud API), Twilio.
+- [ ] Sign or accept the data processing terms of: the hosting provider, Cloudflare, Google (Firebase), Amplitude, AppLovin, Meta (WhatsApp Cloud API), Twilio.
 - [ ] Decide the India approach (#88) and update the age gate.
 - [ ] Run the purge jobs from the box's cron sidecar (#76) and record the first run.
 - [ ] Publish the privacy policy and terms on the link domain and set the URLs in both consoles and in the ad SDK's consent flow.

@@ -11,6 +11,8 @@ interface Param {
 interface EventDef {
   readonly name: string;
   readonly params: readonly Param[];
+  /** Happens many times a round: kept out of Amplitude, which gets the totals on round_end. */
+  readonly highVolume: boolean;
 }
 
 /** Reads schemas/analytics/events.json into a list of events with typed parameters. */
@@ -27,6 +29,7 @@ export function analyticsEvents(schema: JsonSchema): readonly EventDef[] {
         values: Array.isArray(p["enum"]) ? (p["enum"] as string[]) : null,
         required: required.has(param),
       })),
+      highVolume: def["x-high-volume"] === true,
     };
   });
 }
@@ -66,6 +69,11 @@ export function generateAnalyticsTs(events: readonly EventDef[]): string {
     "",
     "export const ANALYTICS_EVENT_NAMES: readonly AnalyticsEventName[] = [",
     ...events.map((e) => `  ${JSON.stringify(e.name)},`),
+    "];",
+    "",
+    "/** Per-move and per-message events: not sent to Amplitude (docs/design/analytics-events.md). */",
+    "export const ANALYTICS_HIGH_VOLUME: readonly AnalyticsEventName[] = [",
+    ...events.filter((e) => e.highVolume).map((e) => `  ${JSON.stringify(e.name)},`),
     "];",
     "",
   ];
@@ -110,6 +118,12 @@ export function generateAnalyticsCs(events: readonly EventDef[]): string {
     "",
     "    public static class AnalyticsEvents",
     "    {",
+    "        /// <summary>Per-move and per-message events: not sent to Amplitude, which gets the totals on round_end.</summary>",
+    "        public static readonly HashSet<string> HighVolume = new HashSet<string>",
+    "        {",
+    ...events.filter((e) => e.highVolume).map((e) => `            ${JSON.stringify(e.name)},`),
+    "        };",
+    "",
   ];
   events.forEach((e, index) => {
     const args = [...e.params]

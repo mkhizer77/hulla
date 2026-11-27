@@ -787,7 +787,7 @@
   "ui.after_rounds": "After {0} rounds",
   "ui.already_friends": "Already friends",
   "ui.also_block": "Also block {0}",
-  "ui.analytics_ask": "Help us improve Hulla? We'd count anonymous things like round length and taps, and get crash reports, through Google Firebase and Meta. Never your chat, cards or name.",
+  "ui.analytics_ask": "Help us improve Hulla? We'd count anonymous things like round length and taps, and get crash reports, through Google Firebase, Amplitude and Meta. Never your chat, cards or name.",
   "ui.analytics_label": "Share anonymous usage data",
   "ui.analytics_no": "No thanks",
   "ui.analytics_yes": "Yes, share",

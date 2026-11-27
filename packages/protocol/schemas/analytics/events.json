@@ -1,8 +1,8 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
   "$id": "https://hulla.gg/schemas/analytics/events.json",
-  "title": "Analytics events (GDD 23.3)",
-  "description": "Every analytics event and its parameters. Pseudonymous: no names, chat or voice content, hands or card lists (GDD 23.6, ARCHITECTURE 12.4). Codegen emits the C# builders and the TypeScript types from this file.",
+  "title": "Analytics events (GDD 23.3, docs/design/analytics-events.md)",
+  "description": "Every analytics event and its parameters. Pseudonymous: no names, chat or voice content, hands or card lists (GDD 23.6, ARCHITECTURE 12.4). Codegen emits the C# builders and the TypeScript types from this file. An event marked x-high-volume happens many times a round: it goes to Firebase and the server log but not to Amplitude, which gets the round's totals on round_end instead.",
   "definitions": {
     "app_open": {
       "type": "object",
@@ -133,6 +133,13 @@
         },
         "region": {
           "type": "string"
+        },
+        "friends": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "rematch": {
+          "type": "boolean"
         }
       },
       "required": ["mode", "seats"]
@@ -140,6 +147,7 @@
     "move_played": {
       "type": "object",
       "additionalProperties": false,
+      "x-high-volume": true,
       "properties": {
         "legal_count": {
           "type": "integer",
@@ -161,6 +169,7 @@
     "thulla": {
       "type": "object",
       "additionalProperties": false,
+      "x-high-volume": true,
       "properties": {
         "pile_size": {
           "type": "integer",
@@ -184,6 +193,7 @@
     "pickup": {
       "type": "object",
       "additionalProperties": false,
+      "x-high-volume": true,
       "properties": {
         "cards": {
           "type": "integer",
@@ -195,6 +205,7 @@
     "hand_taken": {
       "type": "object",
       "additionalProperties": false,
+      "x-high-volume": true,
       "properties": {
         "cards": {
           "type": "integer",
@@ -210,6 +221,7 @@
     "empty_hand_draw": {
       "type": "object",
       "additionalProperties": false,
+      "x-high-volume": true,
       "properties": {
         "source": {
           "type": "string",
@@ -221,6 +233,7 @@
     "endgame_draw": {
       "type": "object",
       "additionalProperties": false,
+      "x-high-volume": true,
       "properties": {
         "source": {
           "type": "string",
@@ -232,6 +245,7 @@
     "confirmed": {
       "type": "object",
       "additionalProperties": false,
+      "x-high-volume": true,
       "properties": {
         "cards_remaining": {
           "type": "integer",
@@ -245,6 +259,7 @@
     "escape": {
       "type": "object",
       "additionalProperties": false,
+      "x-high-volume": true,
       "properties": {
         "rank": {
           "type": "integer",
@@ -275,6 +290,59 @@
         },
         "rematch_vote": {
           "type": "boolean"
+        },
+        "seats": {
+          "type": "integer",
+          "minimum": 2
+        },
+        "humans": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "bots": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "friends": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "rank": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "lost": {
+          "type": "boolean"
+        },
+        "court": {
+          "type": "boolean"
+        },
+        "moves": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "timeouts": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "thullas_given": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "thullas_taken": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "cards_picked": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "chats": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "voice": {
+          "type": "boolean"
         }
       },
       "required": ["duration"]
@@ -282,6 +350,7 @@
     "quick_chat": {
       "type": "object",
       "additionalProperties": false,
+      "x-high-volume": true,
       "properties": {
         "pack": {
           "type": "string"
@@ -301,6 +370,7 @@
     "emote": {
       "type": "object",
       "additionalProperties": false,
+      "x-high-volume": true,
       "properties": {
         "pack": {
           "type": "string"
@@ -320,6 +390,7 @@
     "chat_text": {
       "type": "object",
       "additionalProperties": false,
+      "x-high-volume": true,
       "properties": {
         "context": {
           "type": "string"
@@ -343,6 +414,7 @@
     "voice_speak": {
       "type": "object",
       "additionalProperties": false,
+      "x-high-volume": true,
       "properties": {
         "mode": {
           "type": "string",
@@ -414,6 +486,9 @@
       "properties": {
         "id": {
           "type": "string"
+        },
+        "premium": {
+          "type": "boolean"
         }
       },
       "required": ["id"]
@@ -443,6 +518,10 @@
         },
         "placement": {
           "type": "string"
+        },
+        "currency": {
+          "type": "string",
+          "enum": ["coins", "gems", "store"]
         }
       },
       "required": ["item"]
@@ -515,6 +594,215 @@
         }
       },
       "required": ["fps_avg"]
+    },
+    "screen_view": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "screen": {
+          "type": "string"
+        },
+        "overlay": {
+          "type": "boolean"
+        }
+      },
+      "required": ["screen"]
+    },
+    "sign_in": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "method": {
+          "type": "string",
+          "enum": ["device", "google", "facebook", "apple", "phone"]
+        }
+      },
+      "required": ["method"]
+    },
+    "account_link": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "provider": {
+          "type": "string",
+          "enum": ["google", "facebook", "apple", "phone"]
+        },
+        "outcome": {
+          "type": "string",
+          "enum": ["linked", "switched", "in_use", "failed"]
+        }
+      },
+      "required": ["provider", "outcome"]
+    },
+    "table_join": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "via": {
+          "type": "string",
+          "enum": ["create", "code", "link", "friend", "quick_play", "ranked", "rejoin", "watch"]
+        },
+        "mode": {
+          "type": "string",
+          "enum": ["private", "public", "ranked"]
+        },
+        "spectator": {
+          "type": "boolean"
+        }
+      },
+      "required": ["via"]
+    },
+    "table_leave": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "phase": {
+          "type": "string",
+          "enum": ["lobby", "round", "between_rounds"]
+        },
+        "reason": {
+          "type": "string",
+          "enum": ["left", "removed", "closed"]
+        },
+        "rounds": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "duration": {
+          "type": "number",
+          "minimum": 0
+        }
+      },
+      "required": ["phase", "reason"]
+    },
+    "share_result": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "ratio": {
+          "type": "string",
+          "enum": ["feed", "story"]
+        },
+        "sheet": {
+          "type": "boolean"
+        }
+      },
+      "required": ["ratio"]
+    },
+    "daily_reward_claim": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "day": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "coins": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "gems": {
+          "type": "integer",
+          "minimum": 0
+        }
+      },
+      "required": ["day"]
+    },
+    "level_up": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "level": {
+          "type": "integer",
+          "minimum": 1
+        }
+      },
+      "required": ["level"]
+    },
+    "achievement_unlock": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string"
+        }
+      },
+      "required": ["id"]
+    },
+    "iap_start": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "product": {
+          "type": "string"
+        }
+      },
+      "required": ["product"]
+    },
+    "iap_result": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "product": {
+          "type": "string"
+        },
+        "outcome": {
+          "type": "string",
+          "enum": ["granted", "cancelled", "failed"]
+        },
+        "code": {
+          "type": "string"
+        }
+      },
+      "required": ["product", "outcome"]
+    },
+    "ad_watch": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "placement": {
+          "type": "string"
+        },
+        "rewarded": {
+          "type": "boolean"
+        }
+      },
+      "required": ["placement", "rewarded"]
+    },
+    "error_shown": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "code": {
+          "type": "string"
+        },
+        "screen": {
+          "type": "string"
+        }
+      },
+      "required": ["code"]
+    },
+    "push_prompt": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "answer": {
+          "type": "string",
+          "enum": ["yes", "no"]
+        }
+      },
+      "required": ["answer"]
+    },
+    "push_open": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "route": {
+          "type": "string",
+          "enum": ["lobby", "friends", "pass", "home"]
+        }
+      },
+      "required": ["route"]
     }
   }
 }

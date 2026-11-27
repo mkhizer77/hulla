@@ -22,7 +22,7 @@ What Hulla collects, where it lives, who gets it and how long it stays (#87, GDD
 | Purchases | Unity IAP | `entitlements`, `ledger_keys` (S `services/purchases.ts`) | Apple and Google receipt validation | optional | with the account |
 | Wallet ledger | server | Nakama wallet ledger | — | — | with the account |
 | Ads | MAX after the first round | `ad_rewards` with the time-zone offset | AppLovin and its networks: advertising id, device data, Hulla user id | MAX consent flow and ATT; under-18s get no personalised ads | with the account |
-| Usage analytics (18 events, no user id) | C `Application/Analytics` | — | Firebase Analytics | `AnalyticsConsent` | Firebase setting |
+| Usage analytics (the events of `docs/design/analytics-events.md`, no user id) | C `Application/Analytics` | — | Firebase Analytics; Amplitude (EU), with a random per-install id, device model, OS and language, no IP address and no per-move events | `AnalyticsConsent`; a no deletes the waiting events and the id | Firebase setting; Amplitude: 13 months, to set in the project |
 | Crash reports | Crashlytics | — | Firebase | `AnalyticsConsent` | Firebase setting |
 | Push device record (token, locale, time zone) | C `Application/Social/PushRegistration.cs` | `push` (S `services/push.ts`) | Firebase Cloud Messaging; a push carries the sender's display name | OS notification permission | with the account; a token is dropped after 60 days unused |
 | Reports | `report_create` | `reports`, `report_index`: reporter, target, reason, table, 7 days of chat, the target's public card | — | — | 1 year (`admin_retention_purge`) |
@@ -36,7 +36,7 @@ The links site (`infra/cloudflare/links`) sets no cookies and runs no analytics;
 
 ## Consent before collection
 
-Firebase collection, the advertising id and Meta's automatic events are off at build time (`BuildTools/Editor/FirebaseConsentDefaults.cs`, `BuildTools/Editor/SocialSetup.cs`) and turn on only with "Share anonymous usage data". The FCM token is fetched on Android before that question because push needs it; it is covered by the notification permission. MAX starts after the first live round, with its consent flow and, on iOS, the tracking prompt.
+Amplitude is sent nothing before the same yes (`AnalyticsClient` drops events until then, and a build without a key has no Amplitude at all). Firebase collection, the advertising id and Meta's automatic events are off at build time (`BuildTools/Editor/FirebaseConsentDefaults.cs`, `BuildTools/Editor/SocialSetup.cs`) and turn on only with "Share anonymous usage data". The FCM token is fetched on Android before that question because push needs it; it is covered by the notification permission. MAX starts after the first live round, with its consent flow and, on iOS, the tracking prompt.
 
 ## Export and deletion
 

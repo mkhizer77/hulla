@@ -36,6 +36,7 @@
 | Purchases | Unity IAP | latest stable | Store billing; receipts validated on the server |
 | Ads | AppLovin MAX Unity plugin with AdMob, Meta, Unity Ads, Mintegral, ironSource, Liftoff adapters | latest stable | Rewarded and interstitial only; no banners |
 | Analytics, crashes, push | Firebase Unity SDK: Analytics, Crashlytics, Cloud Messaging; remote config stays on our server | 14.1.0 | Free tier; off until consent (docs/runbooks/firebase-setup.md) |
+| Product analytics | Amplitude over its HTTP V2 API from our own sink, no SDK (ADR-0025) | n/a | Free to 2 million events a month; EU data centre; off until consent (docs/runbooks/amplitude-setup.md) |
 | Deep links | Our own link page on Cloudflare Pages, App Links and Universal Links | n/a | `playhulla.pages.dev/j/<code>` until the domain (docs/runbooks/links-setup.md) |
 | Tests | Unity Test Framework (edit mode, play mode), NUnit for the pure C# packages | 1.6.x | Rule-ID traceability |
 | Analyzers | Microsoft.Unity.Analyzers, Roslynator | | Warnings are errors in Domain and Application |
@@ -92,7 +93,7 @@ Everything is defined in `infra/` so a region is a copy of a compose file and a 
 | Design tokens | USS variables in Unity mirrored to CSS variables on the web from one token file |
 | Backend SDK | Nakama Unity and nakama-js against the same server and RPCs |
 | Voice | LiveKit Unity and web SDKs on the same rooms |
-| Analytics | Firebase on both, one event schema |
+| Analytics | Firebase and Amplitude on both, one event schema |
 | Sign-in | The same Nakama auth providers |
 | Links | One domain, one router |
 | Not shared | Rendering (Unity versus PixiJS), purchases (stores versus Stripe), ads (mobile only), store packaging |
