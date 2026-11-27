@@ -4,13 +4,13 @@ Product analytics for the client (ADR-0025). The events and what they answer: `d
 
 ## The account
 
-Made on 27 November 2026: an organisation in the EU region on the free plan (`app.eu.amplitude.com`, the owner's personal sign-in) with two projects, **Hulla** (id 100072950, store builds) and **Hulla dev** (id 100073074, development builds). The steps, for a new organisation:
+Made on 27 November 2026: an organisation in the EU region on the free plan (`app.eu.amplitude.com`, the owner's personal sign-in) with two projects, **Hulla** (id 100072950, store builds) and **Hulla dev** (id 100073074, development builds). Data is kept 13 months in every project (Settings → Time to Live, switched on that day). The steps, for a new organisation:
 
 1. Sign up at amplitude.com on the Starter (free) plan. When asked for the data region choose **EU**; it cannot be changed later for a project.
 2. Make two projects: `Hulla` for store builds and `Hulla dev` for development builds, so test rounds stay out of the real numbers.
 3. In each project: Settings → Projects → the project → copy the **API key**. It is a write-only key that ships inside the app, so it is not a secret, but it stays out of the repository like the Firebase files.
-4. In the organisation's settings accept the data processing addendum (#87).
-5. Set the projects' data retention to 13 months (GDD 23.6). If the plan does not offer the setting, change the retention line for Amplitude in `docs/legal/privacy.md` to what the plan keeps.
+4. The data processing addendum (amplitude.com/dpa) needs no separate step: its first paragraph makes it part of the agreement accepted at sign-up, with the standard contractual clauses deemed signed. Read it for the legal review (#87); notices of new subprocessors come only on request, by email to the address in its section 11.
+5. Settings → Privacy & Security → Time to Live (TTL): 13 months for all projects, switch on, Save, and type the confirmation (GDD 23.6). Events older than that are deleted for good, starting 24 hours after the change.
 
 ## The key in a build
 
