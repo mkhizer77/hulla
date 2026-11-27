@@ -12,18 +12,9 @@ Product analytics for the client (ADR-0025). The events and what they answer: `d
 
 ## The key in a build
 
-Either the environment of the build:
+Either in the environment of the build: `HULLA_AMPLITUDE_KEY` holds the project's API key, and `HULLA_AMPLITUDE_REGION` is `us` for a project in the US region (leave it unset for the EU).
 
-```
-HULLA_AMPLITUDE_KEY=<api key>
-HULLA_AMPLITUDE_REGION=eu        # or us, for a project in the US region
-```
-
-or the git-ignored `apps/unity/Hulla/HullaAnalytics.local.json` in the checkout that builds:
-
-```
-{ "amplitudeKey": "<api key>", "amplitudeRegion": "eu" }
-```
+Or in the git-ignored `apps/unity/Hulla/HullaAnalytics.local.json` in the checkout that builds, with two fields: `amplitudeKey` (the API key) and `amplitudeRegion` (`eu` or `us`).
 
 `BuildCommands` writes it next to the server address for the build only and logs "build with Amplitude (eu)" or "build without Amplitude". Use the `Hulla dev` key for development builds and the `Hulla` key for `AndroidRelease` and `ios-release.sh`. CI builds have no key until `HULLA_AMPLITUDE_KEY` is added as a secret to the release job.
 
