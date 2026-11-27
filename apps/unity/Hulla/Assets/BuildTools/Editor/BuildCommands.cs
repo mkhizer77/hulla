@@ -204,6 +204,34 @@ namespace Hulla.BuildTools
 
         private const string DevServerLocalFile = "HullaServer.local.json";
 
+        /// <summary>
+        /// The Amplitude project a build reports to: HULLA_AMPLITUDE_KEY (with HULLA_AMPLITUDE_REGION, "eu"
+        /// unless set to "us"), else the git-ignored HullaAnalytics.local.json
+        /// (<c>{"amplitudeKey": "…", "amplitudeRegion": "eu"}</c>). Without a key the build has no Amplitude.
+        /// </summary>
+        private static (string Key, string Region) Amplitude()
+        {
+            var key = Environment.GetEnvironmentVariable("HULLA_AMPLITUDE_KEY");
+            var region = Environment.GetEnvironmentVariable("HULLA_AMPLITUDE_REGION");
+            if (string.IsNullOrEmpty(key) && File.Exists(AnalyticsLocalFile))
+            {
+                var local = JsonUtility.FromJson<AnalyticsFile>(File.ReadAllText(AnalyticsLocalFile));
+                key = local.amplitudeKey;
+                region = string.IsNullOrEmpty(region) ? local.amplitudeRegion : region;
+            }
+
+            return ((key ?? "").Trim(), string.Equals((region ?? "").Trim(), "us", StringComparison.OrdinalIgnoreCase) ? "us" : "eu");
+        }
+
+        [Serializable]
+        private sealed class AnalyticsFile
+        {
+            public string amplitudeKey = "";
+            public string amplitudeRegion = "";
+        }
+
+        private const string AnalyticsLocalFile = "HullaAnalytics.local.json";
+
         private static bool WithDevServer(Func<bool> build)
         {
             var (server, key) = DevServer();
@@ -214,7 +242,10 @@ namespace Hulla.BuildTools
         {
             Debug.Log($"build for {server}");
             Directory.CreateDirectory(Path.GetDirectoryName(DevServerAsset)!);
-            File.WriteAllText(DevServerAsset, key.Length > 0 ? server + "\n" + key : server);
+            var (amplitudeKey, amplitudeRegion) = Amplitude();
+            Debug.Log(amplitudeKey.Length > 0 ? $"build with Amplitude ({amplitudeRegion})" : "build without Amplitude (no HULLA_AMPLITUDE_KEY or HullaAnalytics.local.json)");
+            // AppConfig reads this by line: server, its key, the Amplitude key, the Amplitude region.
+            File.WriteAllText(DevServerAsset, (server + "\n" + key + "\n" + amplitudeKey + "\n" + amplitudeRegion).TrimEnd('\n'));
             AssetDatabase.ImportAsset(DevServerAsset);
             var succeeded = false;
             try

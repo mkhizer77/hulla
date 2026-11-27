@@ -28,6 +28,7 @@ One file per decision, numbered, never edited after acceptance except to change 
 | 0022 | Server-side validators are compiled ahead of time | Accepted |
 | 0023 | String tables come from content and ship as a text asset | Accepted |
 | 0024 | Voice on self-hosted LiveKit | Accepted |
+| 0025 | Amplitude for product analytics, over its HTTP API | Accepted |
 
 ## Template
 ```

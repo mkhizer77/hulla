@@ -38,6 +38,12 @@ namespace Hulla.Application.ViewModels
         /// <summary>A purchase was granted: refresh the wallet, the pass or the shop.</summary>
         public event Action<PurchaseGrant>? Granted;
 
+        /// <summary>The player asked the store for a product.</summary>
+        public event Action<string>? Started;
+
+        /// <summary>A purchase did not go through: the product and the store's code (<see cref="Cancelled"/> when the player backed out).</summary>
+        public event Action<string, string>? Failed;
+
         public IReadOnlyList<ProductInfo> Products { get; private set; } = Array.Empty<ProductInfo>();
 
         public Entitlements Entitlements { get; private set; } = Entitlements.None;
@@ -132,6 +138,7 @@ namespace Hulla.Application.ViewModels
             Busy = productId;
             ErrorCode = null;
             Changed?.Invoke();
+            Started?.Invoke(productId);
             _store.Buy(productId);
         }
 
@@ -193,6 +200,7 @@ namespace Hulla.Application.ViewModels
 
             ErrorCode = code == Cancelled ? null : code;
             Changed?.Invoke();
+            Failed?.Invoke(productId, code);
         }
 
         /// <summary>

@@ -1,0 +1,5 @@
+# False positives the secret scan (ci.yml) has flagged in a commit that stays in a pull request's history.
+# One fingerprint a line, as the scan prints it.
+
+# docs/runbooks/amplitude-setup.md: the placeholder "<api key>" in an example; the lines were reworded in the next commit.
+477401c6dcb5b26a9b07eecd877d85038f4268bb:docs/runbooks/amplitude-setup.md:generic-api-key:18

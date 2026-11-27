@@ -26,5 +26,13 @@ namespace Hulla.Infrastructure.Analytics
 
             _log.Send(batch);
         }
+
+        /// <summary>Firebase keeps its own anonymous instance id; the account and its properties go to Amplitude only.</summary>
+        public void Identify(string? userId, IReadOnlyDictionary<string, object> properties) => _log.Identify(userId, properties);
+
+        /// <summary>Firebase's collection is switched off by <see cref="FirebaseServices.SetConsent"/>.</summary>
+        public void Forget()
+        {
+        }
     }
 }

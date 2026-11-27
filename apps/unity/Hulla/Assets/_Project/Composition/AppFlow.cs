@@ -117,6 +117,7 @@ namespace Hulla.Composition
             _app.Missions.Changed += RefreshBadges;
             _app.Purchases.Granted += OnPurchaseGranted;
             _app.RemoteConfig.Changed += ApplyShopSwitch;
+            WireAnalytics();
         }
 
         /// <summary>The remote shop switch (GDD 22.5): off hides the Shop tab and leaves the shop if it is open.</summary>
@@ -355,6 +356,7 @@ namespace Hulla.Composition
         /// </summary>
         private void ShowErrorHere(string code)
         {
+            _app.Analytics.Track(AnalyticsEvents.ErrorShown(code, _lastScreen));
             if (_view is HomeView)
             {
                 _app.Home.ShowError(code);
@@ -381,6 +383,7 @@ namespace Hulla.Composition
 
             foreach (var id in Hulla.Infrastructure.Nakama.ServerNotices.UnlockedIds(content))
             {
+                _app.Analytics.Track(AnalyticsEvents.AchievementUnlock(id));
                 var text = Strings.Format(UiText.AchievementUnlocked, AchievementText.Name(id, "", 0));
                 _shell.SetBanner(text);
                 await Awaitable.WaitForSecondsAsync(4f);
@@ -497,6 +500,7 @@ namespace Hulla.Composition
             _app.Links.ReferralOpened -= OnReferralLink;
             _app.Purchases.Granted -= OnPurchaseGranted;
             _app.RemoteConfig.Changed -= ApplyShopSwitch;
+            UnwireAnalytics();
             _app.TableChat.Received -= OnText;
             _app.Tables.Disconnected -= OnDisconnected;
             _app.Sessions.Notified -= OnNotice;
@@ -577,6 +581,11 @@ namespace Hulla.Composition
         {
             if (await _app.DailyReward.ClaimAsync(_app.Lifetime))
             {
+                if (_app.DailyReward.Claimed is { } day)
+                {
+                    _app.Analytics.Track(AnalyticsEvents.DailyRewardClaim(day.Day, day.Coins, day.Gems));
+                }
+
                 await _app.Progress.RefreshAsync(LocalOffsetMinutes(), _app.Lifetime);
             }
         }
@@ -586,6 +595,7 @@ namespace Hulla.Composition
         {
             ApplyServer(server);
             var ticket = await _app.Home.CreateAsync(name, _app.Lifetime);
+            _joinVia = "create";
             await EnterAsync(ticket);
             if (ticket.IsOk)
             {
@@ -622,6 +632,7 @@ namespace Hulla.Composition
                 _app.Analytics.Track(AnalyticsEvents.TableCreate("private"));
             }
 
+            _joinVia = "create";
             await EnterAsync(ticket);
         }
 
@@ -655,6 +666,7 @@ namespace Hulla.Composition
                 _app.Analytics.Track(AnalyticsEvents.TableCreate("private"));
             }
 
+            _joinVia = "create";
             await EnterAsync(ticket);
         }
 
@@ -793,7 +805,11 @@ namespace Hulla.Composition
             // A claim pays coins or gems: read the wallet again so the pill on the top shows them.
             async void Claim(long tier, bool premium)
             {
-                await pass.ClaimAsync(tier, premium, _app.Lifetime);
+                if (await pass.ClaimAsync(tier, premium, _app.Lifetime))
+                {
+                    _app.Analytics.Track(AnalyticsEvents.PassTier(tier.ToString(System.Globalization.CultureInfo.InvariantCulture), premium));
+                }
+
                 await _app.Progress.RefreshAsync(LocalOffsetMinutes(), _app.Lifetime);
                 if (ReferenceEquals(_view, passView))
                 {
@@ -852,6 +868,7 @@ namespace Hulla.Composition
         {
             if (await shop.BuyAsync(itemId, _app.Lifetime))
             {
+                TrackShopPurchase(shop, itemId);
                 await shop.EquipAsync(itemId, _app.Lifetime);
                 await _app.Progress.RefreshAsync(LocalOffsetMinutes(), _app.Lifetime);
             }
@@ -961,7 +978,14 @@ namespace Hulla.Composition
             var tz = LocalOffsetMinutes();
             var missionsRoot = _shell.Show(_shell.Catalog.Missions);
             var missionsView = new MissionsView(missionsRoot, missions, ShowHome,
-                id => _ = missions.ClaimAsync(id, tz, _app.Lifetime),
+                async id =>
+                {
+                    await missions.ClaimAsync(id, tz, _app.Lifetime);
+                    if (missions.ErrorCode == null)
+                    {
+                        _app.Analytics.Track(AnalyticsEvents.MissionComplete(id));
+                    }
+                },
                 id => _ = missions.RerollAsync(id, tz, _app.Lifetime));
             missionsView.Retry = () => _ = missions.RefreshAsync(tz, _app.Lifetime);
             missionsView.PlayNow = PlayNowFrom(name, server);
@@ -1098,6 +1122,7 @@ namespace Hulla.Composition
             }
 
             _signedInUser = user;
+            TrackSignIn();
             RefreshBadgeCounts();
             if (_app.Store.GetInt(TutorialBonusDueKey, 0) == 1)
             {
@@ -1381,6 +1406,7 @@ namespace Hulla.Composition
         {
             if (away)
             {
+                TrackPerf();
                 _app.Analytics.Flush();
             }
             else
@@ -1453,6 +1479,8 @@ namespace Hulla.Composition
             _quickPlayTable = quickPlay;
             var invitedAt = _inviteLinkAt;
             _inviteLinkAt = null;
+            var via = _joinVia;
+            _joinVia = null;
             if (ticket.IsOk)
             {
                 RememberName(_app.Home.LastName);
@@ -1488,7 +1516,7 @@ namespace Hulla.Composition
             table.Client.Model.SetSort(_app.Settings.HandSort == HandSort.RankThenSuit ? CardOrder.CompareByRank : CardOrder.Compare);
             table.Client.Model.Changed += FollowModel;
             _tracker?.Dispose();
-            _tracker = new AnalyticsTracker(_app.Analytics, table.Client);
+            _tracker = new AnalyticsTracker(_app.Analytics, table.Client, IsFriend);
             var entered = await _app.Tables.EnterAsync(ticket.Value, table.Lifetime);
             if (!entered.IsOk)
             {
@@ -1518,6 +1546,16 @@ namespace Hulla.Composition
                 _app.Analytics.Track(AnalyticsEvents.InviteSeated(Time.realtimeSinceStartup - invitedAt.Value));
             }
 
+            var mode = table.Client.Model.Mode;
+            _app.Analytics.Track(AnalyticsEvents.TableJoin(
+                ticket.Value.AsSpectator ? "watch"
+                    : invitedAt != null ? "link"
+                    : quickPlay ? "quick_play"
+                    : mode == TableMode.Ranked ? "ranked"
+                    : via ?? "code",
+                mode == TableMode.Ranked ? "ranked" : mode == TableMode.Public ? "public" : "private",
+                ticket.Value.AsSpectator));
+
             await _app.TableChat.JoinAsync(ticket.Value.MatchId, table.Lifetime);
             await _app.Mutes.RefreshAsync(table.Lifetime);
         }
@@ -1545,6 +1583,8 @@ namespace Hulla.Composition
                     ForgetLastTable();
                 }
 
+                var leaving = _app.Session?.Table?.Client.Model;
+                _tracker?.Left(leaving?.RemovedByHost == true ? "removed" : leaving?.Closed == true ? "closed" : "left");
                 await _app.TableChat.LeaveAsync();
                 await _app.Tables.LeaveAsync();
                 betweenRounds = _app.Session?.Table?.Client.Model.InRound != true;
@@ -1601,6 +1641,8 @@ namespace Hulla.Composition
         private void EndTable()
         {
             StopFollowing(_app.Session?.Table);
+            _tracker?.Dispose();
+            _tracker = null;
             _app.Session?.EndTable();
         }
 
@@ -1658,6 +1700,7 @@ namespace Hulla.Composition
                 return;
             }
 
+            _joinVia = "rejoin";
             await EnterAsync(ticket);
         }
 
@@ -1679,7 +1722,11 @@ namespace Hulla.Composition
 
             if (mine != null && _view == home)
             {
-                home.ShowRejoin(mine.Code, () => _ = EnterAsync(Result<TableTicket>.Ok(mine)));
+                home.ShowRejoin(mine.Code, () =>
+                {
+                    _joinVia = "rejoin";
+                    _ = EnterAsync(Result<TableTicket>.Ok(mine));
+                });
             }
         }
 
@@ -1692,6 +1739,13 @@ namespace Hulla.Composition
                 return;
             }
 
+            _app.Analytics.Track(AnalyticsEvents.PushOpen(tap.Value.Route switch
+            {
+                PushRoute.Lobby => "lobby",
+                PushRoute.Friends => "friends",
+                PushRoute.Pass => "pass",
+                _ => "home",
+            }));
             if (tap.Value.Route == PushRoute.Lobby)
             {
                 _app.Links.Receive(InviteLink.For(tap.Value.Code!), Time.realtimeSinceStartup);
@@ -1730,7 +1784,16 @@ namespace Hulla.Composition
             }
 
             _app.PushPrompt.Asked(day);
-            _shell.ShowDialog(PushText.AskTitle, PushText.AskYes, PushText.AskNo, () => _app.PushDevice.Ask(_ => { }), () => { });
+            _shell.ShowDialog(
+                PushText.AskTitle,
+                PushText.AskYes,
+                PushText.AskNo,
+                () =>
+                {
+                    _app.Analytics.Track(AnalyticsEvents.PushPrompt("yes"));
+                    _app.PushDevice.Ask(_ => { });
+                },
+                () => _app.Analytics.Track(AnalyticsEvents.PushPrompt("no")));
             return true;
         }
 
@@ -2077,7 +2140,9 @@ namespace Hulla.Composition
             var text = code != null ? Strings.Format(UiText.ShareResultWithCode, loser, title, code, InviteLink.For(code))
                 : friendCode != null ? Strings.Format(UiText.ShareResultReferral, loser, title, InviteLink.ReferralFor(friendCode))
                 : Strings.Format(UiText.ShareResultText, loser, title);
-            if (!_app.ShareSheet.ShareImage(UiText.ShareResultTitle, text, png, "hulla-" + result.RoundId + ".png"))
+            var shared = _app.ShareSheet.ShareImage(UiText.ShareResultTitle, text, png, "hulla-" + result.RoundId + ".png");
+            _app.Analytics.Track(AnalyticsEvents.ShareResult(ratio == CardRatio.Story ? "story" : "feed", shared));
+            if (!shared)
             {
                 ShowCopied();
             }
@@ -2206,6 +2271,7 @@ namespace Hulla.Composition
                     RoundFinishedForAds(roundId, reward.Coins);
                     if (reward.LevelTo > reward.LevelFrom)
                     {
+                        _app.Analytics.Track(AnalyticsEvents.LevelUp(reward.LevelTo));
                         text += "\n" + Strings.Format(UiText.LevelUp, reward.LevelFrom, reward.LevelTo);
                     }
 
@@ -2350,6 +2416,7 @@ namespace Hulla.Composition
             {
                 if (linked.Error.Code != "auth.cancelled")
                 {
+                    _app.Analytics.Track(AnalyticsEvents.AccountLink(ProviderName(provider), "failed"));
                     status(UiText.Error(linked.Error.Code) + (Debug.isDebugBuild && linked.Error.Detail != null ? " (" + linked.Error.Detail + ")" : ""));
                 }
 
@@ -2360,12 +2427,14 @@ namespace Hulla.Composition
             if (linked.Value.Linked || token == null)
             {
                 _socialLinked.Add(provider);
+                _app.Analytics.Track(AnalyticsEvents.AccountLink(ProviderName(provider), "linked"));
                 AccountChanged();
                 status(Strings.Format(UiText.SocialLinkedDone, name));
                 then?.Invoke();
                 return;
             }
 
+            _app.Analytics.Track(AnalyticsEvents.AccountLink(ProviderName(provider), "in_use"));
             _shell.ShowDialog(Strings.Format(UiText.SocialInUse, name), UiText.SocialSwitch, UiText.NotNow, async () =>
             {
                 var switched = await _app.SocialAccounts.SwitchAsync(provider, token, _app.Lifetime);
@@ -2375,6 +2444,8 @@ namespace Hulla.Composition
                     return;
                 }
 
+                _app.Analytics.Track(AnalyticsEvents.AccountLink(ProviderName(provider), "switched"));
+                _signInMethod = ProviderName(provider);
                 CloseSettings();
                 AccountSwitched(switched.Value);
             }, () => { });
@@ -2410,6 +2481,7 @@ namespace Hulla.Composition
         /// <summary>Signed in to the number's account: its name, a fresh session scope, Home again.</summary>
         private void OnPhoneSwitched(PlayerSession player)
         {
+            _signInMethod = "phone";
             ClosePhone();
             AccountSwitched(player);
         }
@@ -2541,6 +2613,7 @@ namespace Hulla.Composition
         {
             var settings = _app.Settings;
             _app.Analytics.SetConsent(settings.AnalyticsConsent == true);
+            DescribePlayer();
             _app.Firebase.SetConsent(settings.AnalyticsConsent == true);
             Hulla.Infrastructure.Social.NativeSocialSignIn.SetUsageConsent(settings.AnalyticsConsent == true);
             ThemeClasses.Apply(_shell.Root, settings);
@@ -2555,6 +2628,7 @@ namespace Hulla.Composition
         {
             _app.QuickPlay.Tick(deltaSeconds);
             _app.Analytics.Tick(deltaSeconds);
+            CountFrame(deltaSeconds);
             _tutorial?.Tick(deltaSeconds);
             _app.HomeFriends.Tick(deltaSeconds, _app.Lifetime);
             _lobbyView?.Tick();

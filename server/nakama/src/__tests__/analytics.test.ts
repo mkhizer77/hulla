@@ -234,7 +234,7 @@ describe("server analytics emitters (GDD 23.3, ARCHITECTURE 12.4)", () => {
     expect(events[9]?.params).toMatchObject({ phrase_id: "t22", pack: "v1", context: "round" });
     expect(events[10]?.params).toMatchObject({ phrase_id: "e03", target: true });
     expect(events[11]?.params).toEqual({ outcome: "dropped" });
-    expect(events[13]?.params).toMatchObject({ bhabhi_cards: 9 });
+    expect(events[13]?.params).toMatchObject({ bhabhi_cards: 9, seats: 3, humans: 3, bots: 0 });
     for (const e of events) {
       for (const [key, value] of Object.entries(e.params)) {
         expect(forbiddenParam(key, value), `${e.name}.${key}`).toBeNull();

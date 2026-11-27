@@ -3934,7 +3934,7 @@
   },
   {
    "key": "ui.analytics_ask",
-   "text": "Help us improve Hulla? We'd count anonymous things like round length and taps, and get crash reports, through Google Firebase and Meta. Never your chat, cards or name.",
+   "text": "Help us improve Hulla? We'd count anonymous things like round length and taps, and get crash reports, through Google Firebase, Amplitude and Meta. Never your chat, cards or name.",
    "smart": false
   },
   {

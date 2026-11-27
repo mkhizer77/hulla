@@ -21,6 +21,23 @@ namespace Hulla.Protocol
 
     public static class AnalyticsEvents
     {
+        /// <summary>Per-move and per-message events: not sent to Amplitude, which gets the totals on round_end.</summary>
+        public static readonly HashSet<string> HighVolume = new HashSet<string>
+        {
+            "move_played",
+            "thulla",
+            "pickup",
+            "hand_taken",
+            "empty_hand_draw",
+            "endgame_draw",
+            "confirmed",
+            "escape",
+            "quick_chat",
+            "emote",
+            "chat_text",
+            "voice_speak",
+        };
+
         public static AnalyticsEvent AppOpen(bool cold, string? deepLinkType = null)
         {
             var p = new Dictionary<string, object>();
@@ -84,7 +101,7 @@ namespace Hulla.Protocol
             return new AnalyticsEvent("match_search", p);
         }
 
-        public static AnalyticsEvent RoundStart(string mode, long seats, long? humans = null, long? bots = null, string? presetHash = null, string? region = null)
+        public static AnalyticsEvent RoundStart(string mode, long seats, long? humans = null, long? bots = null, string? presetHash = null, string? region = null, long? friends = null, bool? rematch = null)
         {
             var p = new Dictionary<string, object>();
             // mode: private, public, ranked
@@ -94,6 +111,8 @@ namespace Hulla.Protocol
             if (bots != null) p["bots"] = bots;
             if (presetHash != null) p["preset_hash"] = presetHash;
             if (region != null) p["region"] = region;
+            if (friends != null) p["friends"] = friends;
+            if (rematch != null) p["rematch"] = rematch;
             return new AnalyticsEvent("round_start", p);
         }
 
@@ -165,12 +184,26 @@ namespace Hulla.Protocol
             return new AnalyticsEvent("escape", p);
         }
 
-        public static AnalyticsEvent RoundEnd(double duration, long? bhabhiCards = null, bool? rematchVote = null)
+        public static AnalyticsEvent RoundEnd(double duration, long? bhabhiCards = null, bool? rematchVote = null, long? seats = null, long? humans = null, long? bots = null, long? friends = null, long? rank = null, bool? lost = null, bool? court = null, long? moves = null, long? timeouts = null, long? thullasGiven = null, long? thullasTaken = null, long? cardsPicked = null, long? chats = null, bool? voice = null)
         {
             var p = new Dictionary<string, object>();
             p["duration"] = duration;
             if (bhabhiCards != null) p["bhabhi_cards"] = bhabhiCards;
             if (rematchVote != null) p["rematch_vote"] = rematchVote;
+            if (seats != null) p["seats"] = seats;
+            if (humans != null) p["humans"] = humans;
+            if (bots != null) p["bots"] = bots;
+            if (friends != null) p["friends"] = friends;
+            if (rank != null) p["rank"] = rank;
+            if (lost != null) p["lost"] = lost;
+            if (court != null) p["court"] = court;
+            if (moves != null) p["moves"] = moves;
+            if (timeouts != null) p["timeouts"] = timeouts;
+            if (thullasGiven != null) p["thullas_given"] = thullasGiven;
+            if (thullasTaken != null) p["thullas_taken"] = thullasTaken;
+            if (cardsPicked != null) p["cards_picked"] = cardsPicked;
+            if (chats != null) p["chats"] = chats;
+            if (voice != null) p["voice"] = voice;
             return new AnalyticsEvent("round_end", p);
         }
 
@@ -252,10 +285,11 @@ namespace Hulla.Protocol
             return new AnalyticsEvent("mission_complete", p);
         }
 
-        public static AnalyticsEvent PassTier(string id)
+        public static AnalyticsEvent PassTier(string id, bool? premium = null)
         {
             var p = new Dictionary<string, object>();
             p["id"] = id;
+            if (premium != null) p["premium"] = premium;
             return new AnalyticsEvent("pass_tier", p);
         }
 
@@ -267,12 +301,14 @@ namespace Hulla.Protocol
             return new AnalyticsEvent("shop_view", p);
         }
 
-        public static AnalyticsEvent Purchase(string item, double? price = null, string? placement = null)
+        public static AnalyticsEvent Purchase(string item, double? price = null, string? placement = null, string? currency = null)
         {
             var p = new Dictionary<string, object>();
             p["item"] = item;
             if (price != null) p["price"] = price;
             if (placement != null) p["placement"] = placement;
+            // currency: coins, gems, store
+            if (currency != null) p["currency"] = currency;
             return new AnalyticsEvent("purchase", p);
         }
 
@@ -316,6 +352,136 @@ namespace Hulla.Protocol
             // device_tier: low, mid, high
             if (deviceTier != null) p["device_tier"] = deviceTier;
             return new AnalyticsEvent("perf_sample", p);
+        }
+
+        public static AnalyticsEvent ScreenView(string screen, bool? overlay = null)
+        {
+            var p = new Dictionary<string, object>();
+            p["screen"] = screen;
+            if (overlay != null) p["overlay"] = overlay;
+            return new AnalyticsEvent("screen_view", p);
+        }
+
+        public static AnalyticsEvent SignIn(string method)
+        {
+            var p = new Dictionary<string, object>();
+            // method: device, google, facebook, apple, phone
+            p["method"] = method;
+            return new AnalyticsEvent("sign_in", p);
+        }
+
+        public static AnalyticsEvent AccountLink(string provider, string outcome)
+        {
+            var p = new Dictionary<string, object>();
+            // provider: google, facebook, apple, phone
+            p["provider"] = provider;
+            // outcome: linked, switched, in_use, failed
+            p["outcome"] = outcome;
+            return new AnalyticsEvent("account_link", p);
+        }
+
+        public static AnalyticsEvent TableJoin(string via, string? mode = null, bool? spectator = null)
+        {
+            var p = new Dictionary<string, object>();
+            // via: create, code, link, friend, quick_play, ranked, rejoin, watch
+            p["via"] = via;
+            // mode: private, public, ranked
+            if (mode != null) p["mode"] = mode;
+            if (spectator != null) p["spectator"] = spectator;
+            return new AnalyticsEvent("table_join", p);
+        }
+
+        public static AnalyticsEvent TableLeave(string phase, string reason, long? rounds = null, double? duration = null)
+        {
+            var p = new Dictionary<string, object>();
+            // phase: lobby, round, between_rounds
+            p["phase"] = phase;
+            // reason: left, removed, closed
+            p["reason"] = reason;
+            if (rounds != null) p["rounds"] = rounds;
+            if (duration != null) p["duration"] = duration;
+            return new AnalyticsEvent("table_leave", p);
+        }
+
+        public static AnalyticsEvent ShareResult(string ratio, bool? sheet = null)
+        {
+            var p = new Dictionary<string, object>();
+            // ratio: feed, story
+            p["ratio"] = ratio;
+            if (sheet != null) p["sheet"] = sheet;
+            return new AnalyticsEvent("share_result", p);
+        }
+
+        public static AnalyticsEvent DailyRewardClaim(long day, long? coins = null, long? gems = null)
+        {
+            var p = new Dictionary<string, object>();
+            p["day"] = day;
+            if (coins != null) p["coins"] = coins;
+            if (gems != null) p["gems"] = gems;
+            return new AnalyticsEvent("daily_reward_claim", p);
+        }
+
+        public static AnalyticsEvent LevelUp(long level)
+        {
+            var p = new Dictionary<string, object>();
+            p["level"] = level;
+            return new AnalyticsEvent("level_up", p);
+        }
+
+        public static AnalyticsEvent AchievementUnlock(string id)
+        {
+            var p = new Dictionary<string, object>();
+            p["id"] = id;
+            return new AnalyticsEvent("achievement_unlock", p);
+        }
+
+        public static AnalyticsEvent IapStart(string product)
+        {
+            var p = new Dictionary<string, object>();
+            p["product"] = product;
+            return new AnalyticsEvent("iap_start", p);
+        }
+
+        public static AnalyticsEvent IapResult(string product, string outcome, string? code = null)
+        {
+            var p = new Dictionary<string, object>();
+            p["product"] = product;
+            // outcome: granted, cancelled, failed
+            p["outcome"] = outcome;
+            if (code != null) p["code"] = code;
+            return new AnalyticsEvent("iap_result", p);
+        }
+
+        public static AnalyticsEvent AdWatch(string placement, bool rewarded)
+        {
+            var p = new Dictionary<string, object>();
+            p["placement"] = placement;
+            p["rewarded"] = rewarded;
+            return new AnalyticsEvent("ad_watch", p);
+        }
+
+        public static AnalyticsEvent ErrorShown(string code, string? screen = null)
+        {
+            var p = new Dictionary<string, object>();
+            p["code"] = code;
+            if (screen != null) p["screen"] = screen;
+            return new AnalyticsEvent("error_shown", p);
+        }
+
+        public static AnalyticsEvent PushPrompt(string answer)
+        {
+            var p = new Dictionary<string, object>();
+            // answer: yes, no
+            p["answer"] = answer;
+            return new AnalyticsEvent("push_prompt", p);
+        }
+
+        public static AnalyticsEvent PushOpen(string route)
+        {
+            var p = new Dictionary<string, object>();
+            // route: lobby, friends, pass, home
+            p["route"] = route;
+            return new AnalyticsEvent("push_open", p);
         }
     }
 }

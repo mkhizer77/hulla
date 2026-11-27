@@ -53,6 +53,22 @@ namespace Hulla.Integration.Tests
 
         private readonly List<Player> _players = new List<Player>();
 
+        /// <summary>Keeps what the first player's table would send to analytics.</summary>
+        private sealed class Recorded : Hulla.Application.Analytics.IAnalyticsSink
+        {
+            public readonly List<Protocol.AnalyticsEvent> Events = new List<Protocol.AnalyticsEvent>();
+
+            public void Send(IReadOnlyList<Protocol.AnalyticsEvent> batch) => Events.AddRange(batch);
+
+            public void Identify(string? userId, IReadOnlyDictionary<string, object> properties)
+            {
+            }
+
+            public void Forget()
+            {
+            }
+        }
+
         [TearDown]
         public void TearDown()
         {
@@ -105,6 +121,10 @@ namespace Hulla.Integration.Tests
                 Assert.IsTrue(signedIn.IsOk, name + " sign-in: " + signedIn.Error);
             }
 
+            var recorded = new Recorded();
+            var analytics = new Hulla.Application.Analytics.AnalyticsClient(recorded);
+            analytics.SetConsent(true);
+            Hulla.Composition.AnalyticsTracker? tracker = null;
             var tickets = new Dictionary<Player, TableTicket>();
             var created = await _players[0].Gateway.CreateTableAsync(default);
             Assert.IsTrue(created.IsOk, "table_create: " + created.Error);
@@ -117,6 +137,13 @@ namespace Hulla.Integration.Tests
                 tickets[player] = ticket.Value;
                 var client = new TableClient(player.Gateway, ticket.Value, player.Session.Current!.UserId, DateTimeOffset.UtcNow.ToUnixTimeMilliseconds());
                 player.Client = client;
+                if (player == _players[0])
+                {
+                    // The second player counts as the first one's friend, for the friend-round count.
+                    var friend = _players[1].Session.Current!.UserId;
+                    tracker = new Hulla.Composition.AnalyticsTracker(analytics, client, id => id == friend);
+                }
+
                 var captured = player;
                 client.Model.Changed += () => Act(captured);
                 client.Model.Chat += captured.Chat.Add;
@@ -207,6 +234,30 @@ namespace Hulla.Integration.Tests
                 CollectionAssert.AreEqual(first.EscapeOrder, result.EscapeOrder);
                 Debug.Log($"{player.Name}: {player.Plays} plays, bhabhi seat {result.BhabhiSeat}");
             }
+
+            // The first player's event log for the round (docs/design/analytics-events.md).
+            analytics.Flush();
+            tracker!.Dispose();
+            var started = recorded.Events.FindAll(e => e.Name == "round_start");
+            Assert.AreEqual(1, started.Count, "one round_start");
+            Assert.AreEqual("thulla", started[0].Parameters["game"]);
+            Assert.AreEqual("private", started[0].Parameters["mode"]);
+            Assert.AreEqual(3L, started[0].Parameters["seats"]);
+            Assert.AreEqual(3L, started[0].Parameters["humans"]);
+            Assert.AreEqual(0L, started[0].Parameters["bots"]);
+            Assert.AreEqual(1L, started[0].Parameters["friends"]);
+            var ended = recorded.Events.FindAll(e => e.Name == "round_end");
+            Assert.AreEqual(1, ended.Count, "one round_end");
+            var totals = ended[0].Parameters;
+            var myMoves = recorded.Events.FindAll(e => e.Name == "move_played").Count;
+            Assert.Greater(myMoves, 0, "the first player's moves were counted");
+            Assert.AreEqual((long)myMoves, totals["moves"], "round_end carries the moves Amplitude never sees one by one");
+            Assert.AreEqual("thulla", totals["game"]);
+            Assert.AreEqual(3L, totals["seats"]);
+            Assert.AreEqual(1L, totals["friends"]);
+            Assert.AreEqual(first.BhabhiSeat == _players[0].Client!.Model.MySeat, totals["lost"]);
+            Assert.IsTrue(totals.ContainsKey("rank") && totals.ContainsKey("cards_picked") && totals.ContainsKey("voice"));
+            Assert.Greater((double)totals["duration"], 0d);
 
             if (!dropOne)
             {

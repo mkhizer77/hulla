@@ -39,6 +39,12 @@ namespace Hulla.Application.ViewModels
 
         public event Action? Changed;
 
+        /// <summary>A rewarded ad was shown for a placement, and whether the server paid its reward.</summary>
+        public event Action<string, bool>? Watched;
+
+        /// <summary>An interstitial was shown.</summary>
+        public event Action? InterstitialShown;
+
         public AdsInfo? Info { get; private set; }
 
         /// <summary>True once the network is up for this account.</summary>
@@ -116,6 +122,7 @@ namespace Hulla.Application.ViewModels
 
             Busy = null;
             Changed?.Invoke();
+            Watched?.Invoke(placement, paid);
             return paid;
         }
 
@@ -138,6 +145,7 @@ namespace Hulla.Application.ViewModels
         public async Awaitable ShowInterstitialAsync(CancellationToken cancellation)
         {
             _lastInterstitial = _nowSeconds();
+            InterstitialShown?.Invoke();
             await _network.ShowInterstitialAsync(cancellation);
         }
 

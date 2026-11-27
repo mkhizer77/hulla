@@ -21,13 +21,20 @@ namespace Hulla.Application.Analytics
 
         private static readonly Regex CardList = new Regex(@"\b[2-9TJQKA][SHCD]\b(?:[\s,;|]+\b[2-9TJQKA][SHCD]\b)+");
 
-        private readonly IAnalyticsSink _sink;
+        private readonly IReadOnlyList<IAnalyticsSink> _sinks;
         private readonly List<AnalyticsEvent> _queue = new List<AnalyticsEvent>();
+        private readonly Dictionary<string, object> _context = new Dictionary<string, object>();
+        private readonly Dictionary<string, object> _properties = new Dictionary<string, object>();
+        private readonly Dictionary<string, object> _sentProperties = new Dictionary<string, object>();
+        private string? _userId;
+        private string? _sentUserId;
+        private bool _identified;
+        private bool _forgotten;
         private float _sinceFlush;
 
-        public AnalyticsClient(IAnalyticsSink sink)
+        public AnalyticsClient(params IAnalyticsSink[] sinks)
         {
-            _sink = sink;
+            _sinks = sinks;
         }
 
         public bool Consented { get; private set; }
@@ -39,10 +46,62 @@ namespace Hulla.Application.Analytics
         public void SetConsent(bool consented)
         {
             Consented = consented;
-            if (!consented)
+            if (consented)
             {
-                _queue.Clear();
+                _forgotten = false;
+                SendIdentity();
+                return;
             }
+
+            _queue.Clear();
+            _sentProperties.Clear();
+            _identified = false;
+            if (!_forgotten)
+            {
+                _forgotten = true;
+                foreach (var sink in _sinks)
+                {
+                    sink.Forget();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Goes on every event until cleared with null: the game and the kind of table while the player
+        /// is at one (ARCHITECTURE 12.4). An event's own parameter of the same name wins.
+        /// </summary>
+        public void SetContext(string key, object? value)
+        {
+            if (value == null)
+            {
+                _context.Remove(key);
+            }
+            else
+            {
+                _context[key] = value;
+            }
+        }
+
+        /// <summary>The signed-in account's id (null when none) and what is known about the player; only changes are passed on.</summary>
+        public void Identify(string? userId, IReadOnlyDictionary<string, object> properties)
+        {
+            if (userId != _userId)
+            {
+                // Another account: nothing known about the last one describes this one.
+                _properties.Clear();
+                _sentProperties.Clear();
+            }
+
+            _userId = userId;
+            foreach (var pair in properties)
+            {
+                if (!ForbiddenKeys.Contains(pair.Key))
+                {
+                    _properties[pair.Key] = pair.Value;
+                }
+            }
+
+            SendIdentity();
         }
 
         public void Track(AnalyticsEvent analyticsEvent)
@@ -52,13 +111,14 @@ namespace Hulla.Application.Analytics
                 return;
             }
 
-            if (!IsClean(analyticsEvent))
+            var withContext = WithContext(analyticsEvent);
+            if (!IsClean(withContext))
             {
                 Dropped++;
                 return;
             }
 
-            _queue.Add(analyticsEvent);
+            _queue.Add(withContext);
             if (_queue.Count >= BatchSize)
             {
                 Flush();
@@ -84,7 +144,10 @@ namespace Hulla.Application.Analytics
 
             var batch = _queue.ToArray();
             _queue.Clear();
-            _sink.Send(batch);
+            foreach (var sink in _sinks)
+            {
+                sink.Send(batch);
+            }
         }
 
         /// <summary>No personal data, chat or hidden cards (GDD 23.6): checked on every event, not just the generated ones.</summary>
@@ -107,6 +170,54 @@ namespace Hulla.Application.Analytics
             }
 
             return true;
+        }
+
+        private AnalyticsEvent WithContext(AnalyticsEvent analyticsEvent)
+        {
+            if (_context.Count == 0)
+            {
+                return analyticsEvent;
+            }
+
+            var merged = new Dictionary<string, object>(_context);
+            foreach (var pair in analyticsEvent.Parameters)
+            {
+                merged[pair.Key] = pair.Value;
+            }
+
+            return new AnalyticsEvent(analyticsEvent.Name, merged);
+        }
+
+        private void SendIdentity()
+        {
+            if (!Consented)
+            {
+                return;
+            }
+
+            var changed = new Dictionary<string, object>();
+            foreach (var pair in _properties)
+            {
+                if (!_sentProperties.TryGetValue(pair.Key, out var sent) || !Equals(sent, pair.Value))
+                {
+                    changed[pair.Key] = pair.Value;
+                    _sentProperties[pair.Key] = pair.Value;
+                }
+            }
+
+            if (_identified && changed.Count == 0 && _sentUserId == _userId)
+            {
+                return;
+            }
+
+            _identified = true;
+            _sentUserId = _userId;
+            // Events before this moment belong to whoever was signed in when they happened.
+            Flush();
+            foreach (var sink in _sinks)
+            {
+                sink.Identify(_userId, changed);
+            }
         }
     }
 }
