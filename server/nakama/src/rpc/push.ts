@@ -235,8 +235,14 @@ export function rpcAdminPushSweep(
   return JSON.stringify({ ok: true, ...result });
 }
 
+/**
+ * The room code of the test invite. It is spelled from the room code alphabet (no 0, 1, I or O) and
+ * names no room: a client drops a code outside the alphabet without a word, so a tap would show nothing.
+ */
+export const SAMPLE_ROOM_CODE = "TEST22";
+
 const SAMPLE_ARGS: Readonly<Record<PushType, readonly string[]>> = {
-  table_invite: ["Hulla", "TEST12"],
+  table_invite: ["Hulla", SAMPLE_ROOM_CODE],
   friend_request: ["Hulla"],
   friend_online: ["Hulla"],
   daily_reward: [],
@@ -259,7 +265,7 @@ export function rpcAdminPushTest(
   const ports = nkPushPorts(nk, logger, ctx.env);
   const data: Record<string, string> =
     type === "table_invite"
-      ? { matchId: "test", code: "TEST12", fromUserId: userId }
+      ? { matchId: "test", code: SAMPLE_ROOM_CODE, fromUserId: userId }
       : type === "season_end"
         ? { seasonId: "test" }
         : { fromUserId: userId };

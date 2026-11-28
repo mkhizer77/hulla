@@ -1,7 +1,7 @@
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 
-import { stateFromSeed, Xoshiro128StarStar } from "@hulla/shared-ts";
+import { ROOM_CODE_ALPHABET, stateFromSeed, Xoshiro128StarStar } from "@hulla/shared-ts";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
 import { afterAddFriends } from "../hooks/after_add_friends";
@@ -10,6 +10,7 @@ import { rpcDailyRewardClaim } from "../rpc/daily_reward";
 import {
   rpcAdminPushSweep,
   rpcAdminPushTest,
+  SAMPLE_ROOM_CODE,
   rpcPushRegister,
   rpcPushSettingsGet,
   rpcPushSettingsSet,
@@ -649,5 +650,10 @@ describe("the push RPCs, hooks and sweep against an in-memory Nakama", () => {
       sent: 0,
       outcomes: { "u1-phone": "unconfigured" },
     });
+  });
+
+  it("the test invite carries a code a client accepts as a room code", () => {
+    expect(SAMPLE_ROOM_CODE).toHaveLength(6);
+    for (const letter of SAMPLE_ROOM_CODE) expect(ROOM_CODE_ALPHABET).toContain(letter);
   });
 });
