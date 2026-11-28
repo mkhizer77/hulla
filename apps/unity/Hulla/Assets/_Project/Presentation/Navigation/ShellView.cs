@@ -339,6 +339,19 @@ namespace Hulla.Presentation.Navigation
             }
 
             banner.text = text;
+            PlaceBanner(banner);
+        }
+
+        /// <summary>
+        /// The pill is positioned from the shell's top edge, which the safe-area padding does not move, so
+        /// it is set below the notch by hand; left at the top it sits behind an iPhone's island.
+        /// </summary>
+        private void PlaceBanner(VisualElement? banner)
+        {
+            if (banner != null)
+            {
+                banner.style.top = ScreenLayout.BannerTop(SafeArea);
+            }
         }
 
         private void Awake()
@@ -400,6 +413,7 @@ namespace Hulla.Presentation.Navigation
             Size = ScreenLayout.ClassOf(ScreenLayout.Canvas(screen.x, screen.y).x);
             SafeArea = ScreenLayout.SafeInsets(safeArea, screen.x, screen.y);
             ScreenLayout.Apply(Root, Size, SafeArea);
+            PlaceBanner(Root.Q("shell-banner"));
             LayoutChanged?.Invoke();
         }
 
