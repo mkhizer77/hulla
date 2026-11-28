@@ -131,5 +131,12 @@ namespace Hulla.Presentation.Tests
             Assert.AreEqual(PanelScreenMatchMode.Expand, settings.screenMatchMode);
             Assert.AreEqual(new Vector2Int(1080, 1920), settings.referenceResolution);
         }
+
+        [Test]
+        public void TheTopPillSitsBelowTheNotch()
+        {
+            Assert.AreEqual(ScreenLayout.BannerGap, ScreenLayout.BannerTop(new Insets(0f, 0f, 0f, 0f)));
+            Assert.Greater(ScreenLayout.BannerTop(new Insets(62f, 0f, 34f, 0f)), 62f);
+        }
     }
 }

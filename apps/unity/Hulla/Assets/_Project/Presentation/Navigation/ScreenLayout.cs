@@ -111,6 +111,12 @@ namespace Hulla.Presentation.Navigation
         }
 
         /// <summary>Puts the size class on the shell root (one of the three, never two) and pads it by the insets.</summary>
+        /// <summary>The gap between the safe area's top and the pill, in panel units.</summary>
+        public const float BannerGap = 16f;
+
+        /// <summary>Where the top pill goes, measured from the shell's top edge: clear of the notch.</summary>
+        public static float BannerTop(Insets insets) => insets.Top + BannerGap;
+
         public static void Apply(VisualElement root, SizeClass size, Insets insets)
         {
             root.EnableInClassList(CompactClass, size == SizeClass.Compact);

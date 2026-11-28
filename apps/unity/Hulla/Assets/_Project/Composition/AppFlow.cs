@@ -1498,7 +1498,17 @@ namespace Hulla.Composition
                         ShowHome();
                     }
 
-                    ShowErrorHere(ticket.Error.Code);
+                    // A join from a link or a tapped notification was not asked for on Home, so its refusal
+                    // goes in the pill at the top, where the player looks after coming in from outside.
+                    if (invitedAt != null)
+                    {
+                        _app.Home.ClearError();
+                        ShowBriefly(UiText.Error(ticket.Error.Code));
+                    }
+                    else
+                    {
+                        ShowErrorHere(ticket.Error.Code);
+                    }
                 }
 
                 return;
@@ -1529,7 +1539,16 @@ namespace Hulla.Composition
                     ShowHome();
                 }
 
-                ShowErrorHere(entered.Error.Code);
+                if (invitedAt != null)
+                {
+                    _app.Home.ClearError();
+                    ShowBriefly(UiText.Error(entered.Error.Code));
+                }
+                else
+                {
+                    ShowErrorHere(entered.Error.Code);
+                }
+
                 return;
             }
 
